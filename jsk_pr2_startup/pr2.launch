@@ -1,0 +1,57 @@
+<launch>
+  <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
+       <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
+
+  <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
+        type="tf_publish.py" />
+  <include file="$(find jsk_maps)/launch/start_map_eng2.launch" />
+
+  <!-- japanese speech node -->
+  <node name="sound_play"
+	pkg="sound_play_jsk_patch" type="soundplay_node.py">
+    <param name="command" value="$(find aques_talk)/text2wave-jp.sh"/>
+    <param name="frequency" value="8000"/>
+    <param name="channels" value="1"/>
+    <param name="command_args" value="-p aq_f1c.phont"/>
+  </node>
+
+  <!--start sift on narrow left-->
+  <group ns="/narrow_stereo/left">
+    <node machine="c1" name="throttle" pkg="topic_tools"
+          type="throttle" args="messages image_rect 2.0"/>
+    <node machine="c2" name="sift" pkg="imagesift" type="imagesift"
+          args="image:=image_rect_throttle"
+          launch-prefix="nice -n +10"/>
+  </group>
+
+  <!-- kinect node -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
+
+  <!-- face detection node -->
+  <node pkg="face_detector" type="face_detector" name="face_detector"
+	args="stereo:=narrow_stereo image:=image_rect" machine="c2">
+         <param name="classifier_name" type="string" value="frontalface" />
+         <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/>
+         <param name="classifier_reliability" type="double" value="0.9"/>
+         <param name="do_continuous" type="bool" value="true" />
+         <param name="do_publish_faces_of_unknown_size" type="bool" value="false" />
+         <param name="do_display" type="string" value="none" />
+         <param name="output" type="string" value="none" />
+  </node>
+
+  <!-- logging node for PR2 -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/db_client.launch"/>
+
+  <!-- pr2 warning -->
+  <!-- battery warning -->
+  <node name="battery_warning" pkg="roseus"
+	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+  <node name="cable_warning" pkg="roseus"
+	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l"/>
+
+  <!-- mjpeg_server for web -->
+  <node pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
+    <param name="port" type="int" value="8080" />
+  </node>
+</launch>

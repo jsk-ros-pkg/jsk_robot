@@ -1,0 +1,38 @@
+<package>
+  <description brief="jsk_pr2_startup">
+
+     jsk_pr2_startup
+
+  </description>
+  <author>Manabu Saito</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jsk_pr2_startup</url>
+
+  <depend package="sound_play"/>
+  <depend package="aques_talk"/>
+  <depend package="image_view2"/>
+  <depend package="face_detector_mono"/>
+  <depend package="checkerboard_pose"/>
+  <depend package="kinect_camera"/>
+  <depend package="imagesift"/>
+  <depend package="posedetectiondb"/>
+  <depend package="move_base"/>
+  <depend package="amcl"/>
+  <depend package="safe_teleop_pr2"/>
+  <depend package="map_server"/>
+  <depend package="pr2_move_base"/>
+  <depend package="pr2_navigation_self_filter"/>
+  <depend package="pr2_navigation_teleop"/>
+  <depend package="pr2_navigation_slam"/>
+  <depend package="pr2_base_trajectory_action"/>
+  <depend package="dynamic_tf_publisher"/>
+  <depend package="pr2_base_trajectory_action"/>
+  <depend package="pr2_teleop_general_jsk_patch"/>
+  <depend package="move_base_jsk_patch"/>
+  <depend package="mjpeg_server"/>
+  <depend package="jsk_maps"/>
+
+</package>
+
+

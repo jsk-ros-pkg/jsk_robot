@@ -1,0 +1,31 @@
+<launch>
+
+  <include file="$(find kinect_camera)/launch/kinect_node.launch" />
+  <!--
+  <node pkg="tf" type="static_transform_publisher"
+        name="head_to_kinect_rgb" args="0.07 -0.005 0.18 -1.57 0.03 -1.52
+        /head_tilt_link /kinect_rgb 10" />
+  -->
+  <node pkg="tf" type="static_transform_publisher" name="head_to_kinect_rgb"
+	args="0.002529 -0.043259 -0.025547 0.025917 -0.010858 0.002503 0.999602 /wide_stereo_optical_frame /kinect_rgb 10" />
+  <node pkg="tf" type="static_transform_publisher"
+	name="kinect_rgb_to_kinect_depth"
+	args="-0.03 0.0 0.0 0.0 0.0 0.0 /kinect_rgb /kinect_depth 10" />
+
+  <node name="kinect_throttle" pkg="topic_tools" type="throttle"
+	args="messages /kinect/rgb/points 3.0" />
+
+  <node pkg="pr2_navigation_self_filter" type="self_filter"
+	name="kinect_self_filter" respawn="true" output="screen">
+    <!-- The topic for the input cloud -->
+    <remap from="cloud_in" to="/kinect/rgb/points_throttle" />
+    <!-- The topic for the output cloud -->
+    <remap from="cloud_out" to="kinect_rgb_filtered" />
+
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
+    <!-- The frame of the sensor used to obtain the data to be
+	 filtered; This parameter is optional. If it is not specified,
+	 shadow points will be considered outside -->
+    <param name="sensor_frame" type="string" value="/kinect_rgb" />
+  </node>
+</launch>

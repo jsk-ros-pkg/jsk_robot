@@ -1,0 +1,18 @@
+<launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <include file="$(find pr2_navigation_global)/amcl_node.xml" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch"/>
+<!--  <include file="$(find pr2_navigation_teleop)/teleop.xml" />-->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop.xml" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/lasers_and_filters.xml" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/ground_plane.xml" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base.xml" />
+
+  <!-- To ignore tilt-laser -->
+  <node name="tilt_laser_mux" pkg="topic_tools" type="mux"
+	args="ground_object_cloud_mux ground_object_cloud empty_cloud">
+    <remap from="mux" to="tilt_laser_mux"/>
+  </node>
+  <node name="empty_cloud_publisher" pkg="jsk_pr2_startup"
+	type="publish_empty_cloud.py" />
+</launch>
