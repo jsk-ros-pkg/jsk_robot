@@ -10,9 +10,9 @@
      ((numberp sound)
       (send msg :sound sound))
      (t
-      (send msg :sound sound_play::*play_file*)
+      (send msg :sound sound_play::SoundRequest::*play_file*)
       (send msg :arg sound)))
-    (send msg :command sound_play::*play_once*)
+    (send msg :command sound_play::SoundRequest::*play_once*)
     (ros::publish "/robotsound" msg)))
 
 (defun joy-cb (msg)

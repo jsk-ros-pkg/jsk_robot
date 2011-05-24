@@ -15,9 +15,9 @@
      ((numberp sound)
       (send msg :sound sound))
      (t
-      (send msg :sound sound_play::*play_file*)
+      (send msg :sound sound_play::SoundRequest::*play_file*)
       (send msg :arg sound)))
-    (send msg :command sound_play::*play_once*)
+    (send msg :command sound_play::SoundRequest::*play_once*)
     (ros::publish "/robotsound" msg)))
 
 (defun stop_robot ()
@@ -32,9 +32,9 @@
 	     *ac*
 	     (some #'(lambda (x)
 		       (eq (send x :status)
-			   actionlib_msgs::*active*))
+			   actionlib_msgs::GoalStatus::*active*))
 		   (send msg :status_list)))
-    (play_sound sound_play::*needs_unplugging_badly*)
+    (play_sound sound_play::SoundRequest::*needs_unplugging_badly*)
     (stop_robot)))
 
 (defun check-power-state-cb (msg)

@@ -15,9 +15,9 @@
      ((numberp sound)
       (send msg :sound sound))
      (t
-      (send msg :sound sound_play::*play_file*)
+      (send msg :sound sound_play::SoundRequest::*play_file*)
       (send msg :arg sound)))
-    (send msg :command sound_play::*play_once*)
+    (send msg :command sound_play::SoundRequest::*play_once*)
     (ros::publish "/robotsound" msg)))
 
 (defun check-power-state-cb (msg)
@@ -39,7 +39,7 @@
 	   )
 	  ((< p 10)
 	   (ros::ros-info "need to back to M78 nebula")
-	   (play_sound sound_play::*needs_plugging*)
+	   (play_sound sound_play::SoundRequest::*needs_plugging*)
 	   )
 	  (t
 	   ))))
