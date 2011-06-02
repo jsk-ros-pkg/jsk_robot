@@ -1,7 +1,7 @@
 <launch>
   <node name="move_base_db" pkg="jsk_pr2_startup" output="screen"
 	type="move_base_db.py">
-    <param name="map_frame" value="/eng8"/>
+    <param name="map_frame" value="/eng2"/>
     <param name="robot_frame" value="/base_footprint"/>
   </node>
   <node name="action_result_db" pkg="jsk_pr2_startup" output="screen"
