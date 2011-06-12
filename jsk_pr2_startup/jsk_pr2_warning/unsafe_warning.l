@@ -20,7 +20,7 @@
 	 (eq 1 (elt (send msg :buttons) 9))
 	 (eq 1 (elt (send msg :buttons) 10)))
     (play_sound 2) ;; kan kan
-    (unix::sleep 5)
+    (unix::sleep 2)
     ))
 
 (ros::roseus "unsafe_warning")
