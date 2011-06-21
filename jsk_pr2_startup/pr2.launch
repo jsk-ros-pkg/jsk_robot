@@ -41,7 +41,7 @@
   </node>
 
   <!-- logging node for PR2 -->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/db_client.launch"/>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/>
 
   <!-- pr2 warning -->
   <!-- battery warning -->
