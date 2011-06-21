@@ -23,18 +23,14 @@ class FullbodyAction(object):
         # controllers
         self._larm_client=actionlib.SimpleActionClient('/l_arm_controller/joint_trajectory_action', JointTrajectoryAction)
         self._rarm_client=actionlib.SimpleActionClient('/r_arm_controller/joint_trajectory_action', JointTrajectoryAction)
-        self._torso_client=actionlib.SimpleActionClient('/torso_controller/position_joint_action', SingleJointPositionAction)
-        self._head_client=actionlib.SimpleActionClient('/head_traj_controller/point_head_action', PointHeadAction)
-#        self._base_client=actionlib.SimpleActionClient('/base_trajectory_action', JointTrajectoryAction)
+        self._torso_client=actionlib.SimpleActionClient('/torso_controller/joint_trajectory_action', JointTrajectoryAction)
+        self._head_client=actionlib.SimpleActionClient('/head_traj_controller/head_trajectory_action', JointTrajectoryAction)
+        self._base_client=actionlib.SimpleActionClient('/base_controller/joint_trajectory_action', JointTrajectoryAction)
         self._clients = [self._larm_client, self._rarm_client,
-                         self._torso_client, self._head_client] #, self._base_client]
+                         self._torso_client, self._head_client,
+                         self._base_client]
         for client in self._clients:
             client.wait_for_server()
-
-        self._head_thread = Thread(target = self.head)
-        self._head_thread.start()
-        self._torso_thread = Thread(target = self.torso)
-        self._torso_thread.start()
 
         print 'fullbody action initialized'
 
@@ -54,65 +50,12 @@ class FullbodyAction(object):
     def base(self, traj):
         joints = ["base_link_x", "base_link_y", "base_link_pan"]
         return self.joint(self._base_client, traj, joints)
-
-    def torso(self):
-        while not rospy.is_shutdown():
-            self._lockobj.acquire()
-            sleep_sec = 0.02
-
-            try:
-                valids = [x for x in self._trajectories if -0.05 < (rospy.Time.now()-x.header.stamp).to_sec() < x.points[0].time_from_start.to_sec() - 0.05]
-                traj = valids[0]
-                indexes = [x[0] for x in enumerate(traj.joint_names)
-                           if x[1] == "torso_lift_joint"]
-                pts = [(pt.positions[indexes[0]], pt.time_from_start + traj.header.stamp) for pt in traj.points]
-                pts = [x for x in pts if rospy.Time.now() + rospy.Duration(0.02) < x[1]]
-
-                if 0 < len(pts):
-                    pt = pts[0]
-                    jgoal = SingleJointPositionGoal()
-                    jgoal.position = pt[0]
-                    jgoal.min_duration = pt[1] - rospy.Time.now()
-                    jgoal.max_velocity = 1.0
-                    self._torso_client.send_goal(jgoal)
-                    sleep_sec = jgoal.min_duration.to_sec()-0.01
-            except:
-                #print "Unexpected error:", sys.exc_info()
-                None
-            self._lockobj.release()
-            rospy.sleep(sleep_sec)
-
-    def head(self):
-        while not rospy.is_shutdown():
-            self._lockobj.acquire()
-            sleep_sec = 0.02
-
-            try:
-                valids = [x for x in self._trajectories if -0.05 < (rospy.Time.now()-x.header.stamp).to_sec() < x.points[0].time_from_start.to_sec() - 0.05]
-                traj = valids[0]
-                joints = ["head_pan_joint", "head_tilt_joint"]
-                indexes = [x[0] for y in joints for x in enumerate(traj.joint_names) if x[1] == y]
-                pts = [(pt.positions[indexes[0]], pt.positions[indexes[1]], pt.time_from_start + traj.header.stamp) for pt in traj.points]
-                pts = [x for x in pts if rospy.Time.now() + rospy.Duration(0.02) < x[2]]
-                if 0 < len(pts):
-                    pt = pts[0]
-                    target_x = math.cos(pt[0])
-                    target_y = math.sin(pt[0])
-                    target_z = - math.tan(pt[1])
-                    jgoal = PointHeadGoal()
-                    jgoal.target = PointStamped()
-                    jgoal.target.header.stamp = traj.header.stamp
-                    jgoal.target.header.frame_id = "/torso_lift_link"
-                    jgoal.target.point = Point(x=target_x, y=target_y,
-                                               z=target_z + 0.3875)
-                    jgoal.min_duration = pt[2] - rospy.Time.now()
-                    jgoal.max_velocity = 1.0 # ??
-                    self._head_client.send_goal(jgoal)
-                    sleep_sec = jgoal.min_duration.to_sec()-0.01
-            except:
-                None
-            self._lockobj.release()
-            rospy.sleep(sleep_sec)
+    def torso(self, traj):
+        joints = ["torso_lift_joint"]
+        return self.joint(self._torsi_client, traj, joints)
+    def head(self, traj):
+        joints = ["head_pan_joint", "head_tilt_joint"]
+        return self.joint(self._head_client, traj, joints)
 
     def joint(self, client, traj, joints):
         try:
@@ -131,19 +74,12 @@ class FullbodyAction(object):
         except:
             print 'error in joint client'
 
-    def add_trajectory(self, traj):
-        # TODO sort and check
-        self._lockobj.acquire()
-        self._trajectories = [pt for pt in self._trajectories
-                              if 0 < (traj.header.stamp-pt.header.stamp).to_sec()] + [JointTrajectory(header=traj.header, joint_names=traj.joint_names, points=[pt]) for pt in traj.points]
-        self._lockobj.release()
-
     def execute_cb(self, goal):
-        self.add_trajectory(goal.trajectory)
-
         self.larm(goal.trajectory)
         self.rarm(goal.trajectory)
-#       self.base(goal.trajectory)
+        self.base(goal.trajectory)
+        self.torso(goal.trajectory)
+        self.head(goal.trajectory)
 
         self._as.set_succeeded(JointTrajectoryResult())
 
