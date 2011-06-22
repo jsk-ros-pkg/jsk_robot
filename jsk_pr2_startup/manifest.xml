@@ -14,7 +14,7 @@
   <depend package="image_view2"/>
   <depend package="face_detector_mono"/>
   <depend package="checkerboard_pose"/>
-  <depend package="kinect_camera"/>
+  <depend package="openni_camera"/>
   <depend package="imagesift"/>
   <depend package="posedetectiondb"/>
   <depend package="move_base"/>
