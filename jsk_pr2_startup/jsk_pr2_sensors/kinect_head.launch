@@ -6,6 +6,9 @@
   <node name="kinect_throttle" pkg="topic_tools" type="throttle"
 	args="messages /camera/rgb/points 3.0" />
 
+  <node name="kinect_image_proc" pkg="image_proc" type="image_proc"
+	ns="/camera/rgb" />
+
   <!-- <node pkg="pr2_navigation_self_filter" type="self_filter" -->
   <!-- 	name="kinect_self_filter" respawn="true" output="screen"> -->
   <!--   <remap from="cloud_in" to="/camera/rgb/points_throttle" /> -->
