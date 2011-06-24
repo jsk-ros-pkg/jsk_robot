@@ -28,31 +28,6 @@
   <!-- kinect node -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
 
-  <!-- assmble and snapshot node for laser -->
-  <node type="laser_scan_assembler" pkg="laser_assembler"
-        name="$(anon tilt_scan_assembler)">
-    <remap from="scan" to="tilt_scan"/>
-    <param name="max_scans" type="int" value="400" />
-    <param name="fixed_frame" type="string" value="base_link" />
-    <param name="ignore_laser_skew" type="bool" value="true" />
-  </node>
-
-  <node pkg="pr2_laser_snapshotter" type="pr2_laser_snapshotter"
-	output="screen" name="$(anon snapshotter)">
-    <remap from="laser_scanner_signal"
-           to="/laser_tilt_controller/laser_scanner_signal"/>
-    <remap from="full_cloud" to="tilt_laser_cloud" />
-    <param name="num_skips" value="1" />
-  </node>
-
-  <!-- convert PointCloud to PointCloud2 -->
-  <node pkg="point_cloud_converter" type="point_cloud_converter"
-	output="screen" name="$(anon pc_converter)">
-    <remap from="points_in" to="tilt_laser_cloud" />
-    <remap from="points2_out" to="tilt_laser_cloud2" />
-  </node>
-
-
   <!-- face detection node -->
   <node pkg="face_detector" type="face_detector" name="face_detector"
 	args="stereo:=narrow_stereo image:=image_rect" machine="c2">
@@ -79,4 +54,6 @@
   <node pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
     <param name="port" type="int" value="8080" />
   </node>
+
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
 </launch>
