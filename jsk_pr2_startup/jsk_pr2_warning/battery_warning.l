@@ -30,16 +30,17 @@
 	    (> 180.0 (send (ros::time- tm *ac-tm*) :to-sec)))
 	(return-from check-power-state-cb nil))
     (setq *ac-tm* tm) ;; check every 3min
-    (cond ((< p 20)
+    (cond 
+	  ((< p 10)
+	   (ros::ros-info "need to back to M78 nebula")
+	   (play_sound sound_play::SoundRequest::*needs_plugging*)
+	   )
+	  ((< p 20)
 	   (ros::ros-info "less than 20 perrcept")
 	   ;;(play_sound sound_play::needs_unplugging)
 	   (play_sound (ros::resolve-ros-path "package://piano/notes/E.wav"))
 	   (play_sound (ros::resolve-ros-path "package://piano/notes/G.wav"))
 	   (play_sound (ros::resolve-ros-path "package://piano/notes/B.wav"))
-	   )
-	  ((< p 10)
-	   (ros::ros-info "need to back to M78 nebula")
-	   (play_sound sound_play::SoundRequest::*needs_plugging*)
 	   )
 	  (t
 	   ))))
