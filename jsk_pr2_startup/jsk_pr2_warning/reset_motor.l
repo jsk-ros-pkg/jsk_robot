@@ -6,7 +6,8 @@
   (print (send msg :data))
   (cond ((send msg :data)
 	 (call-empty-service "/pr2_etherCAT/reset_motors")
-	 (ros::ros-warn "reseted motors")))
+	 (ros::ros-warn "reseted motors")
+	 (unix::sleep 2)))
   )
 
 (ros::roseus "reset_motor")
