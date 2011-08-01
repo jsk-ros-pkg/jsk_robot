@@ -24,7 +24,7 @@
 			  :arg jp-str)))
 
 (defun global-path-cb (msg)
-  (let ((co (ros::tf-pose->coords (send (elt (reverse (send msg :poses)) 0) :pose)))
+  (let ((co (ros::tf-pose->coords (send (car (last (send msg :poses))) :pose)))
 	(tra (send *tfl* :lookup-transform "base_link" "odom_combined" (ros::time 0)))
 	(av (send *pr2* :angle-vector)))
     ;; need convert ?
@@ -34,21 +34,21 @@
     (send tra :transform co)
     (ros::ros-info "msg received ~A~%" msg (norm (send tra :worldpos)))
 
-    (when (and *look-enable* (< 500 (norm (send tra :worldpos))))
-      ;;(send *ri* :wait-interpolation)
-      (send *pr2* :head :look-at (v+ #f(0 0 1300) (send tra :worldpos)))
+    (when *look-enable*
+      (if (< 500 (norm (send tra :worldpos)))
+	  (send *pr2* :head :look-at (v+ #f(0 0 1300) (send tra :worldpos)))
+	(send *pr2* :head :look-at #f(0 0 1300)))
       ;;(send *ri* :angle-vector (send *pr2* :angle-vector) 500)
-      (send *ri* :head-angle-vector (send *pr2* :angle-vector) 500)
       (if (> (abs (send *pr2* :head :neck-p :joint-angle)) 30)
-	  (ros::ros-error "error head ik ~A ~A" av (v+ #f(0 0 1300) (send tra :worldpos))))
-      )
+	  (ros::ros-error "error head ik ~A ~A" av (v+ #f(0 0 1300) (send tra :worldpos)))
+	(send *ri* :head-angle-vector (send *pr2* :angle-vector) 500)))
 
     (when (and *speak-enable* (< 1000 (norm (send tra :worldpos))))
       (setq ang (atan (elt (send tra :worldpos) 1)
 		      (elt (send tra :worldpos) 0)))
-      (when (< (* 0.25 pi) ang (* 0.75 pi))
+      (when (< (* 0.25 pi) ang (* 0.50 pi))
 	(speak-jp "ひだりにまがります"))
-      (when (> (* -0.25 pi) ang (* -0.75 pi))
+      (when (> (* -0.25 pi) ang (* -0.50 pi))
 	(speak-jp "みぎにまがります"))
       (ros::ros-info "angle = ~A" ang)
       )
