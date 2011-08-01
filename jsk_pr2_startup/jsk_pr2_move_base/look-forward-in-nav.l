@@ -37,7 +37,8 @@
     (when (and *look-enable* (< 500 (norm (send tra :worldpos))))
       ;;(send *ri* :wait-interpolation)
       (send *pr2* :head :look-at (v+ #f(0 0 1300) (send tra :worldpos)))
-      (send *ri* :angle-vector (send *pr2* :angle-vector) 500)
+      ;;(send *ri* :angle-vector (send *pr2* :angle-vector) 500)
+      (send *ri* :head-angle-vector (send *pr2* :angle-vector) 500)
       (if (> (abs (send *pr2* :head :neck-p :joint-angle)) 30)
 	  (ros::ros-error "error head ik ~A ~A" av (v+ #f(0 0 1300) (send tra :worldpos))))
       )
@@ -51,7 +52,7 @@
 	(speak-jp "みぎにまがります"))
       (ros::ros-info "angle = ~A" ang)
       )
-    (ros::ros-info "~A plan trajectory end oint ~A, head angle ~A" msg (send tra :worldpos) (send *pr2* :head :angle-vector))
+    (ros::ros-info "~A plan trajectory end point ~A, head angle ~A" msg (send tra :worldpos) (send *pr2* :head :angle-vector))
     ))
 
 (init)
@@ -60,6 +61,5 @@
 ;;
 (ros::rate 5)
 (while (ros::ok)
-  (ros::ros-info "loop")
   (ros::sleep)
   (ros::spin-once))

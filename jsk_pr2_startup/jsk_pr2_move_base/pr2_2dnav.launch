@@ -15,4 +15,8 @@
   </node>
   <node name="empty_cloud_publisher" pkg="jsk_pr2_startup"
 	type="publish_empty_cloud.py" />
+
+  <!-- look path forward when navigation -->
+  <node name="look_forward_in_navigation" pkg="jsk_pr2_startup" type="look-forward-in-nav.l" />
+
 </launch>
