@@ -1,7 +1,7 @@
 # this file is a copy of pr2_navigation_config/move_base/move_base_params.yaml 
 
 #footprint: [[-0.325, -0.325], [-0.325, 0.325], [0.325, 0.325], [0.46, 0.0], [0.325, -0.325]]
-footprint: [[-0.425, -0.325], [-0.425, 0.325], [0.325, 0.325], [0.375, 0.0], [0.325, -0.325]]
+footprint: [[-0.325, -0.325], [-0.425, -0.175], [-0.425, 0.175], [-0.325, 0.325], [0.325, 0.325], [0.375, 0.0], [0.325, -0.325]]
 
 controller_frequency: 10.0
 controller_patience: 15.0
