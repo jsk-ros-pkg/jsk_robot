@@ -7,7 +7,7 @@
   <node name="action_result_db" pkg="jsk_pr2_startup" output="screen"
 	type="action_result_db.py"/>
   <group ns="/narrow_stereo/left">
-     <node name="move_base_db" pkg="jsk_pr2_startup" output="screen"
+     <node name="object_detection_db" pkg="jsk_pr2_startup" output="screen"
 	   type="objectdetection_db.py"/>
   </group>
 </launch>

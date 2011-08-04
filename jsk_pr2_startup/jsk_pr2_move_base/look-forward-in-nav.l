@@ -4,7 +4,7 @@
 (load "package://pr2eus/pr2-interface.l")
 
 (setq *look-enable* t)
-(setq *speak-enable* t)
+(setq *speak-timestamp* (ros::time 0))
 
 (defun init ()
   (pr2)
@@ -43,13 +43,16 @@
 	  (ros::ros-error "error head ik ~A ~A" av (v+ #f(0 0 1300) (send tra :worldpos)))
 	(send *ri* :head-angle-vector (send *pr2* :angle-vector) 500)))
 
-    (when (and *speak-enable* (< 1000 (norm (send tra :worldpos))))
+    (when (and (< 3.0 (send (ros::time- (ros::time-now) *speak-timestamp*) :to-sec))
+	       (< 1000 (norm (send tra :worldpos))))
       (setq ang (atan (elt (send tra :worldpos) 1)
 		      (elt (send tra :worldpos) 0)))
       (when (< (* 0.25 pi) ang (* 0.50 pi))
-	(speak-jp "ひだりにまがります"))
+	(speak-jp "ひだりにまがります")
+	(setq *speak-timestamp* (ros::time-now)))
       (when (> (* -0.25 pi) ang (* -0.50 pi))
-	(speak-jp "みぎにまがります"))
+	(speak-jp "みぎにまがります")
+	(setq *speak-timestamp* (ros::time-now)))
       (ros::ros-info "angle = ~A" ang)
       )
     (ros::ros-info "~A plan trajectory end point ~A, head angle ~A" msg (send tra :worldpos) (send *pr2* :head :angle-vector))

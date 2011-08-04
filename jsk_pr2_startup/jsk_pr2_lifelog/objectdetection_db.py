@@ -78,7 +78,7 @@ class ObjectDetectionDB:
 
     def update_subscribers(self):
         current_subscribers = rospy.client.get_published_topics()
-        targets = [x for x in current_subscribers if x[1]=='posedetection_msgs/ObjectDetection']
+        targets = [x for x in current_subscribers if x[1]=='posedetection_msgs/ObjectDetection' and ('_agg' in x[0])]
         for sub in self.subscribers:
             if sub.get_num_connections() == 0:
                 sub.unregister()
