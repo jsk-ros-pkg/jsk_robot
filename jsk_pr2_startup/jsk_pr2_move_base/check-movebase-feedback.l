@@ -30,12 +30,12 @@
  (ros::ros-info "check /move_base/status ~A, /move_base/feedback interval ~5,2A[sec], move_base/goal ~A" *status* interval (if *goal* (ros::tf-pose->coords (send *goal* :pose))))
  (when (and (> interval 5) *goal* *status*)
    ;; kick move_base_simple
-   (if (y-or-n-p "Send Simple Goal??")
-	   (progn
-		 (ros::ros-warn "publish /move_base_simple/goal ~A" *goal*)
-		 (ros::publish "/move_base_simple/goal" *goal*))
-	 (setq *last-message* (ros::time-now))))
+   (when (y-or-n-p "Send Simple Goal??")
+	 (ros::ros-warn "publish /move_base_simple/goal ~A" *goal*)
+	 (ros::publish "/move_base_simple/goal" *goal*))
+   (setq *last-message* (ros::time-now)))
  )
+
 
 
 
