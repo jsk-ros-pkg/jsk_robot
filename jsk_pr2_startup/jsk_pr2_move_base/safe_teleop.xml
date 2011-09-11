@@ -34,6 +34,7 @@
     <remap from="~safe_vel" to="/navigation/safe_vel"/>
     <rosparam file="$(find safe_teleop_pr2)/config/safe_teleop_pr2_params.yaml"
               command="load" />
+    <rosparam param="local_costmap/footprint">[[-0.325, -0.325], [-0.325, 0.325], [0.325, 0.325], [0.46, 0.0], [0.325, -0.325]]</rosparam>
   </node>
 
   <!-- switch base velocity, safe or not -->
