@@ -30,7 +30,7 @@ def message_serialize(msg):
 
 class ActionResultDB:
     loaded_types = []
-    useless_types = [] # message types not but action (goal|result)
+    useless_types = ['roslib.msg.Header'] # message types not but action (goal|result)
     subscribers = {} # topicname:subscriber
 
     def __init__(self,connection=None,db_lock=None): # TODO
@@ -148,6 +148,7 @@ class ActionResultDB:
                 type_obj = eval(typ)()
             except (AttributeError, NameError), e:
                 try:
+                    rospy.loginfo("try to load [%s]", typ_tuple[0]);
                     roslib.load_manifest(typ_tuple[0])
                     exec('import ' + typ_tuple[0] + '.msg')
                 except SyntaxError, e:
