@@ -1,8 +1,9 @@
+# original : pr2_navigation_config/move_base/costmap_common_params.yaml
 #BEGIN VOXEL STUFF
 map_type: voxel
 origin_z: 0.0
 z_voxels: 16
-z_resolution: 0.081
+z_resolution: 0.1125
 unknown_cost_value: 0
 unknown_threshold: 8
 mark_threshold: 0
@@ -21,11 +22,13 @@ base_scan_marking: {sensor_frame: base_laser_link, topic: /base_scan_marking, da
 
 base_scan: {sensor_frame: base_laser_link, topic: /base_scan, data_type: LaserScan, expected_update_rate: 0.2,
              observation_persistence: 0.0, marking: false, clearing: true, min_obstacle_height: -0.10, max_obstacle_height: 2.0, raytrace_range: 10.0}
+# Modified : extend raytrace area (10.0 m)
 
 tilt_scan: {sensor_frame: laser_tilt_link, topic: /tilt_scan, data_type: LaserScan, expected_update_rate: 0.2,
              observation_persistence: 0.2, marking: false, clearing: true, min_obstacle_height: -20.00, max_obstacle_height: 40.0}
 
 ground_object_cloud: {sensor_frame: laser_tilt_link, topic: /ground_object_cloud, data_type: PointCloud, expected_update_rate: 0.2,
                        observation_persistence: 2.3, marking: true, clearing: false, min_obstacle_height: -0.10, max_obstacle_height: 1.80}
-# tilt laser (2.3 sec)
+# Modified : tilt laser (2.3 sec)
+# Modified : max_obstacle_height (1.8 m) for through doors
 # END VOXEL STUFF
