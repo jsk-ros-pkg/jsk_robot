@@ -29,7 +29,6 @@
   <depend package="dynamic_tf_publisher"/>
   <depend package="pr2_base_trajectory_action"/>
   <depend package="pr2_teleop_general_jsk_patch"/>
-  <depend package="move_base_jsk_patch"/>
   <depend package="mjpeg_server"/>
   <depend package="jsk_maps"/>
   <depend package="pr2_laser_snapshotter"/>
