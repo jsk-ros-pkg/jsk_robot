@@ -2,7 +2,7 @@
 
 (ros::roseus-add-msgs "std_msgs")
 (ros::roseus-add-msgs "sound_play")
-(ros::roseus-add-msgs "joy")
+(ros::roseus-add-msgs "sensor_msgs")
 
 (defun play_sound (sound)
   (let ((msg (instance sound_play::SoundRequest :init)))
@@ -24,6 +24,6 @@
     ))
 
 (ros::roseus "unsafe_warning")
-(ros::subscribe "/joy" joy::joy #'joy-cb)
+(ros::subscribe "/joy" sensor_msgs::joy #'joy-cb)
 (ros::advertise "/robotsound" sound_play::SoundRequest 10)
 (ros::spin)
