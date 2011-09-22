@@ -9,7 +9,7 @@
 (defun init ()
   (pr2)
   (ros::roseus "look-formward")
-  (ros::subscribe "/move_base_node/TrajectoryPlannerROS/global_plan"
+  (ros::subscribe "/move_base_node/DWAPlannerROS/global_plan"
 		  nav_msgs::Path #'global-path-cb 1)
   (ros::advertise "robotsound" sound_play::SoundRequest 5)
   (setq *ri* (instance pr2-interface :init))
