@@ -19,7 +19,7 @@
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base_params.yaml" command="load" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find pr2_navigation_config)/move_base/dwa_local_planner.yaml" command="load" ns="DWAPlannerROS" />
+    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/dwa_local_planner.yaml" command="load" ns="DWAPlannerROS" />
     <rosparam file="$(find pr2_navigation_config)/move_base/recovery_behaviors.yaml" command="load" />
 
     <!-- Load global navigation specific parameters -->
