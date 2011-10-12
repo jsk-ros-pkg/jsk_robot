@@ -1,6 +1,7 @@
+<!-- This file is originally pr2_2dnav/pr2_2dnav.launch --> 
 <launch>
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
-  <include file="$(find pr2_navigation_global)/amcl_node.xml" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/amcl_node.xml" />
   <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch"/>
 <!--  <include file="$(find pr2_navigation_teleop)/teleop.xml" />-->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop.xml" />
