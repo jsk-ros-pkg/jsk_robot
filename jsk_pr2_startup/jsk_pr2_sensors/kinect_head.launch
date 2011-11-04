@@ -1,7 +1,7 @@
 <launch>
   <include file="$(find openni_camera)/launch/openni_node.launch" /> 
   <node pkg="tf" type="static_transform_publisher" name="head_to_kinect_rgb" 
-	args="0.022 0.04 0.15 0 -0.02 0 /head_plate_frame /openni_camera 10" />
+	args="0.022 0.04 0.15 0 -0.02 0 /head_plate_frame /openni_camera 100" />
 
   <node name="kinect_throttle" pkg="topic_tools" type="throttle"
 	args="messages /camera/rgb/points 3.0" />
