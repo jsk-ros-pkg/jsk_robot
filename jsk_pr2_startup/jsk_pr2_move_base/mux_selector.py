@@ -89,9 +89,9 @@ if __name__ == "__main__":
     # loop
     try:
         before = default_select
+        update_trigger(conditions)
         looprate = rospy.Rate(freq)
         while not rospy.is_shutdown():
-            update_trigger(conditions)
             lockobj.acquire()
             cand = [x[0] for x in selects if x[0] != None and (rospy.Time.now()-x[1]).to_sec()<deadtime]
             lockobj.release()
