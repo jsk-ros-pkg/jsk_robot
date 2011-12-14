@@ -4,7 +4,7 @@
       respawn="true" output="log">
   <remap from="scan" to="base_scan" />
   <!-- Publish scans from best pose at a max of 10 Hz -->
-  <param name="base_frame_id" value="base_footprint"/>
+  <param name="base_frame_id" value="/base_footprint"/>
   <param name="use_map_topic" value="true" />
   <param name="odom_model_type" value="omni"/>
   <param name="odom_alpha5" value="0.1"/>
@@ -32,7 +32,7 @@
   <param name="laser_likelihood_max_dist" value="2.0"/>
   <param name="update_min_d" value="0.2"/>
   <param name="update_min_a" value="0.5"/>
-  <param name="odom_frame_id" value="odom_combined"/>
+  <param name="odom_frame_id" value="/odom_combined"/>
   <param name="resample_interval" value="1"/>
   <param name="transform_tolerance" value="0.1"/>
   <param name="recovery_alpha_slow" value="0.0"/>
