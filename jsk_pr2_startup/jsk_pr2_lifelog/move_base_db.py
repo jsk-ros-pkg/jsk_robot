@@ -69,13 +69,14 @@ class MoveBaseDB:
             (trans,rot) = self.tf_listener.lookupTransform(self.map_frame,self.robot_frame,rospy.Time(0))
             stamp = self.tf_listener.getLatestCommonTime(self.map_frame,self.robot_frame)
             pose = (list(trans),list(rot))
-        except (tf.LookupException, tf.ConnectivityException):
-            return
 
-        diffthre = 0.1 + 1.0 / (stamp - self.latest_stamp).to_sec()
-        if (diffthre < (sum([(trans[i]-self.current_pose[0][i])**2 for i in [0,1,2]]) ** 0.5) or diffthre/2 < (sum([(rot[i]-self.current_pose[1][i])**2 for i in [0,1,2,3]]) ** 0.5)):
-            self.insert_pose_to_db("tf",stamp,self.map_frame,self.robot_frame,pose)
-            self.current_pose = (trans,rot)
+            diffthre = 0.1 + 1.0 / (stamp - self.latest_stamp).to_sec()
+            if (diffthre < (sum([(trans[i]-self.current_pose[0][i])**2 for i in [0,1,2]]) ** 0.5) or diffthre/2 < (sum([(rot[i]-self.current_pose[1][i])**2 for i in [0,1,2,3]]) ** 0.5)):
+                self.insert_pose_to_db("tf",stamp,self.map_frame,self.robot_frame,pose)
+                self.current_pose = (trans,rot)
+        except (tf.LookupException, tf.ConnectivityException, \
+                tf.ExtrapolationException):
+            return
 
 if __name__ == "__main__":
     rospy.init_node('move_base_db')
