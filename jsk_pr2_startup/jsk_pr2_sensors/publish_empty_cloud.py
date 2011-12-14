@@ -5,12 +5,13 @@ import math
 from sensor_msgs.msg import *
 from geometry_msgs.msg import Point32
 def talker():
-    pub = rospy.Publisher('empty_cloud', PointCloud)
     rospy.init_node('empty_cloud_publisher')
+    pub = rospy.Publisher('empty_cloud', PointCloud)
+    frame_id = rospy.get_param('frame_id', '/base_laser_link')
     while not rospy.is_shutdown():
-        msg=PointCloud()
+        msg = PointCloud()
         msg.header.stamp = rospy.Time.now()
-        msg.header.frame_id = "/base_laser_link"
+        msg.header.frame_id = frame_id
         msg.points = []
         for i in range(-200,200):
             msg.points += [Point32(x=25*math.cos(i*0.01),
