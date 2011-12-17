@@ -36,7 +36,7 @@
     (setq tra (send *tfl* :transform-pose "base_footprint" po))
     (when (not tra)
       (ros::ros-error "not transform")
-      (return-from global-path-cb nil))
+      (return-from look-at-front nil))
     (ros::ros-info "msg received ~A~%" msg (norm (send tra :worldpos)))
 
     (when *look-enable*
