@@ -15,7 +15,9 @@
     <remap from="mux" to="tilt_laser_mux"/>
   </node>
   <node name="empty_cloud_publisher" pkg="jsk_pr2_startup"
-	type="publish_empty_cloud.py" />
+	type="publish_empty_cloud.py">
+    <param name="frame_id" value="/laser_tilt_link" />
+  </node>
 
   <!-- look path forward when navigation -->
   <node name="look_forward_in_navigation" pkg="jsk_pr2_startup" type="look-forward-in-nav.l" respawn="true"/>
