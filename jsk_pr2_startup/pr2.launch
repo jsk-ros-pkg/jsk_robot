@@ -8,7 +8,7 @@
   <include file="$(find jsk_maps)/launch/start_map_eng2.launch" />
 
   <!-- japanese speech node -->
-  <node pkg="sound_play" type="soundplay_node.py" name="soundplay_node">
+  <node pkg="sound_play" type="soundplay_node.py" name="sound_node">
     <env name="PATH" value="$(find aques_talk):$(env PATH)" />
   </node>
 
