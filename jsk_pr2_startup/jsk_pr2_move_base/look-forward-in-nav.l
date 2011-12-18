@@ -22,12 +22,14 @@
   (setq *msg* msg))
 
 (defun look-at-front ()
-  (if *msg* (setq msg *msg*)
-    (return-from look-at-front nil))
-
+  (unless (boundp '*msg*) (return-from look-at-front nil))
+  (if (< 5 (send (ros::time- (ros::time-now)
+			     (send *msg* :header :stamp) :to-sec)))
+      (return-from look-at-front nil))
+  ;;
   (let* ((po (instance geometry_msgs::PoseStamped :init
-		       :header (send msg :header)
-		       :pose (send (car (last (send msg :poses))) :pose)))
+		       :header (send *msg* :header)
+		       :pose (send (car (last (send *msg* :poses))) :pose)))
 	 tra (av (send *pr2* :angle-vector)))
     ;; need convert ?
     (send *tfl* :wait-for-transform
@@ -37,7 +39,7 @@
     (when (not tra)
       (ros::ros-error "not transform")
       (return-from look-at-front nil))
-    (ros::ros-info "msg received ~A~%" msg (norm (send tra :worldpos)))
+    (ros::ros-info "msg received ~A~%" *msg* (norm (send tra :worldpos)))
 
     (when *look-enable*
       (if (< 500 (norm (send tra :worldpos)))
@@ -59,17 +61,16 @@
 	(setq *speak-timestamp* (ros::time-now)))
       (ros::ros-info "angle = ~A" ang)
       )
-    (ros::ros-info "~A plan trajectory end point ~A, head angle ~A" msg (send tra :worldpos) (send *pr2* :head :angle-vector))
+    (ros::ros-info "~A plan trajectory end point ~A, head angle ~A" *msg* (send tra :worldpos) (send *pr2* :head :angle-vector))
     ))
 
 ;; init
-(setq *msg* nil)
 (pr2)
 (unless (boundp '*ri*) (setq *ri* (instance pr2-interface :init)))
 (unless (boundp '*tfl*) (setq *tfl*  (instance ros::transform-listener :init)))
 (ros::subscribe "/move_base_node/DWAPlannerROS/global_plan"
 		nav_msgs::Path #'global-path-cb 1)
-(ros::advertise "/robotsound" sound_play::SoundRequest 5)
+(ros::advertise "robotsound" sound_play::SoundRequest 5)
 
 (unix::sleep 1)
 

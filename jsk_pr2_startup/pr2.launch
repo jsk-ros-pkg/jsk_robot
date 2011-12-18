@@ -52,4 +52,8 @@
   </node>
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
+
+  <!-- for gripper sensor actions -->
+  <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+
 </launch>
