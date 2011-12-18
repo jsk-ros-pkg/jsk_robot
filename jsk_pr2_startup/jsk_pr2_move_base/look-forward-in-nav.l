@@ -24,7 +24,7 @@
 (defun look-at-front ()
   (unless (boundp '*msg*) (return-from look-at-front nil))
   (if (< 5 (send (ros::time- (ros::time-now)
-			     (send *msg* :header :stamp) :to-sec)))
+			     (send *msg* :header :stamp)) :to-sec))
       (return-from look-at-front nil))
   ;;
   (let* ((po (instance geometry_msgs::PoseStamped :init
