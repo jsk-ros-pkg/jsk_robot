@@ -10,7 +10,7 @@
   <!-- japanese speech node -->
   <node pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
     <env name="PATH" value="$(find aques_talk):$(env PATH)" />
-    <remap from="robotsound" to="j_robotsound" />
+    <remap from="robotsound" to="robotsound_jp" />
   </node>
 
   <!--start sift on narrow left-->
