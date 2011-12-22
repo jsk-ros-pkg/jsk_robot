@@ -9,13 +9,6 @@
 (setq *look-enable* t)
 (setq *speak-timestamp* (ros::time 0))
 
-(defun speak-jp (jp-str)
-  (ros::publish "robotsound"
-		(instance sound_play::SoundRequest :init
-			  :sound sound_play::SoundRequest::*say*
-			  :command sound_play::SoundRequest::*play_once*
-			  :arg jp-str)))
-
 ;; if (ros::spin-once) is called in callback function,
 ;;   stack overflow will occure.
 (defun global-path-cb (msg)
