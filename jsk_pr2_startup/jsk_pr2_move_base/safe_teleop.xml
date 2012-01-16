@@ -32,7 +32,7 @@
         name="safe_teleop_base" machine="c2">
     <remap from="base_velocity" to="/navigation/unsafe_vel"/>
     <remap from="~safe_vel" to="/navigation/safe_vel"/>
-    <rosparam file="$(find safe_teleop_pr2)/config/safe_teleop_pr2_params.yaml"
+    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop_pr2_params.yaml"
               command="load" />
     <rosparam param="local_costmap/footprint">[[-0.325, -0.325], [-0.325, 0.325], [0.325, 0.325], [0.46, 0.0], [0.325, -0.325]]</rosparam>
   </node>
