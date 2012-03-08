@@ -50,7 +50,7 @@
   </node>
 
   <!-- warning 5 sec when unsafe -->
-  <node pkg="jsk_pr2_startup" type="unsafe_warning.l"
-	name="unsafe_warning" respawn="true" />  
+  <node pkg="roseus" type="roseus" name="unsafe_warning" respawn="true"
+	args="$(find jsk_pr2_startup)/jsk_pr2_move_base/unsafe_warning.l"/>
 
 </launch>

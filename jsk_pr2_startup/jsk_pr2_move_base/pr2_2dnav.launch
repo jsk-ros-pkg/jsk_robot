@@ -20,6 +20,8 @@
   </node>
 
   <!-- look path forward when navigation -->
-  <node name="look_forward_in_navigation" pkg="jsk_pr2_startup" type="look-forward-in-nav.l" respawn="true"/>
+  <node name="look_forward_in_navigation" pkg="roseus" type="roseus"
+    	args="$(find jsk_pr2_startup)/jsk_pr2_move_base/look-forward-in-nav.l"
+	respawn="true"/>
 
 </launch>
