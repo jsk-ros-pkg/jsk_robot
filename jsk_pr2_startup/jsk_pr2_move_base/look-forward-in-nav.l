@@ -2,6 +2,7 @@
 
 (ros::roseus-add-msgs "nav_msgs")
 (ros::roseus-add-msgs "sound_play")
+(ros::roseus-add-msgs "move_base_msgs")
 (load "package://pr2eus/pr2-interface.l")
 
 (ros::roseus "look_forward")
@@ -13,6 +14,13 @@
 ;;   stack overflow will occure.
 (defun global-path-cb (msg)
   (setq *msg* msg))
+
+(defun result-cb (msg)
+  (let ((av (send *ri* :state :potentio-vector)))
+    (send *pr2* :angle-vector av)
+    (send *pr2* :head :angle-vector #f(0 0))
+    (send *ri* :angle-vector (send *pr2* :angle-vector) 1000)
+    ))
 
 (defun look-at-front ()
   (unless (boundp '*msg*) (return-from look-at-front nil))
@@ -63,6 +71,9 @@
 (unless (boundp '*tfl*) (setq *tfl*  (instance ros::transform-listener :init)))
 (ros::subscribe "/move_base_node/DWAPlannerROS/global_plan"
 		nav_msgs::Path #'global-path-cb 1)
+;; look straight when navigation retries
+(ros::subscribe "/move_base/result"
+		move_base_msgs::MoveBaseActionResult #'result-cb 1)
 (ros::advertise "robotsound" sound_play::SoundRequest 5)
 
 (unix::sleep 1)
