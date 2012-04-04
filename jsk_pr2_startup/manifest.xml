@@ -10,7 +10,7 @@
   <url>http://ros.org/wiki/jsk_pr2_startup</url>
 
   <depend package="sound_play"/>
-  <depend package="aques_talk"/>
+  <depend package="voice_text"/>
   <depend package="image_view2"/>
   <depend package="face_detector_mono"/>
   <depend package="openni_camera"/>

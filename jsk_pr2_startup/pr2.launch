@@ -9,7 +9,7 @@
 
   <!-- japanese speech node -->
   <node pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
-    <env name="PATH" value="$(find aques_talk):$(env PATH)" />
+    <env name="PATH" value="$(find voice_text):$(env PATH)" />
     <remap from="robotsound" to="robotsound_jp" />
   </node>
 
