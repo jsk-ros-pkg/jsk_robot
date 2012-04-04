@@ -7,6 +7,7 @@
 (ros::roseus-add-srvs "std_srvs")
 
 (setq *ac* nil *ac-tm* (ros::time 0)) ;; ac_present > 0
+(setq *net* nil) ;; netwoork is connected
 (setq *motor* t) ;; if motors working
 
 (defun play_sound (sound)
@@ -27,9 +28,9 @@
   (setq *motor* (not (send msg :data))))
 
 (defun move-base-status-cb (msg)
-  (ros::ros-info "base status motor:~A ac:~A, goal:~A" *motor* *ac* (send-all (send msg :status_list) :status))
+  (ros::ros-info "base status motor:~A ac:~A, net:~A, goal:~A" *motor* *ac* *net* (send-all (send msg :status_list) :status))
   (when (and *motor*
-	     *ac*
+	     (or *ac* *net*)
 	     (some #'(lambda (x)
 		       (eq (send x :status)
 			   actionlib_msgs::GoalStatus::*active*))
@@ -49,9 +50,13 @@
     (setq *ac-tm* tm) ;; check every 3min
     ))
 
+(defun check-network-connected-cb (msg)
+  (setq *net* (send msg :data)))
+
 (ros::roseus "cable_warning")
 (ros::wait-for-service "/pr2_etherCAT/halt_motors")
 (ros::subscribe "/power_state" pr2_msgs::PowerState #'check-power-state-cb)
+(ros::subscribe "/network/connected" std_msgs::Bool #'check-network-connected-cb)
 (ros::subscribe "/pr2_etherCAT/motors_halted" std_msgs::Bool #'motors-halted-cb)
 (ros::subscribe "/move_base/status" actionlib_msgs::GoalStatusArray #'move-base-status-cb)
 (ros::advertise "/robotsound" sound_play::SoundRequest 10)
