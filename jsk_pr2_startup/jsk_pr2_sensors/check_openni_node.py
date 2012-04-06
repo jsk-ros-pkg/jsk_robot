@@ -27,8 +27,7 @@ class image_converter:
             rospy.logerr("Restart openni_node1")
             retcode = -1
             try:
-                #retcode = subprocess.call('rosnode kill openni_node1', shell=True)
-                None
+                retcode = subprocess.call('rosnode kill openni_node1', shell=True)
             except Exception, e:
                 rospy.logerr('Unable to kill kinect node, caught exception:\n%s', traceback.format_exc())
 
