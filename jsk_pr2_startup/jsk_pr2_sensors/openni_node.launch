@@ -20,5 +20,5 @@
     <param name="depth_time_offset" value="0" />
     <param name="image_time_offset" value="0" />
   </node>
-  <include file="$(find openni_camera)/launch/kinect_frames.launch"/>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_frames.launch"/>
 </launch>

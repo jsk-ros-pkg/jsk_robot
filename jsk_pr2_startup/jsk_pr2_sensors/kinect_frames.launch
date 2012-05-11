@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="tf" type="static_transform_publisher" name="kinect_base_link" args="0 -0.02 0 0 0 0  /openni_camera /openni_depth_frame 100" />  
+  <node pkg="tf" type="static_transform_publisher" name="kinect_base_link1" args="0 -0.04 0 0 0 0  /openni_camera /openni_rgb_frame 100" />  
+  <node pkg="tf" type="static_transform_publisher" name="kinect_base_link2" args="0 0 0 -1.57 0 -1.57 /openni_depth_frame /openni_depth_optical_frame  100" />  
+  <node pkg="tf" type="static_transform_publisher" name="kinect_base_link3" args="0 0 0 -1.57 0 -1.57 /openni_rgb_frame /openni_rgb_optical_frame 100" />  
+</launch>
