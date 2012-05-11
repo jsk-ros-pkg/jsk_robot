@@ -1,7 +1,7 @@
 <launch>
-  <include file="$(find openni_camera)/launch/openni_node.launch" /> 
+  <!-- include file="$(find openni_camera)/launch/openni_node.launch" / --> 
   <!-- copy from openni_camera/launch/openni_node.launch, just for respawn true -->
-  <!-- include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" / -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" />
   <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen" />
   <node pkg="tf" type="static_transform_publisher" name="head_to_kinect_rgb" 
 	args="0.022 0.04 0.15 0 -0.02 0 /head_plate_frame /openni_camera 100" />
