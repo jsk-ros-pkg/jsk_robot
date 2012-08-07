@@ -6,6 +6,7 @@ import rospy
 import twoauth,yaml
 from std_msgs.msg import String
 
+# see http://d.hatena.ne.jp/gumilab/20101004/1286154912 to setup CKEY/AKEY
 key = yaml.load(open('/var/lib/robot/twitter_acount.yaml'))
 CKEY = key['CKEY']
 CSECRET = key['CSECRET']
