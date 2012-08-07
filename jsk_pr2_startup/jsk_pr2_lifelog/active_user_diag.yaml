@@ -1,0 +1,11 @@
+analyzers:
+  users:
+    type: diagnostic_aggregator/GenericAnalyzer
+    path: Active User
+    expected: 'Active User'
+
+
+
+
+
+
