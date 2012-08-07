@@ -14,7 +14,7 @@ AKEY = key['AKEY']
 ASECRET = key['ASECRET']
 
 def twit(dat):
-    rospy.loginfo(rospy.get_name()+"sending %s",dat.data)
+    rospy.loginfo(rospy.get_name()+" sending %s",dat.data)
     twitter.status_update(dat.data)
 
 if __name__ == '__main__':
