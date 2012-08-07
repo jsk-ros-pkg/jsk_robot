@@ -10,4 +10,7 @@
      <node name="object_detection_db" pkg="jsk_pr2_startup" output="screen"
 	   type="objectdetection_db.py"/>
   </group>
+  <node name="tweet" pkg="jsk_pr2_startup" type="tweet.py" />
+  <node name="active_user" pkg="roseus"
+	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/active_user.l" />
 </launch>
