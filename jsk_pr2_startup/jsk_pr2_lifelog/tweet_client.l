@@ -18,7 +18,7 @@
     (ros::publish "/pr2twit"
 		  (instance std_msgs::String :init
 			    :data (format nil "Congratulations! ~A have reached ~d minutes"
-					  (concatenate string  (string-upcase (subseq *user-name*  0 1)) (subseq *user-name*  1))
+					  (subseq *user-name* 0 (or (position #\space *user-name*) (length *user-name*)))
 					  (round (/ *elapsed-time* 60))))))
   (ros::spin-once)
   (ros::sleep)
