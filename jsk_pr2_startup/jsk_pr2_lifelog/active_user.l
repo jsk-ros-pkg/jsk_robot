@@ -42,7 +42,8 @@
 (setq *elapsed-sec* 0)
 (setq *seq* 0)
 (do-until-key
-  (setq *user-name* (read-line (piped-fork "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1") nil))
+  (unix::system (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt" (unix::getpid)))
+  (with-open-file (f (format nil "/tmp/username_~d.txt" (unix::getpid)))  (setq *user-name* (read-line f)))
   (ros::ros-info "user -> ~A" *user-name*)
   ;; check if the robot is moving
   (when (and *user-name* *prev-distance* *prev-angle* *prev-position*)
