@@ -66,6 +66,7 @@
 	(ros::ros-error "start moving")
 	(setq *status* 'move)
 	(setq *start-time* (ros::time-now))
+	(setq *tmp-elapsed* *elapsed*)
 	)
        ((and (eq *status* 'stop) (not *movingp*)) ;; stop->stop
 	(setq *tmp-elapsed* (ros::time 0))
