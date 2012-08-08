@@ -42,7 +42,7 @@
 (setq *elapsed-sec* 0)
 (setq *seq* 0)
 (do-until-key
-  (setq *user-name* (read-line (piped-fork "cat /var/lib/robot/active_user.yaml | grep user | sed s@user:\\ @@") nil))
+  (setq *user-name* (read-line (piped-fork "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1") nil))
   (ros::ros-info "user -> ~A" *user-name*)
   ;; check if the robot is moving
   (when (and *user-name* *prev-distance* *prev-angle* *prev-position*)
