@@ -37,7 +37,7 @@
 
 (ros::rate 1)
 (setq *status* 'stop)
-(setq *elapsed* (ros::time (or (ros::get-param "/active_user/elapsed_time") 0)))
+(setq *elapsed* (ros::time (if (ros::has-param "/active_user/elapsed_time") (ros::get-param "/active_user/elapsed_time") 0)))
 (setq *start-time* (ros::time 0))
 (setq *elapsed-sec* 0)
 (setq *seq* 0)
