@@ -5,15 +5,15 @@
 (ros::roseus "twitter_client")
 (ros::advertise "/pr2twit" std_msgs::String 1)
 
-;; tweet evely 30 miniutes (= 30 * 60 = 1800 sec)
-(setq *target-second* (+ (ros::get-param "/active_user/elapsed_time") 1800))
+;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
+(setq *target-second* (+ (ros::get-param "/active_user/elapsed_time") 300))
 (ros::rate 1)
 (do-until-key
   (setq *user-name* (ros::get-param "/active_user/user_name")
 	*elapsed-time* (ros::get-param "/active_user/elapsed_time"))
   (ros::ros-info "user -> ~A, time -> ~A (~A) " *user-name* *elapsed-time* *target-second*)
   (when (> *elapsed-time* *target-second*)
-    (incf *target-second* 1800)
+    (incf *target-second* *target-second*)
     ;; save wide  image and save to /tmp/frame0000.jpg
     (unix::system "`rospack find image_view`/bin/extract_images image:=/wide_stereo/right/image_rect_color _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=extract_images &")
     (unix::sleep 4)
