@@ -1,4 +1,8 @@
 <launch>
+  <arg name="launch_openni" default="true" />
+  <arg name="launch_imagesift" default="true" />
+  <arg name="launch_facedetection" default="true" />
+
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
        <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
@@ -14,7 +18,7 @@
   </node>
 
   <!--start sift on narrow left-->
-  <group ns="/narrow_stereo/left">
+  <group ns="/narrow_stereo/left" if="$(arg launch_imagesift)" >
     <node machine="c1" name="throttle" pkg="topic_tools"
           type="throttle" args="messages image_rect 2.0"/>
     <node machine="c2" name="sift" pkg="imagesift" type="imagesift"
@@ -23,11 +27,14 @@
   </group>
 
   <!-- kinect node -->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
+    <arg name="launch_openni" value="$(arg launch_openni)" />
+  </include>
 
   <!-- face detection node -->
   <node pkg="face_detector" type="face_detector" name="face_detector"
-	args="stereo:=narrow_stereo image:=image_rect" machine="c2">
+        args="stereo:=narrow_stereo image:=image_rect" machine="c2"
+        if="$(arg launch_facedetection)" >
          <param name="classifier_name" type="string" value="frontalface" />
          <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/>
          <param name="classifier_reliability" type="double" value="0.9"/>
@@ -43,9 +50,9 @@
   <!-- pr2 warning -->
   <!-- battery warning -->
   <node name="battery_warning" pkg="roseus"
-	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
   <node name="cable_warning" pkg="roseus"
-	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l"/>
+        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l"/>
 
   <!-- mjpeg_server for web -->
   <node pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
