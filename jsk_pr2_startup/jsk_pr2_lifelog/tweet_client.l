@@ -6,6 +6,9 @@
 (ros::advertise "/pr2twit" std_msgs::String 1)
 
 ;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
+(while (not (ros::has-param "/active_user/elapsed_time"))
+  (unix::sleep 3)
+  (ros::ros-info "Wait for /active_user/elapsed_time parameter ..."))
 (setq *target-second* (+ (ros::get-param "/active_user/elapsed_time") 300))
 (ros::rate 1)
 (do-until-key
