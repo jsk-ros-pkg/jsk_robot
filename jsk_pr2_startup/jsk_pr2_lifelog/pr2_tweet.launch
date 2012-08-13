@@ -4,5 +4,6 @@
 	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/active_user.l"
 	respawn="true" />
   <node name="tweet_client" pkg="roseus"
-	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/tweet_client.l" />
+	type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/tweet_client.l"
+	respawn="true" />
 </launch>
