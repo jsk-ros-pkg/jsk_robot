@@ -19,7 +19,7 @@
     (incf *target-second* *target-second*)
     ;; save wide  image and save to /tmp/frame0000.jpg
     (unix::system "(cd /tmp; `rospack find image_view`/bin/image_saver image:=/camera/rgb/image_rect_color _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &)")
-    (unix::sleep 2)
+    (unix::sleep 10)
     (unix::system "rosnode kill image_saver")
     ;; tweet
     (ros::ros-info "tweet ~A ~A" *user-name* *elapsed-time*)
