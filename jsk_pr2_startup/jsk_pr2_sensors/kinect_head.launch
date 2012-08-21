@@ -5,11 +5,14 @@
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" if="$(arg launch_openni)" />
   <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen" />
 
-  <node name="kinect_throttle" pkg="topic_tools" type="throttle"
-	args="messages /camera/rgb/points 3.0" />
-
   <node name="kinect_image_proc" pkg="image_proc" type="image_proc"
 	ns="/camera/rgb" />
+
+  <node name="kinect_points_throttle" pkg="topic_tools" type="throttle"
+	args="messages /camera/rgb/points 3.0" />
+
+  <node name="kinect_image_throttle" pkg="topic_tools" type="throttle"
+        args="messages /camera/rgb/image_rect_color/compressed 5.0" />
 
   <!-- <node pkg="pr2_navigation_self_filter" type="self_filter" -->
   <!-- 	name="kinect_self_filter" respawn="true" output="screen"> -->

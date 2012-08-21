@@ -17,7 +17,7 @@
     <remap from="robotsound" to="robotsound_jp" />
   </node>
 
-  <!--start sift on narrow left-->
+  <!-- start sift on narrow left-->
   <group ns="/narrow_stereo/left" if="$(arg launch_imagesift)" >
     <node machine="c1" name="throttle" pkg="topic_tools"
           type="throttle" args="messages image_rect 2.0"/>
@@ -63,5 +63,30 @@
 
   <!-- for gripper sensor actions -->
   <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+
+  <!-- for iPad or android apps -->
+  <node name="tablet_receiver_default" pkg="jsk_smart_gui" respawn="true"
+        type="tablet_receiver.l" output="screen" args="(execute-main)" >
+    <param name="~ray_srv" value="/pointcloud_screenpoint_nodelet/screen_to_point"/>
+  </node>
+
+  <include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" />
+
+  <node pkg="image_view2" name="image_view2_for_tablet"
+        type="image_view2" output="screen" respawn="true">
+    <remap from="image" to="/camera/rgb/image_rect_color"/>
+    <remap from="camera_info" to="/camera/rgb/camera_info"/>
+    <remap from="image_marked" to="/camera/marked/image_raw"/>
+    <param name="blurry" value="true"/>
+    <param name="use_window" value="false"/>
+  </node>
+
+  <node pkg="topic_tools" type="mux"
+        respawn="true" name="marked_camera_info"
+        args="/camera/marked/camera_info /camera/rgb/camera_info"/>
+  <node ns="/camera/marked" pkg="image_proc" type="image_proc"
+        respawn="true" name="marked_image_proc" />
+  <node name="kinect_marked_image_throttle" pkg="topic_tools" type="throttle"
+        args="messages /camera/marked/image_rect_color/compressed 5.0" />
 
 </launch>
