@@ -66,7 +66,9 @@
   <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
 
   <!-- for iPad or android apps -->
-  <include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" />
+  <include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
+    <arg name="cloud_machine" value="c2" />
+  </include>
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
 </launch>

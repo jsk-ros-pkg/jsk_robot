@@ -13,31 +13,40 @@
     <param name="use_window" value="false"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" output="screen" name="mux_for_image"
+  <node pkg="topic_tools" type="mux" output="screen" 
+	name="mux_for_image"
         args="image_input_mux 
 	      /camera/rgb/image_rect_color 
 	      /wide_stereo/right/image_rect_color
 	      /wide_stereo/left/image_rect_color
+	      /narrow_stereo/right/image_rect_color
+	      /narrow_stereo/left/image_rect_color
 	      /r_forearm_cam/image_rect_color
 	      /l_forearm_cam/image_rect_color ">
     <remap from="mux" to="image_mux"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" output="screen" name="mux_for_camera_info"
+  <node pkg="topic_tools" type="mux" output="screen" 
+	name="mux_for_camera_info"
         args="camera_info_input_mux 
 	      /camera/rgb/camera_info 
 	      /wide_stereo/right/camera_info
 	      /wide_stereo/left/camera_info
+	      /narrow_stereo/right/camera_info
+	      /narrow_stereo/left/camera_info
 	      /r_forearm_cam/camera_info
 	      /l_forearm_cam/camera_info ">
     <remap from="mux" to="camera_info_mux"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" respawn="true" name="marked_camera_info"
-        args="/camera/marked/camera_info /camera_info_input_mux"/>
+  <node pkg="topic_tools" type="mux" respawn="true" 
+	name="marked_camera_info"
+        args="/camera/marked/camera_info /camera_info_input_mux">
+    <remap from="mux" to="markde_camera_info_mux"/>
+  </node>
 
   <node ns="/camera/marked" pkg="image_proc" type="image_proc"
-        respawn="true" name="marked_image_proc" />
+        respawn="true" name="marked_image_proc"/>
 
   <node name="kinect_marked_image_throttle" pkg="topic_tools" type="throttle"
         args="messages /camera/marked/image_rect_color/compressed 5.0" />
