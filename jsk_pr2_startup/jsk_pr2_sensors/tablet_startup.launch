@@ -8,7 +8,7 @@
         type="image_view2" output="screen" respawn="true">
     <remap from="image" to="/image_input_mux"/>
     <remap from="camera_info" to="/camera_info_input_mux"/>
-    <remap from="image_marked" to="/camera/marked/image_raw"/>
+    <remap from="image_marked" to="/openni/marked/image_raw"/>
     <param name="blurry" value="true"/>
     <param name="use_window" value="false"/>
   </node>
@@ -16,6 +16,7 @@
   <node pkg="topic_tools" type="mux" output="screen" 
 	name="mux_for_image"
         args="image_input_mux 
+	      /openni/rgb/image_rect_color 
 	      /camera/rgb/image_rect_color 
 	      /wide_stereo/right/image_rect_color
 	      /wide_stereo/left/image_rect_color
@@ -29,6 +30,7 @@
   <node pkg="topic_tools" type="mux" output="screen" 
 	name="mux_for_camera_info"
         args="camera_info_input_mux 
+	      /openni/rgb/camera_info 
 	      /camera/rgb/camera_info 
 	      /wide_stereo/right/camera_info
 	      /wide_stereo/left/camera_info
@@ -41,14 +43,14 @@
 
   <node pkg="topic_tools" type="mux" respawn="true" 
 	name="marked_camera_info"
-        args="/camera/marked/camera_info /camera_info_input_mux">
+        args="/openni/marked/camera_info /camera_info_input_mux">
     <remap from="mux" to="markde_camera_info_mux"/>
   </node>
 
-  <node ns="/camera/marked" pkg="image_proc" type="image_proc"
+  <node ns="/openni/marked" pkg="image_proc" type="image_proc"
         respawn="true" name="marked_image_proc"/>
 
   <node name="kinect_marked_image_throttle" pkg="topic_tools" type="throttle"
-        args="messages /camera/marked/image_rect_color/compressed 5.0" />
+        args="messages /openni/marked/image_rect_color/compressed 5.0" />
 
 </launch>
