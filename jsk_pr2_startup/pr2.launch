@@ -7,8 +7,10 @@
        <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
 
-  <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
-        type="tf_publish.py" />
+  <!-- We do not launch dynamic_tf_publisher for default anymore.
+       <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
+       type="tf_publish.py" /> -->
+
   <include file="$(find jsk_maps)/launch/start_map_eng2.launch" />
 
   <!-- japanese speech node -->
@@ -44,9 +46,7 @@
          <param name="output" type="string" value="none" />
   </node>
 
-  <!-- logging node for PR2 
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/>
-  -->
+  <!-- logging node for PR2  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/> -->
 
   <!-- pr2 warning -->
   <!-- battery warning -->
@@ -66,9 +66,9 @@
   <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
 
   <!-- for iPad or android apps -->
-  <include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
+  <!--include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
     <arg name="cloud_machine" value="c2" />
-  </include>
+  </include-->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
 </launch>

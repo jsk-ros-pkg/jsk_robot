@@ -1,4 +1,4 @@
-#Copied from pr2_navigation_perception/config/tilt_self_filter.yaml
+#Copied from pr2_navigation_perception/config/self_filter_right_left.yaml
 min_sensor_dist: .05
 self_see_default_padding: .01
 self_see_default_scale: 1.0

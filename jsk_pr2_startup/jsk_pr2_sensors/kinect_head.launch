@@ -1,18 +1,28 @@
 <launch>
   <arg name="launch_openni" default="true" />
-  <!-- include file="$(find openni_camera)/launch/openni_node.launch" / --> 
+  <!-- include file="$(find openni_camera)/launch/openni_node.launch" / -->
   <!-- copy from openni_camera/launch/openni_node.launch, just for respawn true -->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" if="$(arg launch_openni)" />
-  <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen" />
 
+  <!-- for ROS_DISTRO under electric -->
+  <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
+
+  <include file="$(find openni_launch)/launch/openni.launch">
+    <arg name="camera" value="openni"/>
+    <arg name="respawn" value="true"/>
+    <arg name="publish_tf" value="false"/>
+  </include>
+
+  <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen" />
+<!--
   <node name="kinect_image_proc" pkg="image_proc" type="image_proc"
-	ns="/camera/rgb" />
+	ns="/openni/rgb" />
+-->
 
   <node name="kinect_points_throttle" pkg="topic_tools" type="throttle"
-	args="messages /camera/rgb/points 3.0" />
+	args="messages /openni/depth_registered/points 3.0" />
 
   <node name="kinect_image_throttle" pkg="topic_tools" type="throttle"
-        args="messages /camera/rgb/image_rect_color/compressed 5.0" />
+        args="messages /openni/rgb/image_rect_color/compressed 5.0" />
 
   <!-- <node pkg="pr2_navigation_self_filter" type="self_filter" -->
   <!-- 	name="kinect_self_filter" respawn="true" output="screen"> -->
