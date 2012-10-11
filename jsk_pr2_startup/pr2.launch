@@ -68,6 +68,8 @@
   <!-- for iPad or android apps -->
   <!--include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
     <arg name="cloud_machine" value="c2" />
+    <arg name="camera_info" default="camera_info_input_mux"/>
+    <arg name="points" default="points_input_mux"/>
   </include-->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 

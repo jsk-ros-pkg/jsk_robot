@@ -40,9 +40,18 @@
     <param name="sensor_model_min" value= "0.12" />
     <param name="sensor_model_max" value= "0.95" />
 
-    <remap from="collision_map_out" to="collision_map_self_occ" />
+    <remap from="collision_map_out" to="collision_map_occ" />
     <!-- <remap from="point_cloud_out" to="octomap_point_cloud" /> -->
     <remap from="point_cloud_out" to="tilt_laser_cloud2" />
+
+    <param name="origin_x" type="double" value="1.1" />
+    <param name="origin_y" type="double" value="0.0" />
+    <param name="origin_z" type="double" value="0.0" />
+
+    <param name="dimension_x" type="double" value="1.5" />
+    <param name="dimension_y" type="double" value="2.0" />
+    <param name="dimension_z" type="double" value="2.0" />
+
 
     <rosparam command="load"  file="$(find jsk_pr2_startup)/jsk_pr2_sensors/collision_map_sources_laser.yaml"/>
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />

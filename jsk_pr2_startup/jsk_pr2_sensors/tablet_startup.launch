@@ -13,11 +13,10 @@
     <param name="use_window" value="false"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" output="screen" 
+  <node pkg="topic_tools" type="mux" output="screen"
 	name="mux_for_image"
-        args="image_input_mux 
-	      /openni/rgb/image_rect_color 
-	      /camera/rgb/image_rect_color 
+        args="image_input_mux
+	      /openni/rgb/image_rect_color
 	      /wide_stereo/right/image_rect_color
 	      /wide_stereo/left/image_rect_color
 	      /narrow_stereo/right/image_rect_color
@@ -27,11 +26,10 @@
     <remap from="mux" to="image_mux"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" output="screen" 
+  <node pkg="topic_tools" type="mux" output="screen"
 	name="mux_for_camera_info"
-        args="camera_info_input_mux 
-	      /openni/rgb/camera_info 
-	      /camera/rgb/camera_info 
+        args="camera_info_input_mux
+	      /openni/rgb/camera_info
 	      /wide_stereo/right/camera_info
 	      /wide_stereo/left/camera_info
 	      /narrow_stereo/right/camera_info
@@ -41,7 +39,15 @@
     <remap from="mux" to="camera_info_mux"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" respawn="true" 
+  <node pkg="topic_tools" type="mux" output="screen"
+	name="mux_for_points"
+        args="points_input_mux
+	      /openni/depth_registered/points
+	      /tilt_laser_cloud2">
+    <remap from="mux" to="points_mux"/>
+  </node>
+
+  <node pkg="topic_tools" type="mux" respawn="true"
 	name="marked_camera_info"
         args="/openni/marked/camera_info /camera_info_input_mux">
     <remap from="mux" to="markde_camera_info_mux"/>
