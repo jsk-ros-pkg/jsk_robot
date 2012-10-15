@@ -1,5 +1,5 @@
 #Copied from pr2_navigation_perception/config/self_filter_right_left.yaml
-min_sensor_dist: .05
+min_sensor_dist: .2
 self_see_default_padding: .01
 self_see_default_scale: 1.0
 self_see_links:
@@ -36,7 +36,7 @@ self_see_links:
   - name: l_shoulder_pan_link
     padding: .01
   - name: l_shoulder_lift_link
-    padding: .01
+    padding: .1
   - name: r_upper_arm_link
     padding: .04
   - name: r_upper_arm_roll_link
@@ -66,11 +66,13 @@ self_see_links:
   - name: r_shoulder_pan_link
     padding: .01
   - name: r_shoulder_lift_link
-    padding: .01
+    padding: .1
   - name: base_laser_link
     padding: .01
   - name: base_link
     padding: .01
+  - name: torso_lift_link
+    padding: .05
 
     
 

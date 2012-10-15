@@ -2,6 +2,7 @@
   <arg name="launch_openni" default="true" />
   <arg name="launch_imagesift" default="true" />
   <arg name="launch_facedetection" default="false" />
+  <arg name="launch_jsk_pcl" default="false" />
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
        <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
@@ -60,17 +61,17 @@
     <param name="port" type="int" value="8080" />
   </node>
 
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
+  <!--include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" /-->
 
   <!-- for gripper sensor actions -->
   <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
 
   <!-- for iPad or android apps -->
-  <!--include file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
+  <include if="$(arg launch_jsk_pcl)" file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
     <arg name="cloud_machine" value="c2" />
     <arg name="camera_info" default="camera_info_input_mux"/>
     <arg name="points" default="points_input_mux"/>
-  </include-->
+  </include>
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
 </launch>

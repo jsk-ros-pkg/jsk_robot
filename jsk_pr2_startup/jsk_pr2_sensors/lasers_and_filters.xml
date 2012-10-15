@@ -1,4 +1,4 @@
-<!-- Copied from pr2_navigation_perception/config/laser_and_filters.xml -->
+<!-- Copied from pr2_navigation_perception/laser_and_filters.xml -->
 <launch>
 
   <node pkg="topic_tools" type="throttle" name="base_scan_throttle" args="messages base_scan 1.0 base_scan_throttled" machine="c2" output="screen"/>

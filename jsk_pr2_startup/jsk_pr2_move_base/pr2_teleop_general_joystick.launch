@@ -1,5 +1,5 @@
 <launch>
-
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
   <!--  Arm controllers for mannequin mode -->
   <rosparam command="load" file="$(find pr2_mannequin_mode)/pr2_arm_controllers_loose.yaml" />
   <node pkg="pr2_controller_manager" type="spawner" name="spawn_arm_controllers"
