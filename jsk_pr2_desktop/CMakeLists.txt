@@ -7,9 +7,10 @@ endif ("${SETUP_DIRECTORY}" STREQUAL "")
 
 set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(PROJECT_SCRIPTS_DIR ${PROJECT_SOURCE_DIR}/scripts)
-set(PR2_USER pr2user)
+set(PR2_USER applications)
 set(USER_NAME $ENV{USER})
 
+# Desktop Icons
 configure_file(${PROJECT_SOURCE_DIR}/PR2Dashboard.desktop.in
                ${SETUP_DIRECTORY}/PR2Dashboard.desktop)
 configure_file(${PROJECT_SOURCE_DIR}/PR2JSKStartup.desktop.in
@@ -21,10 +22,13 @@ configure_file(${PROJECT_SOURCE_DIR}/StartPR2.desktop.in
 configure_file(${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
                ${SETUP_DIRECTORY}/StopPR2.desktop)
 
+# scripts
 configure_file(${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
                ${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup.sh)
 configure_file(${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
                ${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main.sh)
+configure_file(${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
+               ${PROJECT_SCRIPTS_DIR}/detect_cans_demo.sh)
 
 add_custom_target(desktop ALL DEPENDS
   ${PROJECT_SOURCE_DIR}/PR2Dashboard.desktop.in
@@ -34,7 +38,8 @@ add_custom_target(desktop ALL DEPENDS
   ${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
   ${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
   ${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
+  ${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
   )
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES
-  "${SETUP_DIRECTORY}/PR2Dashboard.desktop;${SETUP_DIRECTORY}/PR2JSKStartup.desktop;${SETUP_DIRECTORY}/PR2MarkerControl.desktop;${SETUP_DIRECTORY}/StartPR2.desktop;${SETUP_DIRECTORY}/StopPR2.desktop;${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup.sh;${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main.sh"
+  "${SETUP_DIRECTORY}/PR2Dashboard.desktop;${SETUP_DIRECTORY}/PR2JSKStartup.desktop;${SETUP_DIRECTORY}/PR2MarkerControl.desktop;${SETUP_DIRECTORY}/StartPR2.desktop;${SETUP_DIRECTORY}/StopPR2.desktop;${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup.sh;${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main.sh;${PROJECT_SCRIPTS_DIR}/detect_cans_demo.sh"
   )

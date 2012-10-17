@@ -1,0 +1,16 @@
+#!/bin/bash
+set +e
+
+export PS1=@USER_NAME@
+source ~/.bashrc
+
+## for desktop
+sleep 1
+rosrun pr2_dashboard pr2_dashboard &
+# xterm -sb -rightbar -sl 99999 +s -title "RVIZ" -e 'export PS1=applications; source ~/.bashrc; rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.vcg' &
+
+## for robot
+sleep 1
+xterm -sb -rightbar -sl 99999 +s -title "JSK" -e ssh -t -l @PR2_USER@ pr1012 'export PS1=@PR2_USER@; source ~/.bashrc; roslaunch jsk_pr2_startup pr2.launch'
+sleep 5
+ssh -t -l @PR2_USER@ pr1012 'export PS1=@PR2_USER@; source ~/.bashrc; roslaunch detect_cans_in_fridge_201202 startup.launch start_euslisp:=true'
