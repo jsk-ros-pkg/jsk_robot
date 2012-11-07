@@ -21,13 +21,12 @@
     <!--param name="sensor_frame" type="string" value="laser_tilt_link" /-->
     <!-- Minimum distance to sensor (for point not to be considered inside)-->
     <param name="subsample_value" type="double" value="0.0"/>
-     <!-- The names of the links the sensor can see -->
-     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
-   </node>
+    <!-- The names of the links the sensor can see -->
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
+  </node>
 
- <!-- waiting for patch for PointCloud2
   <node type="laser_scan_assembler" name="tilt_scan_assembler"
-        pkg="laser_assembler">
+	pkg="laser_assembler" respawn="true">
     <remap from="scan" to="tilt_scan"/>
     <param name="max_scans" type="int" value="400" />
     <param name="fixed_frame" type="string" value="base_link" />
@@ -35,12 +34,14 @@
   </node>
 
   <node pkg="pr2_arm_navigation_perception" type="pr2_laser_snapshotter"
-	output="screen" name="snapshotter">
+	output="screen" name="tilt_laser_snapshotter" respawn="true">
     <remap from="laser_scanner_signal"
-           to="/laser_tilt_controller/laser_scanner_signal"/>
-    <remap from="full_cloud" to="tilt_laser_cloud" />
+	   to="/laser_tilt_controller/laser_scanner_signal"/>
+    <remap from="full_cloud2" to="tilt_laser_cloud2" />
+    <param name="publish_point_cloud" value="false" />
+    <param name="publish_point_cloud2" value="true" />
+    <param name="num_skips" value="1"/>
   </node>
-  -->
 
   <!-- send additional description parameters -->
   <include file="$(find pr2_arm_navigation_config)/launch/pr2_planning_environment.launch" />
@@ -59,8 +60,7 @@
 
     <remap from="collision_map_out" to="collision_map_occ" />
     <!-- <remap from="point_cloud_out" to="octomap_point_cloud" /> -->
-    <remap from="point_cloud_out" to="tilt_laser_cloud2" />
-    <!-- <remap from="point_cloud_out" to="tilt_scan_shadow2_self_filtered" /> -->
+    <remap from="point_cloud_out" to="collision_map_point_cloud2" />
 
     <param name="origin_x" type="double" value="1.1" />
     <param name="origin_y" type="double" value="0.0" />

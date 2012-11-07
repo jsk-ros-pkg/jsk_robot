@@ -9,7 +9,7 @@
   <rosparam command="load" file="$(find pr2_mannequin_mode)/head_position_controller_loose.yaml" />
   <node pkg="pr2_controller_manager" type="spawner" name="spawn_head_controller"
         args="--stopped head_traj_controller_loose" />
- 
+
   <node pkg ="pr2_arm_kinematics" type="pr2_arm_kinematics_node" name="pr2_left_arm_kinematics" output="screen">
    <param name="tip_name" value="l_wrist_roll_link" />
    <param name="root_name" value="torso_lift_link" />
@@ -19,7 +19,7 @@
    <param name="tip_name" value="r_wrist_roll_link" />
    <param name="root_name" value="torso_lift_link" />
   </node>
-  
+
   <!-- Trajectory Locks for Mannequin Modes -->
   <include file="$(find pr2_mannequin_mode)/trajectory_lock.launch"/>
 

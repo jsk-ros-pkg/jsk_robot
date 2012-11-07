@@ -50,7 +50,7 @@
   <node pkg="topic_tools" type="mux" respawn="true"
 	name="marked_camera_info"
         args="/openni/marked/camera_info /camera_info_input_mux">
-    <remap from="mux" to="markde_camera_info_mux"/>
+    <remap from="mux" to="marked_camera_info_mux"/>
   </node>
 
   <node ns="/openni/marked" pkg="image_proc" type="image_proc"
