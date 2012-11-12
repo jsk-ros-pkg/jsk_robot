@@ -3,6 +3,8 @@
         type="tablet_receiver.l" output="screen" args="(execute-main)" >
     <param name="~ray_srv" value="/pointcloud_screenpoint_nodelet/screen_to_point"/>
   </node>
+  <node name="tablet_receiver_emergency" pkg="jsk_smart_gui" respawn="true"
+        type="emergency_stop.l" output="screen" args="(execute-main)" />
 
   <node pkg="image_view2" name="image_view2_for_tablet"
         type="image_view2" output="screen" respawn="true">
