@@ -1,0 +1,14 @@
+digraph jsk_pr2_tilt_laser {
+   node[shape=box]
+   "tilt_laser"[shape=hexagon]
+   ""[shape=point]
+   " "[shape=point]
+   "tilt_laser"->"/tilt_laser_snapshotter"[label="/laser_tilt_controller/laser_scanner_signal[LaserScannerSignal]"]
+   "tilt_laser"->"/tilt_scan_assembler"[label="/tilt_scan[LaserScan]"]
+   "/tilt_laser_snapshotter"->"/tilt_scan_assembler"[label="/assemble_scans2" arrowhead=box]
+   "/tilt_laser_snapshotter"->""[label="/tilt_laser_cloud2[PointCloud2]"]
+   "tilt_laser"->"/scan_to_cloud_filter_chain_tilt_laser"[label="/tilt_scan[LaserScan]"]
+   "/scan_to_cloud_filter_chain_tilt_laser"->"/robot_shadow_self_filter"[label="/tilt_scan_shadow2_filtered[PointCloud2]"]
+   "/robot_shadow_self_filter"->"/collider_node"[label="/tilt_scan_shadow2_self_filtered[PointCloud2]"]
+   "/collider_node"->" "[label="/collision_map_point_cloud2[PointCloud2]"]
+}
