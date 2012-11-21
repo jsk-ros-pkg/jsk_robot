@@ -1,12 +1,22 @@
 <launch>
   <arg name="launch_openni" default="true" />
+  <arg name="launch_move_base" default="true" />
   <arg name="launch_imagesift" default="true" />
   <arg name="launch_facedetection" default="false" />
+  <arg name="launch_sound_play" default="true" />
+  <arg name="launch_sift" default="true" />
+  <arg name="launch_mjpeg_server" default="true" />
+  <arg name="launch_gripper_sensor" default="false" />
+  <arg name="launch_safety_warning" default="true" />
+  <arg name="launch_tablet" default="true" />
   <arg name="launch_jsk_pcl" default="true" />
+
+  <arg name="move_tilt_scan" default="true" />
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
        <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
+  <include if="$(arg launch_move_base)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
 
   <!-- We do not launch dynamic_tf_publisher for default anymore.
        <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
@@ -15,13 +25,15 @@
   <include file="$(find jsk_maps)/launch/start_map_eng2.launch" />
 
   <!-- japanese speech node -->
-  <node pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
+  <node if="$(arg launch_sound_play)"
+        pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
     <env name="PATH" value="$(find voice_text):$(env PATH)" />
     <remap from="robotsound" to="robotsound_jp" />
   </node>
 
   <!-- start sift on narrow left-->
-  <group ns="/narrow_stereo/left" if="$(arg launch_imagesift)" >
+  <group if="$(arg launch_imagesift)"
+         ns="/narrow_stereo/left" >
     <node machine="c1" name="throttle" pkg="topic_tools"
           type="throttle" args="messages image_rect 2.0"/>
     <node machine="c2" name="sift" pkg="imagesift" type="imagesift"
@@ -35,9 +47,9 @@
   </include>
 
   <!-- face detection node -->
-  <node pkg="face_detector" type="face_detector" name="face_detector"
-        args="stereo:=narrow_stereo image:=image_rect" machine="c2"
-        if="$(arg launch_facedetection)" >
+  <node if="$(arg launch_facedetection)"
+        pkg="face_detector" type="face_detector" name="face_detector"
+        args="stereo:=narrow_stereo image:=image_rect" machine="c2" >
          <param name="classifier_name" type="string" value="frontalface" />
          <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/>
          <param name="classifier_reliability" type="double" value="0.9"/>
@@ -51,27 +63,35 @@
 
   <!-- pr2 warning -->
   <!-- battery warning -->
+  <group if="$(arg launch_safety_warning)" >
   <node name="battery_warning" pkg="roseus"
         type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
   <node name="cable_warning" pkg="roseus"
         type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l"/>
+  </group>
 
   <!-- mjpeg_server for web -->
-  <node pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
+  <node if="$(arg launch_mjpeg_server)"
+        pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
     <param name="port" type="int" value="8080" />
   </node>
 
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
+  <include if="$(arg move_tilt_scan)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
 
   <!-- for gripper sensor actions -->
-  <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  <include if="$(arg launch_gripper_sensor)"
+           file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
 
   <!-- for iPad or android apps -->
-  <include if="$(arg launch_jsk_pcl)" file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
+  <include if="$(arg launch_jsk_pcl)"
+           file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
     <arg name="cloud_machine" value="c2" />
     <arg name="camera_info" default="camera_info_input_mux"/>
     <arg name="points" default="points_input_mux"/>
   </include>
- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
+
+ <include if="$(arg launch_tablet)"
+          file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
 </launch>
