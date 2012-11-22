@@ -6,7 +6,7 @@
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_sift" default="true" />
   <arg name="launch_mjpeg_server" default="true" />
-  <arg name="launch_gripper_sensor" default="false" />
+  <arg name="launch_gripper_sensor" default="true" />
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="true" />
   <arg name="launch_jsk_pcl" default="true" />
@@ -91,7 +91,7 @@
     <arg name="points" default="points_input_mux"/>
   </include>
 
- <include if="$(arg launch_tablet)"
-          file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
+  <include if="$(arg launch_tablet)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
 </launch>
