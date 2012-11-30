@@ -10,7 +10,7 @@
         type="image_view2" output="screen" respawn="true">
     <remap from="image" to="/image_input_mux"/>
     <remap from="camera_info" to="/camera_info_input_mux"/>
-    <remap from="image_marked" to="/openni/marked/image_raw"/>
+    <remap from="image_marked" to="/tablet/marked/image_raw"/>
     <param name="blurry" value="true"/>
     <param name="use_window" value="false"/>
   </node>
@@ -26,6 +26,7 @@
 	      /r_forearm_cam/image_rect_color
 	      /l_forearm_cam/image_rect_color ">
     <remap from="mux" to="image_mux"/>
+    <param name="lazy" value="true"/>
   </node>
 
   <node pkg="topic_tools" type="mux" output="screen"
@@ -39,6 +40,7 @@
 	      /r_forearm_cam/camera_info
 	      /l_forearm_cam/camera_info ">
     <remap from="mux" to="camera_info_mux"/>
+    <param name="lazy" value="true"/>
   </node>
 
   <node pkg="topic_tools" type="mux" output="screen"
@@ -47,18 +49,20 @@
 	      /openni/depth_registered/points
 	      /tilt_laser_cloud2">
     <remap from="mux" to="points_mux"/>
+    <param name="lazy" value="true"/>
   </node>
 
   <node pkg="topic_tools" type="mux" respawn="true"
 	name="marked_camera_info"
-        args="/openni/marked/camera_info /camera_info_input_mux">
+        args="/tablet/marked/camera_info /camera_info_input_mux">
     <remap from="mux" to="marked_camera_info_mux"/>
+    <param name="lazy" value="true"/>
   </node>
 
-  <node ns="/openni/marked" pkg="image_proc" type="image_proc"
+  <node ns="/tablet/marked" pkg="image_proc" type="image_proc"
         respawn="true" name="marked_image_proc"/>
 
-  <node name="kinect_marked_image_throttle" pkg="topic_tools" type="throttle"
-        args="messages /openni/marked/image_rect_color/compressed 5.0" />
+  <node name="tablet_marked_image_throttle" pkg="topic_tools" type="throttle"
+        args="messages /tablet/marked/image_rect_color/compressed 5.0" />
 
 </launch>
