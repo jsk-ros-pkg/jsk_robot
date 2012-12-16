@@ -87,8 +87,8 @@
   <include if="$(arg launch_jsk_pcl)"
            file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
     <arg name="cloud_machine" value="c2" />
-    <arg name="camera_info" default="camera_info_input_mux"/>
-    <arg name="points" default="points_input_mux"/>
+    <arg name="camera_info" value="camera_info_input_mux"/>
+    <arg name="points" value="points_input_mux"/>
   </include>
 
   <include if="$(arg launch_tablet)"

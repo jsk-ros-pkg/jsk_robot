@@ -46,8 +46,8 @@
   <node pkg="topic_tools" type="mux" output="screen"
 	name="mux_for_points"
         args="points_input_mux
-	      /openni/depth_registered/points
-	      /tilt_laser_cloud2">
+              /openni/depth_registered/points_throttle
+              /tilt_laser_cloud2">
     <remap from="mux" to="points_mux"/>
     <param name="lazy" value="true"/>
   </node>
