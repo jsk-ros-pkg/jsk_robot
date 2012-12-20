@@ -18,13 +18,13 @@
   <node pkg="topic_tools" type="mux" output="screen"
 	name="mux_for_image" respawn="true"
         args="image_input_mux
-	      /openni/rgb/image_rect_color
-	      /wide_stereo/right/image_rect_color
-	      /wide_stereo/left/image_rect_color
-	      /narrow_stereo/right/image_rect_color
-	      /narrow_stereo/left/image_rect_color
-	      /r_forearm_cam/image_rect_color
-	      /l_forearm_cam/image_rect_color ">
+	      /openni/rgb/image_color
+	      /wide_stereo/right/image_color
+	      /wide_stereo/left/image_color
+	      /narrow_stereo/right/image_mono
+	      /narrow_stereo/left/image_mono
+	      /r_forearm_cam/image_mono
+	      /l_forearm_cam/image_mono ">
     <remap from="mux" to="image_mux"/>
     <param name="lazy" value="true"/>
   </node>
