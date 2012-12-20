@@ -16,7 +16,7 @@
   </node>
 
   <node pkg="topic_tools" type="mux" output="screen"
-	name="mux_for_image"
+	name="mux_for_image" respawn="true"
         args="image_input_mux
 	      /openni/rgb/image_rect_color
 	      /wide_stereo/right/image_rect_color
@@ -30,7 +30,7 @@
   </node>
 
   <node pkg="topic_tools" type="mux" output="screen"
-	name="mux_for_camera_info"
+	name="mux_for_camera_info" respawn="true"
         args="camera_info_input_mux
 	      /openni/rgb/camera_info
 	      /wide_stereo/right/camera_info
@@ -44,7 +44,7 @@
   </node>
 
   <node pkg="topic_tools" type="mux" output="screen"
-	name="mux_for_points"
+	name="mux_for_points" respawn="true"
         args="points_input_mux
               /openni/depth_registered/points_throttle
               /tilt_laser_cloud2">
