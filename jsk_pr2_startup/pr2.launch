@@ -1,22 +1,26 @@
 <launch>
   <arg name="launch_openni" default="true" />
   <arg name="launch_move_base" default="true" />
-  <arg name="launch_imagesift" default="true" />
+  <arg name="launch_imagesift" default="false" />
   <arg name="launch_facedetection" default="false" />
   <arg name="launch_sound_play" default="true" />
-  <arg name="launch_sift" default="true" />
-  <arg name="launch_mjpeg_server" default="true" />
+  <arg name="launch_mjpeg_server" default="false" />
   <arg name="launch_gripper_sensor" default="true" />
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="true" />
   <arg name="launch_jsk_pcl" default="true" />
-
   <arg name="move_tilt_scan" default="true" />
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
        <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
   <include if="$(arg launch_move_base)"
            file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
+
+  <!-- special start: use when launuch_move_base is false-->
+  <group unless="$(arg launch_move_base)" >
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch"/>
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop.xml" />
+  </group>
 
   <!-- We do not launch dynamic_tf_publisher for default anymore.
        <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
@@ -32,14 +36,14 @@
   </node>
 
   <!-- start sift on narrow left-->
-  <group if="$(arg launch_imagesift)"
-         ns="/narrow_stereo/left" >
-    <node machine="c1" name="throttle" pkg="topic_tools"
-          type="throttle" args="messages image_rect 2.0"/>
-    <node machine="c2" name="sift" pkg="imagesift" type="imagesift"
-          args="image:=image_rect_throttle"
-          launch-prefix="nice -n +10"/>
-  </group>
+  <!-- <group if="$(arg launch_imagesift)" -->
+  <!--        ns="/narrow_stereo/left" > -->
+  <!--   <node machine="c1" name="throttle" pkg="topic_tools" -->
+  <!--         type="throttle" args="messages image_rect 2.0"/> -->
+  <!--   <node machine="c2" name="sift" pkg="imagesift" type="imagesift" -->
+  <!--         args="image:=image_rect_throttle" -->
+  <!--         launch-prefix="nice -n +10"/> -->
+  <!-- </group> -->
 
   <!-- kinect node -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
@@ -47,17 +51,17 @@
   </include>
 
   <!-- face detection node -->
-  <node if="$(arg launch_facedetection)"
-        pkg="face_detector" type="face_detector" name="face_detector"
-        args="stereo:=narrow_stereo image:=image_rect" machine="c2" >
-         <param name="classifier_name" type="string" value="frontalface" />
-         <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/>
-         <param name="classifier_reliability" type="double" value="0.9"/>
-         <param name="do_continuous" type="bool" value="true" />
-         <param name="do_publish_faces_of_unknown_size" type="bool" value="false" />
-         <param name="do_display" type="string" value="none" />
-         <param name="output" type="string" value="none" />
-  </node>
+  <!-- <node if="$(arg launch_facedetection)" -->
+  <!--       pkg="face_detector" type="face_detector" name="face_detector" -->
+  <!--       args="stereo:=narrow_stereo image:=image_rect" machine="c2" > -->
+  <!--        <param name="classifier_name" type="string" value="frontalface" /> -->
+  <!--        <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/> -->
+  <!--        <param name="classifier_reliability" type="double" value="0.9"/> -->
+  <!--        <param name="do_continuous" type="bool" value="true" /> -->
+  <!--        <param name="do_publish_faces_of_unknown_size" type="bool" value="false" /> -->
+  <!--        <param name="do_display" type="string" value="none" /> -->
+  <!--        <param name="output" type="string" value="none" /> -->
+  <!-- </node> -->
 
   <!-- logging node for PR2  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/> -->
 

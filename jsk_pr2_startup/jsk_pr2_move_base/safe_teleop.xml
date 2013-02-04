@@ -1,4 +1,5 @@
 <launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- push L1 and R2 to unsafe teleop
        push L1 to safe_teleop
