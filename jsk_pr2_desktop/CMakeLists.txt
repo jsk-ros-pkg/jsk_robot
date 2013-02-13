@@ -9,8 +9,14 @@ set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(PROJECT_SCRIPTS_DIR ${PROJECT_SOURCE_DIR}/scripts)
 set(PR2_USER applications)
 set(USER_NAME $ENV{USER})
-#set(ICON_COLOR red)
-#set(PR2_NAME pr1040)
+# scripts
+configure_file(${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
+  ${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup.sh)
+configure_file(${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
+  ${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main${PR2_NAME}.sh)
+configure_file(${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
+  ${PROJECT_SCRIPTS_DIR}/detect_cans_demo${PR2_NAME}.sh)
+
 macro(configure_icon_files icol iname)
   set(ICON_COLOR ${icol})
   set(PR2_NAME ${iname})
@@ -25,13 +31,6 @@ macro(configure_icon_files icol iname)
     ${SETUP_DIRECTORY}/StartPR2${PR2_NAME}.desktop)
   configure_file(${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
     ${SETUP_DIRECTORY}/StopPR2${PR2_NAME}.desktop)
-  # scripts
-  configure_file(${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
-    ${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup${PR2_NAME}.sh)
-#  configure_file(${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
-#    ${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main${PR2_NAME}.sh)
-  configure_file(${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
-    ${PROJECT_SCRIPTS_DIR}/detect_cans_demo${PR2_NAME}.sh)
 endmacro(configure_icon_files)
 
 configure_icon_files(blue pr1012)
