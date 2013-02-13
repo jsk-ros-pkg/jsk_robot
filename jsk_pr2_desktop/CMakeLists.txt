@@ -9,26 +9,33 @@ set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(PROJECT_SCRIPTS_DIR ${PROJECT_SOURCE_DIR}/scripts)
 set(PR2_USER applications)
 set(USER_NAME $ENV{USER})
+#set(ICON_COLOR red)
+#set(PR2_NAME pr1040)
+macro(configure_icon_files icol iname)
+  set(ICON_COLOR ${icol})
+  set(PR2_NAME ${iname})
+  # Desktop Icons
+  configure_file(${PROJECT_SOURCE_DIR}/PR2Dashboard.desktop.in
+    ${SETUP_DIRECTORY}/PR2Dashboard${PR2_NAME}.desktop)
+  configure_file(${PROJECT_SOURCE_DIR}/PR2JSKStartup.desktop.in
+    ${SETUP_DIRECTORY}/PR2JSKStartup${PR2_NAME}.desktop)
+#  configure_file(${PROJECT_SOURCE_DIR}/PR2MarkerControl.desktop.in
+#    ${SETUP_DIRECTORY}/PR2MarkerControl${PR2_NAME}.desktop)
+  configure_file(${PROJECT_SOURCE_DIR}/StartPR2.desktop.in
+    ${SETUP_DIRECTORY}/StartPR2${PR2_NAME}.desktop)
+  configure_file(${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
+    ${SETUP_DIRECTORY}/StopPR2${PR2_NAME}.desktop)
+  # scripts
+  configure_file(${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
+    ${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup${PR2_NAME}.sh)
+#  configure_file(${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
+#    ${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main${PR2_NAME}.sh)
+  configure_file(${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
+    ${PROJECT_SCRIPTS_DIR}/detect_cans_demo${PR2_NAME}.sh)
+endmacro(configure_icon_files)
 
-# Desktop Icons
-configure_file(${PROJECT_SOURCE_DIR}/PR2Dashboard.desktop.in
-               ${SETUP_DIRECTORY}/PR2Dashboard.desktop)
-configure_file(${PROJECT_SOURCE_DIR}/PR2JSKStartup.desktop.in
-               ${SETUP_DIRECTORY}/PR2JSKStartup.desktop)
-configure_file(${PROJECT_SOURCE_DIR}/PR2MarkerControl.desktop.in
-               ${SETUP_DIRECTORY}/PR2MarkerControl.desktop)
-configure_file(${PROJECT_SOURCE_DIR}/StartPR2.desktop.in
-               ${SETUP_DIRECTORY}/StartPR2.desktop)
-configure_file(${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
-               ${SETUP_DIRECTORY}/StopPR2.desktop)
-
-# scripts
-configure_file(${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
-               ${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup.sh)
-configure_file(${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
-               ${PROJECT_SCRIPTS_DIR}/pr2_marker_control_main.sh)
-configure_file(${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
-               ${PROJECT_SCRIPTS_DIR}/detect_cans_demo.sh)
+configure_icon_files(blue pr1012)
+configure_icon_files(red pr1040)
 
 add_custom_target(desktop ALL DEPENDS
   ${PROJECT_SOURCE_DIR}/PR2Dashboard.desktop.in
