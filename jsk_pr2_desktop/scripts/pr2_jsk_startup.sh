@@ -8,6 +8,7 @@ shift
 export PS1=pr2admin
 source ~/.bashrc
 
+export ROS_IP=`LANGUAGE=en LANG=C LC_ALL=C ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
 export ROS_MASTER_URI=http://${PR2_NAME}:11311
 ## for desktop
 sleep 1
