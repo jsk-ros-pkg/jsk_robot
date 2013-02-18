@@ -3,16 +3,28 @@
 import roslib
 roslib.load_manifest('jsk_pr2_startup')
 import rospy
-import twoauth,yaml
+import twoauth,yaml,sys
 import re
 from std_msgs.msg import String
 
 # see http://d.hatena.ne.jp/gumilab/20101004/1286154912 to setup CKEY/AKEY
-key = yaml.load(open('/var/lib/robot/twitter_acount_pr2jsk.yaml'))
-CKEY = key['CKEY']
-CSECRET = key['CSECRET']
-AKEY = key['AKEY']
-ASECRET = key['ASECRET']
+try:
+    key = yaml.load(open('/var/lib/robot/twitter_acount_pr2jsk.yaml'))
+    CKEY = key['CKEY']
+    CSECRET = key['CSECRET']
+    AKEY = key['AKEY']
+    ASECRET = key['ASECRET']
+except IOError as e:
+    rospy.logerr('"/var/lib/robot/twitter_acount_pr2jsk.yaml" not found')
+    rospy.logerr("$ rosrun python_twoauth get_access_token.py")
+    rospy.logerr("cat /var/lib/robot/twitter_acount_pr2jsk.yaml <<EOF")
+    rospy.logerr("CKEY: xxx")
+    rospy.logerr("CSECRET: xxx")
+    rospy.logerr("AKEY: xxx")
+    rospy.logerr("ASECRET: xxx")
+    rospy.logerr("EOF")
+    rospy.logerr('see http://d.hatena.ne.jp/gumilab/20101004/1286154912 for detail')
+    sys.exit(-1)
 
 def twit(dat):
     message = dat.data
