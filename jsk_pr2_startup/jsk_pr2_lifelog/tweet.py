@@ -1,10 +1,10 @@
-#!/usr/bin/env python                                                          
+#!/usr/bin/env python
 
 import roslib
 roslib.load_manifest('jsk_pr2_startup')
 import rospy
 import twoauth,yaml,sys
-import re
+import re, os
 from std_msgs.msg import String
 
 # see http://d.hatena.ne.jp/gumilab/20101004/1286154912 to setup CKEY/AKEY
@@ -34,9 +34,10 @@ def twit(dat):
     if m :
         filename = m.group(0)
         message = re.sub(filename,"",message)
-        twitter.status_update_with_media(message, filename)
-    else:
-        twitter.status_update(message)
+        if os.path.exists(filename):
+            twitter.status_update_with_media(message, filename)
+            return
+    twitter.status_update(message)
 
 if __name__ == '__main__':
     twitter = twoauth.api(CKEY, CSECRET, AKEY, ASECRET)

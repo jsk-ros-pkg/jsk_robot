@@ -40,16 +40,26 @@
 (setq *elapsed-sec* 0)
 (setq *seq* 0)
 
-(unix::system (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt" (unix::getpid)))
-(with-open-file (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
-		(setq *user-name* (read-line f)))
+(when (ros::has-param "/active_user/launch_user_name")
+  (let ((tname (ros::get-param "/active_user/launch_user_name")))
+    (warn "~%;; launch_user_name = ~A~%" tname)
+    (unless (string= tname "false")
+      (setq *user-name* tname))))
+(unless (and (boundp '*user-name*) *user-name*)
+  (unix::system
+   (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt"
+           (unix::getpid)))
+  (with-open-file
+   (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
+   (setq *user-name* (read-line f))))
+(warn "~%;; start user_name = ~A~%" *user-name*)
 
 (if (and (ros::has-param "/active_user/elapsed_time")
 	 (ros::has-param "/active_user/user_name")
 	 (string= (ros::get-param "/active_user/user_name") *user-name*))
     (setq *elapsed* (ros::time (ros::get-param "/active_user/elapsed_time")))
   (setq *elapsed* (ros::time 0)))
-(print *elapsed*)
+(warn "~%;; start elapsed_time with ~A sec~%~%" *elapsed*);;
 
 (ros::rate 1)
 (do-until-key

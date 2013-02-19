@@ -10,6 +10,9 @@
   <arg name="launch_tablet" default="true" />
   <arg name="launch_jsk_pcl" default="true" />
   <arg name="move_tilt_scan" default="true" />
+  <arg name="USER_NAME" default="false" />
+
+  <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
        <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
@@ -31,7 +34,8 @@
   <!-- japanese speech node -->
   <node if="$(arg launch_sound_play)"
         pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
-    <env name="PATH" value="$(find voice_text):$(env PATH)" />
+    <!-- <env name="PATH" value="$(find voice_text):$(env PATH)" /> -->
+    <env name="PATH" value="$(find aques_talk):$(env PATH)" />
     <remap from="robotsound" to="robotsound_jp" />
   </node>
 
@@ -63,7 +67,8 @@
   <!--        <param name="output" type="string" value="none" /> -->
   <!-- </node> -->
 
-  <!-- logging node for PR2  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/> -->
+  <!-- logging node for PR2  -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/>
 
   <!-- pr2 warning -->
   <!-- battery warning -->
