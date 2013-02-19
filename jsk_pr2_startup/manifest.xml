@@ -10,7 +10,8 @@
   <url>http://ros.org/wiki/jsk_pr2_startup</url>
 
   <depend package="sound_play"/>
-  <depend package="voice_text"/>
+  <!-- <depend package="voice_text"/> -->
+  <depend package="aques_talk"/>
   <depend package="image_view2"/>
   <depend package="face_detector_mono"/>
   <depend package="openni_camera"/>
@@ -36,6 +37,7 @@
   <depend package="jsk_maps"/>
   <depend package="jsk_pcl_ros"/>
   <depend package="jsk_smart_gui"/>
+  <depend package="python_twoauth"/>
 </package>
 
 
