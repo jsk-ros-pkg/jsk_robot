@@ -17,11 +17,57 @@
   (setq *tweet-second* 300)))
 (setq *target-second* (+ (ros::get-param "/active_user/elapsed_time")
                          *tweet-second*))
+
+(setq *waking-tweet-second* 3600.0)
+(cond
+ ((ros::has-param "/active_user/start_time")
+  (let ((st (ros::get-param "/active_user/start_time")))
+    (setq *waking-target-second*
+          (+ (- (send (ros::time-now) :to-sec) st)
+             *waking-tweet-second*))))
+ (t
+  (setq *waking-target-second* *waking-tweet-second*)))
+
 (ros::rate 1)
 (do-until-key
   (setq *user-name* (ros::get-param "/active_user/user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
-  (ros::ros-info "user -> ~A, time -> ~A (~A) " *user-name* *elapsed-time* *target-second*)
+  (ros::ros-info "user -> ~A, time -> ~A (~A) "
+                 *user-name* *elapsed-time* *target-second*)
+  ;; tweet depend on up time
+  (let ((st (ros::get-param "/active_user/start_time")))
+    (when st
+      (let ((waking-time (- (send (ros::time-now) :to-sec) st)))
+        (ros::ros-info "PR2 waking ~A sec (~A)" waking-time *waking-target-second*)
+        (when (> waking-time *waking-target-second*)
+          (incf *waking-target-second* *waking-tweet-second*)
+          ;;(ros::ros-info "waking tweet !!")
+          (let ((fname (format nil "/tmp/tweet_~d.txt" (unix::getpid)))
+                str
+                lines)
+            (unix::system
+             (format nil "fortune hitchhiker -n 274 -s > ~A" fname))
+            (with-open-file
+             (f fname)
+             (while (setq str (read-line f nil nil))
+               (push str lines)))
+            (let* ((ln (apply #'+ (length lines)
+                              (mapcar #'(lambda (x) (length x)) lines)))
+                   (dt (make-string (1- ln)))
+                   (pos 0))
+              (dolist (s (nreverse lines))
+                (replace dt s :start1 pos)
+                (incf pos (length s))
+                (if (< pos (- ln 2))
+                    (setf (elt dt pos) 10))
+                (incf pos))
+              ;;(print dt)
+              (ros::ros-info "waking tweet !!")
+              (ros::publish "/pr2twit"
+                            (instance std_msgs::String :init :data dt))
+              ))
+          ))))
+  ;; tweet depend on working time
   (when (> *elapsed-time* *target-second*)
     (incf *target-second* *tweet-second* )
     ;; save wide  image and save to /tmp/frame0000.jpg

@@ -61,6 +61,16 @@
   (setq *elapsed* (ros::time 0)))
 (warn "~%;; start elapsed_time with ~A sec~%~%" *elapsed*);;
 
+(let ((tm-now (ros::time-now)))
+  (cond
+   ((and (ros::has-param "/active_user/start_time")
+         (ros::time= *elapsed* (ros::time 0)))
+    (setq *start-time* (ros::time (ros::get-param "/active_user/start_time"))))
+   (t
+    (setq *start-time* tm-now)
+    (ros::set-param "/active_user/start_time" (send *start-time* :to-sec)))
+   ))
+
 (ros::rate 1)
 (do-until-key
   (ros::ros-info "user -> ~A" *user-name*)

@@ -26,6 +26,17 @@ except IOError as e:
     rospy.logerr('see http://d.hatena.ne.jp/gumilab/20101004/1286154912 for detail')
     sys.exit(-1)
 
+def twit_lst(tw_str):
+    ret = []
+    tw_len = 140
+    while True:
+        a = tw_str[tw_len-140:tw_len]
+        rospy.loginfo(a)
+        if a == '':
+            return ret
+        tw_len = tw_len + 140
+        ret.append(a)
+
 def twit(dat):
     message = dat.data
     rospy.loginfo(rospy.get_name()+" sending %s",message)
@@ -37,7 +48,11 @@ def twit(dat):
         if os.path.exists(filename):
             twitter.status_update_with_media(message, filename)
             return
-    twitter.status_update(message)
+
+    lst = twit_lst(message)
+    print lst
+    for tw_str in lst:
+        twitter.status_update(tw_str)
 
 if __name__ == '__main__':
     twitter = twoauth.api(CKEY, CSECRET, AKEY, ASECRET)
