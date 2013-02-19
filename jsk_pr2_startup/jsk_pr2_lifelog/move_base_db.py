@@ -24,6 +24,12 @@
 # transform_rotation_w    | real    |
 #Indexes:
 #    "tf_stamp_idx" btree (header_stamp)
+### creating table
+# con = pgdb.connect(...)
+# cur = con.cursor()
+# cur.execute("CREATE TABLE tf (id int, header_stamp bigint, header_frame_id text, child_frame_id text, transform_translation_x real, transform_translation_y real, transform_translation_z real, transform_rotation_x real, transform_rotation_y real, transform_rotation_z real, transform_rotation_w real);")
+# cur.close()
+# con.commit()
 
 import roslib; roslib.load_manifest('jsk_pr2_startup')
 import rospy
@@ -37,6 +43,7 @@ class MoveBaseDB:
         port = rospy.get_param('~port',5432)
         username = rospy.get_param('~user_name','pr2admin')
         passwd = rospy.get_param('~passwd','')
+        update_cycle = rospy.get_param('update_cycle', 1)
         # args dbname, host, port, opt, tty, user, passwd
         self.con = pgdb.connect(database=db_name, host=host, user=username, password=passwd)
         self.map_frame = rospy.get_param('~map_frame','/map')
@@ -61,6 +68,7 @@ class MoveBaseDB:
         pos_rot = cursor.execute("SELECT transform_translation_x, transform_translation_y, transform_translation_z, transform_rotation_x, transform_rotation_y, transform_rotation_z, transform_rotation_w FROM tf ORDER BY header_stamp DESC LIMIT 1")
         result = cursor.fetchall()
         if len(result) != 0:
+            rospy.loginfo("pos : %f %f %f, rot: %f %f %f %f" % (result[0][0], result[0][1], result[0][2], result[0][3], result[0][4], result[0][5], result[0][6],))
             self.current_pose = (result[0][0:3],result[0][3:])
         return
 
@@ -83,5 +91,5 @@ if __name__ == "__main__":
     obj = MoveBaseDB()
     while not rospy.is_shutdown():
         obj.insert_current_pose();
-        rospy.sleep(1)
+        rospy.sleep(obj.update_cycle);
     exit(1)
