@@ -27,6 +27,7 @@ except IOError as e:
     sys.exit(-1)
 
 def twit_lst(tw_str):
+    ## do not need this
     ret = []
     tw_len = 140
     while True:
@@ -49,10 +50,8 @@ def twit(dat):
             twitter.status_update_with_media(message, filename)
             return
 
-    lst = twit_lst(message)
-    print lst
-    for tw_str in lst:
-        twitter.status_update(tw_str)
+    twitter.status_update(message)
+
 
 if __name__ == '__main__':
     twitter = twoauth.api(CKEY, CSECRET, AKEY, ASECRET)
