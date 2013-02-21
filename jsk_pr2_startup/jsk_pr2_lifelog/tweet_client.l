@@ -127,7 +127,7 @@
     (unix::system "rosnode kill image_saver")
     ;; tweet
     (ros::ros-info "tweet ~A ~A" *user-name* *elapsed-time*)
-    (let ((mainstr (format nil "~A have used PR2 ~d minutes"
+    (let ((mainstr (format nil "~A have used PR2 for ~d minutes"
                            ;; why delete *user-name* after space ?
                            ;;(subseq *user-name* 0
                            ;;(or (position #\space *user-name*)
