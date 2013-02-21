@@ -64,7 +64,7 @@
 (let ((tm-now (ros::time-now)))
   (cond
    ((and (ros::has-param "/active_user/start_time")
-         (ros::time= *elapsed* (ros::time 0)))
+         (not (ros::time= *elapsed* (ros::time 0))))
     (setq *start-time* (ros::time (ros::get-param "/active_user/start_time"))))
    (t
     (setq *start-time* tm-now)
