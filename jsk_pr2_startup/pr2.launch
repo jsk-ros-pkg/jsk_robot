@@ -9,6 +9,9 @@
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="true" />
   <arg name="launch_jsk_pcl" default="true" />
+  <arg name="launch_db" default="true" />
+  <arg name="launch_hark" default="false" />
+
   <arg name="move_tilt_scan" default="true" />
   <arg name="USER_NAME" default="false" />
 
@@ -50,7 +53,8 @@
   <!-- </group> -->
 
   <!-- kinect node -->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
+  <include if="$(arg launch_openni)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
     <arg name="launch_openni" value="$(arg launch_openni)" />
   </include>
 
@@ -68,7 +72,8 @@
   <!-- </node> -->
 
   <!-- logging node for PR2  -->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch"/>
+  <include if="$(arg launch_db)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch" />
 
   <!-- pr2 warning -->
   <!-- battery warning -->
@@ -99,8 +104,10 @@
     <arg name="camera_info" value="camera_info_input_mux"/>
     <arg name="points" value="points_input_mux"/>
   </include>
-
   <include if="$(arg launch_tablet)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
-
+  
+  <!-- for HARK -->
+  <include if="$(arg launch_hark)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
 </launch>
