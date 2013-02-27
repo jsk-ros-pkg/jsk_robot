@@ -31,7 +31,6 @@ def twit_lst(tw_str):
     tw_len = 140
     while True:
         a = tw_str[tw_len-140:tw_len]
-        rospy.loginfo(a)
         if a == '':
             return ret
         tw_len = tw_len + 140
@@ -39,18 +38,21 @@ def twit_lst(tw_str):
 
 def twit(dat):
     message = dat.data
-    rospy.loginfo(rospy.get_name()+" sending %s",message)
+    rospy.loginfo(rospy.get_name() + " sending %s", message)
     # search word start from / and end with {.jpeg,.jpg,.png,.gif}
     m = re.search('/\S+\.(jpeg|jpg|png|gif)', message)
     if m :
         filename = m.group(0)
         message = re.sub(filename,"",message)
         if os.path.exists(filename):
+            ##rospy.logdebug(rospy.get_name() + " tweet %s with file %s", message, filename)
             twitter.status_update_with_media(message, filename)
             return
 
     lst = twit_lst(message)
-    for sub_msg in lst.reverse():
+    lst.reverse() ## tweet bottom line first
+    for sub_msg in lst:
+        ##rospy.logdebug(rospy.get_name() + " tweet %s", sub_msg)
         twitter.status_update(sub_msg)
     ## seg faults if message is longer than 140 byte ???
     ##twitter.status_update(message)

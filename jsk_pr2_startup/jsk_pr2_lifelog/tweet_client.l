@@ -88,6 +88,7 @@
                  (spos 0) (str-len 0) lines)
             (push (format nil "I am running ~A min." (round (/ waking-time 60.0)))
                   lines)
+            (incf str-len (length (car lines)))
             (while (< (+ start-n spos) len)
               (let ((str (elt *src-lines* (+ start-n spos))))
                 (incf str-len (length str))
@@ -103,8 +104,7 @@
                 (incf pos (length s))
                 (if (< pos (- ln 2)) (setf (elt dt pos) 10))
                 (incf pos))
-              (print (list :tweet dt))
-              (ros::ros-info "waking tweet !!")
+              ;;(ros::ros-debug "waking tweet !!")
               (ros::publish "/pr2twit"
                             (instance std_msgs::String :init :data dt))
               ))
