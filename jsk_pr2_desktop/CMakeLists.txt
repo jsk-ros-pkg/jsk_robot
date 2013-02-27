@@ -42,7 +42,7 @@ add_custom_target(desktop ALL DEPENDS
   ${PROJECT_SOURCE_DIR}/PR2MarkerControl.desktop.in
   ${PROJECT_SOURCE_DIR}/StartPR2.desktop.in
   ${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
-  ${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
+#  ${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
   ${PROJECT_SOURCE_DIR}/pr2_marker_control_main.sh.in
   ${PROJECT_SOURCE_DIR}/detect_cans_demo.sh.in
   )
