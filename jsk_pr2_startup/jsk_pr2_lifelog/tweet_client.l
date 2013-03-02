@@ -1,6 +1,7 @@
 #!/usr/bin/env roseus
 (defvar *camera-topic-name* "/openni/rgb/image_rect_color")
 (ros::load-ros-manifest "roseus")
+(load "package://pr2eus/speak.l")
 
 (ros::roseus "twitter_client")
 (ros::advertise "/pr2twit" std_msgs::String 1)
@@ -33,6 +34,35 @@
 (setq *src-lines* nil)
 (setq *random-state* (coerce (unix::gettimeofday) integer-vector))
 
+(defun twit-cb (msg)
+  (let ((twit-str (send msg :data)))
+    (speak-jp "さんびょうまえ")
+    (unix::sleep 3)
+    (unix::system "rm -f /tmp/left*.jpg /tmp/left*.ini")
+    (unix::system
+     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A __name:=image_saver &)" "/tablet/marked/image_rect_color"))
+    (let ((cntr 0))
+      (while t
+        (if (probe-file "/tmp/left0000.jpg") (return))
+        (unix::sleep 2)
+        (if (> cntr 20) (return-from twit-cb nil))
+        (incf cntr)
+        ))
+
+    (unix::system "rosnode kill image_saver")
+
+    (ros::ros-info "tweeting")
+    (speak-jp "ついーとしました")
+    (ros::publish "/pr2twit"
+                  (instance std_msgs::String :init
+                            :data (format nil "~A ~A"
+                                          twit-str "/tmp/left0000.jpg")))
+    ))
+
+
+(ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
+
+(speak-jp "ついいとちゅうい")
 (ros::rate 1)
 (do-until-key
   (setq *user-name* (ros::get-param "/active_user/user_name")
@@ -105,12 +135,16 @@
                 (if (< pos (- ln 2)) (setf (elt dt pos) 10))
                 (incf pos))
               ;;(ros::ros-debug "waking tweet !!")
+              (ros::ros-info "tweeting")
+              (speak-jp "ついーとしました")
               (ros::publish "/pr2twit"
                             (instance std_msgs::String :init :data dt))
               ))
           ))))
   ;; tweet depend on working time
   (when (> *elapsed-time* *target-second*)
+    (speak-jp "ごびょうまえ")
+    (unix::sleep 5)
     (incf *target-second* *tweet-second* )
     ;; save wide  image and save to /tmp/frame0000.jpg
     (unix::system "rm -f /tmp/left*.jpg")
@@ -156,6 +190,8 @@
         (setq presubstr "Awesome! "
               postsubstr ", Got some rest?")))
 
+      (ros::ros-info "tweeting")
+      (speak-jp "ついーとしました")
       (ros::publish "/pr2twit"
                     (instance std_msgs::String :init
                               :data (format nil "~A~A~A ~A"
