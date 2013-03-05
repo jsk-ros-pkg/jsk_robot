@@ -1,0 +1,3 @@
+<launch>
+	<node name="pr2_hark" pkg="jsk_pr2_startup" type="microcone_localization_MFCC.sh" output="log" />
+</launch>
