@@ -106,7 +106,7 @@
   </include>
   <include if="$(arg launch_tablet)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
-  
+
   <!-- for HARK -->
   <include if="$(arg launch_hark)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />

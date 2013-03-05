@@ -36,33 +36,61 @@
 
 (defun twit-cb (msg)
   (let ((twit-str (send msg :data)))
-    (speak-jp "さんびょうまえ")
-    (unix::sleep 3)
+    (tweet-string twit-str
+                  :warning-time nil
+                  :with-image "/tablet/marked/image_rect_color")))
+(ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
+
+(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speek t))
+  (when warning-time
+    (unless (numberp warning-time)
+      (setq warinig-time 3))
+    (speak-jp (format nil "~Aびょうまえ"
+                      (case warning-time
+                        (0 "ぜろ")
+                        (1 "いち")
+                        (2 "に")
+                        (3 "さん")
+                        (4 "よん")
+                        (5 "ご")
+                        (6 "ろく")
+                        (7 "なな")
+                        (8 "はち")
+                        (9 "きゅう")
+                        (10 "じゅう")
+                        (t "じゅういじょう"))))
+    (unix::sleep warning-time))
+
+  (when with-image
+    (unless (stringp with-image)
+      (setq with-image *camera-topic-name*))
     (unix::system "rm -f /tmp/left*.jpg /tmp/left*.ini")
     (unix::system
-     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A __name:=image_saver &)" "/tablet/marked/image_rect_color"))
+     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &)"
+             with-image))
     (let ((cntr 0))
       (while t
         (if (probe-file "/tmp/left0000.jpg") (return))
-        (unix::sleep 2)
-        (if (> cntr 20) (return-from twit-cb nil))
+        (unix::sleep 1)
+        (if (> cntr image-wait) (return-from twit-cb nil))
         (incf cntr)
         ))
-
-    (unix::system "rosnode kill image_saver")
+    (unix::system "rosnode kill image_saver"))
 
     (ros::ros-info "tweeting")
-    (speak-jp "ついーとしました")
-    (ros::publish "/pr2twit"
-                  (instance std_msgs::String :init
-                            :data (format nil "~A ~A"
-                                          twit-str "/tmp/left0000.jpg")))
-    ))
+    (cond
+     (with-image
+      (ros::publish "/pr2twit"
+                    (instance std_msgs::String :init
+                              :data (format nil "~A ~A"
+                                            twit-str "/tmp/left0000.jpg"))))
+     (t
+      (ros::publish "/pr2twit" (instance std_msgs::String :init :data twit-str))
+      ))
+    (when speek (speak-jp "ついーとしました"))
+    )
 
-
-(ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
-
-(speak-jp "ついいとちゅうい")
+;;(speak-jp "ついいとちゅうい")
 (ros::rate 1)
 (do-until-key
   (setq *user-name* (ros::get-param "/active_user/user_name")
@@ -134,32 +162,12 @@
                 (incf pos (length s))
                 (if (< pos (- ln 2)) (setf (elt dt pos) 10))
                 (incf pos))
-              ;;(ros::ros-debug "waking tweet !!")
-              (ros::ros-info "tweeting")
-              (speak-jp "ついーとしました")
-              (ros::publish "/pr2twit"
-                            (instance std_msgs::String :init :data dt))
+              (tweet-string dt)
               ))
           ))))
   ;; tweet depend on working time
   (when (> *elapsed-time* *target-second*)
-    (speak-jp "ごびょうまえ")
-    (unix::sleep 5)
     (incf *target-second* *tweet-second* )
-    ;; save wide  image and save to /tmp/frame0000.jpg
-    (unix::system "rm -f /tmp/left*.jpg")
-    (unix::system
-     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &)"
-             *camera-topic-name*))
-    (let ((cntr 0))
-      (while t
-        (if (probe-file "/tmp/left0000.jpg") (return))
-        (unix::sleep 2)
-        (if (> cntr 20) (return))
-        (incf cntr)
-        ))
-    (unix::system "rosnode kill image_saver")
-    ;; tweet
     (ros::ros-info "tweet ~A ~A" *user-name* *elapsed-time*)
     (let ((mainstr (format nil "~A have used PR2 for ~d minutes"
                            ;; why delete *user-name* after space ?
@@ -168,37 +176,30 @@
                            ;;(length *user-name*)))
                            *user-name*
                            (round (/ *elapsed-time* 60))))
-          (filenamestr "/tmp/left0000.jpg")
           presubstr postsubstr)
       (cond
-       ((< *elapsed-time* 300) ;; 5 min
+       ((< *elapsed-time* 600) ;; 5 min
         (setq presubstr "Congratulations! "
               postsubstr ", Let's get started!"))
-       ((< *elapsed-time* 900) ;; 15 min
+       ((< *elapsed-time* 910) ;; 15 min
         (setq presubstr "Gooood! "
               postsubstr ", Go ahead!"))
-       ((< *elapsed-time* 1800) ;; 30 min
+       ((< *elapsed-time* 1820) ;; 30 min
         (setq presubstr "So Nice! "
               postsubstr ", Go ahead!"))
-       ((< *elapsed-time* 2700) ;; 45 min
+       ((< *elapsed-time* 2730) ;; 45 min
         (setq presubstr "Fantastic! "
               postsubstr ", Keep going!"))
-       ((< *elapsed-time* 3600) ;; 60 min
+       ((< *elapsed-time* 3640) ;; 60 min
         (setq presubstr "Amazing! "
               postsubstr ", I'm not tired!"))
        (t
         (setq presubstr "Awesome! "
               postsubstr ", Got some rest?")))
 
-      (ros::ros-info "tweeting")
-      (speak-jp "ついーとしました")
-      (ros::publish "/pr2twit"
-                    (instance std_msgs::String :init
-                              :data (format nil "~A~A~A ~A"
-                                            presubstr
-                                            mainstr
-                                            postsubstr
-                                            filenamestr)))
+      (tweet-string (format nil "~A~A~A" presubstr mainstr postsubstr)
+                    :warning-time 1 :with-image t)
+
       ))
   (ros::spin-once)
   (ros::sleep)
