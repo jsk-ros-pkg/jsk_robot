@@ -73,7 +73,7 @@
         (if (probe-file "/tmp/left0000.jpg") (return))
         (unix::sleep 1)
         (when (> cntr image-wait)
-          (setq twit-str (format nil "~A\n(image not published)" twit-str))
+          (setq twit-str (format nil "~A~%(image not published)" twit-str))
           (setq with-image nil)
           (return))
         (incf cntr)
