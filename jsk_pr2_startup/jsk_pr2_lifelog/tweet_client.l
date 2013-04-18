@@ -65,6 +65,17 @@
     (unless (stringp with-image)
       (setq with-image *camera-topic-name*))
     (unix::system "rm -f /tmp/left*.jpg /tmp/left*.ini")
+
+	;; camera shot sound
+	(unless (ros::get-topic-publisher "robotsound")
+	  (ros::advertise "robotsound" sound_play::SoundRequest 5)
+	  (unix:sleep 1))
+	(ros::publish "robotsound" 
+				  (instance sound_play::SoundRequest :init
+							:sound sound_play::SoundRequest::*play_file*
+							:command sound_play::SoundRequest::*play_once*
+							:arg "`rospack find jsk_pr2_startup`/jsk_pr2_lifelog/camera.wav"))
+
     (unix::system
      (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &)"
              with-image))
