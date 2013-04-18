@@ -44,7 +44,7 @@
 (defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speek t))
   (when warning-time
     (unless (numberp warning-time)
-      (setq warinig-time 3))
+      (setq warning-time 3))
     (speak-jp (format nil "~Aびょうまえ"
                       (case warning-time
                         (0 "ぜろ")
@@ -67,10 +67,10 @@
     (unix::system "rm -f /tmp/left*.jpg /tmp/left*.ini")
 
 	;; camera shot sound
-	(unless (ros::get-topic-publisher "robotsound")
-	  (ros::advertise "robotsound" sound_play::SoundRequest 5)
+	(unless (ros::get-topic-publisher "robotsound_jp")
+	  (ros::advertise "robotsound_jp" sound_play::SoundRequest 5)
 	  (unix:sleep 1))
-	(ros::publish "robotsound" 
+	(ros::publish "robotsound_jp" 
 				  (instance sound_play::SoundRequest :init
 							:sound sound_play::SoundRequest::*play_file*
 							:command sound_play::SoundRequest::*play_once*
