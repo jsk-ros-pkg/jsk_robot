@@ -92,7 +92,7 @@
       ;;
       (cond
        ((and (eq *status* 'stop) *movingp*) ;; stop->move
-	(ros::ros-error "start moving")
+	(ros::ros-info "[active_user] start moving")
 	(setq *status* 'move)
 	(setq *start-time* (ros::time-now))
 	(setq *tmp-elapsed* *elapsed*)
@@ -105,7 +105,7 @@
 	(setq *tmp-elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
 	)
        ((and (eq *status* 'move) (not *movingp*)) ;; move-stop
-	(ros::ros-error "stop moving")
+	(ros::ros-info "[active user] stop moving")
 	(setq *status* 'stop)
 	(setq *elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
 	))
