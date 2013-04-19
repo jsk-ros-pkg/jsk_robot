@@ -71,13 +71,13 @@
 	  (ros::advertise "robotsound_jp" sound_play::SoundRequest 5)
 	  (unix:sleep 1))
 	(ros::publish "robotsound_jp" 
-				  (instance sound_play::SoundRequest :init
-							:sound sound_play::SoundRequest::*play_file*
-							:command sound_play::SoundRequest::*play_once*
-							:arg (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav")))
+                      (instance sound_play::SoundRequest :init
+                                :sound sound_play::SoundRequest::*play_file*
+                                :command sound_play::SoundRequest::*play_once*
+                                :arg (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav")))
 
     (unix::system
-     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &)"
+     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &; chmod +rwx ~A &)"
              with-image))
     (let ((cntr 0))
       (while t
