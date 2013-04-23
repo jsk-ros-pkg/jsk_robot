@@ -165,7 +165,7 @@
             (while (< (+ start-n spos) len)
               (let ((str (elt *src-lines* (+ start-n spos))))
                 (incf str-len (length str))
-                (if (> str-len 280) (return))
+                (if (> str-len 140) (return))
                 (push str lines))
               (incf spos))
             (let* ((ln (apply #'+ (length lines)
