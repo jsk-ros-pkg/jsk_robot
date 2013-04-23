@@ -64,7 +64,7 @@
   (when with-image
     (unless (stringp with-image)
       (setq with-image *camera-topic-name*))
-    (unix::system "rm -f /tmp/left*.jpg /tmp/left*.ini")
+    (unix::system (format nil "rm -f /tmp/frame_~A*.jpg" (unix:getpid)))
 
 	;; camera shot sound
 	(unless (ros::get-topic-publisher "robotsound_jp")
@@ -76,12 +76,13 @@
                                 :command sound_play::SoundRequest::*play_once*
                                 :arg (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav")))
 
+
     (unix::system
-     (format nil "(cd /tmp; `rospack find image_view`/bin/image_saver image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame%04i.jpg\" _sec_per_frame:=1 __name:=image_saver &; chmod +rwx ~A &)"
-             with-image))
+     (format nil "(cd /tmp; `rospack find image_view`/bin/extract_images image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame_~A_%04i.jpg\" _sec_per_frame:=1 __name:=tweet_image_saver &)"
+             with-image (unix::getpid)))
     (let ((cntr 0))
       (while t
-        (if (probe-file "/tmp/left0000.jpg") (return))
+        (if (probe-file (format nil "/tmp/frame_~A_0000.jpg" (unix::getpid))) (return))
         (unix::sleep 1)
         (when (> cntr image-wait)
           (setq twit-str (format nil "~A~%(image not published)" twit-str))
@@ -89,7 +90,7 @@
           (return))
         (incf cntr)
         ))
-    (unix::system "rosnode kill image_saver"))
+    (unix::system "rosnode kill tweet_image_saver"))
 
     (ros::ros-info "tweeting")
     (cond
@@ -97,7 +98,7 @@
       (ros::publish "/pr2twit"
                     (instance std_msgs::String :init
                               :data (format nil "~A ~A"
-                                            twit-str "/tmp/left0000.jpg"))))
+                                            twit-str (format nil "/tmp/frame_~A_0000.jpg" (unix::getpid))))))
      (t
       (ros::publish "/pr2twit" (instance std_msgs::String :init :data twit-str))
       ))
