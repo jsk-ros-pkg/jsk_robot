@@ -184,7 +184,7 @@
   (when (> *elapsed-time* *target-second*)
     (incf *target-second* *tweet-second* )
     (ros::ros-info "tweet ~A ~A" *user-name* *elapsed-time*)
-    (let ((mainstr (format nil "~A have used PR2 for ~d minutes"
+    (let ((mainstr (format nil "~A has used PR2 for ~d minutes"
                            ;; why delete *user-name* after space ?
                            ;;(subseq *user-name* 0
                            ;;(or (position #\space *user-name*)
