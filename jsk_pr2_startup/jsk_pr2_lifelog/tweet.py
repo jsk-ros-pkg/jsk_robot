@@ -7,24 +7,6 @@ import twoauth,yaml,sys
 import re, os
 from std_msgs.msg import String
 
-# see http://d.hatena.ne.jp/gumilab/20101004/1286154912 to setup CKEY/AKEY
-try:
-    key = yaml.load(open('/var/lib/robot/twitter_acount_pr2jsk.yaml'))
-    CKEY = key['CKEY']
-    CSECRET = key['CSECRET']
-    AKEY = key['AKEY']
-    ASECRET = key['ASECRET']
-except IOError as e:
-    rospy.logerr('"/var/lib/robot/twitter_acount_pr2jsk.yaml" not found')
-    rospy.logerr("$ rosrun python_twoauth get_access_token.py")
-    rospy.logerr("cat /var/lib/robot/twitter_acount_pr2jsk.yaml <<EOF")
-    rospy.logerr("CKEY: xxx")
-    rospy.logerr("CSECRET: xxx")
-    rospy.logerr("AKEY: xxx")
-    rospy.logerr("ASECRET: xxx")
-    rospy.logerr("EOF")
-    rospy.logerr('see http://d.hatena.ne.jp/gumilab/20101004/1286154912 for detail')
-    sys.exit(-1)
 
 def twit_lst(tw_str):
     ret = []
@@ -58,8 +40,30 @@ def twit(dat):
     ##twitter.status_update(message)
     return
 
+def load_oauth_settings():
+# see http://d.hatena.ne.jp/gumilab/20101004/1286154912 to setup CKEY/AKEY
+    try:
+        key = yaml.load(open('/var/lib/robot/twitter_account_pr2jsk.yaml'))
+        global CKEY, CSECRET, AKEY, ASECRET
+        CKEY = key['CKEY']
+        CSECRET = key['CSECRET']
+        AKEY = key['AKEY']
+        ASECRET = key['ASECRET']
+    except IOError as e:
+        rospy.logerr('"/var/lib/robot/twitter_account_pr2jsk.yaml" not found')
+        rospy.logerr("$ rosrun python_twoauth get_access_token.py")
+        rospy.logerr("cat /var/lib/robot/twitter_account_pr2jsk.yaml <<EOF")
+        rospy.logerr("CKEY: xxx")
+        rospy.logerr("CSECRET: xxx")
+        rospy.logerr("AKEY: xxx")
+        rospy.logerr("ASECRET: xxx")
+        rospy.logerr("EOF")
+        rospy.logerr('see http://d.hatena.ne.jp/gumilab/20101004/1286154912 for detail')
+        sys.exit(-1)
+
 if __name__ == '__main__':
-    twitter = twoauth.api(CKEY, CSECRET, AKEY, ASECRET)
     rospy.init_node('rostwitter', anonymous=True)
+    load_oauth_settings()
+    twitter = twoauth.api(CKEY, CSECRET, AKEY, ASECRET)
     rospy.Subscriber("pr2twit", String, twit)
     rospy.spin()
