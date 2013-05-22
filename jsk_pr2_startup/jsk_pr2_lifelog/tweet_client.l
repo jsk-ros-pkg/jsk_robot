@@ -78,7 +78,7 @@
 
 
     (unix::system
-     (format nil "(cd /tmp; `rospack find image_view`/bin/extract_images image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame_~A_%04i.jpg\" _sec_per_frame:=1 __name:=tweet_image_saver &)"
+     (format nil "(cd /tmp; rosrun image_view extract_images image:=~A _image_transport:=compressed _filename_format:=\"/tmp/frame_~A_%04i.jpg\" _sec_per_frame:=1 __name:=tweet_image_saver &)"
              with-image (unix::getpid)))
     (let ((cntr 0))
       (while t
