@@ -1,0 +1,27 @@
+<package>
+  <description brief="pr2_base_trajectory_action">
+
+     pr2_base_trajectory_action is a node that exposes and action
+     interface to move robot base along a trajectory.
+
+  </description>
+  <author>saito</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pr2_base_trajectory_action</url>
+  <depend package="roscpp"/>
+  <depend package="actionlib"/>
+  <depend package="geometry_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="trajectory_msgs"/>
+  <depend package="pr2_controllers_msgs"/>
+  <depend package="actionlib_msgs"/>
+  <depend package="pr2_mechanism_model"/>
+  <depend package="angles"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" />
+  </export>
+
+</package>
+
