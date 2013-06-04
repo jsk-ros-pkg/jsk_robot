@@ -9,6 +9,7 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/jsk_pr2_startup</url>
 
+  <depend package="pr2_groovy_patches"/>
   <depend package="sound_play"/>
   <depend package="voice_text"/>
   <!-- <depend package="aques_talk"/> -->
