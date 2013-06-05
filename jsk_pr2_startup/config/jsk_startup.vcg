@@ -1,490 +1,735 @@
-Background\ ColorB=0
-Background\ ColorG=0
-Background\ ColorR=0
-Base\ Scan..AxisColorAutocompute\ Value\ Bounds=1
-Base\ Scan..AxisColorAxis=2
-Base\ Scan..AxisColorMax\ Value=10
-Base\ Scan..AxisColorMin\ Value=-10
-Base\ Scan..AxisColorUse\ Fixed\ Frame=1
-Base\ Scan..FlatColorColorB=0
-Base\ Scan..FlatColorColorG=1
-Base\ Scan..FlatColorColorR=1
-Base\ Scan..IntensityAutocompute\ Intensity\ Bounds=1
-Base\ Scan..IntensityChannel\ Name=x
-Base\ Scan..IntensityMax\ ColorB=0
-Base\ Scan..IntensityMax\ ColorG=1
-Base\ Scan..IntensityMax\ ColorR=1
-Base\ Scan..IntensityMax\ Intensity=7.95163
-Base\ Scan..IntensityMin\ ColorB=0
-Base\ Scan..IntensityMin\ ColorG=0
-Base\ Scan..IntensityMin\ ColorR=0
-Base\ Scan..IntensityMin\ Intensity=2.35332
-Base\ Scan..IntensityUse\ full\ RGB\ spectrum=0
-Base\ Scan.Alpha=1
-Base\ Scan.Billboard\ Size=0.06
-Base\ Scan.Color\ Transformer=FlatColor
-Base\ Scan.Decay\ Time=0
-Base\ Scan.Enabled=1
-Base\ Scan.Position\ Transformer=XYZ
-Base\ Scan.Queue\ Size=10
-Base\ Scan.Selectable=1
-Base\ Scan.Style=2
-Base\ Scan.Topic=/base_scan_throttled
-Camera\ Config=0.659797 0.360401 10.0031 1.66239 0.797328 -2.10535
-Camera\ Type=rviz::XYOrbitViewController
-Fixed\ Frame=/map
-Grid.Alpha=0.5
-Grid.Cell\ Size=2
-Grid.ColorB=0.5
-Grid.ColorG=0.5
-Grid.ColorR=0.5
-Grid.Enabled=1
-Grid.Line\ Style=0
-Grid.Line\ Width=0.03
-Grid.Normal\ Cell\ Count=0
-Grid.OffsetX=0
-Grid.OffsetY=0
-Grid.OffsetZ=0
-Grid.Plane=0
-Grid.Plane\ Cell\ Count=500
-Grid.Reference\ Frame=<Fixed Frame>
-Kinect\ Camera.Enabled=0
-Kinect\ Camera.Image\ Rendering=background & overlay
-Kinect\ Camera.Image\ Topic=/openni/rgb/image_rect_color
-Kinect\ Camera.Overlay\ Alpha=0.5
-Kinect\ Camera.Queue\ Size=2
-Kinect\ Camera.Transport\ Hint=raw
-Kinect\ Camera.Zoom\ Factor=1
-Kinect\ PointCloud..AxisColorAutocompute\ Value\ Bounds=1
-Kinect\ PointCloud..AxisColorAxis=2
-Kinect\ PointCloud..AxisColorMax\ Value=10
-Kinect\ PointCloud..AxisColorMin\ Value=-10
-Kinect\ PointCloud..AxisColorUse\ Fixed\ Frame=1
-Kinect\ PointCloud..FlatColorColorB=1
-Kinect\ PointCloud..FlatColorColorG=1
-Kinect\ PointCloud..FlatColorColorR=1
-Kinect\ PointCloud..IntensityAutocompute\ Intensity\ Bounds=1
-Kinect\ PointCloud..IntensityChannel\ Name=intensity
-Kinect\ PointCloud..IntensityMax\ ColorB=1
-Kinect\ PointCloud..IntensityMax\ ColorG=1
-Kinect\ PointCloud..IntensityMax\ ColorR=1
-Kinect\ PointCloud..IntensityMax\ Intensity=4096
-Kinect\ PointCloud..IntensityMin\ ColorB=0
-Kinect\ PointCloud..IntensityMin\ ColorG=0
-Kinect\ PointCloud..IntensityMin\ ColorR=0
-Kinect\ PointCloud..IntensityMin\ Intensity=0
-Kinect\ PointCloud..IntensityUse\ full\ RGB\ spectrum=0
-Kinect\ PointCloud.Alpha=1
-Kinect\ PointCloud.Billboard\ Size=0.004
-Kinect\ PointCloud.Color\ Transformer=RGB8
-Kinect\ PointCloud.Decay\ Time=0
-Kinect\ PointCloud.Enabled=0
-Kinect\ PointCloud.Position\ Transformer=XYZ
-Kinect\ PointCloud.Queue\ Size=10
-Kinect\ PointCloud.Selectable=1
-Kinect\ PointCloud.Style=0
-Kinect\ PointCloud.Topic=/openni/depth_registered/points_throttle
-Local\ Obstacles.Alpha=1
-Local\ Obstacles.ColorB=0
-Local\ Obstacles.ColorG=1
-Local\ Obstacles.ColorR=0.1
-Local\ Obstacles.Enabled=1
-Local\ Obstacles.Topic=/safe_teleop_base/local_costmap/inflated_obstacles
-Map.Alpha=0.7
-Map.Draw\ Behind=0
-Map.Enabled=1
-Map.Topic=/map
-Object\ Detection.Enabled=1
-Object\ Detection.Marker\ Array\ Topic=/object_detection_marker_array
-Object\ Detection.Queue\ Size=100
-OpenRAVE.Enabled=1
-OpenRAVE.Marker\ Array\ Topic=/openrave_marker_array
-OpenRAVE.Queue\ Size=100
-Path.Alpha=1
-Path.ColorB=0
-Path.ColorG=1
-Path.ColorR=0.1
-Path.Enabled=1
-Path.Topic=/move_base_node/NavfnROS/plan
-Property\ Grid\ Splitter=799,78
-Property\ Grid\ State=expanded=.Global Options;splitterratio=0.5
-QMainWindow=000000ff00000000fd000000030000000000000154000003bffc0200000002fb000000100044006900730070006c006100790073010000001d000003bf000000ee00fffffffb0000000c00430061006d00650072006100000002e1000000fb0000001900ffffff0000000100000131000003bffc0200000003fb0000001e0054006f006f006c002000500072006f0070006500720074006900650073010000001d000000f80000006700fffffffb0000000a00560069006500770073010000011b000001c3000000bb00fffffffb0000001200530065006c0065006300740069006f006e01000002e4000000f80000006700ffffff000000030000073f0000003efc0100000001fb0000000800540069006d006501000000000000073f000002bf00ffffff000004ae000003bf00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-Robot\ Footprint.Alpha=1
-Robot\ Footprint.ColorB=0
-Robot\ Footprint.ColorG=1
-Robot\ Footprint.ColorR=0.1
-Robot\ Footprint.Enabled=0
-Robot\ Footprint.Topic=/move_base_node/local_costmap/robot_footprint
-Robot\ Model.Alpha=1
-Robot\ Model.Collision\ Enabled=0
-Robot\ Model.Enabled=1
-Robot\ Model.Robot\ Description=robot_description
-Robot\ Model.TF\ Prefix=
-Robot\ Model.Update\ Interval=0
-Robot\ Model.Visual\ Enabled=1
-Robot\:\ Robot\ Model\ Link\ base_bellow_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ base_bellow_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ base_bellow_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ base_bellow_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ base_footprintAlpha=1
-Robot\:\ Robot\ Model\ Link\ base_footprintEnabled=1
-Robot\:\ Robot\ Model\ Link\ base_footprintShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ base_footprintShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ base_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ base_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ base_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ base_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ bl_caster_l_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ bl_caster_l_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ bl_caster_l_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ bl_caster_l_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ bl_caster_r_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ bl_caster_r_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ bl_caster_r_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ bl_caster_r_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ bl_caster_rotation_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ bl_caster_rotation_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ bl_caster_rotation_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ bl_caster_rotation_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ br_caster_l_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ br_caster_l_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ br_caster_l_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ br_caster_l_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ br_caster_r_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ br_caster_r_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ br_caster_r_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ br_caster_r_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ br_caster_rotation_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ br_caster_rotation_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ br_caster_rotation_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ br_caster_rotation_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ double_stereo_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ double_stereo_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ double_stereo_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ double_stereo_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ fl_caster_l_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ fl_caster_l_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ fl_caster_l_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ fl_caster_l_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ fl_caster_r_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ fl_caster_r_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ fl_caster_r_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ fl_caster_r_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ fl_caster_rotation_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ fl_caster_rotation_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ fl_caster_rotation_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ fl_caster_rotation_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ fr_caster_l_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ fr_caster_l_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ fr_caster_l_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ fr_caster_l_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ fr_caster_r_wheel_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ fr_caster_r_wheel_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ fr_caster_r_wheel_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ fr_caster_r_wheel_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ fr_caster_rotation_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ fr_caster_rotation_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ fr_caster_rotation_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ fr_caster_rotation_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_ir_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_ir_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_ir_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_ir_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_rgb_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_rgb_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_rgb_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_mount_kinect_rgb_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_mount_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_mount_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_mount_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_mount_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_mount_prosilica_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_mount_prosilica_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_mount_prosilica_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_mount_prosilica_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_pan_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_pan_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_pan_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_pan_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_plate_frameAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_plate_frameEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_plate_frameShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_plate_frameShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ head_tilt_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ head_tilt_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ head_tilt_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ head_tilt_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_elbow_flex_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_elbow_flex_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_elbow_flex_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_elbow_flex_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_forearm_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_forearm_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_forearm_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_forearm_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_forearm_roll_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_forearm_roll_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_forearm_roll_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_forearm_roll_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_tip_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_tip_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_tip_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_l_finger_tip_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_motor_accelerometer_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_motor_accelerometer_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_motor_accelerometer_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_motor_accelerometer_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_palm_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_palm_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_palm_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_palm_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_tip_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_tip_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_tip_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_gripper_r_finger_tip_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_shoulder_lift_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_shoulder_lift_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_shoulder_lift_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_shoulder_lift_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_shoulder_pan_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_shoulder_pan_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_shoulder_pan_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_shoulder_pan_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_roll_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_roll_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_roll_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_upper_arm_roll_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_wrist_flex_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_wrist_flex_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_wrist_flex_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_wrist_flex_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ l_wrist_roll_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ l_wrist_roll_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ l_wrist_roll_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ l_wrist_roll_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ laser_tilt_mount_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ laser_tilt_mount_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ laser_tilt_mount_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ laser_tilt_mount_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_elbow_flex_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_elbow_flex_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_elbow_flex_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_elbow_flex_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_forearm_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_forearm_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_forearm_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_forearm_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_forearm_roll_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_forearm_roll_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_forearm_roll_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_forearm_roll_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_tip_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_tip_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_tip_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_l_finger_tip_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_motor_accelerometer_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_motor_accelerometer_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_motor_accelerometer_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_motor_accelerometer_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_palm_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_palm_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_palm_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_palm_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_tip_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_tip_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_tip_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_gripper_r_finger_tip_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_shoulder_lift_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_shoulder_lift_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_shoulder_lift_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_shoulder_lift_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_shoulder_pan_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_shoulder_pan_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_shoulder_pan_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_shoulder_pan_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_roll_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_roll_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_roll_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_upper_arm_roll_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_wrist_flex_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_wrist_flex_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_wrist_flex_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_wrist_flex_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ r_wrist_roll_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ r_wrist_roll_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ r_wrist_roll_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ r_wrist_roll_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ sensor_mount_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ sensor_mount_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ sensor_mount_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ sensor_mount_linkShow\ Trail=0
-Robot\:\ Robot\ Model\ Link\ torso_lift_linkAlpha=1
-Robot\:\ Robot\ Model\ Link\ torso_lift_linkEnabled=1
-Robot\:\ Robot\ Model\ Link\ torso_lift_linkShow\ Axes=0
-Robot\:\ Robot\ Model\ Link\ torso_lift_linkShow\ Trail=0
-Spot.Enabled=1
-Spot.Marker\ Array\ Topic=/spots_marker_array
-Spot.Queue\ Size=100
-Spot.pin=1
-Spot.text=1
-TF.All\ Enabled=1
-TF.Enabled=0
-TF.Frame\ Timeout=15
-TF.Marker\ Scale=1
-TF.Show\ Arrows=1
-TF.Show\ Axes=1
-TF.Show\ Names=1
-TF.Update\ Interval=0.05
-Tablet\ Marker\ Array.Enabled=1
-Tablet\ Marker\ Array.Marker\ Array\ Topic=/tablet_marker_array
-Tablet\ Marker\ Array.Queue\ Size=100
-Tablet\ Marker.Enabled=1
-Tablet\ Marker.Marker\ Topic=/tablet_marker
-Tablet\ Marker.Queue\ Size=100
-Tabletop\ Detection.Enabled=1
-Tabletop\ Detection.Marker\ Array\ Topic=/tabletop_detection_marker_array
-Tabletop\ Detection.Queue\ Size=100
-Target\ Frame=/base_link
-Tilt\ Laser\ PointCloud..AxisColorAutocompute\ Value\ Bounds=1
-Tilt\ Laser\ PointCloud..AxisColorAxis=2
-Tilt\ Laser\ PointCloud..AxisColorMax\ Value=10
-Tilt\ Laser\ PointCloud..AxisColorMin\ Value=-10
-Tilt\ Laser\ PointCloud..AxisColorUse\ Fixed\ Frame=1
-Tilt\ Laser\ PointCloud..FlatColorColorB=1
-Tilt\ Laser\ PointCloud..FlatColorColorG=1
-Tilt\ Laser\ PointCloud..FlatColorColorR=1
-Tilt\ Laser\ PointCloud..IntensityAutocompute\ Intensity\ Bounds=1
-Tilt\ Laser\ PointCloud..IntensityChannel\ Name=intensity
-Tilt\ Laser\ PointCloud..IntensityMax\ ColorB=1
-Tilt\ Laser\ PointCloud..IntensityMax\ ColorG=1
-Tilt\ Laser\ PointCloud..IntensityMax\ ColorR=1
-Tilt\ Laser\ PointCloud..IntensityMax\ Intensity=4096
-Tilt\ Laser\ PointCloud..IntensityMin\ ColorB=0
-Tilt\ Laser\ PointCloud..IntensityMin\ ColorG=0
-Tilt\ Laser\ PointCloud..IntensityMin\ ColorR=0
-Tilt\ Laser\ PointCloud..IntensityMin\ Intensity=0
-Tilt\ Laser\ PointCloud..IntensityUse\ full\ RGB\ spectrum=0
-Tilt\ Laser\ PointCloud.Alpha=1
-Tilt\ Laser\ PointCloud.Billboard\ Size=0.01
-Tilt\ Laser\ PointCloud.Color\ Transformer=Intensity
-Tilt\ Laser\ PointCloud.Decay\ Time=0
-Tilt\ Laser\ PointCloud.Enabled=0
-Tilt\ Laser\ PointCloud.Position\ Transformer=XYZ
-Tilt\ Laser\ PointCloud.Queue\ Size=10
-Tilt\ Laser\ PointCloud.Selectable=1
-Tilt\ Laser\ PointCloud.Style=1
-Tilt\ Laser\ PointCloud.Topic=/tilt_laser_cloud2
-Tilt\ Scan..AxisColorAutocompute\ Value\ Bounds=1
-Tilt\ Scan..AxisColorAxis=2
-Tilt\ Scan..AxisColorMax\ Value=10
-Tilt\ Scan..AxisColorMin\ Value=-10
-Tilt\ Scan..AxisColorUse\ Fixed\ Frame=1
-Tilt\ Scan..FlatColorColorB=1
-Tilt\ Scan..FlatColorColorG=1
-Tilt\ Scan..FlatColorColorR=1
-Tilt\ Scan..IntensityAutocompute\ Intensity\ Bounds=1
-Tilt\ Scan..IntensityChannel\ Name=intensity
-Tilt\ Scan..IntensityMax\ ColorB=1
-Tilt\ Scan..IntensityMax\ ColorG=1
-Tilt\ Scan..IntensityMax\ ColorR=1
-Tilt\ Scan..IntensityMax\ Intensity=4096
-Tilt\ Scan..IntensityMin\ ColorB=0
-Tilt\ Scan..IntensityMin\ ColorG=0
-Tilt\ Scan..IntensityMin\ ColorR=0
-Tilt\ Scan..IntensityMin\ Intensity=0
-Tilt\ Scan..IntensityUse\ full\ RGB\ spectrum=0
-Tilt\ Scan.Alpha=1
-Tilt\ Scan.Billboard\ Size=0.01
-Tilt\ Scan.Color\ Transformer=Intensity
-Tilt\ Scan.Decay\ Time=0
-Tilt\ Scan.Enabled=0
-Tilt\ Scan.Position\ Transformer=XYZ
-Tilt\ Scan.Queue\ Size=10
-Tilt\ Scan.Selectable=1
-Tilt\ Scan.Style=1
-Tilt\ Scan.Topic=/tilt_scan
-Tool\ 2D\ Nav\ GoalTopic=move_base_simple/goal
-Tool\ 2D\ Pose\ EstimateTopic=initialpose
-[Display0]
-ClassName=rviz::GridDisplay
-Name=Grid
-[Display1]
-ClassName=rviz::MapDisplay
-Name=Map
-[Display10]
-ClassName=rviz::MarkerDisplay
-Name=Tablet Marker
-[Display11]
-ClassName=rviz::MarkerArrayDisplay
-Name=Tablet Marker Array
-[Display12]
-ClassName=rviz::MarkerArrayDisplay
-Name=Tabletop Detection
-[Display13]
-ClassName=rviz::MarkerArrayDisplay
-Name=Object Detection
-[Display14]
-ClassName=rviz::MarkerArrayDisplay
-Name=OpenRAVE
-[Display15]
-ClassName=rviz::MarkerArrayDisplay
-Name=Spot
-[Display16]
-ClassName=rviz::CameraDisplay
-Name=Kinect Camera
-[Display17]
-ClassName=rviz::PathDisplay
-Name=Path
-[Display2]
-ClassName=rviz::GridCellsDisplay
-Name=Local Obstacles
-[Display3]
-ClassName=rviz::RobotModelDisplay
-Name=Robot Model
-[Display4]
-ClassName=rviz::LaserScanDisplay
-Name=Base Scan
-[Display5]
-ClassName=rviz::LaserScanDisplay
-Name=Tilt Scan
-[Display6]
-ClassName=rviz::PolygonDisplay
-Name=Robot Footprint
-[Display7]
-ClassName=rviz::TFDisplay
-Name=TF
-[Display8]
-ClassName=rviz::PointCloud2Display
-Name=Kinect PointCloud
-[Display9]
-ClassName=rviz::PointCloud2Display
-Name=Tilt Laser PointCloud
-[Window]
-Height=1092
-Width=1871
-X=-9
-Y=-56
+Panels:
+  - Class: rviz/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /Marker1
+        - /MarkerArray1
+      Splitter Ratio: 0.5
+    Tree Height: 587
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: true
+      Links:
+        base_bellow_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bl_caster_l_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bl_caster_r_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bl_caster_rotation_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        br_caster_l_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        br_caster_r_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        br_caster_rotation_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        double_stereo_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fl_caster_l_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fl_caster_r_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fl_caster_rotation_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fr_caster_l_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fr_caster_r_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fr_caster_rotation_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_mount_kinect_ir_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_mount_kinect_rgb_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_mount_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_mount_prosilica_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_pan_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_plate_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        head_tilt_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_elbow_flex_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_forearm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_forearm_roll_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_l_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_l_finger_tip_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_motor_accelerometer_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_palm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_r_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_r_finger_tip_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_shoulder_lift_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_shoulder_pan_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_upper_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_upper_arm_roll_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_wrist_flex_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_wrist_roll_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        laser_tilt_mount_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_elbow_flex_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_forearm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_forearm_roll_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_l_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_l_finger_tip_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_motor_accelerometer_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_palm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_r_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_r_finger_tip_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_shoulder_lift_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_shoulder_pan_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_upper_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_upper_arm_roll_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_wrist_flex_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_wrist_roll_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sensor_mount_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        torso_lift_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        /base_bellow_link:
+          Value: true
+        /base_footprint:
+          Value: true
+        /base_laser_link:
+          Value: true
+        /base_link:
+          Value: true
+        /bl_caster_l_wheel_link:
+          Value: true
+        /bl_caster_r_wheel_link:
+          Value: true
+        /bl_caster_rotation_link:
+          Value: true
+        /br_caster_l_wheel_link:
+          Value: true
+        /br_caster_r_wheel_link:
+          Value: true
+        /br_caster_rotation_link:
+          Value: true
+        /camera:
+          Value: true
+        /checkerboard:
+          Value: true
+        /double_stereo_link:
+          Value: true
+        /eng2:
+          Value: true
+        /eng2/2f:
+          Value: true
+        /eng2/3f:
+          Value: true
+        /eng2/7f:
+          Value: true
+        /eng2/7f/73B2:
+          Value: true
+        /eng2/8f:
+          Value: true
+        /fl_caster_l_wheel_link:
+          Value: true
+        /fl_caster_r_wheel_link:
+          Value: true
+        /fl_caster_rotation_link:
+          Value: true
+        /fr_caster_l_wheel_link:
+          Value: true
+        /fr_caster_r_wheel_link:
+          Value: true
+        /fr_caster_rotation_link:
+          Value: true
+        /head_mount_kinect_ir_link:
+          Value: true
+        /head_mount_kinect_rgb_link:
+          Value: true
+        /head_mount_link:
+          Value: true
+        /head_mount_prosilica_link:
+          Value: true
+        /head_mount_prosilica_optical_frame:
+          Value: true
+        /head_pan_link:
+          Value: true
+        /head_plate_frame:
+          Value: true
+        /head_tilt_link:
+          Value: true
+        /high_def_frame:
+          Value: true
+        /high_def_optical_frame:
+          Value: true
+        /imu_link:
+          Value: true
+        /l_elbow_flex_link:
+          Value: true
+        /l_forearm_cam_frame:
+          Value: true
+        /l_forearm_cam_optical_frame:
+          Value: true
+        /l_forearm_link:
+          Value: true
+        /l_forearm_roll_link:
+          Value: true
+        /l_gripper_l_finger_link:
+          Value: true
+        /l_gripper_l_finger_tip_frame:
+          Value: true
+        /l_gripper_l_finger_tip_link:
+          Value: true
+        /l_gripper_led_frame:
+          Value: true
+        /l_gripper_motor_accelerometer_link:
+          Value: true
+        /l_gripper_motor_screw_link:
+          Value: true
+        /l_gripper_motor_slider_link:
+          Value: true
+        /l_gripper_palm_link:
+          Value: true
+        /l_gripper_r_finger_link:
+          Value: true
+        /l_gripper_r_finger_tip_link:
+          Value: true
+        /l_gripper_tool_frame:
+          Value: true
+        /l_shoulder_lift_link:
+          Value: true
+        /l_shoulder_pan_link:
+          Value: true
+        /l_torso_lift_side_plate_link:
+          Value: true
+        /l_upper_arm_link:
+          Value: true
+        /l_upper_arm_roll_link:
+          Value: true
+        /l_wrist_flex_link:
+          Value: true
+        /l_wrist_roll_link:
+          Value: true
+        /laser_tilt_link:
+          Value: true
+        /laser_tilt_mount_link:
+          Value: true
+        /map:
+          Value: true
+        /narrow_stereo_gazebo_l_stereo_camera_frame:
+          Value: true
+        /narrow_stereo_gazebo_l_stereo_camera_optical_frame:
+          Value: true
+        /narrow_stereo_gazebo_r_stereo_camera_frame:
+          Value: true
+        /narrow_stereo_gazebo_r_stereo_camera_optical_frame:
+          Value: true
+        /narrow_stereo_link:
+          Value: true
+        /narrow_stereo_optical_frame:
+          Value: true
+        /odom_combined:
+          Value: true
+        /openni_depth_optical_frame:
+          Value: true
+        /openni_rgb_optical_frame:
+          Value: true
+        /projector_wg6802418_child_frame:
+          Value: true
+        /projector_wg6802418_frame:
+          Value: true
+        /r_elbow_flex_link:
+          Value: true
+        /r_forearm_cam_frame:
+          Value: true
+        /r_forearm_cam_optical_frame:
+          Value: true
+        /r_forearm_link:
+          Value: true
+        /r_forearm_roll_link:
+          Value: true
+        /r_gripper_l_finger_link:
+          Value: true
+        /r_gripper_l_finger_tip_frame:
+          Value: true
+        /r_gripper_l_finger_tip_link:
+          Value: true
+        /r_gripper_led_frame:
+          Value: true
+        /r_gripper_motor_accelerometer_link:
+          Value: true
+        /r_gripper_motor_screw_link:
+          Value: true
+        /r_gripper_motor_slider_link:
+          Value: true
+        /r_gripper_palm_link:
+          Value: true
+        /r_gripper_r_finger_link:
+          Value: true
+        /r_gripper_r_finger_tip_link:
+          Value: true
+        /r_gripper_tool_frame:
+          Value: true
+        /r_shoulder_lift_link:
+          Value: true
+        /r_shoulder_pan_link:
+          Value: true
+        /r_torso_lift_side_plate_link:
+          Value: true
+        /r_upper_arm_link:
+          Value: true
+        /r_upper_arm_roll_link:
+          Value: true
+        /r_wrist_flex_link:
+          Value: true
+        /r_wrist_roll_link:
+          Value: true
+        /sensor_mount_link:
+          Value: true
+        /table:
+          Value: true
+        /torso_lift_link:
+          Value: true
+        /torso_lift_motor_screw_link:
+          Value: true
+        /wide_stereo_gazebo_l_stereo_camera_frame:
+          Value: true
+        /wide_stereo_gazebo_l_stereo_camera_optical_frame:
+          Value: true
+        /wide_stereo_gazebo_r_stereo_camera_frame:
+          Value: true
+        /wide_stereo_gazebo_r_stereo_camera_optical_frame:
+          Value: true
+        /wide_stereo_link:
+          Value: true
+        /wide_stereo_optical_frame:
+          Value: true
+        /world:
+          Value: true
+        All Enabled: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        /world:
+          /eng2:
+            /eng2/2f:
+              {}
+            /eng2/3f:
+              {}
+            /eng2/7f:
+              /eng2/7f/73B2:
+                {}
+              /map:
+                /odom_combined:
+                  /base_footprint:
+                    /base_link:
+                      /base_bellow_link:
+                        {}
+                      /base_laser_link:
+                        {}
+                      /bl_caster_rotation_link:
+                        /bl_caster_l_wheel_link:
+                          {}
+                        /bl_caster_r_wheel_link:
+                          {}
+                      /br_caster_rotation_link:
+                        /br_caster_l_wheel_link:
+                          {}
+                        /br_caster_r_wheel_link:
+                          {}
+                      /fl_caster_rotation_link:
+                        /fl_caster_l_wheel_link:
+                          {}
+                        /fl_caster_r_wheel_link:
+                          {}
+                      /fr_caster_rotation_link:
+                        /fr_caster_l_wheel_link:
+                          {}
+                        /fr_caster_r_wheel_link:
+                          {}
+                      /table:
+                        {}
+                      /torso_lift_link:
+                        /head_pan_link:
+                          /head_tilt_link:
+                            /head_plate_frame:
+                              /head_mount_link:
+                                /head_mount_kinect_ir_link:
+                                  /head_mount_kinect_rgb_link:
+                                    /openni_rgb_optical_frame:
+                                      {}
+                                  /openni_depth_optical_frame:
+                                    {}
+                                /head_mount_prosilica_link:
+                                  /head_mount_prosilica_optical_frame:
+                                    {}
+                              /projector_wg6802418_frame:
+                                /projector_wg6802418_child_frame:
+                                  {}
+                              /sensor_mount_link:
+                                /double_stereo_link:
+                                  /narrow_stereo_link:
+                                    /narrow_stereo_gazebo_l_stereo_camera_frame:
+                                      /narrow_stereo_gazebo_l_stereo_camera_optical_frame:
+                                        {}
+                                      /narrow_stereo_gazebo_r_stereo_camera_frame:
+                                        /narrow_stereo_gazebo_r_stereo_camera_optical_frame:
+                                          {}
+                                    /narrow_stereo_optical_frame:
+                                      {}
+                                  /wide_stereo_link:
+                                    /wide_stereo_gazebo_l_stereo_camera_frame:
+                                      /wide_stereo_gazebo_l_stereo_camera_optical_frame:
+                                        {}
+                                      /wide_stereo_gazebo_r_stereo_camera_frame:
+                                        /wide_stereo_gazebo_r_stereo_camera_optical_frame:
+                                          {}
+                                    /wide_stereo_optical_frame:
+                                      /checkerboard:
+                                        /camera:
+                                          {}
+                                /high_def_frame:
+                                  /high_def_optical_frame:
+                                    {}
+                        /imu_link:
+                          {}
+                        /l_shoulder_pan_link:
+                          /l_shoulder_lift_link:
+                            /l_upper_arm_roll_link:
+                              /l_upper_arm_link:
+                                /l_elbow_flex_link:
+                                  /l_forearm_roll_link:
+                                    /l_forearm_cam_frame:
+                                      /l_forearm_cam_optical_frame:
+                                        {}
+                                    /l_forearm_link:
+                                      /l_wrist_flex_link:
+                                        /l_wrist_roll_link:
+                                          /l_gripper_palm_link:
+                                            /l_gripper_l_finger_link:
+                                              /l_gripper_l_finger_tip_link:
+                                                {}
+                                            /l_gripper_led_frame:
+                                              {}
+                                            /l_gripper_motor_accelerometer_link:
+                                              {}
+                                            /l_gripper_motor_slider_link:
+                                              /l_gripper_motor_screw_link:
+                                                {}
+                                            /l_gripper_r_finger_link:
+                                              /l_gripper_r_finger_tip_link:
+                                                /l_gripper_l_finger_tip_frame:
+                                                  {}
+                                            /l_gripper_tool_frame:
+                                              {}
+                        /l_torso_lift_side_plate_link:
+                          {}
+                        /laser_tilt_mount_link:
+                          /laser_tilt_link:
+                            {}
+                        /r_shoulder_pan_link:
+                          /r_shoulder_lift_link:
+                            /r_upper_arm_roll_link:
+                              /r_upper_arm_link:
+                                /r_elbow_flex_link:
+                                  /r_forearm_roll_link:
+                                    /r_forearm_cam_frame:
+                                      /r_forearm_cam_optical_frame:
+                                        {}
+                                    /r_forearm_link:
+                                      /r_wrist_flex_link:
+                                        /r_wrist_roll_link:
+                                          /r_gripper_palm_link:
+                                            /r_gripper_l_finger_link:
+                                              /r_gripper_l_finger_tip_link:
+                                                {}
+                                            /r_gripper_led_frame:
+                                              {}
+                                            /r_gripper_motor_accelerometer_link:
+                                              {}
+                                            /r_gripper_motor_slider_link:
+                                              /r_gripper_motor_screw_link:
+                                                {}
+                                            /r_gripper_r_finger_link:
+                                              /r_gripper_r_finger_tip_link:
+                                                /r_gripper_l_finger_tip_frame:
+                                                  {}
+                                            /r_gripper_tool_frame:
+                                              {}
+                        /r_torso_lift_side_plate_link:
+                          {}
+                      /torso_lift_motor_screw_link:
+                        {}
+            /eng2/8f:
+              {}
+      Update Interval: 0
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /tabletop_segmentation_markers
+      Name: Marker
+      Namespaces:
+        tabletop_node: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /tabletop_detection_marker_array
+      Name: MarkerArray
+      Namespaces:
+        "": true
+        tabletop: true
+      Queue Size: 100
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: /base_link
+  Name: root
+  Tools:
+    - Class: rviz/MoveCamera
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 2.15671
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Name: Current View
+      Near Clip Distance: 0.01
+      Pitch: 0.740398
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 0.295398
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 800
+  Hide Left Dock: false
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd00000001000000000000010f000002dafc0200000001fb000000100044006900730070006c0061007900730100000028000002da000000dd00ffffff000004b0000002da00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Width: 1477
+  X: 121
+  Y: 200

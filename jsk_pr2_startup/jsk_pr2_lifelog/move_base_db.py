@@ -24,10 +24,11 @@
 # transform_rotation_w    | real    |
 #Indexes:
 #    "tf_stamp_idx" btree (header_stamp)
-### creating table
-# con = pgdb.connect(...)
+### command for creating table
+# con = pgdb.connect(database='pr2db', host='c1', user='pr2admin')
 # cur = con.cursor()
-# cur.execute("CREATE TABLE tf (id int, header_stamp bigint, header_frame_id text, child_frame_id text, transform_translation_x real, transform_translation_y real, transform_translation_z real, transform_rotation_x real, transform_rotation_y real, transform_rotation_z real, transform_rotation_w real);")
+# cur.execute("CREATE TABLE tf (id serial, header_stamp bigint, header_frame_id text, child_frame_id text, transform_translation_x real, transform_translation_y real, transform_translation_z real, transform_rotation_x real, transform_rotation_y real, transform_rotation_z real, transform_rotation_w real);")
+# cur.execute("CREATE INDEX tf_stamp_idx ON tf (header_stamp);")
 # cur.close()
 # con.commit()
 
