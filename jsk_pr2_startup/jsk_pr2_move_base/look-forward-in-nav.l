@@ -19,7 +19,7 @@
   (let ((av (send *ri* :state :potentio-vector)))
     (send *pr2* :angle-vector av)
     (send *pr2* :head :angle-vector #f(0 0))
-    (send *ri* :angle-vector (send *pr2* :angle-vector) 1000)
+    (send *ri* :angle-vector (send *pr2* :angle-vector) 1000 :head-controller)
     ))
 
 (defun look-at-front ()
