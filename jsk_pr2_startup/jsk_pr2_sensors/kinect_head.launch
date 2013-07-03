@@ -10,8 +10,9 @@
     <arg name="publish_tf" value="false"/>
   </include>
 
-  <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen"
-	if="$(arg launch_openni)" />
+  <!-- check openni_node does not respawn openni_node, in groovy -->
+  <!-- node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen"
+	if="$(arg launch_openni)" / -->
 
   <node name="kinect_points_throttle" pkg="topic_tools" type="throttle"
 	args="messages /openni/depth_registered/points 3.0" />
