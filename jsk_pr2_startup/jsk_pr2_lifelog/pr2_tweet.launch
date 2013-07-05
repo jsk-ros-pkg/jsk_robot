@@ -1,11 +1,17 @@
 <launch>
-  <arg name="output" default="log" />
+  <arg name="output" default="screen" />
   <node name="tweet" pkg="jsk_pr2_startup" type="tweet.py"
         output="$(arg output)" respawn="true" />
   <node name="active_user" pkg="roseus"
         type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/active_user.l"
         output="$(arg output)" respawn="true" />
-  <node name="tweet_client" pkg="roseus"
-        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/tweet_client.l"
+  <node name="tweet_client_worktime" pkg="roseus"
+        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/tweet_client_worktime.l"
+        output="$(arg output)" respawn="true" />
+  <node name="tweet_client_uptime" pkg="roseus"
+        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/tweet_client_uptime.l"
+        output="$(arg output)" respawn="true" />
+  <node name="tweet_client_tablet" pkg="roseus"
+        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/tweet_client_tablet.l"
         output="$(arg output)" respawn="true" />
 </launch>
