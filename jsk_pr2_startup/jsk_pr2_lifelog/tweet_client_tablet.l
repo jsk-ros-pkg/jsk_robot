@@ -1,6 +1,6 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "twitter_client_client_tablet")
+(ros::roseus "twitter_client_tablet")
 
 (load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
 

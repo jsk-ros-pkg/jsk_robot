@@ -1,6 +1,6 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "twitter_client_client_worktime")
+(ros::roseus "twitter_client_worktime")
 
 (load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
 

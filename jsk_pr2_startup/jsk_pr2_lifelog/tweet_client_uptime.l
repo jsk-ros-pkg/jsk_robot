@@ -1,6 +1,6 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "twitter_client_client_uptime")
+(ros::roseus "twitter_client_uptime")
 
 (load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
 
