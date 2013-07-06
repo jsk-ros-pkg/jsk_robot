@@ -17,6 +17,10 @@
 	       t) ;; skip motors
 	      ((substringp "/Other/Accelerometer" (send status :name)) t)
 	      ((substringp "/Other/Pressure" (send status :name)) t)
+	      ((and (string= "/Computers/Network/Wifi Status (ddwrt)" (send status :name))
+		    (string= "Updates Stale" (send status :message))) t)
+	      ((and (string= "/Computers/Network" (send status :name))
+		    (string= "Error" (send status :message))) t)
 	      ((position #\/ (send status :name) :count 2) ;; check depth of name
 	       (setq key (subseq (send status :name) 0 (position #\/ (send status :name) :count 2)))
 	       (when (> (length (send status :name)) (length (gethash key diagnostics)))
