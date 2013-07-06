@@ -33,7 +33,7 @@
     )) ;; let
 
 (ros::subscribe "/diagnostics_agg" diagnostic_msgs::DiagnosticArray #'diagnostics-cb)
-(ros::rate (/ 1.0 30.0))
+(ros::rate (/ 1.0 3.0))
 (while (ros::ok)
   (ros::spin-once)
   (ros::sleep)
