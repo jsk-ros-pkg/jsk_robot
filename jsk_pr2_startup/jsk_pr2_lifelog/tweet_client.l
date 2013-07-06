@@ -83,7 +83,7 @@
         ))
     (unix::system "rosnode kill tweet_image_saver"))
 
-    (ros::ros-info "tweeting")
+    (ros::ros-info "tweeting ~A" twit-str)
     (cond
      (with-image
       (ros::publish "/pr2twit"
