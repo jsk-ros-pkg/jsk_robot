@@ -11,8 +11,9 @@
   <!-- base controll node to move along a trajectry -->
   <node pkg="pr2_base_trajectory_action" type="pr2_base_trajectory_action"
         name="joint_trajectory_action" ns="base_controller"
-	respawn="True" output="screen">
+        respawn="true" output="screen">
     <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
+    <param name="goal_threshold" value="10.0" /> <!-- ignore goal error -->
     <remap from="command" to="/navigation/cmd_vel"/>
     <remap from="odom" to="/base_odometry/odom"/>
   </node>
