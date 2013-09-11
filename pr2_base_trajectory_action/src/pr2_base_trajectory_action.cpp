@@ -41,8 +41,6 @@
 #include <sstream>
 #include "angles/angles.h"
 
-const double DEFAULT_GOAL_THRESHOLD = 0.01;
-
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "base_trajectory_action_node");
@@ -182,6 +180,9 @@ bool BaseTrajectoryActionController::init()
 			  std::string("base_link_pan"));
 
   node_.param(ns+"/use_pid", use_pid, true);
+  node_.param(ns+"/goal_threshold", goal_threshold_, 0.01);
+  node_.param(ns+"/stopped_velocity_tolerance", stopped_velocity_tolerance_, 0.01);
+  node_.param(ns+"/goal_time_constraint", goal_time_constraint_, 0.0);
 
   for (size_t i = 0; i < joints_.size(); ++i)
     {
@@ -324,7 +325,7 @@ void BaseTrajectoryActionController::update()
         {
           ROS_DEBUG("qd[%ld] = %f", i, qd[i]);
           if (fabs(joints_[i]->velocity_) > stopped_velocity_tolerance_) {
-            ROS_DEBUG("fabs(joints_[%ld]->velocity_) = %f > %f (stopped_velocity_tolerance_)",
+            ROS_WARN("fabs(joints_[%ld]->velocity_) = %f > %f (stopped_velocity_tolerance_)",
                       i, joints_[i]->velocity_, stopped_velocity_tolerance_);
             inside_goal_constraints = false;
           }
@@ -333,8 +334,9 @@ void BaseTrajectoryActionController::update()
 
       for (size_t i = 0; i < joints_.size() && inside_goal_constraints; ++i)
       {
-        if(e[i] > DEFAULT_GOAL_THRESHOLD) {
-          ROS_DEBUG("e[%ld] = %f > %f(DEFAULT_GOAL_THRESHOLD)", i, e[i], DEFAULT_GOAL_THRESHOLD);
+        if(fabs(error[i]) > goal_threshold_) {
+          ROS_WARN("fabs(error[%ld]) = %f > %f (goal_threshold)",
+                   i, fabs(error[i]), goal_threshold_);
           inside_goal_constraints = false;
         }
       }

@@ -82,6 +82,7 @@ private:
   ros::Time last_time_, robot_time_;
   std::vector<JointState*> joints_;
   double goal_time_constraint_;
+  double goal_threshold_;
   double stopped_velocity_tolerance_;
   std::vector<double> goal_constraints_;
   std::vector<double> trajectory_constraints_;
