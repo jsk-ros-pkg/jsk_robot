@@ -214,7 +214,7 @@ bool BaseTrajectoryActionController::init()
                                 boost::bind(&BaseTrajectoryActionController::goalCB, this, _1),
                                 boost::bind(&BaseTrajectoryActionController::cancelCB, this, _1)));
 
-  ROS_INFO("base traj controller initialized;");
+  ROS_DEBUG("base traj controller initialized;");
 
   return true;
 }
@@ -304,6 +304,8 @@ void BaseTrajectoryActionController::update()
   if (traj[seg].gh && traj[seg].gh == active_goal_)
   {
     ros::Time end_time(traj[seg].start_time + traj[seg].duration);
+    ROS_DEBUG("time: %f -> end: %f", time.toSec(), end_time.toSec());
+    ROS_DEBUG("seg = %d, tarj.size() = %ld", seg, traj.size());
     if (time <= end_time)
     {
       // Verifies trajectory constraints
@@ -320,22 +322,28 @@ void BaseTrajectoryActionController::update()
         // It's important to be stopped if that's desired.
         if (fabs(qd[i]) < 1e-6)
         {
-          if (fabs(joints_[i]->velocity_) > stopped_velocity_tolerance_)
+          ROS_DEBUG("qd[%ld] = %f", i, qd[i]);
+          if (fabs(joints_[i]->velocity_) > stopped_velocity_tolerance_) {
+            ROS_DEBUG("fabs(joints_[%ld]->velocity_) = %f > %f (stopped_velocity_tolerance_)",
+                      i, joints_[i]->velocity_, stopped_velocity_tolerance_);
             inside_goal_constraints = false;
+          }
         }
       }
 
       for (size_t i = 0; i < joints_.size() && inside_goal_constraints; ++i)
       {
-	if(e[i] > DEFAULT_GOAL_THRESHOLD)
-	  inside_goal_constraints = false;
+        if(e[i] > DEFAULT_GOAL_THRESHOLD) {
+          ROS_DEBUG("e[%ld] = %f > %f(DEFAULT_GOAL_THRESHOLD)", i, e[i], DEFAULT_GOAL_THRESHOLD);
+          inside_goal_constraints = false;
+        }
       }
 
       if (inside_goal_constraints)
       {
 	traj[seg].gh->setSucceeded();
 	active_goal_ = boost::shared_ptr<GoalHandle>((GoalHandle*)NULL);
-	ROS_INFO("base_traj success");
+	ROS_DEBUG("base_traj success");
         //ROS_ERROR("Success!  (%s)", traj[seg].gh->gh_.getGoalID().id.c_str());
       }
       else if (time < end_time + ros::Duration(goal_time_constraint_))
@@ -347,7 +355,7 @@ void BaseTrajectoryActionController::update()
         //ROS_WARN("Aborting because we wound up outside the goal constraints");
         traj[seg].gh->setAborted();
 	active_goal_ = boost::shared_ptr<GoalHandle>((GoalHandle*)NULL);
-	ROS_INFO("base_traj aborted");
+	ROS_WARN("base_traj aborted");
       }
     }
 
@@ -358,7 +366,7 @@ void BaseTrajectoryActionController::update()
       {
 	joints_[j]->commanded_velocity_ *=
 	  joints_[j]->max_abs_velocity_/fabs(joints_[j]->commanded_velocity_);
-	ROS_INFO("joint(%s) violates its velocity limit.", joints_[j]->name.c_str());
+	ROS_WARN("joint(%s) violates its velocity limit.", joints_[j]->name.c_str());
       }
    }
 
@@ -373,8 +381,8 @@ void BaseTrajectoryActionController::update()
     vel.angular.z = joints_[2]->commanded_velocity_;
     pub_command_.publish(vel);
 
-    ROS_INFO("pos = %f %f %f", joints_[0]->position_,joints_[1]->position_,joints_[2]->position_);
-    ROS_INFO("vel = %f %f %f", vel.linear.x, vel.linear.y, vel.angular.z);
+    ROS_DEBUG("pos = %f %f %f", joints_[0]->position_,joints_[1]->position_,joints_[2]->position_);
+    ROS_DEBUG("vel = %f %f %f", vel.linear.x, vel.linear.y, vel.angular.z);
   }
 
 }
@@ -623,10 +631,10 @@ void BaseTrajectoryActionController::commandTrajectory(const trajectory_msgs::Jo
 #if 0
   for (size_t i = 0; i < std::min((size_t)20,new_traj.size()); ++i)
   {
-    ROS_INFO("Segment %2d: %.3lf for %.3lf", i, new_traj[i].start_time, new_traj[i].duration);
+    ROS_DEBUG("Segment %2ld: %.3lf for %.3lf", i, new_traj[i].start_time, new_traj[i].duration);
     for (size_t j = 0; j < new_traj[i].splines.size(); ++j)
     {
-      ROS_INFO("    %.2lf  %.2lf  %.2lf  %.2lf , %.2lf  %.2lf(%s)",
+      ROS_DEBUG("    %.2lf  %.2lf  %.2lf  %.2lf , %.2lf  %.2lf(%s)",
                 new_traj[i].splines[j].coef[0],
                 new_traj[i].splines[j].coef[1],
                 new_traj[i].splines[j].coef[2],
@@ -706,7 +714,7 @@ static boost::shared_ptr<Member> share_member(boost::shared_ptr<Enclosure> enclo
 
 void BaseTrajectoryActionController::goalCB(GoalHandle gh)
 {
-  ROS_INFO("goalCB");
+  ROS_DEBUG("goalCB");
 
   std::vector<std::string> joint_names(joints_.size());
   for (size_t j = 0; j < joints_.size(); ++j)
