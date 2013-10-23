@@ -1,0 +1,22 @@
+<launch>
+  <arg name="sim" default="true" />
+
+  <include file="$(find naoeus)/launch/nao_driver_ns.launch">
+    <arg name="nao_name" value="nao_master"/>
+    <!-- Opal -->
+    <arg name="nao_ip" value="$(optenv NAO_MASTER_IP 192.168.97.214)" />
+  </include>
+
+  <include file="$(find naoeus)/launch/nao_driver_ns.launch">
+    <arg name="nao_name" value="nao_slave"/>
+    <!-- Webots_simulator -->
+    <arg name="nao_ip" value="127.0.0.1" if="$(arg sim)"/>
+    <!-- Garnet -->
+    <arg name="nao_ip" value="$(optenv NAO_SLAVE_IP 192.168.97.227)" unless="$(arg sim)" />
+  </include>
+
+  <!--
+      <node pkg="roseus" type="roseus" args="$(find naoeus)/nao-master-slave.l" name="nao_interface" required="true" output="screen"/>
+  -->
+
+</launch>
