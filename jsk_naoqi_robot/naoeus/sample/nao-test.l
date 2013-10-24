@@ -1,5 +1,5 @@
 (ros::roseus "nao-test")
-(load "package://naoeus/nao-interface.l")
+(load "package://naoeus/euslisp/nao-interface.l")
 
 (setq *nao* (nao))
 (objects (list *nao*))
