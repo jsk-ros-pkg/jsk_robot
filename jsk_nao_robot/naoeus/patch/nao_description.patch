@@ -1,0 +1,140 @@
+Index: urdf/visuals.xacro
+===================================================================
+--- urdf/visuals.xacro	(リビジョン 2815)
++++ urdf/visuals.xacro	(作業コピー)
+@@ -21,105 +21,108 @@
+     
+     <xacro:macro name="insert_visualization_torso" params="">
+         <visual>
+-            <!-- one cylinder spanning over HipOffsetZ and NeckOffsetZ -->
+-            <origin xyz="0 0 0.02075" rpy="0 0 0"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.2115"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/Torso.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_headYaw" params="">
++        <visual>
++          <geometry>
++            <mesh filename="package://nao_description/meshes/nao/V40/HeadYaw.mesh" scale=".001 .001 .001"/>
++          </geometry>
++        </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_head" params="">
+         <visual>
+-            <origin xyz="0 0 0.058" rpy="1.57 0 0"/>
+             <geometry>
+-                <cylinder radius="0.04" length="0.14"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/HeadPitch.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_arm" params="side">
+         <visual>
+-            <origin xyz="0.045 0 0" rpy="${pi_2} 0 ${pi_2}"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.09"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/${side}ShoulderRoll.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_elbow" params="side">
+         <visual>
+-            <origin xyz="0.025325 0 0" rpy="${pi_2} 0 ${pi_2}"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.05065"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/${side}ElbowRollComplete.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_wrist" params="side">
+         <visual>
+-            <origin xyz="0.029 0 0" rpy="${pi_2} 0 ${pi_2}"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.058"/>
++               <mesh filename="package://nao_description/meshes/nao/V40/WristYaw.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_hip" params="side">
++      <visual>
++        <geometry>
++          <mesh filename="package://nao_description/meshes/nao/V40/${side}HipYawPitch.mesh" scale=".001 .001 .001"/>
++        </geometry>
++      </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_hipRoll" params="side">
++      <visual>
++        <geometry>
++          <mesh filename="package://nao_description/meshes/nao/V40/${side}HipRoll.mesh" scale=".001 .001 .001"/>
++        </geometry>
++      </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_thigh" params="side">
+         <visual>
+-            <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.1"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/${side}HipPitch.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_shine" params="side">
+         <visual>
+-            <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.1"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/${side}KneePitch.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_ankle" params="side">
++      <visual>
++        <geometry>
++          <mesh filename="package://nao_description/meshes/nao/V40/${side}AnklePitch.mesh" scale=".001 .001 .001"/>
++        </geometry>
++      </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_ankleRoll" params="side">
+         <visual>
+-            <origin xyz="0 0 -0.023" rpy="0 0 0"/>
+             <geometry>
+-                <cylinder radius="0.015" length="0.046"/>
++                <mesh filename="package://nao_description/meshes/nao/V40/${side}AnkleRoll.mesh" scale=".001 .001 .001"/>
+             </geometry>
+-            <material name="LightGrey"/>
+         </visual>
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_foot" params="side">
+-        <visual>
++        <!--visual>
+             <origin xyz="0.02 0 0.0075" rpy="0 0 0"/>
+             <geometry>
+                 <box size="0.16 0.06 0.015"/>
+             </geometry>
+             <material name="LightGrey"/>
+-        </visual>
++        </visual-->
+     </xacro:macro>
+     
+     <xacro:macro name="insert_visualization_cameraTop" params="">    
