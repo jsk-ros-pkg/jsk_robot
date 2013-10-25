@@ -1,7 +1,7 @@
 ;; 2013/06/21
 (ros::roseus "nao")
 
-(load "package://naoeus/nao-interface.l")
+(load "package://naoeus/euslisp/nao-interface.l")
 (ros::load-ros-manifest "naoeus")
 
 #|
