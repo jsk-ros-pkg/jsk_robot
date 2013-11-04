@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('jsk_pr2_startup')
+import roslib; roslib.load_manifest('sensor_msgs')
 import rospy
 import math
 from struct import *
