@@ -5,18 +5,24 @@ import math
 from struct import *
 from sensor_msgs.msg import *
 
+# rotate x
 def talker():
     rospy.init_node('empty_cloud_publisher')
     pub = rospy.Publisher('empty_cloud', PointCloud2)
     frame_id = rospy.get_param('~frame_id', '/base_laser_link')
     max_range = rospy.get_param('~max_range', 25.0)
+    rate = rospy.get_param('~rate', 10) ## Hz
+    rotate_points = rospy.get_param('~rotate_points', False)
 
     irange = range(-314, 315)
-
+    jrange = range(-314, 315)
     msg = PointCloud2()
     msg.header.frame_id = frame_id
     msg.height = 1
-    msg.width = len(irange)
+    if rotate_points:
+        msg.width = len(irange) * len(jrange)
+    else:
+        msg.width = len(irange)
 
     msg_fieldx = PointField()
     msg_fieldy = PointField()
@@ -39,22 +45,28 @@ def talker():
     msg.row_step = msg.point_step * msg.width;
     msg.is_dense = True
 
+    points = []
     for i in irange:
         x = max_range * math.cos(i*0.005)
         y = max_range * math.sin(i*0.005)
-        z = 0.0
-        msg.data += pack('<f', x)
-        msg.data += pack('<f', y)
-        msg.data += pack('<f', z)
-        msg.data += pack('<f', 0.0)
+        if rotate_points:
+            for j in jrange:
+                # x rotation
+                #            x = max_range * math.cos(i*0.005)
+                #            y = max_range * math.sin(i*0.005) * math.cos(j * 0.005)
+                #            z = -1 * max_range * math.sin(i*0.005) * math.sin(j * 0.005)
+                # y rotation
+                points.append(pack('<ffff', x * math.cos(j * 0.005), y, -1 * x * math.sin(j * 0.005), 0.0))
+        else:
+            points.append(pack('<ffff', x, y, 0.0, 0.0))
 
+    msg.data = ''.join(points)
 
+    r = rospy.Rate(rate)
     while not rospy.is_shutdown():
-
         msg.header.stamp = rospy.Time.now()
-
         pub.publish(msg)
-        rospy.sleep(0.1)
+        r.sleep()
 
 if __name__ == '__main__':
     try:
