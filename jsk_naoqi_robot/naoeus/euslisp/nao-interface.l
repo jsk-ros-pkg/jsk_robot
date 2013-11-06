@@ -16,7 +16,6 @@
    ;; wait for pr2-action server (except move_base)
 
    (send-super* :init :robot nao-robot :type type :groupname (format nil "~A/nao_interface" ns) :namespace ns args)
-   (setq joint-action-enable t)
 
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
