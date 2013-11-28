@@ -8,6 +8,7 @@
     <arg name="camera" value="openni"/>
     <arg name="respawn" value="true"/>
     <arg name="publish_tf" value="false"/>
+    <arg name="depth_registration" value="true"/>
   </include>
 
   <!-- check openni_node does not respawn openni_node, in groovy -->
