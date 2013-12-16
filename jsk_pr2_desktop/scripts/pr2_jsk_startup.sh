@@ -4,8 +4,8 @@ PR2_NAME=$1
 if [ "$1" == "" ]; then PR2_NAME="pr1012"; fi
 shift
 
-
-export PS1=pr2admin
+HOST_NAME=$(hostname)
+export PS1=furushchev
 source ~/.bashrc
 
 export ROS_IP=`LANGUAGE=en LANG=C LC_ALL=C ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
@@ -13,8 +13,12 @@ export ROS_MASTER_URI=http://${PR2_NAME}:11311
 ## for desktop
 sleep 1
 rosrun pr2_dashboard pr2_dashboard &
-xterm -sb -rightbar -sl 99999 +s -title "RVIZ (${PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.vcg" &
+if [ "$ROS_DISTRO" = "fuerte" ]; then
+    xterm -sb -rightbar -sl 99999 +s -title "RVIZ (${PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.vcg" &
+elif [ "$ROS_DISTRO" = "groovy" ]; then
+    xterm -sb -rightbar -sl 99999 +s -title "RVIZ (${PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.rviz" &
+fi
 
 ## for robot
 sleep 1
-ssh -t -l applications ${PR2_NAME} "export PS1=applications; source ~/.bashrc; ROS_MASTER_URI=http://${PR2_NAME}:11311 roslaunch jsk_pr2_startup pr2.launch"
+ssh -t -l applications ${PR2_NAME} "export PS1=applications; source ~/.bashrc; ROS_MASTER_URI=http://${PR2_NAME}:11311 roslaunch jsk_pr2_startup pr2.launch USER_NAME:='furushchev (from ${HOST_NAME})'"

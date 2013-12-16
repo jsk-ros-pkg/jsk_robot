@@ -13,7 +13,7 @@ export ROS_MASTER_URI=http://$@BLANK@{PR2_NAME}:11311
 ## for desktop
 sleep 1
 if [ "$ROS_DISTRO" = "fuerte" ]; then
-    xterm -sb -rightbar -sl 99999 +s -title "RVIZ ($@BL@{PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.vcg" &
+    rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.vcg
 elif [ "$ROS_DISTRO" = "groovy" ]; then
-    xterm -sb -rightbar -sl 99999 +s -title "RVIZ ($@BL@{PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.rviz" &
+    rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.rviz
 fi
