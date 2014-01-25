@@ -129,7 +129,7 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.dae
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.l
   COMMAND echo "${_collada2eus} baxter.dae baxter.l"
   COMMAND ${_collada2eus} ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${PROJECT_SOURCE_DIR}/baxter.l
-  DEPENDS ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml)
+  DEPENDS ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${_collada2eus})
 add_custom_target(compile_baxter ALL DEPENDS ${PROJECT_SOURCE_DIR}/baxter.l)
 
 #############
