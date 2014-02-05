@@ -1,0 +1,11 @@
+<launch>
+  <!-- for tf topic buffer server -->
+  <include file="$(find jsk_topic_tools)/launch/tf_buffer_client.launch"/>
+  <!-- for pcl roi -->
+  <include file="$(find jsk_pcl_ros)/launch/pcl_roi_remote.launch">
+    <arg name="USE_LHAND_POINTCLOUD" value="false"/>
+    <arg name="USE_RHAND_POINTCLOUD" value="false"/>
+    <arg name="ROI_MARKER_BASEFRAME" value="/head_mount_kinect_ir_optical_frame"/>
+  </include>
+
+</launch>

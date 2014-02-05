@@ -1,0 +1,13 @@
+<launch>
+  <!-- for tf topic buffer server -->
+  <include file="$(find jsk_topic_tools)/launch/tf_buffer_server.launch"/>
+  <!-- for pcl roi -->
+  <include file="$(find jsk_pcl_ros)/launch/pcl_roi_robot.launch">
+    <arg name="USE_LHAND_POINTCLOUD" value="false"/>
+    <arg name="USE_RHAND_POINTCLOUD" value="false"/>
+    <arg name="USE_HEAD_POINTCLOUD" value="true"/>
+    <arg name="HEAD_SELECTED" default="/head_pointcloud_selected"/>
+    <arg name="HEAD_TOPIC" default="/head_mount_kinect/depth_registered/points"/>
+    <arg name="BASE_FRAME" value="/head_mount_kinect_ir_optical_frame"/>
+  </include>
+</launch>
