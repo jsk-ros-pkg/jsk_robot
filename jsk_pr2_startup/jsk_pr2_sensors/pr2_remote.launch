@@ -4,6 +4,7 @@
   <arg name="launch_pcl_roi" default="true" />
   <arg name="launch_image_resized" default="true" />
   <arg name="launch_image_roi" default="true" />
+  <arg name="launch_interactive_controller" default="false" />
 
   <!-- for tf topic buffer server -->
   <include if="$(arg launch_tf_buffer)"
@@ -25,4 +26,9 @@
   <!-- for image roi -->
   <include if="$(arg launch_image_roi)"
 	   file="$(find jsk_pr2_startup)/jsk_pr2_image_transport/pr2_roi_viewer.launch"/>
+
+  <!-- for interactive controller -->
+  <include if="$(arg launch_interactive_controller)"
+	   file="$(find jsk_interactive_marker)/launch/interactive_marker_controller_remote.launch"/>
+
 </launch>
