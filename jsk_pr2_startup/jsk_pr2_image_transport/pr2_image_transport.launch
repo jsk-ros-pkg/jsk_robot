@@ -32,7 +32,7 @@
 
   <group if="$(arg USE_THROTTLE)" >
     <!-- resized image -->
-    <node pkg="resized_image_transport" type="image_resizer" name="kinect_resized"
+    <node pkg="resized_image_transport" type="image_resizer" name="head_resized"
           output="screen" >
       <remap from="camera" to="/openni/rgb" />
       <remap from="image" to="$(arg THROTTLE_IMAGE_TYPE)"/>
@@ -97,9 +97,9 @@
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="lhand_snap"
           output="screen" >
-      <remap from="camera" to="l_forarm_cam/rotated" />
-      <remap from="/l_forarm_cam/rotated/camera_info"
-             to="/l_forarm_cam/camera_info" />
+      <remap from="camera" to="l_forearm_cam/rotated" />
+      <remap from="/l_forearm_cam/rotated/camera_info"
+             to="/l_forearm_cam/camera_info" />
       <remap from="lhand_snap/image" to="lhand_snap/image_rect" />
       <param name="resize_scale_x" value="$(arg SNAPSHOT_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg SNAPSHOT_RESIZE_RATE)" />
@@ -107,9 +107,9 @@
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="rhand_snap"
           output="screen" >
-      <remap from="camera" to="r_forarm_cam/rotated" />
-      <remap from="/r_forarm_cam/rotated/camera_info"
-             to="/r_forarm_cam/camera_info" />
+      <remap from="camera" to="r_forearm_cam/rotated" />
+      <remap from="/r_forearm_cam/rotated/camera_info"
+             to="/r_forearm_cam/camera_info" />
       <remap from="rhand_snap/image" to="rhand_snap/image_rect" />
       <param name="resize_scale_x" value="$(arg SNAPSHOT_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg SNAPSHOT_RESIZE_RATE)" />
