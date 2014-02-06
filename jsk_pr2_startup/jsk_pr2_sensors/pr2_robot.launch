@@ -3,6 +3,7 @@
   <arg name="launch_pcl_roi" default="true" />
   <arg name="launch_image_resized" default="true" />
   <arg name="launch_image_roi" default="true" />
+  <arg name="launch_interactive_controller" default="true" />
 
   <!-- for tf topic buffer server -->
   <include if="$(arg launch_tf_buffer)"
@@ -26,4 +27,11 @@
   <!-- for image roi -->
   <include if="$(arg launch_image_roi)"
 	   file="$(find jsk_pr2_startup)/jsk_pr2_image_transport/pr2_roi_transport.launch"/>
+
+  <!-- for interactive controller -->
+  <node if="$(arg launch_interactive_controller)"
+	pkg="roseus" type="roseus" name="move_joint_interface_for_im"
+	args="$(find jsk_interactive)/euslisp/move-joint-interface-robot.l">
+    <param name="robot" value="PR2"/>
+  </node>
 </launch>
