@@ -1,0 +1,69 @@
+<launch>
+  <arg name="RESIZE_RATE" default="0.1" />
+  <arg name="SNAP_RESIZE_RATE" default="0.25" />
+  <arg name="COMPRESS_TYPE" default="compressed" />
+
+  <!-- for resized -->
+  <node pkg="image_view2" type="image_view2"
+        name="head_resized_view2" output="screen" >
+    <remap from="image" to="head_resized/image_rect" />
+    <remap from="/tf" to="/tf_dummy" />
+    <param name="autosize" value="false" />
+    <param name="image_transport" value="$(arg COMPRESS_TYPE)" />
+    <param name="resize_scale_x" value="$(arg RESIZE_RATE)" />
+    <param name="resize_scale_y" value="$(arg RESIZE_RATE)" />
+  </node>
+
+  <node pkg="image_view2" type="image_view2"
+        name="lhand_resized_view2" output="screen" >
+    <remap from="image" to="lhand_resized/image" />
+    <remap from="/tf" to="/tf_dummy" />
+    <param name="autosize" value="false" />
+    <param name="image_transport" value="$(arg COMPRESS_TYPE)" />
+    <param name="resize_scale_x" value="$(arg RESIZE_RATE)" />
+    <param name="resize_scale_y" value="$(arg RESIZE_RATE)" />
+  </node>
+
+  <node pkg="image_view2" type="image_view2"
+        name="rhand_resized_view2" output="screen" >
+    <remap from="image" to="rhand_resized/image" />
+    <remap from="/tf" to="/tf_dummy" />
+    <param name="autosize" value="false" />
+    <param name="image_transport" value="$(arg COMPRESS_TYPE)" />
+    <param name="resize_scale_x" value="$(arg RESIZE_RATE)" />
+    <param name="resize_scale_y" value="$(arg RESIZE_RATE)" />
+  </node>
+
+  <!-- for snapshot -->
+  <node pkg="image_view2" type="image_view2"
+        name="head_snap_view2" output="screen" >
+    <remap from="image" to="head_snap/image_rect_color" />
+    <remap from="/tf" to="/tf_dummy" />
+    <param name="autosize" value="false" />
+    <param name="image_transport" value="$(arg COMPRESS_TYPE)" />
+    <param name="resize_scale_x" value="0.16" />
+    <param name="resize_scale_y" value="0.16" />
+  </node>
+
+  <node pkg="image_view2" type="image_view2"
+        name="lhand_snap_view2" output="screen" >
+    <remap from="image" to="lhand_snap/image_rect" />
+    <remap from="/tf" to="/tf_dummy" />
+    <param name="autosize" value="false" />
+    <param name="image_transport" value="$(arg COMPRESS_TYPE)" />
+    <param name="resize_scale_x" value="$(arg SNAP_RESIZE_RATE)" />
+    <param name="resize_scale_y" value="$(arg SNAP_RESIZE_RATE)" />
+  </node>
+
+  <node pkg="image_view2" type="image_view2"
+        name="rhand_snap_view2" output="screen" >
+    <remap from="image" to="rhand_snap/image_rect" />
+    <remap from="/tf" to="/tf_dummy" />
+    <param name="autosize" value="false" />
+    <param name="image_transport" value="$(arg COMPRESS_TYPE)" />
+    <param name="resize_scale_x" value="$(arg SNAP_RESIZE_RATE)" />
+    <param name="resize_scale_y" value="$(arg SNAP_RESIZE_RATE)" />
+  </node>
+
+  <!--node pkg="jsk_pr2_startup" type="image_gui.py" name="image_snapshot_gui" /-->
+</launch>
