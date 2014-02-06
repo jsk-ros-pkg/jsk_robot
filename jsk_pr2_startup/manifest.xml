@@ -39,6 +39,12 @@
   <depend package="jsk_pcl_ros"/>
   <depend package="jsk_smart_gui"/>
   <depend package="python_twoauth"/>
+
+  <depend package="rospy" />
+  <depend package="rqt_gui" />
+  <depend package="rqt_gui_py" />
+  <depend package="rqt_py_common" />
+  <export>
+    <rqt_gui plugin="${prefix}/plugin.xml"/>
+  </export>
 </package>
-
-

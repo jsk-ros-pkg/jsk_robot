@@ -65,5 +65,5 @@
     <param name="resize_scale_y" value="$(arg SNAP_RESIZE_RATE)" />
   </node>
 
-  <!--node pkg="jsk_pr2_startup" type="image_gui.py" name="image_snapshot_gui" /-->
+  <node pkg="jsk_pr2_startup" type="image_gui.py" name="image_snapshot_gui" />
 </launch>
