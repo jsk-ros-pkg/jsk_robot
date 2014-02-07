@@ -31,9 +31,9 @@
     <remap from="camera_out" to="roi_camera_output_rh" />
   </node>
 
-  <!--node pkg="jsk_pr2_startup" type="roi-reconfigure-call.l"
+  <node pkg="jsk_pr2_startup" type="roi-reconfigure-call.l"
         name="roi_reconfigure_call" output="screen" respawn="true" >
-  </node-->
+  </node>
 
   <node pkg="jsk_topic_tools" type="topic_buffer_server"
         name="roi_topic_buffer_server"
