@@ -1,0 +1,14 @@
+<library path="src">
+  <class name="rqt_pr2_imagesnapshot"
+         type="jsk_pr2_startup.image_snapshot.ImageSnapShotGUI"
+         base_class_type="rqt_gui_py::Plugin">
+    <description>
+      hogehogehoge
+    </description>
+    <qtgui>
+      <label>Hoge</label>
+      <icon type="theme">utilities-system-monitor</icon>
+      <statustip>hogehoge</statustip>
+    </qtgui>
+  </class>
+</library>
