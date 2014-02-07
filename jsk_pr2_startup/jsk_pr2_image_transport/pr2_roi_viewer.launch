@@ -24,7 +24,7 @@
         name="roi_topic_buffer_client"
         output="screen" >
     <param name="fixed_rate" value="10000000" />
-    <param name="update_rate" value="10000000" />
+    <param name="update_rate" value="2000000000" />
     <param name="latched" value="true" />
     <rosparam>
       topics: ["/roi_camera_output/image_raw"]
@@ -37,7 +37,7 @@
         name="roi_lh_topic_buffer_client"
         output="screen" >
     <param name="fixed_rate" value="10000000" />
-    <param name="update_rate" value="10000000" />
+    <param name="update_rate" value="2000000000" />
     <param name="latched" value="true" />
     <rosparam>
       topics: ["/roi_camera_output_lh/image_raw"]
@@ -50,7 +50,7 @@
         name="roi_rh_topic_buffer_client"
         output="screen" >
     <param name="fixed_rate" value="10000000" />
-    <param name="update_rate" value="10000000" />
+    <param name="update_rate" value="2000000000" />
     <param name="latched" value="true" />
     <rosparam>
       topics: ["/roi_camera_output_rh/image_raw"]
