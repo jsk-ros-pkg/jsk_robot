@@ -5,9 +5,13 @@
   <arg name="launch_image_roi" default="true" />
   <arg name="launch_interactive_controller" default="true" />
 
+  <arg name="tf_update_rate" default="1.0" />
+
   <!-- for tf topic buffer server -->
   <include if="$(arg launch_tf_buffer)"
-      file="$(find jsk_topic_tools)/launch/tf_buffer_server.launch"/>
+	   file="$(find jsk_topic_tools)/launch/tf_buffer_server.launch">
+    <arg name="UPDATE_RATE" value="$(arg tf_update_rate)"/>
+  </include>
 
   <!-- for pcl roi -->
   <include if="$(arg launch_pcl_roi)"
