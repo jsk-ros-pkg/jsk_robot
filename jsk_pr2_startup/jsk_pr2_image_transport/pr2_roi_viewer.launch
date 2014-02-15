@@ -22,6 +22,7 @@
 
   <node pkg="jsk_topic_tools" type="topic_buffer_client"
         name="roi_topic_buffer_client"
+        clear_params="true"
         output="screen" >
     <param name="fixed_rate" value="10000000" />
     <param name="update_rate" value="2000000000" />
@@ -35,6 +36,7 @@
 
   <node pkg="jsk_topic_tools" type="topic_buffer_client"
         name="roi_lh_topic_buffer_client"
+        clear_params="true"
         output="screen" >
     <param name="fixed_rate" value="10000000" />
     <param name="update_rate" value="2000000000" />
@@ -48,6 +50,7 @@
 
   <node pkg="jsk_topic_tools" type="topic_buffer_client"
         name="roi_rh_topic_buffer_client"
+        clear_params="true"
         output="screen" >
     <param name="fixed_rate" value="10000000" />
     <param name="update_rate" value="2000000000" />
