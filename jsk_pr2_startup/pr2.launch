@@ -115,9 +115,9 @@
   <node machine="c2" pkg="joy" type="joy_node" name="joy" >
     <param name="deadzone" value="0.10" />
     <param name="dev" value="/etc/ros/sensors/ps3joy" />
-    <remap from="joy" to="joy_org" />
+    <remap from="/joy" to="/joy_org" />
   </node>
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
-        respawn="true" args="joy joy_org joy_other" />
+        respawn="true" args="/joy /joy_org /joy_other" />
 
 </launch>
