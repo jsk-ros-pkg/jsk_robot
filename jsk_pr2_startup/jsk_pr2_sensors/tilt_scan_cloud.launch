@@ -25,12 +25,13 @@
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
   </node>
 
-  <node type="laser_scan_assembler" name="tilt_scan_assembler"
-	pkg="laser_assembler" respawn="true">
+  <node type="laser_scan_assembler" name="tilt_scan_assembler" pkg="laser_assembler"
+        output="screen" clear_params="true" respawn="true">
     <remap from="scan" to="tilt_scan"/>
     <param name="max_scans" type="int" value="400" />
     <param name="fixed_frame" type="string" value="base_link" />
     <param name="ignore_laser_skew" type="bool" value="true" />
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_filters.yaml" />
   </node>
 
   <node pkg="pr2_arm_navigation_perception" type="pr2_laser_snapshotter"
