@@ -7,7 +7,7 @@ python:
 compiler:
   - gcc
 env:
-  - ROS_DISTRO=groovy ROSWS=rosws BUILDER=rosbuild BUILD_PACKAGES="pddl task_compiler"
+  - ROS_DISTRO=groovy ROSWS=rosws BUILDER=rosbuild BUILD_PACKAGES="jsk_baxter_robot  jsk_nao_robot  jsk_pr2_accessories  jsk_pr2_desktop  jsk_pr2_startup  pr2_base_trajectory_action"
   - ROS_DISTRO=hydro ROSWS=wstool BUILDER=catkin
   - ROS_DISTRO=groovy ROSWS=wstool BUILDER=catkin
 #notifications:
