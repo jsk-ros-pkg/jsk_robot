@@ -7,9 +7,9 @@ python:
 compiler:
   - gcc
 env:
+  - ROS_DISTRO=groovy ROSWS=rosws BUILDER=rosbuild BUILD_PACKAGES="pddl task_compiler"
   - ROS_DISTRO=hydro ROSWS=wstool BUILDER=catkin
   - ROS_DISTRO=groovy ROSWS=wstool BUILDER=catkin
-  - ROS_DISTRO=groovy ROSWS=rosws BUILDER=rosbuild BUILD_PACKAGES="-a" # posedetectiondb
 #notifications:
 #  email:
 #    recipients:
@@ -45,19 +45,23 @@ install: # Use this to install any prerequisites or dependencies necessary to ru
   - ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
   - cd ../
   # Install dependencies for source repos
+  - find -L src -name package.xml -exec dirname {} \; | xargs -n 1 -i find {} -name manifest.xml | xargs -n 1 -i mv {} {}.deprecated
   - rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
+  - find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml
+  - if [ $BUILDER = rosbuild ]; then source src/setup.sh; rosdep install -a -y -n -r; fi
+  - if [ $ROS_DISTRO = groovy ]; then echo sudo apt-get install ros-$ROS_DISTRO-common-tutorials ros-$ROS_DISTRO-audio-common ros-$ROS_DISTRO-navigation ros-$ROS_DISTRO-laser-filters ros-$ROS_DISTRO-camera-calibration-parsers ros-$ROS_DISTRO-depth-image-proc ros-$ROS_DISTRO-driver-base ros-$ROS_DISTRO-image-proc ros-$ROS_DISTRO-image-proc ros-$ROS_DISTRO-compressed-image-transport ros-$ROS_DISTRO-pr2-common ros-$ROS_DISTRO-pr2-controllers ros-$ROS_DISTRO-arm-navigation ros-$ROS_DISTRO-pr2-common-actions; fi
 before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
   - source /opt/ros/$ROS_DISTRO/setup.bash
+  - export CATKIN_PACKAGES="`find $CI_SOURCE_PATH -name package.xml | xargs -n 1 dirname | xargs -n 1 basename`"
 script: # All commands must exit with code 0 on success. Anything else is considered failure.
   - cd ~/ros/ws_$REPOSITORY_NAME
   - if [ $BUILDER = rosbuild ]; then source src/setup.sh; cd src; fi
   - rospack profile
   - if [ $BUILDER = catkin ]; then catkin_make -j4; else rosmake $BUILD_PACKAGES --profile --pjobs=4; fi
-  - if [ $BUILDER = catkin ]; then catkin_make test; else rosmake $BUILD_PACKAGES --test-only; fi
+  - if [ $BUILDER = catkin ]; then if [ "$CATKIN_PACKAGES" != "" ]; then catkin_make test --pkg $CATKIN_PACKAGES; fi; else rosmake $BUILD_PACKAGES --test-only; fi
   - if [ $BUILDER = catkin ]; then catkin_make install; fi
   - if [ $BUILDER = catkin ]; then rm -fr devel src build; source install/setup.bash; else source setup.sh; fi
 after_failure:
   - if [ -e ./build/Testing/Temporary/LastTest.log ]; then cat ./build/Testing/Temporary/LastTest.log; fi
   - find ${HOME}/.ros/test_results -type f -exec echo "== {} ==" \; -exec cat {} \;
   - for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
-
