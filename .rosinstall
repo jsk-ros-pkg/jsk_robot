@@ -10,6 +10,9 @@
 - git:
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     local-name: jsk-ros-pkg/jsk_common
+- git:
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    local-name: jsk-ros-pkg/jsk_recognition
 - svn:
     uri: https://svn.code.sf.net/p/tum-ros-pkg/code/perception/
     local-name: tum-ros-pkg/perception
