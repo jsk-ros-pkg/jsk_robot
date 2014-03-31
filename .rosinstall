@@ -34,3 +34,7 @@
 - svn:
     uri: http://svn.code.sf.net/p/bosch-ros-pkg/code/trunk/stacks/bosch_shared_autonomy
     local-name: bosch-ros-pkg/stacks/bosch_shared_autonomy
+- git:
+    local-name: humanoid_stacks/nao_robot
+    uri: https://github.com/ahornung/nao_robot.git
+    
