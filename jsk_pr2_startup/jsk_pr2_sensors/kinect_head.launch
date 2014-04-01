@@ -3,12 +3,14 @@
   <!-- for ROS_DISTRO under electric -->
   <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
 
+  <param name="/openni/driver/depth_ir_offset_x" value="4.5" />
+  <param name="/openni/driver/depth_ir_offset_y" value="2.5" />
   <include file="$(find openni_launch)/launch/openni.launch"
 	   if="$(arg launch_openni)">
     <arg name="camera" value="openni"/>
     <arg name="respawn" value="true"/>
     <arg name="publish_tf" value="false"/>
-    <arg name="depth_registration" value="true"/>
+    <arg name="depth_registration" value="false"/>
   </include>
 
   <!-- check openni_node does not respawn openni_node, in groovy -->
