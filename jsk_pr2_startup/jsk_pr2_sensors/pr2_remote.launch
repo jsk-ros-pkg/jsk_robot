@@ -4,7 +4,7 @@
   <arg name="launch_pcl_roi" default="true" />
   <arg name="launch_image_resized" default="true" />
   <arg name="launch_image_roi" default="true" />
-  <arg name="launch_interactive_controller" default="false" />
+  <arg name="launch_interactive_controller" default="true" />
 
   <!-- for tf topic buffer server -->
   <include if="$(arg launch_tf_buffer)"
