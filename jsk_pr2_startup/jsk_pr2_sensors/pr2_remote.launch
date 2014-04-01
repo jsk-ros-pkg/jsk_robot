@@ -8,7 +8,9 @@
 
   <!-- for tf topic buffer server -->
   <include if="$(arg launch_tf_buffer)"
-	   file="$(find jsk_topic_tools)/launch/tf_buffer_client.launch"/>
+	   file="$(find jsk_topic_tools)/launch/tf_buffer_client.launch">
+    <arg name="REMOTE_TF" value="$(arg REMOTE_TF)"/>
+  </include>
 
   <!-- for pcl roi -->
   <include if="$(arg launch_pcl_roi)"
@@ -29,6 +31,8 @@
 
   <!-- for interactive controller -->
   <include if="$(arg launch_interactive_controller)"
-	   file="$(find jsk_interactive_marker)/launch/interactive_marker_controller_remote.launch"/>
+	   file="$(find jsk_interactive_marker)/launch/interactive_marker_controller_remote.launch">
+    <arg name="REMOTE_TF" value="$(arg REMOTE_TF)"/>
+  </include>
 
 </launch>
