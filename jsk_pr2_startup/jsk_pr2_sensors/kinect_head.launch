@@ -1,5 +1,7 @@
 <launch>
   <arg name="launch_openni" default="true" />
+  <arg name="use_nodelet_throttle" default="true" />
+  <arg name="nodelet_manager" default="/openni_nodelet_manager" />
   <!-- for ROS_DISTRO under electric -->
   <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
 
@@ -18,9 +20,33 @@
   <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen"
         if="$(arg launch_openni)" />
 
-  <node name="kinect_points_throttle" pkg="topic_tools" type="throttle"
-	args="messages /openni/depth_registered/points 3.0" />
+  <group unless="$(arg use_nodelet_throttle)">
+    <node name="kinect_points_throttle" pkg="topic_tools" type="throttle"
+          args="messages /openni/depth_registered/points 3.0" />
 
-  <node name="kinect_image_throttle" pkg="topic_tools" type="throttle"
-        args="messages /openni/rgb/image_rect_color/compressed 5.0" />
+    <node name="kinect_image_throttle" pkg="topic_tools" type="throttle"
+          args="messages /openni/rgb/image_rect_color/compressed 5.0" />
+  </group>
+  
+  <group if="$(arg use_nodelet_throttle)">
+    <node name="kinect_points_throttle"
+          pkg="nodelet"
+          type="nodelet"
+          args="load jsk_pcl/NodeletPointCloudThrottle $(arg nodelet_manager)"
+          clear_params="true">
+      <remap from="topic_in" to="/openni/depth_registered/points" />
+      <remap from="topic_out" to="/openni/depth_registered/points_throttle" />
+      <param name="update_rate" value="0.3" />
+    </node>
+    <node name="kinect_image_throttle"
+          pkg="nodelet"
+          type="nodelet"
+          args="load jsk_pcl/NodeletImageThrottle $(arg nodelet_manager)"
+          clear_params="true">
+      <remap from="topic_in" to="/openni/rgb/image_rect_color/compressed" />
+      <remap from="topic_out" to="/openni/rgb/image_rect_color/compressed_throttle" />
+      <param name="update_rate" value="0.3" />
+    </node>
+  </group>
+  
 </launch>
