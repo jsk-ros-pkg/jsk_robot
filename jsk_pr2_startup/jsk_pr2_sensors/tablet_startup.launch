@@ -4,11 +4,13 @@
   <include file="$(find jsk_android_gui_api9)/cameras_and_points_mux.launch"/>
 
   <node name="tablet_receiver_default" pkg="jsk_smart_gui" respawn="true"
+        machine="c2"
         type="tablet_receiver.l" output="screen" args="(execute-main)" >
     <param name="~ray_srv" value="/pointcloud_screenpoint_nodelet/screen_to_point"/>
   </node>
 
   <node name="tablet_receiver_emergency" pkg="jsk_smart_gui" respawn="true"
+        machine="c2"
         type="emergency_stop.l" output="screen" args="(execute-main)" />
 
   <node pkg="image_view2" name="image_view2_for_tablet"
