@@ -11,6 +11,7 @@
   <arg name="launch_jsk_pcl" default="true" />
   <arg name="launch_db" default="true" />
   <arg name="launch_hark" default="true" />
+  <arg name="launch_teleoperation" default="true" />
 
   <arg name="move_tilt_scan" default="true" />
   <arg name="USER_NAME" default="false" />
@@ -119,5 +120,8 @@
   </node>
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
         respawn="true" args="/joy /joy_org /joy_other" />
+
+  <include if="$(arg launch_teleoperation)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_robot.launch" />
 
 </launch>
