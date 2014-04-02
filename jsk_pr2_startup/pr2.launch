@@ -33,7 +33,9 @@
        <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
        type="tf_publish.py" /> -->
 
-  <include file="$(find jsk_maps)/launch/start_map_eng2.launch" />
+  <include file="$(find jsk_maps)/launch/start_map_eng2.launch">
+    <arg name="MACHINE" value="c2" />
+  </include>
 
   <!-- japanese speech node -->
   <node if="$(arg launch_sound_play)"
