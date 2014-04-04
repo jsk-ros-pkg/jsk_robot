@@ -1,4 +1,6 @@
 <launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
   <arg name="launch_tf_buffer" default="true" />
   <arg name="launch_pcl_roi" default="true" />
   <arg name="launch_image_resized" default="true" />
@@ -34,7 +36,7 @@
 
   <!-- for interactive controller -->
   <node if="$(arg launch_interactive_controller)"
-	pkg="roseus" type="roseus" name="move_joint_interface_for_im"
+        machine="c2" pkg="roseus" type="roseus" name="move_joint_interface_for_im"
 	args="$(find jsk_interactive)/euslisp/move-joint-interface-robot.l">
     <param name="robot" value="PR2"/>
   </node>
