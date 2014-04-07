@@ -35,7 +35,7 @@
 import roslib; roslib.load_manifest('jsk_pr2_startup')
 import rospy
 import pgdb
-import tf
+import tf2_ros, tf2
 import geometry_msgs
 
 class MoveBaseDB:
@@ -50,7 +50,7 @@ class MoveBaseDB:
         self.con = pgdb.connect(database=db_name, host=host, user=username, password=passwd)
         self.map_frame = rospy.get_param('~map_frame','/map')
         self.robot_frame = rospy.get_param('~robot_frame','/base_link')
-        self.tf_listener = tf.TransformListener()
+        self.tf_listener = tf2_ros.BufferClient("tf2_buffer_server")
         self.initialpose_pub = rospy.Publisher('/initialpose', geometry_msgs.msg.PoseWithCovarianceStamped)
         self.current_pose = None
         self.latest_pose = None
@@ -80,8 +80,8 @@ class MoveBaseDB:
 
     def insert_current_pose(self):
         try:
-            (trans,rot) = self.tf_listener.lookupTransform(self.map_frame,self.robot_frame,rospy.Time(0))
-            stamp = self.tf_listener.getLatestCommonTime(self.map_frame,self.robot_frame)
+            (trans,rot) = self.tf_listener.lookup_transform(self.map_frame,self.robot_frame,rospy.Time(0))
+            stamp = rospy.Time.now()
             pose = (list(trans),list(rot))
 
             diffthre = 0.1 + 1.0 / (stamp - self.latest_stamp).to_sec()
@@ -90,8 +90,8 @@ class MoveBaseDB:
                 or diffthre/2 < (sum([(rot[i]-self.current_pose[1][i])**2 for i in [0,1,2,3]]) ** 0.5)):
                 self.insert_pose_to_db("tf",stamp,self.map_frame,self.robot_frame,pose)
                 self.current_pose = (trans,rot)
-        except (tf.LookupException, tf.ConnectivityException, \
-                tf.ExtrapolationException):
+        except (tf2.LookupException, tf2.ConnectivityException, \
+                tf2.ExtrapolationException):
             return
 
     def sleep_one_cycle(self):
@@ -102,7 +102,7 @@ class MoveBaseDB:
         if (self.latest_pose != None \
             and self.initialpose_pub.get_num_connections() > 0):
             try:
-                (trans, rot) = self.tf_listener.lookupTransform(self.map_frame, '/map', rospy.Time(0))
+                (trans, rot) = self.tf_listener.lookup_transform(self.map_frame, '/map', rospy.Time(0))
                 (ctrans, crot) = self.latest_pose
 
                 rospy.loginfo("set pos: %f %f %f, rot: %f %f %f %f" % (trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3]))
@@ -121,8 +121,8 @@ class MoveBaseDB:
                 ps.pose.pose.orientation.w = crot[3]
                 self.initialpose_pub.publish (ps);
                 self.latest_pose = None
-            except (tf.LookupException, tf.ConnectivityException, \
-                        tf.ExtrapolationException):
+            except (tf2.LookupException, tf2.ConnectivityException, \
+                        tf2.ExtrapolationException):
                 return
 
 if __name__ == "__main__":

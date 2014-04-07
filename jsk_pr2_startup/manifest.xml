@@ -44,6 +44,8 @@
   <depend package="rqt_gui" />
   <depend package="rqt_gui_py" />
   <depend package="rqt_py_common" />
+  <depend package="tf2" />
+  <depend package="tf2_ros" />
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>
