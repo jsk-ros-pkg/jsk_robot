@@ -122,7 +122,7 @@ class MoveBaseDB:
                 self.initialpose_pub.publish (ps);
                 self.latest_pose = None
             except (tf2.LookupException, tf2.ConnectivityException, \
-                    tf2.ExtrapolationException, , tf2.TimeoutException):
+                    tf2.ExtrapolationException, tf2.TimeoutException):
                 return
 
 if __name__ == "__main__":
