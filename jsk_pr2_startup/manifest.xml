@@ -47,4 +47,10 @@
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>
+
+  <!--
+      jsk_pr2_moveit should be updated after merged pull requests listed below
+      https://github.com/ros-planning/moveit_pr2/pull/46
+      https://github.com/ros-planning/moveit_pr2/pull/47
+  -->
 </package>
