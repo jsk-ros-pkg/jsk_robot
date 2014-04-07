@@ -48,8 +48,8 @@ class MoveBaseDB:
         self.update_cycle = rospy.get_param('update_cycle', 1)
         # args dbname, host, port, opt, tty, user, passwd
         self.con = pgdb.connect(database=db_name, host=host, user=username, password=passwd)
-        self.map_frame = rospy.get_param('~map_frame','/map')
-        self.robot_frame = rospy.get_param('~robot_frame','/base_link')
+        self.map_frame = rospy.get_param('~map_frame','map')
+        self.robot_frame = rospy.get_param('~robot_frame','base_link')
         self.tf_listener = tf2_ros.BufferClient("tf2_buffer_server")
         self.initialpose_pub = rospy.Publisher('/initialpose', geometry_msgs.msg.PoseWithCovarianceStamped)
         self.current_pose = None
@@ -102,7 +102,7 @@ class MoveBaseDB:
         if (self.latest_pose != None \
             and self.initialpose_pub.get_num_connections() > 0):
             try:
-                (trans, rot) = self.tf_listener.lookup_transform(self.map_frame, '/map', rospy.Time(0))
+                (trans, rot) = self.tf_listener.lookup_transform(self.map_frame, 'map', rospy.Time(0))
                 (ctrans, crot) = self.latest_pose
 
                 rospy.loginfo("set pos: %f %f %f, rot: %f %f %f %f" % (trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3]))
