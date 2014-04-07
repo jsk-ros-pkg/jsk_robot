@@ -80,7 +80,9 @@ class MoveBaseDB:
 
     def insert_current_pose(self):
         try:
-            (trans,rot) = self.tf_listener.lookup_transform(self.map_frame,self.robot_frame,rospy.Time(0))
+            transform = self.tf_listener.lookup_transform(self.map_frame,self.robot_frame,rospy.Time(0))
+            trans = [transform.transform.translation.x, transform.transform.translation.y, transform.transform.translation.z]
+            rot = [transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w]
             stamp = rospy.Time.now()
             pose = (list(trans),list(rot))
 
@@ -102,7 +104,9 @@ class MoveBaseDB:
         if (self.latest_pose != None \
             and self.initialpose_pub.get_num_connections() > 0):
             try:
-                (trans, rot) = self.tf_listener.lookup_transform(self.map_frame, 'map', rospy.Time(0))
+                transform = self.tf_listener.lookup_transform(self.map_frame, 'map', rospy.Time(0))
+                trans = [transform.transform.translation.x, transform.transform.translation.y, transform.transform.translation.z]
+                rot = [transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w]
                 (ctrans, crot) = self.latest_pose
 
                 rospy.loginfo("set pos: %f %f %f, rot: %f %f %f %f" % (trans[0], trans[1], trans[2], rot[0], rot[1], rot[2], rot[3]))
