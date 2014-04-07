@@ -91,7 +91,7 @@ class MoveBaseDB:
                 self.insert_pose_to_db("tf",stamp,self.map_frame,self.robot_frame,pose)
                 self.current_pose = (trans,rot)
         except (tf2.LookupException, tf2.ConnectivityException, \
-                tf2.ExtrapolationException):
+                tf2.ExtrapolationException, tf2.TimeoutException):
             return
 
     def sleep_one_cycle(self):
@@ -122,7 +122,7 @@ class MoveBaseDB:
                 self.initialpose_pub.publish (ps);
                 self.latest_pose = None
             except (tf2.LookupException, tf2.ConnectivityException, \
-                        tf2.ExtrapolationException):
+                    tf2.ExtrapolationException, , tf2.TimeoutException):
                 return
 
 if __name__ == "__main__":
