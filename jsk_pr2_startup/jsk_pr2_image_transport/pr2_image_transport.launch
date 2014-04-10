@@ -14,14 +14,28 @@
   <arg name="MJPEGSERVER_PORT" default="8181"/>
   <arg name="GAZEBO_MODE" default="false" />
 
+  <arg name="IMAGE_NODELET_MANAGER" default="/openni_nodelet_manager"/>
+
   <!-- rotate hand image -->
   <group if="$(arg USE_ROTATED)" >
+    <node if="$(arg USE_HEAD_POINTCLOUD)"
+	  ns="l_forearm_cam"
+	  pkg="nodelet" type="nodelet"
+          name="lhand_resized_rotated"
+          args="load jsk_pcl/image_rotate $(arg HEAD_NODELET_MANAGER)"
+          output="screen" clear_params="true">
+      <remap from="image" to="image_rect"/>
+      <param name="target_frame_id" value="/base_footprint"/>
+      <param name="use_tf2" value="true"/>
+    </node>
+<!--
     <node ns="l_forearm_cam"
           pkg="image_rotate" type="image_rotate" name="lhand_resized_rotated"
           respawn="true" output="screen">
-      <remap from="image" to="image_rect"/>
+
       <param name="target_frame_id" value="/base_footprint"/>
     </node>
+-->
     <node ns="r_forearm_cam"
           pkg="image_rotate" type="image_rotate" name="rhand_resized_rotated"
           respawn="true" output="screen">
