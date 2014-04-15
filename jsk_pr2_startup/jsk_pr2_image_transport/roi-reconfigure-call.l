@@ -48,7 +48,7 @@
 
 (setq *default-roi-width* 320)
 (setq *default-roi-height* 240)
-(defun callback-point (srvname bufsrv buftopic msg image-width image-height)
+(defun callback-point (image-width image-height srvname bufsrv buftopic msg)
   (format *error-output* "callback~%")
   (let* ((pt (send msg :point))
          (x (round (send pt :x)))
@@ -73,10 +73,11 @@
                 "/roi_camera_output/image_raw")    ;; buffer-topic
 (ros::subscribe "head_snap/image_rect_color/screenpoint" geometry_msgs::PointStamped
                 #'callback-point
+		640 480
                 "roi_crop_decimate/set_parameters"
                 "/roi_topic_buffer_server/update"
-                "/roi_camera_output/image_raw"
-		640 480)
+                "/roi_camera_output/image_raw")
+
 (ros::subscribe "lhand_snap/image_rect/screenrectangle" geometry_msgs::PolygonStamped
                 #'callback-angle
                 "roi_crop_lh_decimate/set_parameters" ;; decimate
@@ -84,10 +85,10 @@
                 "/roi_camera_output_lh/image_raw")    ;; buffer-topic
 (ros::subscribe "lhand_snap/image_rect/screenpoint" geometry_msgs::PointStamped
                 #'callback-point
+		640 480
                 "roi_crop_lh_decimate/set_parameters"
                 "/roi_lh_topic_buffer_server/update"
-                "/roi_camera_output_lh/image_raw"
-		640 480)
+                "/roi_camera_output_lh/image_raw")
 (ros::subscribe "rhand_snap/image_rect/screenrectangle" geometry_msgs::PolygonStamped
                 #'callback-angle
                 "roi_crop_rh_decimate/set_parameters" ;; decimate
@@ -95,10 +96,10 @@
                 "/roi_camera_output_rh/image_raw")    ;; buffer-topic
 (ros::subscribe "rhand_snap/image_rect/screenpoint" geometry_msgs::PointStamped
                 #'callback-point
+		640 480
                 "roi_crop_rh_decimate/set_parameters"
                 "/roi_rh_topic_buffer_server/update"
-                "/roi_camera_output_rh/image_raw"
-		640 480)
+                "/roi_camera_output_rh/image_raw")
 
 (setq *update* nil)
 (ros::rate 20)
