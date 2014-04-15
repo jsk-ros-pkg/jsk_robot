@@ -25,8 +25,8 @@
 - svn:
     uri: https://svn.code.sf.net/p/tum-ros-pkg/code/perception/
     local-name: tum-ros-pkg/perception
-- svn:
-    uri: https://svn.code.sf.net/p/tum-ros-pkg/code/highlevel/SnapMapICP
+- git:
+    uri: https://github.com/code-iai/SnapMapICP.git
     local-name: tum-ros-pkg/highlevel/SnapMapICP
 - svn:
     uri: http://svn.code.sf.net/p/bosch-ros-pkg/code/trunk/stacks/bosch_shared_autonomy
