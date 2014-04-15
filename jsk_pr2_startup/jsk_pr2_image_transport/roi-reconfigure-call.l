@@ -48,7 +48,7 @@
 
 (setq *default-roi-width* 320)
 (setq *default-roi-height* 240)
-(defun callback-point (srvname bufsrv buftopic msg)
+(defun callback-point (srvname bufsrv buftopic msg image-width image-height)
   (format *error-output* "callback~%")
   (let* ((pt (send msg :point))
          (x (round (send pt :x)))
@@ -58,6 +58,8 @@
          )
     (if (< st_x 0) (setq st_x 0))
     (if (< st_y 0) (setq st_y 0))
+    (if (> (+ st_x *default-roi-width*) image-width) (setq st_x (- image-width *default-roi-width*)))
+    (if (> (+ st_y *default-roi-height*) image-height) (setq st_y (- image-height *default-roi-height*)))
     (call-roi *default-roi-width* *default-roi-height* st_x st_y
               :service-name srvname
               :buffer-service bufsrv
@@ -73,8 +75,8 @@
                 #'callback-point
                 "roi_crop_decimate/set_parameters"
                 "/roi_topic_buffer_server/update"
-                "/roi_camera_output/image_raw")
-
+                "/roi_camera_output/image_raw"
+		640 480)
 (ros::subscribe "lhand_snap/image_rect/screenrectangle" geometry_msgs::PolygonStamped
                 #'callback-angle
                 "roi_crop_lh_decimate/set_parameters" ;; decimate
@@ -84,8 +86,8 @@
                 #'callback-point
                 "roi_crop_lh_decimate/set_parameters"
                 "/roi_lh_topic_buffer_server/update"
-                "/roi_camera_output_lh/image_raw")
-
+                "/roi_camera_output_lh/image_raw"
+		640 480)
 (ros::subscribe "rhand_snap/image_rect/screenrectangle" geometry_msgs::PolygonStamped
                 #'callback-angle
                 "roi_crop_rh_decimate/set_parameters" ;; decimate
@@ -95,7 +97,8 @@
                 #'callback-point
                 "roi_crop_rh_decimate/set_parameters"
                 "/roi_rh_topic_buffer_server/update"
-                "/roi_camera_output_rh/image_raw")
+                "/roi_camera_output_rh/image_raw"
+		640 480)
 
 (setq *update* nil)
 (ros::rate 20)
