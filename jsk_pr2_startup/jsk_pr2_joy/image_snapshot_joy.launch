@@ -1,0 +1,13 @@
+<launch>
+  <arg name="JOY_CONFIG" default="$(find jsk_teleop_joy)/configs/padkontrol.yaml"/>
+
+  <group ns="jsk_image_joy">
+    <remap from="/joy" to="/interactive_control_joy"/>
+    <node pkg="jsk_teleop_joy" type="midi_config_player.py"
+	  name="interactive_control_joy" output="screen"
+	  args="$(arg JOY_CONFIG)">
+    </node>
+    <node pkg="jsk_pr2_startup" type="image_snapshot_joy.py"
+	  name="image_snapshot_joy" output="screen"/>
+  </group>
+</launch>
