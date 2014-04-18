@@ -10,11 +10,13 @@
   <arg name="tf_update_rate" default="1.0" />
 
   <!-- for tf topic buffer server -->
-  <include if="$(arg launch_tf_buffer)"
-	   file="$(find jsk_topic_tools)/launch/tf_buffer_server.launch">
-    <arg name="UPDATE_RATE" value="$(arg tf_update_rate)"/>
-  </include>
-
+  <group if="$(arg launch_tf_buffer)">
+    <include file="$(find jsk_topic_tools)/launch/robot_tf_buffer_server.launch">
+      <arg name="TF_UPDATE_RATE" value="$(arg tf_update_rate)"/>
+      <arg name="TF_CONFIG" value="$(find jsk_topic_tools)/config/pr2_tf_buffer.yaml"/>
+    </include>
+  </group>
+  
   <!-- for pcl roi -->
   <include if="$(arg launch_pcl_roi)"
       file="$(find jsk_pcl_ros)/launch/pcl_roi_robot.launch">
