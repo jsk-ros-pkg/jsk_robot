@@ -37,6 +37,7 @@
 
   <depend package="jsk_maps"/>
   <depend package="jsk_pcl_ros"/>
+  <depend package="jsk_topic_tools"/>
   <depend package="jsk_smart_gui"/>
   <depend package="python_twoauth"/>
 
