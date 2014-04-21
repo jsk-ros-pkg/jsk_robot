@@ -1,0 +1,8 @@
+sensors:
+  - sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+    point_cloud_topic: /openni/depth_registered/points_throttle
+    max_range: 5.0
+    point_subsample: 2
+    shape_padding: 0.08
+    shape_scale: 1.0
+    filtered_cloud_topic: filtered_cloud
