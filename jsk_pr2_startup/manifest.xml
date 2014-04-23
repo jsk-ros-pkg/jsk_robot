@@ -37,6 +37,7 @@
 
   <depend package="jsk_maps"/>
   <depend package="jsk_pcl_ros"/>
+  <depend package="jsk_topic_tools"/>
   <depend package="jsk_smart_gui"/>
   <depend package="python_twoauth"/>
 
@@ -44,7 +45,15 @@
   <depend package="rqt_gui" />
   <depend package="rqt_gui_py" />
   <depend package="rqt_py_common" />
+  <depend package="tf2" />
+  <depend package="tf2_ros" />
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>
+
+  <!--
+      jsk_pr2_moveit should be updated after merged pull requests listed below
+      https://github.com/ros-planning/moveit_pr2/pull/46
+      https://github.com/ros-planning/moveit_pr2/pull/47
+  -->
 </package>

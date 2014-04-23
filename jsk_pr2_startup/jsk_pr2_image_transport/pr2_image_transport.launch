@@ -14,19 +14,30 @@
   <arg name="MJPEGSERVER_PORT" default="8181"/>
   <arg name="GAZEBO_MODE" default="false" />
 
+  <arg name="IMAGE_NODELET_MANAGER" default="/openni_nodelet_manager"/>
+
   <!-- rotate hand image -->
   <group if="$(arg USE_ROTATED)" >
     <node ns="l_forearm_cam"
-          pkg="image_rotate" type="image_rotate" name="lhand_resized_rotated"
-          respawn="true" output="screen">
+          pkg="nodelet" type="nodelet"
+          name="lhand_resized_rotated"
+          args="load jsk_pcl/ImageRotateNodelet $(arg IMAGE_NODELET_MANAGER)"
+          output="screen" clear_params="true">
       <remap from="image" to="image_rect"/>
       <param name="target_frame_id" value="/base_footprint"/>
+      <param name="use_tf2" value="true"/>
+      <param name="use_camera_info" value="true"/>
     </node>
+
     <node ns="r_forearm_cam"
-          pkg="image_rotate" type="image_rotate" name="rhand_resized_rotated"
-          respawn="true" output="screen">
+          pkg="nodelet" type="nodelet"
+          name="rhand_resized_rotated"
+          args="load jsk_pcl/ImageRotateNodelet $(arg IMAGE_NODELET_MANAGER)"
+          output="screen" clear_params="true">
       <remap from="image" to="image_rect"/>
       <param name="target_frame_id" value="/base_footprint"/>
+      <param name="use_tf2" value="true"/>
+      <param name="use_camera_info" value="true"/>
     </node>
   </group>
 
@@ -79,6 +90,7 @@
   </group>
 
   <group if="$(arg USE_SNAPSHOT)" >
+
     <node pkg="resized_image_transport" type="image_resizer" name="head_snap"
           output="screen" >
       <remap from="camera" to="/openni/rgb" />
@@ -95,6 +107,7 @@
       <param name="resize_scale_y" value="0.16" />
       <param name="use_snapshot" value="true" />
     </node>
+
     <node pkg="resized_image_transport" type="image_resizer" name="lhand_snap"
           output="screen" >
       <remap from="camera" to="l_forearm_cam/rotated" />
@@ -105,6 +118,7 @@
       <param name="resize_scale_y" value="$(arg SNAPSHOT_RESIZE_RATE)" />
       <param name="use_snapshot" value="true" />
     </node>
+
     <node pkg="resized_image_transport" type="image_resizer" name="rhand_snap"
           output="screen" >
       <remap from="camera" to="r_forearm_cam/rotated" />
@@ -115,5 +129,6 @@
       <param name="resize_scale_y" value="$(arg SNAPSHOT_RESIZE_RATE)" />
       <param name="use_snapshot" value="true" />
     </node>
+
   </group>
 </launch>
