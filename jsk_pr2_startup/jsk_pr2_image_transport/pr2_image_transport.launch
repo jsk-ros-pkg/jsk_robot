@@ -3,6 +3,7 @@
   <arg name="USE_THROTTLE" default="true" />
   <arg name="USE_MJPEGSERVER" default="false" />
   <arg name="USE_ROTATED" default="true" />
+  <arg name="USE_EDGE" default="false" />
 
   <arg name="THROTTLE_RATE" default="1.4" />
   <arg name="THROTTLE_RESIZE_RATE" default="0.1" />
@@ -131,4 +132,19 @@
     </node>
 
   </group>
+
+  <!-- edge image -->
+  <group if="$(arg USE_EDGE)" >
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector">
+      <remap from="image" to="openni/rgb/image_rect_color" />
+      <remap from="edge/image" to="openni/edge/image"/>
+    </node>
+    <node pkg="jsk_perception" type="sparse_image_encoder"
+            name="sparse_image_encoder">
+      <remap from="image" to="openni/edge/image" />
+      <remap from="sparse_image" to="openni/sparse/image" />
+      <param name="rate" value="1.0" />
+    </node>
+  </group>
+
 </launch>
