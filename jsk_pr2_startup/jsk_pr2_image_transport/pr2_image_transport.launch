@@ -135,14 +135,39 @@
 
   <!-- edge image -->
   <group if="$(arg USE_EDGE)" >
-    <node pkg="jsk_perception" type="edge_detector" name="edge_detector">
+    <!-- head -->
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_openni">
       <remap from="image" to="openni/rgb/image_rect_color" />
       <remap from="edge/image" to="openni/edge/image"/>
     </node>
     <node pkg="jsk_perception" type="sparse_image_encoder"
-            name="sparse_image_encoder">
+            name="sparse_image_encoder_openni">
       <remap from="image" to="openni/edge/image" />
       <remap from="sparse_image" to="openni/sparse/image" />
+      <param name="rate" value="1.0" />
+    </node>
+
+    <!-- larm -->
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_larm">
+      <remap from="image" to="l_forearm_cam/rotated/image" />
+      <remap from="edge/image" to="l_forearm_cam/rotated/edge/image" />
+    </node>
+    <node pkg="jsk_perception" type="sparse_image_encoder"
+            name="sparse_image_encoder_larm">
+      <remap from="image" to="l_forearm_cam/rotated/edge/image" />
+      <remap from="sparse_image" to="l_forearm_cam/rotated/sparse/image" />
+      <param name="rate" value="1.0" />
+    </node>
+
+    <!-- rarm -->
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_rarm">
+      <remap from="image" to="r_forearm_cam/rotated/image" />
+      <remap from="edge/image" to="r_forearm_cam/rotated/edge/image" />
+    </node>
+    <node pkg="jsk_perception" type="sparse_image_encoder"
+            name="sparse_image_encoder_rarm">
+      <remap from="image" to="r_forearm_cam/rotated/edge/image" />
+      <remap from="sparse_image" to="r_forearm_cam/rotated/sparse/image" />
       <param name="rate" value="1.0" />
     </node>
   </group>
