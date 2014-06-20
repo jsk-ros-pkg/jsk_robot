@@ -3,7 +3,7 @@
   <arg name="USE_THROTTLE" default="true" />
   <arg name="USE_MJPEGSERVER" default="false" />
   <arg name="USE_ROTATED" default="true" />
-  <arg name="USE_EDGE" default="false" />
+  <arg name="USE_EDGE" default="true" />
 
   <arg name="THROTTLE_RATE" default="1.4" />
   <arg name="THROTTLE_RESIZE_RATE" default="0.1" />
