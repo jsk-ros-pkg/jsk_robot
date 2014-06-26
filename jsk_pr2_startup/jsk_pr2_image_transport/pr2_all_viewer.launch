@@ -79,6 +79,7 @@
 
     <node pkg="image_view2" type="image_view2" name="sparse_edge_image_view_oepnni">
       <remap from="image" to="openni/edge/image_decoded" />
+      <remap from="/tf" to="/tf_dummy" />
     </node>
     <!-- larm -->
     <node pkg="jsk_perception" type="sparse_image_decoder" name="sparse_image_decoder_larm"
@@ -89,16 +90,18 @@
 
     <node pkg="image_view2" type="image_view2" name="sparse_edge_image_view_larm">
       <remap from="image" to="l_forearm_cam/rotated/edge/image_decoded" />
+      <remap from="/tf" to="/tf_dummy" />
     </node>
     <!-- rarm -->
     <node pkg="jsk_perception" type="sparse_image_decoder" name="sparse_image_decoder_rarm"
 	  output="screen">
       <remap from="sparse_image" to="r_forearm_cam/rotated/sparse/image" />
       <remap from="sparse/image_decoded" to="r_forearm_cam/rotated/edge/image_decoded" />
-      </node>
+    </node>
 
-      <node pkg="image_view2" type="image_view2" name="sparse_edge_image_view_rarm">
+    <node pkg="image_view2" type="image_view2" name="sparse_edge_image_view_rarm">
       <remap from="image" to="r_forearm_cam/rotated/edge/image_decoded" />
+      <remap from="/tf" to="/tf_dummy" />
     </node>
 
   </group>
