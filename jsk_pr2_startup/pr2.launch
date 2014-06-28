@@ -15,7 +15,7 @@
   <arg name="slow_camera_framerate" default="true" />
   <arg name="move_tilt_scan" default="true" />
   <arg name="USER_NAME" default="false" />
-
+  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
