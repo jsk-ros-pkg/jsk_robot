@@ -12,10 +12,10 @@
   <arg name="launch_db" default="true" />
   <arg name="launch_hark" default="true" />
   <arg name="launch_teleoperation" default="true" />
-
+  <arg name="slow_camera_framerate" default="true" />
   <arg name="move_tilt_scan" default="true" />
   <arg name="USER_NAME" default="false" />
-
+  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
@@ -127,5 +127,6 @@
 
   <include if="$(arg launch_teleoperation)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_robot.launch" />
-
+  <include if="$(arg slow_camera_framerate)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/camera_framerate.launch" />
 </launch>
