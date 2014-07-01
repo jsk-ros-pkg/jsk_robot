@@ -134,11 +134,11 @@
 
   <include if="$(arg launch_c2_startup)"
 	   file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
-    <arg name="MACHINE_NAME" value="c2"/>
+    <arg name="MACHINE" value="c2"/>
   </include>
   <include if="$(arg launch_c3_startup)"
 	   file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
-    <arg name="MACHINE_NAME" value="c3"/>
+    <arg name="MACHINE" value="c3"/>
     <arg name="launch_battery" value="true"/>
   </include>
 </launch>
