@@ -129,4 +129,11 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_robot.launch" />
   <include if="$(arg slow_camera_framerate)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/camera_framerate.launch" />
+
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+    <arg name="MACHINE" value="c2"/>
+  </include>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+    <arg name="MACHINE" value="c3"/>
+  </include>
 </launch>
