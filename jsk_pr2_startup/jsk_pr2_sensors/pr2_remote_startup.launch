@@ -1,0 +1,13 @@
+<launch>
+  <arg name="MACHINE" default="remote"/>
+  <node pkg="topic_tools" type="relay" name="tf_relay_$(arg MACHINE)"
+	args="/tf /tf_$(arg MACHINE)"/>
+  <group>
+    <remap from="/tf" to="/tf_$(arg MACHINE)"/>
+    <remap from="/rosout" to="/rosout_$(arg MACHINE)"/>
+    <include file="$(find jsk_pcl_ros)/launch/openni_remote.launch">
+      <arg name="camera" value="openni"/>
+      <arg name="camera_remote" value="openni_$(arg MACHINE)"/>
+    </include>
+  </group>
+</launch>
