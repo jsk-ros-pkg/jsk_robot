@@ -1,13 +1,13 @@
 <launch>
-  <arg name="MACHINE" default="remote"/>
-  <node pkg="topic_tools" type="relay" name="tf_relay_$(arg MACHINE)"
-	args="/tf /tf_$(arg MACHINE)"/>
-  <group>
-    <remap from="/tf" to="/tf_$(arg MACHINE)"/>
-    <remap from="/rosout" to="/rosout_$(arg MACHINE)"/>
-    <include file="$(find jsk_pcl_ros)/launch/openni_remote.launch">
-      <arg name="camera" value="openni"/>
-      <arg name="camera_remote" value="openni_$(arg MACHINE)"/>
-    </include>
-  </group>
+  <arg name="MACHINE" default="localhost"/>
+  <arg name="launch_openni" default="true" />
+  <arg name="launch_battery" default="false" />
+
+  <!-- openni -->
+  <node if="$(arg launch_openni)"
+	pkg="jsk_pr2_startup" type="openni_remote_launch.sh" name="openni_remote_launch_$(arg MACHINE)"
+	args="$(arg MACHINE)" output="screen"/>
+  <!-- laptop battery -->
+  <node if="$(arg launch_battery)"
+	pkg="linux_hardware" type="laptop_battery.py" name="laptop_battery_$(arg MACHINE)" machine="$(arg MACHINE)" output="screen"/>
 </launch>
