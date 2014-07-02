@@ -12,4 +12,4 @@ export ROS_IP=`LANGUAGE=en LANG=C LC_ALL=C ifconfig  | grep 'inet addr:'| grep -
 export ROS_MASTER_URI=http://$@BLANK@{PR2_NAME}:11311
 ## for desktop
 sleep 1
-roslaunch jsk_pr2_startup pr2_remote.launch
+roslaunch jsk_pr2_startup pr2_teleop_remote.launch
