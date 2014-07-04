@@ -6,11 +6,13 @@
   <arg name="launch_image_roi" default="true" />
   <arg name="launch_interactive_controller" default="true" />
 
+  <remap from="/output" to="/output_remote"/>
   <!-- for tf topic buffer server -->
-  <include if="$(arg launch_tf_buffer)"
-	   file="$(find jsk_topic_tools)/launch/tf_buffer_client.launch">
-    <arg name="REMOTE_TF" value="$(arg REMOTE_TF)"/>
-  </include>
+  <group if="$(arg launch_tf_buffer)">
+    <include file="$(find jsk_topic_tools)/launch/robot_tf_buffer_client.launch">
+      <arg name="REMOTE_TF" value="$(arg REMOTE_TF)"/>
+    </include>
+  </group>
 
   <!-- for pcl roi -->
   <include if="$(arg launch_pcl_roi)"

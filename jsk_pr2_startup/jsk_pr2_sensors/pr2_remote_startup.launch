@@ -1,0 +1,13 @@
+<launch>
+  <arg name="MACHINE" default="localhost"/>
+  <arg name="launch_openni" default="true" />
+  <arg name="launch_battery" default="false" />
+
+  <!-- openni -->
+  <node if="$(arg launch_openni)"
+	pkg="jsk_pr2_startup" type="openni_remote_launch.sh" name="openni_remote_launch_$(arg MACHINE)"
+	args="$(arg MACHINE)" output="screen"/>
+  <!-- laptop battery -->
+  <node if="$(arg launch_battery)"
+	pkg="linux_hardware" type="laptop_battery.py" name="laptop_battery_$(arg MACHINE)" machine="$(arg MACHINE)" output="screen"/>
+</launch>
