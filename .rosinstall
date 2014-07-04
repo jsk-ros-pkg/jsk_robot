@@ -20,6 +20,9 @@
     uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
     local-name: jsk-ros-pkg/jsk_smart_apps
 - git:
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    local-name: jsk-ros-pkg/jsk_pr2eus
+- git:
     uri: https://github.com/jsk-ros-pkg/openrave_planning.git
     local-name: jsk-ros-pkg/openrave_planning
 - svn:
