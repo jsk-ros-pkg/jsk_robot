@@ -1,5 +1,5 @@
 <launch>
-  <arg name="launch_openni" default="true" />
+  <arg name="launch_openni" default="false" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_imagesift" default="false" />
   <arg name="launch_facedetection" default="false" />
