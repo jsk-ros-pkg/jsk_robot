@@ -33,7 +33,4 @@
 
 (ros::roseus "reset_motor")
 (ros::subscribe "/diagnostics_agg" diagnostic_msgs::DiagnosticArray #'diagnostics-cb)
-(ros::rate 100)
-(do-until-key
- (ros::spin-once)
- (ros::sleep))
+(ros::spin)
