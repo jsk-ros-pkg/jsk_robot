@@ -1,0 +1,11 @@
+<package>
+ <description brief="jsk_baxter_startup">The jsk_baxter_startup package</description>
+
+  <author>inagaki</author>
+  <license>TODO</license>
+  <review status="unreviewed" notes=""/>
+
+  <depend>baxter_interface</depend>
+  <depend>baxter_tools</depend>
+  <depend>openni_launch</depend>
+</package>
