@@ -1,0 +1,3 @@
+<launch>
+  <machine name="c3" address="10.68.0.3" env-loader="/home/applications/env-hydro.sh"/>
+</launch>
