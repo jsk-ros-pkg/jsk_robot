@@ -42,10 +42,10 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>baxter_interface</build_depend>
   <build_depend>baxter_tools</build_depend>
-  <build_depend>openni</build_depend>
+  <build_depend>openni_launch</build_depend>
   <run_depend>baxter_interface</run_depend>
   <run_depend>baxter_tools</run_depend>
-  <run_depend>openni</run_depend>
+  <run_depend>openni_launch</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
