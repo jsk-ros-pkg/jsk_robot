@@ -7,7 +7,7 @@ project(jsk_baxter_startup)
 find_package(catkin REQUIRED COMPONENTS
   baxter_interface
   baxter_tools
-  openni
+  openni_launch
 )
 
 ## System dependencies are found with CMake's conventions
@@ -82,7 +82,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES jsk_baxter_startup
-#  CATKIN_DEPENDS baxter_interface baxter_tools openni
+#  CATKIN_DEPENDS baxter_interface baxter_tools openni_launch
 #  DEPENDS system_lib
 )
 
