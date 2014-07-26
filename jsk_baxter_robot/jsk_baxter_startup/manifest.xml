@@ -5,7 +5,7 @@
   <license>TODO</license>
   <review status="unreviewed" notes=""/>
 
-  <depend>baxter_interface</depend>
-  <depend>baxter_tools</depend>
-  <depend>openni_launch</depend>
+  <depend package="baxter_interface"/>
+  <depend package="baxter_tools"/>
+  <depend package="openni_launch"/>
 </package>
