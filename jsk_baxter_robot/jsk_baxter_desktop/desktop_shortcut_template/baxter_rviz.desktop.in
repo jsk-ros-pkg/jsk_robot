@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon[ja_JP]=ICON_BASE_DIRECTORY/baxter_rviz.png
+Name[ja_JP]=JSK RViz baxter
+Exec=/bin/bash -i -c "DISPLAY=:0.0 ROS_MASTER_URI=http://BAXTER_ROBOT_NAME:11311 rosrun rviz rviz -d `rospack find jsk_baxter_startup`/config/baxter_default.rviz"
+Name=JSK RViz baxter
+Icon=ICON_BASE_DIRECTORY/baxter_rviz.png
