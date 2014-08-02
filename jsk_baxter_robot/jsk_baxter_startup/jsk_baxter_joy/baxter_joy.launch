@@ -2,7 +2,7 @@
   <!-- choose from {ps3 xbox logitech} -->
   <!-- DON'T insert space in value!!!!!-->
   <arg name="device_type" default="ps3"/>
-  <arg name="device_name" default="/dev/input/js1" />
+  <arg name="device_name" default="/dev/input/ps3joy" />
   <arg name="joy_topic"   default="joy"/>
   <arg name="enable_joint_position_joystick" default="true"/>
 
