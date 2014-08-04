@@ -6,10 +6,9 @@ project(jsk_baxter_web)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   rosbridge_server
-  roswww
+  rwt_ros
   baxter_description
   robot_state_publisher
-  joint_state_publisher
   tf2_web_republisher
 )
 
