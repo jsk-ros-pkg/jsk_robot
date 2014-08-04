@@ -7,7 +7,6 @@
 (defvar *text2wave-path*
   (format nil "~A/text2wave-jp.sh" (read-line (piped-fork "rospack find jtalk"))))
 
-
 (defun mei-voice-message-callback
   (msg)
   (print "aaa")
@@ -19,7 +18,7 @@
    ))
 
 (ros::subscribe
- "/voice_echo/mei"
+ "/voice_echo"
  std_msgs::string
  #'mei-voice-message-callback 1)
 
