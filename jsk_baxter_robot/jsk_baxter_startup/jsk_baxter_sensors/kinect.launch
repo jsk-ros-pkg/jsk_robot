@@ -26,7 +26,7 @@
     <!--       pkg="checkerboard_detector" -->
     <!--       type="objectdetection_tf_publisher.py" /> -->
     <node name="objectdetection_tf_publisher"
-          pkg="jsk_baxter_startup"
+          pkg="checker_board_detector"
           type="objectdetection_tf_publisher.py" >
       <param name="latest_publish" value="true"/>
     </node>
