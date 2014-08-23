@@ -13,4 +13,4 @@ export ROS_MASTER_URI=http://$@BLANK@{PR2_NAME}:11311
 
 ## for robot
 sleep 1
-ssh -t -l @PR2_USER@ $@BL@{PR2_NAME} "export PS1=@PR2_USER@; source ~/.bashrc; ROS_MASTER_URI=http://$@BLANK@{PR2_NAME}:11311 roslaunch jsk_pr2_startup pr2_robot.launch USER_NAME:='@USER_NAME@ (from $@BLANK@{HOST_NAME})'"
+ssh -t -l @PR2_USER@ $@BL@{PR2_NAME} "export PS1=@PR2_USER@; source ~/.bashrc; ROS_MASTER_URI=http://$@BLANK@{PR2_NAME}:11311 roslaunch jsk_pr2_startup pr2_teleop_robot.launch USER_NAME:='@USER_NAME@ (from $@BLANK@{HOST_NAME})'"
