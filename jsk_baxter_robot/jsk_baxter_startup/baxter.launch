@@ -1,0 +1,37 @@
+<launch>
+  <arg name="launch_servo" value="true"/>
+  <arg name="launch_joint_trajectory" value="true"/>
+  <arg name="launch_openni" value="true"/>
+  <arg name="launch_voice_echo" value="true"/>
+  <arg name="launch_moveit" value="true"/>
+  <arg name="launch_teleop" value="true"/>
+  <arg name="start_openni" value="true"/>
+
+  <!-- Start Servo (Maybe This should not be here)-->
+  <node if="$(arg launch_servo)" pkg="baxter_tools" name="baxter_servo_node" type="enable_robot.py" args="-e" output="screen" clear_params="true"/>
+
+  <!-- Startup joint trajectory will enable send command from eus-->
+  <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="baxter_joint_trajectory" type="joint_trajectory_action_server.py" args="" output="screen" clear_params="true"/>
+
+  <!-- Use Custom OpenNI-->
+  <include if="$(arg launch_openni)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kinect.launch" >
+    <arg name="launch_openni" value="$(arg start_openni)" />
+  </include>
+
+  <!-- Set the Mike to the PC-->
+  <include if="$(arg launch_voice_echo)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/voice.launch" >
+  </include>
+
+  <include if="$(arg launch_moveit)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_moveit/moveit.launch" >
+  </include>
+
+  <!-- Do teleop with baxter_examples' joint_position_joystick.py-->
+  <include if="$(arg launch_teleop)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_joy/baxter_joy.launch" >
+  </include>
+
+
+</launch>
