@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(pr2_base_trajectory_action)
+
+find_package(catkin REQUIRED COMPONENTS roscpp actionlib geometry_msgs nav_msgs trajectory_msgs pr2_controllers_msgs actionlib_msgs pr2_mechanism_model angles)
+find_package(Boost REQUIRED COMPONENTS thread)
+
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+
+catkin_package(
+    DEPENDS roscpp actionlib geometry_msgs nav_msgs trajectory_msgs pr2_controllers_msgs actionlib_msgs pr2_mechanism_model angles
+    CATKIN_DEPENDS # TODO
+    INCLUDE_DIRS # TODO include
+    LIBRARIES # TODO
+)
+
+add_executable(pr2_base_trajectory_action src/pr2_base_trajectory_action.cpp)
+target_link_libraries(pr2_base_trajectory_action ${catkin_LIBRARIES} ${Boost_LIBRARIES})
