@@ -7,8 +7,8 @@ find_package(Boost REQUIRED COMPONENTS thread)
 include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 catkin_package(
-    DEPENDS roscpp actionlib geometry_msgs nav_msgs trajectory_msgs pr2_controllers_msgs actionlib_msgs pr2_mechanism_model angles
-    CATKIN_DEPENDS # TODO
+    DEPENDS
+    CATKIN_DEPENDS  roscpp actionlib geometry_msgs nav_msgs trajectory_msgs pr2_controllers_msgs actionlib_msgs pr2_mechanism_model angles
     INCLUDE_DIRS # TODO include
     LIBRARIES # TODO
 )
