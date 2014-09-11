@@ -1,6 +1,7 @@
 <launch>
   <arg name="launch_openni" default="true" />
   <arg name="debug" default="false" />
+  <arg name="respawn" default="true" />
   <!-- for ROS_DISTRO under electric -->
   <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
 
@@ -9,7 +10,7 @@
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg launch_openni)">
     <arg name="camera" value="openni"/>
-    <arg name="respawn" value="true"/>
+    <arg name="respawn" value="$(arg respawn)"/>
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
     <arg name="debug" value="$(arg debug)"/>
