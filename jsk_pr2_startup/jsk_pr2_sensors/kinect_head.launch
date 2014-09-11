@@ -68,7 +68,6 @@
     <!-- down sample with 2cm voxel -->
     <param name="leaf_size" value="0.02" />
   </node>
-
   <node pkg="nodelet" type="nodelet" name="throttle" output="screen"
         args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
     <remap from="~input" to="/openni/depth_registered/points" />
