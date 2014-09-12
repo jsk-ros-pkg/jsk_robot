@@ -59,6 +59,15 @@
           if="$(arg launch_openni)" />
   </group>
 
+  <node name="kinect_downsample_for_throttle" pkg="nodelet" type="nodelet"
+        args="load pcl/VoxelGrid /openni_nodelet_manager">
+    <remap from="~input" to="/openni/depth_registered/points"/>
+    <!-- for 0m-4m -->
+    <param name="filter_limit_min" value="0" />
+    <param name="filter_limit_max" value="4" />
+    <!-- down sample with 2cm voxel -->
+    <param name="leaf_size" value="0.02" />
+  </node>
   <node pkg="nodelet" type="nodelet" name="throttle" output="screen"
         args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
     <remap from="~input" to="/openni/depth_registered/points" />
