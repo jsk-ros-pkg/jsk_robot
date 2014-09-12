@@ -1,7 +1,3 @@
 <launch>
-  <!-- <arg name="" value=""/> -->
-  <!-- <param name="depth_registered" value="true"/> -->
-  <!-- <node pkg="" name="" type="" args="" output="screen" clear_params="true"/> -->
-
-  <!-- <include file="$(find )/.launch"/> -->
+  <node pkg="jsk_baxter_startup" name="voice_echo" type="voice_echo.l" args="" output="screen" clear_params="true"/>
 </launch>
