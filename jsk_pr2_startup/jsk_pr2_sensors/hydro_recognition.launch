@@ -31,7 +31,7 @@
    <!-- plane detection -->
    <include file="$(find jsk_pcl_ros)/launch/organized_multi_plane_segmentation.launch">
      <arg name="INPUT" value="/openni/depth_registered/half/points" />
-     <arg aname="BASE_FRAME_ID" value="base_link" />
-   </launch>
+     <arg name="BASE_FRAME_ID" value="base_link" />
+   </include>
 
 </launch>
