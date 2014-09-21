@@ -1,6 +1,7 @@
 <launch>
   <arg name="output" default="screen" />
-  <node name="tweet" pkg="jsk_pr2_startup" type="tweet.py"
+  <param name="account_info" value="/var/lib/robot/twitter_account_pr2jsk.yaml" />
+  <node name="tweet" pkg="rostwitter" type="tweet.py"
         machine="c2"
         output="$(arg output)" respawn="true" />
   <node name="active_user" pkg="roseus"
