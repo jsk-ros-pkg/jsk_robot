@@ -7,6 +7,7 @@
 
 (setq *start-distance* 0)
 (setq *start-angle* 0)
+(setq *servo-on* nil)
 
 (defun motor-cb (msg)
   (ros::ros-debug "/pr2_etherCAT/motors_halted -> ~A" (send msg :data))
