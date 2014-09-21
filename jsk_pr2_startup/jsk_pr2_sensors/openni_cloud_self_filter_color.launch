@@ -1,7 +1,7 @@
 <launch>
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
-  <node pkg="robot_self_filter_color"
+  <node pkg="pr2_navigation_self_filter"
 	type="self_filter_color" clear_params="true"
 	name="openni_cloud_self_filter" respawn="true" output="screen">
     <!-- The topic for the input cloud -->
