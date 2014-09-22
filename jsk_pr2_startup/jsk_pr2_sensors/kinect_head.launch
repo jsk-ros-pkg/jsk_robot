@@ -13,7 +13,7 @@
     <arg name="respawn" value="$(arg respawn)"/>
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
-    <arg name="debug" value="$(arg debug)"/>
+    <!-- <arg name="debug" value="$(arg debug)"/> -->
   </include>
   <!-- run resize pointcloud publishers -->
   <group ns="openni">
