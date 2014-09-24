@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import roslib; roslib.load_manifest('jsk_pr2_startup')
+
 import rospy
 import thread
 import sys

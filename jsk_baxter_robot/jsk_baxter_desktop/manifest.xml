@@ -1,0 +1,12 @@
+<package>
+ <description brief="jsk_baxter_startup">The jsk_baxter_startup package</description>
+
+  <author>inagaki</author>
+  <license>TODO</license>
+  <review status="unreviewed" notes=""/>
+
+  <depend package="jsk_baxter_startup"/>
+  <depend package="rviz"/>
+  <depend package="baxter_tools"/>
+  <depend package="rqt_robot_monitor"/>
+</package>

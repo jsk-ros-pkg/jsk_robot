@@ -32,10 +32,13 @@
 # cur.close()
 # con.commit()
 
-import roslib; roslib.load_manifest('jsk_pr2_startup')
 import rospy
 import pgdb
-import tf2_ros, tf2
+import tf2_ros
+try:
+    import tf2                  # groovy
+except:
+    import tf2_py as tf2
 import geometry_msgs
 
 class MoveBaseDB:

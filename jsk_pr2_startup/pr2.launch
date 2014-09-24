@@ -118,14 +118,11 @@
   <include if="$(arg launch_hark)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
 
-  <!-- override joy node -->
-  <node machine="c2" pkg="joy" type="joy_node" name="joy" >
-    <param name="deadzone" value="0.10" />
-    <param name="dev" value="/etc/ros/sensors/ps3joy" />
-    <remap from="/joy" to="/joy_org" />
-  </node>
+  <!-- joy mux -->
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
-        respawn="true" args="/joy /joy_org /joy_other" />
+        respawn="true" args="/joy /joy_org /joy_other" >
+    <remap from="mux" to="multiple_joystick_mux"/>
+  </node>
 
   <include if="$(arg launch_teleoperation)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_teleop_robot.launch" />
