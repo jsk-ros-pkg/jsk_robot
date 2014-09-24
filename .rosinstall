@@ -5,15 +5,6 @@
     uri: https://github.com/jsk-ros-pkg/jsk_model_tools.git
     local-name: jsk-ros-pkg/jsk_model_tools
 - git:
-    uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
-    local-name: jsk-ros-pkg/jsk_roseus
-- git:
-    uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    local-name: jsk-ros-pkg/jsk_common
-- git:
-    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    local-name: jsk-ros-pkg/jsk_recognition
-- git:
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
     local-name: jsk-ros-pkg/jsk_demos
 - git:
@@ -25,9 +16,6 @@
 - git:
     uri: https://github.com/jsk-ros-pkg/openrave_planning.git
     local-name: jsk-ros-pkg/openrave_planning
-- svn:
-    uri: https://svn.code.sf.net/p/tum-ros-pkg/code/perception/
-    local-name: tum-ros-pkg/perception
 - git:
     uri: https://github.com/code-iai/SnapMapICP.git
     local-name: tum-ros-pkg/highlevel/SnapMapICP
