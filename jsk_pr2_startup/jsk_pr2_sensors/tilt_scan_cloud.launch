@@ -26,7 +26,8 @@
   </node>
 
   <node type="laser_scan_assembler" name="tilt_scan_assembler" pkg="laser_assembler"
-        output="screen" clear_params="true" respawn="true">
+        respawn="true"
+        output="screen">
     <remap from="scan" to="tilt_scan"/>
     <param name="max_scans" type="int" value="400" />
     <param name="fixed_frame" type="string" value="base_link" />
@@ -74,4 +75,9 @@
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/collision_map_sources_laser.yaml"/>
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
   </node>
+
+  <include file="$(find jsk_pcl_ros)/launch/laserscan_registration.launch">
+    <arg name="use_laser_pipeline" value="false" />
+  </include>
+
 </launch>

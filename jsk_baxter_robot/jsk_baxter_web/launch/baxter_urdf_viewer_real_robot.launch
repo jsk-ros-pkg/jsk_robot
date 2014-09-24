@@ -1,0 +1,9 @@
+<launch>
+  <param name="robot_description" textfile="$(find baxter_description)/urdf/baxter.urdf"/>
+  <param name="use_gui" value="true"/>
+
+  <node pkg="roswww" name="webserver" type="webserver.py" args="" output="screen" clear_params="true"/>
+  <node pkg="tf2_web_republisher" name="tf2_web_republisher" type="tf2_web_republisher" args="" output="screen" clear_params="true"/>
+
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+</launch>

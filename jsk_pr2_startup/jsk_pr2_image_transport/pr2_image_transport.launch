@@ -84,8 +84,8 @@
     <!-- resized image -->
     <node pkg="resized_image_transport" type="image_resizer" name="head_resized"
           output="screen" >
-      <remap from="camera" to="/openni/rgb" />
-      <remap from="image" to="$(arg THROTTLE_IMAGE_TYPE)"/>
+      <remap from="~input/image" to="/openni/rgb/$(arg THROTTLE_IMAGE_TYPE)_color" />
+      <remap from="~output/image" to="~$(arg THROTTLE_IMAGE_TYPE)" />
       <param name="resize_scale_x" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="use_messages" value="$(arg THROTTLE_USE_MESSAGES)" />
@@ -94,8 +94,8 @@
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="narrow_resized"
           output="screen" >
-      <remap from="camera" to="/narrow_stereo/left" />
-      <remap from="image" to="$(arg THROTTLE_IMAGE_TYPE)"/>
+      <remap from="~input/image" to="/narrow_stereo/left/$(arg THROTTLE_IMAGE_TYPE)" />
+      <remap from="~output/image" to="~$(arg THROTTLE_IMAGE_TYPE)" />
       <param name="resize_scale_x" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="use_messages" value="$(arg THROTTLE_USE_MESSAGES)" />
@@ -104,10 +104,9 @@
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="lhand_resized"
           output="screen" >
-      <remap from="camera" to="l_forearm_cam/rotated" />
-      <remap from="l_forearm_cam/rotated/camera_info"
-             to="l_forearm_cam/camera_info" />
-      <!--remap from="image" to="$(arg THROTTLE_IMAGE_TYPE)"/-->
+      <remap from="~input/image" to="l_forearm_cam/rotated/image" />
+      <remap from="~output/image" to="~image" />
+      <remap from="l_forearm_cam/rotated/camera_info" to="l_forearm_cam/camera_info" />
       <param name="resize_scale_x" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="use_messages" value="$(arg THROTTLE_USE_MESSAGES)" />
@@ -116,10 +115,10 @@
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="rhand_resized"
           output="screen" >
-      <remap from="camera" to="r_forearm_cam/rotated" />
-      <remap from="r_forearm_cam/rotated/camera_info"
-             to="r_forearm_cam/camera_info" />
-      <!--remap from="image" to="$(arg THROTTLE_IMAGE_TYPE)"/-->
+      <remap from="~input/image" to="r_forearm_cam/rotated/image" />
+      <remap from="~output/image" to="~image" />
+      <remap from="r_forearm_cam/rotated/camera_info" to="r_forearm_cam/camera_info" />
+
       <param name="resize_scale_x" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="use_messages" value="$(arg THROTTLE_USE_MESSAGES)" />
@@ -132,16 +131,16 @@
 
     <node pkg="resized_image_transport" type="image_resizer" name="head_snap"
           output="screen" >
-      <remap from="camera" to="/openni/rgb" />
-      <remap from="image" to="image_rect_color" />
+      <remap from="~input/image" to="/openni/rgb/image_rect_color" />
+      <remap from="~output/image" to="~image_rect_color" />
       <param name="resize_scale_x" value="0.16" />
       <param name="resize_scale_y" value="0.16" />
       <param name="use_snapshot" value="true" />
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="narrow_snap"
           output="screen" >
-      <remap from="camera" to="/narrow_stereo/left" />
-      <remap from="image" to="image_rect_color" />
+      <remap from="~input/image" to="/narrow_stereo/left/image_rect_color" />
+      <remap from="~output/image" to="~image_rect_color" />
       <param name="resize_scale_x" value="0.16" />
       <param name="resize_scale_y" value="0.16" />
       <param name="use_snapshot" value="true" />
@@ -149,7 +148,8 @@
 
     <node pkg="resized_image_transport" type="image_resizer" name="lhand_snap"
           output="screen" >
-      <remap from="camera" to="l_forearm_cam/rotated" />
+      <remap from="~input/image" to="l_forearm_cam/rotated/image" />
+      <remap from="~output/image" to="~image_rect" />
       <remap from="/l_forearm_cam/rotated/camera_info"
              to="/l_forearm_cam/camera_info" />
       <remap from="lhand_snap/image" to="lhand_snap/image_rect" />
@@ -160,6 +160,8 @@
 
     <node pkg="resized_image_transport" type="image_resizer" name="rhand_snap"
           output="screen" >
+      <remap from="~input/image" to="r_forearm_cam/rotated/image" />
+      <remap from="~output/image" to="~image_rect" />
       <remap from="camera" to="r_forearm_cam/rotated" />
       <remap from="/r_forearm_cam/rotated/camera_info"
              to="/r_forearm_cam/camera_info" />
