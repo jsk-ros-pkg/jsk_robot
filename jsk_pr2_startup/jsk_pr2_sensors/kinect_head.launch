@@ -13,7 +13,7 @@
     <arg name="respawn" value="$(arg respawn)"/>
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
-    <arg name="debug" value="$(arg debug)"/>
+    <!-- <arg name="debug" value="$(arg debug)"/> -->
   </include>
   <!-- run resize pointcloud publishers -->
   <group ns="openni">
@@ -68,12 +68,15 @@
     <!-- down sample with 2cm voxel -->
     <param name="leaf_size" value="0.02" />
   </node>
-  <node pkg="nodelet" type="nodelet" name="throttle" output="screen"
-        args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
-    <remap from="~input" to="/openni/depth_registered/points" />
-    <remap from="~output" to="/openni/depth_registered/points_throttle" />
-    <param name="update_rate" value="3.0" />
-  </node>
+  <group ns="openni">
+    <group ns="depth_registered">
+      <node pkg="jsk_topic_tools" type="lightweight_throttle" name="throttle">
+        <remap from="~input" to="points" />
+        <remap from="~output" to="points_throttle" />
+        <param name="update_rate" value="3.0" />
+      </node>
+    </group>
+  </group>
   <node pkg="nodelet" type="nodelet" name="throttle_for_vis" output="screen"
         args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
     <remap from="~input" to="kinect_downsample_for_throttle/output" />
