@@ -21,14 +21,14 @@
       <group ns="half">
         <node  name="resize_points_publisher"
                pkg="nodelet" type="nodelet"
-               args="load jsk_pcl/ResizePointsPublisher /openni_nodelet_manager">
+               args="load jsk_pcl/ResizePointsPublisher /openni/openni_nodelet_manager">
           <remap from="~input" to="/openni/depth_registered/points" />
           <remap from="~output" to="points" />
           <param name="step_x" value="2" />
           <param name="step_y" value="2" />
         </node>
         <node pkg="nodelet" type="nodelet" name="throttle"
-              args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
+              args="load jsk_topic_tools/LightweightThrottle /openni/openni_nodelet_manager">
               <remap from="~input" to="points" />
               <remap from="~output" to="throttle_points" />
               <param name="update_rate" value="3.0" />
@@ -37,14 +37,14 @@
       <group ns="quater">
         <node  name="resize_points_publisher"
                pkg="nodelet" type="nodelet"
-               args="load jsk_pcl/ResizePointsPublisher /openni_nodelet_manager">
+               args="load jsk_pcl/ResizePointsPublisher /openni/openni_nodelet_manager">
           <remap from="~input" to="/openni/depth_registered/points" />
           <remap from="~output" to="points" />
           <param name="step_x" value="4" />
           <param name="step_y" value="4" />
         </node>
         <node pkg="nodelet" type="nodelet" name="throttle"
-              args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
+              args="load jsk_topic_tools/LightweightThrottle /openni/openni_nodelet_manager">
               <remap from="~input" to="points" />
               <remap from="~output" to="throttle_points" />
               <param name="update_rate" value="3.0" />
@@ -60,7 +60,7 @@
   </group>
 
   <node name="kinect_downsample_for_throttle" pkg="nodelet" type="nodelet"
-        args="load pcl/VoxelGrid /openni_nodelet_manager">
+        args="load pcl/VoxelGrid /openni/openni_nodelet_manager">
     <remap from="~input" to="/openni/depth_registered/points"/>
     <!-- for 0m-4m -->
     <param name="filter_limit_min" value="0" />
@@ -70,7 +70,10 @@
   </node>
   <group ns="openni">
     <group ns="depth_registered">
-      <node pkg="jsk_topic_tools" type="lightweight_throttle" name="throttle">
+      <!-- <node pkg="jsk_topic_tools" type="lightweight_throttle" name="throttle" -->
+      <!--       output="screen"> -->
+      <node pkg="nodelet" type="nodelet" name="throttle" output="screen"
+            args="load jsk_topic_tools/LightweightThrottle /openni/openni_nodelet_manager">
         <remap from="~input" to="points" />
         <remap from="~output" to="points_throttle" />
         <param name="update_rate" value="3.0" />
@@ -78,11 +81,15 @@
     </group>
   </group>
   <node pkg="nodelet" type="nodelet" name="throttle_for_vis" output="screen"
-        args="load jsk_topic_tools/LightweightThrottle /openni_nodelet_manager">
+        args="load jsk_topic_tools/LightweightThrottle /openni/openni_nodelet_manager">
     <remap from="~input" to="kinect_downsample_for_throttle/output" />
     <remap from="~output" to="/openni/depth_registered/points_throttle_for_vis" />
     <param name="update_rate" value="3.0" />
   </node>
-  <node name="kinect_image_throttle" pkg="topic_tools" type="throttle"
-        args="messages /openni/rgb/image_rect_color/compressed 5.0" />
+  <node pkg="nodelet" type="nodelet" name="kinect_image_throttle" output="screen"
+        args="load jsk_topic_tools/LightweightThrottle /openni/openni_nodelet_manager">
+    <remap from="~input" to="/openni/rgb/image_rect_color/compressed" />
+    <remap from="~output" to="/openni/rgb/image_rect_color/compressed_throttle" />
+    <param name="update_rate" value="5.0" />
+  </node>
 </launch>
