@@ -16,7 +16,6 @@
   <depend package="image_view2"/>
   <depend package="openni_camera"/>
   <depend package="imagesift"/>
-  <depend package="posedetectiondb"/>
   <depend package="move_base"/>
   <depend package="amcl"/>
   <depend package="safe_teleop_pr2"/>
