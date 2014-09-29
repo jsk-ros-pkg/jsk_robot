@@ -102,7 +102,7 @@
       <Parameter name="SAMPLING_RATE" type="subnet_param" value="SAMPLING_RATE" description="Sampling rate (Hz) [default: 16000]."/>
       <Parameter name="DEVICETYPE" type="string" value="ALSA" description="Device type [default: WS]."/>
       <Parameter name="GAIN" type="string" value="0dB" description="capture gain (dB)  [default: 0dB]."/>
-      <Parameter name="DEVICE" type="string" value="plughw:0,0" description="Device name or IP address [default: 127.0.0.1]"/>
+      <Parameter name="DEVICE" type="string" value="plughw:1,0" description="Device name or IP address [default: 127.0.0.1]"/>
     </Node>
     <Node name="node_RosHarkParamsDynReconf_1" type="RosHarkParamsDynReconf" x="-828.000000" y="-125.000000">
       <Parameter name="ROS_DURATION" type="float" value="0.001" description="This allows you to specify a duration that you would like to loop at [sec]. Keep this value small."/>

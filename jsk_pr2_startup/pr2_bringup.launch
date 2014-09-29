@@ -1,0 +1,163 @@
+<launch>
+  <param name="/use_sim_time" value="false"/>
+  <include file="$(find pr2_machine)/pr2.machine" />
+
+  <!-- Remap diagnostics if we are pushed into a namespace. -->
+  <remap from="/diagnostics" to="/$(optenv ROS_NAMESPACE /)/diagnostics" />
+  <remap from="/diagnostics_agg" to="/$(optenv ROS_NAMESPACE /)/diagnostics_agg" />
+
+  <!-- pr2_etherCAT -->
+  <node name="realtime_loop" machine="c1" launch-prefix="pr2-grant" pkg="pr2_ethercat" type="pr2_ethercat" args="-i ecat0 -x robot_description" output="screen" />
+  <param name="pr2_etherCAT/realtime_socket_timeout" value="5000" />
+
+  <!-- PR2 Calibration -->
+  <node name="calibrate_pr2" pkg="pr2_bringup" type="calibrate_pr2.py" output="screen" 
+        args="$(find pr2_controller_configuration)/pr2_calibration_controllers.yaml $(find pr2_controller_configuration)/pr2_joint_position_controllers.yaml"/>
+
+  <!-- Controller Manager -->
+  <include file="$(find pr2_controller_manager)/controller_manager.launch" />
+
+  <!-- PS3 joystick for A2 servers -->
+  <node machine="c2" pkg="joy" type="joy_node" name="joy_node" >
+    <remap from="joy" to="joy_org" />
+    <param name="deadzone" value="0.12" />
+    <param name="dev" value="/etc/ros/sensors/ps3joy" />
+    <param name="autorepeat_rate" value="10" />
+  </node>
+
+  <!-- Run stop auto restart -->
+  <node name="pr2_run_stop_auto_restart" pkg="pr2_run_stop_auto_restart" type="run_stop_auto_restart" />
+
+  <!-- Power Board Control Node -->
+  <node name="power_board" pkg="pr2_power_board" type="power_node2" args="--address=10.68.0.50" respawn="true"/>
+
+  <!-- Battery Monitor -->
+  <node machine="c2" pkg="ocean_battery_driver" type="ocean_server"  name="ocean_server" respawn="true">
+    <param name="number_of_ports" type="int" value="4" />
+    <param name="port0" type="string" value="/etc/ros/sensors/battery0" />
+    <param name="port1" type="string" value="/etc/ros/sensors/battery1" />
+    <param name="port2" type="string" value="/etc/ros/sensors/battery2" />
+    <param name="port3" type="string" value="/etc/ros/sensors/battery3" />
+    <param name="debug_level" type="int" value="0" />
+  </node>
+  <node pkg="power_monitor" type="power_monitor"  name="power_monitor" respawn="true"/>
+  
+  <!-- Base Laser -->
+  <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
+    <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
+    <param name="frame_id" type="string" value="base_laser_link" />
+    <param name="min_ang" type="double" value="-2.2689" />
+    <param name="max_ang" type="double" value="2.2689" />
+    <param name="skip" type="int" value="1" />
+    <param name="intensity" value="false" />
+  </node>
+
+  <!-- Tilt Laser -->
+  <node  machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="tilt_hokuyo_node" args="scan:=tilt_scan">
+    <param name="port" type="string" value="/etc/ros/sensors/tilt_hokuyo" />
+    <param name="frame_id" type="string" value="laser_tilt_link" />
+    <param name="min_ang" type="double" value="-0.829" />
+    <param name="max_ang" type="double" value="0.829" />
+    <param name="skip" type="int" value="1" />
+    <param name="intensity" value="true" />
+  </node>
+
+  <!-- imu -->
+  <node machine="c1" pkg="microstrain_3dmgx2_imu" type="imu_node" name="imu_node" output="screen">
+    <remap from="imu" to="torso_lift_imu" />
+    <param name="time_offset" value="-0.040" />
+    <param name="port"  type="string" value="/etc/ros/sensors/imu" />
+    <param name="autostart" type="bool" value="true" />
+    <param name="frame_id"  type="string" value="imu_link" />
+    <param name="autocalibrate" type="bool" value="false" />
+    <param name="assume_calibrated" type="bool" value="true" />
+    <param name="orientation_stdev" type="double" value="0.00017" />
+    <param name="max_drift_rate" type="double" value="0.00157" />
+  </node>
+  <node machine="c1" pkg="imu_monitor" type="imu_monitor.py" name="imu_monitor" />
+
+  <!-- Prosilica camera -->
+  <!-- Camera isn't robust to dropped links, so it should respawn -->
+  <arg name="no-prosilica" default="false" />
+  <group unless="$(arg no-prosilica)" >
+    <node name="prosilica_driver" pkg="prosilica_camera"
+          type="prosilica_node" respawn="true" output="screen">
+      <remap from="camera" to="prosilica" />
+
+      <param name="ip_address"   type="str" value="10.68.0.20"/>
+      <param name="trigger_mode" type="str" value="polled"/>
+      <param name="frame_id"     type="str" value="high_def_optical_frame" />
+    </node>
+  </group>
+
+  <!-- Stereo Camera and synchronization -->
+  <include file="$(find pr2_bringup)/config/dualstereo_camera.launch"/>
+
+  <!-- Forearm Camera -->
+  <include file="$(find pr2_bringup)/config/r_forearm_cam.launch" />
+  <include file="$(find pr2_bringup)/config/l_forearm_cam.launch" />
+
+  <!-- Sound -->
+  <node pkg="sound_play" type="soundplay_node.py" machine="c1" name="sound_play" /> 
+
+  <!-- Runtime Diagnostics and Motor Trace Logging -->
+  <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
+      args="-o /hwlog/pr2_diagnostics --split --size=200 --bz2 /diagnostics -e '/motor_trace/.*'" />
+
+  <!-- NTP monitoring script reports clock sync on diagnostics -->
+  <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="10.68.255.1 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
+  <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --diag-hostname=c2" machine="c2"/>
+
+  <!-- Disk usage monitoring script monitors HD temperature, usage on diagnostics -->
+  <node pkg="pr2_computer_monitor" name="realtime_hd_monitor" type="hd_monitor.py" args="$(optenv HOME /home) --diag-hostname=c1" machine="c1"/>
+  <node pkg="pr2_computer_monitor" name="two_hd_monitor" type="hd_monitor.py" args="--diag-hostname=c2" machine="c2"/>
+
+  <!-- Monitor CPU temp, usage -->
+  <node pkg="pr2_computer_monitor" name="realtime_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c1" machine="c1" >
+    <param name="check_core_temps" type="bool" value="False" />
+  </node>
+  <node pkg="pr2_computer_monitor" name="two_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c2" machine="c2" >
+    <param name="check_core_temps" type="bool" value="False" />
+    <param name="enforce_clock_speed" type="bool" value="False" />
+  </node>
+
+  <!-- Monitor Wifi/ddwrt -->
+  <node pkg="pr2_computer_monitor" name="ddwrt_diag" type="wifi_monitor.py" machine="c1" />
+  <node name="wifi_ddwrt" pkg="wifi_ddwrt" type="ddwrt.py">
+    <param name="username" type="string" value="root" />
+    <param name="password" type="string" value="willow" />
+    <param name="router" type="string" value="wifi-router" />
+   </node>
+
+  
+  <!-- Diagnostics aggregation -->
+  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg" />
+
+  <!-- Dashboard aggregation -->
+  <node pkg="pr2_dashboard_aggregator" type="dashboard_aggregator.py" name="pr2_dashboard_aggregator"/>
+
+  <!-- Default controllers -->
+  <include file="$(find pr2_controller_configuration)/pr2_default_controllers.launch" />
+
+  <!-- Robot pose ekf -->
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf" output="screen">
+    <param name="freq" value="30.0"/>
+    <param name="sensor_timeout" value="1.0"/>
+    <param name="publish_tf" value="true"/>
+    <param name="odom_used" value="true"/>
+    <param name="imu_used" value="true"/>
+    <param name="vo_used" value="false"/>
+    <remap from="odom" to="base_odometry/odom" />
+    <remap from="imu_data" to="torso_lift_imu/data" />
+  </node>
+
+  <!-- Buffer Server -->
+  <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
+    <param name="buffer_size" value="120.0"/>
+  </node>
+
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector" output="screen">
+    <param name="interface_name" value="wan0"/>
+  </node>
+
+</launch>

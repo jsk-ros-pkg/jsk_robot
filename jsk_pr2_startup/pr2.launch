@@ -1,5 +1,5 @@
 <launch>
-  <arg name="launch_openni" default="true" />
+  <arg name="launch_openni" default="false" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_imagesift" default="false" />
   <arg name="launch_facedetection" default="false" />
@@ -12,10 +12,12 @@
   <arg name="launch_db" default="true" />
   <arg name="launch_hark" default="true" />
   <arg name="launch_teleoperation" default="true" />
-
+  <arg name="slow_camera_framerate" default="true" />
   <arg name="move_tilt_scan" default="true" />
+  <arg name="launch_c2_startup" default="true" />
+  <arg name="launch_c3_startup" default="false" />
   <arg name="USER_NAME" default="false" />
-
+  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
@@ -83,6 +85,8 @@
   <group if="$(arg launch_safety_warning)" >
   <node name="battery_warning" pkg="roseus"
         type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+  <node name="battery_visualization" pkg="jsk_pr2_startup"
+        type="battery_visualization.py" />
   <node name="cable_warning" pkg="roseus"
         type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l"/>
   </group>
@@ -114,16 +118,24 @@
   <include if="$(arg launch_hark)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
 
-  <!-- override joy node -->
-  <node machine="c2" pkg="joy" type="joy_node" name="joy" >
-    <param name="deadzone" value="0.10" />
-    <param name="dev" value="/etc/ros/sensors/ps3joy" />
-    <remap from="/joy" to="/joy_org" />
-  </node>
+  <!-- joy mux -->
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
-        respawn="true" args="/joy /joy_org /joy_other" />
+        respawn="true" args="/joy /joy_org /joy_other" >
+    <remap from="mux" to="multiple_joystick_mux"/>
+  </node>
 
   <include if="$(arg launch_teleoperation)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_robot.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_teleop_robot.launch" />
+  <include if="$(arg slow_camera_framerate)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/camera_framerate.launch" />
 
+  <include if="$(arg launch_c2_startup)"
+	   file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+    <arg name="MACHINE" value="c2"/>
+  </include>
+  <include if="$(arg launch_c3_startup)"
+	   file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+    <arg name="MACHINE" value="c3"/>
+    <arg name="launch_battery" value="true"/>
+  </include>
 </launch>

@@ -5,10 +5,10 @@
     <remap from="scan" to="/tilt_scan"/>
     <remap from="cloud_filtered" to="/tilt_scan_shadow2_filtered"/>
     <param name="target_frame" type="string" value="base_footprint"/>
-    <rosparam command="load" file="$(find pr2_arm_navigation_perception)/config/shadow_filter.yaml" />
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_shadow_filter.yaml" />
   </node>
 
-  <node pkg="robot_self_filter"
+  <node pkg="pr2_navigation_self_filter"
 	type="self_filter" clear_params="true"
 	name="robot_shadow_self_filter" respawn="true" output="screen">
     <!-- The topic for the input cloud -->
@@ -26,26 +26,14 @@
   </node>
 
   <node type="laser_scan_assembler" name="tilt_scan_assembler" pkg="laser_assembler"
-        output="screen" clear_params="true" respawn="true">
+        respawn="true"
+        output="screen">
     <remap from="scan" to="tilt_scan"/>
     <param name="max_scans" type="int" value="400" />
     <param name="fixed_frame" type="string" value="base_link" />
     <param name="ignore_laser_skew" type="bool" value="true" />
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_filters.yaml" />
   </node>
-
-  <node pkg="pr2_arm_navigation_perception" type="pr2_laser_snapshotter"
-	output="screen" name="tilt_laser_snapshotter" respawn="true">
-    <remap from="laser_scanner_signal"
-	   to="/laser_tilt_controller/laser_scanner_signal"/>
-    <remap from="full_cloud2" to="tilt_laser_cloud2" />
-    <param name="publish_point_cloud" value="false" />
-    <param name="publish_point_cloud2" value="true" />
-    <param name="num_skips" value="1"/>
-  </node>
-
-  <!-- send additional description parameters -->
-  <include file="$(find pr2_arm_navigation_config)/launch/pr2_planning_environment.launch" />
 
   <node pkg="collider" type="collider_node" name="collider_node"
 	respawn="true" output="screen" machine="c2">
@@ -74,4 +62,9 @@
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/collision_map_sources_laser.yaml"/>
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
   </node>
+
+  <include file="$(find jsk_pcl_ros)/launch/laserscan_registration.launch">
+    <arg name="use_laser_pipeline" value="false" />
+  </include>
+
 </launch>

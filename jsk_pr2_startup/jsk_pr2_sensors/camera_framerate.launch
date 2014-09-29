@@ -1,0 +1,16 @@
+<launch>
+  <arg name="framerate" default="1.0" />
+  <node pkg="dynamic_reconfigure" type="dynparam"
+        name="$(anon l_forearm_cam_framerate)"
+        args="set --timeout=10 /l_forearm_cam imager_rate $(arg framerate)" />
+  <node pkg="dynamic_reconfigure" type="dynparam"
+        name="$(anon r_forearm_cam_framerate)"
+        args="set --timeout=10 /r_forearm_cam imager_rate $(arg framerate)" />
+  <node pkg="dynamic_reconfigure" type="dynparam"
+        name="$(anon narrow_stereo_both_framerate)"
+        args="set --timeout=10 /narrow_stereo_both imager_rate $(arg framerate)" />
+  <node pkg="dynamic_reconfigure" type="dynparam"
+        name="$(anon wide_stereo_both_framerate)"
+        args="set --timeout=10 /wide_stereo_both imager_rate $(arg framerate)" />
+
+</launch>
