@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import roslib
-roslib.load_manifest('jsk_pr2_startup')
 import sys,subprocess,traceback
 import rospy
 import cv
