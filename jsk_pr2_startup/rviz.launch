@@ -1,7 +1,4 @@
 <launch>
   <node pkg="rviz" type="rviz" name="jsk_startup_rviz"
         args="-d $(find jsk_pr2_startup)/config/jsk_startup.rviz" />
-  <!-- utility to convert face detection type from groovy to hydro -->
-  <node pkg="jsk_pr2_startup" type="face_detector_hydro_bridge.py"
-        name="face_detector_hydro_bridge" />
 </launch>
