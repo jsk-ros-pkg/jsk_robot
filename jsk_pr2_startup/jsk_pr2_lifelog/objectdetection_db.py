@@ -93,7 +93,7 @@ class ObjectDetectionDB:
             rospy.loginfo('start subscribe (%s)',sub.name)
 
 if __name__ == "__main__":
-    rospy.init_node('pbjectdetecton_db')
+    rospy.init_node('objectdetecton_db')
     obj = ObjectDetectionDB()
     looprate = rospy.Rate(1.0)
     while not rospy.is_shutdown():
