@@ -20,7 +20,7 @@ head:
   - head_pan   : head-neck-y
 
 angle-vector:
-  reset-pose : [-30.0, 30.0, 30.0, 90.0, 0.0, -90.0, 30.0, 30.0, -30.0, 90.0, 0.0, -90.0, 0.0]
+  reset-pose : [20, -25, -40, 60, -20, 80, -20, -25, 40, 60, 20, 80, 0]
 
 larm-end-coords:
   parent : left_hand
