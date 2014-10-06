@@ -10,9 +10,11 @@
   <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base.xml" />
 
   <!-- To ignore tilt-laser -->
-  <node name="tilt_laser_mux" pkg="topic_tools" type="mux"
-	args="ground_object_cloud_mux ground_object_cloud empty_cloud">
-    <remap from="mux" to="tilt_laser_mux"/>
+  <node name="tilt_laser_mux" pkg="jsk_topic_tools" type="mux">
+    <rosparam>
+      topics: ["ground_object_cloud", "empty_cloud"]
+    </rosparam>
+    <remap from="~output" to="ground_object_cloud_mux" />
   </node>
   <node name="empty_cloud_publisher" pkg="jsk_pr2_startup"
 	type="publish_empty_cloud.py">

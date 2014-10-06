@@ -5,8 +5,11 @@
   <remap from="input_cloud" to="tilt_scan_filtered"/>
   <remap from="output_cloud" to="tilt_cloud_filtered"/>
 </node-->
-
-<node name="ground_object_cloud_throttle" pkg="topic_tools" type="throttle" args="messages ground_object_cloud 3.0 ground_object_cloud_throttled" />
+<node name="ground_object_cloud_throttle" pkg="jsk_topic_tools" type="lightweight_throttle">
+  <remap from="~input" to="ground_object_cloud" />
+  <remap from="~output" to="ground_object_cloud_throttled" />
+  <param name="update_rate" value="3.0" />
+</node>
 <node pkg="semantic_point_annotator" type="sac_inc_ground_removal_node" name="sac_ground_removal" machine="c2" >
   <remap from="tilt_laser_cloud_filtered" to="tilt_scan_filtered" />
   <remap from="cloud_ground_filtered" to="ground_object_cloud" />

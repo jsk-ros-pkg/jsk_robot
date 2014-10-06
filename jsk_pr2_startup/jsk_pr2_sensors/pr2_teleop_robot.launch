@@ -25,7 +25,7 @@
     <arg name="USE_HEAD_POINTCLOUD" value="true"/>
     <arg name="HEAD_SELECTED" default="/head_pointcloud_selected"/>
     <arg name="HEAD_TOPIC" default="['/openni/depth_registered/points']"/>
-    <arg name="HEAD_NODELET_MANAGER" default="/openni_nodelet_manager"/>
+    <arg name="HEAD_NODELET_MANAGER" default="/openni/openni_nodelet_manager"/>
     <arg name="BASE_FRAME" value="/base_link"/>
   </include>
 
