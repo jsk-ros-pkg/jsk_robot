@@ -119,9 +119,12 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
 
   <!-- joy mux -->
-  <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
-        respawn="true" args="/joy /joy_org /joy_other" >
-    <remap from="mux" to="multiple_joystick_mux"/>
+  <node machine="c2" pkg="jsk_topic_tools" type="mux" name="multiple_joystick_mux"
+        respawn="true">
+    <remap from="~output" to="/joy" />
+    <rosparam>
+      topics: ["/joy_org", "/joy_other"]
+    </rosparam>
   </node>
 
   <include if="$(arg launch_teleoperation)"

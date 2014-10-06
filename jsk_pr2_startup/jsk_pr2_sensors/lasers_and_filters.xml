@@ -1,7 +1,11 @@
 <!-- Copied from pr2_navigation_perception/laser_and_filters.xml -->
 <launch>
 
-  <node pkg="topic_tools" type="throttle" name="base_scan_throttle" args="messages base_scan 1.0 base_scan_throttled" machine="c2" output="screen"/>
+  <node pkg="jsk_topic_tools" type="lightweight_throttle" name="base_scan_throttle" machine="c2" output="screen">
+    <remap from="~input" to="base_scan" />
+    <remap from="~output" to="base_scan_throttled" />
+    <param name="update_rate" value="1.0" />
+  </node>
   <!-- Filter for tilt laser shadowing/veiling -->
   <node pkg="laser_filters" type="scan_to_cloud_filter_chain" respawn="true" machine="c2" name="tilt_shadow_filter">
     <remap from="scan" to="tilt_scan" />
