@@ -46,21 +46,31 @@
 
   <!-- below mux nodes are needed until deadman option is enable in teleop node -->  
   <group ns="head_traj_controller">
-    <node pkg="topic_tools" type="mux" name="command_mux" respawn="true"
-          args="command command_dummy  command_deadman" machine="c2"/>
+    <node pkg="jsk_topic_tools" type="mux" name="mux" respawn="true"
+          machine="c2">
+      <remap from="~output" to="command" />
+      <rosparam>
+        topics: ["/head_traj_controller/command_deadman", "/head_traj_controller/command_dummy"]
+      </rosparam>
+    </node>
     <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
-          name="command_selector" respawn="true"
-          args="/joy 'm.buttons[11]==1' command_deadman">
-      <param name="default_select" value="command_dummy"/>
+          name="command_selector" respawn="false"
+          args="/joy 'm.buttons[11]==1' /head_traj_controller/command_deadman">
+      <param name="default_select" value="/head_traj_controller/command_dummy"/>
     </node>
   </group>
   <group ns="torso_controller">
-    <node pkg="topic_tools" type="mux" name="command_mux" respawn="true"
-          args="command command_dummy  command_deadman" machine="c2"/>
+    <node pkg="jsk_topic_tools" type="mux" name="mux" respawn="true"
+          machine="c2">
+      <remap from="~output" to="command" />
+      <rosparam>
+        topics: ["/torso_controller/command_deadman", "/torso_controller/command_dummy"]
+      </rosparam>
+    </node>
     <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
-          name="command_selector" respawn="true"
-          args="/joy 'm.buttons[10]==1' command_deadman">
-      <param name="default_select" value="command_dummy"/>
+          name="command_selector" respawn="false"
+          args="/joy 'm.buttons[10]==1' /torso_controller/command_deadman">
+      <param name="default_select" value="/torso_controller/command_dummy"/>
     </node>
   </group>
 
