@@ -24,12 +24,11 @@
     <param name="use_window" value="false"/>
   </node>
 
-  <node pkg="jsk_topic_tools" type="mux" respawn="true"
-        name="marked_camera_info">
-    <remap from="~output" to="/tablet/marked/camera_info" />
-    <rosparam>
-      topics: ["/camera_info_input_mux"]
-    </rosparam>
+  <node pkg="topic_tools" type="mux" respawn="true"
+        name="marked_camera_info"
+        args="/tablet/marked/camera_info /camera_info_input_mux">
+    <remap from="mux" to="marked_camera_info_mux"/>
+    <param name="lazy" value="true"/>
   </node>
 
   <node ns="/tablet/marked" pkg="image_proc" type="image_proc"

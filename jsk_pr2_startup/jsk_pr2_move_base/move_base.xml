@@ -6,12 +6,8 @@
   <node pkg="pr2_move_base" name="pr2_move_base_node" type="pr2_move_base.py" respawn="true" machine="c2" />
 
   <!-- Throttle the voxel grid that is being published for rviz -->
-  <node ns="move_base_node/local_costmap" name="voxel_grid_throttle" pkg="jsk_topic_tools" type="lightweight_throttle"
-        machine="c2">
-    <remap from="~input" to="voxel_grid" />
-    <remap from="~output" to="voxel_grid_throttled" />
-    <param name="update_rate" value="3.0" />
-  </node>
+  <node ns="move_base_node/local_costmap" name="voxel_grid_throttle" pkg="topic_tools" type="throttle" machine="c2" args="messages voxel_grid 3.0 voxel_grid_throttled" />
+
   <node pkg="move_base" type="move_base" name="move_base_node" machine="c2">
     <remap from="odom" to="base_odometry/odom" />
     <remap from="cmd_vel" to="navigation/cmd_vel" />

@@ -1,9 +1,7 @@
 <launch>
   <arg name="MACHINE_NAME" default="remote"/>
-  <node pkg="jsk_topic_tools" type="relay" name="tf_relay_$(arg MACHINE_NAME)">
-    <remap from="~input" to="/tf" />
-    <remap from="~output" to="/tf_$(arg MACHINE_NAME)" />
-  </node>
+  <node pkg="topic_tools" type="relay" name="tf_relay_$(arg MACHINE_NAME)"
+	args="/tf /tf_$(arg MACHINE_NAME)"/>
   <group>
     <remap from="/tf" to="/tf_$(arg MACHINE_NAME)"/>
     <remap from="/rosout" to="/rosout_$(arg MACHINE_NAME)"/>
