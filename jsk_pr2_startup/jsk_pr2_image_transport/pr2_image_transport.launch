@@ -22,10 +22,12 @@
   <group if="$(arg LAUNCH_MANAGER)">
     <node pkg="nodelet" type="nodelet" name="$(arg IMAGE_NODELET_MANAGER)"
           args="manager"
+          machine="c2"
           if="$(arg GDB)"
           launch-prefix="xterm -e gdb --args"
           output="screen"/>
     <node pkg="nodelet" type="nodelet" name="$(arg IMAGE_NODELET_MANAGER)"
+          machine="c2"
           args="manager"
           unless="$(arg GDB)"
           output="screen"/>
@@ -83,8 +85,9 @@
   <group if="$(arg USE_THROTTLE)" >
     <!-- resized image -->
     <node pkg="resized_image_transport" type="image_resizer" name="head_resized"
+          machine="c2"
           output="screen" >
-      <remap from="~input/image" to="/openni/rgb/$(arg THROTTLE_IMAGE_TYPE)_color" />
+      <remap from="~input/image" to="/openni_c2/rgb/$(arg THROTTLE_IMAGE_TYPE)_color" />
       <remap from="~output/image" to="~$(arg THROTTLE_IMAGE_TYPE)" />
       <param name="resize_scale_x" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg THROTTLE_RESIZE_RATE)" />
@@ -93,6 +96,7 @@
       <param name="use_snapshot" value="false" />
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="narrow_resized"
+          machine="c2"
           output="screen" >
       <remap from="~input/image" to="/narrow_stereo/left/$(arg THROTTLE_IMAGE_TYPE)" />
       <remap from="~output/image" to="~$(arg THROTTLE_IMAGE_TYPE)" />
@@ -103,6 +107,7 @@
       <param name="use_snapshot" value="false" />
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="lhand_resized"
+          machine="c2"
           output="screen" >
       <remap from="~input/image" to="l_forearm_cam/rotated/image" />
       <remap from="~output/image" to="~image" />
@@ -114,6 +119,7 @@
       <param name="use_snapshot" value="false" />
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="rhand_resized"
+          machine="c2"
           output="screen" >
       <remap from="~input/image" to="r_forearm_cam/rotated/image" />
       <remap from="~output/image" to="~image" />
@@ -130,14 +136,16 @@
   <group if="$(arg USE_SNAPSHOT)" >
 
     <node pkg="resized_image_transport" type="image_resizer" name="head_snap"
+          machine="c2"
           output="screen" >
-      <remap from="~input/image" to="/openni/rgb/image_rect_color" />
+      <remap from="~input/image" to="/openni_c2/rgb/image_rect_color" />
       <remap from="~output/image" to="~image_rect_color" />
       <param name="resize_scale_x" value="0.16" />
       <param name="resize_scale_y" value="0.16" />
       <param name="use_snapshot" value="true" />
     </node>
     <node pkg="resized_image_transport" type="image_resizer" name="narrow_snap"
+          machine="c2"
           output="screen" >
       <remap from="~input/image" to="/narrow_stereo/left/image_rect_color" />
       <remap from="~output/image" to="~image_rect_color" />
@@ -147,6 +155,7 @@
     </node>
 
     <node pkg="resized_image_transport" type="image_resizer" name="lhand_snap"
+          machine="c2"
           output="screen" >
       <remap from="~input/image" to="l_forearm_cam/rotated/image" />
       <remap from="~output/image" to="~image_rect" />
@@ -159,6 +168,7 @@
     </node>
 
     <node pkg="resized_image_transport" type="image_resizer" name="rhand_snap"
+          machine="c2"
           output="screen" >
       <remap from="~input/image" to="r_forearm_cam/rotated/image" />
       <remap from="~output/image" to="~image_rect" />
@@ -176,8 +186,9 @@
   <!-- edge image -->
   <group if="$(arg USE_EDGE)" >
     <!-- head -->
-    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_openni">
-      <remap from="image" to="openni/rgb/image_rect_color" />
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_openni"
+          machine="c2">
+      <remap from="image" to="openni_c2/rgb/image_rect_color" />
       <remap from="edge/image" to="openni/edge/image"/>
     </node>
     <node pkg="jsk_perception" type="sparse_image_encoder"
@@ -188,24 +199,28 @@
     </node>
 
     <!-- larm -->
-    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_larm">
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_larm"
+          machine="c2">
       <remap from="image" to="l_forearm_cam/rotated/image" />
       <remap from="edge/image" to="l_forearm_cam/rotated/edge/image" />
     </node>
     <node pkg="jsk_perception" type="sparse_image_encoder"
-            name="sparse_image_encoder_larm">
+            name="sparse_image_encoder_larm"
+            machine="c2">
       <remap from="image" to="l_forearm_cam/rotated/edge/image" />
       <remap from="sparse_image" to="l_forearm_cam/rotated/sparse/image" />
       <param name="rate" value="1.0" />
     </node>
 
     <!-- rarm -->
-    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_rarm">
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_rarm"
+          machine="c2">
       <remap from="image" to="r_forearm_cam/rotated/image" />
       <remap from="edge/image" to="r_forearm_cam/rotated/edge/image" />
     </node>
     <node pkg="jsk_perception" type="sparse_image_encoder"
-            name="sparse_image_encoder_rarm">
+            name="sparse_image_encoder_rarm"
+            machine="c2">
       <remap from="image" to="r_forearm_cam/rotated/edge/image" />
       <remap from="sparse_image" to="r_forearm_cam/rotated/sparse/image" />
       <param name="rate" value="1.0" />

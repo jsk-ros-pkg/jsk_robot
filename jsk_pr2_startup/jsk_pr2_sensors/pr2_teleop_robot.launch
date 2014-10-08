@@ -2,7 +2,6 @@
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <arg name="launch_tf_buffer" default="true" />
-  <arg name="launch_pcl_roi" default="true" />
   <arg name="launch_image_resized" default="true" />
   <arg name="launch_image_roi" default="true" />
   <arg name="launch_interactive_controller" default="true" />
@@ -17,18 +16,6 @@
     </include>
   </group>
   
-  <!-- for pcl roi -->
-  <include if="$(arg launch_pcl_roi)"
-      file="$(find jsk_pcl_ros)/launch/pcl_roi_robot.launch">
-    <arg name="USE_LHAND_POINTCLOUD" value="false"/>
-    <arg name="USE_RHAND_POINTCLOUD" value="false"/>
-    <arg name="USE_HEAD_POINTCLOUD" value="true"/>
-    <arg name="HEAD_SELECTED" default="/head_pointcloud_selected"/>
-    <arg name="HEAD_TOPIC" default="['/openni/depth_registered/points']"/>
-    <arg name="HEAD_NODELET_MANAGER" default="/openni_nodelet_manager"/>
-    <arg name="BASE_FRAME" value="/base_link"/>
-  </include>
-
   <!-- for image resized -->
   <include if="$(arg launch_image_resized)"
 	   file="$(find jsk_pr2_startup)/jsk_pr2_image_transport/pr2_image_transport.launch"/>
