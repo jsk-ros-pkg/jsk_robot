@@ -2,7 +2,7 @@
 
 (ros::load-ros-manifest "roseus")
 (load "package://pr2eus/speak.l")
-(defvar *camera-topic-name* "/openni/rgb/image_rect_color")
+(defvar *camera-topic-name* "/openni_c2/rgb/image_rect_color")
 
 (ros::roseus "tweet_client")
 (ros::advertise "/pr2twit" std_msgs::String 1)
