@@ -24,9 +24,9 @@
          value="$(arg sensor_params_file)" />
   </include>
 
-  <include file="$(find pr2_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="config" value="true"/>
-  </include>
+  <!-- <include file="$(find pr2_moveit_config)/launch/moveit_rviz.launch"> -->
+  <!--   <arg name="config" value="true"/> -->
+  <!-- </include> -->
 
   <!--include file="$(find pr2_moveit_config)/launch/default_warehouse_db.launch" /-->
 </launch>
