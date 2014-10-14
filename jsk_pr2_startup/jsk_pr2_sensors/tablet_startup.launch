@@ -2,7 +2,7 @@
   <!-- roslaunch local_app_manager app_manager.launch -->
 
   <include file="$(find jsk_android_gui_api9)/cameras_and_points_mux.launch">
-    <arg name="USE_NODELET" value="true"/>
+    <arg name="USE_NODELET" value="false"/>
   </include>
 
   <node name="tablet_receiver_default" pkg="jsk_smart_gui" respawn="true"

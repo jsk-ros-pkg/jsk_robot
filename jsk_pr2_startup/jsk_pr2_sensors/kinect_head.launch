@@ -117,9 +117,9 @@
       <arg name="HEAD_NODELET_MANAGER" default="/openni_c2/openni_c2_nodelet_manager"/>
       <arg name="BASE_FRAME" value="/base_link"/>
   </include>
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_remote.launch" 
-           if="$(arg launch_c2_startup)">
-    <arg name="MACHINE_NAME" value="c2" />
-  </include>
+  <node type="openni_remote_launch.sh" pkg="jsk_pr2_startup"
+        name="openni_remote_launch_c2" output="screen"
+        machine="c2"
+        args="c2"/>
 
 </launch>
