@@ -7,7 +7,7 @@
   </node>
   <arg name="camera" default="openni_c2" />
   <arg name="image_topic" default="image_rect_color" />
-  <arg name="depth_topic" default="image_rect_raw" />
+  <arg name="depth_topic" default="image_raw" />
   <arg name="fixed_frame" default="openni_rgb_optical_frame" />
   <arg name="depth_ns" default="depth_registered" />
 
