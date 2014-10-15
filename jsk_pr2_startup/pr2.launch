@@ -86,8 +86,6 @@
         type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
   <node name="battery_visualization" pkg="jsk_pr2_startup"
         type="battery_visualization.py" />
-  <node name="cable_warning" pkg="roseus"
-        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l"/>
   </group>
 
   <!-- mjpeg_server for web -->
