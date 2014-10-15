@@ -41,7 +41,7 @@
 
   <!-- switch base velocity, safe or not -->
   <node pkg="topic_tools" type="mux" name="cmd_vel_mux" respawn="true" machine="c2"
-	args="base_controller/command /navigation/unsafe_vel /navigation/safe_vel">
+	args="base_controller/command_unchecked /navigation/unsafe_vel /navigation/safe_vel">
     <remap from="mux" to="cmd_vel_mux" />
   </node>
   <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
@@ -50,6 +50,10 @@
     <remap from="mux" to="cmd_vel_mux" />
     <param name="default_select" value="/navigation/unsafe_vel"/>
   </node>
+
+  <!-- check cable and filter baser_controller/command -->
+  <node pkg="roseus" type="roseus" name="check_cable" respawn="true"
+	args="$(find jsk_pr2_startup)/jsk_pr2_move_base/check_cable.l"/>
 
   <!-- warning 5 sec when unsafe -->
   <node pkg="roseus" type="roseus" name="unsafe_warning" respawn="true"
