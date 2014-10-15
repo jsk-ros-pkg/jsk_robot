@@ -6,6 +6,8 @@
   <!-- for ROS_DISTRO under electric -->
   <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
 
+  <include file="$(find pr2_machine)/pr2.machine" />
+
   <param name="/openni/driver/depth_ir_offset_x" value="4.5" />
   <param name="/openni/driver/depth_ir_offset_y" value="2.5" />
   <include file="$(find openni_launch)/launch/openni.launch"
