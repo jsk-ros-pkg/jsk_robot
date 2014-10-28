@@ -41,41 +41,10 @@
      (cons :controller-action (if namespace (format nil "~A/joint_trajectory" namespace ) "joint_trajectory"))
      ;;"joint_trajectory")
      ;;(cons :controller-state "joint_trajectory")
-     (cons :controller-state "")
+     (cons :controller-state "dummy_state") ;; this is dummy
      (cons :action-type nao_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
-
-  (:add-controller 
-   (ctype &key (joint-enable-check))
-   (let (tmp-actions)
-     (mapcar
-      #'(lambda (param)
-	  (let* ((controller-action (cdr (assoc :controller-action param)))
-		 (action-type (cdr (assoc :action-type param)))
-		 (action (instance ros::simple-action-client :init controller-action action-type
-				   :groupname groupname)))
-	    (push action tmp-actions)))
-      (send self ctype))
-     (setq tmp-actions (nreverse tmp-actions))
-     ;;
-     (dolist (action tmp-actions)
-       (unless (and joint-action-enable (send action :wait-for-server 3))
-	 (ros::ros-warn "~A is not respond, ~A-interface is disabled" action (send robot :name))
-	 (when joint-enable-check
-	   (setq joint-action-enable nil)
-	   (return))))
-     
-     ;; (dolist (param (send self ctype))
-     ;;   (let* ((controller-state (cdr (assoc :controller-state param)))
-     ;; 	      (key (intern (string-upcase controller-state) *keyword-package*)))
-     ;; 	 (ros::subscribe controller-state
-     ;; 			 pr2_controllers_msgs::JointTrajectoryControllerState
-     ;; 			 #'send self :set-robot-state1 key :groupname groupname)))
-     ;;
-     (setf (gethash ctype controller-table) tmp-actions)
-     tmp-actions
-     ))
 
   (:servo-on () (send self :send-stiffness-controller 1.0))
   (:servo-off () (send self :send-stiffness-controller 0.0))
