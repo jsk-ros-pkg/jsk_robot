@@ -48,6 +48,9 @@
 
   <run_depend>collada_urdf</run_depend>
   <run_depend>euscollada</run_depend>
+  <run_depend>baxter_description</run_depend>
+  <run_depend>baxter_interface</run_depend>
+  <run_depend>baxter_tools</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

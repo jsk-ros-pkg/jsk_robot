@@ -113,7 +113,11 @@ include_directories(
 # target_link_libraries(baxtereus_node
 #   ${catkin_LIBRARIES}
 # )
+if(EXISZTS ${baxter_description_SOURCE_DIR}/urdf/baxter.urdf)
 set(_baxter_urdf ${baxter_description_SOURCE_DIR}/urdf/baxter.urdf)
+else()
+set(_baxter_urdf ${baxter_description_PREFIX}/share/baxter_description/urdf/baxter.urdf)
+fi()
 set(_urdf_to_collada ${collada_urdf_PREFIX}/lib/collada_urdf/urdf_to_collada)
 set(_collada2eus ${euscollada_PREFIX}/lib/euscollada/collada2eus)
 
