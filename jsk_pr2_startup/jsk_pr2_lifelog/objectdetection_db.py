@@ -3,76 +3,51 @@
 # Store the ObjectDetection message
 #
 
-# parameters:
-#    dbname,hostname,port,username,passwd: for DB connection
-#    table_name(default "tf"): DB table name
+try:
+    import roslib; roslib.load_manifest('jsk_pr2_startup')
+except:
+    pass
 
-# fore example, table definition of "tf"
-#                                  Table "public.tf"
-#         Column          |  Type   |                    Modifiers
-#-------------------------+---------+-------------------------------------------------
-# id                      | integer | not null default nextval('tf_id_seq'::regclass)
-# header_stamp            | bigint  |
-# header_frame_id         | text    |
-# child_frame_id          | text    |
-# transform_translation_x | real    |
-# transform_translation_y | real    |
-# transform_translation_z | real    |
-# transform_rotation_x    | real    |
-# transform_rotation_y    | real    |
-# transform_rotation_z    | real    |
-# transform_rotation_w    | real    |
-#Indexes:
-#    "tf_stamp_idx" btree (header_stamp)
-
-import roslib; roslib.load_manifest('jsk_pr2_startup')
 import rospy
-import pgdb
-import tf
+import tf2_ros
+
+try:
+    import tf2
+except:
+    import tf2_py as tf2
 
 from geometry_msgs.msg import PoseStamped
 from posedetection_msgs.msg import ObjectDetection
 
-class ObjectDetectionDB:
-    def __init__(self,connection=None,db_lock=None): # TODO
-        db_name = rospy.get_param('~db_name','pr2db')
-        host = rospy.get_param('~host_name','c1')
-        port = rospy.get_param('~port',5432)
-        username = rospy.get_param('~user_name','pr2admin')
-        passwd = rospy.get_param('~passwd','')
-        # args dbname, host, port, opt, tty, user, passwd
-        if connection == None:
-            self.con = pgdb.connect(database=db_name, host=host,
-                                    user=username, password=passwd)
-        else:
-            self.con = connection
-        self.tf_listener = tf.TransformListener()
-        self.robot_frame = rospy.get_param('~base_frame_id','/base_link')
-        self.table_name = rospy.get_param('~table_name','tf')
+from mongodb_store.message_store import MessageStoreProxy
+
+class ObjectDetectionDB(object):
+    def __init__(self):
+        self.db_name = rospy.get_param('~db_name','jsk_pr2_lifelog')
+        self.col_name = rospy.get_param('~col_name', 'objectdetection_db')
+        self.update_cycle = rospy.get_param('update_cycle', 1)
+        self.map_frame = rospy.get_param('~map_frmae', 'map')
+        self.robot_frame = rospy.get_param('~robot_frame','base_footprint')
+        self.tf_listener = tf2_ros.BufferClient("tf2_buffer_server")
+        self.msg_store = MessageStoreProxy(database=self.db_name, collection=self.col_name)
+
         self.subscribers = []
-        return
 
     # DB Insertion function
-    def insert_pose_to_db(self, table, stamp, source, target, pose):
-        rospy.loginfo("insert ObjectDetection message");
-        (trans,rot) = (pose.position, pose.orientation)
-        cursor = self.con.cursor()
-        cursor.execute("INSERT INTO %s (header_stamp,header_frame_id,child_frame_id,transform_translation_x, transform_translation_y, transform_translation_z, transform_rotation_x, transform_rotation_y, transform_rotation_z, transform_rotation_w) VALUES (%d,'%s','%s',%f,%f,%f,%f,%f,%f,%f);" % (table,stamp.to_nsec(),source,target,trans.x,trans.y,trans.z,rot.x,rot.y,rot.z,rot.w))
-        cursor.close()
-        self.con.commit()
-
+    def insert_pose_to_db(self, map_to_robot, robot_to_obj)
+        self.msg_store.insert(map_to_robot)
+        self.msg_store.insert(robot_to_obj)
+    
     def objectdetection_cb(self, msg):
         try:
-            self.tf_listener.waitForTransform(self.robot_frame, msg.header.frame_id, msg.header.stamp, rospy.Duration(1.0))
+            self.tf_listener.wait_for_server(rospy.Duration(1.0))
+            map_to_robot = self.tf_listener.lookup_transform(self.robot_frame, self.map_frame, msg.header.stamp)
             for obj in msg.objects:
                 spose = PoseStamped(header=msg.header,pose=obj.pose)
-                tpose = self.tf_listener.transformPose(self.robot_frame,spose)
-                pose = tpose.pose
-
-                trans = (pose.position.x, pose.position.y, pose.position.z)
-                rot = (pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w)
-                self.insert_pose_to_db(self.table_name, msg.header.stamp,
-                                       msg.header.frame_id, obj.type, pose)
+                tpose = self.tf_listener.transform(spose, self.robot_frame)
+#                tpose = self.tf_listener.transformPose(self.robot_frame,spose)
+                obj.pose = tpose.pose
+                self.insert_pose_to_db(map_to_robot, obj)
         except (tf.Exception, tf.LookupException, tf.ConnectivityException):
             return
 
@@ -92,11 +67,13 @@ class ObjectDetectionDB:
             self.subscribers += [sub]
             rospy.loginfo('start subscribe (%s)',sub.name)
 
+    def sleep_one_cycle(self):
+        self.update_subscribers()
+        rospy.sleep(self.update_cycle)
+
 if __name__ == "__main__":
     rospy.init_node('objectdetecton_db')
     obj = ObjectDetectionDB()
-    looprate = rospy.Rate(1.0)
     while not rospy.is_shutdown():
-        obj.update_subscribers()
-        looprate.sleep()
-
+        obj.sleep_one_cycle()
+    exit(1)
