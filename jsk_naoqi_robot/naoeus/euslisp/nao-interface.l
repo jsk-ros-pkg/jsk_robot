@@ -1,6 +1,6 @@
 (ros::roseus "nao")
 
-(load "package://euscollada/nao.l")
+(load "package://naoeus/euslisp/nao.l")
 (load "package://pr2eus/robot-interface.l")
 (ros::load-ros-manifest "naoeus")
 
