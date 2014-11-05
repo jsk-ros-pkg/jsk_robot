@@ -1,12 +1,12 @@
 #nao euslisp
-generate nao.l
+##Generate nao.l
 ```
 catkin_make --only-pkg-with-deps euscollada
 roscd euscollada
 ./nao.sh
 ```
 
-improve nao.l
+##Improve nao.l
 ```
 catkin_make --only-pkg-with-deps eus_assimp
 roscd naoeus/scripts
@@ -29,7 +29,7 @@ make nao_meshes_meshes
 roscd
 cp -r tmp/nao_meshes/* ../src/ros_nao/nao_meshes/
 ```
-##how to run
+##How to run
 ```
 roslaunch nao_gazebo_plugin nao_gazebo_plugin_H25.launch
 ```
