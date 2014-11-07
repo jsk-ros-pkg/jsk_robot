@@ -21,8 +21,22 @@
   </node>
 
 
-  <param name="camera/brightness" value="0" />
-  <include file="$(find naoqi_sensors)/launch/camera.launch" />
+  <group ns="depth" >
+    <include file="$(find naoqi_sensors)/launch/camera.launch" >
+      <arg name="source" value="2" />
+    </include>
+  </group>  
+  <group ns="top" >
+    <include file="$(find naoqi_sensors)/launch/camera.launch" >
+      <arg name="brightness" value="0" />
+      <arg name="source" value="0" />
+    </include>
+  </group>  
+  <group ns="bottom" >
+    <include file="$(find naoqi_sensors)/launch/camera.launch" >
+      <arg name="source" value="1" />
+    </include>
+  </group>  
   <!--
   <include file="$(find nao_sensors)/launch/sonar.launch" />
   -->
@@ -30,7 +44,7 @@
   <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
   <node pkg="rostwitter" name="tweet" type="tweet.py" />
   <node pkg="image_view" name="image_saver" type="image_saver" >
-    <remap from="image" to="/camera/image_raw" />
+    <remap from="image" to="/top/camera/image_raw" />
     <param name="save_all_image" value="false" />
     <param name="filename_format" value="/tmp/pepper_camera.png" />
   </node>
