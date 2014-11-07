@@ -6,6 +6,7 @@
 
 
 (ros::advertise "/tweet" std_msgs::String 1)
+(ros::advertise "/speech" std_msgs::String 1)
 ;;(ros::advertise "robotsound_jp" sound_play::SoundRequest 5)
 (defun speak-jp (str)
   (let ((speech_msg (instance std_msgs::String :init)))
@@ -28,7 +29,7 @@
   (ros::ros-info "save image")
   ;; tweet
   (ros::publish "/tweet" (instance std_msgs::String :init :data (format nil "~A /tmp/pepper_camera.png" str)))
-  (speak-jp "ついーとしました")
+  (speak-jp (format nil "~A って ついーとしました" str))
   (ros::ros-info "tweet ~A" str)
   )
 
