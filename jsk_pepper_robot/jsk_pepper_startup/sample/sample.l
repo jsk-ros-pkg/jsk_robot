@@ -33,7 +33,7 @@
 
 
 ;; (recognize-word (list "Konnichiwa" "Sayounara" "Pepper"))
-(defun recognize-word (vocabulary &optional (threshold 0.3) (wait 5))
+(defun recognize-word (vocabulary &key (threshold 0.3) (wait 5))
   (let (tm req str)
     (setq str (car vocabulary))
     (dolist (v (cdr vocabulary))
@@ -49,6 +49,7 @@
 			    (setq *word-recognized* (send msg :words)))))
     (call-empty-service "start_recognition")
     (setq tm (ros::time-now))
+    (ros::rate 2)
     (while (and (< (send (ros::time- (ros::time-now) tm) :to-sec) wait)
 		(null *word-recognized*))
       (ros::spin-once)
