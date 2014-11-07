@@ -59,11 +59,37 @@
     ))
 
 
-
-
 ;(ros::rate 10)
 ;(do-until-key
 ; (ros::spin-once)
 ; (ros::sleep)
 
+(ros::advertise "/pepper_tweet" std_msgs::String 1)
+(defun tweet (str)
+  (ros::publish "/pepper_tweet" (instance std_msgs::String :init :data str)))
 
+(defun demo1 ()
+  (let (ret)
+    (speak-jp "こんにちは")
+    (setq ret (recognize-word (list "Konnichiwa" "Sayounara" "Pepper" "Shashin")))
+    (unless ret
+      (speak-jp "おーい")
+      (setq ret (recognize-word (list "Konnichiwa" "Sayounara" "Pepper" "Shashin") :wait 3)))
+    (ros::ros-info "Recognized ~A~%" ret)
+    (cond ((equal ret "Konnichiwa")
+	   (speak-jp "ははは")
+	   )
+	  ((equal ret "Sayounara")
+	   (speak-jp "そんなこといわないでよー")
+	   )
+	  ((equal ret "Pepper")
+	   (speak-jp "はーい")
+	   )
+	  ((equal ret "Shashin")
+	   (tweet "こんにちわ")
+	   )
+	  ((null ret)
+	   (speak-jp "だれもいないのかなぁ"))
+	  (t
+	   (speak-jp "なんかバグった")))
+    ))
