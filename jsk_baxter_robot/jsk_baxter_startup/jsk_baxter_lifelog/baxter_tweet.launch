@@ -1,0 +1,6 @@
+<launch>
+  <arg name="output" default="screen" />
+  <param name="account_info" value="/var/lib/robot/account.yaml" />
+  <node name="tweet" pkg="rostwitter" type="tweet.py"
+        output="$(arg output)" respawn="true" />
+</launch>

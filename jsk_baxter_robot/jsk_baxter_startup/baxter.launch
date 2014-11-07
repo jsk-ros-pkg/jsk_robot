@@ -5,6 +5,7 @@
   <arg name="launch_voice_echo" value="true"/>
   <arg name="launch_moveit" value="true"/>
   <arg name="launch_teleop" value="true"/>
+  <arg name="launch_tweet" value="true"/>
   <arg name="start_openni" value="true"/>
 
   <!-- Start Servo (Maybe This should not be here)-->
@@ -33,5 +34,8 @@
            file="$(find jsk_baxter_startup)/jsk_baxter_joy/baxter_joy.launch" >
   </include>
 
-
+  <!-- Twitter -->
+  <include if="$(arg launch_tweet)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
+  </include>
 </launch>
