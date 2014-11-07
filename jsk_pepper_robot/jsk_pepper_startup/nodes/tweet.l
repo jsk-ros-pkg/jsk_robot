@@ -7,7 +7,7 @@
 
 (ros::advertise "/tweet" std_msgs::String 1)
 (ros::advertise "/speech" std_msgs::String 1)
-;;(ros::advertise "robotsound_jp" sound_play::SoundRequest 5)
+
 (defun speak-jp (str)
   (let ((speech_msg (instance std_msgs::String :init)))
     (send speech_msg :data str)
@@ -16,12 +16,6 @@
 
 
 (defun tweet (str)
-  ;; camera shot sound
-;;  (ros::publish "robotsound_jp"
-;;		(instance sound_play::SoundRequest :init
-;;			  :sound sound_play::SoundRequest::*play_file*
-;;			  :command sound_play::SoundRequest::*play_once*
-;;			  :arg (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav")))
   (speak-jp "写真を撮るよ")
   (speak-jp "さん")
   (unix:sleep 1)
@@ -40,4 +34,5 @@
   (ros::ros-info "tweet ~A" str)
   )
 
-;;
+(ros::subscribe "/pepper_tweet" std_msgs::String #'(lambda (msg) (tweet (send msg :data))))
+(ros::spin)
