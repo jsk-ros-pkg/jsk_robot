@@ -1,5 +1,8 @@
 <launch>
-  <include file="$(find nao_bringup)/nao.launch" output="screen" />
+  <include file="$(find nao_bringup)/nao.launch" >
+    <arg name="force_python" value="true"/>
+  </include>
+ 
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="teleop_joy">
     <param name="dev" value="/dev/input/js1" />
@@ -17,7 +20,13 @@
     <remap from="turtlebot_teleop_joystick/cmd_vel" to="cmd_vel"/>
   </node>
 
+
   <include file="$(find nao_sensors)/launch/camera.launch" />
+  <!--
+  <include file="$(find nao_sensors)/launch/sonar.launch" />
+  -->
+
+  <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
   <node pkg="rostwitter" name="tweet" type="tweet.py" />
   <node pkg="image_view" name="image_saver" type="image_saver" >
     <remap from="image" to="/nao_camera/image_raw" />
@@ -25,4 +34,5 @@
     <param name="filename_format" value="/tmp/pepper_camera.png" />
   </node>
   <!-- <include file="$(find nao_driver)/launch/nao_driver.launch" /> -->
+  <node pkg="nao_dashboard" name="dashboard" type="nao_dashboard"/>
 </launch>
