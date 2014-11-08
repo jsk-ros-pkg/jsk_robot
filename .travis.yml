@@ -32,6 +32,7 @@ before_install: # Use this to prepare the system to install prerequisites or dep
   - sudo apt-get install -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" # default actions
   ##### quick hack for missing python-tk on hrpsys/waitInput.py
   - sudo apt-get install -qq -y python-tk
+  - sudo apt-get install -qq -y ros-$ROS_DISTRO-nao-driver
   # Setup rosdep
   - sudo rosdep init
   - rosdep update
