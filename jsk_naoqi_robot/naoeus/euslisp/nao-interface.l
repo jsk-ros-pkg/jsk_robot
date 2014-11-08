@@ -23,7 +23,7 @@
 		   nao_msgs::JointTrajectoryAction))
    (ros::advertise (if namespace (format nil "~A/cmd_pose" namespace) "cmd_pose") geometry_msgs::Pose2D 1)
    (ros::advertise (if namespace (format nil "~A/cmd_vel" namespace) "cmd_vel") geometry_msgs::Twist 1)
-   
+   (ros::advertise "/speech" std_msgs::String 1)
    ;; (dolist (param (send self controller-type))
    ;;   (let* ((controller-state (cdr (assoc :controller-state param)))
    ;; 	    (key (intern (string-upcase controller-state) *keyword-package*)))
