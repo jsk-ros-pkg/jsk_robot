@@ -121,18 +121,6 @@
    )
   )
 
-(defun nao-init (&optional (create-viewer))
-  (unless (boundp '*nao*) (nao))
-  (unless (ros::ok) (ros::roseus "nao_eus_interface"))
-  (unless (boundp '*ni*) (setq *ni* (instance nao-interface :init)))
-  
-  (ros::spin-once)
-  (send *ni* :spin-once)
-  
-  (send *nao* :angle-vector (send *ni* :state :potentio-vector))
-  (when create-viewer (objects (list *nao*)))
-  )
-
 #|
 (setq *nao* (nao))
 (objects (list *nao*))
