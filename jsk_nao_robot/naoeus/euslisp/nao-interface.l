@@ -23,7 +23,7 @@
 		   nao_msgs::JointTrajectoryAction))
    (ros::advertise (if namespace (format nil "~A/cmd_pose" namespace) "cmd_pose") geometry_msgs::Pose2D 1)
    (ros::advertise (if namespace (format nil "~A/cmd_vel" namespace) "cmd_vel") geometry_msgs::Twist 1)
-   
+   (ros::advertise "/speech" std_msgs::String 1)
    ;; (dolist (param (send self controller-type))
    ;;   (let* ((controller-state (cdr (assoc :controller-state param)))
    ;; 	    (key (intern (string-upcase controller-state) *keyword-package*)))
@@ -119,6 +119,18 @@
    ()
    (send self :angle-vector #f(105.292 13.8845 -94.3102 -26.1893 -18.3718 103.363 -15.2077 102.919 29.3582 -30.5008 -2.107 -2.72224 -55.721 121.039 -67.9785 2.02391 -2.107 -7.29261 -55.1105 121.039 -67.97 5.01224 -4.74855 -5.89115) 3000)
    )
+  )
+
+(defun nao-init (&optional (create-viewer))
+  (unless (boundp '*nao*) (nao))
+  (unless (ros::ok) (ros::roseus "nao_eus_interface"))
+  (unless (boundp '*ni*) (setq *ni* (instance nao-interface :init)))
+  
+  (ros::spin-once)
+  (send *ni* :spin-once)
+  
+  (send *nao* :angle-vector (send *ni* :state :potentio-vector))
+  (when create-viewer (objects (list *nao*)))
   )
 
 #|
