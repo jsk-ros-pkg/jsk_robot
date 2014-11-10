@@ -1,5 +1,6 @@
 <launch>
   <arg name="launch_openni" default="true" />
+  <rosparam command="load" file="$(find jsk_baxter_startup)/config/checkerboard_config.yaml" />
 
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg launch_openni)">
@@ -29,7 +30,7 @@
       <param name="latest_publish" value="true"/>
     </node>
   </group>
-  <node pkg="tf" type="static_transform_publisher" name="base_to_checkerboard" args="0.425 0.04 0.23 -0.1 3.14 0.055 /object /world 100" />
+  <node pkg="tf" type="static_transform_publisher" name="base_to_checkerboard" args="0.425 0.04 0.25 -0.1 3.1 0.02 /object /world 100" />
   <node pkg="dynamic_tf_publisher" name="tf_publish" type="tf_publish.py"/>
 
   <!-- end checkerboard  -->
