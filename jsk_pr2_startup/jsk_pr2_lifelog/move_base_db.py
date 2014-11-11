@@ -14,12 +14,14 @@ class MoveBaseDB(object):
     def __init__(self):
         self.db_name = rospy.get_param('~db_name','jsk_pr2_lifelog')
         self.col_name = rospy.get_param('~col_name', 'move_base_db')
-        self.update_cycle = rospy.get_param('update_cycle', 1)
+        self.update_cycle = rospy.get_param('~update_cycle', 1.0)
         self.map_frame = rospy.get_param('~map_frame','map')
         self.robot_frame = rospy.get_param('~robot_frame','base_link')
         self.tf_listener = tf2_ros.BufferClient("tf2_buffer_server")
         self.initialpose_pub = rospy.Publisher('/initialpose', geometry_msgs.msg.PoseWithCovarianceStamped)
         self.msg_store = MessageStoreProxy(database=self.db_name, collection=self.col_name)
+        rospy.loginfo("connected to %s.%s" % (self.db_name, self.col_name))
+        rospy.loginfo("map->robot: %s -> %s" % (self.map_frame, self.robot_frame))
 
         self.current_pose = None
         self.latest_pose = None
@@ -29,14 +31,15 @@ class MoveBaseDB(object):
 
     def insert_pose_to_db(self, map_to_robot):
         try:
-            self.msg_store.insert(map_to_robot)
+            res = self.msg_store.insert(map_to_robot)
+            rospy.loginfo("inserted %s : %s" % (res, map_to_robot))
         except Exception as e:
             rospy.logerr('failed to insert current robot pose to db: %s', e)
 
     def load_latest_pose(self):
         updated = None
         try:
-            updated = self.msg_store.query('geometry_msgs/TransformStamped', single=True, sort=[("$natural", -1)])
+            updated = self.msg_store.query('geometry_msgs/TransformStamped', single=True, sort_query=[("$natural", -1)])
         except Exception as e:
             rospy.logerr('failed to load latest pose from db: %s' % e)
             return
@@ -46,15 +49,19 @@ class MoveBaseDB(object):
 
     def need_update_db(self, t):
         if self.current_pose is None:
-            return False
+            if self.latest_pose is None:
+                return True
+            else:
+                return False
         diffthre = 0.1 + 1.0 / (rospy.Time.now() - self.latest_stamp).to_sec()
         diffpos = sum([(t.transform.translation.x - self.current_pose.transform.translation.x) ** 2,
                        (t.transform.translation.y - self.current_pose.transform.translation.y) ** 2,
                        (t.transform.translation.z - self.current_pose.transform.translation.z) ** 2]) ** 0.5
-        diffrot = sum([(t.transform.rotation.rotation.x - self.current_pose.transform.rotation.x) ** 2,
-                       (t.transform.rotation.rotation.y - self.current_pose.transform.rotation.y) ** 2,
-                       (t.transform.rotation.rotation.z - self.current_pose.transform.rotation.z) ** 2,
-                       (t.transform.rotation.rotation.w - self.current_pose.transform.rotation.w) ** 2]) ** 0.5
+        diffrot = sum([(t.transform.rotation.x - self.current_pose.transform.rotation.x) ** 2,
+                       (t.transform.rotation.y - self.current_pose.transform.rotation.y) ** 2,
+                       (t.transform.rotation.z - self.current_pose.transform.rotation.z) ** 2,
+                       (t.transform.rotation.w - self.current_pose.transform.rotation.w) ** 2]) ** 0.5
+        rospy.loginfo("diffthre: %f, diffpos: %f, diffrot: %f" % (diffthre, diffpos, diffrot))
         if diffthre < diffpos or diffthre / 2.0 < diffrot:
             return True
         else:
@@ -63,6 +70,7 @@ class MoveBaseDB(object):
     def insert_current_pose(self):
         try:
             transform = self.tf_listener.lookup_transform(self.map_frame,self.robot_frame,rospy.Time(0))
+#            rospy.loginfo("current pr2 location: %s" % transform)
             if self.need_update_db(transform):
                 self.insert_pose_to_db(transform)
                 self.current_pose = transform
@@ -72,7 +80,6 @@ class MoveBaseDB(object):
             rospy.logwarn('failed to get current robot pose from tf: %s' % e)
 
     def sleep_one_cycle(self):
-        self.pub_latest_pose()
         rospy.sleep(self.update_cycle)
 
     def pub_latest_pose(self):
@@ -95,6 +102,7 @@ if __name__ == "__main__":
     rospy.init_node('move_base_db')
     obj = MoveBaseDB()
     while not rospy.is_shutdown():
-        obj.insert_current_pose();
-        obj.sleep_one_cycle();
-    exit(1)
+        obj.insert_current_pose()
+        obj.pub_latest_pose()
+        obj.sleep_one_cycle()
+

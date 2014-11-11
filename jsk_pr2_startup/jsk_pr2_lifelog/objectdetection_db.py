@@ -34,7 +34,7 @@ class ObjectDetectionDB(object):
         self.subscribers = []
 
     # DB Insertion function
-    def insert_pose_to_db(self, map_to_robot, robot_to_obj)
+    def insert_pose_to_db(self, map_to_robot, robot_to_obj):
         self.msg_store.insert(map_to_robot)
         self.msg_store.insert(robot_to_obj)
     
