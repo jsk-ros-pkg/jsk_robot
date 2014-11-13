@@ -3,4 +3,10 @@
   <param name="account_info" value="/var/lib/robot/account.yaml" />
   <node name="tweet" pkg="rostwitter" type="tweet.py"
         output="$(arg output)" respawn="true" />
+  <node name="image_saver" pkg="image_view" type="image_saver"
+        output="$(arg output)" respawn="true" >
+    <remap from="image" to="/cameras/head_camera/image" />
+    <param name="save_all_image" value="false" />
+    <param name="filename_format" value="/tmp/baxter_camera.png" />
+  </node>
 </launch>
