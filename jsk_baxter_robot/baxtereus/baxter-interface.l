@@ -6,12 +6,15 @@
 
 (defclass baxter-interface
   :super robot-interface
-  :slots ())
+  :slots (gripper-sequence-id))
 (defmethod baxter-interface
   (:init (&rest args)
    (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states")
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
+     (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
+     (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
+     (setq gripper-sequence-id 0)
      ))
   (:default-controller ()
    (append
@@ -70,6 +73,51 @@
       (setq res (ros::service-call "/cameras/list" req))
       (send res :cameras)
       ))
+
+  (:clear-calib-grasp
+   (&optional (arm :arms))
+   (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
+     (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*CMD_CLEAR_CALIBRATION* a)
+     )
+   )
+
+  (:calib-grasp
+   (&optional (arm :arms) &key ((:pos pos) 100))
+   (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
+     (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_calibrate* a)
+     )
+   )
+
+  (:start-grasp
+   (&optional (arm :arms))
+   (send self :go-grasp arm :pos 0)
+   )
+
+  (:stop-grasp
+   (&optional (arm :arms))
+   (send self :go-grasp arm :pos 100)
+   )
+
+  (:go-grasp
+   (&optional (arm :arms) &key ((:pos pos) 0))
+   (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
+     (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_go* a :pos pos)
+     )
+   )
+
+  (:command-grasp
+   (cmd arm &key ((:pos pos) nil))
+   (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
+     (send ee-cmd :id 65538)
+     (send ee-cmd :command cmd)
+     (send ee-cmd :sender "/baxter_interface")
+     (send ee-cmd :sequence gripper-sequence-id)
+     (if pos
+         (send ee-cmd :args (format nil "{\"position\": ~A}" pos)))
+     (ros::publish (format nil "/robot/end_effector/~A_gripper/command" arm) ee-cmd)
+     (setq gripper-sequence-id (1+ gripper-sequence-id))
+     )
+   )
   )
 
 (defun baxter-init ()
@@ -77,4 +125,5 @@
       (setq *ri* (instance baxter-interface :init)))
   (if (not (boundp '*baxter*))
       (setq *baxter* (instance baxter-robot :init)))
+  (send *ri* :calib-grasp :arms)
   )
