@@ -136,15 +136,17 @@ else()
     COMMAND cp ${_baxter_urdf}/baxter.urdf ${PROJECT_SOURCE_DIR}/baxter.urdf
     DEPENDS ${_baxter_urdf}/baxter.urdf)
 endif()
-add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.dae
-  COMMAND echo "${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/baxter.urdf baxter.dae"
-  COMMAND ${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/baxter.urdf ${PROJECT_SOURCE_DIR}/baxter.dae
-  DEPENDS ${PROJECT_SOURCE_DIR}/baxter.urdf)
-add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.l
-  COMMAND echo "${_collada2eus} baxter.dae baxter.l"
-  COMMAND ${_collada2eus} ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${PROJECT_SOURCE_DIR}/baxter.l
-  DEPENDS ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${_collada2eus})
-add_custom_target(compile_baxter ALL DEPENDS ${PROJECT_SOURCE_DIR}/baxter.l)
+if(NOT EXISTS ${PROJECT_SOURCE_DIR}/baxter.l)
+  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.dae
+    COMMAND echo "${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/baxter.urdf baxter.dae"
+    COMMAND ${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/baxter.urdf ${PROJECT_SOURCE_DIR}/baxter.dae
+    DEPENDS ${PROJECT_SOURCE_DIR}/baxter.urdf)
+  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.l
+    COMMAND echo "${_collada2eus} baxter.dae baxter.l"
+    COMMAND ${_collada2eus} ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${PROJECT_SOURCE_DIR}/baxter.l
+    DEPENDS ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${_collada2eus})
+  add_custom_target(compile_baxter ALL DEPENDS ${PROJECT_SOURCE_DIR}/baxter.l)
+endif()
 
 #############
 ## Install ##
