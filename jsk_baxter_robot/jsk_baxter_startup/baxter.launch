@@ -6,6 +6,7 @@
   <arg name="launch_moveit" value="true"/>
   <arg name="launch_teleop" value="true"/>
   <arg name="launch_tweet" value="true"/>
+  <arg name="launch_wrench" value="true"/>
   <arg name="start_openni" value="true"/>
 
   <!-- Start Servo (Maybe This should not be here)-->
@@ -38,4 +39,10 @@
   <include if="$(arg launch_tweet)"
            file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
   </include>
+
+  <!-- Wrench -->
+  <include if="$(arg launch_wrench)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/virtual_force.launch" >
+  </include>
+
 </launch>
