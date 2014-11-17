@@ -1,0 +1,16 @@
+<launch>
+  <node pkg="roseus" type="roseus" name="end_effector_republisher" args="$(find jsk_baxter_startup)/jsk_baxter_lifelog/estimated_endeffector.l "/>
+
+  <!-- <node pkg="virtual_force_publisher" type="virtual_force_publisher" name="left_virtual_force_publisher"> -->
+  <!--   <remap from="joint_states" to="/robot/joint_states"/> -->
+  <!--   <remap from="wrench" to="/robot/end_effector/left/wrench"/> -->
+  <!--   <param name="root" value="left_arm_mount"/> -->
+  <!--   <param name="tip" value="left_hand"/> -->
+  <!-- </node> -->
+  <!-- <node pkg="virtual_force_publisher" type="virtual_force_publisher" name="right_virtual_force_publisher"> -->
+  <!--   <remap from="joint_states" to="/robot/joint_states"/> -->
+  <!--   <remap from="wrench" to="/robot/end_effector/right/wrench"/> -->
+  <!--   <param name="root" value="right_arm_mount"/> -->
+  <!--   <param name="tip" value="right_hand"/> -->
+  <!-- </node> -->
+</launch>
