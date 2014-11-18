@@ -3,7 +3,7 @@
 (ros::load-ros-manifest "jsk_pepper_startup")
 (ros::roseus "pepper_client_sample")
 
-;; 
+;;  see http://doc.aldebaran.com/2-1/naoqi/audio/altexttospeech-tuto.html#using-tags-for-voice-tuning for tag
 (ros::advertise "/speech" std_msgs::String 1)
 (defun speak-jp (str &rest args)
   (let ((msg (instance std_msgs::String :init)))
