@@ -9,4 +9,9 @@
     <param name="save_all_image" value="false" />
     <param name="filename_format" value="/tmp/baxter_camera.png" />
   </node>
+
+  <node pkg="face_recognition" type="Fserver" name="face_recognition">
+    <remap from="camera/image_raw" to="/cameras/head_camera/image"/>
+  </node>
+  <node pkg="face_recognition" type="Fclient" name="face_recognition_client"/>
 </launch>
