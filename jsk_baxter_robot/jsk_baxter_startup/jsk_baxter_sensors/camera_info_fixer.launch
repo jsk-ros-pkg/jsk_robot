@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="jsk_baxter_startup" type="camera_info_fixer.py"
+        name="right_hand_camera_fixer" >
+    <remap from="camera_info" to="/cameras/right_hand_camera/camera_info" />
+  </node>
+  <node pkg="jsk_baxter_startup" type="camera_info_fixer.py"
+        name="left_hand_camera_fixer" >
+    <remap from="camera_info" to="/cameras/left_hand_camera/camera_info" />
+  </node>
+  
+</launch>
