@@ -1,6 +1,7 @@
 <launch>
   <arg name="launch_servo" value="true"/>
   <arg name="launch_joint_trajectory" value="true"/>
+  <arg name="launch_gripper_action" value="true"/>
   <arg name="launch_openni" value="true"/>
   <arg name="launch_voice_echo" value="true"/>
   <arg name="launch_moveit" value="true"/>
@@ -14,12 +15,16 @@
 
   <!-- Startup joint trajectory will enable send command from eus-->
   <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="baxter_joint_trajectory" type="joint_trajectory_action_server.py" args="" output="screen" clear_params="true"/>
+  <node if="$(arg launch_gripper_action)" pkg="baxter_interface" name="baxter_gripper_action_server" type="gripper_action_server.py" args="" output="screen" clear_params="true"/>
 
   <!-- Use Custom OpenNI-->
   <include if="$(arg launch_openni)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kinect.launch" >
     <arg name="launch_openni" value="$(arg start_openni)" />
   </include>
+
+  <!-- Fix camera info -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/camera_info_fixer.launch" />
 
   <!-- Set the Mike to the PC-->
   <include if="$(arg launch_voice_echo)"
