@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_robot_startup</name>
+  <version>0.0.0</version>
+  <description>The jsk_robot_startup package</description>
+  <maintainer email="inagaki@todo.todo">inagaki</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>mongodb_store</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <run_depend>mongodb_store</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
+
+  <export>
+  </export>
+</package>
