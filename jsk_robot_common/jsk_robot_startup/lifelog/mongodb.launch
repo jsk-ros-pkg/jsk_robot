@@ -1,0 +1,7 @@
+<launch>
+  <!-- MongoDB -->
+  <launch>
+    <param name="mongodb_port" value="62345"/>
+    <include file="$(find mongodb_store)/mongodb_store.launch"/>
+  </launch>
+</launch>
