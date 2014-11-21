@@ -8,6 +8,11 @@
   (send *ri* :angle-vector (send *baxter* :angle-vector) 10000)
   (send *ri* :wait-interpolation)
 
+  ;;reset manip baxter
+  (send *baxter* :reset-manip-pose)
+  (send *ri* :angle-vector (send *baxter* :angle-vector) 10000)
+  (send *ri* :wait-interpolation)
+
   ;;Camera Control
   (ros::ros-info "camera-controls")
   (send *ri* :close-left-hand-camera)
