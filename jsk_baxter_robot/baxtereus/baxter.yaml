@@ -21,6 +21,7 @@ head:
 
 angle-vector:
   reset-pose : [20, -25, -40, 60, -20, 80, -20, -25, 40, 60, 20, 80, 0]
+  reset-manip-pose : [-13, -60, -50, 118, 29, 42, 13, -63, 50, 118, -29, 42, 0]
 
 larm-end-coords:
   parent : left_hand
