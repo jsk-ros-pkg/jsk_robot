@@ -21,6 +21,9 @@
     <arg name="launch_openni" value="$(arg start_openni)" />
   </include>
 
+  <!-- Fix camera info -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/camera_info_fixer.launch" />
+
   <!-- Set the Mike to the PC-->
   <include if="$(arg launch_voice_echo)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/voice.launch" >
