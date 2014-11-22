@@ -14,4 +14,6 @@
     <remap from="camera/image_raw" to="/cameras/head_camera/image"/>
   </node>
   <node pkg="face_recognition" type="Fclient" name="face_recognition_client"/>
+
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"/>
 </launch>
