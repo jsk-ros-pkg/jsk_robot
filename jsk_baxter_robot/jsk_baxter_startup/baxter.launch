@@ -1,14 +1,14 @@
 <launch>
-  <arg name="launch_servo" value="true"/>
-  <arg name="launch_joint_trajectory" value="true"/>
-  <arg name="launch_gripper_action" value="true"/>
-  <arg name="launch_openni" value="true"/>
-  <arg name="launch_voice_echo" value="true"/>
-  <arg name="launch_moveit" value="true"/>
-  <arg name="launch_teleop" value="true"/>
-  <arg name="launch_tweet" value="true"/>
-  <arg name="launch_wrench" value="true"/>
-  <arg name="start_openni" value="true"/>
+  <arg name="launch_servo" default="true"/>
+  <arg name="launch_joint_trajectory" default="true"/>
+  <arg name="launch_gripper_action" default="true"/>
+  <arg name="launch_openni" default="true"/>
+  <arg name="launch_voice_echo" default="true"/>
+  <arg name="launch_moveit" default="true"/>
+  <arg name="launch_teleop" default="true"/>
+  <arg name="launch_tweet" default="true"/>
+  <arg name="launch_wrench" default="true"/>
+  <arg name="start_openni" default="true"/>
 
   <!-- Start Servo (Maybe This should not be here)-->
   <node if="$(arg launch_servo)" pkg="baxter_tools" name="baxter_servo_node" type="enable_robot.py" args="-e" output="screen" clear_params="true"/>
