@@ -6,7 +6,7 @@
 
 (defclass baxter-interface
   :super robot-interface
-  :slots (gripper-sequence-id))
+  :slots (gripper-sequence-id right-gripper-action left-gripper-action))
 (defmethod baxter-interface
   (:init (&rest args)
    (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states")
@@ -15,6 +15,24 @@
      (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
+     
+     (setq right-gripper-action (instance ros::simple-action-client :init
+					  "robot/end_effector/right_gripper/gripper_action"
+					  control_msgs::GripperCommandAction
+					  ))
+     (setq left-gripper-action (instance ros::simple-action-client :init
+					 "robot/end_effector/left_gripper/gripper_action"
+					 control_msgs::GripperCommandAction
+					 ))
+
+     (setq joint-action-enable t)
+     
+     (dolist (action (list right-gripper-action left-gripper-action))
+       (unless (and joint-action-enable (send action :wait-for-server 3))
+	 (setq joint-action-enable nil)
+	 (ros::ros-warn "~A is not respond, baxter-interface is disabled" action)
+	 (return)))
+
      (setq gripper-sequence-id 0)
      ))
   (:default-controller ()
@@ -90,19 +108,37 @@
    )
 
   (:start-grasp
-   (&optional (arm :arms))
-   (send self :go-grasp arm :pos 0)
+   (&optional (arm :arms) &key (effort 50))
+   (send self :go-grasp arm :pos 0 :effort effort)
    )
 
   (:stop-grasp
-   (&optional (arm :arms))
-   (send self :go-grasp arm :pos 100)
+   (&optional (arm :arms) &key (effort 50))
+   (send self :go-grasp arm :pos 100 :effort effort)
    )
 
   (:go-grasp
-   (&optional (arm :arms) &key ((:pos pos) 0))
-   (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
-     (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_go* a :pos pos)
+   (&optional (arm :arms) &key (pos 0) (effort 50) (wait t))
+   (let (goal
+	 (clients (case arm
+		    (:larm (list left-gripper-action))
+		    (:rarm (list right-gripper-action))
+		    (:arms (list right-gripper-action left-gripper-action))
+		    (t (ros::ros-warn "arm[~a] in :move-gripper is invalid type" arm))))
+	 (results (list)))
+     (dolist (client clients)
+       (ros::ros-info "send-goal to ~A" client)
+       (setq goal  (instance control_msgs::GripperCommandActionGoal :init))
+       (send goal :goal :command :position pos)
+       (send goal :goal :command :max_effort effort)
+       (send client :send-goal goal)
+       )
+     
+     (if wait (send-all clients :wait-for-result)) 
+     (dolist (client clients)
+       (push (send client :get-result) results)
+       )
+     results
      )
    )
 
