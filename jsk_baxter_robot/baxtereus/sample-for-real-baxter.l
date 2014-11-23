@@ -24,15 +24,13 @@
   ;;Gripper Control
   (ros::ros-info "start-grasp")
   (send *ri* :start-grasp :rarm)
-  (unix::sleep 5)
+  (send *ri* :start-grasp :arms :effort 40)
 
   (ros::ros-info "stop-grasp")
   (send *ri* :stop-grasp)
-  (unix::sleep 5)
 
   (ros::ros-info "go-grasp")
-  (send *ri* :go-grasp :rarm :pos 50)
-  (unix::sleep 5)
+  (send *ri* :go-grasp :rarm :pos 50 :effort 30)
 
   ;;Set jpg file for baxter face
   ;;replace FILE_PATH with real jpeg file path
