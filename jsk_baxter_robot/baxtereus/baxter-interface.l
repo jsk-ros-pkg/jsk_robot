@@ -15,6 +15,7 @@
      (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
+     (ros::advertise "/robot/head/command_head_nod" std_msgs::Bool 1)
      
      (setq right-gripper-action (instance ros::simple-action-client :init
 					  "robot/end_effector/right_gripper/gripper_action"
@@ -181,6 +182,13 @@
      (send msg :data (send img :entity))
      (send msg :header :stamp (ros::time-now))
      (ros::publish "/robot/xdisplay" msg)
+     )
+   )
+
+  (:nod
+   ()
+   (let ((msg (instance std_msgs::Bool :init :data t)))
+     (ros::publish "/robot/head/command_head_nod" msg)
      )
    )
   )
