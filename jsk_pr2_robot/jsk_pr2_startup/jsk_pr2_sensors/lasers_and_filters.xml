@@ -8,7 +8,7 @@
     <remap from="cloud_filtered" to="tilt_scan_shadow_filtered" />
     <param name="target_frame" value="base_footprint" />
     <param name="high_fidelity" value="true" />
-    <rosparam command="load" file="$(find pr2_navigation_perception)/config/tilt_laser_filters.yaml" />
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_laser_filters.yaml" />
     <rosparam command="load" file="$(find pr2_navigation_perception)/config/point_cloud_footprint_filter.yaml" />
   </node>
 

@@ -1,3 +1,6 @@
+# copied from package://pr2navigation_perception/config/shadow_filters.yaml
+# used in lasers_and_filters.xml
+
 scan_filter_chain:
 - name: shadows
   type: ScanShadowsFilter
@@ -6,9 +9,3 @@ scan_filter_chain:
     max_angle: 170
     neighbors: 5
     window: 1
-- name: dark_shadows
-  type: LaserScanIntensityFilter
-  params: 
-    lower_threshold: 100
-    upper_threshold: 10000
-    disp_histogram: 0
