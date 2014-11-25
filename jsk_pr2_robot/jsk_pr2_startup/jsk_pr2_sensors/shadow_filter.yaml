@@ -1,4 +1,4 @@
-# copied from package://pr2navigation_perception/config/shadow_filters.yaml
+# copied from package://pr2_navigation_perception/config/shadow_filters.yaml
 # used in lasers_and_filters.xml
 
 scan_filter_chain:
