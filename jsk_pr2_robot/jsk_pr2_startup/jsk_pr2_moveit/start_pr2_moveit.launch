@@ -1,13 +1,16 @@
 <launch>
-  <arg name="USE_KINECT" default="true" />
+  <arg name="USE_LASER_AND_KINECT" default="true" />
+  <arg name="USE_LASER" default="false" />
+  <arg name="USE_KINECT" default="false" />
 
-  <!-- <arg if="$(arg USE_KINECT)" -->
-  <!--      name="sensor_params_file" -->
-  <!--      value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_kinect.yaml" /> -->
-  <!-- <arg unless="$(arg USE_KINECT)" -->
-  <!--      name="sensor_params_file" -->
-  <!--      value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_laser.yaml" /> -->
-  <arg name="sensor_params_file" value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors.yaml" />
+  <!-- select sensor -->
+  <arg if="$(arg USE_LASER_AND_KINECT)" name="sensor_params_file" value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors.yaml" />
+  <arg if="$(arg USE_LASER)"
+       name="sensor_params_file"
+       value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_laser.yaml" />
+  <arg if="$(arg USE_KINECT)"
+       name="sensor_params_file"
+       value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_kinect.yaml" />
 
   <include file="$(find pr2_moveit_config)/launch/planning_context.launch">
     <arg name="load_robot_description" value="false"/>
