@@ -1,5 +1,6 @@
 <!-- Copied from pr2_navigation_perception/laser_and_filters.xml -->
 <launch>
+  <arg name="gazebo" default="false" />
 
   <node pkg="topic_tools" type="throttle" name="base_scan_throttle" args="messages base_scan 1.0 base_scan_throttled" machine="c2" output="screen"/>
   <!-- Filter for tilt laser shadowing/veiling -->
@@ -8,7 +9,8 @@
     <remap from="cloud_filtered" to="tilt_scan_shadow_filtered" />
     <param name="target_frame" value="base_footprint" />
     <param name="high_fidelity" value="true" />
-    <rosparam command="load" file="$(find pr2_navigation_perception)/config/tilt_laser_filters.yaml" />
+    <rosparam command="load" file="$(find pr2_navigation_perception)/config/tilt_laser_filters.yaml" unless="$(arg gazebo)"/>
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_laser_filters_for_gazebo.yaml" if="$(arg gazebo)"/>
     <rosparam command="load" file="$(find pr2_navigation_perception)/config/point_cloud_footprint_filter.yaml" />
   </node>
 
@@ -34,7 +36,8 @@
     <remap from="scan" to="base_scan" />
     <remap from="cloud_filtered" to="base_scan_shadow_filtered" />
     <param name="target_frame" value="base_footprint" />
-    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/shadow_filter.yaml" />
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/shadow_filter.yaml" unless="$(arg gazebo)"/>
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/shadow_filter_for_gazebo.yaml" if="$(arg gazebo)"/>
     <rosparam command="load" file="$(find pr2_navigation_perception)/config/point_cloud_footprint_filter.yaml" />
   </node>
 
