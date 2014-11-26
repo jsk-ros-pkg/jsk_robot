@@ -32,6 +32,8 @@
   (ros::ros-info "go-grasp")
   (send *ri* :go-grasp :rarm :pos 50 :effort 30)
 
+
+  (send *ri* :nod)
   ;;Set jpg file for baxter face
   ;;replace FILE_PATH with real jpeg file path
   ;;(send *ri* :set-baxter-face FILE_PATH)
