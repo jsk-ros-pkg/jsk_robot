@@ -26,12 +26,9 @@
 					 control_msgs::GripperCommandAction
 					 ))
 
-     (setq joint-action-enable t)
-     
      (dolist (action (list right-gripper-action left-gripper-action))
        (unless (and joint-action-enable (send action :wait-for-server 3))
-	 (setq joint-action-enable nil)
-	 (ros::ros-warn "~A is not respond, baxter-interface is disabled" action)
+	 (ros::ros-warn "~A is not respond" action)
 	 (return)))
 
      (setq gripper-sequence-id 0)
