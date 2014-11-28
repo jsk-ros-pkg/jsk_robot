@@ -48,6 +48,5 @@
     <param name="save_all_image" value="false" />
     <param name="filename_format" value="/tmp/pepper_camera.png" />
   </node>
-  <!-- <include file="$(find nao_driver)/launch/nao_driver.launch" /> -->
   <node pkg="nao_dashboard" name="dashboard" type="nao_dashboard"/>
 </launch>
