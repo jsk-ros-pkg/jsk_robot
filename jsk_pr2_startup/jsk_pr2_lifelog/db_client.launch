@@ -1,9 +1,12 @@
 <launch>
-  <include file="$(find mongodb_store)/launch/mongodb_store.launch">
-    <arg name="machine" value="c1" />
+  <arg name="use_machine" default="false" />
+  <arg name="machine" default="localhost" />
+  
+    <include file="$(find mongodb_store)/launch/mongodb_store.launch">
+    <arg name="machine" value="$(arg machine)" unless="$(arg use_machine)"/>
     <arg name="db_path" value="/var/lib/robot/mongodb_store" />
     <arg name="port" value="62345" />
-    <arg name="use_repl_set" value="false" />
+    <arg name="use_repl_set" value="true" />
     <arg name="repl_set" value="rs0" />
   </include>
 
