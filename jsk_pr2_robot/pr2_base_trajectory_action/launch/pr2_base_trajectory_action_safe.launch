@@ -1,0 +1,10 @@
+<launch>
+
+  <node pkg="pr2_base_trajectory_action" type="pr2_base_trajectory_action"
+	name="base_trajectory_action" respawn="True" output="screen">
+    <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
+    <remap from="command" to="/input_vel"/>
+    <remap from="odom" to="/base_odometry/odom"/>
+  </node>
+
+</launch>

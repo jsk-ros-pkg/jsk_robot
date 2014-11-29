@@ -9,12 +9,10 @@
 
 (defun mei-voice-message-callback
   (msg)
-  (print "aaa")
-  (print msg)
   (unix:system
    (format nil "~A ~A happy /tmp/tmp.wav && aplay /tmp/tmp.wav"
-	   *text2wave-jp-path*
-	   (send msg :data))
+           *text2wave-jp-path*
+           (send msg :data))
    ))
 
 (ros::subscribe
@@ -25,7 +23,6 @@
 (ros::rate 3)
 (do-until-key
  (if (not (ros::ok)) (return-from nil nil))
- (print 'running)
  (ros::spin-once)
  (ros::sleep)
  )

@@ -1,9 +1,0 @@
-<launch>
-  <include file="$(find jsk_pr2_startup)/pr2.launch" >
-    <arg name="launch_openni" value="false" />
-  </include>
-
-  <include file="$(find pr2_interactive_manipulation)/launch/pr2_interactive_manipulation_robot.launch">
-    <!--arg name="stereo" value="true" /-->
-  </include>
-</launch>

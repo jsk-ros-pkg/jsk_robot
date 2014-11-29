@@ -1,0 +1,12 @@
+# this file is a copy of pr2_navigation_config/move_base/move_base_params.yaml 
+
+#footprint: [[-0.325, -0.325], [-0.325, 0.325], [0.325, 0.325], [0.46, 0.0], [0.325, -0.325]]
+local_costmap:
+  footprint: [[-0.325, -0.325], [-0.425, -0.175], [-0.425, 0.175], [-0.325, 0.325], [0.325, 0.325], [0.375, 0.0], [0.325, -0.325]]
+global_costmap:
+  footprint: [[-0.325, -0.325], [-0.425, -0.175], [-0.425, 0.175], [-0.325, 0.325], [0.325, 0.325], [0.375, 0.0], [0.325, -0.325]]
+
+controller_frequency: 10.0
+controller_patience: 15.0
+clearing_radius: 0.59
+footprint_padding: 0.015

@@ -1,0 +1,10 @@
+#copy from pr2_object_manipulation_launch/config/collision_map_sources_laser.yaml
+cloud_sources:
+  - name: /tilt_scan_shadow2_self_filtered
+    frame_subsample: 1
+    point_subsample: 1
+    sensor_frame: laser_tilt_link
+
+camera_info_topic: /narrow_stereo_textured/left/camera_info
+camera_stereo_offset_left: 128
+camera_stereo_offset_right: 0

@@ -1,0 +1,14 @@
+sensors:
+  - sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+    point_cloud_topic: /openni_c2/depth_registered/points_throttle
+    max_range: 2.0
+    point_subsample: 1
+    padding_offset: 0.1
+    padding_scale: 1.0
+    filtered_cloud_topic: filtered_cloud
+  - sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+    point_cloud_topic: /tilt_scan_shadow_filtered
+    max_range: 5.0
+    padding_offset: 0.06
+    padding_scale: 1.0
+    filtered_cloud_topic: filtered_laser_cloud

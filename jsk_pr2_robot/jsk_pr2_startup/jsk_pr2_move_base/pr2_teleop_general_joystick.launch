@@ -1,0 +1,67 @@
+<launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <!--  Arm controllers for mannequin mode -->
+  <rosparam command="load" file="$(find pr2_mannequin_mode)/config/pr2_arm_controllers_loose.yaml" />
+  <node pkg="pr2_controller_manager" type="spawner" name="spawn_arm_controllers"
+        args="--stopped r_arm_controller_loose l_arm_controller_loose" />
+
+  <!-- Head controllers for mannequin mode -->
+  <rosparam command="load" file="$(find pr2_mannequin_mode)/config/head_position_controller_loose.yaml" />
+  <node pkg="pr2_controller_manager" type="spawner" name="spawn_head_controller"
+        args="--stopped head_traj_controller_loose" />
+
+  <node pkg ="pr2_arm_kinematics" type="pr2_arm_kinematics_node" name="pr2_left_arm_kinematics" output="screen">
+   <param name="tip_name" value="l_wrist_roll_link" />
+   <param name="root_name" value="torso_lift_link" />
+  </node>
+
+  <node pkg="pr2_arm_kinematics" type="pr2_arm_kinematics_node" name="pr2_right_arm_kinematics" output="screen">
+   <param name="tip_name" value="r_wrist_roll_link" />
+   <param name="root_name" value="torso_lift_link" />
+  </node>
+
+  <!-- Trajectory Locks for Mannequin Modes -->
+  <include file="$(find pr2_mannequin_mode)/launch/trajectory_lock.launch"/>
+
+  <node pkg="pr2_tuck_arms_action" type="tuck_arms.py" name="tuck_arms_action" output="screen">
+  	<param name="controller_name" type="string" value="arm_controller"/>
+  </node>
+
+  <node pkg="pr2_teleop_general" type="pr2_teleop_general_joystick" name="pr2_teleop_general_joystick" output="screen" machine="c2">
+  	<remap from="base_controller/command" to="teleop/joy_vel"/>
+  	<param name="control_body" type="bool" value="true"/>
+        <param name="control_head" type="bool" value="true"/>
+        <param name="control_larm" type="bool" value="true"/>
+        <param name="control_rarm" type="bool" value="true"/>
+	<param name="control_prosilica" type="bool" value="false"/>
+  	<param name="walk_along_x_speed_scale" type="double" value="3.0"/>
+  	<param name="walk_along_y_speed_scale" type="double" value="1.0"/>
+  	<param name="walk_along_w_speed_scale" type="double" value="3.0"/>
+  	<param name="walk_along_x_dist_max" type="double" value=".25"/>
+  	<param name="walk_along_y_dist_max" type="double" value=".20"/>
+	<!-- need deadman-nopublish option in teleop node -->
+  	<remap from="head_traj_controller/command" to="head_traj_controller/command_deadman"/>
+  	<remap from="torso_controller/command" to="torso_controller/command_deadman"/>
+  </node>
+
+  <!-- below mux nodes are needed until deadman option is enable in teleop node -->  
+  <group ns="head_traj_controller">
+    <node pkg="topic_tools" type="mux" name="command_mux" respawn="true"
+          args="command command_dummy  command_deadman" machine="c2"/>
+    <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+          name="command_selector" respawn="true"
+          args="/joy 'm.buttons[11]==1' command_deadman">
+      <param name="default_select" value="command_dummy"/>
+    </node>
+  </group>
+  <group ns="torso_controller">
+    <node pkg="topic_tools" type="mux" name="command_mux" respawn="true"
+          args="command command_dummy  command_deadman" machine="c2"/>
+    <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+          name="command_selector" respawn="true"
+          args="/joy 'm.buttons[10]==1' command_deadman">
+      <param name="default_select" value="command_dummy"/>
+    </node>
+  </group>
+
+</launch>

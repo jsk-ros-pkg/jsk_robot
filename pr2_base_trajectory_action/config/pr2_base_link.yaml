@@ -1,9 +1,0 @@
-x_joint_name: base_link_x
-y_joint_name: base_link_y
-rotational_joint_name: base_link_pan
-base_link_x:
-    max_velocity: 0.305
-base_link_y:
-    max_velocity: 0.305
-base_link_pan:
-    max_velocity: 0.505

@@ -1,0 +1,4 @@
+Noise-LocationFile
+Version=1.0
+NumOfPosition=1
+Position -1,0.204,0,-0.979

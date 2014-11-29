@@ -1,0 +1,12 @@
+<launch>
+  <node name="pr2_hark" pkg="jsk_pr2_startup"
+        type="microcone_localization_MFCC.sh" output="log"
+        machine="c1"
+        if="$(env USE_MIC_C1)"
+        />
+  <node name="pr2_hark" pkg="jsk_pr2_startup"
+        type="microcone_localization_MFCC.sh" output="log"
+        machine="c2"
+        if="$(env USE_MIC_C2)"
+        />
+</launch>

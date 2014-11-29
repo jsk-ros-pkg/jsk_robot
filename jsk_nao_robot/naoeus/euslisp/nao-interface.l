@@ -1,6 +1,6 @@
 (ros::roseus "nao")
 
-(load "package://euscollada/nao.l")
+(load "package://naoeus/euslisp/nao.l")
 (load "package://pr2eus/robot-interface.l")
 (ros::load-ros-manifest "naoeus")
 
@@ -23,7 +23,8 @@
 		   nao_msgs::JointTrajectoryAction))
    (ros::advertise (if namespace (format nil "~A/cmd_pose" namespace) "cmd_pose") geometry_msgs::Pose2D 1)
    (ros::advertise (if namespace (format nil "~A/cmd_vel" namespace) "cmd_vel") geometry_msgs::Twist 1)
-   
+   (ros::advertise "/speech" std_msgs::String 1)
+   (ros::advertise "/joint_angles" nao_msgs::JointAnglesWithSpeed 1)
    ;; (dolist (param (send self controller-type))
    ;;   (let* ((controller-state (cdr (assoc :controller-state param)))
    ;; 	    (key (intern (string-upcase controller-state) *keyword-package*)))
@@ -41,41 +42,10 @@
      (cons :controller-action (if namespace (format nil "~A/joint_trajectory" namespace ) "joint_trajectory"))
      ;;"joint_trajectory")
      ;;(cons :controller-state "joint_trajectory")
-     (cons :controller-state "")
+     (cons :controller-state "dummy_state") ;; this is dummy
      (cons :action-type nao_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
-
-  (:add-controller 
-   (ctype &key (joint-enable-check))
-   (let (tmp-actions)
-     (mapcar
-      #'(lambda (param)
-	  (let* ((controller-action (cdr (assoc :controller-action param)))
-		 (action-type (cdr (assoc :action-type param)))
-		 (action (instance ros::simple-action-client :init controller-action action-type
-				   :groupname groupname)))
-	    (push action tmp-actions)))
-      (send self ctype))
-     (setq tmp-actions (nreverse tmp-actions))
-     ;;
-     (dolist (action tmp-actions)
-       (unless (and joint-action-enable (send action :wait-for-server 3))
-	 (ros::ros-warn "~A is not respond, ~A-interface is disabled" action (send robot :name))
-	 (when joint-enable-check
-	   (setq joint-action-enable nil)
-	   (return))))
-     
-     ;; (dolist (param (send self ctype))
-     ;;   (let* ((controller-state (cdr (assoc :controller-state param)))
-     ;; 	      (key (intern (string-upcase controller-state) *keyword-package*)))
-     ;; 	 (ros::subscribe controller-state
-     ;; 			 pr2_controllers_msgs::JointTrajectoryControllerState
-     ;; 			 #'send self :set-robot-state1 key :groupname groupname)))
-     ;;
-     (setf (gethash ctype controller-table) tmp-actions)
-     tmp-actions
-     ))
 
   (:servo-on () (send self :send-stiffness-controller 1.0))
   (:servo-off () (send self :send-stiffness-controller 0.0))
@@ -85,6 +55,7 @@
 	 (joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
      (send goal :header :seq 1)
      (send goal :header :stamp (ros::time-now))
+     (setq joint-names (append joint-names (list "RHand" "LHand")))
      (send goal :goal :trajectory :joint_names joint-names)
      (send goal :goal :trajectory :header :stamp (ros::time-now))
      (send goal :goal :trajectory :points
@@ -132,20 +103,68 @@
    ()
    (send self :go-velocity 0 0 0 0 :stop nil)
    )
-
+  
   (:speak
    (str)
+   (let ((speech_msg (instance std_msgs::String :init)))
+     (send speech_msg :data str) 
+     (ros::publish "/speech" speech_msg))
    )
+  
   (:start-grasp
    (&optional (arm :arms))
-   )
+   (let ((start_grasp_msg (instance nao_msgs::JointAnglesWithSpeed :init)))
+     (send start_grasp_msg :header :stamp (ros::time-now))
+     (send start_grasp_msg :header :seq 1)
+     (send start_grasp_msg :speed 0.5)
+     (send start_grasp_msg :relative 0)
+     (case arm  
+       (:arms
+	(send start_grasp_msg :joint_names (list "RHand" "LHand"))
+	(send start_grasp_msg :joint_angles (list 0.0 0.0)))
+       (:rarm 
+	(send start_grasp_msg :joint_names (list "RHand"))
+	(send start_grasp_msg :joint_angles (list 0.0 )))
+       (:larm 
+	(send start_grasp_msg :joint_names (list "LHand"))
+	(send start_grasp_msg :joint_angles (list 0.0))))
+     (ros::publish "/joint_angles" start_grasp_msg)
+     ))
   (:stop-grasp
    (&optional (arm :arms))
-   )
+   (let ((stop_grasp_msg (instance nao_msgs::JointAnglesWithSpeed :init)))
+     (send stop_grasp_msg :header :stamp (ros::time-now))
+     (send stop_grasp_msg :header :seq 1)
+     (send stop_grasp_msg :speed 0.5)
+     (send stop_grasp_msg :relative 0)
+     (case arm  
+       (:arms
+	(send stop_grasp_msg :joint_names (list "RHand" "LHand"))
+	(send stop_grasp_msg :joint_angles (list 1.0 1.0)))
+       (:rarm 
+	(send stop_grasp_msg :joint_names (list "RHand"))
+	(send stop_grasp_msg :joint_angles (list 1.0 )))
+       (:larm 
+	(send stop_grasp_msg :joint_names (list "LHand"))
+	(send stop_grasp_msg :joint_angles (list 1.0))))
+     (ros::publish "/joint_angles" stop_grasp_msg)
+     ))
   (:reset-pose
    ()
    (send self :angle-vector #f(105.292 13.8845 -94.3102 -26.1893 -18.3718 103.363 -15.2077 102.919 29.3582 -30.5008 -2.107 -2.72224 -55.721 121.039 -67.9785 2.02391 -2.107 -7.29261 -55.1105 121.039 -67.97 5.01224 -4.74855 -5.89115) 3000)
    )
+  )
+
+(defun nao-init (&optional (create-viewer))
+  (unless (boundp '*nao*) (nao))
+  (unless (ros::ok) (ros::roseus "nao_eus_interface"))
+  (unless (boundp '*ni*) (setq *ni* (instance nao-interface :init)))
+  
+  (ros::spin-once)
+  (send *ni* :spin-once)
+  
+  (send *nao* :angle-vector (send *ni* :state :potentio-vector))
+  (when create-viewer (objects (list *nao*)))
   )
 
 #|
