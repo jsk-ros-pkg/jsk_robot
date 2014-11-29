@@ -42,8 +42,12 @@ class MoveBaseDB(object):
             updated = self.msg_store.query('geometry_msgs/TransformStamped', single=True, sort_query=[("$natural", -1)])
         except Exception as e:
             rospy.logerr('failed to load latest pose from db: %s' % e)
-            return
+            if 'master has changed' in str(e):
+                self.load_latest_pose()
+            else:
+                return
         if updated is not None:
+            rospy.loginfo('found latest pose %s' % updated)
             self.current_pose = updated[0]
             self.latest_pose = updated[0]
 
@@ -95,6 +99,7 @@ class MoveBaseDB(object):
             try:
                 self.initialpose_pub.publish(pub_msg)
                 self.latest_pose = None
+                rospy.loginfo('published latest pose %s' % pub_msg)
             except Exception as e:
                 rospy.logerr('failed to publish initial robot pose: %s' % e)
 

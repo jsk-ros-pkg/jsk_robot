@@ -17,6 +17,7 @@ def kill_mongod():
     except Exception as e:
         rospy.logfatal('cannot find mongod.lock: %s' % e)
         return
+    rospy.sleep(5.0)
     try:
         os.kill(pid, signal.SIGINT)
         rospy.loginfo('killed mongod: %d' % pid)
