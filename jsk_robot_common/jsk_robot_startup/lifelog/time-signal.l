@@ -4,6 +4,8 @@
 (load "package://pr2eus/speak.l")
 (ros::roseus "tiem_signal")
 
+(ros::advertise "robotsound" sound_play::SoundRequest)
+
 (defun speak-time
   (hour)
   (cond
@@ -31,6 +33,7 @@
 
 (defun start-time-signal
   (hour)
+  (ros::ros-info "start time signal")
   (let (music-list
 	music-index
 	music)
