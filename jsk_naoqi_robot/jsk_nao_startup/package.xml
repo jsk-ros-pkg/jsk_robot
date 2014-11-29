@@ -41,11 +41,11 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>nao_driver</build_depend>
+  <build_depend>naoqi_driver</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>rostwitter</build_depend>
 
-  <run_depend>nao_driver</run_depend>
+  <run_depend>naoqi_driver</run_depend>
   <run_depend>nao_interaction_msgs</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>rostwitter</run_depend>
