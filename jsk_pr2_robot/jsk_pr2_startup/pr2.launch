@@ -77,7 +77,10 @@
 
   <!-- logging node for PR2  -->
   <include if="$(arg launch_db)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch">
+    <arg name="use_machine" value="true" />
+    <arg name="machine" value="c1" />
+  </include>
 
   <!-- pr2 warning -->
   <!-- battery warning -->
