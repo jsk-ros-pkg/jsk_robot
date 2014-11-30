@@ -3,9 +3,12 @@
 (ros::load-ros-manifest "roseus")
 (load "package://pr2eus/speak.l")
 (defvar *camera-topic-name* "/openni_c2/rgb/image_rect_color")
+(when (ros::has-param "/active_user/image_topic")
+  (setq *camera-topic-name* (ros::get-param "/active_user/image_topic"))
+  )
 
 (ros::roseus "tweet_client")
-(ros::advertise "/pr2twit" std_msgs::String 1)
+(ros::advertise "/tweet" std_msgs::String 1)
 
 ;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
 (while (not (ros::has-param "/active_user/elapsed_time"))
@@ -86,12 +89,12 @@
     (ros::ros-info "tweeting ~A" twit-str)
     (cond
      (with-image
-      (ros::publish "/pr2twit"
+      (ros::publish "/tweet"
                     (instance std_msgs::String :init
                               :data (format nil "~A ~A"
                                             twit-str (format nil "/tmp/frame_~A_0000.jpg" (unix::getpid))))))
      (t
-      (ros::publish "/pr2twit" (instance std_msgs::String :init :data twit-str))
+      (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))
       ))
     (when speek (speak-jp "ついーとしました"))
     )
