@@ -30,11 +30,11 @@ angle-vector:
 larm-end-coords:
   parent : left_hand
   translate : [0, 0, 0.10]
-  rotate : [ 0.57735, -0.57735,  0.57735, 120]
+  rotate : [0 -1.0 0 90]
 rarm-end-coords:
   parent : right_hand
   translate : [0, 0, 0.10]
-  rotate : [-0.57735, -0.57735, -0.57735, 120]
+  rotate : [0 -1 0 90]
 head-end-coords:
   parent : head_camera
   translate : [0, 0, 0]
