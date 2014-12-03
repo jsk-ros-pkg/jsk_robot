@@ -2,7 +2,7 @@
 
 (ros::roseus "twitter_client_tablet")
 
-(load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
+(load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (defun twit-cb (msg)
   (let ((twit-str (send msg :data)))

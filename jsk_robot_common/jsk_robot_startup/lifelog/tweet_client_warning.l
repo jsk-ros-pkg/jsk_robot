@@ -2,7 +2,7 @@
 
 (ros::roseus "twitter_client_warning")
 
-(load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
+(load "package://jsk_robot_startup/lifelog/tweet_client.l")
 (ros::load-ros-manifest "diagnostic_msgs")
 
 (defun diagnostics-cb (msg)

@@ -2,7 +2,12 @@
 
 (ros::roseus "twitter_client_worktime")
 
-(load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
+(load "package://jsk_robot_startup/lifelog/tweet_client.l")
+
+(defvar *robot-name* "robot")
+(when (ros::has-param "/active_user/robot_name")
+  (setq *robot-name* (ros::get-param "/active_user/robot_name"))
+  )
 
 (ros::rate 0.1)
 (do-until-key
@@ -14,12 +19,13 @@
   (when (> *elapsed-time* *target-second*)
     (incf *target-second* *tweet-second* )
     (ros::ros-info "tweet ~A ~A" *user-name* *elapsed-time*)
-    (let ((mainstr (format nil "~A has used PR2 for ~d minutes"
+    (let ((mainstr (format nil "~A has used ~A for ~d minutes"
                            ;; why delete *user-name* after space ?
                            ;;(subseq *user-name* 0
                            ;;(or (position #\space *user-name*)
                            ;;(length *user-name*)))
                            *user-name*
+			   *robot-name*
                            (round (/ *elapsed-time* 60))))
           presubstr postsubstr)
       (cond
@@ -46,6 +52,5 @@
                     :warning-time 1 :with-image t)
 
       ))
-  (ros::spin-once)
   (ros::sleep)
   )

@@ -1,0 +1,64 @@
+<launch>
+  <arg name="robot_name" default="PR2"/>
+  <arg name="worktime_enable" default="true"/>
+  <arg name="uptime_enable" default="true"/>
+  <arg name="tablet_enable" default="true"/>
+  <arg name="warning_enable" default="true"/>
+
+  <arg name="motor_subscribe" default="true"/>
+  <arg name="odom_subscribe" default="true"/>
+  <arg name="joint_state_subscribe" default="true"/>
+
+  <arg name="remap_motor_state" default="/pr2_ethercat/motors_halted"/>
+  <arg name="remap_odom_state" default="/base_odometry/odometer"/>
+  <arg name="remap_joint_states" default="/joint_states"/>
+  <arg name="remap_diagnostics" default="/diagnostics"/>
+
+  <arg name="image_topic" default="/openni_c2/rgb/image_rect_color"/>
+  <arg name="machine" default="localhost"/>
+  <arg name="output" default="screen"/>
+
+  <arg name="account_info" default="/var/lib/robot/twitter_account_pr2jsk.yaml"/>
+  <param name="account_info" value="$(arg account_info)" />
+
+  <node name="tweet" pkg="rostwitter" type="tweet.py"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true" >
+  </node>
+
+  <node name="active_user" pkg="roseus"
+        type="roseus" args="$(find jsk_robot_startup)/lifelog/active_user.l"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true">
+    <param name="robot_name" value="$(arg robot_name)"/>
+    <param name="image_topic" value="$(arg image_topic)"/>
+    <param name="motor_subscribe" value="$(arg motor_subscribe)"/>
+    <param name="odom_subscribe" value="$(arg odom_subscribe)"/>
+    <param name="joint_state_subscribe" value="$(arg joint_state_subscribe)"/>
+
+    <remap from="motor_state" to="$(arg remap_motor_state)"/>
+    <remap from="odom_state" to="$(arg remap_odom_state)"/>
+    <remap from="joint_states" to="$(arg remap_joint_states)"/>
+    <remap from="diagnostics" to="$(arg remap_diagnostics)"/>
+  </node>
+  <node if="$(arg worktime_enable)" name="tweet_client_worktime" pkg="roseus"
+        type="roseus" args="$(find jsk_robot_startup)/lifelog/tweet_client_worktime.l"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true">
+  </node>
+  <node if="$(arg uptime_enable)" name="tweet_client_uptime" pkg="roseus"
+        type="roseus" args="$(find jsk_robot_startup)/lifelog/tweet_client_uptime.l"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true" >
+  </node>
+  <node if="$(arg tablet_enable)" name="tweet_client_tablet" pkg="roseus"
+        type="roseus" args="$(find jsk_robot_startup)/lifelog/tweet_client_tablet.l"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true" >
+  </node>
+  <node if="$(arg warning_enable)" name="tweet_client_warning" pkg="roseus"
+        type="roseus" args="$(find jsk_robot_startup)/lifelog/tweet_client_warning.l"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true" >
+  </node>
+</launch>

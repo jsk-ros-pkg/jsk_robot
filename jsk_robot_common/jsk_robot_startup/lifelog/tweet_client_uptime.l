@@ -2,10 +2,15 @@
 
 (ros::roseus "twitter_client_uptime")
 
-(load "package://jsk_pr2_startup/jsk_pr2_lifelog/tweet_client.l")
+(load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (setq *src-lines* nil)
 (setq *random-state* (coerce (unix::gettimeofday) integer-vector))
+
+(defvar *robot-name* "robot")
+(when (ros::has-param "/active_user/robot_name")
+  (setq *robot-name* (ros::get-param "/active_user/robot_name"))
+  )
 
 (ros::rate 0.1)
 (do-until-key
@@ -15,7 +20,7 @@
   (let ((st (ros::get-param "/active_user/start_time")))
     (when st
       (let ((waking-time (- (send (ros::time-now) :to-sec) st)))
-        (ros::ros-info "PR2 waking ~A sec (~A)" waking-time *waking-target-second*)
+        (ros::ros-info "~A waking ~A sec (~A)" *robot-name* waking-time *waking-target-second*)
         (when (> waking-time *waking-target-second*)
           (incf *waking-target-second* *waking-tweet-second*)
           ;; tweet source of robot-interface
@@ -53,6 +58,5 @@
               (tweet-string dt)
               ))
           ))))
-  (ros::spin-once)
   (ros::sleep)
   )
