@@ -3,6 +3,9 @@
 (ros::load-ros-manifest "jsk_pepper_startup")
 (ros::roseus "pepper_client_sample")
 
+(ros::roseus-add-msgs "nao_msgs")
+(ros::roseus-add-srvs "nao_msgs")
+
 ;;  see http://doc.aldebaran.com/2-1/naoqi/audio/altexttospeech-tuto.html#using-tags-for-voice-tuning for tag
 (ros::advertise "/speech" std_msgs::String 1)
 (defun speak-jp (str &rest args)
@@ -16,7 +19,7 @@
   (let ((ret))
     (setq ret (ros::service-call "get_installed_behaviors" (instance nao_msgs::GetInstalledBehaviorsRequest :init)))
     (send ret :behaviors)
-  ))
+    ))
 
 ;; (run-behavior "pepper_tongue_twister_sample")
 ;; (run-behavior "pepper_dialog_sample")
@@ -38,7 +41,7 @@
 ;; (recognize-word (list "Konnichiwa" "Sayounara" "Pepper"))
 ;; (recognize-word (list "こんにちは" "さようなら" "Pepper" "あれ" "ぼく" "げんき" "ろぼっと" "しんぼう"))
 (defun recognize-word (vocabulary &key (threshold 0.3) (wait 5))
-  (let (tm req st)
+  (let (tm req str)
     (setq str (car vocabulary))
     (dolist (v (cdr vocabulary))
       (setq str (format nil "~A / ~A" str v)))
@@ -80,8 +83,12 @@
   (let ((req (instance nao_interaction_msgs::LearnFaceRequest :init))
 	res)
     (send req :name :data name)
+    (speak-jp "こんにちは")
+    (speak-jp "ぼく　ペッパー")
+    (speak-jp "あなたのおなまえ覚えます")
     (setq res (ros::service-call "/nao_vision/face_detection/learn_face" req))
     (ros::ros-warn "learn face ~A~%" (if (send res :result :data) "success" "fail"))
+    (speak-jp "~Aさん　よろしくね" name)
     )
   )
 
@@ -90,9 +97,11 @@
   (let ((req (instance nao_interaction_msgs::LearnFaceRequest :init))
 	res)
     (send req :name :data name)
-  
+    ;;(speak-jp "~Aさん" name)
+    (speak-jp "残念だけど~Aさんの顔を忘れるよ" name)
     (setq res (ros::service-call "/nao_vision/face_detection/forget_person" req))
-    (ros::ros-warn "forget person ~A~%" (if (send res :result :data) "success" "fail")))
+    (ros::ros-warn "forget person ~A~%" (if (send res :result :data) "success" "fail"))
+    (speak-jp "また遊んでね"))
   )
 
 
@@ -127,7 +136,7 @@
     (ros::wait-for-service "/nao_vision/face_detection/disable")
     (call-empty-service "/nao_vision/face_detection/disable")
     ;;(when *face-label* (speak-jp "~Aさん" *face-label*))
-    (when *face-label* (tweet "~Aさん" *face-label*))
+    (when *face-label* (tweet "~Aさんに会ったよ" *face-label*))
     *face-recognized*
     ))
 
@@ -174,7 +183,7 @@
        (ros::ros-info "Recognized ~A~%" ret)
        (cond ((equal ret "こんにちは")
 	      (speak-jp "よろしくー")
-	      )
+	      )	     
 	     ((equal ret "さようなら")
 	      (speak-jp "そんなこといわないでよー")
 	      )
@@ -200,8 +209,12 @@
   (do-until-key
    (detect-face :wait 30)
    (if *face-label*
-     (speak-jp "ひさしぶり")
-     (speak-jp "はじめまして")
+     (speak-jp "~Aさん　ひさしぶり" *face-label*)
+     (progn
+       (speak-jp "はじめまして")
+       (speak-jp "僕はペッパー")
+       (speak-jp "名前を教えて")
+       )
      )
    (unix:sleep 30)
    )
