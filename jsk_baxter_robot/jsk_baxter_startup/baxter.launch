@@ -8,6 +8,7 @@
   <arg name="launch_teleop" default="true"/>
   <arg name="launch_tweet" default="true"/>
   <arg name="launch_wrench" default="true"/>
+  <arg name="launch_time_signal" default="true"/>
   <arg name="start_openni" default="true"/>
 
   <!-- Start Servo (Maybe This should not be here)-->
@@ -49,5 +50,10 @@
   <include if="$(arg launch_wrench)"
            file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/virtual_force.launch" >
   </include>
+
+  <!-- Time signal -->
+  <node if="$(arg launch_time_signal)"
+	pkg="roseus" type="roseus" name="time_signal" output="screen"
+	args="$(find jsk_robot_startup)/lifelog/time-signal.l" />
 
 </launch>
