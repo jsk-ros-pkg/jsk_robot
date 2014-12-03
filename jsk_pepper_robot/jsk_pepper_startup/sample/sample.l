@@ -19,10 +19,7 @@
   (let ((ret))
     (setq ret (ros::service-call "get_installed_behaviors" (instance nao_msgs::GetInstalledBehaviorsRequest :init)))
     (send ret :behaviors)
-    ;;test
-    (print (send ret :behaviors))
-    ;;(ros::ros-info (send ret :behaviors))
-  ))
+    ))
 
 ;; (run-behavior "pepper_tongue_twister_sample")
 ;; (run-behavior "pepper_dialog_sample")
