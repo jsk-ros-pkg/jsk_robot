@@ -98,8 +98,19 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
 
   <!-- for gripper sensor actions -->
-  <include if="$(arg launch_gripper_sensor)"
-           file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  <group if="$(arg launch_gripper_sensor)">
+    <group ns="l_gripper_sensor_controller">
+      <group ns="pr2_gripper_sensor_action">
+        <param name="publish_skip" value="100" /> <!--10Hz-->
+      </group>
+    </group>
+    <group ns="r_gripper_sensor_controller">
+      <group ns="pr2_gripper_sensor_action">
+        <param name="publish_skip" value="100" /> <!--10Hz-->
+      </group>
+    </group>
+    <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  </group>
 
   <!-- for iPad or android apps -->
   <include if="$(arg launch_jsk_pcl)"
