@@ -11,7 +11,7 @@
     <arg name="joint_state_subscribe" value="true"/>
 
     <arg name="remap_motor_state" value="/robot/servo_state"/>
-    <arg name="remap_joint_state" value="/robot/joint_states"/>
+    <arg name="remap_joint_states" value="/robot/joint_states"/>
 
     <arg name="image_topic" value="/openni/rgb/image_rect_color"/>
 
