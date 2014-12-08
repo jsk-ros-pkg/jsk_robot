@@ -142,4 +142,7 @@
     <arg name="MACHINE" value="c3"/>
     <arg name="launch_battery" value="true"/>
   </include>
+  <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
+        machine="c2"
+        name="finish_launch_sound" />
 </launch>
