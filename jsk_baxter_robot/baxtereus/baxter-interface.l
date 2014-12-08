@@ -25,8 +25,12 @@
 					 "robot/end_effector/left_gripper/gripper_action"
 					 control_msgs::GripperCommandAction
 					 ))
+     (setq head-pan-action (instance ros::simple-action-client :init
+					 "robot/head/head_action"
+					 control_msgs::SingleJointPositionAction
+					 ))
 
-     (dolist (action (list right-gripper-action left-gripper-action))
+     (dolist (action (list right-gripper-action left-gripper-action head-pan-action))
        (unless (and joint-action-enable (send action :wait-for-server 3))
 	 (ros::ros-warn "~A is not respond" action)
 	 (return)))
@@ -153,6 +157,15 @@
      (setq gripper-sequence-id (1+ gripper-sequence-id))
      )
    )
+
+  (:head-pan
+   (pos &key (velocity 100))
+   (let (goal)
+     (setq goal  (instance control_msgs::SingleJointPositionActionGoal :init))
+     (send goal :goal :position pos)
+     (send goal :goal :max_velocity velocity)
+     (send head-pan-action :send-goal goal)
+     ))
 
   (:set-baxter-face 
    (filepath)
