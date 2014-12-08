@@ -44,7 +44,12 @@
   <build_depend>roseus</build_depend>
   <build_depend>rostwitter</build_depend>
 
+  <run_depend>nao_interaction_launchers</run_depend>
   <run_depend>nao_interaction_msgs</run_depend>
+  <run_depend>jsk_pepper_bringup</run_depend>
+  <run_depend>topic_tools</run_depend>
+  <run_depend>turtlebot_teleop</run_depend>
+  <run_depend>image_view</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>rostwitter</run_depend>
 
