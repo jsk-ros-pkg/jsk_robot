@@ -26,13 +26,19 @@ class image_converter:
             rospy.logerr("Restart openni_node1")
             retcode = -1
             try:
-                retcode = subprocess.call('rosnode kill /openni/driver', shell=True)
+                #retcode = subprocess.call('rosnode kill /openni/driver', shell=True)
+                # 1. kill nodelet manager
+                rospy.logerr("killing nodelet manager")
+                retcode = subprocess.call('rosnode kill /openni/openni_nodelet_manager', shell=True)
+                # 2. pkill
+                rospy.logerr("killing openni processes")
+                retcode = subprocess.call('pkill -f openni_nodelet_manager', shell=True)
             except Exception, e:
                 rospy.logerr('Unable to kill kinect node, caught exception:\n%s', traceback.format_exc())
 
     def process(self):
         if self.image_sub == None or self.image_sub.impl == None:
-            self.image_sub = rospy.Subscriber("/openni/rgb/image_color",Image,self.callback,None,1)
+            self.image_sub = rospy.Subscriber("/openni_c2/rgb/image_color",Image,self.callback,None,1)
 
 
 def main(args):
