@@ -11,5 +11,5 @@ rospy.sleep(5)                  # sleep to wait for connection
 msg = SoundRequest()
 msg.sound = SoundRequest.SAY
 msg.command = SoundRequest.PLAY_START
-msg.arg = "Now I am ready"
+msg.arg = "Launching"
 p.publish(msg)
