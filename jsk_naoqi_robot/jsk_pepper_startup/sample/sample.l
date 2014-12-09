@@ -3,9 +3,6 @@
 (ros::load-ros-manifest "jsk_pepper_startup")
 (ros::roseus "pepper_client_sample")
 
-(ros::roseus-add-msgs "nao_msgs")
-(ros::roseus-add-srvs "nao_msgs")
-
 ;;  see http://doc.aldebaran.com/2-1/naoqi/audio/altexttospeech-tuto.html#using-tags-for-voice-tuning for tag
 (ros::advertise "/speech" std_msgs::String 1)
 (defun speak-jp (str &rest args)
@@ -150,6 +147,27 @@
 ; (ros::sleep)
 
 
+(ros::advertise "/tweet" std_msgs::String 1)
+(defun fast_tweet (str &rest args)
+  (let ((text)
+	(timestamp0 0) (timestamp1 0)
+	(filename "/tmp/pepper_camera.png")
+	tm)
+    (setq text (apply #'format nil str args))
+    (ros::service-call "/image_saver/save" (instance std_srvs::EmptyRequest :init))
+    (setq tm (ros::time-now))
+    (ros::ros-info "~A timestamp ~A ~A" filename timestamp0 timestamp1)
+    (ros::rate 2)
+    (while (and (< (send (ros::time- (ros::time-now) tm) :to-sec) 10)
+		(= timestamp0 timestamp1))
+      (if (probe-file filename) (setq timestamp1 (file-write-date filename)))
+      (ros::ros-info "~A timestamp ~A ~A" filename timestamp0 timestamp1)
+      (ros::sleep))
+    (ros::ros-info "save image")
+    ;; tweet
+    (ros::publish "/tweet" (instance std_msgs::String :init :data (format nil "~A ~A" str filename)))
+    ))
+
 (defun start-imu ()
   (ros::subscribe "imu" sensor_msgs::Imu
 		  #'(lambda (msg)
@@ -158,10 +176,12 @@
 		      (ros::ros-info "imu ~A ~A" (matrix-column *imu-rotation* 2) *imu-orientation*)
 		      (cond ((< *imu-orientation* 0.99)
 			     (speak-jp "やめてくださいよー")
+			     (fast_tweet "やめてくださいよー")
 			     (unix:sleep 2)
 			     )
 			    ((< *imu-orientation* 0.98)
 			     (tweet "だれかたすけてー")
+			     (fast_tweet "だれかたすけてー")
 			     (unix:sleep 5)
 			     )))
 		  1))
