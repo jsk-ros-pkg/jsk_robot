@@ -1,0 +1,2274 @@
+<?xml version="1.0"?>
+<robot name="pr2">
+  <gazebo/>
+  <material name="Blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="Green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="Grey">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+  <material name="Grey2">
+    <color rgba="0.9 0.9 0.9 1.0"/>
+  </material>
+  <material name="Red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="White">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <material name="Black">
+    <color rgba="0.1 0.1 0.1 1.0"/>
+  </material>
+  <material name="LightGrey">
+    <color rgba="0.6 0.6 0.6 1.0"/>
+  </material>
+  <material name="Caster">
+    <texture filename="package://pr2_description/materials/textures/pr2_caster_texture.png"/>
+  </material>
+  <material name="Wheel_l">
+    <texture filename="package://pr2_description/materials/textures/pr2_wheel_left.png"/>
+  </material>
+  <material name="Wheel_r">
+    <texture filename="package://pr2_description/materials/textures/pr2_wheel_right.png"/>
+  </material>
+  <material name="RollLinks">
+    <texture filename="package://pr2_description/materials/textures/pr2_wheel_left.png"/>
+  </material>
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.061 0.0 0.1465"/>
+      <mass value="116.0"/>
+      <inertia ixx="5.65223269921" ixy="-0.009719934438" ixz="1.29398822642" iyy="5.66947315865" iyz="-0.007379583694" izz="3.68319635173"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/base.dae"/>
+      </geometry>
+      <material name="White"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/base_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="base_footprint">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="White"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.071" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.051" rpy="0.0 0.0 0.0"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+  <link name="base_bellow_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.05 0.37 0.3"/>
+      </geometry>
+      <material name="Black"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.05 0.37 0.3"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_bellow_joint" type="fixed">
+    <origin xyz="-0.29 0.0 0.8" rpy="0.0 0.0 0.0"/>
+    <parent link="base_link"/>
+    <child link="base_bellow_link"/>
+  </joint>
+  <joint name="base_laser_joint" type="fixed">
+    <origin xyz="0.275 0.0 0.252" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="base_link"/>
+    <child link="base_laser_link"/>
+  </joint>
+  <link name="base_laser_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="1e-06" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <gazebo reference="base_laser_link"/>
+  <joint name="fl_caster_rotation_joint" type="continuous">
+    <origin xyz="0.2246 0.2246 0.0282" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="base_link"/>
+    <child link="fl_caster_rotation_link"/>
+    <limit effort="6.5" velocity="10.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+    <calibration rising="-0.785398163397"/>
+  </joint>
+  <link name="fl_caster_rotation_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.07"/>
+      <mass value="3.473082"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster.stl"/>
+      </geometry>
+      <material name="Caster"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="fl_caster_rotation_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="fl_caster_rotation_joint"/>
+    <actuator name="fl_caster_rotation_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="fl_caster_l_wheel_joint" type="continuous">
+    <origin xyz="0.0 0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="fl_caster_rotation_link"/>
+    <child link="fl_caster_l_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="fl_caster_l_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_l"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="fl_caster_l_wheel_link"/>
+  <transmission name="fl_caster_l_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="fl_caster_l_wheel_joint"/>
+    <actuator name="fl_caster_l_wheel_motor"/>
+    <mechanicalReduction>79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="fl_caster_r_wheel_joint" type="continuous">
+    <origin xyz="0.0 -0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="fl_caster_rotation_link"/>
+    <child link="fl_caster_r_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="fl_caster_r_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_r"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="fl_caster_r_wheel_link"/>
+  <transmission name="fl_caster_r_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="fl_caster_r_wheel_joint"/>
+    <actuator name="fl_caster_r_wheel_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <gazebo reference="fl_caster_rotation_link"/>
+  <joint name="fr_caster_rotation_joint" type="continuous">
+    <origin xyz="0.2246 -0.2246 0.0282" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="base_link"/>
+    <child link="fr_caster_rotation_link"/>
+    <limit effort="6.5" velocity="10.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+    <calibration rising="-0.785398163397"/>
+  </joint>
+  <link name="fr_caster_rotation_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.07"/>
+      <mass value="3.473082"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster.stl"/>
+      </geometry>
+      <material name="Caster"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="fr_caster_rotation_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="fr_caster_rotation_joint"/>
+    <actuator name="fr_caster_rotation_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="fr_caster_l_wheel_joint" type="continuous">
+    <origin xyz="0.0 0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="fr_caster_rotation_link"/>
+    <child link="fr_caster_l_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="fr_caster_l_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_l"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="fr_caster_l_wheel_link"/>
+  <transmission name="fr_caster_l_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="fr_caster_l_wheel_joint"/>
+    <actuator name="fr_caster_l_wheel_motor"/>
+    <mechanicalReduction>79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="fr_caster_r_wheel_joint" type="continuous">
+    <origin xyz="0.0 -0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="fr_caster_rotation_link"/>
+    <child link="fr_caster_r_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="fr_caster_r_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_r"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="fr_caster_r_wheel_link"/>
+  <transmission name="fr_caster_r_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="fr_caster_r_wheel_joint"/>
+    <actuator name="fr_caster_r_wheel_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <gazebo reference="fr_caster_rotation_link"/>
+  <joint name="bl_caster_rotation_joint" type="continuous">
+    <origin xyz="-0.2246 0.2246 0.0282" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="base_link"/>
+    <child link="bl_caster_rotation_link"/>
+    <limit effort="6.5" velocity="10.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+    <calibration rising="2.35619449019"/>
+  </joint>
+  <link name="bl_caster_rotation_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.07"/>
+      <mass value="3.473082"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster.stl"/>
+      </geometry>
+      <material name="Caster"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="bl_caster_rotation_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="bl_caster_rotation_joint"/>
+    <actuator name="bl_caster_rotation_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="bl_caster_l_wheel_joint" type="continuous">
+    <origin xyz="0.0 0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="bl_caster_rotation_link"/>
+    <child link="bl_caster_l_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="bl_caster_l_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_l"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="bl_caster_l_wheel_link"/>
+  <transmission name="bl_caster_l_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="bl_caster_l_wheel_joint"/>
+    <actuator name="bl_caster_l_wheel_motor"/>
+    <mechanicalReduction>79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="bl_caster_r_wheel_joint" type="continuous">
+    <origin xyz="0.0 -0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="bl_caster_rotation_link"/>
+    <child link="bl_caster_r_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="bl_caster_r_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_r"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="bl_caster_r_wheel_link"/>
+  <transmission name="bl_caster_r_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="bl_caster_r_wheel_joint"/>
+    <actuator name="bl_caster_r_wheel_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <gazebo reference="bl_caster_rotation_link"/>
+  <joint name="br_caster_rotation_joint" type="continuous">
+    <origin xyz="-0.2246 -0.2246 0.0282" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="base_link"/>
+    <child link="br_caster_rotation_link"/>
+    <limit effort="6.5" velocity="10.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+    <calibration rising="2.35619449019"/>
+  </joint>
+  <link name="br_caster_rotation_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.07"/>
+      <mass value="3.473082"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster.stl"/>
+      </geometry>
+      <material name="Caster"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/caster_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="br_caster_rotation_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="br_caster_rotation_joint"/>
+    <actuator name="br_caster_rotation_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="br_caster_l_wheel_joint" type="continuous">
+    <origin xyz="0.0 0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="br_caster_rotation_link"/>
+    <child link="br_caster_l_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="br_caster_l_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_l"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="br_caster_l_wheel_link"/>
+  <transmission name="br_caster_l_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="br_caster_l_wheel_joint"/>
+    <actuator name="br_caster_l_wheel_motor"/>
+    <mechanicalReduction>79.2380952381</mechanicalReduction>
+  </transmission>
+  <joint name="br_caster_r_wheel_joint" type="continuous">
+    <origin xyz="0.0 -0.049 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="br_caster_rotation_link"/>
+    <child link="br_caster_r_wheel_link"/>
+    <limit effort="7.0" velocity="15.0"/>
+    <dynamics damping="1.0" friction="0.0"/>
+    <safety_controller k_velocity="10.0"/>
+  </joint>
+  <link name="br_caster_r_wheel_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.44036"/>
+      <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-4.273467e-06" izz="0.011763977943"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/base_v0/wheel.dae"/>
+      </geometry>
+      <material name="Wheel_r"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="1.57079632679 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.074792" length="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="br_caster_r_wheel_link"/>
+  <transmission name="br_caster_r_wheel_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="br_caster_r_wheel_joint"/>
+    <actuator name="br_caster_r_wheel_motor"/>
+    <mechanicalReduction>-79.2380952381</mechanicalReduction>
+  </transmission>
+  <gazebo reference="br_caster_rotation_link"/>
+  <gazebo reference="base_link"/>
+  <gazebo reference="base_bellow_link"/>
+  <gazebo/>
+  <joint name="torso_lift_joint" type="prismatic">
+    <origin xyz="-0.05 0.0 0.739675" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="base_link"/>
+    <child link="torso_lift_link"/>
+    <limit effort="10000.0" lower="0.0" upper="0.33" velocity="0.013"/>
+    <dynamics damping="20000.0"/>
+    <safety_controller k_velocity="2000000.0" k_position="100.0" soft_lower_limit="0.0115" soft_upper_limit="0.325"/>
+    <calibration falling="0.00475"/>
+  </joint>
+  <link name="torso_lift_link">
+    <inertial>
+      <origin xyz="-0.1 0.0 -0.0885"/>
+      <mass value="36.248046"/>
+      <inertia ixx="2.77165375026" ixy="0.004284522609" ixz="-0.160418504506" iyy="2.51001950796" iyz="0.029664468704" izz="0.526432355569"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/torso_v0/torso_lift.dae"/>
+      </geometry>
+      <material name="Grey2"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/torso_v0/torso_lift_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_torso_lift_side_plate_joint" type="fixed">
+    <origin xyz="0.0535 0.209285 0.176625" rpy="0.0 0.0 0.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="l_torso_lift_side_plate_link"/>
+  </joint>
+  <link name="l_torso_lift_side_plate_link">
+    <inertial>
+      <origin xyz="-0.0625 0.0 0.05"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="r_torso_lift_side_plate_joint" type="fixed">
+    <origin xyz="0.0535 -0.209285 0.176625" rpy="0.0 0.0 0.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="r_torso_lift_side_plate_link"/>
+  </joint>
+  <link name="r_torso_lift_side_plate_link">
+    <inertial>
+      <origin xyz="-0.0625 0.0 0.05"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <link name="torso_lift_motor_screw_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="torso_lift_motor_screw_joint" type="continuous">
+    <origin xyz="-0.15 0.0 0.7" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="base_link"/>
+    <child link="torso_lift_motor_screw_link"/>
+    <dynamics damping="0.0001"/>
+  </joint>
+  <gazebo reference="torso_lift_link"/>
+  <gazebo/>
+  <transmission name="torso_lift_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="torso_lift_joint"/>
+    <actuator name="torso_lift_motor"/>
+    <mechanicalReduction>-47641.53</mechanicalReduction>
+  </transmission>
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="-0.02977 -0.1497 0.164" rpy="0.0 3.14159265359 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="imu_link"/>
+  </joint>
+  <link name="imu_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="1e-06" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <gazebo/>
+  <joint name="head_pan_joint" type="revolute">
+    <origin xyz="-0.01707 0.0 0.38145" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="head_pan_link"/>
+    <limit effort="2.645" lower="-3.007" upper="3.007" velocity="6.0"/>
+    <dynamics damping="0.5"/>
+    <safety_controller k_velocity="1.5" k_position="100.0" soft_lower_limit="-2.857" soft_upper_limit="2.857"/>
+    <calibration rising="-0.0029925911181"/>
+  </joint>
+  <link name="head_pan_link">
+    <inertial>
+      <origin xyz="0.010907 0.031693 0.090507" rpy="0.0 0.0 0.0"/>
+      <mass value="6.339"/>
+      <inertia ixx="0.032497592" ixy="0.00063604088" ixz="0.0025851534" iyy="0.046545627" iyz="-0.0024534295" izz="0.057652724"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/head_v0/head_pan.dae"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/head_v0/head_pan_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="head_pan_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="head_pan_joint"/>
+    <actuator name="head_pan_motor"/>
+    <mechanicalReduction>6.0</mechanicalReduction>
+  </transmission>
+  <joint name="head_tilt_joint" type="revolute">
+    <origin xyz="0.068 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="head_pan_link"/>
+    <child link="head_tilt_link"/>
+    <limit effort="18.0" lower="-0.471238" upper="1.39626" velocity="5.0"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="3.0" k_position="100.0" soft_lower_limit="-0.3712" soft_upper_limit="1.29626"/>
+    <calibration falling="0.0"/>
+  </joint>
+  <link name="head_tilt_link">
+    <inertial>
+      <origin xyz="0.001716 -0.019556 0.055002" rpy="0.0 0.0 0.0"/>
+      <mass value="4.479"/>
+      <inertia ixx="0.024223222" ixy="0.00062063507" ixz="-9.6909696e-05" iyy="0.054723086" iyz="0.002797024" izz="0.067306377"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/head_v0/head_tilt.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/head_v0/head_tilt_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="head_tilt_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="head_tilt_joint"/>
+    <actuator name="head_tilt_motor"/>
+    <mechanicalReduction>6.0</mechanicalReduction>
+  </transmission>
+  <joint name="head_plate_frame_joint" type="fixed">
+    <origin xyz="0.0232 0.0 0.0645" rpy="0.0 0.0 0.0"/>
+    <parent link="head_tilt_link"/>
+    <child link="head_plate_frame"/>
+  </joint>
+  <link name="head_plate_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="head_plate_frame"/>
+  <joint name="sensor_mount_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="head_plate_frame"/>
+    <child link="sensor_mount_link"/>
+  </joint>
+  <link name="sensor_mount_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.05"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+  </link>
+  <joint name="high_def_frame_joint" type="fixed">
+    <origin xyz="0.0353403901296 -0.107058963284 0.0447517160082" rpy="-0.0057620101699 -0.013977927792 0.00453717154259"/>
+    <parent link="sensor_mount_link"/>
+    <child link="high_def_frame"/>
+  </joint>
+  <link name="high_def_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="high_def_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="high_def_frame"/>
+    <child link="high_def_optical_frame"/>
+  </joint>
+  <link name="high_def_optical_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <gazebo reference="high_def_frame"/>
+  <joint name="double_stereo_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="sensor_mount_link"/>
+    <child link="double_stereo_link"/>
+  </joint>
+  <link name="double_stereo_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.01 0.0 0.025" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.02 0.12 0.05"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+  </link>
+  <joint name="wide_stereo_frame_joint" type="fixed">
+    <origin xyz="0.042712700255 0.030396065487 0.0394379501443" rpy="-0.00226793281615 -0.00500071724318 -0.00491782278553"/>
+    <parent link="double_stereo_link"/>
+    <child link="wide_stereo_link"/>
+  </joint>
+  <link name="wide_stereo_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="wide_stereo_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="wide_stereo_link"/>
+    <child link="wide_stereo_optical_frame"/>
+  </joint>
+  <link name="wide_stereo_optical_frame"/>
+  <joint name="wide_stereo_l_stereo_camera_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="wide_stereo_link"/>
+    <child link="wide_stereo_l_stereo_camera_frame"/>
+  </joint>
+  <link name="wide_stereo_l_stereo_camera_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="wide_stereo_l_stereo_camera_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="wide_stereo_l_stereo_camera_frame"/>
+    <child link="wide_stereo_l_stereo_camera_optical_frame"/>
+  </joint>
+  <link name="wide_stereo_l_stereo_camera_optical_frame"/>
+  <gazebo reference="wide_stereo_l_stereo_camera_frame"/>
+  <joint name="wide_stereo_r_stereo_camera_frame_joint" type="fixed">
+    <origin xyz="0.0 -0.09 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="wide_stereo_l_stereo_camera_frame"/>
+    <child link="wide_stereo_r_stereo_camera_frame"/>
+  </joint>
+  <link name="wide_stereo_r_stereo_camera_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="wide_stereo_r_stereo_camera_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="wide_stereo_r_stereo_camera_frame"/>
+    <child link="wide_stereo_r_stereo_camera_optical_frame"/>
+  </joint>
+  <link name="wide_stereo_r_stereo_camera_optical_frame"/>
+  <gazebo reference="wide_stereo_r_stereo_camera_frame"/>
+  <gazebo reference="wide_stereo_link"/>
+  <gazebo reference="wide_stereo_optical_frame"/>
+  <joint name="narrow_stereo_frame_joint" type="fixed">
+    <origin xyz="0.0417016238476 0.0608137578189 0.0393354284492" rpy="-0.0156109422619 0.000921588889037 0.0470874311142"/>
+    <parent link="double_stereo_link"/>
+    <child link="narrow_stereo_link"/>
+  </joint>
+  <link name="narrow_stereo_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+  </link>
+  <joint name="narrow_stereo_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="narrow_stereo_link"/>
+    <child link="narrow_stereo_optical_frame"/>
+  </joint>
+  <link name="narrow_stereo_optical_frame"/>
+  <joint name="narrow_stereo_l_stereo_camera_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="narrow_stereo_link"/>
+    <child link="narrow_stereo_l_stereo_camera_frame"/>
+  </joint>
+  <link name="narrow_stereo_l_stereo_camera_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="narrow_stereo_l_stereo_camera_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="narrow_stereo_l_stereo_camera_frame"/>
+    <child link="narrow_stereo_l_stereo_camera_optical_frame"/>
+  </joint>
+  <link name="narrow_stereo_l_stereo_camera_optical_frame"/>
+  <gazebo reference="narrow_stereo_l_stereo_camera_frame"/>
+  <joint name="narrow_stereo_r_stereo_camera_frame_joint" type="fixed">
+    <origin xyz="0.0 -0.09 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="narrow_stereo_l_stereo_camera_frame"/>
+    <child link="narrow_stereo_r_stereo_camera_frame"/>
+  </joint>
+  <link name="narrow_stereo_r_stereo_camera_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="narrow_stereo_r_stereo_camera_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="narrow_stereo_r_stereo_camera_frame"/>
+    <child link="narrow_stereo_r_stereo_camera_optical_frame"/>
+  </joint>
+  <link name="narrow_stereo_r_stereo_camera_optical_frame"/>
+  <gazebo reference="narrow_stereo_r_stereo_camera_frame"/>
+  <gazebo reference="narrow_stereo_link"/>
+  <gazebo reference="narrow_stereo_optical_frame"/>
+  <gazebo reference="double_stereo_double_stereo_link"/>
+  <gazebo reference="sensor_mount_sensor_link"/>
+  <joint name="projector_wg6802418_frame_joint" type="fixed">
+    <origin xyz="0.0 0.11 0.0546" rpy="0.0 0.0 0.0"/>
+    <parent link="head_plate_frame"/>
+    <child link="projector_wg6802418_frame"/>
+  </joint>
+  <link name="projector_wg6802418_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="projector_wg6802418_child_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 -1.57079632679 0.0"/>
+    <parent link="projector_wg6802418_frame"/>
+    <child link="projector_wg6802418_child_frame"/>
+  </joint>
+  <link name="projector_wg6802418_child_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <gazebo reference="projector_wg6802418_child_frame"/>
+  <gazebo/>
+  <joint name="head_mount_joint" type="fixed">
+    <origin xyz="-0.138 0.0 0.091" rpy="0.0 0.0 0.0"/>
+    <parent link="head_plate_frame"/>
+    <child link="head_mount_link"/>
+  </joint>
+  <link name="head_mount_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/sensors/kinect_prosilica_v0/115x100_swept_back--coarse.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_mount_kinect_ir_joint" type="fixed">
+    <origin xyz="-0.032267 0.0125 0.136453" rpy="0.0 0.0 0.0"/>
+    <parent link="head_mount_link"/>
+    <child link="head_mount_kinect_ir_link"/>
+  </joint>
+  <link name="head_mount_kinect_ir_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="openni_ir_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.01 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="head_mount_kinect_ir_link"/>
+    <child link="openni_ir_optical_frame"/>
+  </joint>
+  <link name="openni_ir_optical_frame"/>
+  <gazebo reference="head_mount_kinect_ir_link"/>
+  <joint name="head_mount_kinect_rgb_joint" type="fixed">
+    <origin xyz="-0.00467724206107 -0.0229650855065 -0.022901899512" rpy="-0.00772810147059 -0.0313749451539 0.00343445046952"/>
+    <parent link="head_mount_kinect_ir_link"/>
+    <child link="head_mount_kinect_rgb_link"/>
+  </joint>
+  <link name="head_mount_kinect_rgb_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="openni_rgb_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="head_mount_kinect_rgb_link"/>
+    <child link="openni_rgb_optical_frame"/>
+  </joint>
+  <link name="openni_rgb_optical_frame"/>
+  <gazebo reference="head_mount_kinect_rgb_link"/>
+  <joint name="head_mount_prosilica_joint" type="fixed">
+    <origin xyz="-0.046457 0.0125 0.088921" rpy="0.0 0.0 0.0"/>
+    <parent link="head_mount_link"/>
+    <child link="head_mount_prosilica_link"/>
+  </joint>
+  <link name="head_mount_prosilica_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <sphere radius="0.0005"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="head_mount_prosilica_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="head_mount_prosilica_link"/>
+    <child link="head_mount_prosilica_optical_frame"/>
+  </joint>
+  <link name="head_mount_prosilica_optical_frame"/>
+  <gazebo reference="head_mount_prosilica_link"/>
+  <joint name="laser_tilt_mount_joint" type="revolute">
+    <origin xyz="0.09893 0.0 0.227" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="laser_tilt_mount_link"/>
+    <limit effort="0.65" lower="-0.7854" upper="1.48353" velocity="10.0"/>
+    <dynamics damping="0.008"/>
+    <safety_controller k_velocity="0.05" k_position="100.0" soft_lower_limit="-0.7354" soft_upper_limit="1.43353"/>
+    <calibration falling="-0.00216015312659"/>
+  </joint>
+  <link name="laser_tilt_mount_link">
+    <inertial>
+      <origin xyz="-0.001136 0.00167 -0.00713" rpy="0.0 0.0 0.0"/>
+      <mass value="0.591"/>
+      <inertia ixx="0.001195273" ixy="2.3087e-05" ixz="3.7467e-05" iyy="0.001083956" iyz="3.4906e-05" izz="0.000795014"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/tilting_laser_v0/tilting_hokuyo.dae"/>
+      </geometry>
+      <material name="Red"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/tilting_laser_v0/tilting_hokuyo_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="laser_tilt_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.025524299865" rpy="0.0 0.0 -0.00992926293657"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="laser_tilt_mount_link"/>
+    <child link="laser_tilt_link"/>
+  </joint>
+  <link name="laser_tilt_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="1e-06" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <gazebo reference="laser_tilt_link"/>
+  <gazebo reference="laser_tilt_mount_link"/>
+  <transmission name="laser_tilt_mount_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="laser_tilt_mount_joint"/>
+    <actuator name="laser_tilt_mount_motor"/>
+    <mechanicalReduction>-6.05</mechanicalReduction>
+  </transmission>
+  <joint name="r_shoulder_pan_joint" type="revolute">
+    <origin xyz="0.0 -0.188 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="r_shoulder_pan_link"/>
+    <limit effort="30.0" lower="-2.2853981634" upper="0.714601836603" velocity="2.088"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="10.0" k_position="100.0" soft_lower_limit="-2.1353981634" soft_upper_limit="0.564601836603"/>
+    <calibration rising="-0.775415619343"/>
+  </joint>
+  <link name="r_shoulder_pan_link">
+    <inertial>
+      <origin xyz="-0.001201 0.024513 -0.098231" rpy="0.0 0.0 0.0"/>
+      <mass value="25.799322"/>
+      <inertia ixx="0.86617914248" ixy="-0.06086507933" ixz="-0.12118061183" iyy="0.87421714893" iyz="-0.05886609911" izz="0.27353821674"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_pan.dae"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_pan.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_shoulder_lift_joint" type="revolute">
+    <origin xyz="0.1 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="r_shoulder_pan_link"/>
+    <child link="r_shoulder_lift_link"/>
+    <limit effort="30.0" lower="-0.5236" upper="1.3963" velocity="2.082"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="10.0" k_position="100.0" soft_lower_limit="-0.3536" soft_upper_limit="1.2963"/>
+    <calibration falling="0.000557005694856"/>
+  </joint>
+  <link name="r_shoulder_lift_link">
+    <inertial>
+      <origin xyz="0.02195 -0.02664 -0.03127" rpy="0.0 0.0 0.0"/>
+      <mass value="2.74988"/>
+      <inertia ixx="0.02105584615" ixy="0.00496704022" ixz="-0.00194808955" iyy="0.02127223737" iyz="0.0011042549" izz="0.01975753814"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_lift.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_lift.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_upper_arm_roll_joint" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="r_shoulder_lift_link"/>
+    <child link="r_upper_arm_roll_link"/>
+    <limit effort="30.0" lower="-3.9" upper="0.8" velocity="3.27"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="2.0" k_position="100.0" soft_lower_limit="-3.75" soft_upper_limit="0.65"/>
+    <calibration rising="-1.55942345399"/>
+  </joint>
+  <link name="r_upper_arm_roll_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/upper_arm_roll.stl"/>
+      </geometry>
+      <material name="RollLinks"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/upper_arm_roll_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_upper_arm_roll_link"/>
+  <gazebo reference="r_upper_arm_roll_joint"/>
+  <transmission name="r_upper_arm_roll_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="r_upper_arm_roll_joint"/>
+    <actuator name="r_upper_arm_roll_motor"/>
+    <mechanicalReduction>32.6525111499</mechanicalReduction>
+  </transmission>
+  <gazebo reference="r_shoulder_pan_link"/>
+  <gazebo reference="r_shoulder_pan_joint"/>
+  <gazebo reference="r_shoulder_lift_link"/>
+  <gazebo reference="r_shoulder_lift_joint"/>
+  <transmission name="r_shoulder_pan_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="r_shoulder_pan_joint"/>
+    <actuator name="r_shoulder_pan_motor"/>
+    <mechanicalReduction>63.1552452977</mechanicalReduction>
+  </transmission>
+  <transmission name="r_shoulder_lift_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="r_shoulder_lift_joint"/>
+    <actuator name="r_shoulder_lift_motor"/>
+    <mechanicalReduction>61.8948225713</mechanicalReduction>
+  </transmission>
+  <joint name="r_upper_arm_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="r_upper_arm_roll_link"/>
+    <child link="r_upper_arm_link"/>
+  </joint>
+  <link name="r_upper_arm_link">
+    <inertial>
+      <origin xyz="0.21398 -0.01621 -0.0002"/>
+      <mass value="6.01769"/>
+      <inertia ixx="0.01537748957" ixy="0.00375711247" ixz="-0.00070852914" iyy="0.0747367044" iyz="-0.0001793645" izz="0.07608763307"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/upper_arm.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/upper_arm.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_upper_arm_link"/>
+  <joint name="r_forearm_roll_joint" type="continuous">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="r_elbow_flex_link"/>
+    <child link="r_forearm_roll_link"/>
+    <limit effort="30.0" velocity="3.6"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="1.0"/>
+    <calibration rising="-0.00437373873422"/>
+  </joint>
+  <link name="r_forearm_roll_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/forearm_roll.stl"/>
+      </geometry>
+      <material name="RollLinks"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/forearm_roll_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_forearm_roll_link"/>
+  <gazebo reference="r_forearm_roll_joint"/>
+  <transmission name="r_forearm_roll_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="r_forearm_roll_joint"/>
+    <actuator name="r_forearm_roll_motor"/>
+    <mechanicalReduction>-90.5142857143</mechanicalReduction>
+  </transmission>
+  <joint name="r_elbow_flex_joint" type="revolute">
+    <origin xyz="0.4 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="r_upper_arm_link"/>
+    <child link="r_elbow_flex_link"/>
+    <limit effort="30.0" lower="-2.3213" upper="0.0" velocity="3.3"/>
+    <dynamics damping="1.0"/>
+    <safety_controller k_velocity="3.0" k_position="100.0" soft_lower_limit="-2.1213" soft_upper_limit="-0.15"/>
+    <calibration falling="-1.1606"/>
+  </joint>
+  <link name="r_elbow_flex_link">
+    <inertial>
+      <origin xyz="0.01014 0.00032 -0.01211"/>
+      <mass value="1.90327"/>
+      <inertia ixx="0.00346541989" ixy="4.066825e-05" ixz="0.00043171614" iyy="0.00441606455" iyz="-3.968914e-05" izz="0.00359156824"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/elbow_flex.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/elbow_flex.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_elbow_flex_joint"/>
+  <gazebo reference="r_elbow_flex_link"/>
+  <gazebo reference="r_elbow_flex_joint"/>
+  <transmission name="r_elbow_flex_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="r_elbow_flex_joint"/>
+    <actuator name="r_elbow_flex_motor"/>
+    <mechanicalReduction>-36.167452007</mechanicalReduction>
+  </transmission>
+  <joint name="r_forearm_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="r_forearm_roll_link"/>
+    <child link="r_forearm_link"/>
+  </joint>
+  <link name="r_forearm_link">
+    <inertial>
+      <origin xyz="0.18791 -0.00017 -0.00912"/>
+      <mass value="2.57968"/>
+      <inertia ixx="0.00364857222" ixy="5.215877e-05" ixz="0.00071534842" iyy="0.01507736897" iyz="-1.31077e-05" izz="0.01659310749"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/forearm.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/forearm.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_wrist_flex_joint" type="revolute">
+    <origin xyz="0.321 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="r_forearm_link"/>
+    <child link="r_wrist_flex_link"/>
+    <limit effort="10.0" lower="-2.18" upper="0.0" velocity="3.078"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="4.0" k_position="20.0" soft_lower_limit="-2.0" soft_upper_limit="-0.1"/>
+    <calibration falling="-0.534033487092"/>
+  </joint>
+  <link name="r_wrist_flex_link">
+    <inertial>
+      <origin xyz="-0.00157 0.0 -0.00075"/>
+      <mass value="0.61402"/>
+      <inertia ixx="0.00065165722" ixy="2.8864e-07" ixz="3.03477e-06" iyy="0.00019824443" iyz="-2.2645e-07" izz="0.00064450498"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_flex.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_flex.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_wrist_roll_joint" type="continuous">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="r_wrist_flex_link"/>
+    <child link="r_wrist_roll_link"/>
+    <limit effort="10.0" velocity="3.6"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="2.0"/>
+    <calibration rising="-4.61206134617"/>
+  </joint>
+  <link name="r_wrist_roll_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_roll.stl"/>
+      </geometry>
+      <material name="RollLinks"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_roll_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_forearm_link"/>
+  <gazebo reference="r_wrist_flex_link"/>
+  <gazebo reference="r_wrist_flex_joint"/>
+  <gazebo reference="r_wrist_roll_link"/>
+  <gazebo reference="r_wrist_roll_joint"/>
+  <transmission name="r_wrist_trans" type="pr2_mechanism_model/WristTransmission">
+    <mechanicalReduction>1</mechanicalReduction>
+    <rightActuator mechanicalReduction="60.1714285714" name="r_wrist_r_motor"/>
+    <leftActuator mechanicalReduction="60.1714285714" name="r_wrist_l_motor"/>
+    <flexJoint mechanicalReduction="-1.0" name="r_wrist_flex_joint"/>
+    <rollJoint mechanicalReduction="1.0" name="r_wrist_roll_joint"/>
+  </transmission>
+  <joint name="r_gripper_palm_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="r_wrist_roll_link"/>
+    <child link="r_gripper_palm_link"/>
+  </joint>
+  <link name="r_gripper_palm_link">
+    <inertial>
+      <origin xyz="0.06623 0.00053 -0.00119" rpy="0.0 0.0 0.0"/>
+      <mass value="0.58007"/>
+      <inertia ixx="0.00035223921" ixy="-1.580476e-05" ixz="-9.175e-07" iyy="0.00067741312" iyz="-5.9554e-07" izz="0.00086563316"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/gripper_palm.dae"/>
+      </geometry>
+      <material name="Red"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/gripper_palm.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_gripper_led_joint" type="fixed">
+    <origin xyz="0.0513 0.0 0.0244" rpy="0.0 0.0 0.0"/>
+    <parent link="r_gripper_palm_link"/>
+    <child link="r_gripper_led_frame"/>
+  </joint>
+  <link name="r_gripper_led_frame"/>
+  <joint name="r_gripper_motor_accelerometer_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="r_gripper_palm_link"/>
+    <child link="r_gripper_motor_accelerometer_link"/>
+  </joint>
+  <link name="r_gripper_motor_accelerometer_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_gripper_tool_joint" type="fixed">
+    <origin xyz="0.18 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="r_gripper_palm_link"/>
+    <child link="r_gripper_tool_frame"/>
+  </joint>
+  <link name="r_gripper_tool_frame"/>
+  <link name="r_gripper_motor_slider_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="r_gripper_motor_slider_joint" type="prismatic">
+    <origin xyz="0.16828 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="r_gripper_palm_link"/>
+    <child link="r_gripper_motor_slider_link"/>
+    <limit effort="1000.0" lower="-0.1" upper="0.1" velocity="0.2"/>
+  </joint>
+  <link name="r_gripper_motor_screw_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="r_gripper_motor_screw_joint" type="continuous">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="r_gripper_motor_slider_link"/>
+    <child link="r_gripper_motor_screw_link"/>
+    <dynamics damping="0.0001"/>
+  </joint>
+  <joint name="r_gripper_l_finger_joint" type="revolute">
+    <origin xyz="0.07691 0.01 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="r_gripper_palm_link"/>
+    <child link="r_gripper_l_finger_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.02"/>
+  </joint>
+  <link name="r_gripper_l_finger_link">
+    <inertial>
+      <origin xyz="0.03598 0.0173 -0.00164" rpy="0.0 0.0 0.0"/>
+      <mass value="0.17126"/>
+      <inertia ixx="7.756198e-05" ixy="1.49095e-06" ixz="-9.83385e-06" iyy="0.00019708305" iyz="-3.06125e-06" izz="0.00018105446"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_gripper_r_finger_joint" type="revolute">
+    <origin xyz="0.07691 -0.01 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 -1.0"/>
+    <parent link="r_gripper_palm_link"/>
+    <child link="r_gripper_r_finger_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.02"/>
+    <mimic joint="r_gripper_l_finger_joint" multiplier="1.0" offset="0.0"/>
+  </joint>
+  <link name="r_gripper_r_finger_link">
+    <inertial>
+      <origin xyz="0.03576 -0.01736 -0.00095" rpy="0.0 0.0 0.0"/>
+      <mass value="0.17389"/>
+      <inertia ixx="7.73841e-05" ixy="-2.09309e-06" ixz="-8.36228e-06" iyy="0.00019847383" iyz="2.4611e-06" izz="0.00018106988"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_gripper_l_finger_tip_joint" type="revolute">
+    <origin xyz="0.09137 0.00495 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 -1.0"/>
+    <parent link="r_gripper_l_finger_link"/>
+    <child link="r_gripper_l_finger_tip_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.001"/>
+    <mimic joint="r_gripper_l_finger_joint" multiplier="1.0" offset="0.0"/>
+  </joint>
+  <link name="r_gripper_l_finger_tip_link">
+    <inertial>
+      <origin xyz="0.00423 0.00284 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.04419"/>
+      <inertia ixx="8.37047e-06" ixy="5.83632e-06" ixz="0.0" iyy="9.87067e-06" iyz="0.0" izz="1.541768e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="r_gripper_r_finger_tip_joint" type="revolute">
+    <origin xyz="0.09137 -0.00495 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="r_gripper_r_finger_link"/>
+    <child link="r_gripper_r_finger_tip_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.001"/>
+    <mimic joint="r_gripper_l_finger_joint" multiplier="1.0" offset="0.0"/>
+  </joint>
+  <link name="r_gripper_r_finger_tip_link">
+    <inertial>
+      <origin xyz="0.00423 -0.00284 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.04419"/>
+      <inertia ixx="8.37047e-06" ixy="-5.83632e-06" ixz="0.0" iyy="9.87067e-06" iyz="0.0" izz="1.541768e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_gripper_l_finger_link"/>
+  <gazebo reference="r_gripper_l_finger_joint"/>
+  <gazebo reference="r_gripper_r_finger_link"/>
+  <gazebo reference="r_gripper_r_finger_joint"/>
+  <gazebo reference="r_gripper_l_finger_tip_link"/>
+  <gazebo reference="r_gripper_l_finger_tip_joint"/>
+  <gazebo reference="r_gripper_r_finger_tip_link"/>
+  <gazebo/>
+  <gazebo reference="r_gripper_r_finger_tip_joint"/>
+  <gazebo/>
+  <gazebo/>
+  <gazebo/>
+  <gazebo reference="r_gripper_motor_slider_link"/>
+  <gazebo reference="r_gripper_motor_screw_link"/>
+  <gazebo reference="r_gripper_l_parallel_link"/>
+  <gazebo reference="r_gripper_r_parallel_link"/>
+  <joint name="r_gripper_joint" type="prismatic">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="r_gripper_r_finger_tip_link"/>
+    <child link="r_gripper_l_finger_tip_frame"/>
+    <limit effort="1000.0" lower="0.0" upper="0.09" velocity="0.2"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="5000.0" k_position="20.0" soft_lower_limit="-0.01" soft_upper_limit="0.088"/>
+  </joint>
+  <link name="r_gripper_l_finger_tip_frame"/>
+  <gazebo reference="r_gripper_palm_link"/>
+  <gazebo/>
+  <transmission name="r_gripper_trans" type="pr2_mechanism_model/PR2GripperTransmission">
+    <actuator name="r_gripper_motor"/>
+    <mechanicalReduction>1</mechanicalReduction>
+    <gap_joint L0="0.0375528" a="0.0683698" b="0.0433849" gear_ratio="40.095" h="0.0" mechanical_reduction="1.0" name="r_gripper_joint" phi0="0.518518122146" r="0.0915" screw_reduction="0.004" t0="-0.0001914" theta0="0.0628824676201"/>
+    <use_simulated_gripper_joint/>
+    <passive_joint name="r_gripper_l_finger_joint"/>
+    <passive_joint name="r_gripper_r_finger_joint"/>
+    <passive_joint name="r_gripper_r_finger_tip_joint"/>
+    <passive_joint name="r_gripper_l_finger_tip_joint"/>
+    <simulated_actuated_joint name="r_gripper_motor_screw_joint" passive_actuated_joint="r_gripper_motor_slider_joint" simulated_reduction="3141.6"/>
+    
+  </transmission>
+  <joint name="l_shoulder_pan_joint" type="revolute">
+    <origin xyz="0.0 0.188 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="torso_lift_link"/>
+    <child link="l_shoulder_pan_link"/>
+    <limit effort="30.0" lower="-0.714601836603" upper="2.2853981634" velocity="2.088"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="10.0" k_position="100.0" soft_lower_limit="-0.564601836603" soft_upper_limit="2.1353981634"/>
+    <calibration rising="0.781954428069"/>
+  </joint>
+  <link name="l_shoulder_pan_link">
+    <inertial>
+      <origin xyz="-0.001201 0.024513 -0.098231" rpy="0.0 0.0 0.0"/>
+      <mass value="25.799322"/>
+      <inertia ixx="0.86617914248" ixy="-0.06086507933" ixz="-0.12118061183" iyy="0.87421714893" iyz="-0.05886609911" izz="0.27353821674"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_pan.dae"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_pan.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_shoulder_lift_joint" type="revolute">
+    <origin xyz="0.1 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="l_shoulder_pan_link"/>
+    <child link="l_shoulder_lift_link"/>
+    <limit effort="30.0" lower="-0.5236" upper="1.3963" velocity="2.082"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="10.0" k_position="100.0" soft_lower_limit="-0.3536" soft_upper_limit="1.2963"/>
+    <calibration falling="-0.000278114080267"/>
+  </joint>
+  <link name="l_shoulder_lift_link">
+    <inertial>
+      <origin xyz="0.02195 -0.02664 -0.03127" rpy="0.0 0.0 0.0"/>
+      <mass value="2.74988"/>
+      <inertia ixx="0.02105584615" ixy="0.00496704022" ixz="-0.00194808955" iyy="0.02127223737" iyz="0.0011042549" izz="0.01975753814"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_lift.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/shoulder_lift.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_upper_arm_roll_joint" type="revolute">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="l_shoulder_lift_link"/>
+    <child link="l_upper_arm_roll_link"/>
+    <limit effort="30.0" lower="-0.8" upper="3.9" velocity="3.27"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="2.0" k_position="100.0" soft_lower_limit="-0.65" soft_upper_limit="3.75"/>
+    <calibration rising="1.57652752409"/>
+  </joint>
+  <link name="l_upper_arm_roll_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/upper_arm_roll.stl"/>
+      </geometry>
+      <material name="RollLinks"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/shoulder_v0/upper_arm_roll_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="l_upper_arm_roll_link"/>
+  <gazebo reference="l_upper_arm_roll_joint"/>
+  <transmission name="l_upper_arm_roll_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="l_upper_arm_roll_joint"/>
+    <actuator name="l_upper_arm_roll_motor"/>
+    <mechanicalReduction>32.6525111499</mechanicalReduction>
+  </transmission>
+  <gazebo reference="l_shoulder_pan_link"/>
+  <gazebo reference="l_shoulder_pan_joint"/>
+  <gazebo reference="l_shoulder_lift_link"/>
+  <gazebo reference="l_shoulder_lift_joint"/>
+  <transmission name="l_shoulder_pan_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="l_shoulder_pan_joint"/>
+    <actuator name="l_shoulder_pan_motor"/>
+    <mechanicalReduction>63.1552452977</mechanicalReduction>
+  </transmission>
+  <transmission name="l_shoulder_lift_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="l_shoulder_lift_joint"/>
+    <actuator name="l_shoulder_lift_motor"/>
+    <mechanicalReduction>61.8948225713</mechanicalReduction>
+  </transmission>
+  <joint name="l_upper_arm_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="l_upper_arm_roll_link"/>
+    <child link="l_upper_arm_link"/>
+  </joint>
+  <link name="l_upper_arm_link">
+    <inertial>
+      <origin xyz="0.21405 0.01658 -0.00057"/>
+      <mass value="6.01769"/>
+      <inertia ixx="0.01530603856" ixy="-0.00339324862" ixz="0.00060765455" iyy="0.07473694455" iyz="-0.00019953729" izz="0.07601594191"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/upper_arm.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/upper_arm.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="l_upper_arm_link"/>
+  <joint name="l_forearm_roll_joint" type="continuous">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="l_elbow_flex_link"/>
+    <child link="l_forearm_roll_link"/>
+    <limit effort="30.0" velocity="3.6"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="1.0"/>
+    <calibration rising="0.0359456411473"/>
+  </joint>
+  <link name="l_forearm_roll_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/forearm_roll.stl"/>
+      </geometry>
+      <material name="RollLinks"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/forearm_roll_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="l_forearm_roll_link"/>
+  <gazebo reference="l_forearm_roll_joint"/>
+  <transmission name="l_forearm_roll_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="l_forearm_roll_joint"/>
+    <actuator name="l_forearm_roll_motor"/>
+    <mechanicalReduction>-90.5142857143</mechanicalReduction>
+  </transmission>
+  <joint name="l_elbow_flex_joint" type="revolute">
+    <origin xyz="0.4 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="l_upper_arm_link"/>
+    <child link="l_elbow_flex_link"/>
+    <limit effort="30.0" lower="-2.3213" upper="0.0" velocity="3.3"/>
+    <dynamics damping="1.0"/>
+    <safety_controller k_velocity="3.0" k_position="100.0" soft_lower_limit="-2.1213" soft_upper_limit="-0.15"/>
+    <calibration falling="-1.1606"/>
+  </joint>
+  <link name="l_elbow_flex_link">
+    <inertial>
+      <origin xyz="0.01014 0.00032 -0.01211"/>
+      <mass value="1.90327"/>
+      <inertia ixx="0.00346541989" ixy="4.066825e-05" ixz="0.00043171614" iyy="0.00441606455" iyz="-3.968914e-05" izz="0.00359156824"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/elbow_flex.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/upper_arm_v0/elbow_flex.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="l_elbow_flex_joint"/>
+  <gazebo reference="l_elbow_flex_link"/>
+  <gazebo reference="l_elbow_flex_joint"/>
+  <transmission name="l_elbow_flex_trans" type="pr2_mechanism_model/SimpleTransmission">
+    <joint name="l_elbow_flex_joint"/>
+    <actuator name="l_elbow_flex_motor"/>
+    <mechanicalReduction>-36.167452007</mechanicalReduction>
+  </transmission>
+  <joint name="l_forearm_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="l_forearm_roll_link"/>
+    <child link="l_forearm_link"/>
+  </joint>
+  <link name="l_forearm_link">
+    <inertial>
+      <origin xyz="0.18791 -0.00017 -0.00912"/>
+      <mass value="2.57968"/>
+      <inertia ixx="0.00364857222" ixy="5.215877e-05" ixz="0.00071534842" iyy="0.01507736897" iyz="-1.31077e-05" izz="0.01659310749"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/forearm.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/forearm.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_wrist_flex_joint" type="revolute">
+    <origin xyz="0.321 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="l_forearm_link"/>
+    <child link="l_wrist_flex_link"/>
+    <limit effort="10.0" lower="-2.18" upper="0.0" velocity="3.078"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="4.0" k_position="20.0" soft_lower_limit="-2.0" soft_upper_limit="-0.1"/>
+    <calibration falling="-0.542148258551"/>
+  </joint>
+  <link name="l_wrist_flex_link">
+    <inertial>
+      <origin xyz="-0.00157 0.0 -0.00075"/>
+      <mass value="0.61402"/>
+      <inertia ixx="0.00065165722" ixy="2.8864e-07" ixz="3.03477e-06" iyy="0.00019824443" iyz="-2.2645e-07" izz="0.00064450498"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_flex.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_flex.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_wrist_roll_joint" type="continuous">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="l_wrist_flex_link"/>
+    <child link="l_wrist_roll_link"/>
+    <limit effort="10.0" velocity="3.6"/>
+    <dynamics damping="0.1"/>
+    <safety_controller k_velocity="2.0"/>
+    <calibration rising="1.65616435229"/>
+  </joint>
+  <link name="l_wrist_roll_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_roll.stl"/>
+      </geometry>
+      <material name="RollLinks"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/forearm_v0/wrist_roll_L.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="l_forearm_link"/>
+  <gazebo reference="l_wrist_flex_link"/>
+  <gazebo reference="l_wrist_flex_joint"/>
+  <gazebo reference="l_wrist_roll_link"/>
+  <gazebo reference="l_wrist_roll_joint"/>
+  <transmission name="l_wrist_trans" type="pr2_mechanism_model/WristTransmission">
+    <mechanicalReduction>1</mechanicalReduction>
+    <rightActuator mechanicalReduction="60.1714285714" name="l_wrist_r_motor"/>
+    <leftActuator mechanicalReduction="60.1714285714" name="l_wrist_l_motor"/>
+    <flexJoint mechanicalReduction="-1.0" name="l_wrist_flex_joint"/>
+    <rollJoint mechanicalReduction="1.0" name="l_wrist_roll_joint"/>
+  </transmission>
+  <joint name="l_gripper_palm_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="l_wrist_roll_link"/>
+    <child link="l_gripper_palm_link"/>
+  </joint>
+  <link name="l_gripper_palm_link">
+    <inertial>
+      <origin xyz="0.06623 0.00053 -0.00119" rpy="0.0 0.0 0.0"/>
+      <mass value="0.58007"/>
+      <inertia ixx="0.00035223921" ixy="-1.580476e-05" ixz="-9.175e-07" iyy="0.00067741312" iyz="-5.9554e-07" izz="0.00086563316"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/gripper_palm.dae"/>
+      </geometry>
+      <material name="Red"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/gripper_palm.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_gripper_led_joint" type="fixed">
+    <origin xyz="0.0513 0.0 0.0244" rpy="0.0 0.0 0.0"/>
+    <parent link="l_gripper_palm_link"/>
+    <child link="l_gripper_led_frame"/>
+  </joint>
+  <link name="l_gripper_led_frame"/>
+  <joint name="l_gripper_motor_accelerometer_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="l_gripper_palm_link"/>
+    <child link="l_gripper_motor_accelerometer_link"/>
+  </joint>
+  <link name="l_gripper_motor_accelerometer_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_gripper_tool_joint" type="fixed">
+    <origin xyz="0.18 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="l_gripper_palm_link"/>
+    <child link="l_gripper_tool_frame"/>
+  </joint>
+  <link name="l_gripper_tool_frame"/>
+  <link name="l_gripper_motor_slider_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="l_gripper_motor_slider_joint" type="prismatic">
+    <origin xyz="0.16828 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="1.0 0.0 0.0"/>
+    <parent link="l_gripper_palm_link"/>
+    <child link="l_gripper_motor_slider_link"/>
+    <limit effort="1000.0" lower="-0.1" upper="0.1" velocity="0.2"/>
+  </joint>
+  <link name="l_gripper_motor_screw_link">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="l_gripper_motor_screw_joint" type="continuous">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="l_gripper_motor_slider_link"/>
+    <child link="l_gripper_motor_screw_link"/>
+    <dynamics damping="0.0001"/>
+  </joint>
+  <joint name="l_gripper_l_finger_joint" type="revolute">
+    <origin xyz="0.07691 0.01 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="l_gripper_palm_link"/>
+    <child link="l_gripper_l_finger_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.02"/>
+  </joint>
+  <link name="l_gripper_l_finger_link">
+    <inertial>
+      <origin xyz="0.03598 0.0173 -0.00164" rpy="0.0 0.0 0.0"/>
+      <mass value="0.17126"/>
+      <inertia ixx="7.756198e-05" ixy="1.49095e-06" ixz="-9.83385e-06" iyy="0.00019708305" iyz="-3.06125e-06" izz="0.00018105446"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_gripper_r_finger_joint" type="revolute">
+    <origin xyz="0.07691 -0.01 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 -1.0"/>
+    <parent link="l_gripper_palm_link"/>
+    <child link="l_gripper_r_finger_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.02"/>
+    <mimic joint="l_gripper_l_finger_joint" multiplier="1.0" offset="0.0"/>
+  </joint>
+  <link name="l_gripper_r_finger_link">
+    <inertial>
+      <origin xyz="0.03576 -0.01736 -0.00095" rpy="0.0 0.0 0.0"/>
+      <mass value="0.17389"/>
+      <inertia ixx="7.73841e-05" ixy="-2.09309e-06" ixz="-8.36228e-06" iyy="0.00019847383" iyz="2.4611e-06" izz="0.00018106988"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.dae"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_gripper_l_finger_tip_joint" type="revolute">
+    <origin xyz="0.09137 0.00495 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 -1.0"/>
+    <parent link="l_gripper_l_finger_link"/>
+    <child link="l_gripper_l_finger_tip_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.001"/>
+    <mimic joint="l_gripper_l_finger_joint" multiplier="1.0" offset="0.0"/>
+  </joint>
+  <link name="l_gripper_l_finger_tip_link">
+    <inertial>
+      <origin xyz="0.00423 0.00284 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.04419"/>
+      <inertia ixx="8.37047e-06" ixy="5.83632e-06" ixz="0.0" iyy="9.87067e-06" iyz="0.0" izz="1.541768e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_gripper_r_finger_tip_joint" type="revolute">
+    <origin xyz="0.09137 -0.00495 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+    <parent link="l_gripper_r_finger_link"/>
+    <child link="l_gripper_r_finger_tip_link"/>
+    <limit effort="1000.0" lower="0.0" upper="0.548" velocity="0.5"/>
+    <dynamics damping="0.001"/>
+    <mimic joint="l_gripper_l_finger_joint" multiplier="1.0" offset="0.0"/>
+  </joint>
+  <link name="l_gripper_r_finger_tip_link">
+    <inertial>
+      <origin xyz="0.00423 -0.00284 0.0" rpy="0.0 0.0 0.0"/>
+      <mass value="0.04419"/>
+      <inertia ixx="8.37047e-06" ixy="-5.83632e-06" ixz="0.0" iyy="9.87067e-06" iyz="0.0" izz="1.541768e-05"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.dae"/>
+      </geometry>
+      <material name="Green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="3.14159265359 0.0 0.0"/>
+      <geometry>
+        <mesh filename="package://pr2_description/meshes/gripper_v0/l_finger_tip.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="l_gripper_l_finger_link"/>
+  <gazebo reference="l_gripper_l_finger_joint"/>
+  <gazebo reference="l_gripper_r_finger_link"/>
+  <gazebo reference="l_gripper_r_finger_joint"/>
+  <gazebo reference="l_gripper_l_finger_tip_link"/>
+  <gazebo reference="l_gripper_l_finger_tip_joint"/>
+  <gazebo reference="l_gripper_r_finger_tip_link"/>
+  <gazebo/>
+  <gazebo reference="l_gripper_r_finger_tip_joint"/>
+  <gazebo/>
+  <gazebo/>
+  <gazebo/>
+  <gazebo reference="l_gripper_motor_slider_link"/>
+  <gazebo reference="l_gripper_motor_screw_link"/>
+  <gazebo reference="l_gripper_l_parallel_link"/>
+  <gazebo reference="l_gripper_r_parallel_link"/>
+  <joint name="l_gripper_joint" type="prismatic">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+    <parent link="l_gripper_r_finger_tip_link"/>
+    <child link="l_gripper_l_finger_tip_frame"/>
+    <limit effort="1000.0" lower="0.0" upper="0.09" velocity="0.2"/>
+    <dynamics damping="10.0"/>
+    <safety_controller k_velocity="5000.0" k_position="20.0" soft_lower_limit="-0.01" soft_upper_limit="0.088"/>
+  </joint>
+  <link name="l_gripper_l_finger_tip_frame"/>
+  <gazebo reference="l_gripper_palm_link"/>
+  <gazebo/>
+  <transmission name="l_gripper_trans" type="pr2_mechanism_model/PR2GripperTransmission">
+    <actuator name="l_gripper_motor"/>
+    <mechanicalReduction>1</mechanicalReduction>
+    <gap_joint L0="0.0375528" a="0.0683698" b="0.0433849" gear_ratio="40.095" h="0.0" mechanical_reduction="1.0" name="l_gripper_joint" phi0="0.518518122146" r="0.0915" screw_reduction="0.004" t0="-0.0001914" theta0="0.0628824676201"/>
+    <use_simulated_gripper_joint/>
+    <passive_joint name="l_gripper_l_finger_joint"/>
+    <passive_joint name="l_gripper_r_finger_joint"/>
+    <passive_joint name="l_gripper_r_finger_tip_joint"/>
+    <passive_joint name="l_gripper_l_finger_tip_joint"/>
+    <simulated_actuated_joint name="l_gripper_motor_screw_joint" passive_actuated_joint="l_gripper_motor_slider_joint" simulated_reduction="3141.6"/>
+
+  </transmission>
+  <joint name="l_forearm_cam_frame_joint" type="fixed">
+    <origin xyz="0.136021112272 0.00870940298543 0.0376696196694" rpy="-1.53829955207 -0.580995171779 -0.0122719358394"/>
+    <parent link="l_forearm_roll_link"/>
+    <child link="l_forearm_cam_frame"/>
+  </joint>
+  <link name="l_forearm_cam_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="l_forearm_cam_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="l_forearm_cam_frame"/>
+    <child link="l_forearm_cam_optical_frame"/>
+  </joint>
+  <link name="l_forearm_cam_optical_frame"/>
+  <gazebo reference="l_forearm_cam_frame"/>
+  <joint name="r_forearm_cam_frame_joint" type="fixed">
+    <origin xyz="0.135019591647 -0.00989962910798 0.0450877444721" rpy="1.53314188219 -0.568998118697 0.0149488325148"/>
+    <parent link="r_forearm_roll_link"/>
+    <child link="r_forearm_cam_frame"/>
+  </joint>
+  <link name="r_forearm_cam_frame">
+    <inertial>
+      <origin xyz="0.0 0.0 0.0"/>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="r_forearm_cam_optical_frame_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="-1.57079632679 0.0 -1.57079632679"/>
+    <parent link="r_forearm_cam_frame"/>
+    <child link="r_forearm_cam_optical_frame"/>
+  </joint>
+  <link name="r_forearm_cam_optical_frame"/>
+  <gazebo reference="r_forearm_cam_frame"/>
+  <link name="left_arm_chain_cb_link"/>
+  <joint name="left_arm_chain_cb" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="l_wrist_roll_link"/>
+    <child link="left_arm_chain_cb_link"/>
+  </joint>
+  <link name="right_arm_chain_cb_link"/>
+  <joint name="right_arm_chain_cb" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="r_wrist_roll_link"/>
+    <child link="right_arm_chain_cb_link"/>
+  </joint>
+  <link name="head_chain_cb_link"/>
+  <joint name="head_chain_cb" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="head_tilt_link"/>
+    <child link="head_chain_cb_link"/>
+  </joint>
+</robot>
