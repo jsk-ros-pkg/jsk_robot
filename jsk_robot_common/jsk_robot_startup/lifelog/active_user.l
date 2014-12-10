@@ -95,69 +95,75 @@
   ;; check if the robot is moving
   (when (and *user-name* (or (and *prev-distance* *prev-angle* *prev-position*) *odom-disable*))
     (let ((diff-distance (if *odom-disable* nil (- *distance* *prev-distance*)))
-	  (diff-angle (if *odom-disable* nil (- *angle* *prev-angle*)))
-	  (diff-position (if *odom-disable* nil (norm (v- *position* *prev-position*)))))
+          (diff-angle (if *odom-disable* nil (- *angle* *prev-angle*)))
+          (diff-position (if *odom-disable* nil (norm (v- *position* *prev-position*)))))
       ;; check servo on
       (ros::ros-debug " servo on -> ~A" *servo-on*)
       ;; check move_base
       (if (not *odom-disable*)
-	  (ros::ros-debug " move base -> ~A ~A" diff-distance diff-angle))
+          (ros::ros-debug " move base -> ~A ~A" diff-distance diff-angle))
       ;; check arms
       (ros::ros-debug " joint-angle  -> ~A" diff-position)
+
+      ;;for odom-enable machine
       (if (and *servo-on*
-		 (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position 0.001))
-		 (not *odom-disable*))
-	  (setq *movingp* t)
-	(setq *movingp* nil))
+               (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position 0.001))
+               (not *odom-disable*))
+          (setq *movingp* t)
+        ;;for odom-disable machine
+        (if (and (> diff-position 0.001)
+                 *odom-disable*)
+            (setq *movingp* t)
+          (setq *movingp* nil))
+        )
+
       ;;
       (cond
        ((and (eq *status* 'stop) *movingp*) ;; stop->move
-	(ros::ros-debug "[active_user] start moving")
-	(setq *status* 'move)
-	(setq *start-time* (ros::time-now))
-	(setq *tmp-elapsed* *elapsed*)
-	)
+        (ros::ros-debug "[active_user] start moving")
+        (setq *status* 'move)
+        (setq *start-time* (ros::time-now))
+        (setq *tmp-elapsed* *elapsed*)
+        )
        ((and (eq *status* 'stop) (not *movingp*) (not *odom-disable*)) ;; stop->stop
-	(setq *tmp-elapsed* (ros::time 0))
-	(ros::ros-debug "~A :tmp-elapsed" *tmp-elapsed*)
-	)
+        (setq *tmp-elapsed* (ros::time 0))
+        (ros::ros-debug "~A :tmp-elapsed" *tmp-elapsed*)
+        )
        ((and (eq *status* 'move) *movingp*) ;; move-> move
-	;; temp elapsed
-	(setq *tmp-elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
-	)
+        ;; temp elapsed
+        (setq *tmp-elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
+        )
        ((and (eq *status* 'move) (not *movingp*)) ;; move-stop
-	(ros::ros-debug "[active user] stop moving")
-	(setq *status* 'stop)
-	(setq *elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
-	)
-       (*odom-disable*
-	(ros::ros-debug "[active user] No odom")
-	(setq *elapsed* (ros::time- (ros::time-now) *start-time*))
-	))
+        (ros::ros-debug "[active user] stop moving")
+        (setq *status* 'stop)
+        (setq *elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
+        )
+       )
       (setq *elapsed-sec* (send (if *movingp* *tmp-elapsed* *elapsed*) :to-sec))
       (ros::ros-debug " status  -> ~A (currently moving? ~A), elapsed ~A" *status* *movingp* *elapsed-sec*)
       (ros::publish "diagnostics"
-		    (instance diagnostic_msgs::DiagnosticArray :init
-			      :header (instance std_msgs::Header :init :seq *seq* :stamp (ros::time-now))
-			      :status (list
-				       (instance diagnostic_msgs::DiagnosticStatus :init
-						 :level 0
-						 :name"Active User"
-						 :message (format nil "~A ~A sec" *user-name* *elapsed-sec*)
-						 :values (list 
-							  (instance diagnostic_msgs::KeyValue :init
-								    :key "User Name"
-								    :value *user-name*)
-							  (instance diagnostic_msgs::KeyValue :init
-								    :key "Usage Time"
-								    :value *elapsed-sec*))))))
+                    (instance diagnostic_msgs::DiagnosticArray :init
+                              :header (instance std_msgs::Header :init :seq *seq* :stamp (ros::time-now))
+                              :status (list
+                                       (instance diagnostic_msgs::DiagnosticStatus :init
+                                                 :level 0
+                                                 :name"Active User"
+                                                 :message (format nil "~A ~A sec" *user-name* *elapsed-sec*)
+                                                 :values (list 
+                                                          (instance diagnostic_msgs::KeyValue :init
+                                                                    :key "User Name"
+                                                                    :value *user-name*)
+                                                          (instance diagnostic_msgs::KeyValue :init
+                                                                    :key "Usage Time"
+                                                                    :value *elapsed-sec*))))))
       (incf *seq*)
       ))
-    
+
   (if (not *odom-disable*)
       (setq *prev-distance* *distance*
-	    *prev-angle* *angle*
-	    *prev-position* *position*)
+            *prev-angle* *angle*
+            *prev-position* *position*)
+    (setq *prev-position* *position*)
     )
   (when (and *user-name* *elapsed-sec*)
     (ros::set-param "/active_user/user_name" *user-name*)
