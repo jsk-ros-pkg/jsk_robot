@@ -2,17 +2,11 @@
    uri: http://github.com/RethinkRobotics/baxter_common.git
    local-name: RethinkRobotics/baxter_common
 - git:
-    uri: https://github.com/jsk-ros-pkg/jsk_model_tools.git
-    local-name: jsk-ros-pkg/jsk_model_tools
-- git:
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
     local-name: jsk-ros-pkg/jsk_demos
 - git:
     uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
     local-name: jsk-ros-pkg/jsk_smart_apps
-- git:
-    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    local-name: jsk-ros-pkg/jsk_pr2eus
 - git:
     uri: https://github.com/jsk-ros-pkg/openrave_planning.git
     local-name: jsk-ros-pkg/openrave_planning
