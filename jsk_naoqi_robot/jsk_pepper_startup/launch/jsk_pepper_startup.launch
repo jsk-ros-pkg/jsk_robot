@@ -1,8 +1,15 @@
 <launch>
-  <include file="$(find nao_bringup)/nao.launch" >
+  <include file="$(find jsk_pepper_bringup)/launch/pepper.launch" >
     <arg name="force_python" value="true"/>
   </include>
- 
+  <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch"/>
+  <include file="$(find nao_interaction_launchers)/launch/nao_vision_interface.launch"/>
+  <include file="$(find nao_apps)/launch/nao_speech.launch"/>
+  <include file="$(find nao_apps)/launch/nao_behaviors.launch"/>
+  <include file="$(find nao_apps)/launch/nao_walker.launch">
+    <arg name="use_wheel_target" value="true" />
+  </include>
+
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="teleop_joy">
     <param name="dev" value="/dev/input/js1" />
@@ -21,22 +28,6 @@
   </node>
 
 
-  <group ns="depth" >
-    <include file="$(find naoqi_sensors)/launch/camera.launch" >
-      <arg name="source" value="2" />
-    </include>
-  </group>  
-  <group ns="top" >
-    <include file="$(find naoqi_sensors)/launch/camera.launch" >
-      <arg name="brightness" value="0" />
-      <arg name="source" value="0" />
-    </include>
-  </group>  
-  <group ns="bottom" >
-    <include file="$(find naoqi_sensors)/launch/camera.launch" >
-      <arg name="source" value="1" />
-    </include>
-  </group>  
   <!--
   <include file="$(find nao_sensors)/launch/sonar.launch" />
   -->
