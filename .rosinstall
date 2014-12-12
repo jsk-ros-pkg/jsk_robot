@@ -25,3 +25,4 @@
 - git:
     uri: https://github.com/PR2/pr2_calibration.git
     local-name: pr2_calibration
+    version: hydro-devel

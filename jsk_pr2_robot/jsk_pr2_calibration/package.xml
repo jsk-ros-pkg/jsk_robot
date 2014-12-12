@@ -7,10 +7,10 @@
   <license>BSD</license>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>euscollada</build_depend>
-  <build_depend>pr2_calibration</build_depend>
+  <build_depend>pr2_calibration_launch</build_depend>
   <build_depend>pr2_description</build_depend>
   <run_depend>euscollada</run_depend>
-  <run_depend>pr2_calibration</run_depend>
+  <run_depend>pr2_calibration_launch</run_depend>
   <run_depend>pr2_description</run_depend>
   <export>
   </export>
