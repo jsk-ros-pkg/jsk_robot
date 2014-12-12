@@ -1,0 +1,10 @@
+<launch>
+  <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
+    <arg name="robot_name" value="PR2"/>
+
+    <arg name="machine" value="c2"/>
+    <arg name="output" value="screen"/>
+
+    <arg name="account_info" value="/var/lib/robot/twitter_account_pr2jsk.yaml" />
+  </include>
+</launch>

@@ -1,0 +1,18 @@
+<launch>
+<!-- this file is originally from pr2_navigation_perception pkg -->
+<!--node name="ground_reflect_filter" type="plane_reflect_cloud.py"
+      pkg="jsk_pr2_startup">
+  <remap from="input_cloud" to="tilt_scan_filtered"/>
+  <remap from="output_cloud" to="tilt_cloud_filtered"/>
+</node-->
+
+<node name="ground_object_cloud_throttle" pkg="topic_tools" type="throttle" args="messages ground_object_cloud 3.0 ground_object_cloud_throttled" />
+<node pkg="semantic_point_annotator" type="sac_inc_ground_removal_node" name="sac_ground_removal" machine="c2">
+  <remap from="tilt_laser_cloud_filtered" to="tilt_scan_filtered" />
+  <remap from="cloud_ground_filtered" to="ground_object_cloud" />
+  <param name="z_threshold" value="0.15" />
+  <param name="sac_min_points_per_model" value="40" />
+  <param name="sac_distance_threshold" value="0.5" />
+  <param name="planar_refine" value="1" />
+</node>
+</launch>

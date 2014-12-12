@@ -1,0 +1,39 @@
+<launch>
+  <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
+    <arg name="robot_name" value="Baxter"/>
+    <arg name="worktime_enable" value="true"/>
+    <arg name="uptime_enable" value="true"/>
+    <arg name="tablet_enable" value="false"/>
+    <arg name="warning_enable" value="false"/>
+    
+    <arg name="motor_subscribe" value="true"/>
+    <arg name="odom_subscribe" value="false"/>
+    <arg name="joint_state_subscribe" value="true"/>
+
+    <arg name="remap_motor_state" value="/robot/servo_state"/>
+    <arg name="remap_joint_states" value="/robot/joint_states"/>
+
+    <arg name="image_topic" value="/openni/rgb/image_rect_color"/>
+
+    <arg name="machine" value="localhost"/>
+    <arg name="output" value="screen"/>
+
+    <arg name="account_info" value="/var/lib/robot/account.yaml" />
+  </include>
+
+  <arg name="output" default="screen" />
+
+  <node name="image_saver" pkg="image_view" type="image_saver"
+        output="$(arg output)" respawn="true" >
+    <remap from="image" to="/cameras/head_camera/image" />
+    <param name="save_all_image" value="false" />
+    <param name="filename_format" value="/tmp/baxter_camera.png" />
+  </node>
+
+  <node pkg="face_recognition" type="Fserver" name="face_recognition">
+    <remap from="camera/image_raw" to="/cameras/head_camera/image"/>
+  </node>
+  <node pkg="face_recognition" type="Fclient" name="face_recognition_client"/>
+
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"/>
+</launch>

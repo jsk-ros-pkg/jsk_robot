@@ -1,0 +1,62 @@
+<launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
+  <!-- push L1 and R2 to unsafe teleop
+       push L1 to safe_teleop
+       publish /input_vel to move robot safety
+       publish /navigation/cmd_vel to move robot
+       publish /base_controller/command to move every time!
+    -->
+
+  <!-- base controll node to move along a trajectry -->
+  <node pkg="pr2_base_trajectory_action" type="pr2_base_trajectory_action"
+        name="joint_trajectory_action" ns="base_controller"
+        respawn="true" output="screen">
+    <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
+    <param name="goal_threshold" value="10.0" /> <!-- ignore goal error -->
+    <remap from="command" to="/navigation/cmd_vel"/>
+    <remap from="odom" to="/base_odometry/odom"/>
+  </node>
+
+  <node pkg="topic_tools" type="mux" name="unsafe_vel_mux" respawn="true"
+	args="/navigation/unsafe_vel /input_vel /navigation/cmd_vel /teleop/joy_vel" machine="c2">
+    <remap from="mux" to="vel_type_mux" />
+  </node>
+  <!-- args is (topic, condition, select)* -->
+  <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+	name="vel_type_selector" respawn="true" output="screen"
+	args="/joy 'm.buttons[10]==1' /teleop/joy_vel /navigation/cmd_vel 'True' /navigation/cmd_vel">
+    <remap from="mux" to="vel_type_mux" />
+    <param name="default_select" value="/input_vel"/>
+  </node>
+
+  <node pkg="safe_teleop_base" type="safe_teleop_base" respawn="false"
+        name="safe_teleop_base" machine="c2">
+    <remap from="base_velocity" to="/navigation/unsafe_vel"/>
+    <remap from="~safe_vel" to="/navigation/safe_vel"/>
+    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop_pr2_params.yaml"
+              command="load" />
+    <rosparam param="local_costmap/footprint">[[-0.325, -0.325], [-0.325, 0.325], [0.325, 0.325], [0.46, 0.0], [0.325, -0.325]]</rosparam>
+  </node>
+
+  <!-- switch base velocity, safe or not -->
+  <node pkg="topic_tools" type="mux" name="cmd_vel_mux" respawn="true" machine="c2"
+	args="base_controller/command_unchecked /navigation/unsafe_vel /navigation/safe_vel">
+    <remap from="mux" to="cmd_vel_mux" />
+  </node>
+  <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+	name="cmd_vel_selector" respawn="true" output="screen"
+	args="/joy 'm.buttons[9]==0 and m.buttons[10]==1' /navigation/safe_vel /input_vel 'True' /navigation/safe_vel">
+    <remap from="mux" to="cmd_vel_mux" />
+    <param name="default_select" value="/navigation/unsafe_vel"/>
+  </node>
+
+  <!-- check cable and filter baser_controller/command -->
+  <node pkg="roseus" type="roseus" name="check_cable" respawn="true"
+	args="$(find jsk_pr2_startup)/jsk_pr2_move_base/check_cable.l"/>
+
+  <!-- warning 5 sec when unsafe -->
+  <node pkg="roseus" type="roseus" name="unsafe_warning" respawn="true"
+	args="$(find jsk_pr2_startup)/jsk_pr2_warning/unsafe_warning.l"/>
+
+</launch>
