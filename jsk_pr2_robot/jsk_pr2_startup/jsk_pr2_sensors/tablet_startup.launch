@@ -36,5 +36,7 @@
 
   <node name="tablet_marked_image_throttle" pkg="topic_tools" type="throttle"
         args="messages /tablet/marked/image_rect_color/compressed 5.0" />
-
+  <node pkg="jsk_rviz_plugins"
+        type="rviz_mouse_point_to_tablet.py"
+        name="rviz_mouse_point_to_tablet" />
 </launch>
