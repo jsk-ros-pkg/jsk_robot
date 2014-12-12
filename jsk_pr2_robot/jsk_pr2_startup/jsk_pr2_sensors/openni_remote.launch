@@ -1,0 +1,10 @@
+<launch>
+  <arg name="MACHINE_NAME" default="remote"/>
+  <group>
+    <remap from="/rosout" to="/rosout_$(arg MACHINE_NAME)"/>
+    <include file="$(find jsk_pcl_ros)/launch/openni_remote.launch">
+      <arg name="camera" value="openni"/>
+      <arg name="camera_remote" value="openni_$(arg MACHINE_NAME)"/>
+    </include>
+  </group>
+</launch>

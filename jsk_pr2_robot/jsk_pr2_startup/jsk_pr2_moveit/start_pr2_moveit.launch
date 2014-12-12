@@ -1,0 +1,36 @@
+<launch>
+  <arg name="USE_LASER_AND_KINECT" default="true" />
+  <arg name="USE_LASER" default="false" />
+  <arg name="USE_KINECT" default="false" />
+
+  <!-- select sensor -->
+  <arg if="$(arg USE_LASER_AND_KINECT)" name="sensor_params_file" value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors.yaml" />
+  <arg if="$(arg USE_LASER)"
+       name="sensor_params_file"
+       value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_laser.yaml" />
+  <arg if="$(arg USE_KINECT)"
+       name="sensor_params_file"
+       value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_kinect.yaml" />
+
+  <include file="$(find pr2_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="false"/>
+  </include>
+
+  <!--node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 odom_combined base_footprint 100" /-->
+  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="true"/>
+  </node-->
+  <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" /-->
+
+  <include file="$(find pr2_moveit_config)/launch/move_group.launch">
+    <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="moveit_octomap_sensor_params_file"
+         value="$(arg sensor_params_file)" />
+  </include>
+
+  <!-- <include file="$(find pr2_moveit_config)/launch/moveit_rviz.launch"> -->
+  <!--   <arg name="config" value="true"/> -->
+  <!-- </include> -->
+
+  <!--include file="$(find pr2_moveit_config)/launch/default_warehouse_db.launch" /-->
+</launch>
