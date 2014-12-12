@@ -13,7 +13,7 @@
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg launch_openni)">
     <arg name="camera" value="openni"/>
-    <arg name="respawn" value="$(arg respawn)"/>
+    <arg name="respawn" value="$(arg respawn)" if="false"/>
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
     <arg name="rgb_processing"                  value="false"/>
@@ -121,6 +121,7 @@
   </include>
   <node type="openni_remote_launch.sh" pkg="jsk_pr2_startup"
         name="openni_remote_launch_c2" output="screen"
+        if="$(arg launch_c2_startup)"
         machine="c2"
         args="c2"/>
 
