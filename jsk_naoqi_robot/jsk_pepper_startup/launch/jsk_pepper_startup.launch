@@ -5,14 +5,13 @@
   <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch"/>
   <include file="$(find nao_interaction_launchers)/launch/nao_vision_interface.launch"/>
   <include file="$(find nao_apps)/launch/nao_speech.launch"/>
+  <include file="$(find nao_apps)/launch/nao_alife.launch"/>
   <include file="$(find nao_apps)/launch/nao_behaviors.launch"/>
-  <include file="$(find nao_apps)/launch/nao_walker.launch">
-    <arg name="use_wheel_target" value="true" />
-  </include>
+  <include file="$(find nao_apps)/launch/nao_wheel.launch"/>
 
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="teleop_joy">
-    <param name="dev" value="/dev/input/js1" />
+    <param name="dev" value="/dev/input/js0" />
   </node>
   <node pkg="topic_tools" type="relay" name="cmd_vel_relay"
 	args="/cmd_vel_mux/input/teleop /cmd_vel" />
@@ -35,9 +34,13 @@
   <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
   <node pkg="rostwitter" name="tweet" type="tweet.py" />
   <node pkg="image_view" name="image_saver" type="image_saver" >
-    <remap from="image" to="/top/camera/image_raw" />
+    <remap from="image" to="/camera/top/camera/image_raw" />
     <param name="save_all_image" value="false" />
     <param name="filename_format" value="/tmp/pepper_camera.png" />
   </node>
+  <!--
   <node pkg="nao_dashboard" name="dashboard" type="nao_dashboard"/>
+  -->
+
+  <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" />
 </launch>
