@@ -1,35 +1,25 @@
-#nao euslisp
-##Generate nao.l
+jsk_pepper_robot
+================
+
+setup environmnet
+-----------------
 ```
-catkin_make --only-pkg-with-deps euscollada
-roscd euscollada
-./nao.sh
+mkdir -p catkin_ws/semi/src
+cd  catkin_ws/semi/src
+wstool init src
+wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/jsk_pepper_robot/pepper.rosinstall
+wstool update -t src
+rosdep install -y -r --from-paths src --ignore-src
+catkin_make
+source devel/setup.bash
 ```
 
-##Improve nao.l
+running demo
+------------
 ```
-catkin_make --only-pkg-with-deps eus_assimp
-roscd naoeus/scripts
-./setup.sh
+rosrun jsk_pepper_startup jsk_pepper_startup.launch
 ```
-
-#nao gazebo
-##Dependencies
 ```
-sudo apt-get install ros-hydro-joint-state-controller
-sudo apt-get install ros-hydro-position-controller
-sudo apt-get install ros-hydro-gazebo-ros-control
-```
-##Download model file
-```
-catkin_make --only-pkg-with-deps nao_meshes
-roscd
-cd ../build/ros_nao/nao_meses
-make nao_meshes_meshes
-roscd
-cp -r tmp/nao_meshes/* ../src/ros_nao/nao_meshes/
-```
-##How to run
-```
-roslaunch nao_gazebo_plugin nao_gazebo_plugin_H25.launch
+rosrun jsk_pepper_startup sample.l
+$ (demo1)
 ```
