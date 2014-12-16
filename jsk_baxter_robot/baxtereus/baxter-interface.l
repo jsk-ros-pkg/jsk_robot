@@ -4,9 +4,13 @@
 (ros::load-ros-manifest "control_msgs")
 (ros::load-ros-manifest "baxter_core_msgs")
 
+;;(defparameter *suction* 65537) ;;vacuum
+;;(defparameter *electoric* 65538)
+
 (defclass baxter-interface
   :super robot-interface
-  :slots (gripper-sequence-id right-gripper-action left-gripper-action))
+  :slots (gripper-sequence-id right-gripper-action left-gripper-action
+			      right-gripper-type left-gripper-type))
 (defmethod baxter-interface
   (:init (&rest args)
    (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states")
@@ -16,7 +20,9 @@
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
      (ros::advertise "/robot/head/command_head_nod" std_msgs::Bool 1)
-     
+     (ros::subscribe "/robot/end_effector/right_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :right-property-cb)
+     (ros::subscribe "/robot/end_effector/left_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :left-property-cb)
+
      (setq right-gripper-action (instance ros::simple-action-client :init
 					  "robot/end_effector/right_gripper/gripper_action"
 					  control_msgs::GripperCommandAction
@@ -32,7 +38,14 @@
 	 (return)))
 
      (setq gripper-sequence-id 0)
+     (ros::spin-once)
      ))
+  (:right-property-cb (msg)
+   (setq right-gripper-type (send msg :id))
+   )
+  (:left-property-cb (msg)
+   (setq left-gripper-type (send msg :id))
+   )
   (:default-controller ()
    (append
     (send self :larm-controller)
@@ -142,8 +155,12 @@
 
   (:command-grasp
    (cmd arm &key ((:pos pos) nil))
+   (ros::spin-once)
    (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
-     (send ee-cmd :id 65538)
+     (if (equal arm "right")
+	 (send ee-cmd :id right-gripper-type)
+       (send ee-cmd :id left-gripper-type)
+       )
      (send ee-cmd :command cmd)
      (send ee-cmd :sender "/baxter_interface")
      (send ee-cmd :sequence gripper-sequence-id)
