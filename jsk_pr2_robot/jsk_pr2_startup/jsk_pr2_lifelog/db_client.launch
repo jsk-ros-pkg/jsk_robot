@@ -1,12 +1,44 @@
 <launch>
-  <node name="move_base_db" pkg="jsk_pr2_startup" type="move_base_db.py">
+  <arg name="launch_mongodb" default="true" />
+  <arg name="log_move_base" default="true" />
+  <arg name="log_object_detection" default="false" />
+  <arg name="tweet" default="true" />
+
+
+  <!-- mongodb server -->
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"
+           if="$(arg launch_mongodb)" >
+    <arg name="db_path" value="/var/lib/robot/mongodb_store" />
+    <arg name="port" value="62345" />
+    <arg name="repl_set_mode" value="false" />
+  </include>
+
+  <!-- logging and resoring pr2 position data -->
+  <node name="move_base_db"
+        pkg="jsk_pr2_startup" type="move_base_db.py"
+        if="$(arg store_move_base)" >
     <param name="map_frame" value="eng2"/>
     <param name="robot_frame" value="base_footprint"/>
     <param name="update_cycle" value="0.1" />
+    <param name="db_name" value="jsk_pr2_lifelog" />
+    <param name="col_name" value="move_base_db" />
   </node>
+
   <!--node name="action_result_db" pkg="jsk_pr2_startup" type="action_result_db.py"/-->
-  <!--group ns="/narrow_stereo/left">
-     <node name="object_detection_db" pkg="jsk_pr2_startup" type="objectdetection_db.py"/>
-  </group-->
-  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_tweet.launch" />
+
+  <!-- logging object detection data -->
+  <group ns="/narrow_stereo/left">
+     <node name="object_detection_db"
+           pkg="jsk_pr2_startup" type="objectdetection_db.py"
+           if="$(arg log_object_detection)" >
+       <param name="map_frame" value="eng2"/>
+       <param name="robot_frame" value="base_footprint"/>
+       <param name="db_name" value="jsk_pr2_lifelog" />
+       <param name="col_name" value="object_detection_db" />
+     </node>
+  </group>
+
+  <!-- tweeting robot warning data and etc. -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_tweet.launch"
+           if="$(arg tweet)"/>
 </launch>
