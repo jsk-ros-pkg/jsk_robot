@@ -4,8 +4,9 @@
 (ros::load-ros-manifest "control_msgs")
 (ros::load-ros-manifest "baxter_core_msgs")
 
-;;(defparameter *suction* 65537) ;;vacuum
-;;(defparameter *electoric* 65538)
+(defparameter *suction* 65537) ;;vacuum
+(defparameter *electoric* 65538)
+(defvar *wait-for-suction* 5000000)
 
 (defclass baxter-interface
   :super robot-interface
@@ -31,7 +32,8 @@
 					 "robot/end_effector/left_gripper/gripper_action"
 					 control_msgs::GripperCommandAction
 					 ))
-
+     (if (ros::has-param "~wait_for_suction")
+	 (setq *wait-for-suction* (read-from-string (ros::get-param "~wait_for_suction"))))
      (dolist (action (list right-gripper-action left-gripper-action))
        (unless (and joint-action-enable (send action :wait-for-server 3))
 	 (ros::ros-warn "~A is not respond" action)
@@ -121,11 +123,21 @@
   (:start-grasp
    (&optional (arm :arms) &key (effort 50))
    (send self :go-grasp arm :pos 0 :effort effort)
+   (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
+	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
+	   ( and (equal arm :larm) (equal left-gripper-type *suction*)))
+       (unix::usleep *wait-for-suction*)
+     )
    )
 
   (:stop-grasp
    (&optional (arm :arms) &key (effort 50))
    (send self :go-grasp arm :pos 100 :effort effort)
+   (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
+	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
+	   ( and (equal arm :larm) (equal left-gripper-type *suction*)))
+       (unix::usleep *wait-for-suction*)
+     )
    )
 
   (:go-grasp
