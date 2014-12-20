@@ -13,9 +13,10 @@
 - git:
     uri: https://github.com/code-iai/SnapMapICP.git
     local-name: tum-ros-pkg/highlevel/SnapMapICP
-- svn:
-    uri: http://svn.code.sf.net/p/bosch-ros-pkg/code/trunk/stacks/bosch_shared_autonomy
-    local-name: bosch-ros-pkg/stacks/bosch_shared_autonomy
+# - git:
+#     uri: https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation.git
+#     local-name: SharedAutonomyToolkit/shared_autonomy_manipulation
+#     version: hydro-devel
 - git:
     uri: https://github.com/code-iai/SnapMapICP.git
     local-name: tum-ros-pkg/highlevel/SnapMapICP
