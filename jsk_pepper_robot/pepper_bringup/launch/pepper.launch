@@ -1,0 +1,63 @@
+<launch>
+
+  <arg name="nao_ip" default="$(optenv NAO_IP 127.0.0.1)" />
+  <arg name="nao_port" default="$(optenv NAO_PORT 9559)" />
+
+  <!-- Use CPP node by default for naoqi_sensors -->
+  <arg name="force_python" default="false" />
+
+  <node pkg="diagnostic_aggregator" type="aggregator_node" name="diag_agg" clear_params="true">
+    <rosparam command="load" file="$(find nao_bringup)/config/nao_analysers.yaml" />
+  </node>
+
+  <include file="$(find pepper_description)/launch/pepper_publisher.launch" />
+
+  <include file="$(find naoqi_driver)/launch/naoqi_driver.launch">
+    <arg name="force_python" value="$(arg force_python)" />
+  </include>
+  <include file="$(find nao_pose)/launch/pose_manager.launch" >
+    <arg name="nao_ip" value="$(arg nao_ip)" />
+    <arg name="nao_port" value="$(arg nao_port)" />
+  </include>
+
+  <!-- Specify here all dependent settings (default top) -->
+  <include file="$(find naoqi_sensors)/launch/camera.launch" ns="camera/top" >
+    <arg name="nao_ip" value="$(arg nao_ip)" />
+    <arg name="nao_port" value="$(arg nao_port)" />
+    <arg name="source" value="0" />
+    <arg name="color_space" value="13" />
+    <arg name="brightness" value="0" />
+  </include>
+  <include file="$(find naoqi_sensors)/launch/camera.launch" ns="camera/bottom" >
+    <arg name="nao_ip" value="$(arg nao_ip)" />
+    <arg name="nao_port" value="$(arg nao_port)" />
+    <arg name="source" value="1" />
+    <arg name="color_space" value="13" />
+    <arg name="brightness" value="0" />
+  </include>
+  <include file="$(find naoqi_sensors)/launch/camera.launch" ns="camera/depth" >
+    <arg name="nao_ip" value="$(arg nao_ip)" />
+    <arg name="nao_port" value="$(arg nao_port)" />
+    <arg name="source" value="2" />
+    <arg name="color_space" value="17" />
+    <arg name="resolution" value="1" />
+  </include>
+  
+  <!-- Load front and back sonar -->
+  <include file="$(find naoqi_sensors)/launch/sonar.launch" ns="sonar/front" >
+    <arg name="nao_ip" value="$(arg nao_ip)" />
+    <arg name="nao_port" value="$(arg nao_port)" />
+    <arg name="memory_key" value="Device/SubDeviceList/Platform/Front/Sonar/Sensor/Value" />
+    <arg name="frame_id" value="FrontSonar_frame" />
+  </include>
+  <include file="$(find naoqi_sensors)/launch/sonar.launch" ns="sonar/back" >
+    <arg name="nao_ip" value="$(arg nao_ip)" />
+    <arg name="nao_port" value="$(arg nao_port)" />
+    <arg name="memory_key" value="Device/SubDeviceList/Platform/Back/Sonar/Sensor/Value" />
+    <arg name="frame_id" value="BackSonar_frame" />
+  </include>
+
+  <!-- Specify here all dependent settings (default top) -->
+  <!-- include file="$(find naoqi_sensors)/launch/microphone.launch" ns="nao_robot/microphone" / -->
+
+</launch>
