@@ -1,0 +1,45 @@
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package jsk_baxter_startup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Forthcoming
+-----------
+* fix typo in baxter_tweet
+* add time singal in baxter startup
+* move twitter related program to robot_common from jsk_pr2_startup
+* repair mongodb.launch and add param
+* add gripper action server
+* add camera info fixer launch in baxter.launch
+* use face_recognition package(procrob_functional)
+* add camera_info_fixer, camera_info_std publishes with original param and roi, and camera_info publishes cropped image with same roi, it seems something wrong...
+* remove unnecessary components
+* add wrench publisher
+* add depends
+* add image saver
+* add sound tools and eus speak-en
+* modify params
+* modify package name
+* add baxter tweet
+* mv catkin.cmake to CMakeLists.txt
+* fix jsk_baxter_startup/package.xml
+* remove baxter_interface and baxter_tools from find_package, they do not need to load as COMPONENTS
+* remove unneeded lines
+* delete objectdetection_tf_publisher and use checker_board_detector's
+* add baxter_description
+* update kinect.launch
+* delete files correctly
+* delete voice directory and move file
+* delete text2wave and modify voice_echo.l
+* Update jsk_baxter_startup
+  We added files in jsk_baxter_sensors
+  - for kinect.launch
+  - add voice set
+  - change joy device name
+* add baxter joy dir and launch
+* add baxter rviz config file for default baxter nodes
+* update manifest
+* add tmp groovy manifest file
+* one more openni => openni_launch space
+* update and add catkin.cmake (just rename CMakeLists.txt to catkin.cmake)
+* add baxter startup launch file
+* Contributors: Kei Okada, Tomoya Yoshizawa, Yuto Inagaki
