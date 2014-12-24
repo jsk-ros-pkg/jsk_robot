@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2014-12-25)
+------------------
 * fix version number
 * add wait time for suction
 * get baxter hand type property

@@ -2,8 +2,8 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2014-12-25)
+------------------
 * fix typo in baxter_tweet
 * add time singal in baxter startup
 * move twitter related program to robot_common from jsk_pr2_startup
