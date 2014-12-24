@@ -2,8 +2,8 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2014-12-25)
+------------------
 * add depends to pepper_bringup
 * fix launch file as of Dec 14
 * use jsk_pepper_bringup and now naoqi repos
