@@ -1,0 +1,4 @@
+<launch>
+  <param name="robot_description" textfile="$(find pepper_description)/urdf/pepper_generated_urdf/pepper.urdf" />
+  <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher" />
+</launch>
