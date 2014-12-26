@@ -1,6 +1,6 @@
 (ros::roseus "pepper")
 
-(load "/home/nao/catkin_ws/src/jsk_pepper_robot/peppereus/pepper.l")
+(load "package://peppereus/pepper.l")
 (load "package://pr2eus/robot-interface.l")
 (ros::load-ros-manifest "jsk_pepper_startup")
 (ros::load-ros-manifest "peppereus")
