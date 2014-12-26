@@ -12,7 +12,6 @@
   <build_depend>baxter_tools</build_depend>
   <build_depend>baxter_examples</build_depend>
   <build_depend>openni_launch</build_depend>
-  <build_depend>jtalk</build_depend>
   <build_depend>joy</build_depend>
   <build_depend>checkerboard_detector</build_depend>
   <build_depend>topic_tools</build_depend>
@@ -27,7 +26,6 @@
   <run_depend>baxter_tools</run_depend>
   <run_depend>baxter_examples</run_depend>
   <run_depend>openni_launch</run_depend>
-  <run_depend>jtalk</run_depend>
   <run_depend>joy</run_depend>
   <run_depend>checkerboard_detector</run_depend>
   <run_depend>topic_tools</run_depend>
