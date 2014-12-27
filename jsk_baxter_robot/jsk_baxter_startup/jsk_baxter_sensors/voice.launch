@@ -1,4 +1,3 @@
 <launch>
-  <node pkg="jsk_baxter_startup" name="voice_echo" type="voice_echo.l" args="" output="screen" clear_params="true"/>
   <node pkg="sound_play" name="sound_play" type="soundplay_node.py"/>
 </launch>
