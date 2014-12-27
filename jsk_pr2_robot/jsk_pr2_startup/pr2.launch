@@ -102,14 +102,10 @@
   <!-- for gripper sensor actions -->
   <group if="$(arg launch_gripper_sensor)">
     <group ns="l_gripper_sensor_controller">
-      <group ns="pr2_gripper_sensor_action">
-        <param name="publish_skip" value="100" /> <!--10Hz-->
-      </group>
+      <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <group ns="r_gripper_sensor_controller">
-      <group ns="pr2_gripper_sensor_action">
-        <param name="publish_skip" value="100" /> <!--10Hz-->
-      </group>
+      <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
   </group>
