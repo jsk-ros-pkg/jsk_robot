@@ -17,7 +17,7 @@ class image_converter:
         self.image_sub = None
 
     def callback(self,data):
-        if data.header.stamp < self.prev_time + rospy.Duration(5):
+        if data.header.stamp < self.prev_time + rospy.Duration(60):
             return
         self.image_sub.unregister()
         self.prev_time = data.header.stamp
