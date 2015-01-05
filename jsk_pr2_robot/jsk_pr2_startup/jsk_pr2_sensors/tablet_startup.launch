@@ -16,6 +16,7 @@
         type="emergency_stop.l" output="screen" args="(execute-main)" />
 
   <node pkg="image_view2" name="image_view2_for_tablet"
+        machine="c2"
         type="image_view2" output="screen" respawn="true">
     <remap from="image" to="/image_input_mux"/>
     <remap from="camera_info" to="/camera_info_input_mux"/>
@@ -32,6 +33,7 @@
   </node>
 
   <node ns="/tablet/marked" pkg="image_proc" type="image_proc"
+        machine="c2"
         respawn="true" name="marked_image_proc"/>
 
   <node name="tablet_marked_image_throttle" pkg="topic_tools" type="throttle"
