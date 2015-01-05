@@ -24,6 +24,7 @@
   </node>
 
   <node pkg="image_view2" name="image_view2_for_tablet"
+        machine="c2"
         type="image_view2" output="screen" respawn="true">
     <remap from="image" to="/image_input_mux_throttle"/>
     <remap from="camera_info" to="/camera_info_input_mux"/>
@@ -40,6 +41,7 @@
   </node>
 
   <node ns="/tablet/marked" pkg="image_proc" type="image_proc"
+        machine="c2"
         respawn="true" name="marked_image_proc"/>
 
   <node name="tablet_marked_image_throttle" pkg="jsk_topic_tools" type="lightweight_throttle">
