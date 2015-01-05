@@ -14,6 +14,7 @@
   <arg name="launch_db" default="true" />
   <arg name="launch_hark" default="true" />
   <arg name="launch_teleoperation" default="true" />
+  <arg name="launch_people_detection" default="true" />
   <arg name="slow_camera_framerate" default="true" />
   <arg name="move_tilt_scan" default="true" />
   <arg name="launch_c3_startup" default="false" />
@@ -140,6 +141,8 @@
     <arg name="MACHINE" value="c3"/>
     <arg name="launch_battery" value="true"/>
   </include>
+  <include if="$(arg launch_people_detection)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/people_detection.launch" />
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
         name="finish_launch_sound" />
