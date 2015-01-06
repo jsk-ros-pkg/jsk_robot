@@ -20,11 +20,11 @@
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   (if namespace (format nil "~A/joint_stiffness_trajectory" namespace ) "joint_stiffness_trajectory")
-		   nao_msgs::JointTrajectoryAction))
+		   naoqi_msgs::JointTrajectoryAction))
    (ros::advertise (if namespace (format nil "~A/cmd_pose" namespace) "cmd_pose") geometry_msgs::Pose2D 1)
    (ros::advertise (if namespace (format nil "~A/cmd_vel" namespace) "cmd_vel") geometry_msgs::Twist 1)
    (ros::advertise "/speech" std_msgs::String 1)
-   (ros::advertise "/joint_angles" nao_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise "/joint_angles" naoqi_msgs::JointAnglesWithSpeed 1)
    ;; (dolist (param (send self controller-type))
    ;;   (let* ((controller-state (cdr (assoc :controller-state param)))
    ;; 	    (key (intern (string-upcase controller-state) *keyword-package*)))
@@ -43,7 +43,7 @@
      ;;"joint_trajectory")
      ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
-     (cons :action-type nao_msgs::JointTrajectoryAction)
+     (cons :action-type naoqi_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
 
@@ -113,7 +113,7 @@
   
   (:start-grasp
    (&optional (arm :arms))
-   (let ((start_grasp_msg (instance nao_msgs::JointAnglesWithSpeed :init)))
+   (let ((start_grasp_msg (instance naoqi_msgs::JointAnglesWithSpeed :init)))
      (send start_grasp_msg :header :stamp (ros::time-now))
      (send start_grasp_msg :header :seq 1)
      (send start_grasp_msg :speed 0.5)
@@ -132,7 +132,7 @@
      ))
   (:stop-grasp
    (&optional (arm :arms))
-   (let ((stop_grasp_msg (instance nao_msgs::JointAnglesWithSpeed :init)))
+   (let ((stop_grasp_msg (instance naoqi_msgs::JointAnglesWithSpeed :init)))
      (send stop_grasp_msg :header :stamp (ros::time-now))
      (send stop_grasp_msg :header :seq 1)
      (send stop_grasp_msg :speed 0.5)
