@@ -2,6 +2,9 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.1 (2014-12-25)
 ------------------
 * check joint state and set movep for odom disable robot

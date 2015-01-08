@@ -2,6 +2,11 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add install commands to cmake
+* Contributors: Kei Okada
+
 0.0.1 (2014-12-25)
 ------------------
 * add depends to pepper_bringup

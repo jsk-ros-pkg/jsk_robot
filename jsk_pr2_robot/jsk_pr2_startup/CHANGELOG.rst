@@ -2,6 +2,29 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add install commands to cmake
+* [jsk_pr2_startup] Disable collider node, it's out of date
+* Merge pull request #232 from garaemon/rename-hydro-recognition
+  [jsk_pr2_startup] rename hydro_recognition.launch to people_detection.launch and start it up default
+* [jsk_pr2_startup] Remove torso_lift_link from self filtering of
+  tilt laser to avoid too much filtering of points. And update padding
+  of shoulder links to remove veiling noise
+* [jsk_pr2_startup] rename hydro_recognition.launch to people_detection.launch
+  and start it up in default.
+* Merge pull request #230 from garaemon/move-image-processing-to-c2
+  [jsk_pr2_startup] Move several image processing to c2 to avoid heavy network communication between c1 and c2
+* [jsk_pr2_startup] Move several image processing to c2 to avoid heavy
+  network communication between c1 and c2
+* [jsk_pr2_startup] Throttle before applying image_view2 to decrease
+  CPU load
+* use robot-actions.l
+* Fix parameter namespace to slow down pr2_gripper_sensor_action
+* Use longer priod to check openni soundness
+* use rostwitter and python_twoauth
+* Contributors: Kei Okada, Ryohei Ueda, Yusuke Furuta
+
 0.0.1 (2014-12-25)
 ------------------
 * Restarting kinect paranoiac

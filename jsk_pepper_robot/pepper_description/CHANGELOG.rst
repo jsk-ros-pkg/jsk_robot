@@ -2,6 +2,11 @@
 Changelog for package pepper_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add install commands to cmake
+* Contributors: Kei Okada
+
 0.0.1 (2014-12-25)
 ------------------
 * add pepper_description/.gitignore

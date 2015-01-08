@@ -2,6 +2,12 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add install commands to cmake
+* remove jtalk voice
+* Contributors: Kei Okada, Yuto Inagaki
+
 0.0.1 (2014-12-25)
 ------------------
 * fix typo in baxter_tweet
