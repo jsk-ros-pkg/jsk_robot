@@ -2,8 +2,8 @@
 Changelog for package jsk_baxter_desktop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-01-08)
+------------------
 * add install commands to cmake
 * Contributors: Kei Okada
 
