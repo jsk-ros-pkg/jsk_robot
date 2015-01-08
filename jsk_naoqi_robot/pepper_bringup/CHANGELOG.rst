@@ -2,8 +2,8 @@
 Changelog for package pepper_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-01-08)
+------------------
 * add install commands to cmake
 * Contributors: Kei Okada
 
