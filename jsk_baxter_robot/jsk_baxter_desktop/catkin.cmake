@@ -160,3 +160,11 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+install(DIRECTORY desktop_shortcut_template 	icons scripts
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)
+
+install(FILES baxter_servo_stop.desktop.in DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+
