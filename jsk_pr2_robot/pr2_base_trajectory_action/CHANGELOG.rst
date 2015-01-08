@@ -2,6 +2,11 @@
 Changelog for package pr2_base_trajectory_action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add install commands to cmake
+* Contributors: Kei Okada
+
 0.0.1 (2014-12-25)
 ------------------
 * fix version number

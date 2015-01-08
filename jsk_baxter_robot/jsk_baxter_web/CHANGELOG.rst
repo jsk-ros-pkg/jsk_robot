@@ -2,6 +2,11 @@
 Changelog for package jsk_baxter_web
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add install commands to cmake
+* Contributors: Kei Okada
+
 0.0.1 (2014-12-25)
 ------------------
 * debug the loop of link problem
