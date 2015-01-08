@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-01-08)
+------------------
 * add install commands to cmake
 * [jsk_pr2_startup] Disable collider node, it's out of date
 * Merge pull request #232 from garaemon/rename-hydro-recognition

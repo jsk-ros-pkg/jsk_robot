@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-01-08)
+------------------
 * use package:// for pepper.l
 * add .gitignore
 * add CMakeLists.txt package.xml pepper-interface.l
