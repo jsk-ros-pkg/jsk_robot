@@ -14,23 +14,24 @@
 			      right-gripper-type left-gripper-type))
 (defmethod baxter-interface
   (:init (&rest args)
-   (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states")
+   (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface")
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
      (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
      (ros::advertise "/robot/head/command_head_nod" std_msgs::Bool 1)
-     (ros::subscribe "/robot/end_effector/right_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :right-property-cb)
-     (ros::subscribe "/robot/end_effector/left_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :left-property-cb)
+     (ros::subscribe "/robot/end_effector/right_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :right-property-cb :groupname groupname)
+     (ros::subscribe "/robot/end_effector/left_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :left-property-cb :groupname groupname)
 
      (setq right-gripper-action (instance ros::simple-action-client :init
 					  "robot/end_effector/right_gripper/gripper_action"
 					  control_msgs::GripperCommandAction
-					  ))
+					  :groupname groupname))
      (setq left-gripper-action (instance ros::simple-action-client :init
 					 "robot/end_effector/left_gripper/gripper_action"
 					 control_msgs::GripperCommandAction
+					 :groupname groupname
 					 ))
      (if (ros::has-param "~wait_for_suction")
 	 (setq *wait-for-suction* (read-from-string (ros::get-param "~wait_for_suction"))))
