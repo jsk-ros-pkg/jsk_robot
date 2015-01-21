@@ -7,22 +7,24 @@
         msg)
     (send robot :angle-vector av)
     (setq msg (instance jsk_pr2_startup::AngleVectorCompressed :init
-                        :angles (mapcar #'(lambda (jt)
-                                            (ros::ros-info "~A ~A ~A"
-                                                           (send jt :joint-angle)
-                                                           (send jt :min-angle)
-                                                           (send jt :max-angle))
-                                            (if (infinite-joint-p jt)
-                                                (round (* (/
-                                                           (abs (mod (send jt :joint-angle) 360))
-                                                           360.0)
-                                                          255))
-                                              (round (* (/ (- (send jt :joint-angle)
-                                                            (send jt :min-angle))
-                                                           (- (send jt :max-angle)
-                                                              (send jt :min-angle)))
-                                                        255))))
-                                            (send robot :joint-list))))
+                        :angles (coerce
+                                 (mapcar #'(lambda (jt)
+                                             (ros::ros-info "~A ~A ~A"
+                                                            (send jt :joint-angle)
+                                                            (send jt :min-angle)
+                                                            (send jt :max-angle))
+                                             (if (infinite-joint-p jt)
+                                                 (round (* (/
+                                                            (abs (mod (send jt :joint-angle) 360))
+                                                            360.0)
+                                                           255))
+                                               (round (* (/ (- (send jt :joint-angle)
+                                                               (send jt :min-angle))
+                                                            (- (send jt :max-angle)
+                                                               (send jt :min-angle)))
+                                                         255))))
+                                         (send robot :joint-list))
+                                 string)))
     (send robot :angle-vector initial-pose)
     msg))
 
@@ -40,7 +42,7 @@
                             (send jt :min-angle)))))))
            (pairlis
             (send robot :joint-list)
-            (send msg :angles)))
+            (coerce (send msg :angles) cons)))
    float-vector))
 
 (defun infinite-joint-p (jt)
