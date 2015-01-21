@@ -45,11 +45,12 @@
    (let ((start-time (ros::time-now)))
      (setq updating t)
      (while (and updating (< (send (ros::time- (ros::time-now) start-time) :to-nsec) (* timeout 1000 1000)))
-          (ros::spin-once groupname-compressed)))
+          (ros::spin-once groupname-compressed))))
   (:potentio-vector-compressed-callback
    (msg)
    (setq current-angle-vector (decompress-angle-vector robot msg))
    (send robot :angle-vector current-angle-vector)
+   (ros::ros-info "current-angle-vector: ~A" current-angle-vector)
    (setq updating nil)))
 
 

@@ -10,6 +10,8 @@
 (ros::subscribe "angle_vector_compressed" jsk_pr2_startup::AngleVectorCompressed
                 #'(lambda (msg)
                     (let ((av (decompress-angle-vector *pr2* msg)))
+                      (ros::ros-info "angle-vector comming: ~A" av)
+                      (send *pr2* :angle-vector av)
                       (send *ri* :angle-vector av))))
 
 (ros::advertise "potentio_vector_compressed" jsk_pr2_startup::AngleVectorCompressed 1)
@@ -18,7 +20,7 @@
 
 (defun publish-compressed-joint-state ()
   (let ((msg (compress-angle-vector *pr2* (send *ri* :state :potentio-vector))))
-    (ros::ros-info "compressed msg: ~A" (send msg :angles))
+    (ros::ros-info "compressed msg: ~A" (send *ri* :state :potentio-vector))
     (ros::publish "potentio_vector_compressed" msg)))
 
 (while (ros::ok)
