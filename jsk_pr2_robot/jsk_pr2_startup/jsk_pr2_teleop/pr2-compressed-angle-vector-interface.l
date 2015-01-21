@@ -3,11 +3,11 @@
 (require :pr2-interface "package://pr2eus/pr2-interface.l")
 (require :pr2-compressed-angle-vector-bridge "pr2-compressed-angle-vector-bridge.l")
 
-(defclass pr2-angle-vector-compressed-interface
+(defclass pr2-compressed-angle-vector-interface
   :super pr2-interface
   :slots (current-angle-vector groupname-compressed updating))
 
-(defmethod pr2-angle-vector-compressed-interface
+(defmethod pr2-compressed-angle-vector-interface
   (:init
    (&rest args &key (type :default-controller)
           (move-base-action-name "move_base") &allow-other-keys)
@@ -59,10 +59,10 @@
 
 (defun pr2-init (&rest args)
   (unless (boundp '*ri*)
-    (setq *ri* (instance pr2-angle-vector-compressed-interface :init)))
+    (setq *ri* (instance pr2-compressed-angle-vector-interface :init)))
   (apply #'pr2-init-org args))
 
 (ros::roseus "hoge")
 (pr2-init)
 
-(provide :pr2-angle-vector-compressed-interface)
+(provide :pr2-compressed-angle-vector-interface)
