@@ -21,7 +21,7 @@
                                                             (send jt :min-angle))
                                                            (- (send jt :max-angle)
                                                               (send jt :min-angle)))
-                                                        255)))
+                                                        255))))
                                             (send robot :joint-list))))
     (send robot :angle-vector initial-pose)
     msg))
@@ -43,7 +43,7 @@
             (send msg :angles)))
    float-vector))
 
-(defun infinite-joint-p (j)
+(defun infinite-joint-p (jt)
   (or (> (send jt :max-angle) 360)
       (< (send jt :min-angle) -360)))
 
