@@ -132,8 +132,8 @@
    )
 
   (:stop-grasp
-   (&optional (arm :arms) &key (effort 50))
-   (send self :go-grasp arm :pos 100 :effort effort)
+   (&optional (arm :arms) &key (effort 50) (wait nil))
+   (send self :go-grasp arm :pos 100 :effort effort :wait wait)
    (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
 	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
 	   ( and (equal arm :larm) (equal left-gripper-type *suction*)))
