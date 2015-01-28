@@ -33,11 +33,11 @@
    (case (car args)
      (:potentio-vector
       (send self :update-current-angle-vector)
-      (return-from :state current-angle-vector))
+      current-angle-vector)
      (:reference-vector
       (send self :update-current-angle-vector)
       (while updating)
-      (return-from :state current-angle-vector))
+      current-angle-vector)
      (t
       (send-super* :state args))))
   (:update-current-angle-vector
