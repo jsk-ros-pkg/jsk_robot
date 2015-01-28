@@ -4,7 +4,7 @@
     version: master
 - git:
     local-name: nao_interaction
-    uri: https//github.com/ros-naoqi/nao_interaction.git
+    uri: https://github.com/ros-naoqi/nao_interaction.git
     version: master
 - git: 
     local-name: nao_robot
