@@ -24,7 +24,7 @@ export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp"
 running demo
 ------------
 ```
-rosrun jsk_pepper_startup jsk_pepper_startup.launch
+roslaunch jsk_pepper_startup jsk_pepper_startup.launch
 ```
 ```
 rosrun jsk_pepper_startup sample.l
