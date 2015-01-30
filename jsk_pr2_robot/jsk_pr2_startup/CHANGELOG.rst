@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2015-01-30)
+------------------
 * [jsk_pr2_startup] Remove unrequired return-from in pr2-compressed-angle-vector-interface
 * rename pr2-compressed-angle-vector-interface.l
 * use string to set data
