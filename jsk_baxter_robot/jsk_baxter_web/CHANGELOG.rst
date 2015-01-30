@@ -2,6 +2,12 @@
 Changelog for package jsk_baxter_web
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* do not generate baxter_description if baxter_description is not found
+* [jsk_baxter_web] Do not depend on rwt_ros (meta package)
+* Delete rospack find and use the result of find package
+
 0.0.3 (2015-01-09)
 ------------------
 

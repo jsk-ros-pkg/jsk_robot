@@ -2,6 +2,15 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_pr2_startup] Remove unrequired return-from in pr2-compressed-angle-vector-interface
+* rename pr2-compressed-angle-vector-interface.l
+* use string to set data
+* fix typo
+* update to work
+* add jsk_pr2_teleop
+
 0.0.3 (2015-01-09)
 ------------------
 
