@@ -2,6 +2,12 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.4 (2015-01-30)
+------------------
+* currently we do not generate baxter.l from baxter_description on the fly
+* [baxtereus] add wait key for stop-grasp in baxter-interface.l
+* add groupname for baxter-interface.l
+
 0.0.3 (2015-01-09)
 ------------------
 
