@@ -2,7 +2,7 @@
 
 (require :pr2-interface "package://pr2eus/pr2-interface.l")
 (require :pr2-compressed-angle-vector-bridge "pr2-compressed-angle-vector-bridge.l")
-
+(ros::roseus-add-msgs "jsk_network_tools")
 (defclass pr2-compressed-angle-vector-interface
   :super pr2-interface
   :slots (current-angle-vector groupname-compressed updating))
@@ -13,14 +13,16 @@
           (move-base-action-name "move_base") &allow-other-keys)
    (setq groupname-compressed "compressed")
    (ros::create-nodehandle groupname-compressed)
-   (ros::advertise "angle_vector_compressed" jsk_pr2_startup::AngleVectorCompressed 1)
-   (ros::subscribe "potentio_vector_compressed" jsk_pr2_startup::AngleVectorCompressed
-                   #'send self :potentio-vector-compressed-callback :groupname groupname-compressed)
+   (ros::advertise "angle_vector_compressed" jsk_network_tools::CompressedAngleVectorPR2 1)
+   (ros::subscribe "potentio_vector_compressed" jsk_network_tools::CompressedAngleVectorPR2
+     #'send self :potentio-vector-compressed-callback :groupname groupname-compressed)
    (send-super* :init :type type :move-base-action-name move-base-action-name args))
   (:angle-vector
    (av &optional tm &rest args)
    (if tm (ros::ros-warn "time is ignored"))
-   (ros::publish "angle_vector_compressed" (compress-angle-vector robot av))
+   (ros::publish "angle_vector_compressed"
+     (instance jsk_network_tools::CompressedAngleVectorPR2
+               :init :angles (compress-angle-vector robot av)))
    (send robot :angle-vector av))
   (:angle-vector-sequence
    (avs &optional tms &rest args)
@@ -45,10 +47,10 @@
    (let ((start-time (ros::time-now)))
      (setq updating t)
      (while (and updating (< (send (ros::time- (ros::time-now) start-time) :to-nsec) (* timeout 1000 1000)))
-          (ros::spin-once groupname-compressed))))
+       (ros::spin-once groupname-compressed))))
   (:potentio-vector-compressed-callback
    (msg)
-   (setq current-angle-vector (decompress-angle-vector robot msg))
+   (setq current-angle-vector (decompress-angle-vector robot (send msg :angles)))
    (send robot :angle-vector current-angle-vector)
    (ros::ros-info "current-angle-vector: ~A" current-angle-vector)
    (setq updating nil)))
