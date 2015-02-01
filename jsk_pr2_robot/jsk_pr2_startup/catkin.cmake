@@ -1,21 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pr2_startup)
 find_package(catkin REQUIRED COMPONENTS
-  std_msgs
-  message_generation)
-
-add_message_files(
-  FILES
-  AngleVectorCompressed.msg
-)
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
+  jsk_network_tools)
 
 catkin_package(
-  CATKIN_DEPENDS std_msgs message_runtime
+  CATKIN_DEPENDS jsk_network_tools
 )
 
 install(DIRECTORY config jsk_pr2_image_transport
