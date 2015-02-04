@@ -1,0 +1,13 @@
+<launch>
+  <node pkg="pr2_navigation_self_filter"
+	type="self_filter" clear_params="true"
+	name="robot_shadow_self_filter" respawn="true" output="screen">
+    <!-- The topic for the input cloud -->
+    <remap from="cloud_in" to="/openni/depth_registered/points" />
+    <!-- The topic for the output cloud -->
+    <remap from="cloud_out" to="/openni/depth_registered/points_filtered" />
+    <param name="subsample_value" type="double" value="0.0"/>
+    <!-- The names of the links the sensor can see -->
+    <rosparam command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
+  </node>
+</launch>
