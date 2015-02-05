@@ -18,7 +18,7 @@
   <!-- This is watcher checking if mongod exits successfully, and when not, kill mongod process. -->
   <node name="mongod_kill_watcher"
         pkg="jsk_robot_startup" type="mongod_kill_watcher.py"
-        if="$(arg enable_repl_set_mode)">
+        if="$(arg repl_set_mode)">
     <param name="db_path" value="$(arg db_path)" />
   </node>
 </launch>
