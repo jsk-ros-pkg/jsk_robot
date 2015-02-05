@@ -11,7 +11,7 @@
 
 (ros::rate 0.1)
 (do-until-key
-  (setq *user-name* (ros::get-param "/active_user/user_name")
+  (setq *user-name* (ros::get-param "/active_user/launch_user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
   (ros::ros-info "user -> ~A, time -> ~A (~A) "
                  *user-name* *elapsed-time* *target-second*)
