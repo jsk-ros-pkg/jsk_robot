@@ -15,7 +15,7 @@
   <depend package="move_base_msgs"/>
   <depend package="nav_msgs"/>
   <depend package="dynamic_reconfigure"/>
-  <depend package="nao_msgs"/>
+  <depend package="naoqi_msgs"/>
   <depend package="sound_play"/>
 </package>
 

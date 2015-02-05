@@ -17,14 +17,14 @@ self_see_links:
     padding: .04
   - name: l_forearm_roll_link
     padding: .04
-  - name: l_forearm_cam_frame
-    padding: .01
+  # - name: l_forearm_cam_frame
+  #   padding: .01
   - name: l_wrist_flex_link
     padding: .01
   - name: l_wrist_roll_link
     padding: .01
   - name: l_gripper_palm_link
-    padding: .04 #globe +0.03
+    padding: .04 #globe +0.n03
   - name: l_gripper_l_finger_link
     padding: .04 #globe +0.03
   - name: l_gripper_l_finger_tip_link
@@ -34,7 +34,7 @@ self_see_links:
   - name: l_gripper_r_finger_tip_link
     padding: .01
   - name: l_shoulder_pan_link
-    padding: .01
+    padding: .1
   - name: l_shoulder_lift_link
     padding: .1
   - name: r_upper_arm_link
@@ -47,8 +47,8 @@ self_see_links:
     padding: .04
   - name: r_forearm_roll_link
     padding: .04
-  - name: r_forearm_cam_frame
-    padding: .01
+  # - name: r_forearm_cam_frame
+  #   padding: .01
   - name: r_wrist_flex_link
     padding: .01
   - name: r_wrist_roll_link
@@ -64,15 +64,15 @@ self_see_links:
   - name: r_gripper_r_finger_tip_link
     padding: .01
   - name: r_shoulder_pan_link
-    padding: .01
+    padding: .1
   - name: r_shoulder_lift_link
     padding: .1
-  - name: base_laser_link
-    padding: .01
+  # - name: base_laser_link
+  #   padding: .01
   - name: base_link
     padding: .01
-  - name: torso_lift_link
-    padding: .05
+  # - name: torso_lift_link
+  #   padding: .05
 
     
 

@@ -8,8 +8,18 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_web_republisher
 )
 
-execute_process(COMMAND rospack find baxter_description OUTPUT_VARIABLE baxter_description_PACKAGE_PATH OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND cp -Ru ${baxter_description_PACKAGE_PATH}  ${PROJECT_SOURCE_DIR}/www/ OUTPUT_VARIABLE OUTPUT OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (EXISTS ${baxter_description_SOURCE_DIR}/meshes)
+  set(_baxter_description_location ${baxter_description_SOURCE_DIR}/meshes)
+elseif (EXISTS ${baxter_description_SOURCE_PREFIX}/meshes)
+  set(_baxter_description_location ${baxter_description_SOURCE_PREFIX}/meshes)
+elseif (EXISTS ${baxter_description_PREFIX}/share/baxter_description/meshes)
+  set(_baxter_description_location ${baxter_description_PREFIX}/share/baxter_description/meshes)
+else (EXISTS ${baxter_description_SOURCE_DIR}/meshes)
+  message(FATAL_ERROR "cannot find baxter_description")
+endif(EXISTS ${baxter_description_SOURCE_DIR}/meshes)
+
+execute_process(COMMAND mkdir -p ${PROJECT_SOURCE_DIR}/www/baxter_description/meshes/)
+execute_process(COMMAND cp -Ru  ${_baxter_description_location}  ${PROJECT_SOURCE_DIR}/www/baxter_description/ OUTPUT_VARIABLE OUTPUT OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -21,3 +31,7 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+install(DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)

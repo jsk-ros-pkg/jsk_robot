@@ -1,11 +1,11 @@
 jsk_pepper_robot
 ================
 
-setup environmnet
+setup environment
 -----------------
 ```
 mkdir -p catkin_ws/src
-cd  catkin_ws/src
+cd  catkin_ws
 wstool init src
 wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_pepper_robot/pepper.rosinstall
 wstool update -t src
