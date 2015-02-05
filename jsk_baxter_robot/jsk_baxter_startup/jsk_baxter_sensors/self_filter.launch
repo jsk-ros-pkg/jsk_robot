@@ -7,6 +7,8 @@
     <!-- The topic for the output cloud -->
     <remap from="cloud_out" to="/openni/depth_registered/points_filtered" />
     <param name="subsample_value" type="double" value="0.0"/>
+    <param name="use_rgb" type="bool" value="true"/>
+    <param name="keep_organized" type="bool" value="true"/>
     <!-- The names of the links the sensor can see -->
     <rosparam command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/openni_self_filter.yaml" />
   </node>
