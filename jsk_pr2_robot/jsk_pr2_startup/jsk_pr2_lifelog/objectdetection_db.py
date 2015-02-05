@@ -35,9 +35,13 @@ class ObjectDetectionDB(object):
 
     # DB Insertion function
     def insert_pose_to_db(self, map_to_robot, robot_to_obj):
-        self.msg_store.insert(map_to_robot)
-        self.msg_store.insert(robot_to_obj)
-    
+        try:
+            self.msg_store.insert(map_to_robot)
+            self.msg_store.insert(robot_to_obj)
+            rospy.loginfo('inserted map2robot: %s, robot2obj: %s' % (map_to_robot, robot_to_obj))
+        except Exception as e:
+            rospy.logwarn('failed to insert to db' + e)
+
     def objectdetection_cb(self, msg):
         try:
             self.tf_listener.wait_for_server(rospy.Duration(1.0))
@@ -63,7 +67,7 @@ class ObjectDetectionDB(object):
             if topic_info[0] in [x.name for x in self.subscribers]:
                 continue
             sub = rospy.Subscriber(topic_info[0], ObjectDetection,
-                                   obj.objectdetection_cb)
+                                   self.objectdetection_cb)
             self.subscribers += [sub]
             rospy.loginfo('start subscribe (%s)',sub.name)
 
