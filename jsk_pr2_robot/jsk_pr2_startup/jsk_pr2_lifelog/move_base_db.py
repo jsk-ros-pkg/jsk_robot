@@ -26,24 +26,25 @@ class MoveBaseDB(object):
         self.current_pose = None
         self.latest_pose = None
         self.latest_stamp = rospy.Time(0)
-        self.load_latest_pose()
+        self._load_latest_pose()
         self.pub_latest_pose()
+        self.latest_exception = None
 
-    def insert_pose_to_db(self, map_to_robot):
+    def _insert_pose_to_db(self, map_to_robot):
         try:
             res = self.msg_store.insert(map_to_robot)
             rospy.loginfo("inserted %s : %s" % (res, map_to_robot))
         except Exception as e:
             rospy.logerr('failed to insert current robot pose to db: %s', e)
 
-    def load_latest_pose(self):
+    def _load_latest_pose(self):
         updated = None
         try:
             updated = self.msg_store.query('geometry_msgs/TransformStamped', single=True, sort_query=[("$natural", -1)])
         except Exception as e:
             rospy.logerr('failed to load latest pose from db: %s' % e)
             if 'master has changed' in str(e):
-                self.load_latest_pose()
+                self._load_latest_pose()
             else:
                 return
         if updated is not None:
@@ -51,7 +52,7 @@ class MoveBaseDB(object):
             self.current_pose = updated[0]
             self.latest_pose = updated[0]
 
-    def need_update_db(self, t):
+    def _need_update_db(self, t):
         if self.current_pose is None:
             if self.latest_pose is None:
                 return True
@@ -75,13 +76,13 @@ class MoveBaseDB(object):
         try:
             transform = self.tf_listener.lookup_transform(self.map_frame,self.robot_frame,rospy.Time(0))
 #            rospy.loginfo("current pr2 location: %s" % transform)
-            if self.need_update_db(transform):
-                self.insert_pose_to_db(transform)
+            if self._need_update_db(transform):
+                self._insert_pose_to_db(transform)
                 self.current_pose = transform
-        except (tf2.LookupException, tf2.ConnectivityException, \
-                tf2.ExtrapolationException, tf2.TimeoutException, \
-                tf2.TransformException) as e:
-            rospy.logwarn('failed to get current robot pose from tf: %s' % e)
+        except Exception as e:
+            if not self.latest_exception or str(e) is self.latest_exception:
+                rospy.logwarn('failed to get current robot pose from tf: %s' % e)
+                self.latest_exception = str(e)
 
     def sleep_one_cycle(self):
         rospy.sleep(self.update_cycle)
