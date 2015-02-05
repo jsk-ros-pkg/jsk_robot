@@ -26,8 +26,9 @@
 
   <!-- for interactive controller -->
   <node if="$(arg launch_interactive_controller)"
-        machine="c2" pkg="roseus" type="roseus" name="move_joint_interface_for_im"
-	args="$(find jsk_interactive)/euslisp/move-joint-interface-robot.l">
+        machine="c2" pkg="roseus" type="roseus" name="robot_actions"
+	args="$(find jsk_interactive_marker)/euslisp/robot-actions.l"
+	output="screen">
     <param name="robot" value="PR2"/>
   </node>
 </launch>

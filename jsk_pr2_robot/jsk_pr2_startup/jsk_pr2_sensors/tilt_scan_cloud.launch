@@ -36,6 +36,7 @@
   </node>
 
   <node pkg="collider" type="collider_node" name="collider_node"
+        if="false"
 	respawn="true" output="screen" machine="c2">
     <param name="fixed_frame" type="string" value="base_link" />
     <param name="resolution" type="double" value="0.01" />

@@ -4,35 +4,51 @@
 (ros::load-ros-manifest "control_msgs")
 (ros::load-ros-manifest "baxter_core_msgs")
 
+(defparameter *suction* 65537) ;;vacuum
+(defparameter *electoric* 65538)
+(defvar *wait-for-suction* 5000000)
+
 (defclass baxter-interface
   :super robot-interface
-  :slots (gripper-sequence-id right-gripper-action left-gripper-action))
+  :slots (gripper-sequence-id right-gripper-action left-gripper-action
+			      right-gripper-type left-gripper-type))
 (defmethod baxter-interface
   (:init (&rest args)
-   (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states")
+   (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface")
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
      (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
      (ros::advertise "/robot/head/command_head_nod" std_msgs::Bool 1)
-     
+     (ros::subscribe "/robot/end_effector/right_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :right-property-cb :groupname groupname)
+     (ros::subscribe "/robot/end_effector/left_gripper/properties" baxter_core_msgs::EndEffectorProperties #'send self :left-property-cb :groupname groupname)
+
      (setq right-gripper-action (instance ros::simple-action-client :init
 					  "robot/end_effector/right_gripper/gripper_action"
 					  control_msgs::GripperCommandAction
-					  ))
+					  :groupname groupname))
      (setq left-gripper-action (instance ros::simple-action-client :init
 					 "robot/end_effector/left_gripper/gripper_action"
 					 control_msgs::GripperCommandAction
+					 :groupname groupname
 					 ))
-
+     (if (ros::has-param "~wait_for_suction")
+	 (setq *wait-for-suction* (read-from-string (ros::get-param "~wait_for_suction"))))
      (dolist (action (list right-gripper-action left-gripper-action))
        (unless (and joint-action-enable (send action :wait-for-server 3))
 	 (ros::ros-warn "~A is not respond" action)
 	 (return)))
 
      (setq gripper-sequence-id 0)
+     (ros::spin-once)
      ))
+  (:right-property-cb (msg)
+   (setq right-gripper-type (send msg :id))
+   )
+  (:left-property-cb (msg)
+   (setq left-gripper-type (send msg :id))
+   )
   (:default-controller ()
    (append
     (send self :larm-controller)
@@ -108,11 +124,21 @@
   (:start-grasp
    (&optional (arm :arms) &key (effort 50))
    (send self :go-grasp arm :pos 0 :effort effort)
+   (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
+	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
+	   ( and (equal arm :larm) (equal left-gripper-type *suction*)))
+       (unix::usleep *wait-for-suction*)
+     )
    )
 
   (:stop-grasp
-   (&optional (arm :arms) &key (effort 50))
-   (send self :go-grasp arm :pos 100 :effort effort)
+   (&optional (arm :arms) &key (effort 50) (wait nil))
+   (send self :go-grasp arm :pos 100 :effort effort :wait wait)
+   (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
+	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
+	   ( and (equal arm :larm) (equal left-gripper-type *suction*)))
+       (unix::usleep *wait-for-suction*)
+     )
    )
 
   (:go-grasp
@@ -142,8 +168,12 @@
 
   (:command-grasp
    (cmd arm &key ((:pos pos) nil))
+   (ros::spin-once)
    (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
-     (send ee-cmd :id 65538)
+     (if (equal arm "right")
+	 (send ee-cmd :id right-gripper-type)
+       (send ee-cmd :id left-gripper-type)
+       )
      (send ee-cmd :command cmd)
      (send ee-cmd :sender "/baxter_interface")
      (send ee-cmd :sequence gripper-sequence-id)

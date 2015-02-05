@@ -12,7 +12,7 @@ matrix:
   allow_failures:
     - env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=false
 before_script:
-  - export ROS_PARALLEL_JOBS="-j2 -l2"
+  - export ROS_PARALLEL_JOBS="-j1 -l1"
 script: source .travis/travis.sh
 notifications:
   email:
