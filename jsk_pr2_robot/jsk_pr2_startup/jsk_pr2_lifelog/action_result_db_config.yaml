@@ -1,0 +1,12 @@
+black_list:
+  type:
+    - JointTrajectoryActionGoal
+    - JointTrajectoryActionResult
+    - PointHeadActionGoal
+    - PointHeadActionResult
+    - SingleJointPositionActionGoal
+    - SingleJointPositionActionResult
+    - Pr2GripperCommandActionGoal
+    - Pr2GripperCommandActionResult
+    - LookupTransformActionGoal
+    - LookupTransformActionResult
