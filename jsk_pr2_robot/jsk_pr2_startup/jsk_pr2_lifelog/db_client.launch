@@ -2,6 +2,7 @@
   <arg name="launch_mongodb" default="true" />
   <arg name="store_move_base_log" default="true" />
   <arg name="store_object_detection_log" default="true" />
+  <arg name="store_action_result_log" default="true" />
   <arg name="twitter" default="true" />
 
 
@@ -34,6 +35,13 @@
     <param name="robot_frame" value="base_footprint"/>
     <param name="db_name" value="jsk_pr2_lifelog" />
     <param name="col_name" value="object_detection_db" />
+  </node>
+
+  <!-- logging action result/goal data -->
+  <node name="action_result_db"
+        pkg="jsk_pr2_startup" type="action_result_db.py"
+        if="$(arg store_action_result_log)">
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/action_result_db_config.yaml" />
   </node>
 
   <!-- tweeting robot warning data and etc. -->
