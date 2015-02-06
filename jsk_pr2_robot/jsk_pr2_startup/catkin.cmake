@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pr2_startup)
-find_package(catkin REQUIRED)
-catkin_package()
+find_package(catkin REQUIRED COMPONENTS
+  jsk_network_tools)
+
+catkin_package(
+  CATKIN_DEPENDS jsk_network_tools
+)
 
 install(DIRECTORY config jsk_pr2_image_transport
   jsk_pr2_joy jsk_pr2_lifelog jsk_pr2_move_base 	jsk_pr2_moveit

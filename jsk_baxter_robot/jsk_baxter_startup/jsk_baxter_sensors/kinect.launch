@@ -8,6 +8,9 @@
     <arg name="depth_registration" value="true"/>
   </include>
 
+  <!-- self filter -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/self_filter.launch"/>
+
   <!-- checkerboard -->
   <group ns="/camera/rgb/" >
     <!-- <param name="single" value="1" /> -->
