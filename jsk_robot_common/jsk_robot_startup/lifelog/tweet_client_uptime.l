@@ -14,7 +14,7 @@
 
 (ros::rate 0.1)
 (do-until-key
-  (setq *user-name* (ros::get-param "/active_user/user_name")
+  (setq *user-name* (ros::get-param "/active_user/launch_user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
   ;; tweet depend on up time
   (let ((st (ros::get-param "/active_user/start_time")))

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_baxter_web</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <description>The jsk_baxter_web package</description>
 
   <maintainer email="inagaki@todo.todo">inagaki</maintainer>
@@ -10,13 +10,16 @@
   <license>BSD</license>
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>rosbridge_server</build_depend>
-  <build_depend>rwt_ros</build_depend>
+  <build_depend>roslibjs</build_depend>
+  <build_depend>ros2djs</build_depend>
+  <build_depend>ros3djs</build_depend>
   <build_depend>baxter_description</build_depend>
   <build_depend>robot_state_publisher</build_depend>
-  <!-- <build_depend>joint_state_publisher</build_depend> -->
   <build_depend>tf2_web_republisher</build_depend>
   <run_depend>rosbridge_server</run_depend>
-  <run_depend>rwt_ros</run_depend>
+  <run_depend>roslibjs</run_depend>
+  <run_depend>ros2djs</run_depend>
+  <run_depend>ros3djs</run_depend>
   <run_depend>baxter_description</run_depend>
   <run_depend>robot_state_publisher</run_depend>
   <!-- <run_depend>joint_state_publisher</run_depend> -->
