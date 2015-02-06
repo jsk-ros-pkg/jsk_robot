@@ -1,21 +1,24 @@
 <launch>
-  <!-- MongoDB -->
-  <arg name="db_path" default="/opt/strands/mongodb_store"/>
+  <arg name="db_path" default="/var/lib/robot/mongodb_store"/>
   <arg name="port" default="62345" />
-  <arg name="defaults_path" default=""/>
-  
-  <param name="mongodb_port" value="$(arg port)" />
-  <param name="mongodb_host" value="$(optenv HOSTNAME localhost)" />
+  <arg name="repl_set_mode" default="false" />
 
-  <node name="mongo_server" pkg="mongodb_store" type="mongodb_server.py" output="screen">
-    <param name="database_path" value="$(arg db_path)"/>
+  <!-- MongoDB -->
+  <include file="$(find mongodb_store)/launch/mongodb_store.launch">
+    <arg name="db_path" value="$(arg db_path)" />
+    <arg name="port" value="$(arg port)" />
+    <arg name="use_machine" value="false" />
+    <arg name="use_repl_set" value="true"
+         if="$(arg repl_set_mode)" />
+    <arg name="repl_set" value="rs0"
+         if="$(arg repl_set_mode)" />
+  </include>
+
+  <!-- when mongod is deployed as repl set mode, it is uncertain to be killed. -->
+  <!-- This is watcher checking if mongod exits successfully, and when not, kill mongod process. -->
+  <node name="mongod_kill_watcher"
+        pkg="jsk_robot_startup" type="mongod_kill_watcher.py"
+        if="$(arg repl_set_mode)">
+    <param name="db_path" value="$(arg db_path)" />
   </node>
-
-  <node name="config_manager" pkg="mongodb_store" type="config_manager.py" output="screen">
-        <param name="defaults_path" value="$(arg defaults_path)"/>
-  </node>
-
-  <node name="message_store" pkg="mongodb_store" type="message_store_node.py" output="screen"/>
-
-  <node name="replicator_node" pkg="mongodb_store" type="replicator_node.py" output="screen"/>
 </launch>
