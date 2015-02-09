@@ -13,3 +13,6 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+install(DIRECTORY lifelog util
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
