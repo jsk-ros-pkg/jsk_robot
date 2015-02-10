@@ -1,6 +1,5 @@
 <launch>
   <arg name="launch_openni" default="true" />
-  <rosparam command="load" file="$(find jsk_baxter_startup)/config/checkerboard_config.yaml" />
 
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg launch_openni)">

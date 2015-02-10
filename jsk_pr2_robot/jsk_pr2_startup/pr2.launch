@@ -16,7 +16,6 @@
   <arg name="launch_teleoperation" default="true" />
   <arg name="launch_people_detection" default="true" />
   <arg name="slow_camera_framerate" default="true" />
-  <arg name="move_tilt_scan" default="true" />
   <arg name="launch_c3_startup" default="false" />
   <arg name="USER_NAME" default="false" />
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
@@ -96,9 +95,6 @@
         pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
     <param name="port" type="int" value="8080" />
   </node>
-
-  <include if="$(arg move_tilt_scan)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
 
   <!-- for gripper sensor actions -->
   <group if="$(arg launch_gripper_sensor)">
