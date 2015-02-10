@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pr2_startup)
 find_package(catkin REQUIRED COMPONENTS
-  jsk_network_tools)
+  jsk_network_tools
+  roseus)
 
 catkin_package(
   CATKIN_DEPENDS jsk_network_tools
