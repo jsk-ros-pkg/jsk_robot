@@ -1,6 +1,7 @@
 # jsk_pr2_startup
 
 ## setup
+
 ###. rewrite `/etc/ros/robot.launch`
 
 Please rewrite `/etc/ros/robot.launch` like following:
@@ -35,3 +36,17 @@ Please rewrite `/etc/ros/robot.launch` like following:
 </launch> 
 
 ```
+
+### launch mongodb for multiple users
+
+Different users in same unix group can't run mongod against single db owned by that group.
+This is because `mongod` opens database files using the `O_NOATIME` flag to the open system call.
+Open with `O_NOATIME` only works if the UID completelly matchs or the caller is priviledged (`CAP_FOWNER`) for security reasons.
+So if you want to launch mongodb with shared database resouces, it's better to use POSIX Capabilities in Linux.
+
+```bash
+# In Ubuntu
+$ sudo aptitude install libcap2-bin
+$ sudo setcap cap_fowner+ep /usr/bin/mongod
+```
+

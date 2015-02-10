@@ -15,6 +15,7 @@
   <build_depend>imagesift</build_depend>
   <build_depend>move_base</build_depend>
   <build_depend>dwa_local_planner</build_depend>
+  <build_depend>move_base_msgs</build_depend>
   <build_depend>amcl</build_depend>
   <!-- <build_depend>safe_teleop_pr2</build_depend> -->
   <build_depend>map_server</build_depend>
@@ -38,6 +39,7 @@
   <build_depend>jsk_perception</build_depend>
   <build_depend>resized_image_transport</build_depend>
   <build_depend>rospy</build_depend>
+  <build_depend>roseus</build_depend>
   <build_depend>rqt_gui</build_depend>
   <build_depend>rqt_gui_py</build_depend>
   <build_depend>rqt_py_common</build_depend>
