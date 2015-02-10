@@ -5,6 +5,10 @@ find_package(catkin REQUIRED COMPONENTS
   mongodb_store
   roscpp
   rospy
+  pr2_mechanism_controllers
+  diagnostic_msgs
+  sensor_msgs
+  roseus
 )
 
 catkin_package(
