@@ -17,6 +17,7 @@
    (prog1 (send-super :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface")
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
+     (send self :add-controller :head-controller)
      (ros::advertise "/robot/end_effector/right_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/end_effector/left_gripper/command" baxter_core_msgs::EndEffectorCommand 5) 
      (ros::advertise "/robot/xdisplay" sensor_msgs::Image 1)
@@ -52,7 +53,8 @@
   (:default-controller ()
    (append
     (send self :larm-controller)
-    (send self :rarm-controller)))
+    (send self :rarm-controller)
+    (send self :head-controller)))
   (:larm-controller ()
    (list
     (list
@@ -67,6 +69,13 @@
      (cons :controller-state "/robot/limb/right/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "right_s0" "right_s1" "right_e0" "right_e1" "right_w0" "right_w1" "right_w2")))))
+  (:head-controller ()
+   (list
+    (list
+     (cons :controller-action "/robot/head/head_action")
+     (cons :controller-state "/robot/head/head_state")
+     (cons :action-type control_msgs::SingleJointPositionAction)
+     (cons :joint-names (list "head-neck-y")))))
   (:close-head-camera ()
     (send self :close-camera "head_camera")
     )
