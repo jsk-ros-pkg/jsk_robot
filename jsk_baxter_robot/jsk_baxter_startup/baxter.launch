@@ -10,6 +10,9 @@
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="start_openni" default="true"/>
+  <arg name="USER_NAME" default="false"/>
+  <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
+  <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
 
   <!-- Start Servo (Maybe This should not be here)-->
   <node if="$(arg launch_servo)" pkg="baxter_tools" name="baxter_servo_node" type="enable_robot.py" args="-e" output="screen" clear_params="true"/>
