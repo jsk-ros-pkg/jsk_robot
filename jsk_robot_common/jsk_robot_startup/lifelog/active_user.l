@@ -113,7 +113,7 @@
                (not *odom-disable*))
            (setq *movingp* t)
         ;;for odom-disable machine
-        (if (and (> diff-position 0.001)
+        (if (and (and (numberp diff-position) (> diff-position 0.001) )
                  *odom-disable*)
             (setq *movingp* t)
           (setq *movingp* nil))
