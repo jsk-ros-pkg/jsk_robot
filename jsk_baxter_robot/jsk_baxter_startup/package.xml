@@ -20,6 +20,7 @@
   <build_depend>dynamic_tf_publisher</build_depend>
   <build_depend>rostwitter</build_depend>
   <build_depend>image_view</build_depend>
+  <build_depend>roseus</build_depend>
 
   <run_depend>baxter_interface</run_depend>
   <run_depend>baxter_description</run_depend>
@@ -35,6 +36,7 @@
   <run_depend>rostwitter</run_depend>
   <run_depend>image_view</run_depend>
   <run_depend>face_recognition</run_depend>
+  <run_depend>roseus</run_depend>
 
   <export>
   </export>
