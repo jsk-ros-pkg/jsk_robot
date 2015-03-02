@@ -29,3 +29,13 @@
     local-name: pr2_calibration
 #    version: hydro-devel
     version: add_cmake_modules
+
+# temporally added until next release because of broken structure in the packages from apt
+- git:
+    uri: https://github.com/PR2/pr2_gripper_sensor.git
+    local-name: pr2_gripper_sensor
+    version: hydro-devel
+- git:
+    uri: https://github.com/PR2/pr2_apps.git
+    local-name: pr2_apps
+    version: hydro-devel
