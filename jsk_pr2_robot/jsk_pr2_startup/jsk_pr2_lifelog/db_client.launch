@@ -4,6 +4,8 @@
   <arg name="store_action_result_log" default="true" />
   <arg name="twitter" default="true" />
 
+  <include file="$(find pr2_machine)/pr2.machine" />
+
   <!-- logging and resoring pr2 position data -->
   <node name="move_base_db"
         pkg="jsk_pr2_startup" type="move_base_db.py"
