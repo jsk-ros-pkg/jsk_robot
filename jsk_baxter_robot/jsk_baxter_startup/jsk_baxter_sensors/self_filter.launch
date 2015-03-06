@@ -1,11 +1,12 @@
 <launch>
+  <arg name="input_cloud" default="/openni/depth_registered/points"/>
   <node pkg="pr2_navigation_self_filter"
 	type="self_filter" clear_params="true"
 	name="robot_shadow_self_filter" respawn="true" output="screen">
     <!-- The topic for the input cloud -->
-    <remap from="cloud_in" to="/openni/depth_registered/points" />
+    <remap from="cloud_in" to="$(arg input_cloud)" />
     <!-- The topic for the output cloud -->
-    <remap from="cloud_out" to="/openni/depth_registered/points_filtered" />
+    <remap from="cloud_out" to="$(arg input_cloud)_filtered" />
     <param name="subsample_value" type="double" value="0.0"/>
     <param name="use_rgb" type="bool" value="true"/>
     <param name="keep_organized" type="bool" value="true"/>
