@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_baxter_startup)
 
-find_package(catkin REQUIRED COMPONENTS)
+find_package(catkin REQUIRED COMPONENTS baxter_core_msgs sound_play roseus)
 
 catkin_package(
 #  INCLUDE_DIRS include
