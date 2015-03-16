@@ -8,6 +8,7 @@
   <arg name="motor_subscribe" default="true"/>
   <arg name="odom_subscribe" default="true"/>
   <arg name="joint_state_subscribe" default="true"/>
+  <arg name="position_diff_threshold" default="0.05"/>
 
   <arg name="remap_motor_state" default="/pr2_ethercat/motors_halted"/>
   <arg name="remap_odom_state" default="/base_odometry/odometer"/>
@@ -35,6 +36,7 @@
     <param name="motor_subscribe" value="$(arg motor_subscribe)"/>
     <param name="odom_subscribe" value="$(arg odom_subscribe)"/>
     <param name="joint_state_subscribe" value="$(arg joint_state_subscribe)"/>
+    <param name="position_diff_threshold" value="$(arg position_diff_threshold)"/>
 
     <remap from="motor_state" to="$(arg remap_motor_state)"/>
     <remap from="odom_state" to="$(arg remap_odom_state)"/>
