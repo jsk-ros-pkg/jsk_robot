@@ -3,6 +3,7 @@
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"
            if="$(arg launch_openni)">
+    <arg name="use_machine" value="false"/>
   </include>
 
   <!-- self filter -->
