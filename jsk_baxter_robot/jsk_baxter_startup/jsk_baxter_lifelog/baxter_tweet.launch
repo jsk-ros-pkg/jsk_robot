@@ -1,19 +1,21 @@
 <launch>
+  <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="Baxter"/>
     <arg name="worktime_enable" value="true"/>
-    <arg name="uptime_enable" value="true"/>
+    <arg name="uptime_enable" value="false"/>
     <arg name="tablet_enable" value="false"/>
     <arg name="warning_enable" value="false"/>
     
     <arg name="motor_subscribe" value="true"/>
     <arg name="odom_subscribe" value="false"/>
     <arg name="joint_state_subscribe" value="true"/>
+    <arg name="position_diff_threshold" default="0.01"/>
 
     <arg name="remap_motor_state" value="/robot/servo_state"/>
     <arg name="remap_joint_states" value="/robot/joint_states"/>
 
-    <arg name="image_topic" value="/openni/rgb/image_rect_color"/>
+    <arg name="image_topic" value="/cameras/head_camera/image"/>
 
     <arg name="machine" value="localhost"/>
     <arg name="output" value="screen"/>

@@ -13,7 +13,7 @@
 (do-until-key
   (setq *user-name* (ros::get-param "/active_user/launch_user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
-  (ros::ros-info "user -> ~A, time -> ~A (~A) "
+  (ros::ros-debug "user -> ~A, time -> ~A (~A) "
                  *user-name* *elapsed-time* *target-second*)
   ;; tweet depend on working time
   (when (> *elapsed-time* *target-second*)
