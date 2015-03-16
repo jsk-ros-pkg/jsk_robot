@@ -6,8 +6,8 @@
   <arg name="launch_kinect2" default="true"/>
   <arg name="launch_voice_echo" default="true"/>
   <arg name="launch_moveit" default="true"/>
-  <arg name="launch_teleop" default="true"/>
-  <arg name="launch_tweet" default="false"/>
+  <arg name="launch_teleop" default="false"/>
+  <arg name="launch_tweet" default="true"/>
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="start_openni" default="true"/>
@@ -20,7 +20,7 @@
 
   <!-- Startup joint trajectory will enable send command from eus-->
   <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="baxter_joint_trajectory" type="joint_trajectory_action_server.py" args="" output="screen" clear_params="true"/>
-  <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="head_joint_trajectory" type="head_action_server.py" args="" output="screen" clear_params="true"/>
+  <!-- <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="head_joint_trajectory" type="head_action_server.py" args="" output="screen" clear_params="true"/> -->
   <node if="$(arg launch_gripper_action)" pkg="baxter_interface" name="baxter_gripper_action_server" type="gripper_action_server.py" args="" output="screen" clear_params="true"/>
 
   <!-- Use Custom OpenNI-->

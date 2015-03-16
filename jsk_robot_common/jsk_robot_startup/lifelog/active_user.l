@@ -25,7 +25,6 @@
 
 (defun joint-cb (msg)
   (setq *position* (concatenate float-vector (subseq (send msg :position) 12 16) (subseq (send msg :position) 17)))
-;;  (ros::ros-debug "/joint_states -> ~A" *position*)
   (update-activeness)
   )
 
@@ -48,6 +47,11 @@
     )
   )
 
+(when (ros::has-param "/active_user/position_diff_threshold")
+  (setq *position-diff-threshold* (ros::get-param "/active_user/position_diff_threshold")))
+
+
+
 (ros::advertise "diagnostics" diagnostic_msgs::DiagnosticArray 1)
 
 (setq *prev-distance* nil *prev-angle* nil *prev-position* nil)
@@ -68,9 +72,12 @@
   (unix::system
    (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt"
            (unix::getpid)))
+  (warn "Get PID ~A" (unix::getpid))
   (with-open-file
    (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
-   (setq *user-name* (read-line f))))
+   (setq *user-name* (read-line f)))
+  (ros::set-param "/active_user/launch_user_name" *user-name*)
+  )
 (warn "~%;; start user_name = ~A~%" *user-name*)
 
 (if (and (ros::has-param "/active_user/elapsed_time")
@@ -99,7 +106,7 @@
   (when (and *user-name* (or (and *prev-distance* *prev-angle* *prev-position*) *odom-disable*))
     (let ((diff-distance (if *odom-disable* nil (- *distance* *prev-distance*)))
           (diff-angle (if *odom-disable* nil (- *angle* *prev-angle*)))
-          (diff-position (if *odom-disable* nil (norm (v- *position* *prev-position*)))))
+          (diff-position (if (not *prev-position*) nil (norm (v- *position* *prev-position*)))))
       ;; check servo on
       (ros::ros-debug " servo on -> ~A" *servo-on*)
       ;; check move_base
@@ -109,11 +116,11 @@
       (ros::ros-debug " joint-angle  -> ~A" diff-position)
       ;;for odom-enable machine
       (if (and *servo-on*
-               (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position 0.05))
+               (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position *position-diff-threshold*))
                (not *odom-disable*))
            (setq *movingp* t)
         ;;for odom-disable machine
-        (if (and (and (numberp diff-position) (> diff-position 0.001) )
+        (if (and (and (numberp diff-position) (> diff-position *position-diff-threshold*) )
                  *odom-disable*)
             (setq *movingp* t)
           (setq *movingp* nil))
