@@ -116,6 +116,10 @@
       (send res :cameras)
       ))
 
+  (:angle-vector (av &optional (tm :fast) (ctype controller-type) (start-time 0))
+		 (send-super :angle-vector av tm ctype start-time :scale 5)
+		 )
+
   (:clear-calib-grasp
    (&optional (arm :arms))
    (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
