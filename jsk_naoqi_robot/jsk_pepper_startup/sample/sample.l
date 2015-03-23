@@ -14,17 +14,17 @@
 
 (defun get-installed-behaviors ()
   (let ((ret))
-    (setq ret (ros::service-call "get_installed_behaviors" (instance nao_msgs::GetInstalledBehaviorsRequest :init)))
+    (setq ret (ros::service-call "get_installed_behaviors" (instance naoqi_msgs::GetInstalledBehaviorsRequest :init)))
     (send ret :behaviors)
     ))
 
 ;; (run-behavior "pepper_tongue_twister_sample")
 ;; (run-behavior "pepper_dialog_sample")
-(setq *run-behavior* (instance ros::simple-action-client :init "run_behavior" nao_msgs::RunBehaviorAction))
+(setq *run-behavior* (instance ros::simple-action-client :init "run_behavior" naoqi_msgs::RunBehaviorAction))
 (defun run-behavior (behavior &key (wait nil))
   (let (goal)
     (ros::ros-info "running ~A" behavior)
-    (setq goal (instance nao_msgs::RunBehaviorActionGoal :init))
+    (setq goal (instance naoqi_msgs::RunBehaviorActionGoal :init))
     (send goal :goal :behavior behavior)  
     (send *run-behavior* :send-goal goal)
     (if wait (send *run-behavior* :wait-for-result))
@@ -53,7 +53,7 @@
     (call-empty-service "start_recognition")
 
     (setq *word-recognized* nil)
-    (ros::subscribe "word_recognized" nao_msgs::WordRecognized
+    (ros::subscribe "word_recognized" naoqi_msgs::WordRecognized
 		    #'(lambda (msg)
 			(ros::ros-info "Recognized ~A (~A)" (send msg :words) (send msg :confidence_values))
 			(if (> (elt (send msg :confidence_values) 0) threshold)
