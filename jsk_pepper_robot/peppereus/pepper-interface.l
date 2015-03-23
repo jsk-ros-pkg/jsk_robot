@@ -17,7 +17,7 @@
    (ros::advertise "cmd_pose" geometry_msgs::Pose2D 1)
    (ros::advertise "cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "speech" std_msgs::String 1)
-   (ros::advertise "joint_angles" nao_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise "joint_angles" naoqi_msgs::JointAnglesWithSpeed 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   "joint_stiffness_trajectory"
@@ -31,7 +31,7 @@
      (cons :controller-action "joint_trajectory")
     ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
-     (cons :action-type nao_msgs::JointTrajectoryAction)
+     (cons :action-type naoqi_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
   ;;
@@ -56,7 +56,7 @@
   ;;
   (:move-hand
    (value &optional (arm :arms))
-   (let ((start_grasp_msg (instance nao_msgs::JointAnglesWithSpeed :init)))
+   (let ((start_grasp_msg (instance naoqi_msgs::JointAnglesWithSpeed :init)))
      (send start_grasp_msg :header :stamp (ros::time-now))
      (send start_grasp_msg :header :seq 1)
      (send start_grasp_msg :speed 0.5)
