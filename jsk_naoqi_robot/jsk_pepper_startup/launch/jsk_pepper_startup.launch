@@ -4,10 +4,10 @@
   </include>
   <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch"/>
   <include file="$(find nao_interaction_launchers)/launch/nao_vision_interface.launch"/>
-  <include file="$(find nao_apps)/launch/nao_speech.launch"/>
-  <include file="$(find nao_apps)/launch/nao_alife.launch"/>
-  <include file="$(find nao_apps)/launch/nao_behaviors.launch"/>
-  <include file="$(find nao_apps)/launch/nao_wheel.launch"/>
+  <include file="$(find nao_apps)/launch/speech.launch"/>
+  <include file="$(find nao_apps)/launch/alife.launch"/>
+  <include file="$(find nao_apps)/launch/behaviors.launch"/>
+  <!-- <include file="$(find nao_apps)/launch/wheel.launch"/> -->
 
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="teleop_joy">
