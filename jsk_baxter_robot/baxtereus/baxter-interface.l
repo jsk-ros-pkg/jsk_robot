@@ -235,12 +235,15 @@
 		 (if (atom tms) (setq tms (list tms)))
 		 (push (send self :state :potentio-vector) avs)
 		 (push 50 tms)
-		 (when (= (length avs) 2)
+		 (when (= (length avs) 2) ;; when input avs is 1
 		   (setq avs (list (elt avs 0) (midpoint 0.5 (elt avs 0) (elt avs 1)) (elt avs 1)))
 		   (cond ((numberp (elt tms 1))
 			  (setq tms (list (elt tms 0) (/ (elt tms 1) 2) (/ (elt tms 1) 2))))
 			 (t
 			  (setq tms (list (elt tms 0) (elt tms 1) (elt tms 1))))))
+		 (when (= (length avs) 3) ;; when input avs is 1 or 2
+		   (setq avs (append avs (list (elt avs 2))))
+		   (setq tms (append tms (list 50))))
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   )
 
