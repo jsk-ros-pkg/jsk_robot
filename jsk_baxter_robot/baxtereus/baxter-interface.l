@@ -228,6 +228,20 @@
      (ros::publish "/robot/head/command_head_nod" msg)
      )
    )
+  (:angle-vector (av &optional (tm :fast) (ctype controller-type) (start-time 0) &rest args)
+		 (send* self :angle-vector-sequence (list av) (list tm) ctype start-time args))
+  (:angle-vector-sequence (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
+		 ;; force add current position to the top of avs
+		 (if (atom tms) (setq tms (list tm)))
+		 (push (send self :state :potentio-vector) avs)
+		 (push 50 tms)
+		 (when (= (length avs) 2)
+		   (setq avs (list (elt avs 0) (midpoint 0.5 (elt avs 0) (elt avs 1)) (elt avs 1)))
+		   (cond ((numberp (elt tms 1))
+			  (setq tms (list (elt tms 0) (/ (elt tms 1) 2) (/ (elt tms 1) 2))))
+			 (t
+			  (setq tms (list (elt tms 0) (elt tms 1) (elt tms 1))))))
+		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   )
 
 
