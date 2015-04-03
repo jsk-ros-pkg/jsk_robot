@@ -39,6 +39,7 @@
      (dolist (action (list right-gripper-action left-gripper-action))
        (unless (and joint-action-enable (send action :wait-for-server 3))
 	 (ros::ros-warn "~A is not respond" action)
+	 (ros::ros-info "*** if you do not have gripper, you can ignore this message ***")
 	 (return)))
 
      (setq gripper-sequence-id 0)
