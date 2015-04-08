@@ -2,6 +2,29 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_pr2_startup] Add rossetpr1012 and rossetpr1040 automatically by env-hooks
+* add deps jsk_interactive_marker for jsk_pr2_startup
+* add pr2 deps package for build test
+* use only catkin; add deps for running pr2.launch
+* add dwa_local_planner to build/run dependencies
+* add move_base_msgs, roseus to build dependencies
+* update readme for launching mongodb by multi users
+* [jsk_pr2_startup] Remove collider related roslaunch
+* launch mongodb when robot starts
+* add action_result_db to record action result/goal and joint_states
+* add tilt_scan_interpolated topic
+* add openni_cloud_self_filter to launch as default and publish color pointclouds
+* tested objectdetection for all camera on PR2
+* tested on PR2
+* fix option of db_client launch
+* add debug message to objectdetection_db.py
+* [jsk_pr2_robot] Use jsk_network_tools' euslisp code to
+  compress/decompress joint angles
+* migrate pr2 move_base, objectdetection db from postgre to mongodb
+* Contributors: Ryohei Ueda, Yuki Furuta, Yuto Inagaki
+
 0.0.4 (2015-01-30)
 ------------------
 * [jsk_pr2_startup] Remove unrequired return-from in pr2-compressed-angle-vector-interface
