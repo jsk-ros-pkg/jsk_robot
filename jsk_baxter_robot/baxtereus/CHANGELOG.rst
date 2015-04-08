@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-04-08)
+------------------
 * [baxter-interface.l] fix typo
 * [baxter-interface.l] overwrite :angle-vector-seuqnce for tm = :fast
 * [baxter-interface.l] notify this warning is ok
