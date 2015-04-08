@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-04-08)
+------------------
 * [jsk_baxter_startup] update to add position diff paramter for tweet
 * [jsk_baxter_startup] modify to prevent baxter.launch fail
 * [jsk_robot_startup/package.xml: add diagnostic_msgs, pr2_mechanism_controllers, sensor_msgs to build dependencies

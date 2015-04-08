@@ -2,8 +2,8 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-04-08)
+------------------
 * [jsk_baxter_startup/baxter.launch] head_trajectory_action is available after v1.1.0
 * [jsk_baxter_sensors] add kinecct2 use_machine parameter
 * [jsk_baxter_startup] update to add position diff paramter for tweet

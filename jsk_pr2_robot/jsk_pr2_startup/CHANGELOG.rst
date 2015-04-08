@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-04-08)
+------------------
 * [jsk_pr2_startup] Add rossetpr1012 and rossetpr1040 automatically by env-hooks
 * add deps jsk_interactive_marker for jsk_pr2_startup
 * add pr2 deps package for build test

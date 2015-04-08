@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_pepper_startup</name>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <description>The jsk_pepper_startup package</description>
 
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
