@@ -2,6 +2,11 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* change nao_msgs to naoqi_msgs
+* Contributors: Jiang Jun
+
 0.0.4 (2015-01-30)
 ------------------
 

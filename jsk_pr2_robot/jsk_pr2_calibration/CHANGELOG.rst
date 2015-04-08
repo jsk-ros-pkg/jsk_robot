@@ -2,6 +2,9 @@
 Changelog for package jsk_pr2_calibration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.4 (2015-01-30)
 ------------------
 

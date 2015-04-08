@@ -2,6 +2,18 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_baxter_startup] update to add position diff paramter for tweet
+* [jsk_baxter_startup] modify to prevent baxter.launch fail
+* [jsk_robot_startup/package.xml: add diagnostic_msgs, pr2_mechanism_controllers, sensor_msgs to build dependencies
+* [sk_robot_startup/CMakeLists.txt] update to set permission for installed script files
+* [jsk_robot_startup] modfiy CMakeLists.txt to install jsk_robot_startup correctly
+* [jsk_robot_startup/lifelog/active_user.l] repair tweet lifelog
+* [jsk_robot_startup/lifelog/mongodb.launch] fix typo of option in launch
+* [jsk_robot_startup/lifelog/mongodb.launch: add mongodb launch; mongod kill watcher
+* Contributors: Yuki Furuta, Yuto Inagaki
+
 0.0.4 (2015-01-30)
 ------------------
 
