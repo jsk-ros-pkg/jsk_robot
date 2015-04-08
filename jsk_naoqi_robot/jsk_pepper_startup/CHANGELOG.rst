@@ -2,6 +2,11 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* modify msg name and launch file name
+* Contributors: Jiang Jun
+
 0.0.4 (2015-01-30)
 ------------------
 
