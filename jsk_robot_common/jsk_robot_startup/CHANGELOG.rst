@@ -2,6 +2,9 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.5 (2015-04-08)
 ------------------
 * [jsk_baxter_startup] update to add position diff paramter for tweet
