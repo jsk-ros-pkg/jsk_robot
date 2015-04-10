@@ -134,6 +134,17 @@
   (:reset-pose () (send self :angle-vector #f(2 -2 -5 85 10 -70 -20 -40 85 -10  70  20  40 0 -0)))
   )
 
+(defun pepper-init (&optional (create-viewer))
+  (unless (boundp '*pepper*) (pepper))
+  (unless (ros::ok) (ros::roseus "pepper_eus_interface"))
+  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init)))
+  
+  (ros::spin-once)
+  (send *ri* :spin-once)
+  
+  (send *pepper* :angle-vector (send *ri* :state :potentio-vector))
+  (when create-viewer (objects (list *pepper*)))
+  )
 
 #|
 (setq *ri* (instance pepper-interface :init))
