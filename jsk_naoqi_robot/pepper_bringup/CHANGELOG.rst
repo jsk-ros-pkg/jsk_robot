@@ -2,6 +2,9 @@
 Changelog for package pepper_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.5 (2015-04-08)
 ------------------
 
