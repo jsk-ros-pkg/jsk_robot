@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2015-04-10)
+------------------
 * pepper-init added
 * Contributors: kochigami
 

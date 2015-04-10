@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2015-04-10)
+------------------
 * [baxter-interface.l] we found that input data must be larget then 3, and add dummy last element works very nice!
 * Contributors: Yuto Inagaki
 
