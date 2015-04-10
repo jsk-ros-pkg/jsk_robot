@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>pepper_description</name>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
   <description>The pepper_description package</description>
 
   <maintainer email="kei.okada@gmail.com">Kei Okada</maintainer>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_baxter_startup</name>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
   <description>The jsk_baxter_startup package</description>
   <maintainer email="inagaki@jsk.imi.i.u-tokyo.ac.jp">Yuto Inagaki</maintainer>
   <license>BSD</license>

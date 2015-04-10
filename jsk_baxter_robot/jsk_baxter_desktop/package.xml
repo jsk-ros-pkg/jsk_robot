@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_baxter_desktop</name>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
   <description>The jsk_baxter_desktop package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
