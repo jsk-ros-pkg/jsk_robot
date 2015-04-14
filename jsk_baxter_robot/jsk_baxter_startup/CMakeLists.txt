@@ -14,6 +14,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+catkin_add_env_hooks(99.jsk_baxter_startup SHELLS bash zsh
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
 install(DIRECTORY config jsk_baxter_joy jsk_baxter_lifelog jsk_baxter_moveit jsk_baxter_sensors
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
