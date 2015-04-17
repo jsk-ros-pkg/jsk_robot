@@ -115,6 +115,18 @@
   (:go-stop
    ()
    (send self :go-velocity 0 0 0 0 :stop nil))
+  (:play-audio-file (file)
+   (let (ret)
+     (ros::wait-for-service "nao_audio/play_file")
+     (setq ret (instance nao_interaction_msgs::AudioPlaybackRequest :init))
+     (send ret :file_path :data file)
+     (setq ret (ros::service-call "nao_audio/play_file" ret))))
+  (:set-master-volume (volume)
+   (let (ret)
+     (ros::wait-for-service "nao_audio/master_volume")
+     (setq ret (instance nao_interaction_msgs::AudioMasterVolumeRequest :init))
+     (send ret :master_volume :data volume)
+     (setq ret (ros::service-call "nao_audio/master_volume" ret))))
   )
 
 ;;
