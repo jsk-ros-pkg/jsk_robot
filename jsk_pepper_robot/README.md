@@ -21,6 +21,11 @@ export PYTHONPATH=$HOME/pynaoqi:$PYTHONPATH
 export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp"
 ```
 
+Install pepper mesh files with manual approval of license
+```
+sudo apt-get install ros-indigo-pepper-meshes
+```
+
 running demo
 ------------
 ```

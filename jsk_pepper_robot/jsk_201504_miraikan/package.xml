@@ -13,6 +13,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>jsk_pepper_startup</build_depend>
+  <build_depend>peppereus</build_depend>
+
+  <run_depend>jsk_pepper_startup</run_depend>
   <run_depend>peppereus</run_depend>
 
   <export>
