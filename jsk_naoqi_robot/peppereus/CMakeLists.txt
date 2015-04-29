@@ -28,4 +28,9 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/pepper.dae
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   DEPENDS ${pepper_urdf})
 
-add_custom_target(generate_pepper_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/pepper.l)
+find_package(pepper_meshes)
+if(pepper_meshes_FOUND)
+  add_custom_target(generate_pepper_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/pepper.l)
+else()
+  message(WARNING "Please install ros-\$ROS_DISTRO-pepper-meshes manually")
+endif()
