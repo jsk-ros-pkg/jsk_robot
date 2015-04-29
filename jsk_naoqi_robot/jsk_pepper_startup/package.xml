@@ -12,9 +12,11 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>nao_apps</run_depend>
   <run_depend>nao_interaction_launchers</run_depend>
   <run_depend>nao_interaction_msgs</run_depend>
   <run_depend>pepper_bringup</run_depend>
+  <run_depend>pepper_description</run_depend>
   <run_depend>topic_tools</run_depend>
   <run_depend>turtlebot_teleop</run_depend>
   <run_depend>image_view</run_depend>
