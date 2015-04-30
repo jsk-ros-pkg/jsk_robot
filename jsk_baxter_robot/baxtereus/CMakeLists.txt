@@ -20,9 +20,8 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
-if(EXISTS ${baxter_description_SOURCE_DIR}/urdf)
-  set(_baxter_urdf ${baxter_description_SOURCE_DIR}/urdf)
+if(EXISTS ${baxter_description_SOURCE_PREFIX}/urdf)
+  set(_baxter_urdf ${baxter_description_SOURCE_PREFIX}/urdf)
 else()
   set(_baxter_urdf ${baxter_description_PREFIX}/share/baxter_description/urdf)
 endif()
