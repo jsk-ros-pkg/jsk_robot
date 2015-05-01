@@ -1,0 +1,11 @@
+<launch>
+  <node name="roseus_bridge" pkg="roseus_remote" type="roseus_bridge.py" output="screen">
+    <remap from="input" to="repl_raw_command" />
+    <remap from="output" to="repl_raw_print" />
+  </node>
+  <node name="roseus_bridge_client" pkg="roseus_remote" type="roseus_command_sender.py"
+        output="screen">
+    <remap from="input" to="repl_raw_print" />
+    <remap from="output" to="repl_raw_command" />
+  </node>
+</launch>
