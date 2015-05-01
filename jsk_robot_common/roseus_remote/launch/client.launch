@@ -1,0 +1,21 @@
+<launch>
+  <arg name="server_ip" default="127.0.0.1" />
+  <arg name="server_receiver_port" default="1024" />
+  <arg name="send_rate" default="1" />
+
+  <arg name="oneway" default="true" />
+  <arg name="server_sender_port" default="1025" />
+
+  <node name="roseus_remote_client_sender" pkg="jsk_network_tools" type="silverhammer_lowspeed_streamer.py">
+    <remap from="input" to="repl_raw_command" />
+    <param name="message" value="roseus_remote/RawCommand" />
+    <param name="to_port" value="$(arg server_receiver_port)" />
+    <param name="to_ip" value="$(arg server_ip)" />
+    <param name="send_rate" value="$(arg send_rate)" />
+  </node>
+  <node name="roseus_bridge_client" pkg="roseus_remote" type="roseus_command_sender.py"
+        output="screen">
+    <remap from="input" to="repl_raw_print" />
+    <remap from="output" to="repl_raw_command" />
+  </node>
+</launch>
