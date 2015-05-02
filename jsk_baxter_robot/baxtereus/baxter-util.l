@@ -42,6 +42,7 @@
          ))
      r)))
 
+#|
 (baxter)
 (objects (list *baxter*))
 (setq av0 #f(0.0 97.3149 -121.216 -143.873 138.766 -5.67992 -73.1565 -16.2255 -20.0 -25.0 40.0 60.0 20.0 80.0 0.0))
@@ -49,3 +50,4 @@
 (send *viewer* :draw-objects)
 (send *baxter* :larm :move-end-pos #f(160 0 0) :world :debug-view nil) ;; ng
 (send *viewer* :draw-objects)
+|#
