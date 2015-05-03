@@ -20,9 +20,8 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-
-if(EXISTS ${baxter_description_SOURCE_DIR}/urdf)
-  set(_baxter_urdf ${baxter_description_SOURCE_DIR}/urdf)
+if(EXISTS ${baxter_description_SOURCE_PREFIX}/urdf)
+  set(_baxter_urdf ${baxter_description_SOURCE_PREFIX}/urdf)
 else()
   set(_baxter_urdf ${baxter_description_PREFIX}/share/baxter_description/urdf)
 endif()
@@ -35,6 +34,7 @@ message("collada2eus: ${_collada2eus}")
 
 # as of 2014/1/20, *_simple.DAE files are commited in https://github.com/k-okada/baxter_common
 # as of 2014/10/31 we use git://github.com/rethink-rlinsalata/baxter_common.git@k_rob-simple_meshes
+# as of 2015/05/01 we use git://github.com/k-okada/baxter_common.git@fix_simple_urdf
 if(EXISTS ${_baxter_urdf}/baxter_simple.urdf)
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.urdf
     COMMAND sed s/_collision.STL/_collision.DAE/ ${_baxter_urdf}/baxter_simple.urdf > ${PROJECT_SOURCE_DIR}/baxter.urdf
