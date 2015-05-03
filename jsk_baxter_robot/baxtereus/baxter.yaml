@@ -2,6 +2,8 @@
 ## - collada_joint_name : euslisp_joint_name (start with :)
 ##
 
+head:
+  - head_pan   : head-neck-y
 larm:
   - left_s0          : larm-shoulder-y
   - left_s1          : larm-shoulder-p
@@ -18,8 +20,6 @@ rarm:
   - right_w0         : rarm-elbow-r
   - right_w1         : rarm-wrist-p
   - right_w2         : rarm-wrist-r
-head:
-  - head_pan   : head-neck-y
 
 angle-vector:
   reset-pose : [0, 20, -25, -40, 60, -20, 80, 0, -20, -25, 40, 60, 20, 80, 0, 0]
@@ -30,11 +30,11 @@ angle-vector:
 larm-end-coords:
   parent : left_hand
   translate : [0, 0, 0.10]
-  rotate : [0 -1.0 0 90]
+  rotate : [0, -1.0, 0, 90]
 rarm-end-coords:
   parent : right_hand
   translate : [0, 0, 0.10]
-  rotate : [0 -1 0 90]
+  rotate : [0, -1, 0, 90]
 head-end-coords:
   parent : head_camera
   translate : [0, 0, 0]
