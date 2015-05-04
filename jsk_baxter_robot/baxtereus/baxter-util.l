@@ -69,7 +69,7 @@
          (setq larm-collision-avoidance-links collision-avoidance-links)
          (setq rarm-collision-avoidance-links collision-avoidance-links)
          )
-  (:self-collision-check (&key (pairs (mapcar #'(lambda (l) (cons (car l) (cadr l)))  (combination collision-avoidance-links 2))) &rest args &allow-other-keys)
+  (:self-collision-check (&key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &rest args &allow-other-keys)
                          (send-super* :self-collision-check :pairs pairs args))
   )
 
