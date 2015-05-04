@@ -23,8 +23,6 @@
 (ros::subscribe "input" roseus_remote::RawCommand #'command-cb)
 
 (ros::rate 10)
-(do-until-key
-  (ros::spin-once)
-  (ros::sleep))
+(ros::spin)
 
 (exit)
