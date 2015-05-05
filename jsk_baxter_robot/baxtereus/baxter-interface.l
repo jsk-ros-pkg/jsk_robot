@@ -1,5 +1,5 @@
 (load "package://pr2eus/robot-interface.l")
-(require :baxter "package://baxtereus//baxter.l")
+(require :baxter "package://baxtereus//baxter-util.l")
 (load "package://pr2eus/speak.l")
 (ros::load-ros-manifest "control_msgs")
 (ros::load-ros-manifest "baxter_core_msgs")
@@ -247,30 +247,6 @@
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   )
 
-
-(defclass baxter-robot-safe
-  :super baxter-robot
-  :slots ())
-(defmethod baxter-robot-safe
-  (:init (&rest args)
-         (send-super* :init args)
-         (setq collision-avoidance-links (list (send self :screen_lk)
-                                               (send self :larm :wrist-r :child-link)
-                                               (send self :larm :elbow-p :child-link)
-                                               (send self :larm :elbow-r :child-link)
-                                               (send self :rarm :wrist-r :child-link)
-                                               (send self :rarm :elbow-p :child-link)
-                                               (send self :rarm :elbow-r :child-link)
-					       ))
-         (setq larm-collision-avoidance-links collision-avoidance-links)
-         (setq rarm-collision-avoidance-links collision-avoidance-links)
-         )
-  (:self-collision-check (&rest args)
-			 (if (length args)
-			     (send-super* :self-collision-check args)
-			   (send-super :self-collision-check :pairs
-				       (mapcar #'(lambda (l) (cons (car l) (cadr l)))  (combination collision-avoidance-links 2)))
-			 ))
 
 (defun baxter-init (&key (safe t))
   (if (not (boundp '*ri*))
