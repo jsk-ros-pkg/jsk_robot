@@ -51,3 +51,25 @@
 (send *baxter* :larm :move-end-pos #f(160 0 0) :world :debug-view nil) ;; ng
 (send *viewer* :draw-objects)
 |#
+
+(defclass baxter-robot-safe
+  :super baxter-robot
+  :slots ())
+(defmethod baxter-robot-safe
+  (:init (&rest args)
+         (send-super* :init args)
+         (setq collision-avoidance-links (list (send self :screen_lk)
+                                               (send self :larm :wrist-r :child-link)
+                                               (send self :larm :elbow-p :child-link)
+                                               (send self :larm :elbow-r :child-link)
+                                               (send self :rarm :wrist-r :child-link)
+                                               (send self :rarm :elbow-p :child-link)
+                                               (send self :rarm :elbow-r :child-link)
+					       ))
+         (setq larm-collision-avoidance-links collision-avoidance-links)
+         (setq rarm-collision-avoidance-links collision-avoidance-links)
+         )
+  (:self-collision-check (&key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &rest args &allow-other-keys)
+                         (send-super* :self-collision-check :pairs pairs args))
+  )
+
