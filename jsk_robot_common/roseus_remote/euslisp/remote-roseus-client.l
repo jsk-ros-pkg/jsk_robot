@@ -5,19 +5,21 @@
 
 (ros::advertise "ocs_to_fc_eus/input" roseus_remote::RawCommand)
 (setq *returnedp* nil)
+(setq *result* nil)
 (defun command-cb (msg)
   (let ((cmd-str (send msg :data)))
-    (prog1
-        (print (read-from-string (send msg :data)))
-      (setq *returnedp* t))
-    ))
+    (setq *result* (read-from-string 
+                    ;; Remove null characters
+                    (string-right-trim '(0) (send msg :data))))
+    (setq *returnedp* t))
+  )
 
 (defun wait-return-from-server ()
   (setq *returnedp* nil)
   (while (and (not *returnedp*) (ros::ok))
     (ros::sleep)
     (ros::spin-once))
-  )
+  *result*)
 
 (ros::subscribe "ocs_from_fc_eus/output" roseus_remote::RawCommand #'command-cb)
 
