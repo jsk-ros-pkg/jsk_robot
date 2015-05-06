@@ -3,9 +3,10 @@
   <arg name="FC_IP" default="localhost"/>
   <arg name="EUS_OUTPUT_PORT" default="1704"/>
   <arg name="EUS_INPUT_PORT" default="1705"/>
-  
+  <arg name="LAUNCH_PREFIX" default="" />
   <node pkg="jsk_network_tools" type="silverhammer_lowspeed_receiver.py"
         output="log"
+        launch-prefix="$(arg LAUNCH_PREFIX)"
         name="ocs_from_fc_eus">
     <rosparam subst_value="true">
       message: roseus_remote/RawCommand
@@ -18,6 +19,7 @@
   
   <node pkg="jsk_network_tools" type="silverhammer_lowspeed_streamer.py"
         output="log"
+        launch-prefix="$(arg LAUNCH_PREFIX)"
         name="ocs_to_fc_eus">
     <rosparam subst_value="true">
       message: roseus_remote/RawCommand
