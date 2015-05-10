@@ -248,9 +248,9 @@
   )
 
 
-(defun baxter-init (&key (safe t))
+(defun baxter-init (&key (safe t) (type :default-controller))
   (if (not (boundp '*ri*))
-      (setq *ri* (instance baxter-interface :init)))
+      (setq *ri* (instance baxter-interface :init :type type)))
   (if (not (boundp '*baxter*))
       (if safe
 	  (setq *baxter* (instance baxter-robot-safe :init))
