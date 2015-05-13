@@ -244,6 +244,11 @@
 		 (when (= (length avs) 3) ;; when input avs is 1 or 2
 		   (setq avs (append avs (list (elt avs 2))))
 		   (setq tms (append tms (list 50))))
+     ;; place controller-type which was set when initialization above the passed argument
+     (unless (eq controller-type ctype)  ;; warning for unsupported argument
+       (unless (eq controller-type :default-controller)
+         (ros::ros-warn "place default controller-type ~a above the passed argument ~a" controller-type ctype)
+         (setq ctype controller-type)))
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   )
 
