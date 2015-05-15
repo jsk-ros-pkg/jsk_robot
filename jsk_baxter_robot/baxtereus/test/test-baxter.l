@@ -24,5 +24,36 @@
     (assert (send robot :self-collision-check))
     ))
 
+(setq *pod-bin* '(#f(950.0 280.0 1695.0) #f(950.0 -2.449294e-14 1695.0) #f(950.0 -280.0 1695.0) #f(950.0 280.0 1465.0) #f(950.0 -2.449294e-14 1465.0) #f(950.0 -280.0 1465.0) #f(950.0 280.0 1235.0) #f(950.0 -2.449294e-14 1235.0) #f(950.0 -280.0 1235.0) #f(950.0 280.0 975.0) #f(950.0 -2.449294e-14 975.0) #f(950.0 -280.0 975.0)))
+
+(deftest test-robot-ik-bin
+  (let (robot)
+    (setq robot (instance baxter-robot :init))
+    (send robot :locate #f(0 0 950) :world)
+    (objects (list robot))
+    (dolist (pos *pod-bin*)
+      (dolist (arm '(:larm :rarm))
+        (assert (send robot arm :inverse-kinematics
+                      (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                      :rotation-axis t
+                      :debug-view t) "fail to solve ik")
+        )) ;; do list
+    )) ;; let
+
+(deftest test-robot-ik-safe-bin
+  (let (robot)
+    (setq robot (instance baxter-robot-safe :init))
+    (send robot :locate #f(0 0 950) :world)
+    (objects (list robot))
+    (dolist (pos *pod-bin*)
+      (dolist (arm '(:larm :rarm))
+        (send robot :reset-pose)
+        (assert (send robot arm :inverse-kinematics
+                      (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                      :rotation-axis t
+                      :debug-view t) "fail to solve ik")
+        )) ;; do list
+    )) ;; let
+
 (run-all-tests)
 (exit)
