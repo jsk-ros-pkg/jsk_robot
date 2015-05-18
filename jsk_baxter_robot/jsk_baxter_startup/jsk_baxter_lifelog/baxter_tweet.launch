@@ -1,4 +1,7 @@
 <launch>
+  <arg name="launch_mongodb" default="true"/>
+  <arg name="output" default="screen" />
+
   <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="Baxter"/>
@@ -23,8 +26,6 @@
     <arg name="account_info" value="/var/lib/robot/account.yaml" />
   </include>
 
-  <arg name="output" default="screen" />
-
   <node name="image_saver" pkg="image_view" type="image_saver"
         output="$(arg output)" respawn="true" >
     <remap from="image" to="/cameras/head_camera/image" />
@@ -32,5 +33,5 @@
     <param name="filename_format" value="/tmp/baxter_camera.png" />
   </node>
 
-  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"/>
+  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch"/>
 </launch>
