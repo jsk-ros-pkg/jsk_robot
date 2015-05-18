@@ -8,6 +8,7 @@
   <arg name="launch_moveit" default="true"/>
   <arg name="launch_teleop" default="false"/>
   <arg name="launch_tweet" default="true"/>
+  <arg name="launch_mongodb" default="true"/>
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="start_openni" default="true"/>
@@ -55,6 +56,7 @@
   <!-- Twitter -->
   <include if="$(arg launch_tweet)"
            file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
+    <arg name="launch_mongodb" value="$(arg launch_mongodb)"/>
   </include>
 
   <!-- Wrench -->
