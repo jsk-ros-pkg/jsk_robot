@@ -14,6 +14,10 @@
 (setq *motor* t) ;; if motors working
 (setq *warning-percentage* 5)
 
+(setq *min-absolute-charge* 1000)
+(setq *min-charge-bat-id* 0.0)
+(setq *relative-charge* nil)
+
 (defun play_sound (sound)
   (let ((msg (instance sound_play::SoundRequest :init)))
     (cond
@@ -27,29 +31,12 @@
 
 (defun check-power-state-cb (msg)
   (let ((p (send msg :relative_capacity))
-	(a (send msg :ac_present))
-	(tm (ros::time-now)))
+	(a (send msg :ac_present)))
+    
     (ros::ros-info "power-state pc:~A cap:~A" p a)
     (setq *ac* (> a 0))
-    (if (or *ac*
-	    (> 180.0 (send (ros::time- tm *ac-tm*) :to-sec)))
-	(return-from check-power-state-cb nil))
-    (setq *ac-tm* tm) ;; check every 3min
-    (speak-jp (format nil "でんちのこり~Aパーセントです" p))
-    (cond 
-	  ((< p 10)
-	   (ros::ros-info "need to back to M78 nebula")
-	   (play_sound sound_play::SoundRequest::*needs_plugging*)
-	   )
-	  ((< p 20)
-	   (ros::ros-info "less than 20 perrcept")
-	   ;;(play_sound sound_play::needs_unplugging)
-	   (play_sound (ros::resolve-ros-path "package://piano/notes/E.wav"))
-	   (play_sound (ros::resolve-ros-path "package://piano/notes/G.wav"))
-	   (play_sound (ros::resolve-ros-path "package://piano/notes/B.wav"))
-	   )
-	  (t
-	   ))))
+    (setq *relative-charge* p)
+    ))
 
 (defun diag-cb (msg)
   (when (> 180.0 (send (ros::time- (ros::time-now) *ac-tm*) :to-sec))
@@ -87,10 +74,55 @@
                            warn-batt-names)))))
         (ros::ros-info (format nil "ばってりー~Aが充電できていません" warn-batt-names))))))
 
+;;get the Minimum Absolute state of charge and battery ID
+(defun battery-server-cb (msg) 
+  (let* ((bats (send msg :battery))
+	 (abs-charge-list (mapcar #'(lambda (bat)
+				      (elt (send bat :batReg) 14)) 
+				  bats))
+	 (min-charge (reduce #'min abs-charge-list)))
+    
+    (when (< min-charge *min-absolute-charge*)
+      (setq *min-absolute-charge*  min-charge)
+      (setq *min-charge-bat-id* (+ (send msg :id) (/ (position min-charge abs-charge-list) 10.0))))
+))
 
-(ros::rate 1)
+(defun battery-warning (&optional (check-relative nil)) ;use average or absolute percentage
+  (let ((p (if check-relative *relative-charge* *min-absolute-charge*))
+	(tm (ros::time-now)))
+    (if (or *ac*
+    	    (> 180.0 (send (ros::time- tm *ac-tm*) :to-sec)))
+    	(return-from battery-warning nil))
+    (setq *ac-tm* tm) ;; check every 3min
+    (if check-relative
+	(speak-jp (format nil "でんちのこり~Aパーセントです" p))
+      (speak-jp (format nil "でんち~Aのこり~Aパーセントです" *min-charge-bat-id* p)))
+    (cond 
+    	  ((< p 10)
+    	   (ros::ros-info "need to back to M78 nebula")
+    	   (play_sound sound_play::SoundRequest::*needs_plugging*)
+    	   )
+    	  ((< p 20)
+    	   (ros::ros-info "less than 20 perrcept")
+    	   ;;(play_sound sound_play::needs_unplugging)
+    	   (play_sound (ros::resolve-ros-path "package://piano/notes/E.wav"))
+    	   (play_sound (ros::resolve-ros-path "package://piano/notes/G.wav"))
+    	   (play_sound (ros::resolve-ros-path "package://piano/notes/B.wav"))
+    	   )
+    	  (t
+    	   ))))
+
+
+
+   
 (ros::subscribe "/power_state" pr2_msgs::PowerState #'check-power-state-cb)
 (ros::subscribe "/diagnostics_agg" diagnostic_msgs::DiagnosticArray #'diag-cb)
+(ros::subscribe "/battery/server" pr2_msgs::BatteryServer #'battery-server-cb)
 (ros::advertise "/robotsound" sound_play::SoundRequest 10)
 (ros::advertise "/robotsound_jp" sound_play::SoundRequest 5)
-(ros::spin)
+
+(ros::rate 1)
+(while (ros::ok)
+  (ros::spin-once)
+  (battery-warning)
+    (ros::sleep))
