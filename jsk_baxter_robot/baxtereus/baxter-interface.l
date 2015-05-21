@@ -244,6 +244,7 @@
 		 (when (= (length avs) 3) ;; when input avs is 1 or 2
 		   (setq avs (append avs (list (elt avs 2))))
 		   (setq tms (append tms (list 50))))
+     (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   )
 
