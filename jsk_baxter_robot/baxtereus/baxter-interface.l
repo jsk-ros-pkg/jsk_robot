@@ -76,7 +76,7 @@
      (cons :controller-action "/robot/head/head_action")
      (cons :controller-state "/robot/head/head_state")
      (cons :action-type control_msgs::SingleJointPositionAction)
-     (cons :joint-names (list "head-neck-y")))))
+     (cons :joint-names (list "head_pan")))))
   (:close-head-camera ()
     (send self :close-camera "head_camera")
     )
