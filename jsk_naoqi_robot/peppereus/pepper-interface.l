@@ -35,6 +35,8 @@
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
   ;;
+  (:error-vector () (map float-vector #'rad2deg (send self :state :effort)))
+  ;;
   (:servo-on () (send self :send-stiffness-controller 1.0))
   (:servo-off () (send self :send-stiffness-controller 0.0))
   (:send-stiffness-controller
