@@ -55,5 +55,25 @@
         )) ;; do list
     )) ;; let
 
+(load "package://baxtereus/baxter-interface.l")
+(deftest test-baxter-interface
+  (let (robot ri msg)
+    (setq ri (instance baxter-interface :init))
+    (send ri :state :potentio-vector)
+    (setq robot (instance baxter-robot :init))
+    (send ri :angle-vector (send robot :angle-vector))
+    (send ri :angle-vector-sequence (list (send robot :reset-pose) (send robot :reset-manip-pose)))
+    (setq msg (instance sensor_msgs::JointState :init))
+    (send msg :name '("torso_t0" "head_pan" "left_s0" "left_s1" "left_e0" "left_e1" "left_w0" "left_w1" "left_w2" "right_s0" "right_s1" "right_e0" "right_e1" "right_w0" "right_w1" "right_w2"))
+    (send msg :position (instantiate float-vector (length (send msg :name))))
+    (send msg :velocity (instantiate float-vector (length (send msg :name))))
+    (send msg :effort (instantiate float-vector (length (send msg :name))))
+    (send ri :ros-state-callback msg)
+    ))
+
+(deftest test-baxter-init
+  (baxter-init))
+
+
 (run-all-tests)
 (exit)
