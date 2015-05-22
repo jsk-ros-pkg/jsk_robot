@@ -246,6 +246,21 @@
 		   (setq tms (append tms (list 50))))
      (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
+  
+  (:ros-state-callback
+   (msg)
+   (let ((robot-state-names (cdr (assoc :name robot-state))) (robot-msg-names (send msg :name)) (torso-index))
+     ;;Remove toros_t0 . We think this is not the rotational-joint
+     (setq torso-index (position "torso_t0" robot-msg-names :test #'string=))
+     (send msg :name ( remove "torso_t0" robot-state-names :test #'string=))
+     (when torso-index
+       (dolist (key '(:position :velocity :effort) )
+         (send msg key (concatenate float-vector 
+                                    (subseq (send msg key) 0 torso-index)
+                                    (subseq (send msg key) (+ torso-index 1))))))
+     ;;End of Removing torso_t0
+
+     (send-super :ros-state-callback msg)
   )
 
 

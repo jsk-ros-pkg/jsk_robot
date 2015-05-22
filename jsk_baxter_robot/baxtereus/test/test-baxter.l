@@ -55,5 +55,12 @@
         )) ;; do list
     )) ;; let
 
+(require "package://baxtereus/baxter-interface.l")
+(deftest test-baxter-interface
+  (let ()
+    (setq *ri* (instance baxter-interface :init))
+    ))
+
+
 (run-all-tests)
 (exit)
