@@ -14,6 +14,7 @@
 (setq *motor* t) ;; if motors working
 (setq *warning-percentage* 5)
 
+(setq *last-min-charge-bat-update-time*  (ros::time-now))
 (setq *min-absolute-charge* 1000)
 (setq *min-charge-bat-id* 0.0)
 (setq *relative-charge* nil)
@@ -77,12 +78,15 @@
 ;;get the Minimum Absolute state of charge and battery ID
 (defun battery-server-cb (msg) 
   (let* ((bats (send msg :battery))
+         (stamp (send msg :header :stamp))
 	 (abs-charge-list (mapcar #'(lambda (bat)
-				      (elt (send bat :batReg) 14)) 
+				      (elt (send bat :batReg) 14))
 				  bats))
 	 (min-charge (reduce #'min abs-charge-list)))
-    
-    (when (< min-charge *min-absolute-charge*)
+    (ros::ros-info "min-abs-charge:~A ID:~A"  *min-absolute-charge* *min-charge-bat-id*)
+    (when (or (ros::time>= (ros::time- stamp *last-min-charge-bat-update-time*) (ros::time 30)) ;;ensure update after replug ac
+              (and (<= min-charge *min-absolute-charge*) (>= min-charge 0)))
+      (setq *last-min-charge-bat-update-time* stamp)
       (setq *min-absolute-charge*  min-charge)
       (setq *min-charge-bat-id* (+ (send msg :id) (/ (position min-charge abs-charge-list) 10.0))))
 ))
