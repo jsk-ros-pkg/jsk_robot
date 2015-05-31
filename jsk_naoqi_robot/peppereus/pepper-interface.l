@@ -79,6 +79,12 @@
    (&optional (arm :arms))
    (send self :move-hand 0.0 arm)
    )
+   (:speak
+   (str)
+   (let ((speech_msg (instance std_msgs::String :init)))
+     (send speech_msg :data str)
+     (ros::publish "/speech" speech_msg))
+   )
   (:stop-grasp
    (&optional (arm :arms))
    (send self :move-hand 1.0 arm)
