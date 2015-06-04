@@ -2,7 +2,7 @@
   <include file="$(find nao_bringup)/launch/nao_full.launch" >
     <arg name="force_python" value="true"/>
   </include>
-  <include file="$(find nao_apps)/launch/nao_speech.launch" />
+  <include file="$(find nao_apps)/launch/speech.launch" />
   <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch" />
   <include file="$(find nao_interaction_launchers)/launch/nao_vision_interface.launch" />
  
