@@ -13,7 +13,7 @@ rosdep install -y -r --from-paths src --ignore-src
 catkin_make
 source devel/setup.bash
 ```
-Make sure that you have already installed the ``Python NAOqi SDK`` in your computer. If not, you can download it from [here][https://community.aldebaran.com/en/resources/software]. After downloading the file, unzip and rename it to ``pynaoqi``, then put it under your home folder.
+Make sure that you have already installed the ``Python NAOqi SDK`` in your computer. If not, you can download it from [here](https://community.aldebaran.com/en/resources/software). After downloading the file, unzip and rename it to ``pynaoqi``, then put it under your home folder.
  
 Export NAO_IP environment variable and add PYTHON PATH to NAOqi Python SDK path by adding these three lines of code to you ``.bashrc`` file.      
 ```
