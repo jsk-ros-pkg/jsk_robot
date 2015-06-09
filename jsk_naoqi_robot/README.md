@@ -17,7 +17,6 @@ Make sure that you have already installed the ``Python NAOqi SDK`` in your compu
  
 Export NAO_IP environment variable and add PYTHON PATH to NAOqi Python SDK path by adding these three lines of code to you ``.bashrc`` file.      
 ```
-*# Please add the following three lines of code to your .bashrc file*
 source ~/catkin_ws/devel/setup.bash
 export PYTHONPATH=$HOME/pynaoqi:$PYTHONPATH
 export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp"
