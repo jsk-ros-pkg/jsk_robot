@@ -25,7 +25,7 @@
   )
 
 (defun demo(&optional (language :ja))
-  (send *ri* :set-master-volume 50)
+  (send *ri* :set-master-volume 90)
   (send *ri* :stop-grasp)
   (case language
 	(:ja
@@ -35,7 +35,7 @@
 	 (ros::ros-info "wait for nao_speech/set_parameters")
 	 (ros::wait-for-service "nao_speech/set_parameters")
 	 (ros::service-call "nao_speech/set_parameters" req_language)
-	 (send req_voice :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "voice" :value "japanese maki_n16"))) ;;japanese maki_n16
+	 (send req_voice :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "voice" :value "maki_n16"))) ;;japanese maki_n16
 	 (ros::ros-info "wait for nao_speech/set_parameters")
 	 (ros::wait-for-service "nao_speech/set_parameters")
 	 (ros::service-call "nao_speech/set_parameters" req_voice)
@@ -46,7 +46,7 @@
 	 (speak_move "二次元画像を取得するために\\pau=500\\あと二つのカメラを持っています\\pau=1000\\ひたい\\pau=100\\と\\pau=100\\くちの中にそれぞれあって\\pau=500\\このように設計されているのはもっと広い範囲を見るためです。" (list *reset_pose* *reset_pose* *reset_pose* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_in_mouth* *show_the_camera_in_mouth*  *open_two_hands_widely*) (list 100 100 100 1000 100 100 100 100))
 	 (speak_move "私の耳は実はスピーカーで\\pau=500\\ここから声を出します\\pau=1000\\私の後頭部\\pau=500\\アームと足にはタッチセンサーがあります\\pau=1000\\人が触るのを感知したり\\pau=500\\障害物を避けたりするためです。" *speaker_touch_sensor* (list 100 100 100 100 100 100 100 100 100 100))
 	 (speak_move "\\vol=100\\そして最後に\\pau=500\\私の一番重要な部分\\pau=500\\つまり私のシーピーユーは\\pau=500\\頭の中にあります\\pau=1000\\全てのプログラムはその中に保存されていて\\pau=500\\それらによって思考します。" (list  *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *touch_CPU* *touch_CPU* *touch_CPU* *reset_pose*) (list 100 100 100 100 100 100 100 100 100))
-	 (speak_move "今は人の表情と声の調子の変化を識別することによって\\pau=500\\人の感情を読み取る勉強をしています\\pau=1000\\そうすることで\\pau=500\\私はみなさん\\pau=50\\ともっとうまく交流できます\\pau=1000\\私は\\pau=500\\できるだけ早く人の生活に入って\\pau=500\\みなさん\\pau=50\\と一緒に暮らしたいです!\\emph=2\\"  (list *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *bow_slightly_to_left* *bow_slightly_to_left* *bow_slightly_to_left* *reset_pose* *reset_pose* *reset_pose* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *put_two_hands_in_front_of_the_body* *bow_slightly_to_left* *bow_slightly_to_left* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *look_right* *look_right* *look_left* *look_left* *reset_pose* *reset_pose*) (list 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100))
+	 (speak_move "今は人の表情と声の調子の変化を識別することによって\\pau=500\\人の感情を読み取る勉強をしています\\pau=1000\\そうすることで\\pau=500\\私はみなさん\\pau=50\\ともっとうまく交流できます\\pau=1000\\私は\\pau=500\\できるだけ早く人の生活に入って\\pau=500\\みなさん\\pau=50\\と一緒に暮らしたいです!\emph=1\\"  (list *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *bow_slightly_to_left* *bow_slightly_to_left* *bow_slightly_to_left* *reset_pose* *reset_pose* *reset_pose* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *put_two_hands_in_front_of_the_body* *bow_slightly_to_left* *bow_slightly_to_left* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *look_right* *look_right* *look_left* *look_left* *reset_pose* *reset_pose*) (list 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100))
 	 (speak_move "今日はここで\\pau=100\\みなさんとお会いし\\pau=500\\自分のことを知ってもらえて\\pau=500\\とても嬉しいです\\pau=1000\\本当にありがとうございます。" (list *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *left_right_arm* *left_right_arm* *left_right_arm* *bow* *bow* *bow* *reset_pose*) (list 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100))
 	 )
 	(:chi
@@ -66,16 +66,16 @@
 	 (ros::ros-info "wait for nao_speech/set_parameters")
 	 (ros::wait-for-service "nao_speech/set_parameters")
 	 (ros::service-call "nao_speech/set_parameters" req_language)
-	 (send req_voice :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "voice" :value "Kenny22Enhanced"))) ;;japanese maki_n16
+	 (send req_voice :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "voice" :value "Kenny22Enhanced")))
 	 (ros::ros-info "wait for nao_speech/set_parameters")
 	 (ros::wait-for-service "nao_speech/set_parameters")
 	 (ros::service-call "nao_speech/set_parameters" req_voice)
 	  
-	 (speak_move "\\rspd=10\\Welcome to Inaba-Okada laboratory. I am pepper, a robot which is designed to live with human beings." *lift_arm_and_bow* (list 1000 100 100 100 100 100 1000))
-	 (speak_move "Although I’m not good at doing housework, nor do I have dexterous arms like industrial robots do, I’m able to communicate with humans through language, recognize humans’ voices, feel touch and remember the faces of humans whom I have seen." *pepper_can_cannot* (list 200 100 100 100 100 100 100 100 100  100 150 100 150 100 100 100 100 1000))
-	 (speak_move "I can see the world with my eyes as well. My two eyes are 3D cameras, with which I get the point cloud data of the real world, so I can judge distance when I’m moving." *pepper_run* (list 200 200 200 200 200 100 100 100 100 100 100 100 100))
-	 (speak_move "I also have another two cameras for obtaining 2D pictures; they are located on my forehead and in my mouth. It was designed this way to enable me to see a broader range." (list *reset_pose* *reset_pose* *reset_pose* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_in_mouth* *show_the_camera_in_mouth*  *open_two_hands_widely*) (list 100 100 100 1000 100 100 100 100))
-	 (speak_move "My ears are actually speakers, and I speak through them. On my head, arms and feet there are touch sensors, using which I can feel humans' touch or avoid obstacle." *speaker_touch_sensor* (list 100 100 100 100 100 100 100 100 100 100))
+	 (speak_move "\\rspd=10\\Welcome to JSK laboratory. I am pepper, \\pau=500\\a robot which is designed to live with human beings." *lift_arm_and_bow* (list 1000 100 100 100 100 100 1000))
+	 (speak_move "Although I’m not good at doing housework,\\pau500\\ nor do I have dexterous arms like industrial robots do, \\pau=500\\I’m able to communicate with humans through language, \\pau=500\\recognize humans’ voices,\\pau=500\\ feel touch and remember the faces of humans whom I have seen." *pepper_can_cannot* (list 200 100 100 100 100 100 100 100 100  100 150 100 150 100 100 100 100 1000))
+	 (speak_move "I can see the world with my eyes as well. My two eyes are 3D cameras, \\pau=500\\with which I get the point cloud data of the real world, \\pau=100\\so I can judge distance when I’m moving." *pepper_run* (list 200 200 200 200 200 100 100 100 100 100 100 100 100))
+	 (speak_move "I also have another two cameras for obtaining 2D pictures; \\pau=500\\they are located on my forehead and in my mouth. It was designed this way to enable me to see a broader range." (list *reset_pose* *reset_pose* *reset_pose* *reset_pose* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_in_mouth* *open_two_hands_widely*) (list 100 100 100 100 100 100 100))
+	 (speak_move "My ears are actually speakers, \\pau=500\\and I speak through them. On my head, \\pau=500\\arms and feet there are touch sensors, \\pau=500\\using which I can feel humans' touch or avoid obstacle." *speaker_touch_sensor* (list 100 100 100 100 100 100 100 100 100 100))
 	(speak_move "Finally, my most important part, my CPU, is in my head. All of my program is saved there, and I use it to think." (list  *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *touch_CPU* *touch_CPU* *touch_CPU* *reset_pose*) (list 100 100 100 100 100 100 100 100 100))
 	(speak_move "Now, I’m learning how to understand humans’ emotion by recognizing changes of expression and voice so that I can communicate with humans better. I hope I can enter humans’ lives as soon as possible and live together with everyone!"  *look_around_hope* (list 100 100 100 100 100 100  100 100 100 100 100 100))
 	(speak_move "It was an honor to meet you here today and introduce myself to you. Thank you very much again for coming!" (list *reset_pose* *reset_pose* *reset_pose* *reset_pose* *left_right_arm* *left_right_arm* *left_right_arm* *bow* *bow* *bow* *reset_pose*) (list 100 100 100 100 100 100 100 100 100 100 100))
