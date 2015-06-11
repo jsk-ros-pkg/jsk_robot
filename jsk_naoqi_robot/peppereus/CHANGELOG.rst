@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-06-11)
+------------------
 * add speak method
 * [pepper-interface.l] add error-vector method, this requires https://github.com/ros-naoqi/naoqi_bridge/pull/37
 * [peppereus] Compilation does not fail even though pepper_urdf is not
