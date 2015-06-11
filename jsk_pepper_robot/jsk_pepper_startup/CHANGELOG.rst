@@ -2,8 +2,8 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-06-11)
+------------------
 * [package.xml] add depends to nao_apps
 * [jsk_pepper_startup] add joy-client.l
 * Contributors: Kanae Kochigami, Kei Okada

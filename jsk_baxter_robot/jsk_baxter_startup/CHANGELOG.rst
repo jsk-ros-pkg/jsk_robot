@@ -2,8 +2,8 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-06-11)
+------------------
 * [jsk_baxter_startup]add mongodb_launch option
 * [jsk_baxter_startup] remove face_recognition from baxter.launch
 * [jsk_baxter_startup] remove clear_params from joint actionservers in baxter.launch

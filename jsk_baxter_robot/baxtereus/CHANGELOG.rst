@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-06-11)
+------------------
 * [baxtereus/test/test-baxter.l] add test code for baxter-interface
 * [baxtereus] overwrite ros-state-callback in baxter-interface.l for suppress torso warning
 * [baxter.l] expand joint limit to refrect precice robot model
