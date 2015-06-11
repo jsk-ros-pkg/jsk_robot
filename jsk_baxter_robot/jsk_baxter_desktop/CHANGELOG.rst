@@ -2,6 +2,11 @@
 Changelog for package jsk_baxter_desktop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_baxter_desktop] add ROS_DISTRO param to desktop shortcuts
+* Contributors: Kentaro Wada
+
 0.0.6 (2015-04-10)
 ------------------
 

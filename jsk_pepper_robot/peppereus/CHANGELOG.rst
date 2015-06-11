@@ -2,6 +2,19 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add speak method
+* [pepper-interface.l] add error-vector method, this requires https://github.com/ros-naoqi/naoqi_bridge/pull/37
+* [peppereus] Compilation does not fail even though pepper_urdf is not
+  installed because the package is not yet released
+* [peppereus/CMakeLists.txt] run pepper.l only when pepper_meahes found
+* [CMakeLists.txt, pepper.yaml] generate pepper model from pepper_description
+* [package.xml] add more depends
+* [.gitignore] ignore dae file too
+* [peppereus/pepper-interface.l] add :play-audio-file and :set-master-volume
+* Contributors: Kanae Kochigami, Kei Okada, Ryohei Ueda
+
 0.0.6 (2015-04-10)
 ------------------
 * pepper-init added
