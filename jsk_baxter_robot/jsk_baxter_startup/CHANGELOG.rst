@@ -2,6 +2,14 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_baxter_startup]add mongodb_launch option
+* [jsk_baxter_startup] remove face_recognition from baxter.launch
+* [jsk_baxter_startup] remove clear_params from joint actionservers in baxter.launch
+* [jsk_baxter_robot] add rossetbaxter env-hooks
+* Contributors: Yuto Inagaki
+
 0.0.6 (2015-04-10)
 ------------------
 
