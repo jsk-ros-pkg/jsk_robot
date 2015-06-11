@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_baxter_web</name>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <description>The jsk_baxter_web package</description>
 
   <maintainer email="inagaki@todo.todo">inagaki</maintainer>
