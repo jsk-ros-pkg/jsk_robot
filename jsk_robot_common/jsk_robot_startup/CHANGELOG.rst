@@ -2,6 +2,9 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.6 (2015-04-10)
 ------------------
 

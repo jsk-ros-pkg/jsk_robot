@@ -1,9 +1,13 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package jsk_pr2_calibration
+Changelog for package jsk_201504_miraikan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-06-11)
+------------------
+* add japanese demo
+* [package.xml] add depends to jsk_pepper_startup and peppereus
+* [jsk_201504_miraikan] add demo program performed at miraikan on 20150413
+* Contributors: Kanae Kochigami, Kei Okada
 
 0.0.6 (2015-04-10)
 ------------------
@@ -22,6 +26,3 @@ Forthcoming
 
 0.0.1 (2014-12-25)
 ------------------
-* Remove generate file
-* Add utility package to generate JSK-style pr2 urdf
-* Contributors: Ryohei Ueda

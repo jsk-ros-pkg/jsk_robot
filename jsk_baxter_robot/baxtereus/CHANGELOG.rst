@@ -2,6 +2,32 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [baxtereus/test/test-baxter.l] add test code for baxter-interface
+* [baxtereus] overwrite ros-state-callback in baxter-interface.l for suppress torso warning
+* [baxter.l] expand joint limit to refrect precice robot model
+* [baxter-interface.l] fix wrong joint name in head_controller head-neck-y -> head_pan
+* [baxter-util.l] set default avoid-collision-distance from 200 to 5 for baxter
+* [test/test-baxter.l] add ik test, see https://github.com/start-jsk/2014-semi/pull/411
+* [test/test-baxgter.test] extend time-limit to 500
+* [baxter-interface.l] :angle-vector-sequence use default if nil ctype was passed
+* [baxtereus] add arm option for baxter-init
+* [baxtereus] fix baxter-interface :init args passing
+* [baxtereus] overwrite baxter max joint velocity
+* [test/test-baxter.{l,test}] add test code for baxter model (:self-collision-check)
+* [baxter-util.l] use :collision-check-paris to get collision link pair, instaed of combination
+* [baxter-util.l] (length args) always retruns non nil, so it never goes to self-collision-check with pairs
+* [baxter-interface.l, baxter-util.l] move baxter-robot-safe class definition to baxter-util.l
+* [baxtereus] add baxter's custom self check collision
+* [baxtereus] add Baxter Safe Interface
+* [baxter-util.l] comment out test code
+* [CMakeLists.txt] describe which branch is used to generate collada
+* [CMakeLists.txt] use SOURCE_PREFIX instead of SOURCE_DIR
+* [baxter.l] 1) rotate is wrong, we need , for python list, 2) the order of limb is head,larm,rarm
+* [baxtereus/baxter-util.l] add util program for baxter
+* Contributors: Kei Okada, Kentaro Wada, Yuto Inagaki
+
 0.0.6 (2015-04-10)
 ------------------
 * [baxter-interface.l] we found that input data must be larget then 3, and add dummy last element works very nice!
