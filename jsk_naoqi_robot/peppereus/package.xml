@@ -15,6 +15,7 @@
   <build_depend>naoqi_driver</build_depend>
   <build_depend>naoqi_sensors</build_depend>
   <build_depend>nao_pose</build_depend>
+  <build_depend>nao_interaction_msgs</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>pr2eus</build_depend> <!-- for robot interface -->
   <build_depend>pepper_description</build_depend>
@@ -24,6 +25,7 @@
   <run_depend>naoqi_driver</run_depend>
   <run_depend>naoqi_sensors</run_depend>
   <run_depend>nao_pose</run_depend>
+  <run_depend>nao_interaction_msgs</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend> <!-- for robot interface -->
   <run_depend>pepper_description</run_depend>
