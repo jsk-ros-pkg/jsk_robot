@@ -2,6 +2,44 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.7 (2015-06-11)
+------------------
+* [jsk_baxter_startup]add mongodb_launch option
+* [jsk_baxter_startup] remove face_recognition from baxter.launch
+* [jsk_baxter_startup] remove clear_params from joint actionservers in baxter.launch
+* [jsk_baxter_robot] add rossetbaxter env-hooks
+* Contributors: Yuto Inagaki
+
+0.0.6 (2015-04-10)
+------------------
+
+0.0.5 (2015-04-08)
+------------------
+* [jsk_baxter_startup/baxter.launch] head_trajectory_action is available after v1.1.0
+* [jsk_baxter_sensors] add kinecct2 use_machine parameter
+* [jsk_baxter_startup] update to add position diff paramter for tweet
+* [jsk_baxter_startup] update rviz config
+* [jsk_baxter_startup] add head trajectory server for baxter.launch
+* [jsk_baxter_startup] modify to prevent baxter.launch fail
+* [jsk_baxter_startup] add more dependencies to jsk_baxter_startup
+* [jsk_baxter_startup] shift to use kinect2 from kinect
+* [jsk_baxter_startup] remove checkerboard yaml rosparam
+* [jsk_baxter_startup] add use_color and keep_organized option to baxter self_filter.launch
+* [jsk_baxter_startup] add self_filter launch and config to jsk_baxter
+* Contributors: Kei Okada, Yuto Inagaki
+
+0.0.4 (2015-01-30)
+------------------
+
+0.0.3 (2015-01-09)
+------------------
+
+0.0.2 (2015-01-08)
+------------------
+* add install commands to cmake
+* remove jtalk voice
+* Contributors: Kei Okada, Yuto Inagaki
+
 0.0.1 (2014-12-25)
 ------------------
 * fix typo in baxter_tweet

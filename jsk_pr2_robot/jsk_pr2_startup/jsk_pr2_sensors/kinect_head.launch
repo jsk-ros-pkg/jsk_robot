@@ -125,4 +125,6 @@
         machine="c2"
         args="c2"/>
 
+  <include if="true" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_cloud_self_filter_color.launch"/>
+
 </launch>

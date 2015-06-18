@@ -1,0 +1,37 @@
+<launch>
+  <arg name="OCS_IP" default="localhost"/>
+  <arg name="FC_IP" default="localhost"/>
+  <arg name="EUS_OUTPUT_PORT" default="1704"/>
+  <arg name="EUS_INPUT_PORT" default="1705"/>
+  <arg name="LAUNCH_PREFIX" default="" />
+  <node pkg="jsk_network_tools" type="silverhammer_lowspeed_receiver.py"
+        output="log"
+        launch-prefix="$(arg LAUNCH_PREFIX)"
+        name="ocs_from_fc_eus">
+    <rosparam subst_value="true">
+      message: roseus_remote/RawCommand
+      receive_port: $(arg EUS_OUTPUT_PORT)
+      receive_ip: $(arg OCS_IP)
+      event_driven: true
+      receive_buffer_size: 1024
+    </rosparam>
+  </node>
+  
+  <node pkg="jsk_network_tools" type="silverhammer_lowspeed_streamer.py"
+        output="log"
+        launch-prefix="$(arg LAUNCH_PREFIX)"
+        name="ocs_to_fc_eus">
+    <rosparam subst_value="true">
+      message: roseus_remote/RawCommand
+      to_port: $(arg EUS_INPUT_PORT)
+      to_ip: $(arg FC_IP)
+      event_driven: true
+    </rosparam>
+  </node>
+
+  <!-- RUn in OCS -->
+  <node pkg="roseus_remote" type="remote-roseus-client.l"
+        name="remote_roseus_client" if="false">
+  </node>
+
+</launch>

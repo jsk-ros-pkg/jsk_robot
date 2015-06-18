@@ -2,6 +2,31 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.7 (2015-06-11)
+------------------
+* [package.xml] add depends to nao_apps
+* [jsk_pepper_startup] add joy-client.l
+* Contributors: Kanae Kochigami, Kei Okada
+
+0.0.6 (2015-04-10)
+------------------
+
+0.0.5 (2015-04-08)
+------------------
+* modify msg name and launch file name
+* Contributors: Jiang Jun
+
+0.0.4 (2015-01-30)
+------------------
+
+0.0.3 (2015-01-09)
+------------------
+
+0.0.2 (2015-01-08)
+------------------
+* add install commands to cmake
+* Contributors: Kei Okada
+
 0.0.1 (2014-12-25)
 ------------------
 * add depends to pepper_bringup

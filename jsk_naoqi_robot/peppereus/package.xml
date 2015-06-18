@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>peppereus</name>
-  <version>0.0.1</version>
+  <version>0.0.7</version>
   <description>The pepper_bringup package</description>
 
   <maintainer email="kei.okada@gmail.com">Kei Okada</maintainer>
@@ -11,11 +11,24 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>diagnostic_aggregator</build_depend>
+  <build_depend>naoqi_driver</build_depend>
+  <build_depend>naoqi_sensors</build_depend>
+  <build_depend>nao_pose</build_depend>
+  <build_depend>nao_interaction_msgs</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>pr2eus</build_depend> <!-- for robot interface -->
+  <build_depend>pepper_description</build_depend>
+  <build_depend>euscollada</build_depend>
+
   <run_depend>diagnostic_aggregator</run_depend>
   <run_depend>naoqi_driver</run_depend>
   <run_depend>naoqi_sensors</run_depend>
   <run_depend>nao_pose</run_depend>
-
+  <run_depend>nao_interaction_msgs</run_depend>
+  <run_depend>roseus</run_depend>
+  <run_depend>pr2eus</run_depend> <!-- for robot interface -->
+  <run_depend>pepper_description</run_depend>
 
   <export>
   </export>

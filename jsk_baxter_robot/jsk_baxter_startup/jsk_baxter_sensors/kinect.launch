@@ -1,12 +1,14 @@
 <launch>
   <arg name="launch_openni" default="true" />
-  <rosparam command="load" file="$(find jsk_baxter_startup)/config/checkerboard_config.yaml" />
 
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg launch_openni)">
     <arg name="camera" value="openni"/>
     <arg name="depth_registration" value="true"/>
   </include>
+
+  <!-- self filter -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/self_filter.launch"/>
 
   <!-- checkerboard -->
   <group ns="/camera/rgb/" >
