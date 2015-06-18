@@ -1,0 +1,28 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+rleg:
+  - KneePitch        : knee-p
+  - HipRoll          : hip-r
+  - HipPitch         : hip-p
+larm:
+  - LShoulderPitch   : larm-shoulder-p
+  - LShoulderRoll    : larm-shoulder-r
+  - LElbowYaw        : larm-elbow-y
+  - LElbowRoll       : larm-elbow-p
+  - LWristYaw        : larm-wrist-y
+rarm:
+  - RShoulderPitch   : rarm-shoulder-p
+  - RShoulderRoll    : rarm-shoulder-r
+  - RElbowYaw        : rarm-elbow-y
+  - RElbowRoll       : rarm-elbow-p
+  - RWristYaw        : rarm-wrist-y
+head:
+  - HeadYaw   : head-neck-y
+  - HeadPitch : head-neck-p
+
+angle-vector:
+  reset-pose: [2, -2, -5, 85, 10, -70, -20, -40, 85, -10,  70,  20,  40, 0, -0]
+
+## TODO: end-coords tokuni base
+## FIXME: base_linkが浮いてる

@@ -1,6 +1,6 @@
 (ros::roseus "pepper")
 
-(load "/home/nao/catkin_ws/src/jsk_pepper_robot/peppereus/pepper.l")
+(load "package://peppereus/pepper.l")
 (load "package://pr2eus/robot-interface.l")
 (ros::load-ros-manifest "jsk_pepper_startup")
 (ros::load-ros-manifest "peppereus")
@@ -17,7 +17,7 @@
    (ros::advertise "cmd_pose" geometry_msgs::Pose2D 1)
    (ros::advertise "cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "speech" std_msgs::String 1)
-   (ros::advertise "joint_angles" nao_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise "joint_angles" naoqi_msgs::JointAnglesWithSpeed 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   "joint_stiffness_trajectory"
@@ -31,9 +31,11 @@
      (cons :controller-action "joint_trajectory")
     ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
-     (cons :action-type nao_msgs::JointTrajectoryAction)
+     (cons :action-type naoqi_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
+  ;;
+  (:error-vector () (map float-vector #'rad2deg (send self :state :effort)))
   ;;
   (:servo-on () (send self :send-stiffness-controller 1.0))
   (:servo-off () (send self :send-stiffness-controller 0.0))
@@ -56,7 +58,7 @@
   ;;
   (:move-hand
    (value &optional (arm :arms))
-   (let ((start_grasp_msg (instance nao_msgs::JointAnglesWithSpeed :init)))
+   (let ((start_grasp_msg (instance naoqi_msgs::JointAnglesWithSpeed :init)))
      (send start_grasp_msg :header :stamp (ros::time-now))
      (send start_grasp_msg :header :seq 1)
      (send start_grasp_msg :speed 0.5)
@@ -76,6 +78,12 @@
   (:start-grasp
    (&optional (arm :arms))
    (send self :move-hand 0.0 arm)
+   )
+   (:speak
+   (str)
+   (let ((speech_msg (instance std_msgs::String :init)))
+     (send speech_msg :data str)
+     (ros::publish "/speech" speech_msg))
    )
   (:stop-grasp
    (&optional (arm :arms))
@@ -115,6 +123,18 @@
   (:go-stop
    ()
    (send self :go-velocity 0 0 0 0 :stop nil))
+  (:play-audio-file (file)
+   (let (ret)
+     (ros::wait-for-service "nao_audio/play_file")
+     (setq ret (instance nao_interaction_msgs::AudioPlaybackRequest :init))
+     (send ret :file_path :data file)
+     (setq ret (ros::service-call "nao_audio/play_file" ret))))
+  (:set-master-volume (volume)
+   (let (ret)
+     (ros::wait-for-service "nao_audio/master_volume")
+     (setq ret (instance nao_interaction_msgs::AudioMasterVolumeRequest :init))
+     (send ret :master_volume :data volume)
+     (setq ret (ros::service-call "nao_audio/master_volume" ret))))
   )
 
 ;;
@@ -134,6 +154,17 @@
   (:reset-pose () (send self :angle-vector #f(2 -2 -5 85 10 -70 -20 -40 85 -10  70  20  40 0 -0)))
   )
 
+(defun pepper-init (&optional (create-viewer))
+  (unless (boundp '*pepper*) (pepper))
+  (unless (ros::ok) (ros::roseus "pepper_eus_interface"))
+  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init)))
+  
+  (ros::spin-once)
+  (send *ri* :spin-once)
+  
+  (send *pepper* :angle-vector (send *ri* :state :potentio-vector))
+  (when create-viewer (objects (list *pepper*)))
+  )
 
 #|
 (setq *ri* (instance pepper-interface :init))
