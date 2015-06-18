@@ -1,0 +1,42 @@
+min_sensor_dist: .2
+self_see_default_padding: .01
+self_see_default_scale: 1.0
+self_see_links:
+  - name: right_gripper_base
+    padding: .04 
+  - name: right_lower_elbow
+    padding: .04 
+  - name: right_lower_forearm
+    padding: .04
+  - name: right_lower_shoulder
+    padding: .04
+  - name: right_upper_elbow
+    padding: .04
+  - name: right_lower_forearm
+    padding: .07
+  - name: right_upper_forearm
+    padding: .04
+  - name: right_upper_shoulder
+    padding: .04
+  - name: right_wrist
+    padding: .04
+
+
+  - name: left_gripper_base
+    padding: .04 
+  - name: left_lower_elbow
+    padding: .04 
+  - name: left_lower_forearm
+    padding: .07
+  - name: left_lower_shoulder
+    padding: .04
+  - name: left_upper_elbow
+    padding: .04
+  - name: left_lower_forearm
+    padding: .04
+  - name: left_upper_forearm
+    padding: .04
+  - name: left_upper_shoulder
+    padding: .04
+  - name: left_wrist
+    padding: .04

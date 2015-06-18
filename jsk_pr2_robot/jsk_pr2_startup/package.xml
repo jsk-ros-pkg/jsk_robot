@@ -1,6 +1,6 @@
 <package>
   <name>jsk_pr2_startup</name>
-  <version>0.0.1</version>
+  <version>0.0.7</version>
   <description>
      jsk_pr2_startup
   </description>
@@ -14,17 +14,20 @@
   <build_depend>openni_camera</build_depend>
   <build_depend>imagesift</build_depend>
   <build_depend>move_base</build_depend>
+  <build_depend>dwa_local_planner</build_depend>
+  <build_depend>move_base_msgs</build_depend>
   <build_depend>amcl</build_depend>
   <!-- <build_depend>safe_teleop_pr2</build_depend> -->
   <build_depend>map_server</build_depend>
+  <build_depend>jsk_network_tools</build_depend>
   <!-- <build_depend>pr2_move_base</build_depend> -->
   <!-- <build_depend>pr2_2dnav</build_depend> -->
   <!-- <build_depend>pr2_navigation_self_filter</build_depend> -->
   <!-- <build_depend>pr2_navigation_teleop</build_depend> -->
   <!-- <build_depend>pr2_navigation_slam</build_depend> -->
-  <!-- <build_depend>pr2_base_trajectory_action</build_depend> -->
+  <build_depend>pr2_base_trajectory_action</build_depend>
   <!-- <build_depend>pr2_arm_navigation_perception</build_depend> -->
-  <!-- <build_depend>pr2_gripper_sensor_action</build_depend> -->
+  <build_depend>pr2_gripper_sensor_action</build_depend>
   <build_depend>topic_tools</build_depend>
   <build_depend>mjpeg_server</build_depend>
   <build_depend>dynamic_tf_publisher</build_depend>
@@ -36,11 +39,22 @@
   <build_depend>jsk_perception</build_depend>
   <build_depend>resized_image_transport</build_depend>
   <build_depend>rospy</build_depend>
+  <build_depend>roseus</build_depend>
   <build_depend>rqt_gui</build_depend>
   <build_depend>rqt_gui_py</build_depend>
   <build_depend>rqt_py_common</build_depend>
   <build_depend>tf2</build_depend>
   <build_depend>tf2_ros</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>jsk_robot_startup</build_depend>
+  <build_depend>pr2_mannequin_mode</build_depend>
+  <build_depend>jsk_interactive_marker</build_depend>
+  <run_depend>jsk_network_tools</run_depend>
+  <run_depend>dwa_local_planner</run_depend>
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>pr2_mannequin_mode</run_depend>
+  <run_depend>pr2_gripper_sensor_action</run_depend>
+  <run_depend>jsk_interactive_marker</run_depend>
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>

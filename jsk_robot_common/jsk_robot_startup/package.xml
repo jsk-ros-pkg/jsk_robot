@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_robot_startup</name>
-  <version>0.0.1</version>
+  <version>0.0.7</version>
   <description>The jsk_robot_startup package</description>
   <maintainer email="inagaki@todo.todo">inagaki</maintainer>
   <license>BSD</license>
@@ -10,6 +10,10 @@
   <build_depend>mongodb_store</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>diagnostic_msgs</build_depend>
+  <build_depend>pr2_mechanism_controllers</build_depend>
+  <build_depend>sensor_msgs</build_depend>
   <run_depend>mongodb_store</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>

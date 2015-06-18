@@ -14,8 +14,8 @@
   <arg name="launch_db" default="true" />
   <arg name="launch_hark" default="true" />
   <arg name="launch_teleoperation" default="true" />
+  <arg name="launch_people_detection" default="true" />
   <arg name="slow_camera_framerate" default="true" />
-  <arg name="move_tilt_scan" default="true" />
   <arg name="launch_c3_startup" default="false" />
   <arg name="USER_NAME" default="false" />
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
@@ -96,20 +96,13 @@
     <param name="port" type="int" value="8080" />
   </node>
 
-  <include if="$(arg move_tilt_scan)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_scan_cloud.launch" />
-
   <!-- for gripper sensor actions -->
   <group if="$(arg launch_gripper_sensor)">
     <group ns="l_gripper_sensor_controller">
-      <group ns="pr2_gripper_sensor_action">
-        <param name="publish_skip" value="100" /> <!--10Hz-->
-      </group>
+      <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <group ns="r_gripper_sensor_controller">
-      <group ns="pr2_gripper_sensor_action">
-        <param name="publish_skip" value="100" /> <!--10Hz-->
-      </group>
+      <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
   </group>
@@ -144,6 +137,8 @@
     <arg name="MACHINE" value="c3"/>
     <arg name="launch_battery" value="true"/>
   </include>
+  <include if="$(arg launch_people_detection)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/people_detection.launch" />
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
         name="finish_launch_sound" />

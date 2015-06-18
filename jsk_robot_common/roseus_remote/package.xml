@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>roseus_remote</name>
+  <version>0.0.7</version>
+  <description>The jskeus_remote package</description>
+
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
+  <license>BSD</license>
+
+  <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>jsk_network_tools</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <run_depend>jsk_network_tools</run_depend>
+  <run_depend>roseus</run_depend>
+  <run_depend>std_msgs</run_depend>
+
+  <export>
+  </export>
+</package>
