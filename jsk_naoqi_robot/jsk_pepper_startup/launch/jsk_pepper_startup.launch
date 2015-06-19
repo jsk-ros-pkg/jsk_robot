@@ -34,7 +34,7 @@
   <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
   <node pkg="rostwitter" name="tweet" type="tweet.py" />
   <node pkg="image_view" name="image_saver" type="image_saver" >
-    <remap from="image" to="/camera/top/camera/image_raw" />
+    <remap from="image" to="/camera/front/camera/image_raw" />
     <param name="save_all_image" value="false" />
     <param name="filename_format" value="/tmp/pepper_camera.png" />
   </node>
