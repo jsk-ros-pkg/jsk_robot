@@ -83,7 +83,7 @@
    (str)
    (let ((speech_msg (instance std_msgs::String :init)))
      (send speech_msg :data str)
-     (ros::publish "/speech" speech_msg))
+     (ros::publish "speech" speech_msg))
    )
   (:stop-grasp
    (&optional (arm :arms))
