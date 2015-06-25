@@ -16,7 +16,7 @@
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
    (ros::advertise "cmd_pose" geometry_msgs::Pose2D 1)
    (ros::advertise "cmd_vel" geometry_msgs::Twist 1)
-   (ros::advertise "speech" std_msgs::String 1)
+   (ros::advertise "/speech" std_msgs::String 1)
    (ros::advertise "joint_angles" naoqi_msgs::JointAnglesWithSpeed 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
@@ -83,7 +83,7 @@
    (str)
    (let ((speech_msg (instance std_msgs::String :init)))
      (send speech_msg :data str)
-     (ros::publish "speech" speech_msg))
+     (ros::publish "/speech" speech_msg))
    )
   (:stop-grasp
    (&optional (arm :arms))
