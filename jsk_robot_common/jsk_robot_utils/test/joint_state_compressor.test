@@ -1,0 +1,13 @@
+<launch>
+  <include file="$(find jsk_robot_utils)/test/launch_joint_state_compressor.xml"/>
+  <test test-name="angle_vector_compress_error_test"
+        pkg="roseus" type="roseus"
+        args="$(find jsk_robot_utils)/test/joint-state-compressor-test.l"
+        time-limit="1800">
+    <remap from="joint_states1" to="joint_states" />
+    <remap from="joint_states2" to="joint_states_decompressed" />
+    <!-- diff_threshold means the threshold of difference
+         between each raw joint position of JointStates and decompressed one -->
+    <param name="diff_threshold" value="0.5" type="double" />
+  </test>
+</launch>
