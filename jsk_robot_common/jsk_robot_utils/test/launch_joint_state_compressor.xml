@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find pr2_description)/robots/upload_pr2.launch" />
+  <env name="ROBOT" value="pr2" />
+  <node pkg="joint_state_publisher" name="joint_state_publisher" type="joint_state_publisher"/>
+  <node pkg="jsk_robot_utils" type="joint-state-compressor.l" name="joint_state_compressor" output="screen"/>
+  <node pkg="jsk_robot_utils" type="joint-state-decompressor.l" name="joint_state_decompressor" output="screen"/>
+</launch>

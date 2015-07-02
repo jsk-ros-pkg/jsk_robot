@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_robot_utils</name>
+  <version>0.0.7</version>
+  <description>jsk_robot_utils</description>
+
+  <maintainer email="ueda@jsk.imi.i.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
+
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>jsk_network_tools</build_depend>
+  <build_depend>rostest</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>pr2eus</build_depend>
+  <build_depend>joint_state_publisher</build_depend>
+  <run_depend>jsk_network_tools</run_depend>
+  <run_depend>roseus</run_depend>
+  <run_depend>pr2eus</run_depend>
+  <run_depend>rostest</run_depend>
+</package>
