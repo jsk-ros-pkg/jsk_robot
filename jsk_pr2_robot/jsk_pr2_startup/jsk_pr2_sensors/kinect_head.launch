@@ -3,6 +3,7 @@
   <arg name="debug" default="false" />
   <arg name="respawn" default="true" />
   <arg name="launch_c2_startup" default="true" />
+  <arg name="deprecated_relay" default="true" />
   <!-- for ROS_DISTRO under electric -->
   <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
 
@@ -131,5 +132,26 @@
         args="c2"/>
 
   <include if="true" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_cloud_self_filter_color.launch"/>
+
+  <group if="$(arg deprecated_relay)">
+    <node name="deprecated_relay_rgb_image_rect_color"
+          pkg="jsk_topic_tools" type="deprecated_relay"
+          output="screen" machine="c2">
+      <remap from="~input" to="/kinect_head_c2/rgb/image_rect_color" />
+      <remap from="~output" to="/openni_c2/rgb/image_rect_color" />
+    </node>
+    <node name="deprecated_relay_depth_registered_points"
+          pkg="jsk_topic_tools" type="deprecated_relay"
+          output="screen" machine="c2">
+      <remap from="~input" to="/kinect_head_c2/depth_registered/points" />
+      <remap from="~output" to="/openni_c2/depth_registered/points" />
+    </node>
+    <node name="deprecated_relay_depth_registered_points_throttle"
+          pkg="jsk_topic_tools" type="deprecated_relay"
+          output="screen" machine="c2">
+      <remap from="~input" to="/kinect_head_c2/depth_registered/points_throttle" />
+      <remap from="~output" to="/openni_c2/depth_registered/points_throttle" />
+    </node>
+  </group>
 
 </launch>
