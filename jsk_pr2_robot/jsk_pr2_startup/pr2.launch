@@ -21,8 +21,7 @@
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
-  <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius
-       <include file="$(find pr2_2dnav)/pr2_2dnav.launch" /> -->
+  <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius -->
   <include if="$(arg launch_move_base)"
            file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
 
@@ -110,6 +109,7 @@
   <!-- for iPad or android apps -->
   <include if="$(arg launch_jsk_pcl)"
            file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
+    <arg name="image" value="/kinect_head/rgb" />
     <arg name="cloud_machine" value="c2" />
     <arg name="camera_info" value="camera_info_input_mux"/>
     <arg name="points" value="points_input_mux"/>

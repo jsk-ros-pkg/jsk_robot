@@ -3,16 +3,19 @@
   <arg name="debug" default="false" />
   <arg name="respawn" default="true" />
   <arg name="launch_c2_startup" default="true" />
+  <arg name="deprecated_relay" default="true" />
   <!-- for ROS_DISTRO under electric -->
   <!-- <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_node.launch" /> -->
 
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
-  <param name="/openni/driver/depth_ir_offset_x" value="4.5" />
-  <param name="/openni/driver/depth_ir_offset_y" value="2.5" />
+  <param name="/kinect_head/driver/depth_ir_offset_x" value="4.5" />
+  <param name="/kinect_head/driver/depth_ir_offset_y" value="2.5" />
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg launch_openni)">
-    <arg name="camera" value="openni"/>
+    <arg name="camera" value="kinect_head"/>
+    <arg name="rgb_frame_id" value="/head_mount_kinect_rgb_optical_frame" />
+    <arg name="depth_frame_id" value="/head_mount_kinect_ir_optical_frame" />
     <arg name="respawn" value="$(arg respawn)" if="false"/>
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
@@ -27,19 +30,19 @@
     <!-- <arg name="debug" value="$(arg debug)"/> -->
   </include>
   <!-- run resize pointcloud publishers -->
-  <group ns="openni_c2">
+  <group ns="kinect_head_c2">
     <group ns="depth_registered">
       <group ns="half">
         <node  name="resize_points_publisher"
                pkg="nodelet" type="nodelet"
-               args="load jsk_pcl/ResizePointsPublisher /openni_c2/openni_c2_nodelet_manager">
-          <remap from="~input" to="/openni_c2/depth_registered/points" />
+               args="load jsk_pcl/ResizePointsPublisher /kinect_head_c2/kinect_head_c2_nodelet_manager">
+          <remap from="~input" to="/kinect_head_c2/depth_registered/points" />
           <remap from="~output" to="points" />
           <param name="step_x" value="2" />
           <param name="step_y" value="2" />
         </node>
         <node pkg="nodelet" type="nodelet" name="throttle"
-              args="load jsk_topic_tools/LightweightThrottle /openni_c2/openni_c2_nodelet_manager">
+              args="load jsk_topic_tools/LightweightThrottle /kinect_head_c2/kinect_head_c2_nodelet_manager">
               <remap from="~input" to="points" />
               <remap from="~output" to="throttle_points" />
               <param name="update_rate" value="3.0" />
@@ -48,14 +51,14 @@
       <group ns="quater">
         <node  name="resize_points_publisher"
                pkg="nodelet" type="nodelet"
-               args="load jsk_pcl/ResizePointsPublisher /openni_c2/openni_c2_nodelet_manager">
-          <remap from="~input" to="/openni_c2/depth_registered/points" />
+               args="load jsk_pcl/ResizePointsPublisher /kinect_head_c2/kinect_head_c2_nodelet_manager">
+          <remap from="~input" to="/kinect_head_c2/depth_registered/points" />
           <remap from="~output" to="points" />
           <param name="step_x" value="4" />
           <param name="step_y" value="4" />
         </node>
         <node pkg="nodelet" type="nodelet" name="throttle"
-              args="load jsk_topic_tools/LightweightThrottle /openni_c2/openni_c2_nodelet_manager">
+              args="load jsk_topic_tools/LightweightThrottle /kinect_head_c2/kinect_head_c2_nodelet_manager">
               <remap from="~input" to="points" />
               <remap from="~output" to="throttle_points" />
               <param name="update_rate" value="3.0" />
@@ -67,24 +70,27 @@
   <!-- add 2013/12/14 -->
   <group if="$(arg respawn)">
     <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen"
-          if="$(arg launch_openni)" />
+          if="$(arg launch_openni)">
+      <param name="camera" value="kinect_head" />
+      <remap from="image" to="/kinect_head_c2/rgb/image_rect_color" />
+    </node>
   </group>
 
   <node name="kinect_downsample_for_throttle" pkg="nodelet" type="nodelet"
-        args="load pcl/VoxelGrid /openni_c2/openni_c2_nodelet_manager">
-    <remap from="~input" to="/openni_c2/depth_registered/points"/>
+        args="load pcl/VoxelGrid /kinect_head_c2/kinect_head_c2_nodelet_manager">
+    <remap from="~input" to="/kinect_head_c2/depth_registered/points"/>
     <!-- for 0m-4m -->
     <param name="filter_limit_min" value="0" />
     <param name="filter_limit_max" value="4" />
     <!-- down sample with 2cm voxel -->
     <param name="leaf_size" value="0.02" />
   </node>
-  <group ns="openni_c2">
+  <group ns="kinect_head_c2">
     <group ns="depth_registered">
       <!-- <node pkg="jsk_topic_tools" type="lightweight_throttle" name="throttle" -->
       <!--       output="screen"> -->
       <node pkg="nodelet" type="nodelet" name="throttle" output="screen"
-            args="load jsk_topic_tools/LightweightThrottle /openni_c2/openni_c2_nodelet_manager">
+            args="load jsk_topic_tools/LightweightThrottle /kinect_head_c2/kinect_head_c2_nodelet_manager">
         <remap from="~input" to="points" />
         <remap from="~output" to="points_throttle" />
         <param name="update_rate" value="3.0" />
@@ -92,15 +98,15 @@
     </group>
   </group>
   <node pkg="nodelet" type="nodelet" name="throttle_for_vis" output="screen"
-        args="load jsk_topic_tools/LightweightThrottle /openni_c2/openni_c2_nodelet_manager">
+        args="load jsk_topic_tools/LightweightThrottle /kinect_head_c2/kinect_head_c2_nodelet_manager">
     <remap from="~input" to="kinect_downsample_for_throttle/output" />
-    <remap from="~output" to="/openni_c2/depth_registered/points_throttle_for_vis" />
+    <remap from="~output" to="/kinect_head_c2/depth_registered/points_throttle_for_vis" />
     <param name="update_rate" value="3.0" />
   </node>
   <node pkg="nodelet" type="nodelet" name="kinect_image_throttle" output="screen"
-        args="load jsk_topic_tools/LightweightThrottle /openni_c2/openni_c2_nodelet_manager">
-    <remap from="~input" to="/openni_c2/rgb/image_rect_color/compressed" />
-    <remap from="~output" to="/openni_c2/rgb/image_rect_color/compressed_throttle" />
+        args="load jsk_topic_tools/LightweightThrottle /kinect_head_c2/kinect_head_c2_nodelet_manager">
+    <remap from="~input" to="/kinect_head_c2/rgb/image_rect_color/compressed" />
+    <remap from="~output" to="/kinect_head_c2/rgb/image_rect_color/compressed_throttle" />
     <param name="update_rate" value="5.0" />
   </node>
 
@@ -115,8 +121,8 @@
       <arg name="USE_RHAND_POINTCLOUD" value="false"/>
       <arg name="USE_HEAD_POINTCLOUD" value="true"/>
       <arg name="HEAD_SELECTED" default="/head_pointcloud_selected"/>
-      <arg name="HEAD_TOPIC" default="['/openni_c2/depth_registered/points']"/>
-      <arg name="HEAD_NODELET_MANAGER" default="/openni_c2/openni_c2_nodelet_manager"/>
+      <arg name="HEAD_TOPIC" default="['/kinect_head_c2/depth_registered/points']"/>
+      <arg name="HEAD_NODELET_MANAGER" default="/kinect_head_c2/kinect_head_c2_nodelet_manager"/>
       <arg name="BASE_FRAME" value="/base_link"/>
   </include>
   <node type="openni_remote_launch.sh" pkg="jsk_pr2_startup"
@@ -126,5 +132,26 @@
         args="c2"/>
 
   <include if="true" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/openni_cloud_self_filter_color.launch"/>
+
+  <group if="$(arg deprecated_relay)">
+    <node name="deprecated_relay_rgb_image_rect_color"
+          pkg="jsk_topic_tools" type="deprecated_relay"
+          output="screen" machine="c2">
+      <remap from="~input" to="/kinect_head_c2/rgb/image_rect_color" />
+      <remap from="~output" to="/openni_c2/rgb/image_rect_color" />
+    </node>
+    <node name="deprecated_relay_depth_registered_points"
+          pkg="jsk_topic_tools" type="deprecated_relay"
+          output="screen" machine="c2">
+      <remap from="~input" to="/kinect_head_c2/depth_registered/points" />
+      <remap from="~output" to="/openni_c2/depth_registered/points" />
+    </node>
+    <node name="deprecated_relay_depth_registered_points_throttle"
+          pkg="jsk_topic_tools" type="deprecated_relay"
+          output="screen" machine="c2">
+      <remap from="~input" to="/kinect_head_c2/depth_registered/points_throttle" />
+      <remap from="~output" to="/openni_c2/depth_registered/points_throttle" />
+    </node>
+  </group>
 
 </launch>
