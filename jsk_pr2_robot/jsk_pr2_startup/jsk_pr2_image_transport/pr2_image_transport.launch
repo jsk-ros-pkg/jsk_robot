@@ -87,7 +87,7 @@
     <node pkg="resized_image_transport" type="image_resizer" name="head_resized"
           machine="c2"
           output="screen" >
-      <remap from="~input/image" to="/openni_c2/rgb/$(arg THROTTLE_IMAGE_TYPE)_color" />
+      <remap from="~input/image" to="/kinect_head_c2/rgb/$(arg THROTTLE_IMAGE_TYPE)_color" />
       <remap from="~output/image" to="~$(arg THROTTLE_IMAGE_TYPE)" />
       <param name="resize_scale_x" value="$(arg THROTTLE_RESIZE_RATE)" />
       <param name="resize_scale_y" value="$(arg THROTTLE_RESIZE_RATE)" />
@@ -138,7 +138,7 @@
     <node pkg="resized_image_transport" type="image_resizer" name="head_snap"
           machine="c2"
           output="screen" >
-      <remap from="~input/image" to="/openni_c2/rgb/image_rect_color" />
+      <remap from="~input/image" to="/kinect_head_c2/rgb/image_rect_color" />
       <remap from="~output/image" to="~image_rect_color" />
       <param name="resize_scale_x" value="0.16" />
       <param name="resize_scale_y" value="0.16" />
@@ -186,15 +186,15 @@
   <!-- edge image -->
   <group if="$(arg USE_EDGE)" >
     <!-- head -->
-    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_openni"
+    <node pkg="jsk_perception" type="edge_detector" name="edge_detector_kinect_head"
           machine="c2">
-      <remap from="image" to="openni_c2/rgb/image_rect_color" />
-      <remap from="edge/image" to="openni/edge/image"/>
+      <remap from="image" to="kinect_head_c2/rgb/image_rect_color" />
+      <remap from="edge/image" to="kinect_head/edge/image"/>
     </node>
     <node pkg="jsk_perception" type="sparse_image_encoder"
-            name="sparse_image_encoder_openni">
-      <remap from="image" to="openni/edge/image" />
-      <remap from="sparse_image" to="openni/sparse/image" />
+            name="sparse_image_encoder_kinect_head">
+      <remap from="image" to="kinect_head/edge/image" />
+      <remap from="sparse_image" to="kinect_head/sparse/image" />
       <param name="rate" value="1.0" />
     </node>
 

@@ -6,7 +6,7 @@
         pkg="nodelet" type="nodelet" name="$(arg MANAGER_NAME)"
         args="manager" output="screen"/>
 
-  <arg name="DECIMATE_CAMERA" default="/openni_c2/rgb" />
+  <arg name="DECIMATE_CAMERA" default="/kinect_head_c2/rgb" />
   <arg name="DECIMATE_IMAGE" default="image_rect_mono" />
   <arg name="DECIMATE_OUTPUT_CAMERA" default="roi_camera_output" />
   <!--arg name="DECIMATE_OUTPUT_IMAGE" default="image_raw" /-->
