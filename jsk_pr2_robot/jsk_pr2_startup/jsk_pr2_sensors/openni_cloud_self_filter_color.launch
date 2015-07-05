@@ -2,8 +2,8 @@
   <node pkg="pr2_navigation_self_filter"
 	type="self_filter" clear_params="true"
 	name="openni_cloud_self_filter" respawn="true" output="screen" machine="c2">
-    <remap from="cloud_in" to="/openni_c2/depth_registered/points" />
-    <remap from="cloud_out" to="/openni_c2/depth_registered/points_self_filtered" />
+    <remap from="cloud_in" to="/kinect_head_c2/depth_registered/points" />
+    <remap from="cloud_out" to="/kinect_head_c2/depth_registered/points_self_filtered" />
     <param name="subsample_value" type="double" value="0.0"/>
 
     <param name="use_rgb" type="bool" value="true"/>

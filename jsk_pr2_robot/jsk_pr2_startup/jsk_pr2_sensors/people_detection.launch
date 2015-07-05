@@ -1,10 +1,10 @@
 <launch>
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
   <!-- a launch file for hydro, it should be run on c2 -->
-  <arg name="camera" default="openni_c2" />
+  <arg name="camera" default="kinect_head_c2" />
   <arg name="image_topic" default="image_rect_color" />
   <arg name="depth_topic" default="image_raw" />
-  <arg name="fixed_frame" default="openni_rgb_optical_frame" />
+  <arg name="fixed_frame" default="kinect_head_rgb_optical_frame" />
   <arg name="depth_ns" default="depth_registered" />
 
   <!-- face detector -->

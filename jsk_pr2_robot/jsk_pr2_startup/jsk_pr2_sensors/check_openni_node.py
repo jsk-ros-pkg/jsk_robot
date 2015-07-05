@@ -15,6 +15,7 @@ class image_converter:
     def __init__(self):
         self.bridge = CvBridge()
         self.image_sub = None
+        self.camera = rospy.get_param('~camera', 'kinect_head')
 
     def callback(self,data):
         if data.header.stamp < self.prev_time + rospy.Duration(60):
@@ -32,7 +33,7 @@ class image_converter:
             rospy.logerr("Restart openni_node1")
             retcode = -1
             try:
-                #retcode = subprocess.call('rosnode kill /openni/driver', shell=True)
+                #retcode = subprocess.call('rosnode kill /%s/driver' % self.camera, shell=True)
                 # 3. usbreset...
                 speak("resetting u s b")
                 p = subprocess.Popen("lsusb", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -50,21 +51,21 @@ class image_converter:
                 time.sleep(10)
                 # 1. kill nodelet manager
                 speak("something wrong with kinect, I'll restart it, killing nodelet manager")
-                retcode = subprocess.call('rosnode kill /openni/openni_nodelet_manager', shell=True)
+                retcode = subprocess.call('rosnode kill /%s/%s_nodelet_manager' % (self.camera, self.camera), shell=True)
                 time.sleep(10)
                 # 2. pkill
                 speak("killing child processes")
-                retcode = subprocess.call('pkill -f openni_nodelet_manager', shell=True)
+                retcode = subprocess.call('pkill -f %s_nodelet_manager' % self.camera, shell=True)
                 time.sleep(10)
                 # 3 restarting
                 speak("restarting processes")
-                retcode = subprocess.call('roslaunch openni_launch openni.launch camera:=openni publish_tf:=false depth_registration:=true rgb_processing:=false ir_processing:=false depth_processing:=false depth_registered_processing:=false disparity_processing:=false disparity_registered_processing:=false hw_registered_processing:=true sw_registered_processing:=false', shell=True)
+                retcode = subprocess.call('roslaunch openni_launch openni.launch camera:=%s publish_tf:=false depth_registration:=true rgb_processing:=false ir_processing:=false depth_processing:=false depth_registered_processing:=false disparity_processing:=false disparity_registered_processing:=false hw_registered_processing:=true sw_registered_processing:=false rgb_frame_id:=/head_mount_kinect_rgb_optical_frame depth_frame_id:=/head_mount_kinect_ir_optical_frame' % self.camera, shell=True)
             except Exception, e:
                 rospy.logerr('Unable to kill kinect node, caught exception:\n%s', traceback.format_exc())
 
     def process(self):
         if self.image_sub == None or self.image_sub.impl == None:
-            self.image_sub = rospy.Subscriber("/openni_c2/rgb/image_color",Image,self.callback,None,1)
+            self.image_sub = rospy.Subscriber("image",Image,self.callback,None,1)
 
 speak_pub = None
 def speak(string):
