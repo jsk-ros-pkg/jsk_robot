@@ -1,0 +1,90 @@
+<launch>
+  <arg name="launch_gazebo" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="paused" default="true" />
+  <arg name="world" default="worlds/empty.world" />
+  <arg name="relay" default="true" />
+  <arg name="relay_c2" default="true" />
+  <arg name="rectify_kinect" default="true" />
+  <arg name="launch_pr2" default="true" />
+
+  <include file="$(find pr2_machine)/sim.machine" />
+
+  <!-- pr2_gazebo -->
+  <group if="$(arg launch_gazebo)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="gui" value="$(arg gui)" />
+      <arg name="paused" value="$(arg paused)" />
+      <arg name="world_name" value="$(arg world)" />
+    </include>
+    <include file="$(find pr2_gazebo)/launch/pr2.launch" />
+  </group>
+
+  <!-- color rectify kinect -->
+  <group if="$(arg rectify_kinect)" ns="/kinect_head/rgb">
+    <node name="kinect_head_nodelet_manager" pkg="nodelet" type="nodelet" args="manager" />
+    <node pkg="nodelet" type="nodelet" name="rectify_color"
+          args="load image_proc/rectify kinect_head_nodelet_manager"
+          respawn="true">
+      <remap from="image_mono" to="image_raw" />
+      <remap from="image_rect" to="image_rect_color" />
+    </node>
+  </group>
+
+  <!-- relay -->
+  <group if="$(arg relay)">
+    <node name="relay_rgb_image_raw"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/rgb/image_raw /kinect_head/rgb/image_raw" />
+    <node name="relay_rgb_camera_info"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/rgb/camera_info /kinect_head/rgb/camera_info" />
+    <node name="relay_depth_points"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth/points /kinect_head/depth/points" />
+    <node name="relay_depth_camera_info"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth/camera_info /kinect_head/depth/camera_info" />
+    <node name="relay_depth_registered_points"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth_registered/points /kinect_head/depth_registered/points" />
+    <node name="relay_depth_registered_camera_info"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth_registered/camera_info /kinect_head/depth_registered/camera_info" />
+  </group>
+
+  <!-- relay kinect to c2 -->
+  <group if="$(arg relay_c2)">
+    <node name="relay_c2_rgb_image_raw"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/rgb/image_raw /kinect_head_c2/rgb/image_raw" />
+    <node name="relay_c2_rgb_camera_info"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/rgb/camera_info /kinect_head_c2/rgb/camera_info" />
+    <node name="relay_c2_depth_points"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth/points /kinect_head_c2/depth/points" />
+    <node name="relay_c2_depth_camera_info"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth/camera_info /kinect_head_c2/depth/camera_info" />
+    <node name="relay_c2_depth_registered_points"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth_registered/points /kinect_head_c2/depth_registered/points" />
+    <node name="relay_c2_depth_registered_camera_info"
+          pkg="topic_tools" type="relay"
+          args="/head_mount_kinect/depth_registered/camera_info /kinect_head_c2/depth_registered/camera_info" />
+  </group>
+
+
+  <!-- pr2.launch -->
+  <include file="$(find jsk_pr2_startup)/pr2.launch"
+           if="$(arg launch_pr2)">
+    <arg name="launch_openni" value="false" />
+    <arg name="launch_db" value="false" />
+    <arg name="launch_hark" value="false" />
+    <arg name="launch_teleoperation" value="false" />
+    <arg name="launch_gripper_sensor" value="false" />
+    <arg name="slow_camera_framerate" value="false" />
+    <arg name="launch_c3_startup" value="false" />
+  </include>
+</launch>
