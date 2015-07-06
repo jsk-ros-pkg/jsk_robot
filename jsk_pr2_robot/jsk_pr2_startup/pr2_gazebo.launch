@@ -6,6 +6,7 @@
   <arg name="relay" default="true" />
   <arg name="relay_c2" default="true" />
   <arg name="rectify_kinect" default="true" />
+  <arg name="num_worker_threads" default="4" />
   <arg name="launch_pr2" default="true" />
 
   <include file="$(find pr2_machine)/sim.machine" />
@@ -21,14 +22,18 @@
   </group>
 
   <!-- color rectify kinect -->
-  <group if="$(arg rectify_kinect)" ns="/kinect_head/rgb">
-    <node name="kinect_head_nodelet_manager" pkg="nodelet" type="nodelet" args="manager" />
-    <node pkg="nodelet" type="nodelet" name="rectify_color"
-          args="load image_proc/rectify kinect_head_nodelet_manager"
-          respawn="true">
-      <remap from="image_mono" to="image_raw" />
-      <remap from="image_rect" to="image_rect_color" />
-    </node>
+  <group if="$(arg rectify_kinect)" ns="/kinect_head">
+    <include file="$(find rgbd_launch)/launch/includes/manager.launch.xml">
+      <arg name="name" value="kinect_head_nodelet_manager" />
+      <arg name="machine" value="c1" />
+      <arg name="num_worker_threads" value="$(arg num_worker_threads)" />
+    </include>
+    <include file="$(find rgbd_launch)/launch/includes/rgb.launch.xml">
+      <arg name="manager" value="kinect_head_nodelet_manager" />
+      <arg name="rgb" value="rgb" />
+      <arg name="debayer_processing" value="false" />
+      <arg name="respawn" value="true" />
+    </include>
   </group>
 
   <!-- relay -->
