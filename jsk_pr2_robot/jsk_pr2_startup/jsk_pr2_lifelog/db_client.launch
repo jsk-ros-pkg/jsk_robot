@@ -4,7 +4,7 @@
   <arg name="store_action_result_log" default="true" />
   <arg name="twitter" default="true" />
 
-  <include file="$(find pr2_machine)/pr2.machine" />
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- logging and resoring pr2 position data -->
   <node name="move_base_db"

@@ -18,7 +18,10 @@
   <arg name="slow_camera_framerate" default="true" />
   <arg name="launch_c3_startup" default="false" />
   <arg name="USER_NAME" default="false" />
-  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
+           if="$(arg launch_c3_startup)" />
+  <include file="$(find pr2_machine)/$(env ROBOT).machine"
+           unless="$(arg launch_c3_startup)" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius -->
