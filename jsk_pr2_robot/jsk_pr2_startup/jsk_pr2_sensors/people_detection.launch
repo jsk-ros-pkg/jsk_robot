@@ -1,5 +1,5 @@
 <launch>
-  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine" />
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
   <!-- a launch file for hydro, it should be run on c2 -->
   <arg name="camera" default="kinect_head_c2" />
   <arg name="image_topic" default="image_rect_color" />
