@@ -8,6 +8,7 @@
   <arg name="rectify_kinect" default="true" />
   <arg name="num_worker_threads" default="4" />
   <arg name="launch_pr2" default="true" />
+  <arg name="map_frame" default="eng2" />
 
   <include file="$(find pr2_machine)/sim.machine" />
 
@@ -84,6 +85,7 @@
   <!-- pr2.launch -->
   <include file="$(find jsk_pr2_startup)/pr2.launch"
            if="$(arg launch_pr2)">
+    <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="launch_openni" value="false" />
     <arg name="launch_db" value="false" />
     <arg name="launch_hark" value="false" />
