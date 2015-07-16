@@ -2,6 +2,13 @@
 Changelog for package jsk_201504_miraikan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* delete unnecessary words
+* change english demo
+* add english demo (need modifying)
+* Contributors: Kanae Kochigami
+
 0.0.7 (2015-06-11)
 ------------------
 * add japanese demo

@@ -2,6 +2,11 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use front/camera until https://github.com/ros-naoqi/pepper_robot/pull/1/files is merged
+* Contributors: Kanae Kochigami
+
 0.0.7 (2015-06-11)
 ------------------
 * [package.xml] add depends to nao_apps
