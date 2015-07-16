@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2015-07-16)
+------------------
 * modify send-stiffness-controller method for pepper
 * modify ros::advertise to be consistent with ros::publish
 * modify speak method

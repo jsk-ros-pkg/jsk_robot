@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2015-07-16)
+------------------
 * [jsk_robot_utils] Add jsk_robot_utils package and move script to compress/decompress joint angles from jsk_network_tools to jsk_robot_utils
 * Contributors: Ryohei Ueda
 

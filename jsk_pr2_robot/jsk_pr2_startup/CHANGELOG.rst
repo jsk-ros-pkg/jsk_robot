@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2015-07-16)
+------------------
 * [jsk_pr2_startup] add option map_frame to change eng2/eng8
 * [jsk_pr2_startup/pr2_gazebo.launch] include rgbd_launch to rectify kinect rgb image
 * [jsk_pr2_startup] add pr2_gazebo.launch
