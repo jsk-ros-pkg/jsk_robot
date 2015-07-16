@@ -2,8 +2,8 @@
 Changelog for package jsk_201504_miraikan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2015-07-16)
+------------------
 * delete unnecessary words
 * change english demo
 * add english demo (need modifying)
