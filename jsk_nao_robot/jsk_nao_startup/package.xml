@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_nao_startup</name>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
   <description>The jsk_nao_startup package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 

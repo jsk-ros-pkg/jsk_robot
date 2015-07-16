@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>roseus_remote</name>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
   <description>The jskeus_remote package</description>
 
   <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
