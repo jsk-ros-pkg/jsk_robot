@@ -1,9 +1,11 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package jsk_pr2_calibration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package jsk_robot_utils
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
+* [jsk_robot_utils] Add jsk_robot_utils package and move script to compress/decompress joint angles from jsk_network_tools to jsk_robot_utils
+* Contributors: Ryohei Ueda
 
 0.0.7 (2015-06-11)
 ------------------
@@ -25,6 +27,3 @@ Forthcoming
 
 0.0.1 (2014-12-25)
 ------------------
-* Remove generate file
-* Add utility package to generate JSK-style pr2 urdf
-* Contributors: Ryohei Ueda

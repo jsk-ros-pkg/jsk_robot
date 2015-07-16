@@ -2,6 +2,20 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_pr2_startup] add option map_frame to change eng2/eng8
+* [jsk_pr2_startup/pr2_gazebo.launch] include rgbd_launch to rectify kinect rgb image
+* [jsk_pr2_startup] add pr2_gazebo.launch
+* [jsk_pr2_startup] use env ROBOT for including machine tags
+* [jsk_pr2_startup/jsk_pr2_sensors/kinect_head.launch] add deprecated relay for openni_c2 rgb, depth, depth_registered topics
+* [jsk_pr2_startup] use kinect_head(_c2) instead of openni(_c2) following pr2 default naming
+* [jsk_pr2_startup/jsk_pr2_move_base] fix topic name /base_scan_filtered -> base_scan
+* [jsk_pr2_startup/jsk_pr2_move_base] split name space along with modules; use hydro-based costmap params
+* [jsk_pr2_startup/jsk_pr2_move_base] enable clear params option to move_base_node; increase nice value
+* [jsk_pr2_start_up] set ROBOT=pr2 in rossetpr10XX
+* Contributors: Kentaro Wada, Yuki Furuta
+
 0.0.7 (2015-06-11)
 ------------------
 * solve not updating problem after recharge

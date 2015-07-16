@@ -2,6 +2,9 @@
 Changelog for package jsk_baxter_desktop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.7 (2015-06-11)
 ------------------
 * [jsk_baxter_desktop] add ROS_DISTRO param to desktop shortcuts

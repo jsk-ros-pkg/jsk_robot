@@ -2,6 +2,15 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* modify send-stiffness-controller method for pepper
+* modify ros::advertise to be consistent with ros::publish
+* modify speak method
+* [package.xml] add nao_interaction_msgs to depends
+* 0.0.7
+* Contributors: Kanae Kochigami, Kei Okada, Jiang Jun
+
 0.0.7 (2015-06-11)
 ------------------
 * add speak method
