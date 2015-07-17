@@ -1,7 +1,7 @@
 <launch>
   <node pkg="jsk_robot_startup" type="start_launch_sound.py"
         name="start_launch_sound" />
-  <arg name="map_frame" defualt="eng2" />
+  <arg name="map_frame" default="eng2" />
   <arg name="launch_openni" default="false" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_imagesift" default="false" />
