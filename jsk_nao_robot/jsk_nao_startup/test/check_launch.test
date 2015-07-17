@@ -1,0 +1,6 @@
+<launch>
+  <env name="ROBOT" value="sim" />
+  <env name="ROS_ENV_LOADER" value="/opt/ros/$(env ROS_DISTRO)/env.sh" />
+  <test test-name="check_nao_launch" pkg="roslaunch" type="roslaunch-check"
+        args="$(find jsk_nao_startup)/launch/jsk_nao_startup.launch --" />
+</launch>
