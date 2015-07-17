@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_baxter_startup)
 
-find_package(catkin REQUIRED COMPONENTS baxter_core_msgs sound_play roseus)
+find_package(catkin REQUIRED COMPONENTS baxter_core_msgs sound_play roseus rostest)
 
 catkin_package(
 #  INCLUDE_DIRS include
@@ -9,6 +9,8 @@ catkin_package(
 #  CATKIN_DEPENDS baxter_interface baxter_tools openni_launch
 #  DEPENDS system_lib
 )
+
+add_rostest(test/check_launch.test)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}

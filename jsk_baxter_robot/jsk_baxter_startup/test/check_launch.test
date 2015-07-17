@@ -1,0 +1,4 @@
+<launch>
+  <test test-name="check_baxter_launch" pkg="roslaunch" type="roslaunch-check"
+        args="$(find jsk_baxter_startup)/baxter.launch --" />
+</launch>
