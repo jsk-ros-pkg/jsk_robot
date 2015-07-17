@@ -3,6 +3,7 @@ project(jsk_pr2_startup)
 find_package(catkin REQUIRED COMPONENTS
   jsk_network_tools
   move_base_msgs
+  rostest
   roseus)
 
 catkin_package(
@@ -20,3 +21,5 @@ install(DIRECTORY config jsk_pr2_image_transport
 install(FILES install_pr1040_description.sh jsk_pr2.machine plugin.xml
   pr2.launch pr2_bringup.launch pr2_jsk_interactive.launch 	rviz.launch startup.app
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+add_rostest(test/check_launch.test)

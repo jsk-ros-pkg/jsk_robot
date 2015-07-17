@@ -49,6 +49,7 @@
   <build_depend>jsk_robot_startup</build_depend>
   <build_depend>pr2_mannequin_mode</build_depend>
   <build_depend>jsk_interactive_marker</build_depend>
+  <build_depend>rostest</build_depend>
   <run_depend>jsk_network_tools</run_depend>
   <run_depend>dwa_local_planner</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
