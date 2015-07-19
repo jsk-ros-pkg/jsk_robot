@@ -9,6 +9,12 @@
   <arg name="num_worker_threads" default="4" />
   <arg name="launch_pr2" default="true" />
   <arg name="map_frame" default="eng2" />
+  <arg name="INITIAL_POSE_X" default="0.0" />
+  <arg name="INITIAL_POSE_Y" default="0.0" />
+  <arg name="INITIAL_POSE_Z" default="0.0" />
+  <arg name="INITIAL_POSE_ROLL" default="0.0" />
+  <arg name="INITIAL_POSE_PITCH" default="0.0" />
+  <arg name="INITIAL_POSE_YAW" default="0.0" />
 
   <include file="$(find pr2_machine)/sim.machine" />
 
@@ -19,7 +25,10 @@
       <arg name="paused" value="$(arg paused)" />
       <arg name="world_name" value="$(arg world)" />
     </include>
-    <include file="$(find pr2_gazebo)/launch/pr2.launch" />
+    <include file="$(find pr2_description)/robots/upload_pr2.launch" />
+    <node name="spawn_pr2_model" pkg="gazebo_ros" type="spawn_model" args="-x $(arg INITIAL_POSE_X) -y $(arg INITIAL_POSE_Y) -z $(arg INITIAL_POSE_Z) -R $(arg INITIAL_POSE_ROLL) -P $(arg INITIAL_POSE_PITCH) -Y $(arg INITIAL_POSE_YAW) -unpause -urdf -param robot_description -model pr2 -ros_namespace /gazebo" respawn="false" output="screen" />
+    <include file="$(find pr2_gazebo)/launch/pr2_bringup.launch" />
+    <include file="$(find pr2_controller_configuration_gazebo)/launch/pr2_default_controllers.launch" />
   </group>
 
   <!-- color rectify kinect -->
