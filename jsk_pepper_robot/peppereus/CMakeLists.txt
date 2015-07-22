@@ -19,6 +19,7 @@ if (EXISTS ${pepper_urdf})
   message(STATUS "Found pepper.urdf at ${pepper_urdf}")
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/pepper.l
     COMMAND rosrun euscollada collada2eus pepper.dae pepper.yaml pepper.l
+    COMMAND sed -i 's@JulietteY20MP@pepper@g' pepper.l
     COMMAND sed -i 's@julietteY20MP@pepper@g' pepper.l
     COMMAND sed -i 's@juliettey20mp@pepper@g' pepper.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
