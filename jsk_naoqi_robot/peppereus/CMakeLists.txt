@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(peppereus)
 
-find_package(catkin REQUIRED naoqi_driver naoqi_sensors nao_pose pr2eus diagnostic_aggregator naoqi_msgs roseus pepper_description euscollada)
+find_package(catkin REQUIRED naoqi_driver naoqi_sensors nao_pose pr2eus diagnostic_aggregator naoqi_msgs roseus pepper_description euscollada rostest)
 
 catkin_package()
 
@@ -35,3 +35,5 @@ if (EXISTS ${pepper_urdf})
     message(WARNING "Please install ros-\$ROS_DISTRO-pepper-meshes manually")
   endif()
 endif()
+
+add_rostest(test/peppereus.test)
