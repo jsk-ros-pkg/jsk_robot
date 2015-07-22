@@ -604,7 +604,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.008
       Style: Flat Squares
-      Topic: /openni/depth_registered/half/points
+      Topic: /kinect_head_c2/depth_registered/half/points
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -654,7 +654,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: false
       Image Rendering: background and overlay
-      Image Topic: /openni/rgb/image_rect_color
+      Image Topic: /kinect_head_c2/rgb/image_rect_color
       Name: KinectCamera
       Overlay Alpha: 0.3
       Queue Size: 2
@@ -810,7 +810,7 @@ Visualization Manager:
     - Class: jsk_rviz_plugin/CameraInfo
       Enabled: false
       Name: KinectCameraInfo
-      Topic: /openni/depth_registered/camera_info
+      Topic: /kinect_head/depth_registered/camera_info
       Value: false
       alpha: 0.5
       color: 85; 255; 255
