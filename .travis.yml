@@ -16,6 +16,7 @@ matrix:
     - env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-indigo-convex-decomposition ros-indigo-ivcon"
 before_script:
   - export ROS_PARALLEL_JOBS="-j1 -l1"
+  - if [ "$ROS_DISTRO" == "indigo" ]; then export BEFORE_SCRIPT="echo \"ros-indigo-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true\" | sudo debconf-set-selections; sudo apt-get install -y -qq ros-$ROS_DISTRO-pepper-meshes; "; fi
 script: source .travis/travis.sh
 notifications:
   email:
