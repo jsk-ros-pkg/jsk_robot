@@ -2,11 +2,26 @@
   <arg name="db_path" default="/var/lib/robot/mongodb_store"/>
   <arg name="port" default="62345" />
   <arg name="repl_set_mode" default="false" />
+  <arg name="use_daemon" default="false" />
+  <arg name="replicate" default="true" />
+  <arg name="db_name" default="jsk_robot_lifelog"/>
+  <arg name="robot_name" default="$(env ROBOT_NAME)" />
+
+  <!-- Replication -->
+  <group if="$(arg replicate)">
+    <rosparam command="load"
+              file="$(find jsk_robot_startup)/lifelog/mongodb_replication_params.yaml" />
+    <node name="replication_client"
+          pkg="mongodb_store" type="replicator_client.py"
+          args="$(arg db_name) $(arg robot_name)"
+          output="screen"/>
+  </group>
 
   <!-- MongoDB -->
   <include file="$(find mongodb_store)/launch/mongodb_store.launch">
     <arg name="db_path" value="$(arg db_path)" />
     <arg name="port" value="$(arg port)" />
+    <arg name="use_daemon" value="$(arg use_daemon)" />
     <arg name="use_machine" value="false" />
     <arg name="use_repl_set" value="true"
          if="$(arg repl_set_mode)" />
