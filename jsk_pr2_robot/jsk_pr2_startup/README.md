@@ -2,6 +2,14 @@
 
 ## setup
 
+## specify robot identifier
+
+Write to `~/.bashrc`
+
+```bash
+export ROBOT_NAME=pr1012  # or pr1040, etc.
+```
+
 ###. rewrite `/etc/ros/robot.launch`
 
 Please rewrite `/etc/ros/robot.launch` like following:
