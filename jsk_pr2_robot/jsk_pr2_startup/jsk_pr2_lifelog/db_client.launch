@@ -4,6 +4,8 @@
   <arg name="store_object_detection_log" default="true" />
   <arg name="store_action_result_log" default="true" />
   <arg name="twitter" default="true" />
+  <arg name="db_name" default="jsk_robot_lifelog" />
+  <arg name="col_name" default="$(env ROBOT_NAME)" />
 
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
@@ -14,11 +16,9 @@
     <param name="map_frame" value="$(arg map_frame)"/>
     <param name="robot_frame" value="base_footprint"/>
     <param name="update_cycle" value="0.1" />
-    <param name="db_name" value="jsk_pr2_lifelog" />
-    <param name="col_name" value="move_base_db" />
+    <param name="db_name" value="$(arg db_name)" />
+    <param name="col_name" value="$(arg col_name)" />
   </node>
-
-  <!--node name="action_result_db" pkg="jsk_pr2_startup" type="action_result_db.py"/-->
 
   <!-- logging object detection data -->
   <node name="object_detection_db"
@@ -26,14 +26,16 @@
         if="$(arg store_object_detection_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
     <param name="robot_frame" value="base_footprint"/>
-    <param name="db_name" value="jsk_pr2_lifelog" />
-    <param name="col_name" value="object_detection_db" />
+    <param name="db_name" value="$(arg db_name)" />
+    <param name="col_name" value="$(arg col_name)" />
   </node>
 
   <!-- logging action result/goal data -->
   <node name="action_result_db"
         pkg="jsk_pr2_startup" type="action_result_db.py"
         if="$(arg store_action_result_log)">
+    <param name="db_name" value="$(arg db_name)" />
+    <param name="col_name" value="$(arg col_name)" />
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/action_result_db_config.yaml" />
   </node>
 
