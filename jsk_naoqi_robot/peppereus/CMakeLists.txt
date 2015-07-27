@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(peppereus)
 
-find_package(catkin REQUIRED naoqi_driver naoqi_sensors nao_pose pr2eus diagnostic_aggregator naoqi_msgs roseus pepper_description euscollada)
+find_package(catkin REQUIRED naoqi_driver naoqi_sensors nao_pose pr2eus diagnostic_aggregator naoqi_msgs roseus pepper_description euscollada rostest)
 
 catkin_package()
 
@@ -19,6 +19,7 @@ if (EXISTS ${pepper_urdf})
   message(STATUS "Found pepper.urdf at ${pepper_urdf}")
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/pepper.l
     COMMAND rosrun euscollada collada2eus pepper.dae pepper.yaml pepper.l
+    COMMAND sed -i 's@JulietteY20MP@pepper@g' pepper.l
     COMMAND sed -i 's@julietteY20MP@pepper@g' pepper.l
     COMMAND sed -i 's@juliettey20mp@pepper@g' pepper.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -35,3 +36,5 @@ if (EXISTS ${pepper_urdf})
     message(WARNING "Please install ros-\$ROS_DISTRO-pepper-meshes manually")
   endif()
 endif()
+
+add_rostest(test/peppereus.test)
