@@ -1,0 +1,19 @@
+- git: {local-name: jsk-ros-pkg/jsk_demos, uri: 'https://github.com/jsk-ros-pkg/jsk_demos.git'}
+
+# temporally added for specific reason
+## jsk-ros-pkg/jsk_smart_apps: not released this repo
+- git: {local-name: jsk-ros-pkg/jsk_smart_apps, uri: 'https://github.com/jsk-ros-pkg/jsk_smart_apps.git'}
+## jsk-ros-pkg/jsk_robot: not yet released latest version
+- git: {local-name: jsk-ros-pkg/jsk_robot, uri: 'https://github.com/jsk-ros-pkg/jsk_robot.git'}
+## jsk-ros-pkg/jsk_recognition: it fails creating PointCloud from kinect depth image with apt version
+- git: {local-name: jsk-ros-pkg/jsk_recognition, uri: 'https://github.com/jsk-ros-pkg/jsk_recognition.git'}
+## pr2_navigation: PR2/pr2_navigation#18 not released -> PR2/pr2_navigation#19
+- git: {local-name: pr2_navigation, uri: 'https://github.com/pr2/pr2_navigation',
+    version: hydro-devel}
+## jsk-ros-pkg/jsk_common: not yet released latest version (jsk-ros-pkg/jsk_common#1028)
+- git: {local-name: jsk-ros-pkg/jsk_common, uri: 'https://github.com/jsk-ros-pkg/jsk_common'}
+## SharedAutonomyToolkit/shared_autonomy_manipulation: not released this repo
+- git: {local-name: SharedAutonomyToolkit/shared_autonomy_manipulation, uri: 'https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation'}
+## snap_map_icp: not released this repo
+- git: {local-name: snap_map_icp, uri: 'https://github.com/code-iai/snap_map_icp.git',
+    version: hydro-devel}
