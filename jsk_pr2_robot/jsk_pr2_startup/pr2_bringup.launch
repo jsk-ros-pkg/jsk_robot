@@ -162,8 +162,8 @@
 
   <!-- logging database -->
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
-    <arg name="db_path" value="/var/lib/robot/mongodb_store" />
-    <arg name="port" value="62345" />
+    <arg name="use_daemon" value="true" />
+    <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
   </include>
 </launch>
