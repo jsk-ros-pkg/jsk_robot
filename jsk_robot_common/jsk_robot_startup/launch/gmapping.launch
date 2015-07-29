@@ -1,0 +1,29 @@
+<!-- original : navigation_global/move_base.xml (electric) -->
+<launch>
+  <arg name="scan_frame_parent" default="BODY" /> 
+  <arg name="scan_frame" default="pointcloud_to_scan_base" />
+  <arg name="cloud_in" default="/multisense/organized_image_points2_color" />
+  <arg name="scan_height" default="1.0" />  
+  <arg name="range_max" default="0.5" /> 
+  <arg name="range_min" default="-0.5" />
+  <arg name="use_fixed_frame" default="true" />
+  
+  <include file="$(find jsk_robot_startup)/launch/pointcloud_to_laserscan.launch">
+    <arg name="scan_frame_parent" value="$(arg scan_frame_parent)" />    
+    <arg name="scan_frame" value="$(arg scan_frame)" />    
+    <arg name="cloud_in" value="$(arg cloud_in)" />
+    <arg name="scan_height" value="$(arg scan_height)" />
+    <arg name="range_max" value="$(arg range_max)" /> 
+    <arg name="range_min" value="$(arg range_min)" />
+    <arg name="use_fixed_frame" value="$(arg use_fixed_frame)" />
+  </include>
+  
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping_test" output="screen" >
+    <remap from="scan" to="/pointcloud_scan" />
+    <param name="base_frame" value="$(arg scan_frame)" />
+    <param name="map_update_interval" value="1.0" />
+    <param name="delta" value="0.025" />
+    <param name="maxUrange" value="30.0" />
+    <param name="temporalUpdate" value="-1.0" />
+  </node>
+</launch>
