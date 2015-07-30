@@ -18,6 +18,7 @@
   <arg name="launch_people_detection" default="true" />
   <arg name="slow_camera_framerate" default="true" />
   <arg name="launch_c3_startup" default="false" />
+  <arg name="gazebo" default="false" />
   <arg name="USER_NAME" default="false" />
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
            if="$(arg launch_c3_startup)" />
@@ -27,7 +28,9 @@
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius -->
   <include if="$(arg launch_move_base)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+    <arg name="gazebo" value="$(arg gazebo)"/>
+  </include>
 
   <!-- special start: use when launuch_move_base is false-->
   <group unless="$(arg launch_move_base)" >
