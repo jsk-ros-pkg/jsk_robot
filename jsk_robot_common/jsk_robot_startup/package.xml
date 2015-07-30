@@ -17,6 +17,7 @@
   <run_depend>mongodb_store</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
+  <run_depend>gmapping</run_depend>
 
   <export>
   </export>
