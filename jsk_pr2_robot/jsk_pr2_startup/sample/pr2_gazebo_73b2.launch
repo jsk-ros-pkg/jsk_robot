@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find jsk_pr2_startup)/pr2_gazebo.launch">
+    <arg name="world" default="$(find eusurdf)/worlds/room73b2.world" />
+    <arg name="INITIAL_POSE_X" default="1.0" />
+  </include>
+</launch>
