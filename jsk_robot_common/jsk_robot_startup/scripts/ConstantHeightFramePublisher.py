@@ -29,8 +29,11 @@ class ConstantHeightFramePublisher:
         try:
             # (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
             # self.broadcast.sendTransform((0, 0, trans[2] + self.height), rot, rospy.Time.now(), self.frame_name, self.parent)
+            # (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
+            # self.broadcast.sendTransform((0, 0, trans[2] + self.height), (0, 0, 0, 1), rospy.Time.now(), self.frame_name, self.parent)
             (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
-            self.broadcast.sendTransform((0, 0, trans[2] + self.height), (0, 0, 0, 1), rospy.Time.now(), self.frame_name, self.parent)
+            rot_euler = tf.transformations.euler_from_quaternion(rot)
+            target_rot = tf.transformations.quaternion_from_euler(rot_euler[0], rot_euler[1], 0.0)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             return
 
