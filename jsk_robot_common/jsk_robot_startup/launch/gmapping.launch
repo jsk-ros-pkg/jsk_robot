@@ -22,7 +22,8 @@
     <arg name="use_fixed_frame" value="$(arg use_fixed_frame)" />
   </include>
   
-  <node pkg="gmapping" type="slam_gmapping" name="gmapping_test" output="screen" >
+  <node pkg="gmapping" type="slam_gmapping"
+        name="gmapping_test" output="screen" respawn="true" >
     <remap from="scan" to="/pointcloud_scan" />
     <param name="base_frame" value="$(arg scan_frame)" />
     <param name="map_update_interval" value="1.0" />
