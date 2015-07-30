@@ -65,4 +65,11 @@
 
   </node>
 
+  <node name="base_scan_marking_to_laserscan"
+        pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node"
+        machine="c2" respawn="true" output="screen">
+    <remap from="cloud_in" to="base_scan_marking"/>
+    <remap from="scan" to="base_scan_for_leg_detect"/>
+    <param name="concurrency_level" value="0" />
+  </node>
 </launch>
