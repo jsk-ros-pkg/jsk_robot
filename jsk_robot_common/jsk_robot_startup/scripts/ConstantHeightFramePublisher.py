@@ -5,6 +5,7 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Float64
 
 import tf
+import numpy
 
 class ConstantHeightFramePublisher:
     def __init__(self):
@@ -27,13 +28,17 @@ class ConstantHeightFramePublisher:
 
     def make_constant_tf(self):
         try:
-            # (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
-            # self.broadcast.sendTransform((0, 0, trans[2] + self.height), rot, rospy.Time.now(), self.frame_name, self.parent)
-            # (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
-            # self.broadcast.sendTransform((0, 0, trans[2] + self.height), (0, 0, 0, 1), rospy.Time.now(), self.frame_name, self.parent)
             (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
+            # transformation: (x, y): same as parent, z: equal to height
+            T = tf.transformations.quaternion_matrix(rot)
+            T[:3, 3] = trans
+            T_inv = tf.transformations.inverse_matrix(T)
+            target_trans = T.dot(numpy.array([T_inv[:3, 3][0], T_inv[:3, 3][1], self.height, 1]))[:3]
+            # rotation: (x, y): same as /odom, z: same as parent 
             rot_euler = tf.transformations.euler_from_quaternion(rot)
             target_rot = tf.transformations.quaternion_from_euler(rot_euler[0], rot_euler[1], 0.0)
+            # publish tf
+            self.broadcast.sendTransform(target_trans, target_rot, rospy.Time.now(), self.frame_name, self.parent)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             return
 
