@@ -12,8 +12,12 @@ from mongodb_store.message_store import MessageStoreProxy
 
 class MoveBaseDB(object):
     def __init__(self):
-        self.db_name = rospy.get_param('~db_name','jsk_pr2_lifelog')
-        self.col_name = rospy.get_param('~col_name', 'move_base_db')
+        self.db_name = rospy.get_param('robot/database','jsk_robot_lifelog')
+        try:
+            self.col_name = rospy.get_param('robot/name')
+        except KeyError as e:
+            rospy.logerr("please specify param \"robot/name\" (e.g. pr1012, olive)")
+            exit(1)
         self.update_cycle = rospy.get_param('~update_cycle', 1.0)
         self.map_frame = rospy.get_param('~map_frame','map')
         self.robot_frame = rospy.get_param('~robot_frame','base_link')

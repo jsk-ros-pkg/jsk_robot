@@ -5,16 +5,18 @@
   <arg name="use_daemon" default="false" />
   <arg name="replicate" default="true" />
   <arg name="db_name" default="jsk_robot_lifelog"/>
-  <arg name="robot_name" default="$(env ROBOT_NAME)" />
+
+  <param name="robot/database" value="$(arg db_name)" />
 
   <!-- Replication -->
   <group if="$(arg replicate)">
     <rosparam command="load"
               file="$(find jsk_robot_startup)/lifelog/mongodb_replication_params.yaml" />
     <node name="replication_client"
-          pkg="mongodb_store" type="replicator_client.py"
-          args="$(arg db_name) $(arg robot_name)"
-          output="screen"/>
+          pkg="jsk_robot_startup" type="periodic_replicator_client.py"
+          output="screen">
+      <param name="periodic" value="true" />
+    </node>
   </group>
 
   <!-- MongoDB -->
