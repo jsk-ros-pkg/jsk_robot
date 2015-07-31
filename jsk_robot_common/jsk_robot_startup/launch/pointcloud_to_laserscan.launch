@@ -22,7 +22,7 @@
     </node>
   </group>
   
-  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_test" output="screen" >
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node" output="screen" >
     <remap from="cloud_in" to="$(arg cloud_in)" />
     <remap from="scan" to="pointcloud_scan" />
     <param name="target_frame" value="$(arg scan_frame)" />
