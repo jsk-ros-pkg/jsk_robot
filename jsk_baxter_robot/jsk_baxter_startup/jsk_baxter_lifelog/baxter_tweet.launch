@@ -33,9 +33,5 @@
     <param name="filename_format" value="/tmp/baxter_camera.png" />
   </node>
 
-  <include if="$(arg launch_mongodb)"
-           file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
-    <arg name="robot_name" value="baxter" />
-  </include>
-
+  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch"/>
 </launch>
