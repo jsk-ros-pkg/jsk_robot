@@ -2,6 +2,18 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_pr2_startup] add 73b2 sample launch file
+* [jsk_pr2_startup/people_detection.launch] add people tracker
+* [jsk_pr2_startup] add rosinstall for jsk pr2
+* [jsk_robot] use common database jsk_robot_lifelog, with identify with collection name ROBOT_NAME
+* [jsk_pr2_startup/pr2_bringup.launch] use daemon mode mongod for pr2
+* change openni namespace to kinect_head
+* [jsk_pr2_startup/pr2_gazebo.launch] add initial pose of pr2 in gazebo
+* [jsk_pr2_startup] fix typo in pr2.launch
+* Contributors: Yuki Furuta, Yuto Inagaki, Chi Wun Aau, Hitoshi Kamada
+
 0.0.8 (2015-07-16)
 ------------------
 * [jsk_pr2_startup] add option map_frame to change eng2/eng8

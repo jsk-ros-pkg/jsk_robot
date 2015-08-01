@@ -2,6 +2,12 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* package.xml: add joy
+* [jsk_pepper_startup] add test_code to check if pepper launch is valid
+* Contributors: Hitoshi Kamada, Kei Okada
+
 0.0.8 (2015-07-16)
 ------------------
 * use front/camera until https://github.com/ros-naoqi/pepper_robot/pull/1/files is merged

@@ -2,6 +2,18 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup] Modify node name of gmapping and pointcloud_to_laserscan
+* [jsk_robot_startup] Add respawn to gmapping
+* [jsk_robot_startup] Add angle_max and angle_min arguments to determine horizontal scan range
+* [jsk_robot_startup] Fix x, y and yaw of pointcloud_toscan_base to parent, roll and pitch to /odom
+* [jsk_robot_startup] Fix roll and pitch angle of cosntant height frame same as /odom
+* [jsk_robot_startup] Add gmapping to run_depend
+* [jsk_robot_startup] Add scripts and launch files for gmapping
+* [jsk_robot_startup] support daemon mode mongod; enable replication to jsk robot-database
+* Contributors: Iori Kumagai, Yuki Furuta
+
 0.0.8 (2015-07-16)
 ------------------
 
