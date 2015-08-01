@@ -2,6 +2,9 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.8 (2015-07-16)
 ------------------
 * [package.xml] add roseus pr2eus to baxtereus/package.xml, (https://github.com/start-jsk/2014-semi/issues/816)

@@ -2,6 +2,11 @@
 Changelog for package pr2_base_trajectory_action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove old rosmake related files
+* Contributors: Kei Okada
+
 0.0.8 (2015-07-16)
 ------------------
 

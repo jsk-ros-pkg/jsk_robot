@@ -2,6 +2,14 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* since ros-naoqi repository chages names (naoqi_sensors -. naoqi_sensors_py), we removed unstable pacagkes
+* [peppereus] Do not run test if no meshes are found
+* add sed command of correct spell
+* test/test-peppereus.l: add test codes
+* Contributors: Kei Okada, Ryohei Ueda, Akira Kako
+
 0.0.8 (2015-07-16)
 ------------------
 * modify send-stiffness-controller method for pepper
