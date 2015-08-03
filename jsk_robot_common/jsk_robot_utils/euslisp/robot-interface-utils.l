@@ -1,8 +1,8 @@
 (defun robot-file (name)
   "You can get robot-interface file according to `name' argument.
 You can create `*ri*' like 
-(progn (load (robot-file (ros::get-param \"/robot\")))
-       (init-robot-from-name (ros::get-param \"/robot\")))
+(progn (load (robot-file (ros::get-param \"/robot/type\")))
+       (init-robot-from-name (ros::get-param \"/robot/type\")))
 "
   (let ((lower-name (string-downcase name)))
     (cond
@@ -26,5 +26,7 @@ You can create `*ri*' like
       "package://hrpsys_ros_bridge_tutorials/euslisp/samplerobot-interface.l")
      ((string= lower-name "hrp2w")
       "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
+     ((string= lower-name "pepper")
+      "package://peppereus/pepper-interface.l")
      (t (error "uknown robot ~A" name))
      )))
