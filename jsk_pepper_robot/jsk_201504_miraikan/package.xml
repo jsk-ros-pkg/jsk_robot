@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_201504_miraikan</name>
-  <version>0.0.8</version>
+  <version>0.0.9</version>
   <description>The jsk_201504_miraikan package</description>
 
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>

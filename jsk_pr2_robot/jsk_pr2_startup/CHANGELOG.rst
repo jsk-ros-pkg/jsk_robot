@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.9 (2015-08-03)
+------------------
 * [jsk_pr2_startup] add 73b2 sample launch file
 * [jsk_pr2_startup/people_detection.launch] add people tracker
 * [jsk_pr2_startup] add rosinstall for jsk pr2

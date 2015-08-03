@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.9 (2015-08-03)
+------------------
 * [jsk_robot_startup] Modify node name of gmapping and pointcloud_to_laserscan
 * [jsk_robot_startup] Add respawn to gmapping
 * [jsk_robot_startup] Add angle_max and angle_min arguments to determine horizontal scan range

@@ -2,8 +2,8 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.9 (2015-08-03)
+------------------
 * [jsk_robot] use common database jsk_robot_lifelog, with identify with collection name ROBOT_NAME
 * remove old rosmake related files
 * Contributors: Yuki Furuta, Kei Okada
