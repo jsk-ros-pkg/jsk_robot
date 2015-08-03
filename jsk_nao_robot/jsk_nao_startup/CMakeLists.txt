@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   naoqi_driver
   roseus
   rostwitter
+  rostest
 )
 
 ## System dependencies are found with CMake's conventions
@@ -69,6 +70,8 @@ find_package(catkin REQUIRED COMPONENTS
 #   DEPENDENCIES
 #   std_msgs  # Or other packages containing msgs
 # )
+
+add_rostest(test/check_launch.test)
 
 ###################################
 ## catkin specific configuration ##
