@@ -18,6 +18,7 @@
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>gmapping</run_depend>
+  <run_depend>pointcloud_to_laserscan</run_depend>
 
   <export>
   </export>
