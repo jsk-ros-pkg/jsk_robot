@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.9 (2015-08-03)
+------------------
 * since ros-naoqi repository chages names (naoqi_sensors -. naoqi_sensors_py), we removed unstable pacagkes
 * [peppereus] Do not run test if no meshes are found
 * add sed command of correct spell

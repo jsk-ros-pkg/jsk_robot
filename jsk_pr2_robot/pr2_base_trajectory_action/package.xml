@@ -1,6 +1,6 @@
 <package>
   <name>pr2_base_trajectory_action</name>
-  <version>0.0.8</version>
+  <version>0.0.9</version>
   <description>pr2_base_trajectory_action is a node that exposes and action
      interface to move robot base along a trajectory.</description>
   <maintainer email="t@t.com">saito</maintainer>
