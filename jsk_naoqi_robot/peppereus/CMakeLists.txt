@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(peppereus)
 
-find_package(catkin REQUIRED pepper_description)
+find_package(catkin REQUIRED pepper_description roseus rostest)
 
 catkin_package()
 
