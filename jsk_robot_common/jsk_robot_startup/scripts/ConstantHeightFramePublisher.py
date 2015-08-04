@@ -13,7 +13,7 @@ class ConstantHeightFramePublisher:
         self.sub = rospy.Subscriber("~height", Float64, self.height_callback)
         self.broadcast = tf.TransformBroadcaster()
         self.listener = tf.TransformListener()
-        self.rate = rospy.Rate(100)
+        self.rate = rospy.Rate(rospy.get_param("~rate", 10.0)) # [Hz]
         self.height = rospy.get_param("~height", 1.0) # [m]
         self.parent = rospy.get_param("~parent_frame", "BODY")
         self.frame_name = rospy.get_param("~frame_name", "pointcloud_to_scan_base")
