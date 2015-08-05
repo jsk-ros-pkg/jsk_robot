@@ -17,3 +17,6 @@
 ## snap_map_icp: not released this repo
 - git: {local-name: snap_map_icp, uri: 'https://github.com/code-iai/snap_map_icp.git',
     version: hydro-devel}
+## mongodb_store: wait for release #139
+- git: {local-name: mongodb_store, uri: 'https://github.com/strands-project/mongodb_store.git',
+    version: hydro-devel}
