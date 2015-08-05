@@ -5,6 +5,9 @@
 (ros::load-ros-manifest "jsk_pepper_startup")
 (ros::load-ros-manifest "peppereus")
 
+(if (not (find-package "NAOQI_BRIDGE_MSGS"))
+    (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
+
 (defclass naoqi-interface
   :super robot-interface
   :slots (joint-stiffness-trajectory-action)
@@ -17,11 +20,11 @@
    (ros::advertise "cmd_pose" geometry_msgs::Pose2D 1)
    (ros::advertise "cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "/speech" std_msgs::String 1)
-   (ros::advertise "joint_angles" naoqi_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise "joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   "joint_stiffness_trajectory"
-		   naoqi_msgs::JointTrajectoryAction))
+		   naoqi_bridge_msgs::JointTrajectoryAction))
    self)
   ;;
   (:naoqi-controller
@@ -31,7 +34,7 @@
      (cons :controller-action "joint_trajectory")
     ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
-     (cons :action-type naoqi_msgs::JointTrajectoryAction)
+     (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
   ;;
@@ -58,7 +61,7 @@
   ;;
   (:move-hand
    (value &optional (arm :arms))
-   (let ((start_grasp_msg (instance naoqi_msgs::JointAnglesWithSpeed :init)))
+   (let ((start_grasp_msg (instance naoqi_bridge_msgs::JointAnglesWithSpeed :init)))
      (send start_grasp_msg :header :stamp (ros::time-now))
      (send start_grasp_msg :header :seq 1)
      (send start_grasp_msg :speed 0.5)
