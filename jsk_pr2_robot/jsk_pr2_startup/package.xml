@@ -58,6 +58,7 @@
   <run_depend>pr2_mannequin_mode</run_depend>
   <run_depend>pr2_gripper_sensor_action</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
+  <run_depend>social_navigation_layers</run_depend>
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>
