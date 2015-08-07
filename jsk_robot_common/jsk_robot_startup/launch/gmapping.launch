@@ -9,6 +9,9 @@
   <arg name="angle_max" default="2.35619" /> <!-- horizontal range of laser scan [rad] -->
   <arg name="angle_min" default="-2.35619" />
   <arg name="use_fixed_frame" default="true" />
+  <arg name="particles" default="30" />
+  <arg name="minimum_score" default="0.0" /> <!-- make greater when gmapping cause jumpping estimated pose -->
+  <arg name="delta" default="0.025" /> <!-- map resolution -->
   
   <include file="$(find jsk_robot_startup)/launch/pointcloud_to_laserscan.launch">
     <arg name="scan_frame_parent" value="$(arg scan_frame_parent)" />    
@@ -27,8 +30,10 @@
     <remap from="scan" to="/pointcloud_scan" />
     <param name="base_frame" value="$(arg scan_frame)" />
     <param name="map_update_interval" value="1.0" />
-    <param name="delta" value="0.025" />
     <param name="maxUrange" value="30.0" />
     <param name="temporalUpdate" value="-1.0" />
+    <param name="minimumScore" value="$(arg minimum_score)" />    
+    <param name="delta" value="$(arg delta)" />
+    <param name="particles" value="$(arg particles)" />    
   </node>
 </launch>
