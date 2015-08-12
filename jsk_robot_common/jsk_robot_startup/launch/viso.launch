@@ -1,12 +1,14 @@
 <launch>
   <!-- for viso -->
   <arg name="odom_frame_id" default="viso_odom" />
-  <arg name="base_link_frame_id" default="base_footprint" />
+  <arg name="base_link_frame_id" default="/BODY" />
   <arg name="output_odom_topic" default="viso_odom" />
   <arg name="publish_viso_tf" default="false" />
   <!-- for ekf -->
-  <arg name="use_robot_pose_ekf" default="false" />
-  <arg name="imu_used" default = "true" />
+  <arg name="use_robot_pose_ekf" default="true" />
+  <arg name="odom_used" default = "true" />
+  <arg name="odom_data" default="/odom" />
+  <arg name="imu_used" default = "false" />
   <arg name="imu_data" default="/imu" />
 
   <!-- viso -->
@@ -26,13 +28,21 @@
       <param name="base_footprint_frame" value="$(arg base_link_frame_id)"/>
       <param name="freq" value="20.0"/>
       <param name="sensor_timeout" value="1.0"/>
-      <param name="odom_used" value="false"/>
+      <param name="odom_used" value="$(arg odom_used)"/>
+      <param name="odom" value="$(arg odom_data)"/>
       <param name="imu_used" value="$(arg imu_used)"/>
       <remap from="imu_data" to="$(arg imu_data)" />
       <param name="vo_used" value="true"/>
       <remap from="vo" to="$(arg output_odom_topic)" />
       <param name="debug" value="false"/>
       <param name="self_diagnose" value="false"/>
+      <!-- <param name="publish_tf" value="false"/> -->
     </node>
   </group>
+  <!-- visualization -->
+  <node pkg="jsk_pcl_ros" type="pose_with_covariance_stamped_to_gaussian_pointcloud" 
+        name="viso_gaussian_point_cloud" output="screen" >
+    <remap from="~input" to="/viso_robot_pose_ekf/odom_combined" />
+  </node>
+
 </launch>
