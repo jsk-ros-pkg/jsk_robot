@@ -15,7 +15,7 @@
   <arg name="remap_joint_states" default="/joint_states"/>
   <arg name="remap_diagnostics" default="/diagnostics"/>
 
-  <arg name="image_topic" default="/openni_c2/rgb/image_rect_color"/>
+  <arg name="image_topic" default="/kinect_head_c2/rgb/image_rect_color"/>
   <arg name="machine" default="localhost"/>
   <arg name="output" default="screen"/>
 
