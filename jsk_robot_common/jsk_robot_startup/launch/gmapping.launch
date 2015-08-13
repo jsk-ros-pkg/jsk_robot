@@ -12,6 +12,10 @@
   <arg name="particles" default="30" />
   <arg name="minimum_score" default="0.0" /> <!-- make greater when gmapping cause jumpping estimated pose -->
   <arg name="delta" default="0.025" /> <!-- map resolution -->
+  <arg name="srr" default="0.025" />  <!-- accuracy of odometry: default values are from turtlebot -->
+  <arg name="srt" default="0.05" />
+  <arg name="str" default="0.025" />
+  <arg name="stt" default="0.05" />
   
   <include file="$(find jsk_robot_startup)/launch/pointcloud_to_laserscan.launch">
     <arg name="scan_frame_parent" value="$(arg scan_frame_parent)" />    
@@ -34,6 +38,10 @@
     <param name="temporalUpdate" value="-1.0" />
     <param name="minimumScore" value="$(arg minimum_score)" />    
     <param name="delta" value="$(arg delta)" />
-    <param name="particles" value="$(arg particles)" />    
+    <param name="particles" value="$(arg particles)" />
+    <param name="srr" value="$(arg srr)"/>
+    <param name="srt" value="$(arg srt)"/>
+    <param name="str" value="$(arg str)"/>
+    <param name="stt" value="$(arg srt)"/>
   </node>
 </launch>
