@@ -6,7 +6,7 @@ black_list:
     - PointHeadActionResult
     - SingleJointPositionActionGoal
     - SingleJointPositionActionResult
-    - Pr2GripperCommandActionGoal
-    - Pr2GripperCommandActionResult
+    # - Pr2GripperCommandActionGoal
+    # - Pr2GripperCommandActionResult
     - LookupTransformActionGoal
     - LookupTransformActionResult
