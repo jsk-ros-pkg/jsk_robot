@@ -3,13 +3,21 @@
   <arg name="store_move_base_log" default="true" />
   <arg name="store_object_detection_log" default="true" />
   <arg name="store_action_result_log" default="true" />
+  <arg name="store_tf" default="true" />
+  <arg name="store_joint_states" default="true" />
+  <arg name="store_camera_rgb" default="true" />
+  <arg name="store_camera_depth" default="true" />
+  <arg name="store_people" default="true" />
   <arg name="twitter" default="true" />
+  <arg name="machine" default="c1" />
+  <arg name="output" default="screen" />
 
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- logging and resoring pr2 position data -->
   <node name="move_base_db"
         pkg="jsk_pr2_startup" type="move_base_db.py"
+        machine="$(arg machine)"
         if="$(arg store_move_base_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
     <param name="robot_frame" value="base_footprint"/>
@@ -19,6 +27,7 @@
   <!-- logging object detection data -->
   <node name="object_detection_db"
         pkg="jsk_pr2_startup" type="objectdetection_db.py"
+        machine="$(arg machine)"
         if="$(arg store_object_detection_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
     <param name="robot_frame" value="base_footprint"/>
@@ -27,9 +36,33 @@
   <!-- logging action result/goal data -->
   <node name="action_result_db"
         pkg="jsk_pr2_startup" type="action_result_db.py"
+        machine="$(arg machine)"
         if="$(arg store_action_result_log)">
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/action_result_db_config.yaml" />
   </node>
+
+  <node name="mongodb_log_tf" pkg="mongodb_log" type="mongodb_log.py"
+        output="$(arg output)" respawn="true" machine="$(arg machine)"
+        args="/tf" if="$(arg store_tf)"/>
+
+  <node name="mongodb_log_joint_states" pkg="mongodb_log" type="mongodb_log.py"
+        output="$(arg output)" respawn="true" machine="$(arg machine)"
+        args="/joint_states" if="$(arg store_joint_states)"/>
+
+  <node name="mongodb_log_camera_rgb" pkg="mongodb_log" type="mongodb_log.py"
+        output="$(arg output)" respawn="true" machine="$(arg machine)"
+        args="-e '.*/image_rect_color/compressed$' -x half quater openni"
+        if="$(arg store_camera_rgb)"/>
+
+  <node name="mongodb_log_camera_depth" pkg="mongodb_log" type="mongodb_log.py"
+        output="$(arg output)" respawn="true" machine="$(arg machine)"
+        args="-e '.*/depth_registered/points$' -x openni"
+        if="$(arg store_camera_depth)"/>
+
+  <node name="mongodb_log_people" pkg="mongodb_log" type="mongodb_log.py"
+        output="$(arg output)" respawn="true" machine="$(arg machine)"
+        args="/people /face_detector/faces_cloud"
+        if="$(arg store_people)" />
 
   <!-- tweeting robot warning data and etc. -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_tweet.launch"
