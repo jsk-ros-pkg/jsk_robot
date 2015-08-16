@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2015-08-16)
+-------------------
 * [jsk_pr2_startup] logging images/pointclouds/tf/jointstates/people
 * [jsk_pr2_startup] enable logging pr2_gripper_action
 * [jsk_pr2_startup] add pr2 heightmap sample launch
