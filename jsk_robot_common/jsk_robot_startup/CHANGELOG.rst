@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2015-08-16)
+-------------------
 * [jsk_robot_startup] fix camera namespace openni -> kinect_head
 * [jsk_robot_startup] Add odometry accuracy parameters for gmapping
 * [jsk_robot_startup] Add scripts to reset slam and heightmap according to /odom_init_trigger
