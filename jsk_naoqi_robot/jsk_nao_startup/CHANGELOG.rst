@@ -2,8 +2,8 @@
 Changelog for package jsk_nao_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2015-08-16)
+-------------------
 * jsk_nao_startup/CMakeLists.txt : remove naoqi_driver from find_package
 * Contributors: Kei Okada
 
