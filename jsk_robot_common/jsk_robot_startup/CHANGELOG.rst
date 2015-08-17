@@ -2,6 +2,21 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.10 (2015-08-16)
+-------------------
+* [jsk_robot_startup] fix camera namespace openni -> kinect_head
+* [jsk_robot_startup] Add odometry accuracy parameters for gmapping
+* [jsk_robot_startup] Add scripts to reset slam and heightmap according to /odom_init_trigger
+  topic
+* [jsk_robot_startup] Add gmapping.rviz for gmapping.launch
+* [jsk_robot_startup] Add delta/particle/minimum_score parameters for gmapping
+* [jsk_robot_startup] use param "robot/name"
+  [jsk_pr2_startup] use daemon mongod
+* [jsk_robot_startup] Add rate param to modify tf publish rate and set 10.0 as defalut
+* add run depend for mapping
+* [jsk_robot_startup] Enable inf value in pointcloud_to_laserscan to prevent robot from obtaining wrong obstacles
+* Contributors: Yuki Furuta, Ryohei Ueda, Yu Ohara, Iori Kumagai
+
 0.0.9 (2015-08-03)
 ------------------
 * [jsk_robot_startup] Modify node name of gmapping and pointcloud_to_laserscan

@@ -2,7 +2,7 @@
 
 (ros::load-ros-manifest "roseus")
 (load "package://pr2eus/speak.l")
-(defvar *camera-topic-name* "/openni_c2/rgb/image_rect_color")
+(defvar *camera-topic-name* "/kinect_head_c2/rgb/image_rect_color")
 (when (ros::has-param "/active_user/image_topic")
   (setq *camera-topic-name* (ros::get-param "/active_user/image_topic"))
   )
