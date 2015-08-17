@@ -4,11 +4,7 @@ project(jsk_nao_startup)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  naoqi_driver
-  roseus
-  rostwitter
-)
+find_package(catkin REQUIRED COMPONENTS roseus)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

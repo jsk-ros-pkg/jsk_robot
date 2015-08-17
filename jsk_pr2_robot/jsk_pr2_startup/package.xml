@@ -1,6 +1,6 @@
 <package>
   <name>jsk_pr2_startup</name>
-  <version>0.0.9</version>
+  <version>0.0.10</version>
   <description>
      jsk_pr2_startup
   </description>
@@ -52,6 +52,7 @@
   <build_depend>face_detector</build_depend>
   <build_depend>leg_detector</build_depend>
   <build_depend>people_velocity_tracker</build_depend>
+  <build_depend>mongodb_log</build_depend>
   <run_depend>jsk_network_tools</run_depend>
   <run_depend>dwa_local_planner</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
@@ -62,6 +63,7 @@
   <run_depend>pr2_teleop_general</run_depend>
   <run_depend>pr2_arm_kinematics</run_depend>
   <run_depend>safe_teleop_base</run_depend>
+  <run_depend>mongodb_log</run_depend>
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>

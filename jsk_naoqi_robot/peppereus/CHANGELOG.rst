@@ -2,6 +2,15 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.10 (2015-08-16)
+-------------------
+* do not add naoqi_driver in find_package
+* pepper-interface.l: use naoqi_bridge_msgs, but if not found use naoqi_msgs
+* CMakeLists.txt, package.xml: add nao_interaction_msgs
+* add depends to naoqi_driver
+* roseus/CMakeLists.txt: add rostest, roseus to find_pakcage
+* Contributors: Kei Okada
+
 0.0.9 (2015-08-03)
 ------------------
 * since ros-naoqi repository chages names (naoqi_sensors -. naoqi_sensors_py), we removed unstable pacagkes

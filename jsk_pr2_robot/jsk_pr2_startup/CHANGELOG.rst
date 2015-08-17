@@ -2,6 +2,20 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.10 (2015-08-16)
+-------------------
+* [jsk_pr2_startup] logging images/pointclouds/tf/jointstates/people
+* [jsk_pr2_startup] enable logging pr2_gripper_action
+* [jsk_pr2_startup] add pr2 heightmap sample launch
+* [jsk_pr2_startup/package.xml] add missing deps for pr2
+* [jsk_pr2_startup/pr2_gazebo.launch] use relay/republish instead of rgbd_launch for creating rectified images
+* [jsk_pr2_startup/package.xml] add social_navigation_layers to run_depends
+* [jsk_robot_startup] use param "robot/name"
+  [jsk_pr2_startup] use daemon mongod
+* Revert "[jsk_robot] unified database"
+* [jsk_pr2_startup/jsk_pr2.rosinstall] add temporal missing package mongodb_store
+* Contributors: Yuki Furuta, Yuto Inagaki
+
 0.0.9 (2015-08-03)
 ------------------
 * [jsk_pr2_startup] add 73b2 sample launch file

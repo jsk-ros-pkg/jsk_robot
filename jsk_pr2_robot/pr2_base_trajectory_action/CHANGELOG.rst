@@ -2,6 +2,9 @@
 Changelog for package pr2_base_trajectory_action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.10 (2015-08-16)
+-------------------
+
 0.0.9 (2015-08-03)
 ------------------
 * remove old rosmake related files

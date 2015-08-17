@@ -2,6 +2,11 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.10 (2015-08-16)
+-------------------
+* Revert "[jsk_robot] unified database"
+* Contributors: Yuki Furuta
+
 0.0.9 (2015-08-03)
 ------------------
 * [jsk_robot] use common database jsk_robot_lifelog, with identify with collection name ROBOT_NAME
