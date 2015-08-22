@@ -1,4 +1,6 @@
 <launch>
+  <param name="robot/type" value="pepper" />
+  <param name="robot/name" command='bash -c "getent hosts $NAO_IP | tr -s \" \" | cut -d\  -f 2 | cut -d. -f 1"' />
   <include file="$(find pepper_bringup)/launch/pepper.launch" >
     <arg name="force_python" value="true"/>
   </include>
