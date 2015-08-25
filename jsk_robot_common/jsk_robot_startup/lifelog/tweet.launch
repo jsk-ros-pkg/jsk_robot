@@ -15,7 +15,7 @@
   <arg name="remap_joint_states" default="/joint_states"/>
   <arg name="remap_diagnostics" default="/diagnostics"/>
 
-  <arg name="image_topic" default="/kinect_head_c2/rgb/image_rect_color"/>
+  <arg name="image_topics" default="/kinect_head_c2/rgb/image_rect_color /wide_stereo/left/image_rect_color"/>
   <arg name="machine" default="localhost"/>
   <arg name="output" default="screen"/>
 
@@ -27,12 +27,24 @@
         output="$(arg output)" respawn="true" >
   </node>
 
+  <node name="tweet_image_mux" pkg="topic_tools" type="mux"
+        args="/tweet_image $(arg image_topics)"
+        machine="$(arg machine)">
+    <remap from="mux" to="tweet_image_mux" />
+    <param name="lazy" value="true" />
+  </node>
+  <node name="tweet_image_saver" pkg="image_view" type="image_saver"
+        machine="$(arg machine)">
+    <remap from="image" to="/tweet_image" />
+    <param name="save_all_image" value="false" />
+    <param name="filename_format" value="/tmp/tweet_image.jpg" />
+    <param name="image_transport" value="raw" />
+  </node>
   <node name="active_user" pkg="roseus"
         type="roseus" args="$(find jsk_robot_startup)/lifelog/active_user.l"
         machine="$(arg machine)"
         output="$(arg output)" respawn="true">
     <param name="robot_name" value="$(arg robot_name)"/>
-    <param name="image_topic" value="$(arg image_topic)"/>
     <param name="motor_subscribe" value="$(arg motor_subscribe)"/>
     <param name="odom_subscribe" value="$(arg odom_subscribe)"/>
     <param name="joint_state_subscribe" value="$(arg joint_state_subscribe)"/>
