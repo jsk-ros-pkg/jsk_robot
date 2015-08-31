@@ -62,6 +62,6 @@ install(DIRECTORY euslisp test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES baxter.l baxter-interface.l baxter-moveit.l baxter.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES baxter.l baxter-interface.l baxter-util.l baxter-moveit.l baxter.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 add_rostest(test/test-baxter.test)
