@@ -36,7 +36,7 @@
         (assert (send robot arm :inverse-kinematics
                       (make-cascoords :pos (v+ pos #f(-90 0 0)))
                       :rotation-axis t
-                      :debug-view t) "fail to solve ik")
+                      :debug-view :no-message) "fail to solve ik")
         )) ;; do list
     )) ;; let
 
@@ -51,7 +51,7 @@
         (assert (send robot arm :inverse-kinematics
                       (make-cascoords :pos (v+ pos #f(-90 0 0)))
                       :rotation-axis t
-                      :debug-view t) "fail to solve ik")
+                      :debug-view :no-message) "fail to solve ik")
         )) ;; do list
     )) ;; let
 
