@@ -2,6 +2,9 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.10 (2015-08-16)
 -------------------
 * [jsk_pr2_startup] logging images/pointclouds/tf/jointstates/people
