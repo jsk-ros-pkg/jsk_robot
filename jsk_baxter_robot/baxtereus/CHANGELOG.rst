@@ -2,6 +2,13 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [baxtereus/test/test-baxter.l] :debug-view :no-messages output too many messages for travis
+* [baxtereus/CMakeLists.txt] forget installing baxter-util.l
+* [baxtereus/CMakeLists.txt] install test directory
+* Contributors: Kei Okada
+
 0.0.10 (2015-08-16)
 -------------------
 

@@ -2,6 +2,9 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.10 (2015-08-16)
 -------------------
 * Revert "[jsk_robot] unified database"
