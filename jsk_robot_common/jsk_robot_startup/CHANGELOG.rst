@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.11 (2015-09-01)
+-------------------
 * [jsk_robot_startup] Add visualization node for viso odom_combined
 * [jsk_robot_startup] Add viso.launch for visual odometry
 * Contributors: Iori Kumagai
