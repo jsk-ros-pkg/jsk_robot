@@ -2,8 +2,8 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.11 (2015-09-01)
+-------------------
 * set robot/type, robot/name
 * Contributors: Kei Okada
 
