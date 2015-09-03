@@ -1,6 +1,6 @@
 plugins:
-  - {name: inflation,  type: "costmap_2d::InflationLayer" }
   - {name: obstacles,  type: "costmap_2d::VoxelLayer" }
+  - {name: inflation,  type: "costmap_2d::InflationLayer" }
   - {name: people,     type: "social_navigation_layers::ProxemicLayer" }
   - {name: passing,    type: "social_navigation_layers::PassingLayer" }
 
