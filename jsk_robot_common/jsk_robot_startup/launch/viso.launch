@@ -15,7 +15,7 @@
 
   <!-- viso -->
   <node pkg="viso2_ros" type="stereo_odometer" name="viso_node"
-        output="screen" >
+        output="screen" respawn="true">
     <remap from="stereo" to="$(arg stereo)" />
     <remap from="image" to="$(arg image)" />
     <param name="~base_link_frame_id" value="$(arg base_link_frame_id)" />
