@@ -1,7 +1,7 @@
 plugins:
+  - {name: static_map, type: "costmap_2d::StaticLayer" }
   - {name: footprint,  type: "costmap_2d::FootprintLayer" }
   - {name: inflation,  type: "costmap_2d::InflationLayer" }
-  - {name: static_map, type: "costmap_2d::StaticLayer" }
 
 footprint: [[-0.325, -0.325], [-0.425, -0.175], [-0.425, 0.175], [-0.325, 0.325], [0.325, 0.325], [0.375, 0.0], [0.325, -0.325]]
 
