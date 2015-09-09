@@ -18,7 +18,7 @@
     <arg name="remap_motor_state" value="/robot/servo_state"/>
     <arg name="remap_joint_states" value="/robot/joint_states"/>
 
-    <arg name="image_topic" value="/cameras/head_camera/image"/>
+    <arg name="image_topics" value="/cameras/head_camera/image"/>
 
     <arg name="machine" value="localhost"/>
     <arg name="output" value="screen"/>
