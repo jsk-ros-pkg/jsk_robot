@@ -1,4 +1,6 @@
 <launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="PR2"/>
 
@@ -7,4 +9,9 @@
 
     <arg name="account_info" value="/var/lib/robot/twitter_account_pr2jsk.yaml" />
   </include>
+
+  <!-- tweet logging data -->
+  <node name="pr2_tweet_log" pkg="roseus" type="roseus"
+        args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2-tweet-log.l"
+        machine="c2" output="screen" />
 </launch>
