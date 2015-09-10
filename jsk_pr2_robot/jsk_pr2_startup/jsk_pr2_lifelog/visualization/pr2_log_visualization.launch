@@ -1,0 +1,11 @@
+<launch>
+  <arg name="ROBOT" default="$(env ROBOT)" />
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
+  <node name="visualize_move_base" pkg="jsk_pr2_startup" type="visualize_move_base.py"
+        machine="c1" output="screen">
+    <param name="duration" value="10" /> <!-- days -->
+  </node>
+  <node name="visualize_objectdetection" pkg="roseus" type="roseus"
+        args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/visualization/visualize_objectdetection.l"
+        machine="c1" />
+</launch>

@@ -1,4 +1,5 @@
 <launch>
+  <arg name="ROBOT" default="$(env ROBOT)" />
   <arg name="map_frame" default="eng2" />
   <arg name="store_move_base_log" default="true" />
   <arg name="store_object_detection_log" default="true" />
@@ -8,11 +9,12 @@
   <arg name="store_camera_rgb" default="true" />
   <arg name="store_camera_depth" default="true" />
   <arg name="store_people" default="true" />
+  <arg name="visualize_log" default="true" />
   <arg name="twitter" default="true" />
   <arg name="machine" default="c1" />
   <arg name="output" default="screen" />
 
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <!-- logging and resoring pr2 position data -->
   <node name="move_base_db"
@@ -67,4 +69,8 @@
   <!-- tweeting robot warning data and etc. -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_tweet.launch"
            if="$(arg twitter)"/>
+
+  <!-- visualization of database -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/visualization/pr2_log_visualization.launch"
+    if="$(arg visualize_log)" />
 </launch>
