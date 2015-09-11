@@ -4,9 +4,9 @@
   <arg name="store_object_detection_log" default="true" />
   <arg name="store_action_result_log" default="true" />
   <arg name="store_tf" default="true" />
-  <arg name="store_joint_states" default="true" />
-  <arg name="store_camera_rgb" default="true" />
-  <arg name="store_camera_depth" default="true" />
+  <arg name="store_joint_states" default="false" />
+  <arg name="store_camera_rgb" default="false" />
+  <arg name="store_camera_depth" default="false" />
   <arg name="store_people" default="true" />
   <arg name="twitter" default="true" />
   <arg name="machine" default="c1" />
@@ -41,25 +41,26 @@
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/action_result_db_config.yaml" />
   </node>
 
-  <node name="mongodb_log_tf" pkg="mongodb_log" type="mongodb_log.py"
+  <!-- logging other topics -->
+  <node name="mongodb_log_tf" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
         args="/tf" if="$(arg store_tf)"/>
 
-  <node name="mongodb_log_joint_states" pkg="mongodb_log" type="mongodb_log.py"
+  <node name="mongodb_log_joint_states" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
         args="/joint_states" if="$(arg store_joint_states)"/>
 
-  <node name="mongodb_log_camera_rgb" pkg="mongodb_log" type="mongodb_log.py"
+  <node name="mongodb_log_camera_rgb" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
         args="-e '.*/image_rect_color/compressed$' -x half quater openni"
         if="$(arg store_camera_rgb)"/>
 
-  <node name="mongodb_log_camera_depth" pkg="mongodb_log" type="mongodb_log.py"
+  <node name="mongodb_log_camera_depth" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
         args="-e '.*/depth_registered/points$' -x openni"
         if="$(arg store_camera_depth)"/>
 
-  <node name="mongodb_log_people" pkg="mongodb_log" type="mongodb_log.py"
+  <node name="mongodb_log_people" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
         args="/people /face_detector/faces_cloud"
         if="$(arg store_people)" />
