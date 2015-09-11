@@ -24,6 +24,6 @@
     uri: https://github.com/tork-a/rwt_ros.git
     local-name: rwt_ros
 - git:
-    uri: https://github.com/furushchev/face_recognition.git
+    uri: https://github.com/procrob/face_recognition.git
     localn-name: face_recognition
-    version: fix-show-screen-flag
+    version: catkin
