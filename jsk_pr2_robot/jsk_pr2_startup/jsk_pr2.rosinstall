@@ -20,3 +20,7 @@
 ## mongodb_store: wait for release #139
 - git: {local-name: mongodb_store, uri: 'https://github.com/strands-project/mongodb_store.git',
     version: hydro-devel}
+- git:
+    uri: https://github.com/furushchev/face_recognition.git
+    localn-name: face_recognition
+    version: fix-show-screen-flag
