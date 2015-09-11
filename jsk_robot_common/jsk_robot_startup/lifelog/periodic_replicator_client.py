@@ -24,7 +24,7 @@ class PeriodicReplicatorClient(Thread):
         self.delete_after_move = rospy.get_param("mongodb_replication_delete_after_move", False)
         self.replicate_interval = rospy.Duration(self.interval)
         self.database = rospy.get_param("robot/database")
-        self.collections = sys.argv[2:]
+        self.collections = rospy.myargv()[1:]
         try:
             self.collections.append(rospy.get_param("robot/name"))
         except KeyError as e:
@@ -33,6 +33,11 @@ class PeriodicReplicatorClient(Thread):
         self.periodic = rospy.get_param("~periodic", True)
         self.date_msg_store = MessageStoreProxy(database=self.database,
                                                 collection="replication")
+        rospy.loginfo("replication enabled: db: %s, collection: %s, periodic: %s",
+                      self.database, self.collections, self.periodic)
+        if self.periodic:
+            rospy.loginfo("periodic replication interval: %d [sec]", self.interval)
+        
 
     def run(self):
         while not self.dead.wait(self.interval):
@@ -41,12 +46,11 @@ class PeriodicReplicatorClient(Thread):
             self.insert_replicate_date()
 
     def time_after_last_replicate_date(self):
-        delta = 60 * 60 * 24 # 1 day
+        delta = 0
         try:
             last_replicated = self.date_msg_store.query(StringList._type, single=True, sort_query=[("$natural",-1)])
             date = last_replicated[1]["inserted_at"]
             rospy.loginfo("last replicated at %s", date)
-            delta = (dt.datetime.now() - date).seconds + 60
         except Exception as e:
             rospy.logwarn("failed to search last replicated date from database: %s", e)
         finally:
