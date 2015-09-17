@@ -1,4 +1,15 @@
-(defun robot-file (name)
+(defun make-robot-model-from-name (name &rest args)
+  "make a robot model from string: (make-robot-model \"pr2\")"
+  (let ((name (string-downcase name)))
+    (let ((klasses (flatten (send robot-model :hierarchy))))
+      (dolist (klass klasses)
+        (let ((klass-name (string-downcase (send klass :name))))
+        (if (or (string= klass-name name)
+                (string= (format nil "~A-robot" name) klass-name))
+            (return-from make-robot-model-from-name (instance* klass :init args)))))
+      nil)))
+
+(defun robot-interface-file (name)
   "You can get robot-interface file according to `name' argument.
 You can create `*ri*' like 
 (progn (load (robot-file (ros::get-param \"/robot/type\")))
@@ -30,3 +41,11 @@ You can create `*ri*' like
       "package://peppereus/pepper-interface.l")
      (t (error "uknown robot ~A" name))
      )))
+
+(defun robot-init (&optional (robot-name (ros::get-param "/robot/type")))
+  (require (robot-interface-file robot-name))
+  (let ((klass (read-from-string (format nil "~A-interface" robot-name))))
+    (if (and (boundp klass) (subclassp (eval klass) robot-interface))
+        (setq *ri* (instance* (eval klass) :init args))))
+  (setq *robot* (make-robot-model-from-name robot-name))
+  *ri*)
