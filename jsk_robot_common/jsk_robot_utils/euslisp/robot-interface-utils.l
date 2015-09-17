@@ -39,6 +39,8 @@ You can create `*ri*' like
       "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
      ((string= lower-name "pepper")
       "package://peppereus/pepper-interface.l")
+     ((string= lower-name "nao")
+      "package://naoeus/euslisp/nao-interface.l")
      (t (error "uknown robot ~A" name))
      )))
 
