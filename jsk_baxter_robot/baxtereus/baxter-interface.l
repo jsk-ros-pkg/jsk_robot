@@ -262,14 +262,3 @@
      (send-super :ros-state-callback msg)
      ))
   ) ;; defclass baxter-interface
-
-
-(defun baxter-init (&key (safe t) (type :default-controller))
-  (if (not (boundp '*ri*))
-      (setq *ri* (instance baxter-interface :init :type type)))
-  (if (not (boundp '*baxter*))
-      (if safe
-	  (setq *baxter* (instance baxter-robot-safe :init))
-	(setq *baxter* (instance baxter-robot :init))))
-  (send *ri* :calib-grasp :arms)
-  )
