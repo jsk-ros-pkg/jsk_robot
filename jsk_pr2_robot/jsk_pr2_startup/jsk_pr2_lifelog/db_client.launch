@@ -64,7 +64,7 @@
 
   <node name="mongodb_log_people" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
-        args="/people /face_detector/faces_cloud"
+        args="/people /face_recognition/feedback /face_detector/faces_cloud"
         if="$(arg store_people)" />
 
   <!-- tweeting robot warning data and etc. -->
