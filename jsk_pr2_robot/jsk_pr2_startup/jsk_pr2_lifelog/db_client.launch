@@ -5,9 +5,9 @@
   <arg name="store_object_detection_log" default="true" />
   <arg name="store_action_result_log" default="true" />
   <arg name="store_tf" default="true" />
-  <arg name="store_joint_states" default="false" />
-  <arg name="store_camera_rgb" default="false" />
-  <arg name="store_camera_depth" default="false" />
+  <arg name="store_joint_states" default="true" />
+  <arg name="store_camera_rgb" default="true" />
+  <arg name="store_camera_depth" default="true" />
   <arg name="store_people" default="true" />
   <arg name="visualize_log" default="true" />
   <arg name="twitter" default="true" />
@@ -54,12 +54,12 @@
 
   <node name="mongodb_log_camera_rgb" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
-        args="-e '.*/image_rect_color/compressed$' -x half quater openni"
+        args="-x '.*half' -x '.*quater' -x '.*openni' -e '.*/image_rect_color/compressed$'"
         if="$(arg store_camera_rgb)"/>
 
   <node name="mongodb_log_camera_depth" pkg="jsk_pr2_startup" type="mongodb_log.py"
         output="$(arg output)" respawn="true" machine="$(arg machine)"
-        args="-e '.*/depth_registered/points$' -x openni"
+        args="-x '.*openni' -x '.*half' -x '.*quater' -e '.*/depth_registered/points$'"
         if="$(arg store_camera_depth)"/>
 
   <node name="mongodb_log_people" pkg="jsk_pr2_startup" type="mongodb_log.py"
