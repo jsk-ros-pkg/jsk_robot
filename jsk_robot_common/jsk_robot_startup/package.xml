@@ -14,12 +14,13 @@
   <build_depend>diagnostic_msgs</build_depend>
   <build_depend>pr2_mechanism_controllers</build_depend>
   <build_depend>sensor_msgs</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
   <run_depend>mongodb_store</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>gmapping</run_depend>
   <run_depend>pointcloud_to_laserscan</run_depend>
-
   <export>
   </export>
 </package>

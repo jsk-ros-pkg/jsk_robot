@@ -9,6 +9,13 @@ find_package(catkin REQUIRED COMPONENTS
   diagnostic_msgs
   sensor_msgs
   roseus
+  dynamic_reconfigure
+)
+
+catkin_python_setup()
+
+generate_dynamic_reconfigure_options(
+  config/OdometryFeedbackWrapperReconfigure.cfg
 )
 
 catkin_package(
