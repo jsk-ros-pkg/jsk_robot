@@ -23,3 +23,7 @@
 - git:
     uri: https://github.com/tork-a/rwt_ros.git
     local-name: rwt_ros
+- git:
+    uri: https://github.com/procrob/face_recognition.git
+    localn-name: face_recognition
+    version: catkin
