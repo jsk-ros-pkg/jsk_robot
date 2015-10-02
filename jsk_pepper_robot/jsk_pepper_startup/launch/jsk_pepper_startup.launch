@@ -11,22 +11,36 @@
   </include>
 
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
-  <node pkg="joy" type="joy_node" name="teleop_joy">
+  <node pkg="joy" type="joy_node" name="joy_node">
     <param name="dev" value="/dev/input/js0" />
+    <param name="deadzone" value="0.3" />
+    <param name="autorepeat_rate" value="20" />
   </node>
-  <node pkg="topic_tools" type="relay" name="cmd_vel_relay"
-	args="/cmd_vel_mux/input/teleop /cmd_vel" />
-  <node pkg="turtlebot_teleop" type="turtlebot_teleop_joy" name="turtlebot_teleop_joystick">
-    <param name="scale_angular" value="1.0"/>
-    <param name="scale_linear" value="1.0"/>
-    <param name="axis_deadman" value="4"/>
-    <param name="axis_linear_x" value="1"/>
-    <param name="axis_linear_y" value="0"/>
-    <param name="axis_angular" value="3"/>
-    <param name="is_horonomic" value="true" />
-    <remap from="turtlebot_teleop_joystick/cmd_vel" to="cmd_vel"/>
-  </node>
+  <node pkg="teleop_twist_joy" name="teleop_twist_joy"
+        type="teleop_node">
+    <rosparam>
+axis_linear:
+  x: 1.0
+  y: 0.0
+scale_linear:
+  x: 0.7
+  y: 0.7
+scale_linear_turbo:
+  x: 1.5
+  y: 1.5
 
+axis_angular:
+  yaw: 3
+scale_angular:
+  yaw: 1.0
+scale_augular_turbo:
+  yaw: 1.5
+  yaw: 1.5
+
+enable_button: 4  # Left trigger button
+enable_turbo_button: 0  # A button
+    </rosparam>
+  </node>
 
   <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
   <node pkg="rostwitter" name="tweet" type="tweet.py" />
