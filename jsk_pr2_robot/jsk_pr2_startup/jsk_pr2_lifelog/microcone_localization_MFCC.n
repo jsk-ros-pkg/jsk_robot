@@ -7,8 +7,8 @@
       <Parameter name="SAMPLING_RATE" type="int" value="16000" description="Sampling Rate (Hz)."/>
       <Parameter name="A_MATRIX" type="subnet_param" value="ARG1" description="Filename of a transfer function matrix."/>
       <Parameter name="ADVANCE" type="int" value="160" description="The length in sample between a frame and a previous frame. [default: 160]"/>
-      <Parameter name="TF_CONJ_FILENAME" type="subnet_param" value="ARG2" description="Filename of a pre-measured transfer function for separation."/>
-      <Parameter name="NOISE_FILENAME" type="subnet_param" value="ARG3" description="Filename describing sound locations of the fixed noise sources. The specified noise sources are always separated in addition to sound sources in INPUT_SOURCES. Available only when FIXED_NOISE = true."/>
+      <Parameter name="TF_CONJ_FILENAME" type="subnet_param" value="ARG1" description="Filename of a pre-measured transfer function for separation."/>
+      <Parameter name="NOISE_FILENAME" type="subnet_param" value="ARG2" description="Filename describing sound locations of the fixed noise sources. The specified noise sources are always separated in addition to sound sources in INPUT_SOURCES. Available only when FIXED_NOISE = true."/>
       <Parameter name="DOWHILE" type="bool" value="" description=""/>
     </Node>
     <Node name="node_RosNodeGenerator_1" type="RosNodeGenerator" x="-262.000000" y="-176.000000">
