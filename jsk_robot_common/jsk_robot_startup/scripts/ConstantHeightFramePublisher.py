@@ -41,7 +41,7 @@ class ConstantHeightFramePublisher:
             # publish tf
             self.broadcast.sendTransform(target_trans, target_rot, rospy.Time.now(), self.frame_name, self.parent)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            rospy.logwarn("[%s] Failed to solve tf of %s to $s.", rospy.get_name(), self.parent, self.odom)
+            rospy.logwarn("[%s] Failed to solve tf of %s to %s.", rospy.get_name(), self.parent, self.odom)
             return
 
 if __name__ == '__main__':
