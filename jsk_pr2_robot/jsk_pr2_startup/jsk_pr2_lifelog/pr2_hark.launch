@@ -1,4 +1,6 @@
 <launch>
+  <arg name="ROBOT" default="$(env ROBOT)" />
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
   <node name="pr2_hark" pkg="jsk_pr2_startup"
         type="microcone_localization_MFCC.sh" output="log"
         machine="c1"

@@ -1,3 +1,6 @@
 mongodb_store_extras: [["robot-database.jsk.imi.i.u-tokyo.ac.jp", 27017],["jenkins.jsk.imi.i.u-tokyo.ac.jp", 27017],["musca.jsk.imi.i.u-tokyo.ac.jp",27017]]
-mongodb_replication_inverval: 3600
-mongodb_replication_delete_after_move: false
+replication:
+  periodic: true
+  interval: 3600
+  delete_after_move: false
+  disable_on_wireless_network: true
