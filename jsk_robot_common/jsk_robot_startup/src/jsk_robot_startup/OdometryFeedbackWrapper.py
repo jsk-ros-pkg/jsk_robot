@@ -39,6 +39,7 @@ class OdometryFeedbackWrapper(object):
                         rospy.get_param("~sigma_yaw", 0.01)]
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size=10)
+        self.init_odom_sub = rospy.Subscriber("~init_odom", Odometry, self.init_odom_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
         self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
@@ -58,13 +59,18 @@ class OdometryFeedbackWrapper(object):
         rospy.loginfo("[%s]: feedback sigma is %f", rospy.get_name(), self.feedback_enabled_sigma)
         return config
 
-    def source_odom_callback(self, msg):
+    def init_odom_callback(self, msg):
         with self.lock:
             if not self.odom: # initialize buffers
                 self.odom = msg
                 self.odom.header.frame_id = self.odom_frame
                 self.odom.child_frame_id = self.base_link_frame
                 self.prev_time = rospy.Time.now()
+
+    def source_odom_callback(self, msg):
+        if not self.odom:
+            return
+        with self.lock:
             self.source_odom = msg
 
     def feedback_odom_callback(self, msg):
@@ -130,17 +136,19 @@ class OdometryFeedbackWrapper(object):
         return False
             
     def update(self):
+        if not self.odom or not self.source_odom:
+            return
         with self.lock:
             self.dt = (rospy.Time.now() - self.prev_time).to_sec()           
-            if self.dt > 0.0 and self.odom:
+            if self.dt > 0.0:
                 # if self.dt > 2 * (1.0 / self.rate):
                 #     rospy.logwarn("[%s]Execution time is violated. Target: %f[sec], Current: %f[sec]", rospy.get_name(), 1.0 / self.rate, self.dt)
                 self.calc_odometry()
                 self.calc_covariance()
                 self.publish_odometry()
                 self.prev_time = rospy.Time.now()
-            if self.publish_tf:
-                self.broadcast_transform()
+                if self.publish_tf:
+                    self.broadcast_transform()
 
 
     def calc_odometry(self):
