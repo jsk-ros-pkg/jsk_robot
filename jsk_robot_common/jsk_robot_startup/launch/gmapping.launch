@@ -20,8 +20,9 @@
   <arg name="stt" default="0.05" />
   
   <include file="$(find jsk_robot_startup)/launch/pointcloud_to_laserscan.launch">
+    <arg name="scan_frame" value="$(arg scan_frame)" />
     <arg name="scan_frame_parent" value="$(arg scan_frame_parent)" />    
-    <arg name="scan_frame" value="$(arg scan_frame)" />    
+    <arg name="scan_frame_odom" value="$(arg odom_frame)"/>
     <arg name="cloud_in" value="$(arg cloud_in)" />
     <arg name="scan_height" value="$(arg scan_height)" />
     <arg name="max_height" value="$(arg max_height)" /> 
