@@ -19,11 +19,12 @@
         output="screen" respawn="true">
     <remap from="stereo" to="$(arg stereo)" />
     <remap from="image" to="$(arg image)" />
+    <remap from="~odometry" to="$(arg output_odom_topic)" />
     <param name="~base_link_frame_id" value="$(arg base_link_frame_id)" />
     <param name="~odom_frame_id" value="$(arg odom_frame_id)"/>
     <param name="~publish_tf" value="$(arg publish_viso_tf)" />
     <param name="~invert_tf" value="$(arg invert_viso_tf)" />
-    <remap from="~odometry" to="$(arg output_odom_topic)" />
+    <param name="~ref_frame_change_method" value="1"/>
   </node>
   <!-- EKF -->
   <group if="$(arg use_robot_pose_ekf)" >
