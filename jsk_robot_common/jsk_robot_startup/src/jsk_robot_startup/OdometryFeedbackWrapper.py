@@ -38,10 +38,10 @@ class OdometryFeedbackWrapper(object):
                         rospy.get_param("~sigma_pitch", 0.0001),
                         rospy.get_param("~sigma_yaw", 0.01)]
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
-        self.pub = rospy.Publisher("~output", Odometry, queue_size=10)
+        self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
         self.init_odom_sub = rospy.Subscriber("~init_odom", Odometry, self.init_odom_callback)
-        self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
-        self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback)
+        self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
+        self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback, queue_size = 100)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
 
     def execute(self):
