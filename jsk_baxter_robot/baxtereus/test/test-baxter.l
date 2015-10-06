@@ -41,6 +41,17 @@
     )) ;; let
 
 (deftest
+  test-baxter-arm-tuck-pose
+  (let ((robot)
+        (tuck-av #f(0.000000 -57.000000 -119.000000 152.000000 146.000000 0.000000 0.000000 0.000000 57.000000 -119.000000 -152.000000 136.000000 0.000000 0.000000 0.000000)))
+    (setq robot (instance baxter-robot :init))
+    (send robot :tuck-pose :larm)
+    (send robot :tuck-pose :rarm)
+    (assert (send robot :angle-vector) tuck-av)
+    (send robot :tuck-pose)
+    (assert (send robot :angle-vector) tuck-av)
+    ))
+(deftest
   test-baxter-arm-untuck-pose
   (let ((robot)
         (untuck-av #f(0.000000 -5.000000 -57.000000 -68.000000 111.000000 38.000000 59.000000 0.000000 5.000000 -57.000000 68.000000 111.000000 -38.000000 59.000000 0.000000)))
