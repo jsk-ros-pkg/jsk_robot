@@ -16,6 +16,7 @@ class ConstantHeightFramePublisher:
         self.rate = rospy.Rate(rospy.get_param("~rate", 10.0)) # [Hz]
         self.height = rospy.get_param("~height", 1.0) # [m]
         self.parent = rospy.get_param("~parent_frame", "BODY")
+        self.odom = rospy.get_param("~odom_frame", "odom")
         self.frame_name = rospy.get_param("~frame_name", "pointcloud_to_scan_base")
 
     def execute(self):
@@ -28,7 +29,7 @@ class ConstantHeightFramePublisher:
 
     def make_constant_tf(self):
         try:
-            (trans,rot) = self.listener.lookupTransform(self.parent, '/odom', rospy.Time(0))
+            (trans,rot) = self.listener.lookupTransform(self.parent, self.odom, rospy.Time(0))
             # transformation: (x, y): same as parent, z: equal to height
             T = tf.transformations.quaternion_matrix(rot)
             T[:3, 3] = trans
@@ -40,6 +41,7 @@ class ConstantHeightFramePublisher:
             # publish tf
             self.broadcast.sendTransform(target_trans, target_rot, rospy.Time.now(), self.frame_name, self.parent)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            rospy.logwarn("[%s] Failed to solve tf of %s to %s.", rospy.get_name(), self.parent, self.odom)
             return
 
 if __name__ == '__main__':

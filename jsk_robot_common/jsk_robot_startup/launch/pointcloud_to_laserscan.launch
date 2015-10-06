@@ -12,11 +12,13 @@
   <!-- fixed frame -->
   <arg name="scan_height" default="1.0" />
   <arg name="scan_frame_parent" default="BODY" />
+  <arg name="scan_frame_odom" default="odom"/>
   <arg name="use_fixed_frame" default="true" /> <!-- target_frame should be ignored when use_fixed_frame is false -->
 
   <group if="$(arg use_fixed_frame)" >
     <node pkg="jsk_robot_startup" type="ConstantHeightFramePublisher.py" name="pointcloud_to_laserscan_constant_height_frame" output="screen" >
       <param name="parent_frame" value="$(arg scan_frame_parent)" />
+      <param name="odom_frame" value="$(arg scan_frame_odom)" />
       <param name="height" value="$(arg scan_height)" />
       <param name="frame_name" value="$(arg scan_frame)" />
     </node>
