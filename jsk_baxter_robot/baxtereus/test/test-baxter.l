@@ -55,6 +55,14 @@
         )) ;; do list
     )) ;; let
 
+(deftest test-robot-swap-arm-av
+  (let (robot swapped)
+    (setq robot (instance baxter-robot :init))
+    (setq swapped (send robot :swap-arm-av (send robot :larm :angle-vector)))
+    (dotimes (i (length (send robot :rarm :angle-vector)))
+      (assert (= (elt (send robot :rarm :angle-vector) i) (elt swapped i))))
+    ))
+
 (load "package://baxtereus/baxter-interface.l")
 (deftest test-baxter-interface
   (let (robot ri msg)
