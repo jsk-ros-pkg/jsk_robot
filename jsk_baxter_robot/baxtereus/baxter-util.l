@@ -49,6 +49,17 @@
         (setq index (* i 2))
         (setf (elt _av index) (- (elt _av index))))
       _av))
+  (:untuck-pose
+    (&optional (arm :arms))
+    "untuck-pose for specified arm"
+    (let ((av-table (make-hash-table))
+          (larm-av #f(-5.000000 -57.000000 -68.000000 111.000000 38.000000 59.000000 0.000000)))
+      (setf (gethash :larm av-table) larm-av)
+      (setf (gethash :rarm av-table) (send self :swap-arm-av larm-av))
+      (setf (gethash :head av-table) #f(0))
+    (dolist (link (if (eq arm :arms) (list :head :larm :rarm) (list (if (eq arm :larm) :larm :rarm))))
+      (send self link :angle-vector (gethash link av-table)))
+    (send self :angle-vector)))
   )
 
 #|

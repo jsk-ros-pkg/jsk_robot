@@ -40,6 +40,18 @@
         )) ;; do list
     )) ;; let
 
+(deftest
+  test-baxter-arm-untuck-pose
+  (let ((robot)
+        (untuck-av #f(0.000000 -5.000000 -57.000000 -68.000000 111.000000 38.000000 59.000000 0.000000 5.000000 -57.000000 68.000000 111.000000 -38.000000 59.000000 0.000000)))
+    (setq robot (instance baxter-robot :init))
+    (send robot :untuck-pose :larm)
+    (send robot :untuck-pose :rarm)
+    (assert (send robot :angle-vector) untuck-av)
+    (send robot :untuck-pose)
+    (assert (send robot :angle-vector) untuck-av)
+    ))
+
 (deftest test-robot-ik-safe-bin
   (let (robot)
     (setq robot (instance baxter-robot-safe :init))
