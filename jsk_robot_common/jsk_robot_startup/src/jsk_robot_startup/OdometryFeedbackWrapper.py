@@ -111,7 +111,7 @@ class OdometryFeedbackWrapper(object):
                                                     hist.header.stamp, dt)
                         self.feedback_odom.header.stamp = hist.header.stamp
                     else:
-                        prev_global_twist = self.convert_to_global_twist(hist.twist, hist.header.frame_id, hist.child_frame_id, hist.header.stamp)
+                        prev_global_twist = self.convert_local_twist_to_global_twist(hist.twist, hist.header.frame_id, hist.child_frame_id, hist.header.stamp)
                 self.odom.pose = self.feedback_odom.pose
                 self.prev_time = self.feedback_odom.header.stamp
                 self.odom_history = []
