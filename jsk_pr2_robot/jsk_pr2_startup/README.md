@@ -50,3 +50,10 @@ $ sudo aptitude install libcap2-bin
 $ sudo setcap cap_fowner+ep /usr/bin/mongod
 ```
 
+### Hark with Microcone
+
+#### documentation
+- Hark installation: http://www.hark.jp/wiki.cgi?page=HARK+Installation+Instructions
+- hark jsk installation: https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/hark_jsk_plugins/INSTALL
+- Microcone: http://www.hark.jp/wiki.cgi?page=SupportedHardware#p10
+
