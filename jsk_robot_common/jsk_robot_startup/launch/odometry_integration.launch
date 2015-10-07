@@ -1,0 +1,57 @@
+<launch>
+  <!-- viso -->
+  <include file="$(find jsk_robot_startup)/launch/viso.launch">
+    <arg name="stereo" default="multisense" />
+    <arg name="image" default="image_rect" />
+    <arg name="use_robot_pose_ekf" default="false" />
+    <arg name="publish_viso_tf" default="true" />
+    <arg name="invert_viso_tf" default="true" /> 
+  </include>
+  
+  <!-- wrapper for feedback -->
+  <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="biped_odom_calculator"
+        output="screen" >
+    <remap from="~init_odom" to="/odom" />
+    <remap from="~source_odom" to="/odom" />
+    <remap from="~feedback_odom" to="/integrated_odom" />
+    <remap from="~output" to="/biped_odom_integrated" />
+    <param name="~odom_frame" value="biped_odom_integrated" />
+    <param name="~base_link_frame" value="BODY" />
+    <param name="~rate" value="10" />
+    <param name="~sigma_x" value="0.2" />
+    <param name="~sigma_y" value="0.2" />
+    <param name="~sigma_z" value="0.0001" />
+    <param name="~sigma_roll" value="0.0001" />
+    <param name="~sigma_pitch" value="0.0001" />
+    <param name="~sigma_yaw" value="0.2" />
+    <param name="~feedback_enabled_sigma" value="0.5" />
+  </node>
+  <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="viso_odom_calculator"
+        output="screen" >
+    <remap from="~init_odom" to="/odom" />
+    <remap from="~source_odom" to="/viso_odom" />
+    <remap from="~feedback_odom" to="/integrated_odom" />
+    <remap from="~output" to="/viso_odom_integrated" />
+    <param name="~odom_frame" value="viso_odom_integrated" />
+    <param name="~base_link_frame" value="BODY" /> 
+    <param name="~rate" value="5" />
+    <param name="~sigma_x" value="0.1" />
+    <param name="~sigma_y" value="0.1" />
+    <param name="~sigma_z" value="0.1" />
+    <param name="~sigma_roll" value="0.2" />
+    <param name="~sigma_pitch" value="0.2" />
+    <param name="~sigma_yaw" value="0.2" />
+    <param name="~feedback_enabled_sigma" value="1.0" />
+  </node>
+
+  <!-- integration node -->  
+  <node pkg="jsk_robot_startup" type="OdometryIntegrator.py" name="odom_integrator"
+        output="screen" >
+    <remap from="~source_odom_0" to="/biped_odom_integrated" />
+    <remap from="~source_odom_1" to="/viso_odom_integrated" />
+    <remap from="~output" to="/integrated_odom" />
+    <param name="~rate" value="1" />
+    <param name="~time_threshould" value="1.0" />
+  </node>
+
+</launch>
