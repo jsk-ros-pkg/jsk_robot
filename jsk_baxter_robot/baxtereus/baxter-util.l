@@ -41,14 +41,14 @@
              (send robot :angle-vector av))
          ))
      r))
-  (:swap-arm-av
+  (:l/r-reverse
     (av)
-    "swap :larm <-> :rarm angle vector"
-    (let ((_av (copy-list av)) index)
+    "return the other arm's angle vector"
+    (let ((av-tmp (copy-list av)) index)
       (dotimes (i 4)
         (setq index (* i 2))
-        (setf (elt _av index) (- (elt _av index))))
-      _av))
+        (setf (elt av-tmp index) (- (elt av-tmp index))))
+      av-tmp))
   )
 
 #|
