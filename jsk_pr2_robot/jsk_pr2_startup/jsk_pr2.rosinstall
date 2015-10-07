@@ -22,5 +22,5 @@
     version: hydro-devel}
 - git:
     uri: https://github.com/procrob/face_recognition.git
-    localn-name: face_recognition
+    local-name: face_recognition
     version: catkin
