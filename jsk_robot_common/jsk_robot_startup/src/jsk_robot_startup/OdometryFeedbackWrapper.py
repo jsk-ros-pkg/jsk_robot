@@ -206,6 +206,8 @@ class OdometryFeedbackWrapper(object):
         euler[0] += 0.5 * (global_twist.angular.x + prev_global_twist.angular.x) * dt
         euler[1] += 0.5 * (global_twist.angular.y + prev_global_twist.angular.y) * dt
         euler[2] += 0.5 * (global_twist.angular.z + prev_global_twist.angular.z) * dt
+        quat = tf.transformations.quaternion_from_euler(*euler)
+        pose.pose.orientation = Quaternion(*quat)
         return global_twist # return global twist for next iteration
 
     def update_twist_covariance(self, twist):
