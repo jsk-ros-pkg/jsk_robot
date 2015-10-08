@@ -64,7 +64,7 @@ class OdometryFeedbackWrapper(object):
     def init_signal_callback(self, msg):
         with self.lock: # reset odometry and it is assumed to be initialized by init_odom
             self.odom = None
-            self.initialize_odometry()
+        self.initialize_odometry()
         
     def initialize_odometry(self):
         if self.odom: # do nothing if odom is already initialized
