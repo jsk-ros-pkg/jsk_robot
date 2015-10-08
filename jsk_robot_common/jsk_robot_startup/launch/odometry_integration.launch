@@ -11,6 +11,7 @@
   <!-- wrapper for feedback -->
   <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="biped_odom_calculator"
         output="screen" >
+    <remap from="~init_signal" to="/odom_init_trigger" />
     <remap from="~init_odom" to="/odom" />
     <remap from="~source_odom" to="/odom" />
     <remap from="~feedback_odom" to="/integrated_odom" />
@@ -28,6 +29,7 @@
   </node>
   <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="viso_odom_calculator"
         output="screen" >
+    <remap from="~init_signal" to="/odom_init_trigger" />
     <remap from="~init_odom" to="/odom" />
     <remap from="~source_odom" to="/viso_odom" />
     <remap from="~feedback_odom" to="/integrated_odom" />
