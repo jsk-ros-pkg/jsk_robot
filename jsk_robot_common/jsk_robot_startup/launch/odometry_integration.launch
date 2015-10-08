@@ -12,10 +12,10 @@
   <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="biped_odom_calculator"
         output="screen" >
     <remap from="~init_signal" to="/odom_init_trigger" />
-    <remap from="~init_odom" to="/odom" />
     <remap from="~source_odom" to="/odom" />
     <remap from="~feedback_odom" to="/integrated_odom" />
     <remap from="~output" to="/biped_odom_integrated" />
+    <param name="~odom_init_frame" value="/odom_init" />
     <param name="~odom_frame" value="biped_odom_integrated" />
     <param name="~base_link_frame" value="BODY" />
     <param name="~rate" value="10" />
@@ -30,10 +30,10 @@
   <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="viso_odom_calculator"
         output="screen" >
     <remap from="~init_signal" to="/odom_init_trigger" />
-    <remap from="~init_odom" to="/odom" />
     <remap from="~source_odom" to="/viso_odom" />
     <remap from="~feedback_odom" to="/integrated_odom" />
     <remap from="~output" to="/viso_odom_integrated" />
+    <param name="~odom_init_frame" value="/odom_init" />
     <param name="~odom_frame" value="viso_odom_integrated" />
     <param name="~base_link_frame" value="BODY" /> 
     <param name="~rate" value="5" />

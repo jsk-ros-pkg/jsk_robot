@@ -4,7 +4,7 @@ import rospy
 import numpy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float64, Empty
-from geometry_msgs.msg import Quaternion, Twist, Vector3
+from geometry_msgs.msg import Pose, Point, Quaternion, Twist, Vector3
 import tf
 import sys
 import threading
@@ -19,10 +19,11 @@ class OdometryFeedbackWrapper(object):
         self.rate = float(rospy.get_param("~rate", 100))
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
-        self.broadcast = tf.TransformBroadcaster()
-        self.listener = tf.TransformListener()
+        self.odom_init_frame = rospy.get_param("~odom_init_frame", "odom_init")
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
+        self.broadcast = tf.TransformBroadcaster()
+        self.listener = tf.TransformListener()
         self.odom = None # belief of this wrapper
         self.feedback_odom = None
         self.source_odom = None
@@ -40,11 +41,11 @@ class OdometryFeedbackWrapper(object):
                         rospy.get_param("~sigma_yaw", 0.01)]
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
-        self.init_odom_sub = rospy.Subscriber("~init_odom", Odometry, self.init_odom_callback)
-        self.init_signal_sub = rospy.Subscriber("~init_signal", , Empty, self.init_signal_callback)
+        self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
         self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback, queue_size = 100)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
+        self.initialize_odometry() # init self.odom based on init_odom_frame and base_link_frame
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -63,14 +64,27 @@ class OdometryFeedbackWrapper(object):
     def init_signal_callback(self, msg):
         with self.lock: # reset odometry and it is assumed to be initialized by init_odom
             self.odom = None
+            self.initialize_odometry()
         
-    def init_odom_callback(self, msg):
+    def initialize_odometry(self):
+        if self.odom: # do nothing if odom is already initialized
+            return
+        # initialize odom
         with self.lock:
-            if not self.odom: # initialize buffers
-                self.odom = msg
-                self.odom.header.frame_id = self.odom_frame
-                self.odom.child_frame_id = self.base_link_frame
-                self.prev_time = rospy.Time.now()
+            try:
+                (trans,rot) = self.listener.lookupTransform(self.odom_init_frame, self.base_link_frame, rospy.Time(0))
+            except:
+                rospy.logwarn("failed to solve tf in initialize_odometry: %s to %s", self.odom_init_frame, self.base_link_frame)
+                trans = [0.0, 0.0, 0.0]
+                rot = [0.0, 0.0, 0.0, 1.0]
+            self.odom = Odometry()
+            self.odom.pose.pose = Pose(Point(*trans), Quaternion(*rot))
+            self.odom.pose.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist() # initial covariance: 0.001[mm]**2
+            self.odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
+            self.odom.twist.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist()
+            self.odom.header.frame_id = self.odom_frame
+            self.odom.child_frame_id = self.base_link_frame
+            self.prev_time = rospy.Time.now()
 
     def source_odom_callback(self, msg):
         if not self.odom:
