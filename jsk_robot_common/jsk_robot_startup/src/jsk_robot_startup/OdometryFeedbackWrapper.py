@@ -3,7 +3,7 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Empty
 from geometry_msgs.msg import Quaternion, Twist, Vector3
 import tf
 import sys
@@ -41,6 +41,7 @@ class OdometryFeedbackWrapper(object):
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
         self.init_odom_sub = rospy.Subscriber("~init_odom", Odometry, self.init_odom_callback)
+        self.init_signal_sub = rospy.Subscriber("~init_signal", , Empty, self.init_signal_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
         self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback, queue_size = 100)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
@@ -59,6 +60,10 @@ class OdometryFeedbackWrapper(object):
         rospy.loginfo("[%s]: feedback sigma is %f", rospy.get_name(), self.feedback_enabled_sigma)
         return config
 
+    def init_signal_callback(self, msg):
+        with self.lock: # reset odometry and it is assumed to be initialized by init_odom
+            self.odom = None
+        
     def init_odom_callback(self, msg):
         with self.lock:
             if not self.odom: # initialize buffers
