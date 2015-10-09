@@ -95,13 +95,13 @@ class OdometryFeedbackWrapper(object):
         self.feedback_odom = msg
         with self.lock:
             # check distribution accuracy
-            nearest_odom = copy.copy(self.odom)
+            nearest_odom = copy.deepcopy(self.odom)
             nearest_dt = (self.feedback_odom.header.stamp - self.odom.header.stamp).to_sec()
             for hist in self.odom_history: # get neaerest odom from feedback_odom referencing timestamp
                 dt = (self.feedback_odom.header.stamp - hist.header.stamp).to_sec()
                 if abs(dt) < abs(nearest_dt):
                     nearest_dt = dt
-                    nearest_odom = copy.copy(hist)
+                    nearest_odom = copy.deepcopy(hist)
             # get approximate pose at feedback_odom timestamp (probably it is past) of nearest_odom
             self.update_pose(nearest_odom.pose, nearest_odom.twist, None, # use rectangular approximation for simplicity
                              nearest_odom.header.frame_id, nearest_odom.child_frame_id,
@@ -183,7 +183,7 @@ class OdometryFeedbackWrapper(object):
     def publish_odometry(self):
         self.odom.header.stamp = rospy.Time.now()
         self.pub.publish(self.odom)
-        self.odom_history.append(copy.copy(self.odom))
+        self.odom_history.append(copy.deepcopy(self.odom))
 
     def update_twist(self, twist, new_twist):
         twist.twist = new_twist.twist
