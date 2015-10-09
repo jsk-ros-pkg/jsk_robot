@@ -80,6 +80,7 @@ class OdometryFeedbackWrapper(object):
             self.odom.twist.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist()
             self.odom.header.frame_id = self.odom_frame
             self.odom.child_frame_id = self.base_link_frame
+            self.odom_history = []
             self.prev_time = rospy.Time.now()
 
     def source_odom_callback(self, msg):
