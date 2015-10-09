@@ -147,6 +147,7 @@ class ActionResultDB(object):
             except Exception as e:
                 rospy.logerr('failed to import %s.msg: %s', pkg_name, e)
                 rospy.logerr('please catkin_make %s', pkg_name)
+                self.useless_types += [py_topic_class]
                 continue
 
             try:
@@ -154,6 +155,7 @@ class ActionResultDB(object):
                 type_instance = type_class()
             except Exception as e:
                 rospy.logerr('failed to instantiate %s.msg.%s: %s', pkg_name, msg_type, e)
+                self.useless_types += [py_topic_class]
                 continue
 
             try:
