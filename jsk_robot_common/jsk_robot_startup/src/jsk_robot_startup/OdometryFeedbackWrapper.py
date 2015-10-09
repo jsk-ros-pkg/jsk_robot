@@ -3,8 +3,8 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float64
-from geometry_msgs.msg import Quaternion, Twist, Vector3
+from std_msgs.msg import Float64, Empty
+from geometry_msgs.msg import Pose, Point, Quaternion, Twist, Vector3
 import tf
 import sys
 import threading
@@ -19,16 +19,18 @@ class OdometryFeedbackWrapper(object):
         self.rate = float(rospy.get_param("~rate", 100))
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
-        self.broadcast = tf.TransformBroadcaster()
-        self.listener = tf.TransformListener()
+        self.odom_init_frame = rospy.get_param("~odom_init_frame", "odom_init")
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
+        self.max_feedback_time = rospy.get_param("~max_feedback_time", 60)
+        self.broadcast = tf.TransformBroadcaster()
+        self.listener = tf.TransformListener(True, rospy.Duration(self.max_feedback_time + 10)) # 10[sec] is safety mergin for feedback
         self.odom = None # belief of this wrapper
         self.feedback_odom = None
         self.source_odom = None
         self.prev_global_twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
         self.dt = 0.0
-        self.prev_time = rospy.Time.now()
+        self.prev_feedback_time = rospy.Time.now()
         self.r = rospy.Rate(self.rate)
         self.lock = threading.Lock()
         self.odom_history = []
@@ -40,10 +42,11 @@ class OdometryFeedbackWrapper(object):
                         rospy.get_param("~sigma_yaw", 0.01)]
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
-        self.init_odom_sub = rospy.Subscriber("~init_odom", Odometry, self.init_odom_callback)
+        self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
         self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback, queue_size = 100)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
+        self.initialize_odometry() # init self.odom based on init_odom_frame and base_link_frame
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -59,13 +62,28 @@ class OdometryFeedbackWrapper(object):
         rospy.loginfo("[%s]: feedback sigma is %f", rospy.get_name(), self.feedback_enabled_sigma)
         return config
 
-    def init_odom_callback(self, msg):
+    def init_signal_callback(self, msg):
+        self.initialize_odometry()
+
+    def initialize_odometry(self):
+        try:
+            (trans,rot) = self.listener.lookupTransform(self.odom_init_frame, self.base_link_frame, rospy.Time(0))
+        except:
+            rospy.logwarn("failed to solve tf in initialize_odometry: %s to %s", self.odom_init_frame, self.base_link_frame)
+            trans = [0.0, 0.0, 0.0]
+            rot = [0.0, 0.0, 0.0, 1.0]
+        rospy.loginfo("[%s]: initiailze odometry ", rospy.get_name())
         with self.lock:
-            if not self.odom: # initialize buffers
-                self.odom = msg
-                self.odom.header.frame_id = self.odom_frame
-                self.odom.child_frame_id = self.base_link_frame
-                self.prev_time = rospy.Time.now()
+            self.odom = Odometry()
+            self.odom.pose.pose = Pose(Point(*trans), Quaternion(*rot))
+            self.odom.pose.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist() # initial covariance: 0.001[mm]**2
+            self.odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
+            self.odom.twist.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist()
+            self.odom.header.stamp = rospy.Time.now()
+            self.odom.header.frame_id = self.odom_frame
+            self.odom.child_frame_id = self.base_link_frame
+            self.odom_history = []
+            self.prev_feedback_time = self.odom.header.stamp
 
     def source_odom_callback(self, msg):
         if not self.odom:
@@ -79,13 +97,13 @@ class OdometryFeedbackWrapper(object):
         self.feedback_odom = msg
         with self.lock:
             # check distribution accuracy
-            nearest_odom = copy.copy(self.odom)
+            nearest_odom = copy.deepcopy(self.odom)
             nearest_dt = (self.feedback_odom.header.stamp - self.odom.header.stamp).to_sec()
             for hist in self.odom_history: # get neaerest odom from feedback_odom referencing timestamp
                 dt = (self.feedback_odom.header.stamp - hist.header.stamp).to_sec()
                 if abs(dt) < abs(nearest_dt):
                     nearest_dt = dt
-                    nearest_odom = copy.copy(hist)
+                    nearest_odom = copy.deepcopy(hist)
             # get approximate pose at feedback_odom timestamp (probably it is past) of nearest_odom
             self.update_pose(nearest_odom.pose, nearest_odom.twist, None, # use rectangular approximation for simplicity
                              nearest_odom.header.frame_id, nearest_odom.child_frame_id,
@@ -110,11 +128,19 @@ class OdometryFeedbackWrapper(object):
                                                     self.feedback_odom.header.frame_id, hist.child_frame_id,
                                                     hist.header.stamp, dt)
                         self.feedback_odom.header.stamp = hist.header.stamp
-                    else:
-                        prev_global_twist = self.convert_local_twist_to_global_twist(hist.twist, hist.header.frame_id, hist.child_frame_id, hist.header.stamp)
+                # update self.odom by self.feedback_odom
+                self.odom.header.stamp = self.feedback_odom.header.stamp
                 self.odom.pose = self.feedback_odom.pose
-                self.prev_time = self.feedback_odom.header.stamp
+                self.prev_feedback_time = self.feedback_odom.header.stamp
                 self.odom_history = []
+
+    def check_feedback_time(self):
+        time_from_prev_feedback = (self.odom.header.stamp - self.prev_feedback_time).to_sec()
+        if time_from_prev_feedback > self.max_feedback_time:
+            rospy.loginfo("%s: Feedback time is exceeded. %f > %f", rospy.get_name(), time_from_prev_feedback, self.max_feedback_time)
+            return True
+        else:
+            return False
 
     def check_covaraicne(self, odom):
         for cov in odom.pose.covariance:
@@ -144,14 +170,14 @@ class OdometryFeedbackWrapper(object):
         if not self.odom or not self.source_odom:
             return
         with self.lock:
-            self.dt = (rospy.Time.now() - self.prev_time).to_sec()
+            self.dt = (rospy.Time.now() - self.odom.header.stamp).to_sec()
             if self.dt > 0.0:
                 # if self.dt > 2 * (1.0 / self.rate):
                 #     rospy.logwarn("[%s]Execution time is violated. Target: %f[sec], Current: %f[sec]", rospy.get_name(), 1.0 / self.rate, self.dt)
+                self.odom.header.stamp = rospy.Time.now()
                 self.calc_odometry()
                 self.calc_covariance()
                 self.publish_odometry()
-                self.prev_time = rospy.Time.now()
                 if self.publish_tf:
                     self.broadcast_transform()
 
@@ -165,9 +191,8 @@ class OdometryFeedbackWrapper(object):
         self.update_pose_covariance(self.odom.pose, self.odom.twist, self.odom.header.frame_id, self.odom.child_frame_id, rospy.Time(0), self.dt)
 
     def publish_odometry(self):
-        self.odom.header.stamp = rospy.Time.now()
         self.pub.publish(self.odom)
-        self.odom_history.append(copy.copy(self.odom))
+        self.odom_history.append(copy.deepcopy(self.odom))
 
     def update_twist(self, twist, new_twist):
         twist.twist = new_twist.twist
@@ -268,4 +293,4 @@ class OdometryFeedbackWrapper(object):
         else:
             parent_frame = self.odom.header.frame_id
             target_frame = self.odom.child_frame_id
-        self.broadcast.sendTransform(position, orientation, rospy.Time.now(), target_frame, parent_frame)
+        self.broadcast.sendTransform(position, orientation, self.odom.header.stamp, target_frame, parent_frame)
