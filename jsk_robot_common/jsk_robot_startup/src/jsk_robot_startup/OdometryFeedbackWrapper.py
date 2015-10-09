@@ -62,21 +62,17 @@ class OdometryFeedbackWrapper(object):
         return config
 
     def init_signal_callback(self, msg):
-        with self.lock: # reset odometry and it is assumed to be initialized by init_odom
-            self.odom = None
         self.initialize_odometry()
-        
+
     def initialize_odometry(self):
-        if self.odom: # do nothing if odom is already initialized
-            return
-        # initialize odom
+        try:
+            (trans,rot) = self.listener.lookupTransform(self.odom_init_frame, self.base_link_frame, rospy.Time(0))
+        except:
+            rospy.logwarn("failed to solve tf in initialize_odometry: %s to %s", self.odom_init_frame, self.base_link_frame)
+            trans = [0.0, 0.0, 0.0]
+            rot = [0.0, 0.0, 0.0, 1.0]
+        rospy.loginfo("[%s]: initiailze odometry ", rospy.get_name())
         with self.lock:
-            try:
-                (trans,rot) = self.listener.lookupTransform(self.odom_init_frame, self.base_link_frame, rospy.Time(0))
-            except:
-                rospy.logwarn("failed to solve tf in initialize_odometry: %s to %s", self.odom_init_frame, self.base_link_frame)
-                trans = [0.0, 0.0, 0.0]
-                rot = [0.0, 0.0, 0.0, 1.0]
             self.odom = Odometry()
             self.odom.pose.pose = Pose(Point(*trans), Quaternion(*rot))
             self.odom.pose.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist() # initial covariance: 0.001[mm]**2
