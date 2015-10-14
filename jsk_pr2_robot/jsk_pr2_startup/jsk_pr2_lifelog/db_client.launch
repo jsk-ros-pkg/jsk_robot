@@ -11,7 +11,7 @@
   <arg name="store_people" default="true" />
   <arg name="visualize_log" default="true" />
   <arg name="twitter" default="true" />
-  <arg name="machine" default="c1" />
+  <arg name="machine" default="c2" />
   <arg name="output" default="screen" />
 
   <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
