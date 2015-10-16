@@ -161,10 +161,12 @@
   </node>
 
   <!-- logging database -->
+  <!-- expected mongod server runs on c2 -->
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
-    <arg name="replicator_dump_path" value="/removable/replicator_dumps" />
+    <arg name="replicator_dump_path" value="/removable/replicator_dumps" /> <!-- use removable hdd on c2 -->
+    <arg name="machine" value="c2" />
   </include>
 </launch>
