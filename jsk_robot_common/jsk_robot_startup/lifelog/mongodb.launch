@@ -4,6 +4,7 @@
   <arg name="repl_set_mode" default="false" />
   <arg name="use_daemon" default="false" />
   <arg name="db_name" default="jsk_robot_lifelog"/>
+  <arg name="machine" default="localhost" />
 
   <arg name="replicate" default="true" />
   <arg name="replicator_dump_path" default="/tmp/replicator_dumps" />
@@ -26,6 +27,7 @@
     <arg name="port" value="$(arg port)" />
     <arg name="use_daemon" value="$(arg use_daemon)" />
     <arg name="use_machine" value="false" />
+    <arg name="machine" value="$(arg machine)" />
     <arg name="use_repl_set" value="true"
          if="$(arg repl_set_mode)" />
     <arg name="repl_set" value="rs0"
@@ -37,6 +39,7 @@
   <!-- This is watcher checking if mongod exits successfully, and when not, kill mongod process. -->
   <node name="mongod_kill_watcher"
         pkg="jsk_robot_startup" type="mongod_kill_watcher.py"
+        machine="$(arg machine)"
         if="$(arg repl_set_mode)">
     <param name="db_path" value="$(arg db_path)" />
   </node>
