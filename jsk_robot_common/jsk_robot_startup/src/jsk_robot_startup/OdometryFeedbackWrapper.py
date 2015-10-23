@@ -241,7 +241,7 @@ class OdometryFeedbackWrapper(object):
         if self.twist_proportional_covariance == True:
             current_sigma = [x * y for x, y in zip(twist_list, self.sigma)]
         else:
-            current_sigma = self.v_sigma[i]
+            current_sigma = self.v_sigma
         twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
 
     def update_pose_covariance(self, pose, twist, pose_frame, twist_frame, stamp, dt):
