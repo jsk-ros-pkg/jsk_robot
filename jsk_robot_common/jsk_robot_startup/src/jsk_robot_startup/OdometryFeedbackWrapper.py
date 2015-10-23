@@ -162,8 +162,8 @@ class OdometryFeedbackWrapper(object):
         nearest_odom_pose, nearest_odom_cov_matrix = make_pose_set(nearest_odom)
         feedback_odom_pose, feedback_odom_cov_matrix = make_pose_set(feedback_odom)
         for i in range(6):
-            if abs(nearest_odom_pose[i] - feedback_odom_pose[i]) > numpy.sqrt(nearest_odom_cov_matrix[i, i]):
-                rospy.loginfo("%s: Pose difference is larger than original sigma.%f > %f",
+            if abs(nearest_odom_pose[i] - feedback_odom_pose[i]) > 3 * numpy.sqrt(nearest_odom_cov_matrix[i, i]):
+                rospy.loginfo("%s: Pose difference is larger than original sigma * 3. %f > %f",
                               rospy.get_name(), abs(nearest_odom_pose[i] - feedback_odom_pose[i]), numpy.sqrt(nearest_odom_cov_matrix[i, i]))
                 return True
         return False
