@@ -23,7 +23,7 @@ class OdometryFeedbackWrapper(object):
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.max_feedback_time = rospy.get_param("~max_feedback_time", 60)
-        self.twist_proportional_covariance = rospy.get_param("~twist_proportional_covariance", False)
+        self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
         self.broadcast = tf.TransformBroadcaster()
         self.listener = tf.TransformListener(True, rospy.Duration(self.max_feedback_time + 10)) # 10[sec] is safety mergin for feedback
         self.odom = None # belief of this wrapper
@@ -238,7 +238,7 @@ class OdometryFeedbackWrapper(object):
 
     def update_twist_covariance(self, twist):
         twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
-        if self.twist_proportional_covariance == True:
+        if self.twist_proportional_sigma == True:
             current_sigma = [x * y for x, y in zip(twist_list, self.sigma)]
         else:
             current_sigma = self.v_sigma
