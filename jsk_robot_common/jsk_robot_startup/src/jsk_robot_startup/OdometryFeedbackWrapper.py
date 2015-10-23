@@ -23,6 +23,7 @@ class OdometryFeedbackWrapper(object):
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.max_feedback_time = rospy.get_param("~max_feedback_time", 60)
+        self.twist_proportional_covariance = rospy.get_param("~twist_proportional_covariance", False)
         self.broadcast = tf.TransformBroadcaster()
         self.listener = tf.TransformListener(True, rospy.Duration(self.max_feedback_time + 10)) # 10[sec] is safety mergin for feedback
         self.odom = None # belief of this wrapper
@@ -124,6 +125,7 @@ class OdometryFeedbackWrapper(object):
                                                              hist.header.stamp, dt) # update feedback_odom according to twist of hist
                         # update covariance
                         # this wrapper do not upgrade twist.covariance to trust feedback_odom.covariance
+                        self.update_twist_covariance(self.feedback_odom.twist)
                         self.update_pose_covariance(self.feedback_odom.pose, self.feedback_odom.twist,
                                                     self.feedback_odom.header.frame_id, hist.child_frame_id,
                                                     hist.header.stamp, dt)
@@ -181,7 +183,6 @@ class OdometryFeedbackWrapper(object):
                 if self.publish_tf:
                     self.broadcast_transform()
 
-
     def calc_odometry(self):
         self.update_twist(self.odom.twist, self.source_odom.twist)
         self.prev_global_twist = self.update_pose(self.odom.pose, self.odom.twist, self.prev_global_twist, self.odom.header.frame_id, self.odom.child_frame_id, rospy.Time(0), self.dt)
@@ -236,19 +237,12 @@ class OdometryFeedbackWrapper(object):
         return global_twist # return global twist for next iteration
 
     def update_twist_covariance(self, twist):
-        # twist_proportional_sigma = [twist.twist.linear.x * self.v_sigma[0], twist.twist.linear.y * self.v_sigma[1], twist.twist.linear.z * self.v_sigma[2],
-        #                             twist.twist.angular.x * self.v_sigma[3], twist.twist.angular.y * self.v_sigma[4], twist.twist.angular.z * self.v_sigma[5]]
-        # twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in twist_proportional_sigma]).reshape(-1,).tolist() # covariance should be singular
-
         twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
-        current_sigma = []
-        for i in range(6):
-            if abs(twist_list[i]) < 0.001:
-                current_sigma.append(0.001)
-            else:
-                current_sigma.append(self.v_sigma[i])
+        if self.twist_proportional_covariance == True:
+            current_sigma = [x * y for x, y in zip(twist_list, self.sigma)]
+        else:
+            current_sigma = self.v_sigma[i]
         twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
-
 
     def update_pose_covariance(self, pose, twist, pose_frame, twist_frame, stamp, dt):
         # make matirx from covarinace array
