@@ -1,0 +1,83 @@
+<launch>
+  <arg name="robot" default="pepper_robot" />
+  <group ns="$(arg robot)">
+
+    <arg name="camera" default="camera" />
+    <arg name="rgb_frame_id"   default="CameraTop_optical_frame" />
+    <arg name="depth_frame_id" default="CameraDepth_optical_frame" />
+
+    <!-- Hardware depth registration -->
+    <arg name="depth_registration" default="false" />
+
+    <!-- Driver parameters -->
+    <arg name="color_depth_synchronization"     default="false" />
+    <arg name="auto_exposure"                   default="true" />
+    <arg name="auto_white_balance"              default="true" />
+
+    <!-- Arguments for remapping all device namespaces -->
+    <arg name="rgb"              default="front" />
+    <arg name="ir"               default="ir" />
+    <arg name="depth"            default="depth" />
+
+    <!-- Optionally suppress loading the driver nodelet and/or publishing the default tf
+         tree. Useful if you are playing back recorded raw data from a bag, or are
+         supplying a more accurate tf tree from calibration. -->
+    <arg name="publish_tf" default="false" />
+
+    <!-- Processing Modules -->
+    <arg name="rgb_processing"                  default="true"  />
+    <arg name="debayer_processing"              default="false" />
+    <arg name="ir_processing"                   default="false" />
+    <arg name="depth_processing"                default="true" />
+    <arg name="depth_registered_processing"     default="true" />
+    <arg name="disparity_processing"            default="false" />
+    <arg name="disparity_registered_processing" default="false" />
+    <arg name="hw_registered_processing"        default="true" if="$(arg depth_registration)" />
+    <arg name="sw_registered_processing"        default="false" if="$(arg depth_registration)" />
+    <arg name="hw_registered_processing"        default="false" unless="$(arg depth_registration)" />
+    <arg name="sw_registered_processing"        default="true" unless="$(arg depth_registration)" />
+
+    <!-- Disable bond topics by default -->
+    <arg name="respawn" default="false" />
+
+    <!-- Worker threads for the nodelet manager -->
+    <arg name="num_worker_threads" default="4" />
+
+    <!-- Push down all topics/nodelets into "camera" namespace -->
+    <group ns="$(arg camera)">
+
+      <!-- Start nodelet manager -->
+      <arg name="manager" value="$(arg camera)_nodelet_manager" />
+      <arg name="debug" default="false" /> <!-- Run manager in GDB? -->
+      <include file="$(find rgbd_launch)/launch/includes/manager.launch.xml">
+        <arg name="name" value="$(arg manager)" />
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="num_worker_threads"  value="$(arg num_worker_threads)" />
+      </include>
+
+      <!-- Load standard constellation of processing nodelets -->
+      <include file="$(find rgbd_launch)/launch/includes/processing.launch.xml">
+        <arg name="manager"                         value="$(arg manager)" />
+        <arg name="rgb"                             value="$(arg rgb)" />
+        <arg name="ir"                              value="$(arg ir)" />
+        <arg name="depth"                           value="$(arg depth)" />
+        <arg name="respawn"                         value="$(arg respawn)" />
+        <arg name="rgb_processing"                  value="$(arg rgb_processing)" />
+        <arg name="debayer_processing"              value="$(arg debayer_processing)" />
+        <arg name="ir_processing"                   value="$(arg ir_processing)" />
+        <arg name="depth_processing"                value="$(arg depth_processing)" />
+        <arg name="depth_registered_processing"     value="$(arg depth_registered_processing)" />
+        <arg name="disparity_processing"            value="$(arg disparity_processing)" />
+        <arg name="disparity_registered_processing" value="$(arg disparity_registered_processing)" />
+        <arg name="hw_registered_processing"        value="$(arg hw_registered_processing)" />
+        <arg name="sw_registered_processing"        value="$(arg sw_registered_processing)" />
+      </include>
+
+    </group> <!-- camera -->
+
+    <!-- Load reasonable defaults for the relative pose between cameras -->
+    <include if="$(arg publish_tf)" file="$(find rgbd_launch)/launch/kinect_frames.launch">
+      <arg name="camera" value="$(arg camera)" />
+    </include>
+  </group> <!-- robot -->
+</launch>
