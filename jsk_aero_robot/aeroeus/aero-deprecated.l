@@ -595,10 +595,10 @@
 	  )
      av))
   (:wheel-vector (av)
-    (let ((wheel-joint-names (list "f_r_wheel_joint"
-				   "r_r_wheel_joint"
-				   "f_l_wheel_joint"
-				   "r_l_wheel_joint"))
+    (let ((wheel-joint-names (list "can_front_r_wheel"
+				   "can_rear_r_wheel"
+				   "can_front_l_wheel"
+				   "can_rear_l_wheel"))
 	  )
       (ros::publish "/aero_controller/wheel_command"
 	  (instance trajectory_msgs::JointTrajectory
