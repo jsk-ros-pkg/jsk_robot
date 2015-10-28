@@ -65,6 +65,7 @@
     <env name="PATH" value="$(find voice_text):$(env PATH)" />
     <!-- <env name="PATH" value="$(find aques_talk):$(env PATH)" /> -->
     <remap from="robotsound" to="robotsound_jp" />
+    <remap from="sound_play" to="robotsound_jp" />
   </node>
 
   <!-- start sift on narrow left-->
