@@ -302,6 +302,13 @@
   (if (not (boundp '*aero*))
       (setq *aero* (instance AeroUpperRobot-robot :init))
     )
+  (setq ((send *aero* :head :neck-p) . max-angle) 40)
+  (setq ((send *aero* :torso :waist-p) . max-angle) 40)
+  (setq ((send *aero* :rarm :elbow-p) . max-angle) -1)
+  (setq ((send *aero* :torso :waist-y) . min-angle) -30)
+  (setq ((send *aero* :torso :waist-y) . max-angle) 30)
+  (setq ((send *aero* :head :neck-y) . min-angle) -45)
+  (setq ((send *aero* :head :neck-y) . max-angle) 45)
   (send *aero* :angle-vector (send *ri* :actual-vector))
   )
 
