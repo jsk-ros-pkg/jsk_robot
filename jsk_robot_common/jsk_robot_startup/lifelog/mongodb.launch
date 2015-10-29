@@ -22,11 +22,10 @@
   </group>
 
   <!-- MongoDB -->
-  <include file="$(find mongodb_store)/launch/mongodb_store.launch">
+  <include file="$(find mongodb_store)/launch/mongodb_store_inc.launch">
     <arg name="db_path" value="$(arg db_path)" />
     <arg name="port" value="$(arg port)" />
     <arg name="use_daemon" value="$(arg use_daemon)" />
-    <arg name="use_machine" value="false" />
     <arg name="machine" value="$(arg machine)" />
     <arg name="use_repl_set" value="true"
          if="$(arg repl_set_mode)" />
