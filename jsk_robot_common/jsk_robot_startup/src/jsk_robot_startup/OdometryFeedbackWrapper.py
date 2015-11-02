@@ -23,6 +23,7 @@ class OdometryFeedbackWrapper(object):
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.max_feedback_time = rospy.get_param("~max_feedback_time", 60)
+        self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
         self.broadcast = tf.TransformBroadcaster()
         self.listener = tf.TransformListener(True, rospy.Duration(self.max_feedback_time + 10)) # 10[sec] is safety mergin for feedback
         self.odom = None # belief of this wrapper
@@ -124,6 +125,7 @@ class OdometryFeedbackWrapper(object):
                                                              hist.header.stamp, dt) # update feedback_odom according to twist of hist
                         # update covariance
                         # this wrapper do not upgrade twist.covariance to trust feedback_odom.covariance
+                        self.update_twist_covariance(self.feedback_odom.twist)
                         self.update_pose_covariance(self.feedback_odom.pose, self.feedback_odom.twist,
                                                     self.feedback_odom.header.frame_id, hist.child_frame_id,
                                                     hist.header.stamp, dt)
@@ -160,8 +162,8 @@ class OdometryFeedbackWrapper(object):
         nearest_odom_pose, nearest_odom_cov_matrix = make_pose_set(nearest_odom)
         feedback_odom_pose, feedback_odom_cov_matrix = make_pose_set(feedback_odom)
         for i in range(6):
-            if abs(nearest_odom_pose[i] - feedback_odom_pose[i]) > numpy.sqrt(nearest_odom_cov_matrix[i, i]):
-                rospy.loginfo("%s: Pose difference is larger than original sigma.%f > %f",
+            if abs(nearest_odom_pose[i] - feedback_odom_pose[i]) > 3 * numpy.sqrt(nearest_odom_cov_matrix[i, i]):
+                rospy.loginfo("%s: Pose difference is larger than original sigma * 3. %f > %f",
                               rospy.get_name(), abs(nearest_odom_pose[i] - feedback_odom_pose[i]), numpy.sqrt(nearest_odom_cov_matrix[i, i]))
                 return True
         return False
@@ -180,7 +182,6 @@ class OdometryFeedbackWrapper(object):
                 self.publish_odometry()
                 if self.publish_tf:
                     self.broadcast_transform()
-
 
     def calc_odometry(self):
         self.update_twist(self.odom.twist, self.source_odom.twist)
@@ -236,19 +237,12 @@ class OdometryFeedbackWrapper(object):
         return global_twist # return global twist for next iteration
 
     def update_twist_covariance(self, twist):
-        # twist_proportional_sigma = [twist.twist.linear.x * self.v_sigma[0], twist.twist.linear.y * self.v_sigma[1], twist.twist.linear.z * self.v_sigma[2],
-        #                             twist.twist.angular.x * self.v_sigma[3], twist.twist.angular.y * self.v_sigma[4], twist.twist.angular.z * self.v_sigma[5]]
-        # twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in twist_proportional_sigma]).reshape(-1,).tolist() # covariance should be singular
-
         twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
-        current_sigma = []
-        for i in range(6):
-            if abs(twist_list[i]) < 0.001:
-                current_sigma.append(0.001)
-            else:
-                current_sigma.append(self.v_sigma[i])
+        if self.twist_proportional_sigma == True:
+            current_sigma = [x * y for x, y in zip(twist_list, self.v_sigma)]
+        else:
+            current_sigma = self.v_sigma
         twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
-
 
     def update_pose_covariance(self, pose, twist, pose_frame, twist_frame, stamp, dt):
         # make matirx from covarinace array
