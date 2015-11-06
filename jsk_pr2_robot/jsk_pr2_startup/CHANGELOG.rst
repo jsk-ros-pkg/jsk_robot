@@ -2,6 +2,45 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* support mongodb-based life-log
+
+  * [db_client] add machine option for mongodb client
+  * [jsk_pr2_startup/jsk_pr2_lifelog/action_result_db.py] fix: ignore useless type subscription
+  * [jsk_pr2_startup/pr2_bringup.launch] use replication dump temp path on /removable instead of /tmp
+  * [jsk_pr2_startup] add db client params and map_frame in pr2.launch
+  * [jsk_pr2_startup/jsk_pr2_lifelog/db_client.launch] add result of face recognition data for recording to db
+  * [jsk_pr2_startup/jsk_pr2_lifelog/db_client.launch] fix excluding topics for db record
+  * [jsk_pr2_startup/jsk_pr2_lifelog/objectdetection_db.py] store NOT '_agg' topics instead of '_agg'
+    for support applications that publish msgs without "_agg" topic
+  * [jsk_pr2_startup/jsk_pr2_lifelog/action_result_db_config.yaml] remove gripper action from black_list
+  * [jsk_pr2_startup/jsk_pr2_lifelog/visualization] add visualization nodes for database
+  * [jsk_pr2_startup/jsk_pr2_lifelog/mongodb_log.py] fix mongodb_log.py to support logging with jsk name convention
+  * [jsk_pr2_startup/jsk_pr2_lifelog/pr2-tweet-log.l] add twitter node for logging
+
+* Sounds
+
+  * [jsk_pr2_startup] remap sound_play nodes to robotsound
+  * [jsk_pr2_startup/pr2_hark] fix issue https://github.com/jsk-ros-pkg/jsk_robot/issues/359
+    - Update Transfer function data for Hark >2.1
+    - Update batch files for new transfer function data
+    - support stand-alone launch of `pr2_hark.launch`
+    - Update README
+
+* Misc updates
+
+  * [jsk_pr2_startup] Wording in plugin description
+  * [jsk_pr2_startup] modify typo in jsk_pr2.rosinstall
+  * [jsk_pr2_startup] add some args to pr2.launch
+  * [.rosinstall] fix face_recognition to upstream
+  * [jsk_pr2_startup] add face_recognition
+  * [jsk_pr2_startup] update global costmap params
+  * [jsk_pr2_startup] change the order of local costmap plugin
+  * [jsk_pr2_startup] add pr2_gazebo_610.launch as sample
+
+* Contributors: Yuki Furuta, Isaac IY Saito, Yuto Inagaki
+
 0.0.11 (2015-09-01)
 -------------------
 

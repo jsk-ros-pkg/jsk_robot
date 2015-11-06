@@ -2,6 +2,11 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_baxter_startup] Fix deprecated arg name image_topic + s
+* Contributors: Kentaro Wada
+
 0.0.11 (2015-09-01)
 -------------------
 
