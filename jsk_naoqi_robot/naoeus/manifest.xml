@@ -1,0 +1,22 @@
+<package>
+  <description brief="naoeus">
+
+     naoeus
+
+  </description>
+  <author>Junpei Tsuji</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/naoeus</url>
+  <depend package="roseus"/>
+  <depend package="euscollada"/>
+  <depend package="pr2_msgs" />
+  <depend package="pr2_controllers_msgs"/>
+  <depend package="move_base_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="dynamic_reconfigure"/>
+  <depend package="naoqi_msgs"/>
+  <depend package="sound_play"/>
+</package>
+
+
