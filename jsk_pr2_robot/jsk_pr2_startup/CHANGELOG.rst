@@ -2,6 +2,9 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.12 (2015-11-06)
 -------------------
 * support mongodb-based life-log

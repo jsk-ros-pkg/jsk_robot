@@ -2,6 +2,12 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup] Add scripts to caclulate odometry with particle filter to integrate odometries (from pattern generator or visual odometry etc) and imu
+* [jsk_robot_startup] Add script to set offset from a frame (like init_odom) to odometry source
+* Contributors: Iori Kumagai
+
 0.0.12 (2015-11-06)
 -------------------
 * [jsk_robot_startup/lifelog/mongodb.launch] use machine attribute for mongodb server/client ref: https://github.com/strands-project/mongodb_store/pull/151
