@@ -1,5 +1,0 @@
-- git:
-    local-name: jsk_robot
-    uri: http://github.com/jsk-ros-pkg/jsk_robot.git
-    version: master
-

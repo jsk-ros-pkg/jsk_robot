@@ -1,5 +1,0 @@
-<launch>
-  <arg name="pip" />
-  <node pkg="naoeus" type="nao_laser.py" name="nao_laser" args="--pip $(arg pip)" />
-  <node pkg="tf" type="static_transform_publisher" name="nao_urg_frame_broadcaster" args="0 0 0.12 0 0 0 /HeadPitch_link /urg_frame 100" />
-</launch>

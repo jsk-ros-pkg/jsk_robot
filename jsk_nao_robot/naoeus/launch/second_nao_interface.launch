@@ -1,6 +1,0 @@
-<launch>
-  <arg name="nao_name" default="$(optenv NAO_NAME nao)" />
-  <group ns="$(arg nao_name)">
-    <node pkg="roseus" type="roseus" name="nao_interface" required="true" args="$(find naoeus)/euslisp/nao-interface.l" output="screen" />
-  </group>
-</launch>
