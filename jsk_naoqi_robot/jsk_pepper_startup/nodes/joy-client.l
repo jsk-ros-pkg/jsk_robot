@@ -5,6 +5,9 @@
 (ros::load-ros-manifest "peppereus")
 
 
+(if (not (find-package "NAOQI_BRIDGE_MSGS"))
+    (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
+
 (ros::advertise "/speech" std_msgs::String 1)
 (defun speak-jp (str &rest args)
   (let ((msg (instance std_msgs::String :init)))
@@ -18,10 +21,10 @@
   (ros::publish "/pepper_tweet" (instance std_msgs::String :init :data (apply #'format nil str args))))
 
 
-(ros::advertise "/joint_angles" naoqi_msgs::JointAnglesWithSpeed 1)
+(ros::advertise "/pepper_robot/pose/joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
 
 (setq *power-button-time* (ros::time-now))
-(setq *power-button-mode* "/wakeup")
+(setq *power-button-mode* "/pepper_robot/pose/wakeup")
 (setq *power-button-state* 0)
 (ros::subscribe "/joy" sensor_msgs::Joy
 		#'(lambda (msg)
@@ -36,42 +39,39 @@
 		      (cond ((and (= *power-button-state* 1)
 				  (=  power-button-state  0)
 				  (> (send (ros::time- (ros::time-now) *power-button-time*) :to-sec) 2))
-			     (if (string= *power-button-mode* "/wakeup")
+			     (if (string= *power-button-mode* "/pepper_robot/pose/wakeup")
 				 (progn
 				   (speak-jp "もう朝かな")
 				   (call-empty-service *power-button-mode*)
 				   (tweet "おはよう")
-				   (setq *power-button-mode* "/rest"))
+				   (setq *power-button-mode* "/pepper_robot/pose/rest"))
 			       (progn
 				 (speak-jp "もうそろそろ寝ます")
 				 (call-empty-service *power-button-mode*)
 				 (tweet "おやすみ")
-				 (setq *power-button-mode* "/wakeup")))
+				 (setq *power-button-mode* "/pepper_robot/pose/wakeup")))
 			     (unix:sleep 5)
 			     );; when
 			    ((= rb-button-state 1)
 			     (let ((up-down (elt axes 4))
 				   (left-right (elt axes 3))
-				   (ja_msg (instance naoqi_msgs::JointAnglesWithSpeed :init)))
+				   (ja_msg (instance naoqi_bridge_msgs::JointAnglesWithSpeed :init)))
 			       (send ja_msg :header :stamp (ros::time-now))
 			       (send ja_msg :header :seq 1)
 			       (send ja_msg :speed 0.1)
 			       (send ja_msg :relative 1)
 			       (send ja_msg :joint_names (list "HeadYaw" "HeadPitch"))
 			       (send ja_msg :joint_angles (scale 0.1 (float-vector left-right up-down)))
-			       (ros::publish "/joint_angles" ja_msg)
+			       (ros::publish "/pepper_robot/pose/joint_angles" ja_msg)
 			       ))
 			    ((= b-button-state 1)
 			     (speak-jp "disabled")
-			     (call-empty-service "/nao_alife/disabled")
+			     (call-empty-service "/pepper_robot/pose/life/disable")
 			     (unix:sleep 1)
-			     (call-empty-service "/wakeup"))
+			     (call-empty-service "/pepper_robot/pose/wakeup"))
 			    ((= x-button-state 1)
-			     (speak-jp "solitary")
-			     (call-empty-service "/nao_alife/solitary"))
-			    ((= y-button-state 1)
 			     (speak-jp "interactive")
-			     (call-empty-service "/nao_alife/interactive"))
+			     (call-empty-service "/pepper_robot/pose/life/enable"))
 			    (t
 			     ))
 		      (setq *power-button-time* (ros::time-now))
