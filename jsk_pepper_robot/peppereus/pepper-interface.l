@@ -2,7 +2,6 @@
 
 (load "package://peppereus/pepper.l")
 (load "package://pr2eus/robot-interface.l")
-(ros::load-ros-manifest "jsk_pepper_startup")
 (ros::load-ros-manifest "peppereus")
 
 (if (not (find-package "NAOQI_BRIDGE_MSGS"))
@@ -17,13 +16,13 @@
   (:init
    (&rest args &key (robot) (type :naoqi-controller) &allow-other-keys)
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
-   (ros::advertise "cmd_pose" geometry_msgs::Pose2D 1)
+   (ros::advertise "/move_base_simple/goal" geometry_msgs::PoseStamped 1)
    (ros::advertise "cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "/speech" std_msgs::String 1)
-   (ros::advertise "joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise "/pepper_robot/pose/joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
-		   "joint_stiffness_trajectory"
+		   "/pepper_robot/pose/joint_stiffness_trajectory"
 		   naoqi_bridge_msgs::JointTrajectoryAction))
    self)
   ;;
@@ -31,7 +30,7 @@
    ()
    (list
     (list
-     (cons :controller-action "joint_trajectory")
+     (cons :controller-action "/pepper_robot/pose/joint_trajectory")
     ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
      (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
@@ -76,7 +75,7 @@
        (:larm 
 	(send start_grasp_msg :joint_names (list "LHand"))
 	(send start_grasp_msg :joint_angles (list value))))
-     (ros::publish "joint_angles" start_grasp_msg)
+     (ros::publish "/pepper_robot/pose/joint_angles" start_grasp_msg)
      ))
   (:start-grasp
    (&optional (arm :arms))
@@ -95,11 +94,16 @@
   ;;
   (:go-pos
    (x y &optional (d 0)) ;; [m] [m] [degree]
-   (let ((pose_msg (instance geometry_msgs::Pose2D :init)))
-     (send pose_msg :x x)
-     (send pose_msg :y y)
-     (send pose_msg :theta (deg2rad d))
-     (ros::publish (if namespace (format nil "~A/cmd_pose" namespace) "cmd_pose") pose_msg)
+   "move robot toward x, y, degree and wait to reach that goal. return t if reached or nil if fail
+    the robot moves relative to current position.
+    using [m] and [degree] is historical reason from original hrpsys code"
+   ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/master/pr2eus/robot-interface.l#L867
+   (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
+     (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
+			  :rpy (float-vector (deg2rad d) 0 0)))
+     (send pose_msg :header :frame_id "base_footprint")
+     (send pose_msg :pose (ros::coords->tf-pose c))
+     (ros::publish "/move_base_simple/goal" pose_msg)
      ))
 
   (:go-velocity
@@ -176,8 +180,8 @@
 			   :time_from_start (ros::time 1))))
      (send joint-stiffness-trajectory-action :send-goal goal)
      ))
-  (:servo-on () (call-empty-service "wakeup"))
-  (:servo-off () (call-empty-service "rest"))
+  (:servo-on () (call-empty-service "pepper_robot/pose/wakeup"))
+  (:servo-off () (call-empty-service "pepper_robot/pose/rest"))
   )
 
 (defmethod pepper-robot
