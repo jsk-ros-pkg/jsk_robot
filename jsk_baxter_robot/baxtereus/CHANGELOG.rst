@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.12 (2015-11-06)
+-------------------
 * [baxtereus] :swap-arm-av -> :l/r-reverse
 * [baxtereus] :swap-arm-av method
 * [baxtereus] :hard-coded-pose method
