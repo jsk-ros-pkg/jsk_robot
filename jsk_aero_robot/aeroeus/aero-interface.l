@@ -74,7 +74,7 @@
     )
   (:ungrasp (arm &optional (time 100))
     (send self :hand arm :open-pose)
-    (send *ri* :angle-vector (send self :stroke-vector) time)
+    (send *ri* :angle-vector (send self :angle-vector) time)
     (unix::usleep(* time 1000))
     )
   ;; do not grasp-hard faster than 1 sec
