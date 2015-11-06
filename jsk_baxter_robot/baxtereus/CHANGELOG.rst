@@ -2,6 +2,13 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [baxtereus] :swap-arm-av -> :l/r-reverse
+* [baxtereus] :swap-arm-av method
+* [baxtereus] :hard-coded-pose method
+* Contributors: Kentaro Wada
+
 0.0.11 (2015-09-01)
 -------------------
 * [baxtereus/test/test-baxter.l] :debug-view :no-messages output too many messages for travis

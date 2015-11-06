@@ -2,6 +2,44 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup/lifelog/mongodb.launch] use machine attribute for mongodb server/client ref: https://github.com/strands-project/mongodb_store/pull/151
+* [jsk_robot_startup] Modify pose difference threshould from sigma to 3*sigma
+* [jsk_robot_startup] Rename twist_proportional_covariance to twist_proportional_sigma for accuracy
+* [jsk_robot_startup] Add twist proportional sigma option to odometry feedback wrapper
+* [db_client] add machine option for mongodb client
+* [jsk_robot_startup] Fix timestamp problem of transform and odom in feedback process
+* [jsk_robot_startup] use deepcopy instead of copy because coipy method copies reference of object members
+* [jsk_robot_startup] Reset odometry buffer when initialize_odometry
+* [jsk_robot_startup] Remove unnecessary lock in initialize
+* [jsk_robot_startup] Prevent dead lock in initialize_odometry
+* [jsk_robot_startup] Initialize odometry using odom_init_frame in tf instead of init_odom topic
+* [jsk_robot_startup] Add init_signal subscriber to catch contact signal to ground and reset odometry wrapper
+* [jsk_robot_startup] Revert calculation of orientation, which is probably deleted by mistake
+* [jsk_robot_startup] Modify parameters for real robot
+* [jsk_robot_startup] Fix description of integration
+* [jsk_robot_startup] Modify integration method from rectangular to trapezoidal, and add prev_global_twist as argument of update_pose
+* [jsk_robot_startup] Extend queue_size from 1 to 100
+* [jsk_robot_startup] Modify ref_frame_change_method parameter from 0 to 1 to prevent drift in viso
+* [jsk_robot_startup] Add init_odom to indicate initialize soruce of odom
+* [jsk_robot_startup] Update documents for ConstantHeightFramePublisher
+* [jsk_robot_startup] Add arguments to select odom frame name of ConstantHeightFramePublisher
+* [jsk_robot_startup] Fix typo in error warning
+* [jsk_robot_startup] Print warning when faield to solve tf
+* [jsk_robot_startup] Pass odom frame name as rosparam in ConstantHeightFramePublisher
+* [jsk_robot_startup] Add script to integrate odometry soruce
+* [jsk_robot_startup] Add wrapper script to odometry feedback
+* [jsk_robot_startup/lifelog/periodic_replicator_client.py] cancel replication when no wired network connection
+* [jsk_robot_startup] Add args to determine frame name of odom and map to gmapping
+* [jsk_robot_startup] Add invert_viso_tf option to use invert_tf of viso, which is invert parent and child of viso_odom transformation
+* [jsk_robot_startup/lifelog/periodic_replicator_client.py] fix fetching argument
+* [jsk_robot_startup] Respawn viso to restart by rosnode kill
+* [jsk_robot_startup] Add args to remap image topic name for viso
+* [jsk_robot_startup/lifelog/tweet.launch] use image_saver instead of extract_images for tweeting with image
+* [jsk_robot_startup] add jenkins/musca to database replication node
+* Contributors: Yuki Furuta, Iori Kumagai
+
 0.0.11 (2015-09-01)
 -------------------
 * [jsk_robot_startup] Add visualization node for viso odom_combined
