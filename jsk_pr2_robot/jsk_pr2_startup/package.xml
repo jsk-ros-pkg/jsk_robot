@@ -1,6 +1,6 @@
 <package>
   <name>jsk_pr2_startup</name>
-  <version>0.0.13</version>
+  <version>1.0.0</version>
   <description>
      jsk_pr2_startup
   </description>
