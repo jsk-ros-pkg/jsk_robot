@@ -1,35 +1,46 @@
-#nao euslisp
-##Generate nao.l
+jsk_pepper_robot
+================
+
+setup environment
+-----------------
 ```
-catkin_make --only-pkg-with-deps euscollada
-roscd euscollada
-./nao.sh
+mkdir -p catkin_ws/src
+cd  catkin_ws
+wstool init src
+wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_pepper_robot/pepper.rosinstall
+wstool update -t src
+rosdep install -y -r --from-paths src --ignore-src
+catkin_make
+source devel/setup.bash
+```
+% Make sure that you have already installed the ``Python NAOqi SDK`` in your computer. If not, you can download it from [here](https://community.aldebaran.com/en/resources/software). After downloading the file, unzip and rename it to ``pynaoqi``, then put it under your home folder.
+ 
+You need to set NAO_IP and ROS_IP environment variable to launch `jsk_pepper_startup.launch`
+```
+source ~/catkin_ws/devel/setup.bash
+export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp"
+export ROS_IP="133.11.216.xxx" % OR run rossetip command to set ROS_IP
 ```
 
-##Improve nao.l
+Install pepper mesh files with manual approval of license
 ```
-catkin_make --only-pkg-with-deps eus_assimp
-roscd naoeus/scripts
-./setup.sh
+sudo apt-get install ros-indigo-pepper-meshes
 ```
 
-#nao gazebo
-##Dependencies
+running demo
+------------
 ```
-sudo apt-get install ros-hydro-joint-state-controller
-sudo apt-get install ros-hydro-position-controller
-sudo apt-get install ros-hydro-gazebo-ros-control
+roslaunch jsk_pepper_startup jsk_pepper_startup.launch
 ```
-##Download model file
 ```
-catkin_make --only-pkg-with-deps nao_meshes
-roscd
-cd ../build/ros_nao/nao_meses
-make nao_meshes_meshes
-roscd
-cp -r tmp/nao_meshes/* ../src/ros_nao/nao_meshes/
+rosrun jsk_pepper_startup sample.l
+$ (demo1)
 ```
-##How to run
+
+for developers
+--------------
+add following source code for debugging.
 ```
-roslaunch nao_gazebo_plugin nao_gazebo_plugin_H25.launch
+cd  catkin_ws/src
+wstool set pepper_robot --git pepper_robot http://github.com/ros-naoqi/pepper_robot
 ```

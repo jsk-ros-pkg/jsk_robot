@@ -1,0 +1,55 @@
+<launch>
+  <param name="robot/type" value="pepper" />
+  <param name="robot/name" command='bash -c "getent hosts $NAO_IP | tr -s \" \" | cut -d\  -f 2 | cut -d. -f 1"' />
+  <arg name="nao_ip" value="$(env NAO_IP)"/>
+  <arg name="roscore_ip" value="$(env ROS_IP)"/>
+  <arg name="network_interface"   default="eth0" />
+  <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
+    <arg name="nao_ip" value="$(arg nao_ip)"/>
+    <arg name="roscore_ip" value="$(arg roscore_ip)"/>
+    <arg name="network_interface" value="$(arg network_interface)"/>
+  </include>
+
+  <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
+  <node pkg="joy" type="joy_node" name="joy_node">
+    <param name="dev" value="/dev/input/js0" />
+    <param name="deadzone" value="0.3" />
+    <param name="autorepeat_rate" value="20" />
+  </node>
+  <node pkg="teleop_twist_joy" name="teleop_twist_joy"
+        type="teleop_node">
+    <rosparam>
+axis_linear:
+  x: 1.0
+  y: 0.0
+scale_linear:
+  x: 0.7
+  y: 0.7
+scale_linear_turbo:
+  x: 1.5
+  y: 1.5
+
+axis_angular:
+  yaw: 3
+scale_angular:
+  yaw: 1.0
+scale_augular_turbo:
+  yaw: 1.5
+  yaw: 1.5
+
+enable_button: 4  # Left trigger button
+enable_turbo_button: 0  # A button
+    </rosparam>
+  </node>
+
+  <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
+  <node pkg="rostwitter" name="tweet" type="tweet.py" />
+  <node pkg="image_view" name="image_saver" type="image_saver" >
+    <remap from="image" to="/camera/front/camera/image_raw" />
+    <param name="save_all_image" value="false" />
+    <param name="filename_format" value="/tmp/pepper_camera.png" />
+  </node>
+  <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch"/>
+
+  <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" />
+</launch>

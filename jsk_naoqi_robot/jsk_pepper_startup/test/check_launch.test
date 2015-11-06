@@ -1,0 +1,4 @@
+<launch>
+  <test test-name="check_pepper_launch" pkg="roslaunch" type="roslaunch-check"
+        args="$(find jsk_pepper_startup)/launch/jsk_pepper_startup.launch -o $(env CATKIN_TEST_RESULTS_DIR)/jsk_pepper_startup/rosunit-check_pepper_launch.xml -- " />
+</launch>
