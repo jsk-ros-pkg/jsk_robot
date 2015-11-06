@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.12 (2015-11-06)
+-------------------
 * [jsk_robot_startup/lifelog/mongodb.launch] use machine attribute for mongodb server/client ref: https://github.com/strands-project/mongodb_store/pull/151
 * [jsk_robot_startup] Modify pose difference threshould from sigma to 3*sigma
 * [jsk_robot_startup] Rename twist_proportional_covariance to twist_proportional_sigma for accuracy
