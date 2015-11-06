@@ -1,0 +1,40 @@
+<launch>
+  <arg name="use_imu" default="false"/>
+  
+  <node pkg="jsk_robot_startup" type="odometry_offset.py" name="biped_odometry_offset"
+        output="screen" >
+    <remap from="~source_odom" to="/odom" />
+    <remap from="~output" to="/biped_odom_offset" />
+    <remap from="~init_signal" to="/odom_init_trigger" />
+    <param name="~base_odom_frame" value="/odom_init" />
+    <param name="~odom_frame" value="biped_odom_offset" />
+    <param name="~base_link_frame" value="BODY" />     
+    <param name="~rate" value="100" />
+  </node>
+
+  <node pkg="jsk_robot_startup" type="odometry_offset.py" name="viso_odometry_offset"
+        output="screen" >
+    <remap from="~source_odom" to="/viso_odom" />
+    <remap from="~output" to="/viso_odom_offset" />
+    <remap from="~init_signal" to="/odom_init_trigger" />    
+    <param name="~base_odom_frame" value="/odom_init" />
+    <param name="~odom_frame" value="viso_odom_offset" />
+    <param name="~base_link_frame" value="BODY" />
+    <param name="~rate" value="100" />
+  </node>
+
+  <node pkg="jsk_robot_startup" type="particle_odometry.py" name="biped_particle_odometry"
+        output="screen">
+    <remap from="~source_odom" to="/biped_odom_offset" />
+    <remap from="~measure_odom" to="/viso_odom_offset" />
+    <remap from="~output" to="/biped_odom_particle" />
+    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~imu" to="/imu" />
+    <param name="~odom_init_frame" value="/odom_init" />
+    <param name="~odom_frame" value="biped_odom_particle" />
+    <param name="~base_link_frame" value="BODY" />
+    <param name="~rate" value="10" />
+    <param name="~use_imu" value="$(arg use_imu)" />
+  </node>
+  
+</launch>
