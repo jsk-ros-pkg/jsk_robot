@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2015-11-06)
+------------------
 * [pepper-interface.l] update :go-pos for new NoaQi drivers using move_base_simple/goal
 * [pepper-interface.l] update joint action server name space for newer pepper_bringup
 * Contributors: Kei Okada
