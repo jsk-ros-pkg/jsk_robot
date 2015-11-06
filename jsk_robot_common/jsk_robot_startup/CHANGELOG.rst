@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.13 (2015-11-06)
+-------------------
 * [jsk_robot_startup] Add scripts to caclulate odometry with particle filter to integrate odometries (from pattern generator or visual odometry etc) and imu
 * [jsk_robot_startup] Add script to set offset from a frame (like init_odom) to odometry source
 * Contributors: Iori Kumagai
