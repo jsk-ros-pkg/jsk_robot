@@ -3,7 +3,7 @@ project(naoqieus)
 
 find_package(catkin REQUIRED rostest diagnostic_aggregator nao_interaction_msgs naoqi_driver roseus)
 
-catkin_package()
+catkin_package(CFG_EXTRAS compile_naoqi_model.cmake)
 
 add_rostest(test/naoqieus.test)
 
