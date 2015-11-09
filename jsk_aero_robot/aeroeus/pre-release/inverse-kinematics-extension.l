@@ -55,25 +55,31 @@
 	   res
 	   get-coords
 	   )
-       (setq req (instance aero_startup::AeroReachControllerServiceRequest
-			   :init))
-       (send req :x (elt (send coords :pos) 0))
-       (send req :y (elt (send coords :pos) 1))
-       (send req :z (elt (send coords :pos) 2))
-       (send req :neck_y (send *aero* :head :neck-y :joint-angle))
-       (if (eq arm :larm)
-	   (setq res (ros::service-call "/larm/aero_reach_controller" req))
-	 (setq res (ros::service-call "/rarm/aero_reach_controller" req))
-	 )
-       (setq get-coords
-	     (make-coords :pos (v+ (send coords :pos)
-				   (v- (send coords :pos)
-				       (float-vector (send res :x)
-						     (send res :y)
-						     (send res :z))))
-			  :rot (send coords :rot)))
-       (send *aero* arm :inverse-kinematics get-coords
-	     :revert-if-fail revert-if-fail)
+       (cond ((eq torso nil)
+	      (setq req (instance
+			 aero_startup::AeroReachControllerServiceSimpleRequest
+			 :init))
+	      (send req :x (elt (send coords :pos) 0))
+	      (send req :y (elt (send coords :pos) 1))
+	      (send req :z (elt (send coords :pos) 2))
+	      (send req :neck_y (send *aero* :head :neck-y :joint-angle))
+	      (if (eq arm :larm)
+		  (setq res (ros::service-call
+			     "/larm/aero_reach_controller" req))
+		(setq res (ros::service-call
+			   "/rarm/aero_reach_controller" req))
+		)
+	      (setq get-coords
+		    (make-coords :pos (v+ (send coords :pos)
+					  (v- (send coords :pos)
+					      (float-vector (send res :x)
+							    (send res :y)
+							    (send res :z))))
+				 :rot (send coords :rot)))
+	      (send *aero* arm :inverse-kinematics get-coords
+		    :revert-if-fail revert-if-fail)
+	      )
+	     )
        get-coords))
 
   (:grasp-object (arm &key (torso nil) (revert-if-fail nil))
