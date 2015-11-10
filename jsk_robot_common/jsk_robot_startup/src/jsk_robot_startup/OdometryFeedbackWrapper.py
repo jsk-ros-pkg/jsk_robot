@@ -29,7 +29,6 @@ class OdometryFeedbackWrapper(object):
         self.odom = None # belief of this wrapper
         self.feedback_odom = None
         self.source_odom = None
-        self.prev_global_twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
         self.dt = 0.0
         self.prev_feedback_time = rospy.Time.now()
         self.r = rospy.Rate(self.rate)
@@ -41,6 +40,12 @@ class OdometryFeedbackWrapper(object):
                         rospy.get_param("~sigma_roll", 0.0001),
                         rospy.get_param("~sigma_pitch", 0.0001),
                         rospy.get_param("~sigma_yaw", 0.01)]
+        self.init_sigma = [rospy.get_param("~init_sigma_x", 0.3),
+                           rospy.get_param("~init_sigma_y", 0.3),
+                           rospy.get_param("~init_sigma_z", 0.0001),
+                           rospy.get_param("~init_sigma_roll", 0.0001),
+                           rospy.get_param("~init_sigma_pitch", 0.0001),
+                           rospy.get_param("~init_sigma_yaw", 0.2)]        
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
@@ -77,7 +82,7 @@ class OdometryFeedbackWrapper(object):
         with self.lock:
             self.odom = Odometry()
             self.odom.pose.pose = Pose(Point(*trans), Quaternion(*rot))
-            self.odom.pose.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist() # initial covariance: 0.001[mm]**2
+            self.odom.pose.covariance = numpy.diag([x ** 2 for x in self.init_sigma]).reshape(-1,).tolist()
             self.odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
             self.odom.twist.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist()
             self.odom.header.stamp = rospy.Time.now()
@@ -106,7 +111,7 @@ class OdometryFeedbackWrapper(object):
                     nearest_dt = dt
                     nearest_odom = copy.deepcopy(hist)
             # get approximate pose at feedback_odom timestamp (probably it is past) of nearest_odom
-            self.update_pose(nearest_odom.pose, nearest_odom.twist, None, # use rectangular approximation for simplicity
+            self.update_pose(nearest_odom.pose, nearest_odom.twist,
                              nearest_odom.header.frame_id, nearest_odom.child_frame_id,
                              nearest_odom.header.stamp, nearest_dt)
             enable_feedback = self.check_covaraicne(nearest_odom) or self.check_distribution_difference(nearest_odom, self.feedback_odom)
@@ -114,15 +119,14 @@ class OdometryFeedbackWrapper(object):
             if enable_feedback:
                 rospy.loginfo("%s: Feedback enabled.", rospy.get_name())
                 self.feedback_odom = msg
-                prev_global_twist = None
                 for hist in self.odom_history:
                     dt = (hist.header.stamp - self.feedback_odom.header.stamp).to_sec()
                     if dt > 0.0:
                         # update pose and twist according to the history
                         self.update_twist(self.feedback_odom.twist, hist.twist)
-                        prev_global_twist = self.update_pose(self.feedback_odom.pose, hist.twist, prev_global_twist, # use rectangular approximation only first
-                                                             self.feedback_odom.header.frame_id, hist.child_frame_id,
-                                                             hist.header.stamp, dt) # update feedback_odom according to twist of hist
+                        self.update_pose(self.feedback_odom.pose,
+                                         hist.twist, self.feedback_odom.header.frame_id, hist.child_frame_id,
+                                         hist.header.stamp, dt) # update feedback_odom according to twist of hist
                         # update covariance
                         # this wrapper do not upgrade twist.covariance to trust feedback_odom.covariance
                         self.update_twist_covariance(self.feedback_odom.twist)
@@ -185,7 +189,7 @@ class OdometryFeedbackWrapper(object):
 
     def calc_odometry(self):
         self.update_twist(self.odom.twist, self.source_odom.twist)
-        self.prev_global_twist = self.update_pose(self.odom.pose, self.odom.twist, self.prev_global_twist, self.odom.header.frame_id, self.odom.child_frame_id, rospy.Time(0), self.dt)
+        self.update_pose(self.odom.pose, self.odom.twist, self.odom.header.frame_id, self.odom.child_frame_id, rospy.Time(0), self.dt)
 
     def calc_covariance(self):
         self.update_twist_covariance(self.odom.twist)
@@ -217,24 +221,19 @@ class OdometryFeedbackWrapper(object):
                                                                [local_twist.twist.angular.z]]))
         return Twist(Vector3(*global_velocity[:3, 0]), Vector3(*global_omega[:3, 0]))
 
-    def update_pose(self, pose, twist, prev_global_twist, pose_frame, twist_frame, stamp, dt):
+    def update_pose(self, pose, twist, pose_frame, twist_frame, stamp, dt):
         global_twist = self.convert_local_twist_to_global_twist(twist, pose_frame, twist_frame, stamp)
-        if not global_twist:
-            return prev_global_twist
         euler = list(tf.transformations.euler_from_quaternion((pose.pose.orientation.x, pose.pose.orientation.y,
                                                                pose.pose.orientation.z, pose.pose.orientation.w)))
-        if not prev_global_twist: # use rectangular approximation if prev_global_twist is None
-            prev_global_twist = global_twist
         # calculate trapezoidal integration
-        pose.pose.position.x += 0.5 * (global_twist.linear.x + prev_global_twist.linear.x) * dt
-        pose.pose.position.y += 0.5 * (global_twist.linear.y + prev_global_twist.linear.y) * dt
-        pose.pose.position.z += 0.5 * (global_twist.linear.z + prev_global_twist.linear.z) * dt
-        euler[0] += 0.5 * (global_twist.angular.x + prev_global_twist.angular.x) * dt
-        euler[1] += 0.5 * (global_twist.angular.y + prev_global_twist.angular.y) * dt
-        euler[2] += 0.5 * (global_twist.angular.z + prev_global_twist.angular.z) * dt
+        pose.pose.position.x += global_twist.linear.x * dt
+        pose.pose.position.y += global_twist.linear.y * dt
+        pose.pose.position.z += global_twist.linear.z * dt
+        euler[0] += global_twist.angular.x * dt
+        euler[1] += global_twist.angular.y * dt
+        euler[2] += global_twist.angular.z * dt
         quat = tf.transformations.quaternion_from_euler(*euler)
         pose.pose.orientation = Quaternion(*quat)
-        return global_twist # return global twist for next iteration
 
     def update_twist_covariance(self, twist):
         twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
