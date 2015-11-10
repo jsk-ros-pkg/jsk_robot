@@ -48,11 +48,11 @@ class OdometryFeedbackWrapper(object):
                            rospy.get_param("~init_sigma_yaw", 0.2)]        
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
+        self.initialize_odometry() # init self.odom based on init_odom_frame and base_link_frame before subscribe (to publish first tf)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
         self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback, queue_size = 100)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
-        self.initialize_odometry() # init self.odom based on init_odom_frame and base_link_frame
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -90,6 +90,8 @@ class OdometryFeedbackWrapper(object):
             self.odom.child_frame_id = self.base_link_frame
             self.odom_history = []
             self.prev_feedback_time = self.odom.header.stamp
+            if self.publish_tf:
+                self.broadcast_transform()
 
     def source_odom_callback(self, msg):
         if not self.odom:
@@ -114,11 +116,12 @@ class OdometryFeedbackWrapper(object):
             self.update_pose(nearest_odom.pose, nearest_odom.twist,
                              nearest_odom.header.frame_id, nearest_odom.child_frame_id,
                              nearest_odom.header.stamp, nearest_dt)
-            enable_feedback = self.check_covaraicne(nearest_odom) or self.check_distribution_difference(nearest_odom, self.feedback_odom)
+            enable_feedback = self.check_covariance(nearest_odom) or self.check_distribution_difference(nearest_odom, self.feedback_odom) or self.check_feedback_time()
             # update feedback_odom to approximate odom at current timestamp using previsous velocities
             if enable_feedback:
                 rospy.loginfo("%s: Feedback enabled.", rospy.get_name())
                 self.feedback_odom = msg
+                # adjust timestamp of self.feedback_odom to current self.odom
                 for hist in self.odom_history:
                     dt = (hist.header.stamp - self.feedback_odom.header.stamp).to_sec()
                     if dt > 0.0:
@@ -134,11 +137,47 @@ class OdometryFeedbackWrapper(object):
                                                     self.feedback_odom.header.frame_id, hist.child_frame_id,
                                                     hist.header.stamp, dt)
                         self.feedback_odom.header.stamp = hist.header.stamp
-                # update self.odom by self.feedback_odom
-                self.odom.header.stamp = self.feedback_odom.header.stamp
-                self.odom.pose = self.feedback_odom.pose
-                self.prev_feedback_time = self.feedback_odom.header.stamp
+                dt = (self.odom.header.stamp - self.feedback_odom.header.stamp).to_sec()                        
+                self.update_pose(self.feedback_odom.pose, self.feedback_odom.twist,
+                                 self.feedback_odom.header.frame_id, self.feedback_odom.child_frame_id,
+                                 self.feedback_odom.header.stamp, dt)
+                self.feedback_odom.header.stamp = self.odom.header.stamp
+                # integrate feedback_odom and current odom
+                new_odom_pose, new_odom_cov = self.calculate_mean_and_covariance(self.odom.pose, self.feedback_odom.pose)
+                
+                # update self.odom according to the result of integration
+                quat = tf.transformations.quaternion_from_euler(*new_odom_pose[3:6])
+                self.odom.pose.pose = Pose(Point(*new_odom_pose[0:3]), Quaternion(*quat))
+                self.odom.pose.covariance = new_odom_cov
+                self.prev_feedback_time = self.odom.header.stamp
                 self.odom_history = []
+                
+    def calculate_mean_and_covariance(self, current_pose, feedback_pose):
+        sources = [current_pose, feedback_pose]
+        means = []
+        covs = []
+        for src in sources:
+            euler = tf.transformations.euler_from_quaternion([src.pose.orientation.x, src.pose.orientation.y,
+                                                              src.pose.orientation.z, src.pose.orientation.w])
+            means.append(numpy.array([[src.pose.position.x],
+                                      [src.pose.position.y],
+                                      [src.pose.position.z],
+                                      [euler[0]],
+                                      [euler[1]],
+                                      [euler[2]]])) # 6d column vector
+            covs.append(numpy.mat(src.covariance).reshape(6, 6))
+    
+        # Calculate new state by most likelihood method:
+        # sigma_new = (sigma_0^-1 + sigma_1^-1)^-1
+        # x_new = sigma_new * (sigma_0^-1 * x_0 + sigma_1^-1 * x_1)
+        # Less inverse form (same as above):
+        # sigma__new = sigma_1 - sigma_1 * (sigma_1 + sigma_2)^-1 * sigma_1
+        # x_new = x1 + sigma_1*(sigma_1+sigma_2)^-1*(x_2-x_1)
+        # cf. "Distributed sensor fusion for object position estimation by multi-robot systems"
+        cov0_inv_sum_covs = numpy.dot(covs[0], numpy.linalg.inv(covs[0] + covs[1]))
+        new_cov = covs[0] - numpy.dot(cov0_inv_sum_covs, covs[0])        
+        new_mean = means[0] + numpy.dot(cov0_inv_sum_covs, means[1] - means[0])
+        return numpy.array(new_mean).reshape(-1,).tolist(), numpy.array(new_cov).reshape(-1,).tolist()
 
     def check_feedback_time(self):
         time_from_prev_feedback = (self.odom.header.stamp - self.prev_feedback_time).to_sec()
@@ -148,7 +187,7 @@ class OdometryFeedbackWrapper(object):
         else:
             return False
 
-    def check_covaraicne(self, odom):
+    def check_covariance(self, odom):
         for cov in odom.pose.covariance:
             if cov > self.feedback_enabled_sigma ** 2:
                 rospy.loginfo("%s: Covariance exceeds limitation. %f > %f", rospy.get_name(), cov, self.feedback_enabled_sigma)
@@ -244,7 +283,7 @@ class OdometryFeedbackWrapper(object):
         twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
 
     def update_pose_covariance(self, pose, twist, pose_frame, twist_frame, stamp, dt):
-        # make matirx from covarinace array
+        # make matirx from covariance array
         prev_pose_cov_matrix = numpy.matrix(pose.covariance).reshape(6, 6)
         twist_cov_matrix = numpy.matrix(twist.covariance).reshape(6, 6)
         # twist is described in child_frame_id coordinates
