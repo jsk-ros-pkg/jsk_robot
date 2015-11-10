@@ -13,39 +13,19 @@
 
 (defun ~tf (&optional (arm nil))
   (let (m
-	z
-	target-p
-	target-m
 	)
     (ros::spin-once)
-    (setq m (send *tl* :lookup-transform "leg_base_link" "object" (ros::time)))
+    (if (eq arm :larm)
+	(setq m (send *tl* :lookup-transform "leg_base_link" "object_l"
+		      (ros::time)))
+      (setq m (send *tl* :lookup-transform "leg_base_link" "object_r"
+		    (ros::time)))
+      )
     (if (eq m nil) (return-from ~tf nil))
-
-    (setq target-p (v+ (send m :pos)
-		       (send (send (car (send *aero* :links))
-				   :copy-worldcoords) :pos)))
-
-    (setq target-m (m* (send m :rot)
-		       (rotation-matrix (/ pi 2) #f(0 1 0))
-		       (inverse-matrix (send m :rot))))
-    (setq z (transform target-m #f(0 0 1)))
-    (cond ((eq arm :larm)
-	   (if (< (v. z #f(-1 -1 1)) (v. z #f(1 1 -1)) )
-	       (setq target-m (m* target-m
-				  (rotation-matrix pi #f(1 0 0))
-				  (inverse-matrix target-m)))
-	     )
-	   )
-	  ((eq arm :rarm)
-	   (if (< (v. z #f(-1 1 1)) (v. z #f(1 -1 -1)) )
-	       (setq target-m (m* target-m
-				  (rotation-matrix pi #f(1 0 0))
-				  (inverse-matrix target-m)))
-	     )
-	   )
-	  )
-
-    (setq m (make-coords :pos target-p :rot target-m))
+    (setq m (make-coords :pos (v+ (send m :pos)
+				  (send (send (car (send *aero* :links))
+					      :copy-worldcoords) :pos))
+			 :rot (send m :rot)))
     (send m :draw-on :flush t)
     m))
 
