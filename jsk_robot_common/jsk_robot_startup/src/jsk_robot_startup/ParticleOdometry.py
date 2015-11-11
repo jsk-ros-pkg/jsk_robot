@@ -54,8 +54,10 @@ class ParticleOdometry(object):
         self.odom_init_frame = rospy.get_param("~odom_init_frame", "odom_init")
         self.z_error_sigma = rospy.get_param("~z_error_sigma", 0.01) # z error probability from source. z is assumed not to move largely from source odometry
         self.use_imu = rospy.get_param("~use_imu", False)
+        self.use_imu_yaw = rospy.get_param("~use_imu_yaw", False) # referenced only when use_imu is True
         self.roll_error_sigma = rospy.get_param("~roll_error_sigma", 0.05) # roll error probability from imu. (referenced only when use_imu is True)
         self.pitch_error_sigma = rospy.get_param("~pitch_error_sigma", 0.05) # pitch error probability from imu. (referenced only when use_imu is True)
+        self.yaw_error_sigma = rospy.get_param("~yaw_error_sigma", 0.1) # yaw error probability from imu. (referenced only when use_imu and use_imu_yaw are both True)
         self.min_weight = rospy.get_param("~min_weight", 1e-10)
         self.r = rospy.Rate(self.rate)
         self.lock = threading.Lock()
@@ -189,7 +191,11 @@ class ParticleOdometry(object):
             return 1.0 # multiply 1.0 make no effects to weight
         prt_euler = self.convert_pose_to_list(prt)[3:6]
         imu_euler = tf.transformations.euler_from_quaternion([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w]) # imu.orientation is assumed to be global
-        return scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
+        roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
+        if self.use_imu_yaw:
+            return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
+        else:
+            return roll_pitch_pdf
 
     # input: init_pose(pose), output: initial distribution of pose(list of pose)
     def initial_distribution(self, init_pose):
