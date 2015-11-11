@@ -29,6 +29,7 @@ class OdometryFeedbackWrapper(object):
         self.odom = None # belief of this wrapper
         self.feedback_odom = None
         self.source_odom = None
+        self.offset_homogeneous_matrix = None
         self.dt = 0.0
         self.prev_feedback_time = rospy.Time.now()
         self.r = rospy.Rate(self.rate)
@@ -47,16 +48,15 @@ class OdometryFeedbackWrapper(object):
                            rospy.get_param("~init_sigma_pitch", 0.0001),
                            rospy.get_param("~init_sigma_yaw", 0.2)]        
         self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
-        self.pub = rospy.Publisher("~output", Odometry, queue_size = 100)
+        self.pub = rospy.Publisher("~output", Odometry)
         self.initialize_odometry() # init self.odom based on init_odom_frame and base_link_frame before subscribe (to publish first tf)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
-        self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
-        self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback, queue_size = 100)
+        self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
+        self.feedback_odom_sub = rospy.Subscriber("~feedback_odom", Odometry, self.feedback_odom_callback)
         self.reconfigure_server = Server(OdometryFeedbackWrapperReconfigureConfig, self.reconfigure_callback)
 
     def execute(self):
         while not rospy.is_shutdown():
-            self.update()
             self.r.sleep()
 
     def reconfigure_callback(self, config, level):
@@ -90,6 +90,9 @@ class OdometryFeedbackWrapper(object):
             self.odom.child_frame_id = self.base_link_frame
             self.odom_history = []
             self.prev_feedback_time = self.odom.header.stamp
+            self.offset_homogeneous_matrix = tf.transformations.quaternion_matrix([0, 0, 0, 1])
+            self.source_odom = None
+            self.feedback_odom = None
             if self.publish_tf:
                 self.broadcast_transform()
 
@@ -98,6 +101,11 @@ class OdometryFeedbackWrapper(object):
             return
         with self.lock:
             self.source_odom = msg
+            dt = (self.source_odom.header.stamp - self.odom.header.stamp).to_sec()
+            self.odom = self.calculate_odometry(self.source_odom, dt)
+            self.publish_odometry()
+            if self.publish_tf:
+                self.broadcast_transform()
 
     def feedback_odom_callback(self, msg):
         if not self.odom:
@@ -144,13 +152,18 @@ class OdometryFeedbackWrapper(object):
                 self.feedback_odom.header.stamp = self.odom.header.stamp
                 # integrate feedback_odom and current odom
                 new_odom_pose, new_odom_cov = self.calculate_mean_and_covariance(self.odom.pose, self.feedback_odom.pose)
-                
                 # update self.odom according to the result of integration
                 quat = tf.transformations.quaternion_from_euler(*new_odom_pose[3:6])
                 self.odom.pose.pose = Pose(Point(*new_odom_pose[0:3]), Quaternion(*quat))
                 self.odom.pose.covariance = new_odom_cov
                 self.prev_feedback_time = self.odom.header.stamp
                 self.odom_history = []
+                # update offset
+                new_pose_homogeneous_matrix = self.make_homogeneous_matrix([self.odom.pose.pose.position.x, self.odom.pose.pose.position.y, self.odom.pose.pose.position.z],
+                                                                           [self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w])
+                source_homogeneous_matrix = self.make_homogeneous_matrix([self.source_odom.pose.pose.position.x, self.source_odom.pose.pose.position.y, self.source_odom.pose.pose.position.z],
+                                                                         [self.source_odom.pose.pose.orientation.x, self.source_odom.pose.pose.orientation.y, self.source_odom.pose.pose.orientation.z, self.source_odom.pose.pose.orientation.w])
+                self.offset_homogeneous_matrix = numpy.dot(new_pose_homogeneous_matrix, numpy.linalg.inv(source_homogeneous_matrix)) # self.odom.header.stamp is assumed to be same as self.source_odom.header.stamp
                 
     def calculate_mean_and_covariance(self, current_pose, feedback_pose):
         sources = [current_pose, feedback_pose]
@@ -177,7 +190,7 @@ class OdometryFeedbackWrapper(object):
         cov0_inv_sum_covs = numpy.dot(covs[0], numpy.linalg.inv(covs[0] + covs[1]))
         new_cov = covs[0] - numpy.dot(cov0_inv_sum_covs, covs[0])        
         new_mean = means[0] + numpy.dot(cov0_inv_sum_covs, means[1] - means[0])
-        return numpy.array(new_mean).reshape(-1,).tolist(), numpy.array(new_cov).reshape(-1,).tolist()
+        return numpy.array(new_mean).reshape(-1,).tolist(), numpy.array(new_cov).reshape(-1,).tolist() # return list
 
     def check_feedback_time(self):
         time_from_prev_feedback = (self.odom.header.stamp - self.prev_feedback_time).to_sec()
@@ -211,32 +224,32 @@ class OdometryFeedbackWrapper(object):
                 return True
         return False
             
-    def update(self):
-        if not self.odom or not self.source_odom:
-            return
-        with self.lock:
-            self.dt = (rospy.Time.now() - self.odom.header.stamp).to_sec()
-            if self.dt > 0.0:
-                # if self.dt > 2 * (1.0 / self.rate):
-                #     rospy.logwarn("[%s]Execution time is violated. Target: %f[sec], Current: %f[sec]", rospy.get_name(), 1.0 / self.rate, self.dt)
-                self.odom.header.stamp = rospy.Time.now()
-                self.calc_odometry()
-                self.calc_covariance()
-                self.publish_odometry()
-                if self.publish_tf:
-                    self.broadcast_transform()
-
-    def calc_odometry(self):
-        self.update_twist(self.odom.twist, self.source_odom.twist)
-        self.update_pose(self.odom.pose, self.odom.twist, self.odom.header.frame_id, self.odom.child_frame_id, rospy.Time(0), self.dt)
-
-    def calc_covariance(self):
-        self.update_twist_covariance(self.odom.twist)
-        self.update_pose_covariance(self.odom.pose, self.odom.twist, self.odom.header.frame_id, self.odom.child_frame_id, rospy.Time(0), self.dt)
-
     def publish_odometry(self):
         self.pub.publish(self.odom)
         self.odom_history.append(copy.deepcopy(self.odom))
+
+    def calculate_odometry(self, odom, dt):
+        if not odom:
+            return
+        # consider only pose because twist is local
+        result_odom = copy.deepcopy(odom)
+        result_odom.header.frame_id = self.odom_frame
+        result_odom.child_frame_id = self.base_link_frame
+
+        position = [odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z]
+        orientation = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
+        cov_matrix = numpy.matrix(odom.pose.covariance).reshape(6, 6)
+
+        # calculate pose (use odometry source)
+        odom_homogeneous_matrix = self.make_homogeneous_matrix(position, orientation)
+        result_homogeneous_matrix = numpy.dot(self.offset_homogeneous_matrix, odom_homogeneous_matrix)
+        result_odom.pose.pose.position = Point(*list(result_homogeneous_matrix[:3, 3]))
+        result_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(result_homogeneous_matrix)))
+
+        # calculate covariance (calculate itself, do not use odometry source)
+        self.update_pose_covariance(result_odom.pose, result_odom.twist, result_odom.header.frame_id, odom.child_frame_id, result_odom.header.stamp, dt)
+
+        return result_odom
 
     def update_twist(self, twist, new_twist):
         twist.twist = new_twist.twist
@@ -315,8 +328,7 @@ class OdometryFeedbackWrapper(object):
         position = [self.odom.pose.pose.position.x, self.odom.pose.pose.position.y, self.odom.pose.pose.position.z]
         orientation = [self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w]
         if self.invert_tf:
-            homogeneous_matrix = tf.transformations.quaternion_matrix(orientation)
-            homogeneous_matrix[:3, 3] = numpy.array(position).reshape(1, 3)
+            homogeneous_matrix = self.make_homogeneous_matrix(position, orientation)
             homogeneous_matrix_inv = numpy.linalg.inv(homogeneous_matrix)
             position = list(homogeneous_matrix_inv[:3, 3])
             orientation = list(tf.transformations.quaternion_from_matrix(homogeneous_matrix_inv))
@@ -326,3 +338,9 @@ class OdometryFeedbackWrapper(object):
             parent_frame = self.odom.header.frame_id
             target_frame = self.odom.child_frame_id
         self.broadcast.sendTransform(position, orientation, self.odom.header.stamp, target_frame, parent_frame)
+
+    def make_homogeneous_matrix(self, trans, rot):
+        homogeneous_matrix = tf.transformations.quaternion_matrix(rot)
+        homogeneous_matrix[:3, 3] = numpy.array(trans).reshape(1, 3)
+        return homogeneous_matrix
+        
