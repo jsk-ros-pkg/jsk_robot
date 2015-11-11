@@ -43,13 +43,8 @@ class OdometryFeedbackWrapper(object):
                         rospy.get_param("~sigma_roll", 0.0001),
                         rospy.get_param("~sigma_pitch", 0.0001),
                         rospy.get_param("~sigma_yaw", 0.01)]
-        self.init_sigma = [rospy.get_param("~init_sigma_x", 0.3),
-                           rospy.get_param("~init_sigma_y", 0.3),
-                           rospy.get_param("~init_sigma_z", 0.0001),
-                           rospy.get_param("~init_sigma_roll", 0.0001),
-                           rospy.get_param("~init_sigma_pitch", 0.0001),
-                           rospy.get_param("~init_sigma_yaw", 0.2)]        
-        self.feedback_enabled_sigma = rospy.get_param("~feedback_enabled_sigma", 0.5)
+        self.force_feedback_sigma = rospy.get_param("~force_feedback_sigma", 0.5)
+        self.distribution_feedback_minimum_sigma = rospy.get_param("~distribution_feedback_minimum_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry)
         self.initialize_odometry()
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
@@ -66,8 +61,10 @@ class OdometryFeedbackWrapper(object):
             for i, sigma in enumerate(["sigma_x", "sigma_y", "sigma_z", "sigma_roll", "sigma_pitch", "sigma_yaw"]):
                 self.v_sigma[i] = config[sigma]
         rospy.loginfo("[%s]" + "velocity sigma updated: x: {0}, y: {1}, z: {2}, roll: {3}, pitch: {4}, yaw: {5}".format(*self.v_sigma), rospy.get_name())
-        self.feedback_enabled_sigma = config["feedback_enabled_sigma"]
-        rospy.loginfo("[%s]: feedback sigma is %f", rospy.get_name(), self.feedback_enabled_sigma)
+        self.force_feedback_sigma = config["force_feedback_sigma"]
+        rospy.loginfo("[%s]: force feedback sigma is %f", rospy.get_name(), self.force_feedback_sigma)
+        self.distribution_feedback_minimum_sigma = config["distribution_feedback_minimum_sigma"]
+        rospy.loginfo("[%s]: distribution feedback minimum sigma is %f", rospy.get_name(), self.distribution_feedback_minimum_sigma)
         return config
 
     def init_signal_callback(self, msg):
@@ -186,8 +183,8 @@ class OdometryFeedbackWrapper(object):
 
     def check_covariance(self, odom):
         for cov in odom.pose.covariance:
-            if cov > self.feedback_enabled_sigma ** 2:
-                rospy.loginfo("%s: Covariance exceeds limitation. %f > %f", rospy.get_name(), cov, self.feedback_enabled_sigma)
+            if cov > self.force_feedback_sigma ** 2:
+                rospy.loginfo("%s: Covariance exceeds limitation. %f > %f", rospy.get_name(), cov, self.force_feedback_sigma)
                 return True
         return False
 
@@ -202,9 +199,10 @@ class OdometryFeedbackWrapper(object):
         nearest_odom_pose, nearest_odom_cov_matrix = make_pose_set(nearest_odom)
         feedback_odom_pose, feedback_odom_cov_matrix = make_pose_set(feedback_odom)
         for i in range(6):
-            if abs(nearest_odom_pose[i] - feedback_odom_pose[i]) > 3 * numpy.sqrt(nearest_odom_cov_matrix[i, i]):
-                rospy.loginfo("%s: Pose difference is larger than original sigma * 3. %f > %f",
-                              rospy.get_name(), abs(nearest_odom_pose[i] - feedback_odom_pose[i]), numpy.sqrt(nearest_odom_cov_matrix[i, i]))
+            if abs(nearest_odom_pose[i] - feedback_odom_pose[i]) > 3 * numpy.sqrt(nearest_odom_cov_matrix[i, i]) and numpy.sqrt(nearest_odom_cov_matrix[i, i]) > self.distribution_feedback_minimum_sigma:
+                rospy.loginfo("%s: Pose difference is larger than original sigma * 3. %f > %f (> %f)",
+                              rospy.get_name(), abs(nearest_odom_pose[i] - feedback_odom_pose[i]), numpy.sqrt(nearest_odom_cov_matrix[i, i]),
+                              self.distribution_feedback_minimum_sigma)
                 return True
         return False
             
@@ -245,7 +243,7 @@ class OdometryFeedbackWrapper(object):
             (trans,rot) = self.listener.lookupTransform(pose_frame, twist_frame, stamp)
         except:
             try:
-                rospy.logwarn("timestamp %f of tf (%s to %s) is not correct. use rospy.Time(0).",  stamp.to_sec(), pose_frame, twist_frame)
+                # rospy.loginfo("timestamp %f of tf (%s to %s) is not correct. use rospy.Time(0).",  stamp.to_sec(), pose_frame, twist_frame)
                 (trans,rot) = self.listener.lookupTransform(pose_frame, twist_frame, rospy.Time(0))
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 rospy.logwarn("failed to solve tf: %s to %s", pose_frame, twist_frame)
@@ -290,7 +288,7 @@ class OdometryFeedbackWrapper(object):
             (trans,rot) = self.listener.lookupTransform(pose_frame, twist_frame, stamp)
         except:
             try:
-                rospy.logwarn("timestamp %f of tf (%s to %s) is not correct. use rospy.Time(0).",  stamp.to_sec(), pose_frame, twist_frame)
+                # rospy.logwarn("timestamp %f of tf (%s to %s) is not correct. use rospy.Time(0).",  stamp.to_sec(), pose_frame, twist_frame)
                 (trans,rot) = self.listener.lookupTransform(pose_frame, twist_frame, rospy.Time(0)) # todo: lookup odom.header.stamp
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 rospy.logwarn("failed to solve tf: %s to %s", pose_frame, twist_frame)

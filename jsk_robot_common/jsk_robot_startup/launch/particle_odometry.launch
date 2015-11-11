@@ -47,8 +47,9 @@
     <param name="~sigma_roll" value="2.0" />
     <param name="~sigma_pitch" value="2.0" />
     <param name="~sigma_yaw" value="2.0" />
-    <param name="~feedback_enabled_sigma" value="1.0" />
     <param name="~twist_proportional_sigma" value="true" />
+    <param name="~force_feedback_sigma" value="1.0" />
+    <param name="~distribution_feedback_minimum_sigma" value="1.0" />
   </node>
   
   <node pkg="jsk_robot_startup" type="particle_odometry.py" name="biped_particle_odometry"
