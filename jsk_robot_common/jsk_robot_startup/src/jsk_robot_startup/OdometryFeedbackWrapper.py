@@ -85,11 +85,7 @@ class OdometryFeedbackWrapper(object):
     def source_odom_callback(self, msg):
         with self.lock:
             self.source_odom = msg
-            if not self.odom:
-                dt = 0.0
-            else:
-                dt = (self.source_odom.header.stamp - self.odom.header.stamp).to_sec()
-            self.odom = self.calculate_odometry(self.source_odom, dt)
+            self.calculate_odometry(self.odom, self.source_odom)
             self.publish_odometry()
             if self.publish_tf:
                 self.broadcast_transform()
@@ -150,7 +146,8 @@ class OdometryFeedbackWrapper(object):
                                                                            [self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w])
                 source_homogeneous_matrix = self.make_homogeneous_matrix([self.source_odom.pose.pose.position.x, self.source_odom.pose.pose.position.y, self.source_odom.pose.pose.position.z],
                                                                          [self.source_odom.pose.pose.orientation.x, self.source_odom.pose.pose.orientation.y, self.source_odom.pose.pose.orientation.z, self.source_odom.pose.pose.orientation.w])
-                self.offset_homogeneous_matrix = numpy.dot(new_pose_homogeneous_matrix, numpy.linalg.inv(source_homogeneous_matrix)) # self.odom.header.stamp is assumed to be same as self.source_odom.header.stamp
+                # Hnew = Hold * T -> T = Hold^-1 * Hnew
+                self.offset_homogeneous_matrix = numpy.dot(numpy.linalg.inv(source_homogeneous_matrix), new_pose_homogeneous_matrix) # self.odom.header.stamp is assumed to be same as self.source_odom.header.stamp
                 
     def calculate_mean_and_covariance(self, current_pose, feedback_pose):
         sources = [current_pose, feedback_pose]
@@ -215,28 +212,30 @@ class OdometryFeedbackWrapper(object):
         self.pub.publish(self.odom)
         self.odom_history.append(copy.deepcopy(self.odom))
 
-    def calculate_odometry(self, odom, dt):
-        if not odom:
-            return
-        # consider only pose because twist is local
-        result_odom = copy.deepcopy(odom)
+    def calculate_odometry(self, odom, source_odom):
+        result_odom = copy.deepcopy(source_odom)
         result_odom.header.frame_id = self.odom_frame
         result_odom.child_frame_id = self.base_link_frame
 
-        position = [odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z]
-        orientation = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
-        cov_matrix = numpy.matrix(odom.pose.covariance).reshape(6, 6)
+        # consider only pose because twist is local
+        position = [source_odom.pose.pose.position.x, source_odom.pose.pose.position.y, source_odom.pose.pose.position.z]
+        orientation = [source_odom.pose.pose.orientation.x, source_odom.pose.pose.orientation.y, source_odom.pose.pose.orientation.z, source_odom.pose.pose.orientation.w]
 
         # calculate pose (use odometry source)
-        odom_homogeneous_matrix = self.make_homogeneous_matrix(position, orientation)
-        result_homogeneous_matrix = numpy.dot(self.offset_homogeneous_matrix, odom_homogeneous_matrix)
+        source_homogeneous_matrix = self.make_homogeneous_matrix(position, orientation)
+        result_homogeneous_matrix = numpy.dot(source_homogeneous_matrix, self.offset_homogeneous_matrix)
         result_odom.pose.pose.position = Point(*list(result_homogeneous_matrix[:3, 3]))
         result_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(result_homogeneous_matrix)))
 
-        # calculate covariance (calculate itself, do not use odometry source)
-        self.update_pose_covariance(result_odom.pose, result_odom.twist, result_odom.header.frame_id, odom.child_frame_id, result_odom.header.stamp, dt)
-
-        return result_odom
+        # calculate covariance (do not use odometry source)
+        if self.odom != None:
+            result_odom.pose.covariance =  self.odom.pose.covariance # do not use source_odom covariance in pose
+            dt = (self.source_odom.header.stamp - self.odom.header.stamp).to_sec()
+        else:
+            # initial covariance of pose is defined as same value of source_odom
+            dt = 0.0
+        self.update_pose_covariance(result_odom.pose, result_odom.twist, result_odom.header.frame_id, result_odom.child_frame_id, result_odom.header.stamp, dt)
+        self.odom = result_odom
 
     def update_twist(self, twist, new_twist):
         twist.twist = new_twist.twist
