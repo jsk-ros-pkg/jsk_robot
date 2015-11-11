@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 
+# This script only calculate offset caused by odometry feedback and do not consider initial offset.
+# Initial offset should be calculated by OdometryOffset.py (source_odom is assumed to be offseted already) 
+
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
