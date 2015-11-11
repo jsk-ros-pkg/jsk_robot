@@ -24,6 +24,11 @@
     (setq m (send *tl* :lookup-transform "leg_base_link" "sample"
 		  (ros::time)))
     (if (eq m nil) (return-from ~tf nil))
+    (if (and (eps= (elt (send m :pos) 0) 0 0.1)
+	     (eps= (elt (send m :pos) 1) 0 0.1)
+	     (eps= (elt (send m :pos) 2) 0 0.1))
+	(return-from ~tf nil)
+      )
     (setq m (make-coords :pos (v+ (send m :pos)
 				  (send (send (car (send *aero* :links))
 					      :copy-worldcoords) :pos))))
@@ -166,7 +171,7 @@
       )
     (cond ((eq *real* t)
 	   (send *ri* :angle-vector
-	   	 (send *aero* :stroke-vector) 2000)
+	   	 (send *aero* :angle-vector) 2000)
 	   (unix::usleep (* 4000 1000))
 	   )
 	  )
@@ -192,65 +197,39 @@
 		      :pos))
 	  (send *irtviewer* :draw-objects)
 	  (cond ((eq *real* t)
-		 (let ((n-1-found (send (make-coords) :pos))
-		       (n-found nil)
-		       (i-saw-ghost nil)
-		       )
-		   (print "moving arm to pose")
-		   (send *ri* :angle-vector
-			 (send *aero* :stroke-vector) 2000)
-		   (unix::usleep (* 5000 1000))
-		   (setq res (~tf))
-		   (block find-hand
-		     (cond ((not (eq res nil))
-
-			    ;; check if found hand is a delay capture or not
-			    (setq n-found (send res :pos))
-			    (if (and
-				 (eps= (elt n-found 0) (elt n-1-found 0) 1.0)
-				 (eps= (elt n-found 1) (elt n-1-found 1) 1.0)
-				 (eps= (elt n-found 2) (elt n-1-found 2) 1.0))
-				(progn (print "I see ghost")
-				       (cond ((eq i-saw-ghost nil)
-					      (pop arm-list-model)
-					      (pop arm-list-actual)
-					      (setq i-saw-ghost t)
-					      ))
-				       (return-from find-hand))
+		 (print "moving arm to pose")
+		 (send *ri* :angle-vector
+		       (send *aero* :angle-vector) 2000)
+		 (unix::usleep (* 5000 1000))
+		 (setq res (~tf))
+		 (cond ((not (eq res nil))
+			(let ((tmp-hand (send *aero* arm
+					      :end-coords :copy-worldcoords))
 			      )
-
-			    (let ((tmp-hand (send *aero* arm
-						  :end-coords
-						  :copy-worldcoords))
-				  )
-
-			      ;; modify here the inputs
-			      (push (concatenate float-vector
-					(v+ (send tmp-hand :pos)
-					    (transform (send tmp-hand :rot)
-						       (if (eq arm :larm)
-							   l-hand-center
-							 r-hand-center))
-					    )
-					(float-vector
-					 (send *aero*
-					       :head :neck-y :joint-angle)
-					 )
-					) arm-list-model))
-			    ;; modify here the inputs
-
-			    ;; modify here the outputs
-			    (push (send res :pos) arm-list-actual)
-			    ;; modify here the outputs
-
-			    (print (format nil "found ~A" n-found))
-			    (setq n-1-found n-found)
-			    (setq i-saw-ghost nil)
-			    t)
-			   )
-		     ) ;; block
-		 ) ;; let *real*
-		) ;; cond *real*
+			  ;; modify here the inputs
+			  (push (concatenate float-vector
+					     (v+ (send tmp-hand :pos)
+						 (transform (send tmp-hand :rot)
+							    (if (eq arm :larm)
+								l-hand-center
+							      r-hand-center))
+						 )
+					     (float-vector
+					      (send *aero*
+						    :head :neck-y :joint-angle)
+					      )
+					     ) arm-list-model)
+			  )
+			;; modify here the outputs
+			(push (send res :pos) arm-list-actual)
+			(print (format nil "found ~A" (send res :pos)))
+			)
+		       (t
+			(print (format nil "hand not found"))
+			)
+		       )
+		 )
+		)
 	  )))
     (list arm-list-model arm-list-actual)))
 
