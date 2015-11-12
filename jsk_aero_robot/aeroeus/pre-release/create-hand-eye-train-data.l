@@ -17,7 +17,7 @@
 
 (defvar *tl* (instance ros::transform-listener :init))
 
-(defun ~tf (&optional (arm nil))
+(defun ~tf ()
   (let (m
         )
     (ros::spin-once)
