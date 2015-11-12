@@ -67,23 +67,23 @@ class ParticleOdometry(object):
         self.particles = None
         self.weights = []
         self.measurement_updated = False
-        self.init_sigma = [rospy.get_param("~init_sigma_x", 0.3),
-                           rospy.get_param("~init_sigma_y", 0.3),
+        self.init_sigma = [rospy.get_param("~init_sigma_x", 0.1),
+                           rospy.get_param("~init_sigma_y", 0.1),
                            rospy.get_param("~init_sigma_z", 0.0001),
                            rospy.get_param("~init_sigma_roll", 0.0001),
                            rospy.get_param("~init_sigma_pitch", 0.0001),
-                           rospy.get_param("~init_sigma_yaw", 0.2)]
+                           rospy.get_param("~init_sigma_yaw", 0.05)]
         # tf
         self.listener = tf.TransformListener(True, rospy.Duration(10))
         self.broadcast = tf.TransformBroadcaster()
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
         # publisher
-        self.pub = rospy.Publisher("~output", Odometry, queue_size=10)
+        self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
         # subscriber
-        self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 100)
-        self.measure_odom_sub = rospy.Subscriber("~measure_odom", Odometry, self.measure_odom_callback, queue_size = 100)
-        self.imu_sub = rospy.Subscriber("~imu", Imu, self.imu_callback, queue_size = 100)
+        self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 10)
+        self.measure_odom_sub = rospy.Subscriber("~measure_odom", Odometry, self.measure_odom_callback, queue_size = 10)
+        self.imu_sub = rospy.Subscriber("~imu", Imu, self.imu_callback, queue_size = 10)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback, queue_size = 10)
         # init
         self.initialize_odometry()

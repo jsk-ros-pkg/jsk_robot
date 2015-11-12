@@ -27,7 +27,7 @@ class OdometryOffset(object):
         self.lock = threading.Lock()
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
-        self.pub = rospy.Publisher("~output", Odometry)        
+        self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
 
     def execute(self):
         while not rospy.is_shutdown():
