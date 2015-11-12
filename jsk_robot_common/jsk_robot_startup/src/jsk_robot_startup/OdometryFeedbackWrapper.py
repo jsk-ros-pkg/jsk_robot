@@ -24,10 +24,11 @@ class OdometryFeedbackWrapper(object):
         self.invert_tf = rospy.get_param("~invert_tf", True)
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
-        self.max_feedback_time = rospy.get_param("~max_feedback_time", 60)
+        self.max_feedback_time = rospy.get_param("~max_feedback_time", 60) # if max_feedback_time <= 0, feedback is not occurs by time
+        self.tf_cache_time = rospy.get_param("~tf_cache_time", 60) # determined from frequency of feedback_odom
         self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
         self.broadcast = tf.TransformBroadcaster()
-        self.listener = tf.TransformListener(True, rospy.Duration(self.max_feedback_time + 10)) # 10[sec] is safety mergin for feedback
+        self.listener = tf.TransformListener(True, rospy.Duration(self.tf_cache_time + 10)) # 10[sec] is safety mergin for feedback
         self.odom = None # belief of this wrapper
         self.feedback_odom = None
         self.source_odom = None
@@ -175,7 +176,7 @@ class OdometryFeedbackWrapper(object):
 
     def check_feedback_time(self):
         time_from_prev_feedback = (self.odom.header.stamp - self.prev_feedback_time).to_sec()
-        if time_from_prev_feedback > self.max_feedback_time:
+        if self.max_feedback_time > 0 and time_from_prev_feedback > self.max_feedback_time:
             rospy.loginfo("%s: Feedback time is exceeded. %f > %f", rospy.get_name(), time_from_prev_feedback, self.max_feedback_time)
             return True
         else:
