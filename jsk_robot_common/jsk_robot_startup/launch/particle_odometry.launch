@@ -18,7 +18,6 @@
     <param name="~base_odom_frame" value="/odom_init" />
     <param name="~odom_frame" value="biped_odom_offset" />
     <param name="~base_link_frame" value="BODY" />     
-    <param name="~rate" value="100" />
   </node>
 
   <node pkg="jsk_robot_startup" type="odometry_offset.py" name="viso_odometry_offset"
@@ -29,7 +28,6 @@
     <param name="~base_odom_frame" value="/odom_init" />
     <param name="~odom_frame" value="viso_odom_offset" />
     <param name="~base_link_frame" value="BODY" />
-    <param name="~rate" value="100" />
   </node>
 
   <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="viso_odom_calculator"
@@ -63,7 +61,7 @@
     <param name="~odom_init_frame" value="/odom_init" />
     <param name="~odom_frame" value="biped_odom_particle" />
     <param name="~base_link_frame" value="BODY" />
-    <param name="~rate" value="10" />
+    <param name="~rate" value="20" />
     <param name="~use_imu" value="$(arg use_imu)" />
   </node>
   
