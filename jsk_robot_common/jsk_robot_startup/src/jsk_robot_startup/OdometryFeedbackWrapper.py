@@ -259,18 +259,26 @@ class OdometryFeedbackWrapper(object):
 
     def update_pose(self, pose, twist, pose_frame, twist_frame, stamp, dt):
         global_twist = self.convert_local_twist_to_global_twist(twist, pose_frame, twist_frame, stamp)
-        euler = list(tf.transformations.euler_from_quaternion((pose.pose.orientation.x, pose.pose.orientation.y,
-                                                               pose.pose.orientation.z, pose.pose.orientation.w)))
         # calculate trapezoidal integration
         pose.pose.position.x += global_twist.linear.x * dt
         pose.pose.position.y += global_twist.linear.y * dt
         pose.pose.position.z += global_twist.linear.z * dt
-        euler[0] += global_twist.angular.x * dt
-        euler[1] += global_twist.angular.y * dt
-        euler[2] += global_twist.angular.z * dt
-        quat = tf.transformations.quaternion_from_euler(*euler)
-        pose.pose.orientation = Quaternion(*quat)
+        pose.pose.orientation = self.calculate_quaternion_transform(pose.pose.orientation, twist.twist.angular, dt)
 
+    def calculate_quaternion_transform(self, orientation, angular, dt):
+        # quaternion calculation
+        # cf. https://repository.exst.jaxa.jp/dspace/bitstream/a-is/23926/1/naltm00636.pdf
+        quat_vec = numpy.array([[orientation.x],
+                                [orientation.y],
+                                [orientation.z],
+                                [orientation.w]])
+        skew_omega = numpy.matrix([[0, angular.z, -angular.y, angular.x],
+                                   [-angular.z, 0, angular.x, angular.y],
+                                   [angular.y, -angular.x, 0, angular.z],
+                                   [-angular.x, -angular.y, -angular.z, 0]])
+        new_quat_vec = quat_vec + 0.5 * numpy.dot(skew_omega, quat_vec) * dt
+        return Quaternion(*numpy.array(new_quat_vec).reshape(-1,).tolist())
+        
     def update_twist_covariance(self, twist):
         twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
         if self.twist_proportional_sigma == True:
