@@ -265,18 +265,26 @@ class OdometryFeedbackWrapper(object):
         pose.pose.position.z += global_twist.linear.z * dt
         pose.pose.orientation = self.calculate_quaternion_transform(pose.pose.orientation, twist.twist.angular, dt)
 
-    def calculate_quaternion_transform(self, orientation, angular, dt):
+    def calculate_quaternion_transform(self, orientation, angular, dt): # angular is assumed to be global
         # quaternion calculation
-        # cf. https://repository.exst.jaxa.jp/dspace/bitstream/a-is/23926/1/naltm00636.pdf
         quat_vec = numpy.array([[orientation.x],
                                 [orientation.y],
                                 [orientation.z],
                                 [orientation.w]])
-        skew_omega = numpy.matrix([[0, angular.z, -angular.y, angular.x],
-                                   [-angular.z, 0, angular.x, angular.y],
-                                   [angular.y, -angular.x, 0, angular.z],
+        # skew_omega = numpy.matrix([[0, angular.z, -angular.y, angular.x],
+        #                            [-angular.z, 0, angular.x, angular.y],
+        #                            [angular.y, -angular.x, 0, angular.z],
+        #                            [-angular.x, -angular.y, -angular.z, 0]])
+        skew_omega = numpy.matrix([[0, -angular.z, angular.y, angular.x],
+                                   [angular.z, 0, -angular.x, angular.y],
+                                   [-angular.y, angular.x, 0, angular.z],
                                    [-angular.x, -angular.y, -angular.z, 0]])
         new_quat_vec = quat_vec + 0.5 * numpy.dot(skew_omega, quat_vec) * dt
+        norm = numpy.linalg.norm(new_quat_vec)
+        if norm == 0:
+            rospy.logwarn("norm of quaternion is zero")
+        else:
+            new_quat_vec = new_quat_vec / norm # normalize
         return Quaternion(*numpy.array(new_quat_vec).reshape(-1,).tolist())
         
     def update_twist_covariance(self, twist):
