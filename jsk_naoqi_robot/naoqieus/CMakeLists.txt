@@ -5,11 +5,13 @@ find_package(catkin REQUIRED rostest diagnostic_aggregator nao_interaction_msgs 
 
 catkin_package(CFG_EXTRAS compile_naoqi_model.cmake)
 
-add_rostest(test/naoqieus.test)
+if(NOT "$ENV{ROS_DISTRO}" STREQUAL "hydro") ## naoqi_bridge_msg is only for >= indigo
+  add_rostest(test/naoqieus.test)
 
 install(DIRECTORY test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
+endif()
 
 install(FILES naoqi-interface.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
