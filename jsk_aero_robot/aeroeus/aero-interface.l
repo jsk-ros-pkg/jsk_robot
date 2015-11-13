@@ -123,8 +123,8 @@
             (send self :default-controller-list))
     (ros::roseus "aero_upper_interface")
     (ros::advertise "/aero_controller/command" trajectory_msgs::JointTrajectory)
-    (ros::advertise "/aero_controller/wheel_command" trajectory_msgs::JointTrajectory)
-    (ros::advertise "/aero_controller/wheel_servo" std_msgs::Bool)
+    ;; (ros::advertise "/aero_controller/wheel_command" trajectory_msgs::JointTrajectory)
+    ;; (ros::advertise "/aero_controller/wheel_servo" std_msgs::Bool)
     (ros::subscribe "/aero_controller/state"
 		    pr2_controllers_msgs::JointTrajectoryControllerState
 		    #'send self :controller-callback 1)
