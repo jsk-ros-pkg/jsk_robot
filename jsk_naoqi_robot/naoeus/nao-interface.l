@@ -1,16 +1,21 @@
-(ros::roseus "pepper")
+(ros::roseus "nao")
 
-(load "package://peppereus/pepper.l")
+(load "package://naoeus/nao.l")
 (load "package://naoqieus/naoqi-interface.l")
 
-(defclass pepper-interface
+(defclass nao-interface
+  :super robot-interface
+  :slots (joint-stiffness-trajectory-action)
+  )
+
+(defclass nao-interface
   :super naoqi-interface
   :slots ()
   )
 
-(defmethod pepper-interface
+(defmethod nao-interface
   (:init (&rest args)
-   (send-super* :init :robot pepper-robot :naoqi-namespace "pepper_robot" args))
+   (send-super* :init :robot nao-robot :naoqi-namespace "nao_robot" args))
   (:send-stiffness-controller
    (joint  stiffness)
    (let ((goal (send joint-stiffness-trajectory-action :make-goal-instance))
@@ -38,29 +43,29 @@
 			   :time_from_start (ros::time 1))))
      (send joint-stiffness-trajectory-action :send-goal goal)
      ))
-  (:servo-on () (call-empty-service "pepper_robot/pose/wakeup"))
-  (:servo-off () (call-empty-service "pepper_robot/pose/rest"))
+  (:servo-on () (call-empty-service "nao_robot/pose/wakeup"))
+  (:servo-off () (call-empty-service "nao_robot/pose/rest"))
   )
 
-(defmethod pepper-robot
-  (:reset-pose () (send self :angle-vector #f(2 -2 -5 85 10 -70 -20 -40 85 -10  70  20  40 0 -0)))
+(defmethod nao-robot
+  (:reset-pose () (send self :angle-vector #f(110.0 10.0 -90.0 -40.0 0.0   110.0 -10.0 90.0 40.0 0.0  0.0 0.0 -30.0 60.0 -30.0 0.0   0.0 0.0 -30.0 60.0 -30.0 0.0  0.0 0.0)))
   )
 
-(defun pepper-init (&optional (create-viewer))
-  (unless (boundp '*pepper*) (pepper))
-  (unless (ros::ok) (ros::roseus "pepper_eus_interface"))
-  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init)))
+(defun nao-init (&optional (create-viewer))
+  (unless (boundp '*nao*) (nao))
+  (unless (ros::ok) (ros::roseus "nao_eus_interface"))
+  (unless (boundp '*ri*) (setq *ri* (instance nao-interface :init)))
   
   (ros::spin-once)
   (send *ri* :spin-once)
   
-  (send *pepper* :angle-vector (send *ri* :state :potentio-vector))
-  (when create-viewer (objects (list *pepper*)))
+  (send *nao* :angle-vector (send *ri* :state :potentio-vector))
+  (when create-viewer (objects (list *nao*)))
   )
 
 #|
-(setq *ri* (instance pepper-interface :init))
-(setq *pepper* (pepper))
-(send *pepper* :reset-pose)
-(send *ri* :angle-vector (send *pepper* :angle-vector) 2000)
+(setq *ri* (instance nao-interface :init))
+(setq *nao* (nao))
+(send *nao* :reset-pose)
+(send *ri* :angle-vector (send *nao* :angle-vector) 2000)
 |#

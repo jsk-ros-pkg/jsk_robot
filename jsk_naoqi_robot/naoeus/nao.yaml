@@ -1,0 +1,36 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+
+larm:
+  - LShoulderPitch   : larm-shoulder-p
+  - LShoulderRoll    : larm-shoulder-r
+  - LElbowYaw        : larm-elbow-y
+  - LElbowRoll       : larm-elbow-p
+  - LWristYaw        : larm-wrist-y
+rarm:
+  - RShoulderPitch   : rarm-shoulder-p
+  - RShoulderRoll    : rarm-shoulder-r
+  - RElbowYaw        : rarm-elbow-y
+  - RElbowRoll       : rarm-elbow-p
+  - RWristYaw        : rarm-wrist-y
+lleg:
+  - LHipYawPitch     : lleg-crotch-y
+  - LHipRoll         : lleg-crotch-r
+  - LHipPitch        : lleg-crotch-p
+  - LKneePitch       : lleg-knee-p
+  - LAnklePitch      : lleg-ankle-p
+  - LAnkleRoll       : lleg-ankle-r
+rleg:
+  - RHipYawPitch     : rleg-crotch-y
+  - RHipRoll         : rleg-crotch-r
+  - RHipPitch        : rleg-crotch-p
+  - RKneePitch       : rleg-knee-p
+  - RAnklePitch      : rleg-ankle-p
+  - RAnkleRoll       : rleg-ankle-r
+head:
+  - HeadYaw   : head-neck-y
+  - HeadPitch : head-neck-p
+
+angle-vector:
+  reset-pose : [110.0, 10.0, -90.0, -40.0, 0.0,   110.0, -10.0, 90.0, 40.0, 0.0,  0.0, 0.0, -30.0, 60.0, -30.0, 0.0,   0.0, 0.0, -30.0, 60.0, -30.0, 0.0,  0.0, 0.0]

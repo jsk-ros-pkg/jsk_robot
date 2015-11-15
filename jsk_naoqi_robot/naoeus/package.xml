@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>peppereus</name>
+  <name>naoeus</name>
   <version>1.0.0</version>
-  <description>The pepper_bringup package</description>
+  <description>The naoeus package</description>
 
   <maintainer email="kei.okada@gmail.com">Kei Okada</maintainer>
 
@@ -11,14 +11,14 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>pepper_bringup</build_depend>
+  <build_depend>nap_apps</build_depend>
   <build_depend>naoqieus</build_depend> <!-- for robot interface -->
-  <build_depend>pepper_description</build_depend>
+  <build_depend>nao_description</build_depend>
   <build_depend>rostest</build_depend>
 
-  <run_depend>pepper_bringup</run_depend>
+  <run_depend>nao_apps</run_depend>
   <run_depend>naoqi</run_depend> <!-- for robot interface -->
-  <run_depend>pepper_description</run_depend>
+  <run_depend>nao_description</run_depend>
 
   <export>
   </export>
