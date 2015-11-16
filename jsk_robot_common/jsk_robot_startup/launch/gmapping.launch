@@ -10,6 +10,7 @@
   <arg name="min_height" default="-0.5" />
   <arg name="angle_max" default="2.35619" /> <!-- horizontal range of laser scan [rad] -->
   <arg name="angle_min" default="-2.35619" />
+  <arg name="range_max" default="30.0" />  
   <arg name="use_fixed_frame" default="true" />
   <arg name="particles" default="30" />
   <arg name="minimum_score" default="0.0" /> <!-- make greater when gmapping cause jumpping estimated pose -->
@@ -29,6 +30,7 @@
     <arg name="min_height" value="$(arg min_height)" />
     <arg name="angle_max" value="$(arg angle_max)" />
     <arg name="angle_min" value="$(arg angle_min)" />
+    <arg name="range_max" value="$(arg range_max)" />    
     <arg name="use_fixed_frame" value="$(arg use_fixed_frame)" />
   </include>
   
@@ -38,8 +40,8 @@
     <param name="base_frame" value="$(arg scan_frame)" />
     <param name="map_frame" value="$(arg map_frame)"/>
     <param name="odom_frame" value="$(arg odom_frame)"/>
-    <param name="map_update_interval" value="1.0" />
-    <param name="maxUrange" value="30.0" />
+    <param name="map_update_interval" value="3.0" />
+    <param name="maxUrange" value="$(arg range_max)" />
     <param name="temporalUpdate" value="-1.0" />
     <param name="minimumScore" value="$(arg minimum_score)" />    
     <param name="delta" value="$(arg delta)" />
