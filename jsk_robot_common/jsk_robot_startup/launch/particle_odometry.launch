@@ -66,10 +66,19 @@
     <param name="~base_link_frame" value="BODY" />
     <param name="~particle_num" value="50" /> 
     <param name="~rate" value="50" />
+    <param name="~publish_tf" value="false" />
     <param name="~use_imu" value="$(arg use_imu)" />
   </node>
 
-  <!-- convert map->base_link geometry to odometry msg and use in feedback  -->
+  <!-- make biped_odom_particle->odom_init transform to use biped_odom_particle in gmapping  -->
+  <node pkg="jsk_robot_startup" type="OdomDiffTransformPublisher.py" name="biped_odom_particle_diff_transform_publisher" output="screen">
+    <remap from="~input_odom" to="/biped_odom_particle" />
+    <param name="~target_frame" value="biped_odom_particle" />
+    <param name="~intermediate_frame" value="odom_init" />
+    <param name="~base_frame" value="BODY" />
+  </node>
+
+  <!-- convert map->base_link transform to odometry msg and use in feedback  -->
   <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
         output="screen">
     <remap from="~output" to="/slam_odom" />
