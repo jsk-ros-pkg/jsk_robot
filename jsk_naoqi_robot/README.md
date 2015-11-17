@@ -7,7 +7,7 @@ setup environment
 mkdir -p catkin_ws/src
 cd  catkin_ws
 wstool init src
-wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_pepper_robot/pepper.rosinstall
+wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
 wstool update -t src
 rosdep install -y -r --from-paths src --ignore-src
 catkin_make
