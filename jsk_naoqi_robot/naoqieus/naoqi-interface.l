@@ -16,7 +16,7 @@
    (print args)
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
    (ros::advertise "/move_base_simple/goal" geometry_msgs::PoseStamped 1)
-   (ros::advertise "cmd_vel" geometry_msgs::Twist 1)
+   (ros::advertise "/cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "/speech" std_msgs::String 1)
    (ros::advertise (format nil "~A/pose/joint_angles" naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
    (setq joint-stiffness-trajectory-action
@@ -120,7 +120,7 @@
      (send vel_msg :linear :x x)
      (send vel_msg :linear :y y)
      (send vel_msg :angular :z d)
-     (ros::publish (format nil "~A/cmd_vel" naoqi-namespace) vel_msg)
+     (ros::publish "/cmd_vel" vel_msg)
      (when stop
        (unix:usleep (* 1000 msec))
        (send self :go-stop)
