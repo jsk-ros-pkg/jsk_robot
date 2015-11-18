@@ -47,6 +47,11 @@
   (:servo-off () (call-empty-service "nao_robot/pose/rest"))
   )
 
+;; current nao version H25V50
+(defclass nao-robot
+  :super naoH25V50-robot)
+(defun nao () (setq *nao* (naoH25V50)))
+
 (defmethod nao-robot
   (:reset-pose () (send self :angle-vector #f(110.0 10.0 -90.0 -40.0 0.0   110.0 -10.0 90.0 40.0 0.0  0.0 0.0 -30.0 60.0 -30.0 0.0   0.0 0.0 -30.0 60.0 -30.0 0.0  0.0 0.0)))
   )
