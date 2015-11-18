@@ -2,6 +2,18 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
+* Add new package name naoqieus; move pepper-interface.l to naoqi-interface.l
+
+  * naoqi-interface.l: /cmd_vel is published under global namespace
+  * naoqieus: do not run test on hydro
+  * add naoqieus/cmake/compile_naoqi_modeol.cmake
+  * add naoqieus from peppereus
+
+* Contributors: Kei Okada, Masahiro Bando
+
 1.0.0 (2015-11-06)
 ------------------
 * [pepper-interface.l] update :go-pos for new NoaQi drivers using move_base_simple/goal

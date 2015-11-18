@@ -2,6 +2,10 @@
 Changelog for package jsk_201504_miraikan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* move jsk_201504_miraikan under jsk_naoqi_robot
+
 1.0.0 (2015-11-06)
 ------------------
 

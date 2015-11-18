@@ -2,6 +2,11 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup] Fix namespace of param for pointcloud_to_laserscan
+* Contributors: Eisoku Kuroiwa
+
 1.0.0 (2015-11-06)
 ------------------
 

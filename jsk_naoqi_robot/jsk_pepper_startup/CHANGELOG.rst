@@ -2,6 +2,10 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* move jsk_pepper_startup under jsk_naoqi_robot
+
 1.0.0 (2015-11-06)
 ------------------
 * [launch/jsk_pepper_startup.launch]  use teleop_twist_joy instead of turtlebot_telop
