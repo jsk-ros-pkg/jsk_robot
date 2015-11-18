@@ -1,5 +1,6 @@
 <launch>
   <arg name="use_imu" default="false"/>
+  <arg name="use_slam_feedback" default="false"/>  
   
   <!-- viso -->
   <include file="$(find jsk_robot_startup)/launch/viso.launch">
@@ -36,7 +37,8 @@
         output="screen" >
     <remap from="~init_signal" to="/odom_init_trigger" />
     <remap from="~source_odom" to="/viso_odom_offset" />
-    <remap from="~feedback_odom" to="/slam_odom" />
+    <remap from="~feedback_odom" to="/slam_odom" if="$(arg use_slam_feedback)"/>
+    <remap from="~feedback_odom" to="/biped_odom_particle" unless="$(arg use_slam_feedback)"/>
     <remap from="~output" to="/viso_odom_integrated" />
     <param name="~odom_frame" value="viso_odom_integrated" />
     <param name="~base_link_frame" value="BODY" /> 
@@ -78,7 +80,7 @@
     <param name="~base_frame" value="BODY" />
   </node>
 
-  <!-- convert map->base_link transform to odometry msg and use in feedback  -->
+  <!-- convert map->base_link transform to odometry msg and use in feedback if use_slam_feedback is true -->
   <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
         output="screen">
     <remap from="~output" to="/slam_odom" />
