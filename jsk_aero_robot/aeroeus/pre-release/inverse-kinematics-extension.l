@@ -30,7 +30,7 @@
     m))
 
 (defmethod AeroUpperRobot-robot
-  (:ik-x (arm coords &key (torso nil) (revert-if-fail nil))
+  (:ik-learned (arm coords &key (torso nil) (revert-if-fail nil))
      (let (req
 	   res
 	   get-coords
@@ -67,7 +67,7 @@
 	   )
        (send *aero* :ungrasp arm)
        ;; solve position
-       (send self :ik-x arm (make-coords :pos (send (~tf arm) :pos))
+       (send self :ik-learned arm (make-coords :pos (send (~tf arm) :pos))
 	     :torso torso :revert-if-fail revert-if-fail)
        (send *irtviewer* :draw-objects)
        ;; solve rotation
