@@ -2,8 +2,8 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2015-11-19)
+------------------
 * move jsk_pepper_startup under jsk_naoqi_robot
 
 1.0.0 (2015-11-06)

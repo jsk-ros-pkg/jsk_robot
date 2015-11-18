@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2015-11-19)
+------------------
 * Record battery info before pwer go off `#474 <https://github.com/jsk-ros-pkg/jsk_robot/issues/474>`_ 
 * Contributors:  Chi Wun Au
 

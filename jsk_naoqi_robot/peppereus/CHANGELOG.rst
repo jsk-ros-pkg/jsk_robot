@@ -2,8 +2,8 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2015-11-19)
+------------------
 * move peppereus under jsk_naoqi_robot
 * naoeus,peppereus: package.xml: fix typo in run_depend, naoqi->naoqieus, nap_apps->nao_apps
 * add naoqieus/cmake/compile_naoqi_modeol.cmake

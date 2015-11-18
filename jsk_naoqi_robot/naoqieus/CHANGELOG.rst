@@ -2,8 +2,8 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2015-11-19)
+------------------
 
 * Add new package name naoqieus; move pepper-interface.l to naoqi-interface.l
 

@@ -2,8 +2,8 @@
 Changelog for package naoeus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2015-11-19)
+------------------
 * naoeus/nao-interface.l: add nao-robot class and nao function
 * naoeus/CMakeLists.txt: fix typo papper_meshes_FOUND -> nao_meshes_FOUND
 * naoeus,peppereus: package.xml: fix typo in run_depend, naoqi->naoqieus, nap_apps->nao_apps
