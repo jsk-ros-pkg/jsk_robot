@@ -9,6 +9,6 @@ catkin_package()
 ### nao.l generation
 ###
 compile_naoqi_model(nao naoV50_generated_urdf)
-if(pepper_meshes_FOUND)
+if(nao_meshes_FOUND)
   add_rostest(test/naoeus.test)
 endif()
