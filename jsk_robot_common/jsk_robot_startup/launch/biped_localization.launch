@@ -1,0 +1,120 @@
+<launch>
+  <arg name="set_slam_laser_params" default="true"/>
+  <arg name="use_particle_odom" default="true"/>
+  <arg name="use_imu" default="false"/>
+  <arg name="use_slam_feedback" default="false"/>
+  <arg name="nodelet_index" default="2"/>
+
+  <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
+  <group if="$(arg set_slam_laser_params)">
+    <group ns="slam_distance_filtered_laser_snapshots">
+      <rosparam subst_value="true">
+        laser_type: infinite_spindle_half
+        joint_name: motor_joint
+        use_laser_assembler: true
+        not_use_laser_assembler_service: true
+        overwrap_angle: 0.15
+        skip_number: 1
+        clear_assembled_scans: true
+        twist_frame_id: head_hokuyo_frame
+      </rosparam>
+    </group>
+    <group ns="slam_distance_filtered_laser">
+      <rosparam subst_value="true">
+        laser_type: infinite_spindle_half
+        joint_name: motor_joint
+        use_laser_assembler: true
+        not_use_laser_assembler_service: true
+        overwrap_angle: 0.15
+        skip_number: 1
+        clear_assembled_scans: false
+        twist_frame_id: head_hokuyo_frame
+      </rosparam>
+    </group>
+    <group ns="multisense_laser">
+      <rosparam subst_value="true">
+        nodelets_$(arg nodelet_index):
+          - name: slam_distance_filtered_laser_snapshots
+            type: jsk_pcl/TiltLaserListener
+            remappings:
+              - from: ~input
+                to: /joint_states
+              - from: ~input/cloud
+                to: /slam_odom_scan_distance_filtered/output
+          - name: slam_distance_filtered_laser
+            type: jsk_pcl/TiltLaserListener
+            remappings:
+              - from: ~input
+                to: /joint_states
+              - from: ~input/cloud
+                to: /slam_odom_scan_distance_filtered/output
+          - name: slam_ground_scan_non_filtered
+            type: jsk_pcl/TfTransformCloud
+            remappings:
+              - from: ~input
+                to: /multisense/cloud_self_filtered
+          - name: slam_ground_scan_z_filter
+            type: pcl/PassThrough
+            remappings:
+              - from: ~input
+                to: /slam_ground_scan_non_filtered/output
+          - name: slam_odom_scan_distance_filtered
+            type: jsk_pcl/TfTransformCloud
+            remappings:
+              - from: ~input
+                to: /slam_ground_scan_z_filter/output
+      </rosparam>
+    </group>
+    <group ns="slam_ground_scan_non_filtered">
+      <rosparam>
+        target_frame_id: ground
+      </rosparam>
+    </group>
+    <group ns="slam_ground_scan_z_filter">
+      <rosparam>
+        filter_field_name: z
+        filter_limit_min: -5.0
+        filter_limit_max: 2.5
+      </rosparam>
+    </group>
+    <group ns="slam_odom_scan_distance_filtered" if="$(arg use_particle_odom)">
+      <rosparam>
+        target_frame_id: biped_odom_particle
+      </rosparam>
+    </group>
+    <group ns="slam_odom_scan_distance_filtered" unless="$(arg use_particle_odom)">
+      <rosparam>
+        target_frame_id: odom_init
+      </rosparam>
+    </group>
+  </group>
+
+  <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
+  <group if="$(arg use_particle_odom)">
+    <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch">
+      <arg name="use_imu" value="$(arg use_imu)"/>
+      <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+    </include>
+  </group>
+  
+  <include file="$(find jsk_robot_startup)/launch/gmapping.launch">
+    <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
+    <arg name="odom_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/> <!-- map->biped_odom_particle->odom_init -->
+    <arg name="odom_frame" value="odom_init" unless="$(arg use_particle_odom)"/> <!-- map->odom_init -->
+    <arg name="scan_height" value="0.5" />
+    <arg name="max_height" value="0.2" />
+    <arg name="min_height" value="-0.2" />
+    <arg name="range_max" value="30.0"/>
+    <arg name="particles" value="30.0"/>
+    <arg name="iterations" value="5.0"/>
+    <arg name="map_update_interval" value="5.0"/>
+    <arg name="temporal_update" value="-1.0" />
+    <arg name="srr" value="0.01" /> 
+    <arg name="srt" value="0.025" />
+    <arg name="str" value="0.01" />
+    <arg name="stt" value="0.025" />
+  </include>
+
+  <node pkg="jsk_robot_startup" type="auto_reset_slam.py" name="auto_reset_slam" />
+  
+</launch>

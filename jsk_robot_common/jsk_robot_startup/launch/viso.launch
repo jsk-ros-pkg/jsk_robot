@@ -43,11 +43,11 @@
       <param name="self_diagnose" value="false"/>
       <!-- <param name="publish_tf" value="false"/> -->
     </node>
+    <!-- visualization -->
+    <node pkg="jsk_pcl_ros" type="pose_with_covariance_stamped_to_gaussian_pointcloud" 
+          name="viso_gaussian_point_cloud" output="screen" >
+      <remap from="~input" to="/viso_robot_pose_ekf/odom_combined" />
+    </node>
   </group>
-  <!-- visualization -->
-  <node pkg="jsk_pcl_ros" type="pose_with_covariance_stamped_to_gaussian_pointcloud" 
-        name="viso_gaussian_point_cloud" output="screen" >
-    <remap from="~input" to="/viso_robot_pose_ekf/odom_combined" />
-  </node>
 
 </launch>
