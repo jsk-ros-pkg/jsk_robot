@@ -36,20 +36,20 @@
         output="screen" >
     <remap from="~init_signal" to="/odom_init_trigger" />
     <remap from="~source_odom" to="/viso_odom" />
-    <remap from="~feedback_odom" to="/biped_odom_particle" />
+    <remap from="~feedback_odom" to="/slam_odom" />
     <remap from="~output" to="/viso_odom_integrated" />
     <param name="~odom_frame" value="viso_odom_integrated" />
     <param name="~base_link_frame" value="BODY" /> 
     <param name="~rate" value="10" />
-    <param name="~sigma_x" value="3.0" />
-    <param name="~sigma_y" value="3.0" />
-    <param name="~sigma_z" value="3.0" />
-    <param name="~sigma_roll" value="2.0" />
-    <param name="~sigma_pitch" value="2.0" />
-    <param name="~sigma_yaw" value="2.0" />
+    <param name="~sigma_x" value="1.0" />
+    <param name="~sigma_y" value="1.0" />
+    <param name="~sigma_z" value="1.0" />
+    <param name="~sigma_roll" value="0.5" />
+    <param name="~sigma_pitch" value="0.5" />
+    <param name="~sigma_yaw" value="0.5" />
     <param name="~twist_proportional_sigma" value="true" />
     <param name="~force_feedback_sigma" value="1.0" />
-    <param name="~distribution_feedback_minimum_sigma" value="0.3" />
+    <param name="~distribution_feedback_minimum_sigma" value="0.1" />
     <param name="~max_feedback_time" value="0" />    
   </node>
 
@@ -64,8 +64,19 @@
     <param name="~odom_init_frame" value="/odom_init" />
     <param name="~odom_frame" value="biped_odom_particle" />
     <param name="~base_link_frame" value="BODY" />
-    <param name="~rate" value="20" />
+    <param name="~particle_num" value="50" /> 
+    <param name="~rate" value="50" />
     <param name="~use_imu" value="$(arg use_imu)" />
+  </node>
+
+  <!-- convert map->base_link geometry to odometry msg and use in feedback  -->
+  <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
+        output="screen">
+    <remap from="~output" to="/slam_odom" />
+    <remap from="~map" to="/map" />
+    <remap from="~base_odom" to="/biped_odom_particle" />      
+    <param name="~rate" value="10" />
+    <param name="~map_frame" value="/map"/>
   </node>
   
 </launch>
