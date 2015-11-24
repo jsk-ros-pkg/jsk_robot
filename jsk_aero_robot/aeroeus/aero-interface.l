@@ -5,8 +5,6 @@
 (ros::load-ros-manifest "trajectory_msgs")
 (ros::load-ros-manifest "pr2_controllers_msgs")
 
-
-
 (defmethod AeroUpperRobot-robot
   (:hand (&rest args)
     (if (null args) (return-from :hand nil))
@@ -60,53 +58,7 @@
       (send self hand :f-1p :joint-angle (elt hand-vector 1))
       (send self hand :f-2p :joint-angle (elt hand-vector 2))
       (send self hand :f-3p :joint-angle (elt hand-vector 3))
-      hand-vector)
-    )
-  (:grasp (arm &optional (time 500))
-    (send self :hand arm :close-pose)
-    (send *ri* :angle-vector (send self :angle-vector) time)
-    (unix::usleep (* (+ time 1000) 1000)) ;; sleep an extra 1 sec to get proper value
-    (send self :hand arm :joint-angle
-	  (if (eq arm :larm) (elt (car (send *ri* :actual-vector)) 18)
-	    (- (elt (car (send *ri* :actual-vector)) 7))))
-    (send *ri* :angle-vector (send self :angle-vector) 100)
-    (unix::usleep(* 100 1000))
-    )
-  (:ungrasp (arm &optional (time 100))
-    (send self :hand arm :open-pose)
-    (send *ri* :angle-vector (send self :angle-vector) time)
-    (unix::usleep(* time 1000))
-    )
-  ;; do not grasp-hard faster than 1 sec
-  (:grasp-hard (arm &optional (time 1000) (x 0))
-    (if (< x 0) (return-from :grasp-hard (warn "first option must be positive~%")) )
-    (if (= (send self :hand arm :joint-angle) 50.0)
-	(return-from :grasp-hard (warn "already closed~%"))
-      )
-    (let ((grasp-angle 1.0)
-	  )
-      (if (> (send self :hand arm :joint-angle) 0)
-	  (setq grasp-angle (* (- 50 (send self :hand arm :joint-angle)) 0.02))
-	)
-      (send self arm :move-end-pos (float-vector (+ x (* 49.2 grasp-angle)) 0 0) :local
-	    :revert-if-fail nil)
-      (send self :grasp :larm time)
-      ))
-  ;; do not ungrasp-hard faster than 1 sec
-  (:ungrasp-hard (arm &optional (time 1000) (x 0))
-    (if (> x 0) (return-from :ungrasp-hard (warn "first option must be negative~%")) )
-    (if (= (send self :hand arm :joint-angle) -50.0)
-	(return-from :ungrasp-hard (warn "already open~%"))
-      )
-    (let ((grasp-angle 1.0)
-	  )
-      (if (> (send self :hand arm :joint-angle) 0)
-	  (setq grasp-angle (* (send *aero-fullbody* :hand arm :joint-angle) 0.02))
-	)
-      (send self arm :move-end-pos (float-vector (- x (* 49.2 grasp-angle)) 0 0) :local
-	    :revert-if-fail nil)
-      (send self :ungrasp :larm time)
-      ))
+      hand-vector))
   )
 
 
@@ -123,8 +75,6 @@
             (send self :default-controller-list))
     (ros::roseus "aero_upper_interface")
     (ros::advertise "/aero_controller/command" trajectory_msgs::JointTrajectory)
-    ;; (ros::advertise "/aero_controller/wheel_command" trajectory_msgs::JointTrajectory)
-    ;; (ros::advertise "/aero_controller/wheel_servo" std_msgs::Bool)
     (ros::subscribe "/aero_controller/state"
 		    pr2_controllers_msgs::JointTrajectoryControllerState
 		    #'send self :controller-callback 1)
