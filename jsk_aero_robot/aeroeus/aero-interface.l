@@ -131,7 +131,7 @@
 			     "r_wrist_y_joint"
 			     "r_wrist_p_joint"
 			     "r_wrist_r_joint"
-			     "r_thumb_joint"
+			     ;; "r_thumb_joint"
 			     "l_shoulder_p_joint"
 			     "l_shoulder_r_joint"
 			     "l_shoulder_y_joint"
@@ -139,7 +139,7 @@
 			     "l_wrist_y_joint"
 			     "l_wrist_p_joint"
 			     "l_wrist_r_joint"
-			     "l_thumb_joint"
+			     ;; "l_thumb_joint"
 			     "waist_y_joint"
 			     "waist_p_joint"
 			     "waist_r_joint"
@@ -154,7 +154,7 @@
 		    (deg2rad (elt av 4))
 		    (deg2rad (elt av 5))
 		    (deg2rad (elt av 6))
-		    (deg2rad (elt av 7))
+		    ;; (deg2rad (elt av 7))
 		    (deg2rad (elt av 11))
 		    (deg2rad (elt av 12))
 		    (deg2rad (elt av 13))
@@ -162,7 +162,7 @@
 		    (deg2rad (elt av 15))
 		    (deg2rad (elt av 16))
 		    (deg2rad (elt av 17))
-		    (deg2rad (elt av 18))
+		    ;; (deg2rad (elt av 18))
 		    (deg2rad (elt av 22))
 		    (deg2rad (elt av 23))
 		    (deg2rad (elt av 24))
@@ -263,7 +263,11 @@
   (send *aero* :angle-vector (send *ri* :actual-vector))
   )
 
-
+(defun load-controllers ()
+  (load "package://aeroeus/aero-wheels.l")
+  (load "package://aeroeus/aero-hand.l")
+  (load "package://aeroeus/aero-torso.l")
+  )
 
 (defvar *base-time* 1000)
 (defvar *real* nil)
