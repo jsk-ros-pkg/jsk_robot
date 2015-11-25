@@ -93,20 +93,34 @@
 	     )
        get-coords))
 
-  (:grasp-object (arm &key (torso nil) (revert-if-fail nil))
+  (:grasp-object (arm &key (torso t) (revert-if-fail nil))
      (let (mt
+	   goal
 	   )
        (send *ri* :ungrasp arm)
+       (setq goal (~tf arm))
        ;; solve position
-       (send self :ik-learned arm (make-coords :pos (send (~tf arm) :pos))
+       (send self :ik-learned arm (make-coords :pos (send goal :pos))
 	     :torso torso :revert-if-fail revert-if-fail)
        (send *irtviewer* :draw-objects)
        ;; solve rotation
        (setq mt (make-coords :pos (send (send *aero* :larm :end-coords
 					      :copy-worldcoords) :pos)
-			     :rot (send (~tf arm) :rot)))
+			     :rot (send goal :rot)))
        (send *aero* arm :inverse-kinematics mt
 	     :revert-if-fail revert-if-fail)
-       mt))
+       (send *irtviewer* :draw-objects)
+       ;; move waist for ik misses
+       (setq diff (v- (send goal :pos)
+		      (send (send *aero* arm :end-coords :copy-worldcoords)
+			    :pos)) )
+       (setq diff (v+ diff #f(0 0 20))) ;; magic number for safety
+       (list goal diff) ))
 
   )
+
+;; (defun reset ()
+;;   (send *aero* :angle-vector #f(0.0 -15.0 0.0 -90.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 15.0 0.0 -90.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 40.0 0.0))
+;;   (send *ri* :angle-vector (send *aero* :angle-vector))
+;;   (send *ri* :move-waist #f(0 0 -200) :world)
+;;   )
