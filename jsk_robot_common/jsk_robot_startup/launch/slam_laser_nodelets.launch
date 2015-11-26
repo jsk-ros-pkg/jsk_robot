@@ -74,7 +74,7 @@
     </rosparam>
   </group>
   <group ns="slam_odom_scan_distance_filtered">
-    <rosparam>
+    <rosparam subst_value="true">
       target_frame_id: $(arg assemble_base_frame)
     </rosparam>
   </group>
