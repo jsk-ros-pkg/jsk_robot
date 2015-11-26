@@ -4,6 +4,10 @@
   <arg name="use_imu" default="false"/>
   <arg name="use_slam_feedback" default="false"/>
   <arg name="nodelet_index" default="2"/>
+  <arg name="stereo_namespace" default="multisense"/>
+  <arg name="slam_laser_scan_height" default="0.5"/>
+  <arg name="slam_laser_max_height" default="0.2"/>
+  <arg name="slam_laser_min_height" default="-0.2"/>
 
   <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
   <group if="$(arg set_slam_laser_params)">
@@ -20,6 +24,7 @@
     <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch">
       <arg name="use_imu" value="$(arg use_imu)"/>
       <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+      <arg name="stereo_namespace" value="$(arg stereo_namespace)"/>
     </include>
   </group>
   
@@ -27,9 +32,9 @@
     <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
     <arg name="odom_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/> <!-- map->biped_odom_particle->odom_init -->
     <arg name="odom_frame" value="odom_init" unless="$(arg use_particle_odom)"/> <!-- map->odom_init -->
-    <arg name="scan_height" value="0.5" />
-    <arg name="max_height" value="0.2" />
-    <arg name="min_height" value="-0.2" />
+    <arg name="scan_height" value="$(arg slam_laser_scan_height)" />
+    <arg name="max_height" value="$(arg slam_laser_max_height)" />
+    <arg name="min_height" value="$(arg slam_laser_min_height)" />
     <arg name="range_max" value="30.0"/>
     <arg name="particles" value="30.0"/>
     <arg name="iterations" value="5.0"/>
