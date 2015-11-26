@@ -1,26 +1,48 @@
-- git: {local-name: jsk-ros-pkg/jsk_demos, uri: 'https://github.com/jsk-ros-pkg/jsk_demos.git'}
-
-# temporally added for specific reason
-## jsk-ros-pkg/jsk_smart_apps: not released this repo
-- git: {local-name: jsk-ros-pkg/jsk_smart_apps, uri: 'https://github.com/jsk-ros-pkg/jsk_smart_apps.git'}
-## jsk-ros-pkg/jsk_robot: not yet released latest version
-- git: {local-name: jsk-ros-pkg/jsk_robot, uri: 'https://github.com/jsk-ros-pkg/jsk_robot.git'}
-## jsk-ros-pkg/jsk_recognition: it fails creating PointCloud from kinect depth image with apt version
-- git: {local-name: jsk-ros-pkg/jsk_recognition, uri: 'https://github.com/jsk-ros-pkg/jsk_recognition.git'}
-## pr2_navigation: PR2/pr2_navigation#18 not released -> PR2/pr2_navigation#19
-- git: {local-name: pr2_navigation, uri: 'https://github.com/pr2/pr2_navigation',
-    version: hydro-devel}
-## jsk-ros-pkg/jsk_common: not yet released latest version (jsk-ros-pkg/jsk_common#1028)
-- git: {local-name: jsk-ros-pkg/jsk_common, uri: 'https://github.com/jsk-ros-pkg/jsk_common'}
-## SharedAutonomyToolkit/shared_autonomy_manipulation: not released this repo
-- git: {local-name: SharedAutonomyToolkit/shared_autonomy_manipulation, uri: 'https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation'}
-## snap_map_icp: not released this repo
-- git: {local-name: snap_map_icp, uri: 'https://github.com/code-iai/snap_map_icp.git',
-    version: hydro-devel}
-## mongodb_store: wait for release #139
-- git: {local-name: mongodb_store, uri: 'https://github.com/strands-project/mongodb_store.git',
-    version: hydro-devel}
 - git:
-    uri: https://github.com/procrob/face_recognition.git
+    local-name: SharedAutonomyToolkit/shared_autonomy_manipulation
+    uri: https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation
+    version: 50e96abec7a1981d921f684ea78823e759fcd6c2
+- git:
     local-name: face_recognition
-    version: catkin
+    uri: https://github.com/procrob/face_recognition.git
+    version: 1ddeb750d890d1470b13dcdcb1d3bd50b59b1f1b
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common
+    version: 2.0.4
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+    version: 0.0.2
+- git:
+    local-name: jsk-ros-pkg/jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: 0.2.0
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: 0.3.7
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: 1.0.1
+- git:
+    local-name: jsk-ros-pkg/jsk_roseus
+    uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
+    version: 1.4.1
+- git:
+    local-name: jsk-ros-pkg/jsk_smart_apps
+    uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
+    version: 0.0.1
+- git:
+    local-name: mongodb_store
+    uri: https://github.com/strands-project/mongodb_store
+    version: indigo-0.1.20
+- git:
+    local-name: pr2_navigation
+    uri: https://github.com/pr2/pr2_navigation
+    version: 0.1.27
+- git:
+    local-name: snap_map_icp
+    uri: https://github.com/code-iai/snap_map_icp.git
+    version: 738336b8e17ccb5f9d1ee3261a47ce3940f138d4
