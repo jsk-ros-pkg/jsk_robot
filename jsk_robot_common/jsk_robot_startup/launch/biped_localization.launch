@@ -4,6 +4,7 @@
   <arg name="use_imu" default="false"/>
   <arg name="use_slam_feedback" default="false"/>
   <arg name="nodelet_index" default="2"/>
+  <arg name="stereo_namespace" default="multisense"/>
 
   <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
   <group if="$(arg set_slam_laser_params)">
@@ -20,6 +21,7 @@
     <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch">
       <arg name="use_imu" value="$(arg use_imu)"/>
       <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+      <arg name="stereo_namespace" value="$(arg stereo_namespace)"/>
     </include>
   </group>
   
