@@ -16,6 +16,7 @@ catkin_python_setup()
 
 generate_dynamic_reconfigure_options(
   config/OdometryFeedbackWrapperReconfigure.cfg
+  config/ConstantHeightFramePublisherReconfigure.cfg
 )
 
 catkin_package(

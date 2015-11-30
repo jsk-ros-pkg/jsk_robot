@@ -3,6 +3,8 @@
 import rospy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float64
+from dynamic_reconfigure.server import Server
+from jsk_robot_startup.cfg import ConstantHeightFramePublisherReconfigureConfig
 
 import tf
 import numpy
@@ -18,6 +20,7 @@ class ConstantHeightFramePublisher:
         self.parent = rospy.get_param("~parent_frame", "BODY")
         self.odom = rospy.get_param("~odom_frame", "odom")
         self.frame_name = rospy.get_param("~frame_name", "pointcloud_to_scan_base")
+        self.reconfigure_server = Server(ConstantHeightFramePublisherReconfigureConfig, self.reconfigure_callback)
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -26,6 +29,11 @@ class ConstantHeightFramePublisher:
 
     def height_callback(self, msg):
         self.height = msg.data
+
+    def reconfigure_callback(self, config, level):
+        self.height = config["height"]
+        rospy.loginfo("[%s]" + " Modified simulated scan height to %f", rospy.get_name(), self.height)
+        return config
 
     def make_constant_tf(self):
         try:
