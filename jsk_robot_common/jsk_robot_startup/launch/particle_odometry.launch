@@ -1,17 +1,7 @@
 <launch>
   <arg name="use_imu" default="false"/>
   <arg name="use_slam_feedback" default="false"/>  
-  <arg name="stereo_namespace" default="multisense"/>  
   
-  <!-- viso -->
-  <include file="$(find jsk_robot_startup)/launch/viso.launch">
-    <arg name="stereo" default="$(arg stereo_namespace)" />
-    <arg name="image" default="image_rect" />
-    <arg name="use_robot_pose_ekf" default="false" />
-    <arg name="publish_viso_tf" default="true" />
-    <arg name="invert_viso_tf" default="true" /> 
-  </include>
-
   <!-- odometry offset to adjust origin to odom_init -->
   <node pkg="jsk_robot_startup" type="odometry_offset.py" name="biped_odometry_offset"
         output="screen" >

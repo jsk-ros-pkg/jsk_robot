@@ -19,6 +19,15 @@
     </include>
   </group>
 
+  <!-- viso -->
+  <include file="$(find jsk_robot_startup)/launch/viso.launch">
+    <arg name="stereo" default="$(arg stereo_namespace)" />
+    <arg name="image" default="image_rect" />
+    <arg name="use_robot_pose_ekf" default="false" />
+    <arg name="publish_viso_tf" default="true" />
+    <arg name="invert_viso_tf" default="true" /> 
+  </include>
+ 
   <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
   <group if="$(arg use_particle_odom)">
     <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch">
