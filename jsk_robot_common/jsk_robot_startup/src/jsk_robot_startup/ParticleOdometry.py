@@ -40,6 +40,20 @@ def norm_pdf_multivariate(x, mean, cov):
     else:
         rospy.logwarn("The dimensions of the input don't match")
         return 0.0
+
+# tf.transformations.euler_from_quaternion is slow because the function calculates matrix inside.
+# cf. https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+def transform_quaternion_to_euler(quat):
+    zero_thre = numpy.finfo(float).eps * 4.0 # epsilon for testing whether a number is close to zero
+    roll_numerator = 2 * (quat[3] * quat[0] + quat[1] * quat[2])
+    if abs(roll_numerator) < zero_thre:
+        roll_numerator = numpy.sign(roll_numerator) * 0.0
+    yaw_numerator = 2 * (quat[3] * quat[2] + quat[0] * quat[1])
+    if abs(yaw_numerator) < zero_thre:
+        yaw_numerator = numpy.sign(yaw_numerator) * 0.0
+    return (numpy.arctan2(roll_numerator, 1 - 2 * (quat[0] ** 2 + quat[1] ** 2)),
+            numpy.arcsin(2 * (quat[3] * quat[1] - quat[2] * quat[0])),
+            numpy.arctan2(yaw_numerator, 1 - 2 * (quat[1] ** 2 + quat[2] ** 2)))
     
 class ParticleOdometry(object):
     ## initialize
@@ -188,7 +202,7 @@ class ParticleOdometry(object):
             rospy.logwarn("[%s]: use_imu is True but imu is not subscribed", rospy.get_name())
             return 1.0 # multiply 1.0 make no effects to weight
         prt_euler = self.convert_pose_to_list(prt)[3:6]
-        imu_euler = tf.transformations.euler_from_quaternion([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w]) # imu.orientation is assumed to be global
+        imu_euler = transform_quaternion_to_euler([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w]) # imu.orientation is assumed to be global
         roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
         if self.use_imu_yaw:
             return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
@@ -259,8 +273,7 @@ class ParticleOdometry(object):
         
     ## utils
     def convert_pose_to_list(self, pose):
-        euler = tf.transformations.euler_from_quaternion((pose.orientation.x, pose.orientation.y,
-                                                          pose.orientation.z, pose.orientation.w))
+        euler = transform_quaternion_to_euler((pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w))
         return [pose.position.x, pose.position.y, pose.position.z, euler[0], euler[1], euler[2]]
 
     def convert_list_to_pose(self, lst):
