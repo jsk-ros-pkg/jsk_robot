@@ -17,21 +17,21 @@ from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3
 
 # scipy.stats.multivariate_normal only can be used after SciPy 0.14.0
-# input: x(array), mean(array), cov(matrix) output: probability of x
-def norm_pdf_multivariate(x, mean, cov):
+# input: x(array), mean(array), cov_inv(matrix) output: probability of x
+# covariance has to be inverted to reduce calculation time
+def norm_pdf_multivariate(x, mean, cov_inv):
     size = len(x)
-    if size == len(mean) and (size, size) == cov.shape:
-        det = numpy.linalg.det(cov)
-        if not det > 0:
-            rospy.logwarn("Determinant {0} is equal or smaller than zero".format(det))
+    if size == len(mean) and (size, size) == cov_inv.shape:
+        inv_det = numpy.linalg.det(cov_inv)
+        if not inv_det > 0:
+            rospy.logwarn("Determinant of inverse cov matrix {0} is equal or smaller than zero".format(inv_det))
             return 0.0
-        norm_const = math.pow((2*numpy.pi),float(size)/2) * math.pow(det,1.0/2)
+        norm_const = math.pow((2 * numpy.pi), float(size) / 2) * math.pow(1 / inv_det, 1.0 / 2) # determinant of inverse matrix is reciprocal
         if not norm_const > 0 :
             rospy.logwarn("Norm const {0} is equal or smaller than zero".format(norm_const))
             return 0.0
         x_mean = numpy.matrix(x - mean)
-        inv = cov.I
-        exponent = -0.5 * (x_mean * inv * x_mean.T)
+        exponent = -0.5 * (x_mean * cov_inv * x_mean.T)
         if exponent > 0:
             rospy.logwarn("Exponent {0} is larger than zero".format(exponent))
             exponent = 0
@@ -136,7 +136,7 @@ class ParticleOdometry(object):
         # return self.calculate_pose_transform(prev_x, Twist(Vector3(*vel_list[0:3]), Vector3(*vel_list[3:6])), dt)
         return [self.calculate_pose_transform(prt, Twist(Vector3(*vel[0:3]), Vector3(*vel[3:6])), dt) for prt, vel in zip(particles, sampled_velocities)]
         
-    # input: particles(list of pose), source_odom(control input), measure_odom(measurement),  min_weight(float) output: list of weights
+    # input: particles(list of pose), min_weight(float) output: list of weights
     def weighting(self, particles, min_weight):
         if not self.measure_odom:
             rospy.logwarn("[%s] measurement does not exist.", rospy.get_name())
@@ -144,15 +144,21 @@ class ParticleOdometry(object):
         else:
             measure_to_source_dt = (self.source_odom.header.stamp - self.measure_odom.header.stamp).to_sec() # adjust timestamp of pose in measure_odom to source_odom
             current_measure_pose_with_covariance = self.update_pose_with_covariance(self.measure_odom.pose, self.measure_odom.twist, measure_to_source_dt) # assuming dt is small and measure_odom.twist is do not change in dt
-            weights = [max(min_weight, self.calculate_weighting_likelihood(prt, current_measure_pose_with_covariance.pose, current_measure_pose_with_covariance.covariance)) for prt in particles]
+            measurement_pose_array = numpy.array(self.convert_pose_to_list(current_measure_pose_with_covariance.pose))
+            try:
+                measurement_cov_matrix_inv = numpy.linalg.inv(numpy.matrix(current_measure_pose_with_covariance.covariance).reshape(6, 6)) # calculate inverse matrix first to reduce computation cost
+                weights = [max(min_weight, self.calculate_weighting_likelihood(prt, measurement_pose_array, measurement_cov_matrix_inv)) for prt in particles]
+            except numpy.linalg.LinAlgError:
+                rospy.logwarn("[%s] covariance matrix is not singular.", rospy.get_name())
+                weights = [min_weight] * len(particles)
             if all([x == min_weight for x in weights]):
                 rospy.logwarn("[%s] likelihood is too small and all weights are limited by min_weight.", rospy.get_name())
             normalization_coeffs = sum(weights) # normalization and each weight is assumed to be larger than 0
             weights = [w / normalization_coeffs for w in weights]
         return weights
 
-    def calculate_weighting_likelihood(self, prt, measurement_pose, measurement_cov):
-        measurement_likelihood = self.measurement_pdf(prt, measurement_pose, measurement_cov)
+    def calculate_weighting_likelihood(self, prt, measurement_pose_array, measurement_cov_matrix_inv):
+        measurement_likelihood = self.measurement_pdf(prt, measurement_pose_array, measurement_cov_matrix_inv)
         z_error_likelihood = self.z_error_pdf(prt.position.z) # consider difference from ideal z height to prevent drift
         if self.use_imu:
             imu_likelihood = self.imu_error_pdf(prt)
@@ -184,14 +190,11 @@ class ParticleOdometry(object):
         u_cov_matrix = zip(*[iter(u_cov)]*6)
         return numpy.random.multivariate_normal(u_mean, u_cov_matrix, int(self.particle_num)).tolist()
 
-
-    # input: x(pose), mean(pose), cov(pose.covariance), output: pdf value for x
-    def measurement_pdf(self, x, measure_mean, measure_cov): # pdf = Probability Dencity Function
+    # input: x(pose), mean(array), cov_inv(matrix), output: pdf value for x
+    def measurement_pdf(self, x, measure_mean_array, measure_cov_matrix_inv): # pdf = Probability Dencity Function
         # w ~ p(z(t)|x(t))
         x_array = numpy.array(self.convert_pose_to_list(x))
-        mean_array = numpy.array(self.convert_pose_to_list(measure_mean))
-        cov_matrix = numpy.matrix(measure_cov).reshape(len(x_array), len(x_array))
-        pdf_value = norm_pdf_multivariate(x_array, mean_array, cov_matrix) # ~ p(x(t)|z(t))
+        pdf_value = norm_pdf_multivariate(x_array, measure_mean_array, measure_cov_matrix_inv) # ~ p(x(t)|z(t))
         return pdf_value
 
     def z_error_pdf(self, particle_z):
