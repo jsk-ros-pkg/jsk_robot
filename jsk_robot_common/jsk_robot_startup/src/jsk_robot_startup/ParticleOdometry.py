@@ -284,24 +284,21 @@ class ParticleOdometry(object):
         return Pose(Point(*lst[0:3]), Quaternion(*tf.transformations.quaternion_from_euler(*lst[3:6])))
 
     def guess_normal_distribution(self, particles, weights):
-        # calculate weighted mean and covariance (cf. https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Weighted_sample_covariance)
         # particles_lst = [self.convert_pose_to_list(prt) for prt in particles]
         # mean = numpy.mean(particles_lst, axis = 0)
         # cov = numpy.cov(particles_lst, rowvar = 0)
         particles_list = [numpy.array(self.convert_pose_to_list(prt)) for prt in particles]
         mean = None
         cov = None
-        w2_sum = sum([w ** 2 for w in weights])
-        for prt, w in zip(particles_list, weights):
-            if mean == None:
-                mean = w * prt
-            else:
-                mean += w * prt
+        w2_sum = 0.0
+        mean = numpy.average(particles_list, axis = 0, weights = weights)
+        # calculate weighted mean and covariance (cf. https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Weighted_sample_covariance)
         for prt, w in zip(particles_list, weights):
             if cov == None:
                 cov = w * numpy.vstack(prt - mean) * (prt - mean)
             else:
                 cov += w * numpy.vstack(prt - mean) * (prt - mean)
+            w2_sum += w ** 2
         cov = (1.0 / (1.0 - w2_sum)) * cov # unbiased covariance 
         return (mean, cov)
 
