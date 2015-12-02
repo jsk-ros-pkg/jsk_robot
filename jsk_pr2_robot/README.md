@@ -2,7 +2,7 @@ jsk_pr2_robot
 =============
 
 
-# Setup for Development Users
+## Setup for Development Users
 ```
 mkdir -p catkin_ws/my_first_demo
 cd catkin_ws/my_first_demo
@@ -14,7 +14,7 @@ catkin b
 ```
 
 
-# Setup for Application Users (for administrator only)
+## Setup for Application Users (for administrator only)
 
 use [jsk_pr2.rosinstall](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2.rosinstall) to install software
 ```
