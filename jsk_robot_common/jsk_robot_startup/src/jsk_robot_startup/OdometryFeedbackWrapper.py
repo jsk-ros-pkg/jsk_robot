@@ -109,7 +109,6 @@ class OdometryFeedbackWrapper(object):
             # update feedback_odom to approximate odom at current timestamp using previsous velocities
             if enable_feedback:
                 rospy.loginfo("%s: Feedback enabled.", rospy.get_name())
-                self.feedback_odom = msg
                 # adjust timestamp of self.feedback_odom to current self.odom
                 for hist in self.odom_history:
                     dt = (hist.header.stamp - self.feedback_odom.header.stamp).to_sec()
@@ -126,7 +125,7 @@ class OdometryFeedbackWrapper(object):
                                                     self.feedback_odom.header.frame_id, hist.child_frame_id,
                                                     hist.header.stamp, dt)
                         self.feedback_odom.header.stamp = hist.header.stamp
-                dt = (self.odom.header.stamp - self.feedback_odom.header.stamp).to_sec()                        
+                dt = (self.odom.header.stamp - self.feedback_odom.header.stamp).to_sec()
                 self.update_pose(self.feedback_odom.pose, self.feedback_odom.twist,
                                  self.feedback_odom.header.frame_id, self.feedback_odom.child_frame_id,
                                  self.feedback_odom.header.stamp, dt)
@@ -260,6 +259,9 @@ class OdometryFeedbackWrapper(object):
 
     def update_pose(self, pose, twist, pose_frame, twist_frame, stamp, dt):
         global_twist = self.convert_local_twist_to_global_twist(twist, pose_frame, twist_frame, stamp)
+        if global_twist == None:
+            rospy.logwarn("Cannot calculate global twist. return.")
+            return
         # calculate trapezoidal integration
         pose.pose.position.x += global_twist.linear.x * dt
         pose.pose.position.y += global_twist.linear.y * dt
