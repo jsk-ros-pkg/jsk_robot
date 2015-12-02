@@ -1,0 +1,21 @@
+<launch>
+  <arg name="hub_host" default="pr1040.jsk.imi.i.u-tokyo.ac.jp" />
+  <arg name="hub_port" default="6380" />
+  <arg name="hub_uri" default="http://$(arg hub_host):$(arg hub_port)" />
+  <arg name="gateway_name" default="jsk_pr1012_"/>
+  <arg name="config_path" default=""/>
+
+  <!-- zeroconf -->
+  <node ns="zeroconf" pkg="zeroconf_avahi" type="zeroconf" name="zeroconf"  output="screen"/>
+
+  <!-- rocon_gateway -->
+  <node pkg="rocon_gateway" type="gateway.py" name="gateway" output="screen">
+    <param name="hub_uri" value="$(arg hub_uri)"/>
+    <rosparam command="load" file="$(find rocon_gateway)/param/default.yaml" />
+    <rosparam command="load" file="$(find rocon_gateway)/param/default_blacklist.yaml" />
+    <rosparam param="hub_whitelist">Rocon Hub</rosparam>
+    <rosparam command="load" file="$(arg config_path)" />
+    <param name="name" value="$(arg gateway_name)"/>
+    <rosparam param="firewall">false</rosparam>
+  </node>
+</launch>
