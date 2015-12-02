@@ -168,7 +168,8 @@ class ParticleOdometry(object):
         u_mean = [u.linear.x, u.linear.y, u.linear.z,
                   u.angular.x, u.angular.y, u.angular.z]
         u_cov_matrix = zip(*[iter(u_cov)]*6)
-        return numpy.random.multivariate_normal(u_mean, u_cov_matrix, self.particle_num).tolist()
+        return numpy.random.multivariate_normal(u_mean, u_cov_matrix, int(self.particle_num)).tolist()
+
 
     # input: x(pose), mean(pose), cov(pose.covariance), output: pdf value for x
     def measurement_pdf(self, x, measure_mean, measure_cov): # pdf = Probability Dencity Function
