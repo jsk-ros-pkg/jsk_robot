@@ -40,7 +40,7 @@ def norm_pdf_multivariate(x, mean, cov):
     else:
         rospy.logwarn("The dimensions of the input don't match")
         return 0.0
-
+    
 class ParticleOdometry(object):
     ## initialize
     def __init__(self):
@@ -116,9 +116,11 @@ class ParticleOdometry(object):
     ## particle filter functions
     # input: particles(list of pose), source_odom(control input)  output: list of sampled particles(pose)
     def sampling(self, particles, source_odom):
-        current_time = source_odom.header.stamp
         global_twist_with_covariance = self.transform_twist_with_covariance_to_global(source_odom.pose, source_odom.twist)
-        return [self.state_transition_probability_rvs(prt, global_twist_with_covariance.twist, global_twist_with_covariance.covariance, current_time) for prt in particles]
+        sampled_velocities = self.state_transition_probability_rvs(global_twist_with_covariance.twist, global_twist_with_covariance.covariance) # make sampeld velocity at once because multivariate_normal calculates invert matrix and it is slow
+        dt = (source_odom.header.stamp - self.odom.header.stamp).to_sec()
+        # return self.calculate_pose_transform(prev_x, Twist(Vector3(*vel_list[0:3]), Vector3(*vel_list[3:6])), dt)
+        return [self.calculate_pose_transform(prt, Twist(Vector3(*vel[0:3]), Vector3(*vel[3:6])), dt) for prt, vel in zip(particles, sampled_velocities)]
         
     # input: particles(list of pose), source_odom(control input), measure_odom(measurement),  min_weight(float) output: list of weights
     def weighting(self, particles, min_weight):
@@ -161,14 +163,12 @@ class ParticleOdometry(object):
         return ret_particles
 
     ## probability functions
-    # input: prev_x(pose), u(twist), u_cov(twist.covariance)  output: sampled x
-    def state_transition_probability_rvs(self, prev_x, u, u_cov, current_time): # rvs = Random Varieties Sampling
-        dt = (current_time - self.odom.header.stamp).to_sec()
+    # input: u(twist), u_cov(twist.covariance)  output: sampled velocity
+    def state_transition_probability_rvs(self, u, u_cov): # rvs = Random Varieties Sampling
         u_mean = [u.linear.x, u.linear.y, u.linear.z,
                   u.angular.x, u.angular.y, u.angular.z]
         u_cov_matrix = zip(*[iter(u_cov)]*6)
-        vel_list = numpy.random.multivariate_normal(u_mean, u_cov_matrix, 1)[0]
-        return self.calculate_pose_transform(prev_x, Twist(Vector3(*vel_list[0:3]), Vector3(*vel_list[3:6])), dt)
+        return numpy.random.multivariate_normal(u_mean, u_cov_matrix, self.particle_num).tolist()
 
     # input: x(pose), mean(pose), cov(pose.covariance), output: pdf value for x
     def measurement_pdf(self, x, measure_mean, measure_cov): # pdf = Probability Dencity Function
