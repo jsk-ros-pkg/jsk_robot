@@ -114,7 +114,7 @@ class ParticleOdometry(object):
             self.particles = self.initial_distribution(Pose(Point(*trans), Quaternion(*rot)))
             self.weights = [1.0 / self.particle_num] * int(self.particle_num)
             self.odom = Odometry()
-            mean, cov = self.guess_normal_distribution(self.particles)
+            mean, cov = self.guess_normal_distribution(self.particles, self.weights)
             self.odom.pose.pose = self.convert_list_to_pose(mean)
             self.odom.pose.covariance = list(itertools.chain(*cov))
             self.odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
@@ -235,7 +235,7 @@ class ParticleOdometry(object):
         self.odom.header.stamp = self.source_odom.header.stamp
         self.odom.twist = self.source_odom.twist
         # estimate gaussian distribution for Odometry msg 
-        mean, cov = self.guess_normal_distribution(self.particles)
+        mean, cov = self.guess_normal_distribution(self.particles, self.weights)
         self.odom.pose.pose = self.convert_list_to_pose(mean)
         self.odom.pose.covariance = list(itertools.chain(*cov))
         self.pub.publish(self.odom)
@@ -283,10 +283,26 @@ class ParticleOdometry(object):
     def convert_list_to_pose(self, lst):
         return Pose(Point(*lst[0:3]), Quaternion(*tf.transformations.quaternion_from_euler(*lst[3:6])))
 
-    def guess_normal_distribution(self, particles):
-        particles_lst = [self.convert_pose_to_list(prt) for prt in particles]
-        mean = numpy.mean(particles_lst, axis = 0)
-        cov = numpy.cov(particles_lst, rowvar = 0)
+    def guess_normal_distribution(self, particles, weights):
+        # calculate weighted mean and covariance (cf. https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Weighted_sample_covariance)
+        # particles_lst = [self.convert_pose_to_list(prt) for prt in particles]
+        # mean = numpy.mean(particles_lst, axis = 0)
+        # cov = numpy.cov(particles_lst, rowvar = 0)
+        particles_list = [numpy.array(self.convert_pose_to_list(prt)) for prt in particles]
+        mean = None
+        cov = None
+        w2_sum = sum([w ** 2 for w in weights])
+        for prt, w in zip(particles_list, weights):
+            if mean == None:
+                mean = w * prt
+            else:
+                mean += w * prt
+        for prt, w in zip(particles_list, weights):
+            if cov == None:
+                cov = w * numpy.vstack(prt - mean) * (prt - mean)
+            else:
+                cov += w * numpy.vstack(prt - mean) * (prt - mean)
+        cov = (1.0 / (1.0 - w2_sum)) * cov # unbiased covariance 
         return (mean, cov)
 
     def broadcast_transform(self):
