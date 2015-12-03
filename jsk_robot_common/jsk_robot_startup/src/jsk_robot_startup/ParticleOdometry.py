@@ -73,6 +73,7 @@ class ParticleOdometry(object):
         self.pitch_error_sigma = rospy.get_param("~pitch_error_sigma", 0.05) # pitch error probability from imu. (referenced only when use_imu is True)
         self.yaw_error_sigma = rospy.get_param("~yaw_error_sigma", 0.1) # yaw error probability from imu. (referenced only when use_imu and use_imu_yaw are both True)
         self.min_weight = rospy.get_param("~min_weight", 1e-10)
+        self.source_skip_dt = rospy.get_param("~source_skip_dt", 0.05)
         self.r = rospy.Rate(self.rate)
         self.lock = threading.Lock()
         self.odom = None
@@ -243,9 +244,14 @@ class ParticleOdometry(object):
             self.broadcast_transform()
 
     ## callback functions
-    def source_odom_callback(self, msg):
+    def source_odom_callback(self, msg):        
         with self.lock:
-            self.source_odom = msg
+            dt = (msg.header.stamp - self.source_odom.header.stamp).to_sec()
+            if dt > self.source_skip_dt:
+                rospy.logwarn("[%s]: ignore source_odom because there is a suspicion that has stopped. elapsed time is %f [sec]", rospy.get_name(), dt)
+                self.source_odom.header.stamp = msg.header.stamp
+            else:
+                self.source_odom = msg
 
     def measure_odom_callback(self, msg):
         with self.lock:
