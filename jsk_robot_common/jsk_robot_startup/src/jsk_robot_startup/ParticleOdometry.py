@@ -287,20 +287,29 @@ class ParticleOdometry(object):
         # particles_lst = [self.convert_pose_to_list(prt) for prt in particles]
         # mean = numpy.mean(particles_lst, axis = 0)
         # cov = numpy.cov(particles_lst, rowvar = 0)
-        particles_list = [numpy.array(self.convert_pose_to_list(prt)) for prt in particles]
-        mean = None
-        cov = None
-        w2_sum = 0.0
-        mean = numpy.average(particles_list, axis = 0, weights = weights)
-        # calculate weighted mean and covariance (cf. https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Weighted_sample_covariance)
-        for prt, w in zip(particles_list, weights):
-            if cov == None:
-                cov = w * numpy.vstack(prt - mean) * (prt - mean)
-            else:
-                cov += w * numpy.vstack(prt - mean) * (prt - mean)
-            w2_sum += w ** 2
-        cov = (1.0 / (1.0 - w2_sum)) * cov # unbiased covariance 
-        return (mean, cov)
+        
+        # particles_list = [numpy.array(self.convert_pose_to_list(prt)) for prt in particles]
+        # mean = None
+        # cov = None
+        # w2_sum = 0.0
+        # mean = numpy.average(particles_list, axis = 0, weights = weights)
+        # for prt, w in zip(particles_list, weights):
+        #     if cov == None:
+        #         cov = w * numpy.vstack(prt - mean) * (prt - mean)
+        #     else:
+        #         cov += w * numpy.vstack(prt - mean) * (prt - mean)
+        #     w2_sum += w ** 2
+        # cov = (1.0 / (1.0 - w2_sum)) * cov # unbiased covariance
+
+        # calculate weighted mean and covariance (cf. https://en.wikipedia.org/wiki/Weighted_arithmetic_mean#Weighted_sample_covariance)        
+        particle_array = numpy.array([self.convert_pose_to_list(prt) for prt in particles])
+        weights_array = numpy.array(weights)
+        mean = numpy.average(particle_array, axis = 0, weights = weights_array)
+        diffs = particle_array - mean # array of x - mean
+        cov = numpy.dot((numpy.vstack(weights_array) * diffs).T, diffs) # sum(w * (x - mean).T * (x - mean))
+        cov = (1.0 / (1.0 - sum([w ** 2 for w in weights]))) * cov # unbiased covariance
+        
+        return (mean.tolist(), cov.tolist())
 
     def broadcast_transform(self):
         if not self.odom:
