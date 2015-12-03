@@ -215,6 +215,9 @@ class OdometryFeedbackWrapper(object):
         result_odom.header.frame_id = self.odom_frame
         result_odom.child_frame_id = self.base_link_frame
 
+        # overwrite twist covariance (twist is copied from source_odom)
+        self.update_twist_covariance(result_odom.twist)
+
         # consider only pose because twist is local
         position = [source_odom.pose.pose.position.x, source_odom.pose.pose.position.y, source_odom.pose.pose.position.z]
         orientation = [source_odom.pose.pose.orientation.x, source_odom.pose.pose.orientation.y, source_odom.pose.pose.orientation.z, source_odom.pose.pose.orientation.w]
