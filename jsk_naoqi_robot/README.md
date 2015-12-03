@@ -10,7 +10,7 @@ wstool init src
 wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
 wstool update -t src
 rosdep install -y -r --from-paths src --ignore-src
-catkin_make
+catkin build
 source devel/setup.bash
 ```
 % Make sure that you have already installed the ``Python NAOqi SDK`` in your computer. If not, you can download it from [here](https://community.aldebaran.com/en/resources/software). After downloading the file, unzip and rename it to ``pynaoqi``, then put it under your home folder.
