@@ -1,0 +1,10 @@
+# This launch file is automatically generated.
+default_advertisements:
+  - name: /fuga
+    node: None
+    type: publisher
+default_pulls:
+  - gateway: jsk_pr1012_.*
+
+
+

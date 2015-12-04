@@ -1,0 +1,7 @@
+# This launch file is automatically generated.
+default_pulls:
+  - gateway: jsk_pr1040_.*
+default_advertisements:
+  - name: /pr1012_head_pos_from_73b2
+    node: None
+    type: publisher
