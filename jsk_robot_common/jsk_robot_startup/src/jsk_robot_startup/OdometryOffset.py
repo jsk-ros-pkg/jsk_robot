@@ -3,7 +3,7 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point, Quaternion, Twist
+from geometry_msgs.msg import Point, Quaternion, Twist, Vector3
 from std_msgs.msg import Float64, Empty
 import tf
 import time
