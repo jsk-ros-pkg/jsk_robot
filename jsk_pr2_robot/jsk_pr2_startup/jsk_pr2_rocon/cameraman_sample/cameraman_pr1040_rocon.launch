@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_rocon/pr2s_rocon_common/pr1040_rocon.launch">
+    <arg name="config_path" value="$(find jsk_pr2_startup)/jsk_pr2_rocon/cameraman_sample/pr1040_config.yaml" />
+  </include>
+
+  <!-- <node pkg="jsk_pr2_startup" type="pr1012_tracker.l" name="pr1012_tracker" output="screen"/> -->
+</launch>

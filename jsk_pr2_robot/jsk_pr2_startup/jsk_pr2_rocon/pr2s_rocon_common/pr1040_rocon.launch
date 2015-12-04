@@ -1,0 +1,19 @@
+<launch>
+  <arg name="config_path" default=""/>
+  <arg name="hub_host" default="pr1040.jsk.imi.i.u-tokyo.ac.jp" />
+  <arg name="hub_port" default="6380" />
+  <arg name="hub_uri" default="http://$(arg hub_host):$(arg hub_port)" />
+
+  <!-- hub -->
+  <include file="$(find rocon_hub)/launch/hub.launch">
+    <arg name="hub_name" value="Rocon Hub" />
+  </include>
+
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_rocon/pr2s_rocon_common/pr2s_common_rocon.launch">
+    <arg name="hub_host" value="$(arg hub_host)" />
+    <arg name="hub_port" value="$(arg hub_port)" />
+    <arg name="hub_uri" value="http://$(arg hub_host):$(arg hub_port)" />
+    <arg name="gateway_name" value="jsk_pr1040_"/>
+    <arg name="config_path" value="$(arg config_path)"/>
+  </include>
+</launch>
