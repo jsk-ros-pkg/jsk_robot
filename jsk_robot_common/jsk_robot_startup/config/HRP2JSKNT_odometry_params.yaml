@@ -14,4 +14,5 @@ viso_odom_calculator:
 biped_particle_odometry:
   particle_num: 80
   rate: 50
+  source_skip_dt: 0.075
   
