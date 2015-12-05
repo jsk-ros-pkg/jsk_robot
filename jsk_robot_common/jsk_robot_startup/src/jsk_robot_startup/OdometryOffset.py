@@ -3,7 +3,7 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point, Quaternion
+from geometry_msgs.msg import Point, Quaternion, Twist, Vector3
 from std_msgs.msg import Float64, Empty
 import tf
 import time
@@ -13,13 +13,19 @@ import copy
 class OdometryOffset(object):
     def __init__(self):
         rospy.init_node("OdometryFeedbackWrapper", anonymous=True)
+        # execute rate
         self.rate = float(rospy.get_param("~rate", 100))
+        # tf parameters
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
         self.odom_frame = rospy.get_param("~odom_frame", "offset_odom")
         self.base_odom_frame = rospy.get_param("~base_odom_frame", "odom_init")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.tf_duration = rospy.get_param("~tf_duration", 1)
+        # for filter (only used when use_twist_filter is True)
+        self.use_twist_filter = rospy.get_param("~use_twist_filter", False)
+        self.filter_buffer_size = rospy.get_param("~filter_buffer_size", 5)
+        self.filter_buffer = []
         self.broadcast = tf.TransformBroadcaster()
         self.listener = tf.TransformListener(True, rospy.Duration(120))
         self.r = rospy.Rate(self.rate)
@@ -50,6 +56,7 @@ class OdometryOffset(object):
         time.sleep(1) # wait to update odom_init frame
         with self.lock:
             self.offset_matrix = None
+            self.filter_buffer = []
             
     def source_odom_callback(self, msg):
         with self.lock:
@@ -59,7 +66,13 @@ class OdometryOffset(object):
                                                                    msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
                 new_odom = copy.deepcopy(msg)
                 new_odom.header.frame_id = self.odom_frame
-                new_odom.child_frame_id = self.base_link_frame        
+                new_odom.child_frame_id = self.base_link_frame
+
+                # use median filter to cancel spike noise of twist when use_twist_filter is true
+                if self.use_twist_filter:
+                    vel = [new_odom.twist.twist.linear.x, new_odom.twist.twist.linear.y, new_odom.twist.twist.linear.z, new_odom.twist.twist.angular.x, new_odom.twist.twist.angular.y, new_odom.twist.twist.angular.z]
+                    vel = self.median_filter(vel)
+                    new_odom.twist.twist = Twist(Vector3(*vel[0:3]), Vector3(*vel[3: 6]))
                     
                 # offset coords
                 new_odom_matrix = self.offset_matrix.dot(source_odom_matrix)
@@ -101,3 +114,12 @@ class OdometryOffset(object):
             parent_frame = odom.header.frame_id
             target_frame = odom.child_frame_id
         self.broadcast.sendTransform(position, orientation, odom.header.stamp, target_frame, parent_frame)
+
+    def median_filter(self, data):
+        self.filter_buffer.append(data)
+        ret = numpy.median(self.filter_buffer, axis = 0)
+        if len(self.filter_buffer) >= self.filter_buffer_size:
+            self.filter_buffer.pop(0) # filter_buffer has at least 1 member
+        return ret
+        
+        
