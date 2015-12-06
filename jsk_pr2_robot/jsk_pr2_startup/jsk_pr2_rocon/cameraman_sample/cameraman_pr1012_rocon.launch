@@ -3,5 +3,5 @@
     <arg name="config_path" value="$(find jsk_pr2_startup)/jsk_pr2_rocon/cameraman_sample/pr1012_config.yaml" />
   </include>
 
-  <node pkg="jsk_pr2_startup" type="pr1012_pose_publisher.l" name="pr1012_pose_publisher"/>
+  <node pkg="topic_tools" name="relay" type="relay" args="/pr1012_head_pos_from_73b2_in_pr2 /pr1012_head_pos_from_73b2"/>
 </launch>

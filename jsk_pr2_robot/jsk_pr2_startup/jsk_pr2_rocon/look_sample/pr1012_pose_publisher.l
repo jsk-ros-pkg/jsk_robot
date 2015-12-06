@@ -16,13 +16,14 @@
 (sync-pr2-pos-73b2)
 
 (objects (list *pr2* *room73b2*))
-(ros::advertise "/pr1012_head_pos_from_73b2" geometry_msgs::PoseStamped 1)
+(ros::advertise "/pr1012_head_pos_from_73b2_in_pr2" geometry_msgs::PoseStamped 1)
 
-(ros::rate 10)
+(ros::rate 5)
+(ros::ros-info "Publish to /pr1012_head_pos_from_73b2_in_pr2 Start!")
 (while (ros::ok)
   (let* ((new-head-pose (send *tfl* :lookup-transform "/eng2/7f/73B2" "/head_tilt_link" (ros::time 0)))
          (pr1012-head-pose-msg (ros::coords->tf-pose-stamped (make-coords :coords new-head-pose) "/eng2/7f/73B2")))
-    (ros::publish "/pr1012_head_pos_from_73b2" pr1012-head-pose-msg)
+    (ros::publish "/pr1012_head_pos_from_73b2_in_pr2" pr1012-head-pose-msg)
     (send *irtviewer* :draw-objects)
     )
   (ros::sleep)
