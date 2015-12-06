@@ -127,7 +127,8 @@
 	     )
        get-coords))
 
-  (:grasp-object (arm &key (torso t) (revert-if-fail nil))
+  (:grasp-object (arm &key (torso t) (revert-if-fail nil)
+		      (offset-x 0) (offset-z 50)) ;; magic number for safety
      (let (mt
 	   goal
 	   )
@@ -148,7 +149,7 @@
        (setq diff (v- (send goal :pos)
 		      (send (send *aero* arm :end-coords :copy-worldcoords)
 			    :pos)) )
-       (setq diff (v+ diff #f(0 0 50))) ;; magic number for safety
+       (setq diff (v+ diff (float-vector offset-x 0 offset-z)))
        (list goal diff) ))
 
   )
