@@ -23,7 +23,7 @@
 
     <!-- Load global navigation specific parameters -->
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/global_costmap_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/global_costmap_params_$(env ROS_DISTRO).yaml" command="load" ns="global_costmap" />
 
     <!-- Load local navigation specific parameters -->
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
