@@ -8,4 +8,14 @@
     <arg name="INITIAL_POSE_Y" value="$(arg INITIAL_POSE_Y)" />
     <arg name="INITIAL_POSE_YAW" value="$(arg INITIAL_POSE_YAW)" />
   </include>
+
+  <node name="initial_pose_publisher" output="screen"
+        pkg="jsk_pr2_startup" type="initialpose_publisher.l">
+    <rosparam subst_value="true">
+      initial_pose_frame: /eng2/7f/73B2
+      initial_pose_x: $(arg INITIAL_POSE_X)
+      initial_pose_y: $(arg INITIAL_POSE_Y)
+      initial_pose_yaw: $(arg INITIAL_POSE_YAW)
+    </rosparam>
+  </node>
 </launch>
