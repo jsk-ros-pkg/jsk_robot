@@ -115,6 +115,9 @@
           args="/head_mount_kinect/depth_registered/camera_info /kinect_head_c2/depth_registered/camera_info" />
   </group>
 
+  <node name="relay_cmd_vel"
+        pkg="topic_tools" type="relay"
+        args="/navigation/cmd_vel /navigation/unsafe_vel" />
 
   <!-- pr2.launch -->
   <include file="$(find jsk_pr2_startup)/pr2.launch"
@@ -124,6 +127,8 @@
     <arg name="launch_db" value="false" />
     <arg name="launch_hark" value="false" />
     <arg name="launch_teleoperation" value="false" />
+    <arg name="launch_safety_warning" value="false" />
+    <arg name="launch_twitter" value="false" />
     <arg name="launch_gripper_sensor" value="false" />
     <arg name="slow_camera_framerate" value="false" />
     <arg name="launch_c3_startup" value="false" />
