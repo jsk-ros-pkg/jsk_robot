@@ -1,6 +1,11 @@
 <launch>
+  <arg name="INITIAL_POSE_X" default="1.0" />
+  <arg name="INITIAL_POSE_Y" default="0.0" />
+  <arg name="INITIAL_POSE_YAW" default="0.0" />
   <include file="$(find jsk_pr2_startup)/pr2_gazebo.launch">
-    <arg name="world" default="$(find eusurdf)/worlds/room73b2.world" />
-    <arg name="INITIAL_POSE_X" default="1.0" />
+    <arg name="world" value="$(find eusurdf)/worlds/room73b2.world" />
+    <arg name="INITIAL_POSE_X" value="$(arg INITIAL_POSE_X)" />
+    <arg name="INITIAL_POSE_Y" value="$(arg INITIAL_POSE_Y)" />
+    <arg name="INITIAL_POSE_YAW" value="$(arg INITIAL_POSE_YAW)" />
   </include>
 </launch>
