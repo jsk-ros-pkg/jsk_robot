@@ -34,3 +34,14 @@ head:
 
 angle-vector:
   reset-pose : [110.0, 10.0, -90.0, -40.0, 0.0,   110.0, -10.0, 90.0, 40.0, 0.0,  0.0, 0.0, -30.0, 60.0, -30.0, 0.0,   0.0, 0.0, -30.0, 60.0, -30.0, 0.0,  0.0, 0.0]
+
+##
+## end-coords
+##
+## https://github.com/ros-naoqi/nao_robot/blob/0.5.11/nao_description/urdf/naoV50_generated_urdf/nao_legs.xacro#L197
+lleg-end-coords:
+  parent : l_ankle
+  translate : [0, 0, -0.04511]
+rleg-end-coords:
+  parent : r_ankle
+  translate : [0, 0, -0.04511]
