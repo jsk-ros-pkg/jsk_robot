@@ -113,6 +113,9 @@
     <node name="relay_c2_depth_registered_camera_info"
           pkg="topic_tools" type="relay"
           args="/head_mount_kinect/depth_registered/camera_info /kinect_head_c2/depth_registered/camera_info" />
+    <node name="kinect_c2_depth_registered_points_throttle"
+          pkg="topic_tools" type="throttle"
+          args="messages /kinect_head_c2/depth_registered/points 4.0 /kinect_head_c2/depth_registered/points_throttle" />
   </group>
 
   <node name="relay_cmd_vel"
