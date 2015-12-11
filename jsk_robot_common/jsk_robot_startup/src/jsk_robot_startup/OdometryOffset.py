@@ -28,7 +28,7 @@ class OdometryOffset(object):
         self.filter_buffer = []
         # for covariance calculation (only used when calculate_covariance is True)
         self.calculate_covariance = rospy.get_param("~calculate_covariance", False)
-        self.calculate_covariance = rospy.get_param("~twist_proportional_sigma", False)
+        self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
         self.v_sigma = [rospy.get_param("~sigma_x", 0.05),
                         rospy.get_param("~sigma_y", 0.1),
                         rospy.get_param("~sigma_z", 0.0001),
@@ -39,7 +39,7 @@ class OdometryOffset(object):
         self.listener = tf.TransformListener(True, rospy.Duration(120))
         self.r = rospy.Rate(self.rate)
         self.offset_matrix = None
-        self.prev_time = rospy.Time.now()
+        self.prev_odom = None
         self.lock = threading.Lock()
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
@@ -66,7 +66,7 @@ class OdometryOffset(object):
         time.sleep(1) # wait to update odom_init frame
         with self.lock:
             self.offset_matrix = None
-            self.prev_time = rospy.Time.now()
+            self.prev_odom = None
             self.filter_buffer = []
             
     def source_odom_callback(self, msg):
@@ -95,9 +95,12 @@ class OdometryOffset(object):
                 new_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(new_odom_matrix)))
 
                 if self.calculate_covariance:
-                    dt = (new_odom.header.stamp - self.prev_time).to_sec()
-                    global_twist_with_covariance = self.transform_twist_with_covariance_to_global(new_odom.pose, new_odom.twist)
-                    new_odom.pose.covariance = self.update_pose_covariance(new_odom.pose.covariance, global_twist_with_covariance.covariance, dt)
+                    if self.prev_odom != None:
+                        dt = (new_odom.header.stamp - self.prev_odom.header.stamp).to_sec()
+                        global_twist_with_covariance = self.transform_twist_with_covariance_to_global(new_odom.pose, new_odom.twist)
+                        new_odom.pose.covariance = self.update_pose_covariance(self.prev_odom.pose.covariance, global_twist_with_covariance.covariance, dt)
+                    else:
+                        new_odom.pose.covariance = numpy.diag([0.01**2] * 6).reshape(-1,).tolist() # initial covariance is assumed to be constant
                 else:
                     # only offset pose covariance
                     new_pose_cov_matrix = numpy.matrix(new_odom.pose.covariance).reshape(6, 6)
@@ -111,7 +114,7 @@ class OdometryOffset(object):
                 if self.publish_tf:
                     self.broadcast_transform(new_odom)
 
-                self.prev_time = new_odom.header.stamp
+                self.prev_odom = new_odom
                     
             else:
                 current_offset_matrix = self.calculate_offset(msg)
