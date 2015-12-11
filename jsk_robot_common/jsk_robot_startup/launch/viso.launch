@@ -3,7 +3,8 @@
   <arg name="stereo" default="multisense" />
   <arg name="image" default="image_rect" />
   <arg name="odom_frame_id" default="viso_odom" />
-  <arg name="base_link_frame_id" default="/BODY" />
+  <arg name="base_link_frame_id" default="BODY" />
+  <arg name="sensor_frame_id" default="left_camera_optical_frame" />
   <arg name="output_odom_topic" default="viso_odom" />
   <arg name="publish_viso_tf" default="false" />
   <arg name="invert_viso_tf" default="false" />
@@ -19,13 +20,25 @@
         output="screen" respawn="true">
     <remap from="stereo" to="$(arg stereo)" />
     <remap from="image" to="$(arg image)" />
-    <remap from="~odometry" to="$(arg output_odom_topic)" />
+    <remap from="~odometry" to="$(arg output_odom_topic)_raw" />
     <param name="~base_link_frame_id" value="$(arg base_link_frame_id)" />
-    <param name="~odom_frame_id" value="$(arg odom_frame_id)"/>
+    <param name="~odom_frame_id" value="$(arg odom_frame_id)_raw"/>
+    <param name="~sensor_frame_id" value="$(arg sensor_frame_id)"/>    
     <param name="~publish_tf" value="$(arg publish_viso_tf)" />
     <param name="~invert_tf" value="$(arg invert_viso_tf)" />
     <param name="~ref_frame_change_method" value="1"/>
   </node>
+
+  <node pkg="jsk_robot_startup" type="CameraToBaseOffset.py" name="viso_camera_to_base_offset"
+        output="screen" respawn="true">
+    <remap from="~source_odom" to="$(arg output_odom_topic)_raw" />
+    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~output" to="$(arg output_odom_topic)" />    
+    <param name="~base_link_frame" value="$(arg base_link_frame_id)" />
+    <param name="~camera_frame" value="$(arg sensor_frame_id)"/>
+    <param name="~odom_frame" value="$(arg odom_frame_id)"/>
+  </node>
+  
   <!-- EKF -->
   <group if="$(arg use_robot_pose_ekf)" >
     <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="viso_robot_pose_ekf">
