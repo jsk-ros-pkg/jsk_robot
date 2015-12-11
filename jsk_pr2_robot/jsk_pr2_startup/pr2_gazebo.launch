@@ -113,8 +113,17 @@
     <node name="relay_c2_depth_registered_camera_info"
           pkg="topic_tools" type="relay"
           args="/head_mount_kinect/depth_registered/camera_info /kinect_head_c2/depth_registered/camera_info" />
+    <node name="kinect_c2_depth_registered_points_throttle"
+          pkg="topic_tools" type="throttle"
+          args="messages /kinect_head_c2/depth_registered/points 4.0 /kinect_head_c2/depth_registered/points_throttle" />
   </group>
 
+  <node name="relay_cmd_vel"
+        pkg="topic_tools" type="relay"
+        args="/navigation/cmd_vel /navigation/unsafe_vel" />
+  <!-- Set params for sim -->
+  <param name="r_gripper_controller/gripper_action_node/stall_velocity_threshold" value="0.33" type="double"/>
+  <param name="l_gripper_controller/gripper_action_node/stall_velocity_threshold" value="0.33" type="double"/>
 
   <!-- pr2.launch -->
   <include file="$(find jsk_pr2_startup)/pr2.launch"
@@ -124,6 +133,8 @@
     <arg name="launch_db" value="false" />
     <arg name="launch_hark" value="false" />
     <arg name="launch_teleoperation" value="false" />
+    <arg name="launch_safety_warning" value="false" />
+    <arg name="launch_twitter" value="false" />
     <arg name="launch_gripper_sensor" value="false" />
     <arg name="slow_camera_framerate" value="false" />
     <arg name="launch_c3_startup" value="false" />
