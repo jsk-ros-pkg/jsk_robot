@@ -23,7 +23,7 @@ class CameraToBaseOffset(object):
         self.odom_frame = rospy.get_param("~odom_frame", "viso_odom")        
         self.tf_duration = rospy.get_param("~tf_duration", 1)
         self.broadcast = tf.TransformBroadcaster()
-        self.listener = tf.TransformListener(True, rospy.Duration(120))
+        self.listener = tf.TransformListener(True, rospy.Duration(10))
         self.r = rospy.Rate(self.rate)
         self.initial_matrix = None
         self.lock = threading.Lock()
@@ -43,7 +43,7 @@ class CameraToBaseOffset(object):
     def source_odom_callback(self, msg):
         with self.lock:
             # calculate camera transform
-            current_camera_to_base = self.calculate_camera_to_base_transform()
+            current_camera_to_base = self.calculate_camera_to_base_transform(msg.header.stamp)
             if self.initial_matrix == None:
                 self.initial_matrix = current_camera_to_base
 
@@ -93,12 +93,16 @@ class CameraToBaseOffset(object):
             target_frame = odom.child_frame_id
         self.broadcast.sendTransform(position, orientation, odom.header.stamp, target_frame, parent_frame)
 
-    def calculate_camera_to_base_transform(self):
+    def calculate_camera_to_base_transform(self, stamp):
         try:
-            (trans,rot) = self.listener.lookupTransform(self.camera_frame, self.base_link_frame, rospy.Time(0))
+            (trans,rot) = self.listener.lookupTransform(self.camera_frame, self.base_link_frame, stamp)
         except:
-            rospy.logwarn("[%s] failed to solve camera_to_base tf: %s to %s", rospy.get_name(), self.camera_frame, self.base_link_frame)
-            return None
+            try:
+                rospy.logwarn("[%s] failed to solve camera_to_base tf in %f. Use rospy.Time(0): %s to %s", rospy.get_name(), stamp.to_sec(), self.camera_frame, self.base_link_frame)
+                (trans,rot) = self.listener.lookupTransform(self.camera_frame, self.base_link_frame, rospy.Time(0))
+            except:
+                rospy.logwarn("[%s] failed to solve camera_to_base tf: %s to %s", rospy.get_name(), self.camera_frame, self.base_link_frame)
+                return None
         camera_to_base_link = self.make_homogeneous_matrix(trans, rot) # camera -> base_link
         return camera_to_base_link
         
