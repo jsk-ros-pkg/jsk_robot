@@ -153,7 +153,10 @@ class OdometryOffset(object):
         if self.twist_proportional_sigma == True:
             current_sigma = [x * y for x, y in zip(twist_list, self.v_sigma)]
         else:
-            current_sigma = self.v_sigma
+            if all([abs(x) < 1e-6 for x in twist_list]):
+                current_sigma = [1e-6] * 6 # trust "completely stopping" state
+            else:
+                current_sigma = self.v_sigma
         twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
 
     def update_pose_covariance(self, pose_cov, global_twist_cov, dt):
