@@ -78,6 +78,7 @@ class ParticleOdometry(object):
         self.odom = None
         self.source_odom = None
         self.measure_odom = None
+        self.imu = None
         self.particles = None
         self.weights = []
         self.measurement_updated = False
