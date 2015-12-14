@@ -209,7 +209,8 @@ class ParticleOdometry(object):
             rospy.logwarn("[%s]: use_imu is True but imu is not subscribed", rospy.get_name())
             return 1.0 # multiply 1.0 make no effects to weight
         prt_euler = self.convert_pose_to_list(prt)[3:6]
-        imu_euler = self.imu_rotation.dot(numpy.array(transform_quaternion_to_euler([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w])))
+        imu_matrix = tf.transformations.quaternion_matrix([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w])[:3, :3]
+        imu_euler = tf.transformations.euler_from_matrix(numpy.dot(self.imu_rotation, imu_matrix))
         roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
         if self.use_imu_yaw:
             return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
@@ -262,10 +263,10 @@ class ParticleOdometry(object):
     def imu_callback(self, msg):
         with self.lock:
             try:
-                (trans,rot) = self.listener.lookupTransform(self.base_link_frame, msg.header.frame_id, msg.header.stamp)
+                (trans,rot) = self.listener.lookupTransform(msg.header.frame_id, self.odom_frame, msg.header.stamp)
             except:
                 try:
-                    (trans,rot) = self.listener.lookupTransform(self.base_link_frame, msg.header.frame_id, rospy.Time(0)) # retry to get newest tf data
+                    (trans,rot) = self.listener.lookupTransform(msg.header.frame_id, self.odom_frame, rospy.Time(0)) # retry to get newest tf data
                 except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                     rospy.logwarn("[%s] failed to solve tf in calculate imu_transorm: %s to %s", rospy.get_name(), self.base_link_frame, msg.header.frame_id)
                     return # imu is not updated when imu_rotation cannot be calculated
