@@ -44,34 +44,36 @@ class CameraToBaseOffset(object):
         with self.lock:
             # calculate camera transform
             current_camera_to_base = self.calculate_camera_to_base_transform(msg.header.stamp)
+            if current_camera_to_base == None:
+                return
+
             if self.initial_matrix == None:
-                self.initial_matrix = current_camera_to_base
+                self.initial_matrix = numpy.linalg.inv(current_camera_to_base)
 
-            if self.initial_matrix != None:
-                camera_relative_base_transformation = numpy.dot(numpy.linalg.inv(self.initial_matrix), current_camera_to_base) # base_link transformation in camera coords
-    
-                # calculate offseted odometry
-                source_odom_matrix = self.make_homogeneous_matrix([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z],
-                                                                  [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
-                                                                   msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
-                new_odom_matrix = camera_relative_base_transformation.dot(source_odom_matrix)
+            camera_relative_base_transformation = numpy.dot(self.initial_matrix, current_camera_to_base) # base_link transformation in camera coords
+            
+            # calculate offseted odometry
+            source_odom_matrix = self.make_homogeneous_matrix([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z],
+                                                              [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
+                                                               msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
+            new_odom_matrix = camera_relative_base_transformation.dot(source_odom_matrix)
 
-                # make odometry msg. twist is copied from source_odom
-                new_odom = copy.deepcopy(msg)
-                new_odom.header.frame_id = self.odom_frame
-                new_odom.child_frame_id = self.base_link_frame
-                new_odom.pose.pose.position = Point(*list(new_odom_matrix[:3, 3]))
-                new_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(new_odom_matrix)))
-                new_pose_cov_matrix = numpy.matrix(new_odom.pose.covariance).reshape(6, 6)
-                rotation_matrix = camera_relative_base_transformation[:3, :3]
-                new_pose_cov_matrix[:3, :3] = (rotation_matrix.T).dot(new_pose_cov_matrix[:3, :3].dot(rotation_matrix))
-                new_pose_cov_matrix[3:6, 3:6] = (rotation_matrix.T).dot(new_pose_cov_matrix[3:6, 3:6].dot(rotation_matrix))
-                new_odom.pose.covariance = numpy.array(new_pose_cov_matrix).reshape(-1,).tolist()
+            # make odometry msg. twist is copied from source_odom
+            new_odom = copy.deepcopy(msg)
+            new_odom.header.frame_id = self.odom_frame
+            new_odom.child_frame_id = self.base_link_frame
+            new_odom.pose.pose.position = Point(*list(new_odom_matrix[:3, 3]))
+            new_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(new_odom_matrix)))
+            new_pose_cov_matrix = numpy.matrix(new_odom.pose.covariance).reshape(6, 6)
+            rotation_matrix = camera_relative_base_transformation[:3, :3]
+            new_pose_cov_matrix[:3, :3] = (rotation_matrix.T).dot(new_pose_cov_matrix[:3, :3].dot(rotation_matrix))
+            new_pose_cov_matrix[3:6, 3:6] = (rotation_matrix.T).dot(new_pose_cov_matrix[3:6, 3:6].dot(rotation_matrix))
+            new_odom.pose.covariance = numpy.array(new_pose_cov_matrix).reshape(-1,).tolist()
                                             
-                # publish
-                self.pub.publish(new_odom)
-                if self.publish_tf:
-                    self.broadcast_transform(new_odom)
+            # publish
+            self.pub.publish(new_odom)
+            if self.publish_tf:
+                self.broadcast_transform(new_odom)
 
     def make_homogeneous_matrix(self, trans, rot):
         homogeneous_matrix = tf.transformations.quaternion_matrix(rot)
