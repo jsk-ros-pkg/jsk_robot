@@ -79,6 +79,7 @@ class ParticleOdometry(object):
         self.source_odom = None
         self.measure_odom = None
         self.imu = None
+        self.imu_rotation = None
         self.particles = None
         self.weights = []
         self.measurement_updated = False
@@ -127,6 +128,7 @@ class ParticleOdometry(object):
             self.measure_odom = None
             self.measurement_updated = False
             self.imu = None
+            self.imu_rotation = None
             
     ## particle filter functions
     # input: particles(list of pose), source_odom(control input)  output: list of sampled particles(pose)
@@ -207,7 +209,7 @@ class ParticleOdometry(object):
             rospy.logwarn("[%s]: use_imu is True but imu is not subscribed", rospy.get_name())
             return 1.0 # multiply 1.0 make no effects to weight
         prt_euler = self.convert_pose_to_list(prt)[3:6]
-        imu_euler = transform_quaternion_to_euler([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w]) # imu.orientation is assumed to be global
+        imu_euler = self.imu_rotation.dot(numpy.array(transform_quaternion_to_euler([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w])))
         roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
         if self.use_imu_yaw:
             return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
@@ -259,6 +261,15 @@ class ParticleOdometry(object):
 
     def imu_callback(self, msg):
         with self.lock:
+            try:
+                (trans,rot) = self.listener.lookupTransform(self.base_link_frame, msg.header.frame_id, msg.header.stamp)
+            except:
+                try:
+                    (trans,rot) = self.listener.lookupTransform(self.base_link_frame, msg.header.frame_id, rospy.Time(0)) # retry to get newest tf data
+                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                    rospy.logwarn("[%s] failed to solve tf in calculate imu_transorm: %s to %s", rospy.get_name(), self.base_link_frame, msg.header.frame_id)
+                    return # imu is not updated when imu_rotation cannot be calculated
+            self.imu_rotation = tf.transformations.quaternion_matrix(rot)[:3, :3] # trans does not affects to orientation 
             self.imu = msg
         
     # main functions
