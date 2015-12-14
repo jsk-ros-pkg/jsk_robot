@@ -1,5 +1,4 @@
 <launch>
-  <arg name="use_imu" default="false"/>
   <arg name="use_slam_feedback" default="false"/>
   <arg name="robot" default="default"/>
 
@@ -59,7 +58,6 @@
       odom_frame: biped_odom_particle
       base_link_frame: BODY
       publish_tf: false
-      use_imu: $(arg use_imu)
     </rosparam>
   </node>
 
