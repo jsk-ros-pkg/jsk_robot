@@ -31,7 +31,9 @@
 				  (send (send (car (send *aero* :links))
 					      :copy-worldcoords) :pos))
 			 :rot (send m :rot)))
-    (send m :draw-on :flush t)
+    (if (boundp '*irtviewer*)
+	(send m :draw-on :flush t)
+      )
     m))
 
 (defmethod AeroUpperRobot-robot
@@ -137,14 +139,16 @@
        ;; solve position
        (send self :ik-learned arm (make-coords :pos (send goal :pos))
 	     :torso torso :revert-if-fail revert-if-fail)
-       (send *irtviewer* :draw-objects)
+       (if (boundp '*irtviewer*)
+	   (send *irtviewer* :draw-objects))
        ;; solve rotation
        (setq mt (make-coords :pos (send (send *aero* :larm :end-coords
 					      :copy-worldcoords) :pos)
 			     :rot (send goal :rot)))
        (send *aero* arm :inverse-kinematics mt
 	     :revert-if-fail revert-if-fail)
-       (send *irtviewer* :draw-objects)
+       (if (boundp '*irtviewer*)
+	   (send *irtviewer* :draw-objects))
        ;; move waist for ik misses
        (setq diff (v- (send goal :pos)
 		      (send (send *aero* arm :end-coords :copy-worldcoords)
