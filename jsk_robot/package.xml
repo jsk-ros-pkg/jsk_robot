@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_robot</name>
+  <version>1.0.1</version>
+  <description>The jsk_robot package</description>
+  <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>jsk_pr2_calibration</run_depend>
+  <run_depend>jsk_pr2_startup</run_depend>
+  <run_depend>pr2_base_trajectory_action</run_depend>
+  <run_depend>jsk_baxter_web</run_depend>
+  <run_depend>jsk_baxter_desktop</run_depend>
+  <run_depend>baxtereus</run_depend>
+  <run_depend>jsk_baxter_startup</run_depend>
+  <run_depend>jsk_201504_miraikan</run_depend>
+  <run_depend>jsk_pepper_startup</run_depend>
+  <run_depend>naoqieus</run_depend>
+  <run_depend>naoeus</run_depend>
+  <run_depend>jsk_nao_startup</run_depend>
+  <run_depend>peppereus</run_depend>
+  <run_depend>roseus_remote</run_depend>
+  <run_depend>jsk_robot_utils</run_depend>
+  <run_depend>jsk_robot_startup</run_depend>
+  <export>
+    <metapackage/>
+  </export>
+</package>
