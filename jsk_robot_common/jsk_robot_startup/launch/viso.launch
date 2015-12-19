@@ -37,6 +37,7 @@
     <param name="~base_link_frame" value="$(arg base_link_frame_id)" />
     <param name="~camera_frame" value="$(arg sensor_frame_id)"/>
     <param name="~odom_frame" value="$(arg odom_frame_id)"/>
+    <param name="~publish_tf" value="$(arg publish_viso_tf)" />
   </node>
   
   <!-- EKF -->

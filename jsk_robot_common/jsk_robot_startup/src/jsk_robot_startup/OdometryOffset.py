@@ -16,7 +16,6 @@ from odometry_utils import make_homogeneous_matrix, update_twist_covariance, upd
 class OdometryOffset(object):
     def __init__(self):
         rospy.init_node("OdometryFeedbackWrapper", anonymous=True)
-        self.broadcast = tf.TransformBroadcaster()
         self.listener = tf.TransformListener(True, rospy.Duration(120))
         self.offset_matrix = None
         self.prev_odom = None
@@ -26,7 +25,9 @@ class OdometryOffset(object):
         self.r = rospy.Rate(self.rate)
         # tf parameters
         self.publish_tf = rospy.get_param("~publish_tf", True)
-        self.invert_tf = rospy.get_param("~invert_tf", True)
+        if self.publish_tf:
+            self.broadcast = tf.TransformBroadcaster()
+            self.invert_tf = rospy.get_param("~invert_tf", True)
         self.odom_frame = rospy.get_param("~odom_frame", "offset_odom")
         self.base_odom_frame = rospy.get_param("~base_odom_frame", "odom_init")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")

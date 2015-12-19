@@ -15,6 +15,7 @@
       base_odom_frame: odom_init
       odom_frame: biped_odom_offset
       base_link_frame: BODY
+      publish_tf: false
     </rosparam>
   </node>
 
@@ -27,6 +28,7 @@
       base_odom_frame: odom_init
       odom_frame: viso_odom_offset
       base_link_frame: BODY
+      publish_tf: false      
     </rosparam>
   </node>
 
@@ -42,6 +44,7 @@
     <rosparam>
       odom_frame: viso_odom_integrated
       base_link_frame: BODY
+      publish_tf: false
     </rosparam>
   </node>
 

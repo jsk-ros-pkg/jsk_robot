@@ -52,9 +52,10 @@ class ParticleOdometry(object):
                            rospy.get_param("~init_sigma_yaw", 0.05)]
         # tf
         self.listener = tf.TransformListener(True, rospy.Duration(10))
-        self.broadcast = tf.TransformBroadcaster()
-        self.publish_tf = rospy.get_param("~publish_tf", True)
-        self.invert_tf = rospy.get_param("~invert_tf", True)
+        self.publish_tf = rospy.get_param("~publish_tf", True)        
+        if self.publish_tf:
+            self.broadcast = tf.TransformBroadcaster()
+            self.invert_tf = rospy.get_param("~invert_tf", True)
         # publisher
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
         # subscriber
