@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_python_setup()
 
 generate_dynamic_reconfigure_options(
+  config/OdometryOffsetReconfigure.cfg
   config/OdometryFeedbackWrapperReconfigure.cfg
   config/ConstantHeightFramePublisherReconfigure.cfg
 )

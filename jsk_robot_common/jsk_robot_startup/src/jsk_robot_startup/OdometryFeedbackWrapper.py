@@ -16,7 +16,7 @@ from scipy import signal
 from dynamic_reconfigure.server import Server
 from jsk_robot_startup.cfg import OdometryFeedbackWrapperReconfigureConfig
 
-from odometry_utils import transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_twist_covariance, update_pose_covariance, broadcast_transform, make_homogeneous_matrix
+from odometry_utils import transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform, make_homogeneous_matrix
 
 class OdometryFeedbackWrapper(object):
     def __init__(self):
@@ -40,12 +40,6 @@ class OdometryFeedbackWrapper(object):
         self.r = rospy.Rate(self.rate)
         self.lock = threading.Lock()
         self.odom_history = []
-        self.v_sigma = [rospy.get_param("~sigma_x", 0.05),
-                        rospy.get_param("~sigma_y", 0.1),
-                        rospy.get_param("~sigma_z", 0.0001),
-                        rospy.get_param("~sigma_roll", 0.0001),
-                        rospy.get_param("~sigma_pitch", 0.0001),
-                        rospy.get_param("~sigma_yaw", 0.01)]
         self.force_feedback_sigma = rospy.get_param("~force_feedback_sigma", 0.5)
         self.distribution_feedback_minimum_sigma = rospy.get_param("~distribution_feedback_minimum_sigma", 0.5)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
@@ -60,10 +54,6 @@ class OdometryFeedbackWrapper(object):
             self.r.sleep()
 
     def reconfigure_callback(self, config, level):
-        with self.lock:
-            for i, sigma in enumerate(["sigma_x", "sigma_y", "sigma_z", "sigma_roll", "sigma_pitch", "sigma_yaw"]):
-                self.v_sigma[i] = config[sigma]
-        rospy.loginfo("[%s]" + "velocity sigma updated: x: {0}, y: {1}, z: {2}, roll: {3}, pitch: {4}, yaw: {5}".format(*self.v_sigma), rospy.get_name())
         self.force_feedback_sigma = config["force_feedback_sigma"]
         rospy.loginfo("[%s]: force feedback sigma is %f", rospy.get_name(), self.force_feedback_sigma)
         self.distribution_feedback_minimum_sigma = config["distribution_feedback_minimum_sigma"]
