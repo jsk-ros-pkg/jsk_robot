@@ -3,6 +3,8 @@
 import rospy
 import tf
 import numpy
+import scipy.stats
+import math
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3
 
 # twist transformation
@@ -108,4 +110,43 @@ def make_homogeneous_matrix(trans, rot):
     homogeneous_matrix = tf.transformations.quaternion_matrix(rot)
     homogeneous_matrix[:3, 3] = numpy.array(trans).reshape(1, 3)
     return homogeneous_matrix
+    
+# scipy.stats.multivariate_normal only can be used after SciPy 0.14.0
+# input: x(array), mean(array), cov_inv(matrix) output: probability of x
+# covariance has to be inverted to reduce calculation time
+def norm_pdf_multivariate(x, mean, cov_inv):
+    size = len(x)
+    if size == len(mean) and (size, size) == cov_inv.shape:
+        inv_det = numpy.linalg.det(cov_inv)
+        if not inv_det > 0:
+            rospy.logwarn("Determinant of inverse cov matrix {0} is equal or smaller than zero".format(inv_det))
+            return 0.0
+        norm_const = math.pow((2 * numpy.pi), float(size) / 2) * math.pow(1 / inv_det, 1.0 / 2) # determinant of inverse matrix is reciprocal
+        if not norm_const > 0 :
+            rospy.logwarn("Norm const {0} is equal or smaller than zero".format(norm_const))
+            return 0.0
+        x_mean = numpy.matrix(x - mean)
+        exponent = -0.5 * (x_mean * cov_inv * x_mean.T)
+        if exponent > 0:
+            rospy.logwarn("Exponent {0} is larger than zero".format(exponent))
+            exponent = 0
+        result = math.pow(math.e, exponent)
+        return result / norm_const
+    else:
+        rospy.logwarn("The dimensions of the input don't match")
+        return 0.0
+
+# tf.transformations.euler_from_quaternion is slow because the function calculates matrix inside.
+# cf. https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+def transform_quaternion_to_euler(quat):
+    zero_thre = numpy.finfo(float).eps * 4.0 # epsilon for testing whether a number is close to zero
+    roll_numerator = 2 * (quat[3] * quat[0] + quat[1] * quat[2])
+    if abs(roll_numerator) < zero_thre:
+        roll_numerator = numpy.sign(roll_numerator) * 0.0
+    yaw_numerator = 2 * (quat[3] * quat[2] + quat[0] * quat[1])
+    if abs(yaw_numerator) < zero_thre:
+        yaw_numerator = numpy.sign(yaw_numerator) * 0.0
+    return (numpy.arctan2(roll_numerator, 1 - 2 * (quat[0] ** 2 + quat[1] ** 2)),
+            numpy.arcsin(2 * (quat[3] * quat[1] - quat[2] * quat[0])),
+            numpy.arctan2(yaw_numerator, 1 - 2 * (quat[1] ** 2 + quat[2] ** 2)))
     

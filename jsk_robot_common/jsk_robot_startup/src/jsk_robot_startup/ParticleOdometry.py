@@ -3,7 +3,6 @@
 import rospy
 import numpy
 import scipy.stats
-import math
 import random
 import threading
 import itertools
@@ -15,46 +14,8 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Empty
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3
+from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance
 
-# scipy.stats.multivariate_normal only can be used after SciPy 0.14.0
-# input: x(array), mean(array), cov_inv(matrix) output: probability of x
-# covariance has to be inverted to reduce calculation time
-def norm_pdf_multivariate(x, mean, cov_inv):
-    size = len(x)
-    if size == len(mean) and (size, size) == cov_inv.shape:
-        inv_det = numpy.linalg.det(cov_inv)
-        if not inv_det > 0:
-            rospy.logwarn("Determinant of inverse cov matrix {0} is equal or smaller than zero".format(inv_det))
-            return 0.0
-        norm_const = math.pow((2 * numpy.pi), float(size) / 2) * math.pow(1 / inv_det, 1.0 / 2) # determinant of inverse matrix is reciprocal
-        if not norm_const > 0 :
-            rospy.logwarn("Norm const {0} is equal or smaller than zero".format(norm_const))
-            return 0.0
-        x_mean = numpy.matrix(x - mean)
-        exponent = -0.5 * (x_mean * cov_inv * x_mean.T)
-        if exponent > 0:
-            rospy.logwarn("Exponent {0} is larger than zero".format(exponent))
-            exponent = 0
-        result = math.pow(math.e, exponent)
-        return result / norm_const
-    else:
-        rospy.logwarn("The dimensions of the input don't match")
-        return 0.0
-
-# tf.transformations.euler_from_quaternion is slow because the function calculates matrix inside.
-# cf. https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-def transform_quaternion_to_euler(quat):
-    zero_thre = numpy.finfo(float).eps * 4.0 # epsilon for testing whether a number is close to zero
-    roll_numerator = 2 * (quat[3] * quat[0] + quat[1] * quat[2])
-    if abs(roll_numerator) < zero_thre:
-        roll_numerator = numpy.sign(roll_numerator) * 0.0
-    yaw_numerator = 2 * (quat[3] * quat[2] + quat[0] * quat[1])
-    if abs(yaw_numerator) < zero_thre:
-        yaw_numerator = numpy.sign(yaw_numerator) * 0.0
-    return (numpy.arctan2(roll_numerator, 1 - 2 * (quat[0] ** 2 + quat[1] ** 2)),
-            numpy.arcsin(2 * (quat[3] * quat[1] - quat[2] * quat[0])),
-            numpy.arctan2(yaw_numerator, 1 - 2 * (quat[1] ** 2 + quat[2] ** 2)))
-    
 class ParticleOdometry(object):
     ## initialize
     def __init__(self):
@@ -136,8 +97,7 @@ class ParticleOdometry(object):
         global_twist_with_covariance = self.transform_twist_with_covariance_to_global(source_odom.pose, source_odom.twist)
         sampled_velocities = self.state_transition_probability_rvs(global_twist_with_covariance.twist, global_twist_with_covariance.covariance) # make sampeld velocity at once because multivariate_normal calculates invert matrix and it is slow
         dt = (source_odom.header.stamp - self.odom.header.stamp).to_sec()
-        # return self.calculate_pose_transform(prev_x, Twist(Vector3(*vel_list[0:3]), Vector3(*vel_list[3:6])), dt)
-        return [self.calculate_pose_transform(prt, Twist(Vector3(*vel[0:3]), Vector3(*vel[3:6])), dt) for prt, vel in zip(particles, sampled_velocities)]
+        return [update_pose(prt, Twist(Vector3(*vel[0:3]), Vector3(*vel[3:6])), dt) for prt, vel in zip(particles, sampled_velocities)]
         
     # input: particles(list of pose), min_weight(float) output: list of weights
     def weighting(self, particles, min_weight):
@@ -244,7 +204,7 @@ class ParticleOdometry(object):
         self.odom.pose.covariance = list(itertools.chain(*cov))
         self.pub.publish(self.odom)
         if self.publish_tf:
-            self.broadcast_transform()
+            broadcast_transform(self.broadcast, self.odom, self.invert_tf)
 
     ## callback functions
     def source_odom_callback(self, msg):        
@@ -324,94 +284,13 @@ class ParticleOdometry(object):
         
         return (mean.tolist(), cov.tolist())
 
-    def broadcast_transform(self):
-        if not self.odom:
-            return
-        position = [self.odom.pose.pose.position.x, self.odom.pose.pose.position.y, self.odom.pose.pose.position.z]
-        orientation = [self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w]
-        if self.invert_tf:
-            homogeneous_matrix = tf.transformations.quaternion_matrix(orientation)
-            homogeneous_matrix[:3, 3] = numpy.array(position).reshape(1, 3)
-            homogeneous_matrix_inv = numpy.linalg.inv(homogeneous_matrix)
-            position = list(homogeneous_matrix_inv[:3, 3])
-            orientation = list(tf.transformations.quaternion_from_matrix(homogeneous_matrix_inv))
-            parent_frame = self.odom.child_frame_id
-            target_frame = self.odom.header.frame_id
-        else:
-            parent_frame = self.odom.header.frame_id
-            target_frame = self.odom.child_frame_id
-        self.broadcast.sendTransform(position, orientation, rospy.Time.now(), target_frame, parent_frame)
-
-    def transform_twist_with_covariance_to_global(self, pose, twist):
-        trans = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
-        rot = [pose.pose.orientation.x, pose.pose.orientation.y,
-               pose.pose.orientation.z, pose.pose.orientation.w]
-        rotation_matrix = tf.transformations.quaternion_matrix(rot)[:3, :3]
-        twist_cov_matrix = numpy.matrix(twist.covariance).reshape(6, 6)
-        global_velocity = numpy.dot(rotation_matrix, numpy.array([[twist.twist.linear.x],
-                                                                  [twist.twist.linear.y],
-                                                                  [twist.twist.linear.z]]))
-        global_omega = numpy.dot(rotation_matrix, numpy.array([[twist.twist.angular.x],
-                                                               [twist.twist.angular.y],
-                                                               [twist.twist.angular.z]]))
-        global_twist_cov_matrix = numpy.zeros((6, 6))
-        global_twist_cov_matrix[:3, :3] = (rotation_matrix.T).dot(twist_cov_matrix[:3, :3].dot(rotation_matrix))
-        global_twist_cov_matrix[3:6, 3:6] = (rotation_matrix.T).dot(twist_cov_matrix[3:6, 3:6].dot(rotation_matrix))
-
-        return TwistWithCovariance(Twist(Vector3(*global_velocity[:, 0]), Vector3(*global_omega[:, 0])),
-                                   global_twist_cov_matrix.reshape(-1,).tolist())
+    def transform_twist_with_covariance_to_global(self, pose_with_covariance, twist_with_covariance):
+        global_twist = transform_local_twist_to_global(pose_with_covariance.pose, twist_with_covariance.twist)
+        global_twist_cov = transform_local_twist_covariance_to_global(pose_with_covariance.pose, twist_with_covariance.covariance)
+        return TwistWithCovariance(global_twist, global_twist_cov)
 
     def update_pose_with_covariance(self, pose_with_covariance, twist_with_covariance, dt):
         global_twist_with_covariance = self.transform_twist_with_covariance_to_global(pose_with_covariance, twist_with_covariance)
-        # calculate current pose as integration
-        ret_pose = self.calculate_pose_transform(pose_with_covariance.pose, global_twist_with_covariance.twist, dt)
-        # update covariance
-        ret_pose_cov = self.calculate_pose_covariance_transform(pose_with_covariance.covariance, global_twist_with_covariance.covariance, dt)
+        ret_pose = update_pose(pose_with_covariance.pose, global_twist_with_covariance.twist, dt)
+        ret_pose_cov = update_pose_covariance(pose_with_covariance.covariance, global_twist_with_covariance.covariance, dt)
         return PoseWithCovariance(ret_pose, ret_pose_cov)
-
-    def calculate_pose_transform(self, pose, global_twist, dt):
-        ret_pose = Pose()
-        # calculate current pose as integration
-        ret_pose.position.x = pose.position.x + global_twist.linear.x * dt
-        ret_pose.position.y = pose.position.y + global_twist.linear.y * dt
-        ret_pose.position.z = pose.position.z + global_twist.linear.z * dt
-        ret_pose.orientation = self.calculate_quaternion_transform(pose.orientation, global_twist.angular, dt)
-        return ret_pose
-
-    def calculate_quaternion_transform(self, orientation, angular, dt): # angular is assumed to be global
-        # quaternion calculation
-        quat_vec = numpy.array([[orientation.x],
-                                [orientation.y],
-                                [orientation.z],
-                                [orientation.w]])
-        # skew_omega = numpy.matrix([[0, angular.z, -angular.y, angular.x],
-        #                            [-angular.z, 0, angular.x, angular.y],
-        #                            [angular.y, -angular.x, 0, angular.z],
-        #                            [-angular.x, -angular.y, -angular.z, 0]])
-        skew_omega = numpy.matrix([[0, -angular.z, angular.y, angular.x],
-                                   [angular.z, 0, -angular.x, angular.y],
-                                   [-angular.y, angular.x, 0, angular.z],
-                                   [-angular.x, -angular.y, -angular.z, 0]])
-        new_quat_vec = quat_vec + 0.5 * numpy.dot(skew_omega, quat_vec) * dt
-        norm = numpy.linalg.norm(new_quat_vec)
-        if norm == 0:
-            rospy.logwarn("norm of quaternion is zero")
-        else:
-            new_quat_vec = new_quat_vec / norm # normalize
-        return Quaternion(*numpy.array(new_quat_vec).reshape(-1,).tolist())
-
-    def calculate_pose_covariance_transform(self, pose_cov, global_twist_cov, dt):
-        ret_pose_cov = []
-        # make matirx from covariance array
-        prev_pose_cov_matrix = numpy.matrix(pose_cov).reshape(6, 6)
-        global_twist_cov_matrix = numpy.matrix(global_twist_cov).reshape(6, 6)
-        # jacobian matrix
-        # elements in pose and twist are assumed to be independent on global coordinates
-        jacobi_pose = numpy.diag([1.0] * 6)
-        jacobi_twist = numpy.diag([dt] * 6)
-        # covariance calculation
-        pose_cov_matrix = jacobi_pose.dot(prev_pose_cov_matrix.dot(jacobi_pose.T)) + jacobi_twist.dot(global_twist_cov_matrix.dot(jacobi_twist.T))
-        # update covariances as array type (twist is same as before)
-        ret_pose_cov = numpy.array(pose_cov_matrix).reshape(-1,).tolist()
-        return ret_pose_cov
-        
