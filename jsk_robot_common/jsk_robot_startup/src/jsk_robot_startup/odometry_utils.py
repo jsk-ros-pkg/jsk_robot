@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import rospy
 import tf
 import numpy
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3
@@ -13,9 +14,9 @@ def transform_local_twist_to_global(pose, local_twist):
     global_velocity = numpy.dot(rotation_matrix, numpy.array([[local_twist.linear.x],
                                                               [local_twist.linear.y],
                                                               [local_twist.linear.z]]))
-    global_omega = numpy.dot(rotation_matrix, numpy.array([[local_twist.twist.angular.x],
-                                                           [local_twist.twist.angular.y],
-                                                           [local_twist.twist.angular.z]]))
+    global_omega = numpy.dot(rotation_matrix, numpy.array([[local_twist.angular.x],
+                                                           [local_twist.angular.y],
+                                                           [local_twist.angular.z]]))
     return Twist(Vector3(*global_velocity[:, 0]), Vector3(*global_omega[:, 0]))
 
 def transform_local_twist_covariance_to_global(pose, local_twist_with_covariance):
@@ -23,7 +24,7 @@ def transform_local_twist_covariance_to_global(pose, local_twist_with_covariance
     rot = [pose.orientation.x, pose.orientation.y,
            pose.orientation.z, pose.orientation.w]
     rotation_matrix = tf.transformations.quaternion_matrix(rot)[:3, :3]
-    twist_cov_matrix = numpy.matrix(local_twist_with_covariance.covariance).reshape(6, 6)
+    twist_cov_matrix = numpy.matrix(local_twist_with_covariance).reshape(6, 6)
     global_twist_cov_matrix = numpy.zeros((6, 6))
     global_twist_cov_matrix[:3, :3] = (rotation_matrix.T).dot(twist_cov_matrix[:3, :3].dot(rotation_matrix))
     global_twist_cov_matrix[3:6, 3:6] = (rotation_matrix.T).dot(twist_cov_matrix[3:6, 3:6].dot(rotation_matrix))
@@ -86,7 +87,7 @@ def update_pose_covariance(pose_cov, global_twist_cov, dt):
 
 # tf broadcast
 def broadcast_transform(broadcast, odom, invert_tf):
-    if not self.odom:
+    if not odom or not broadcast:
         return
     position = [odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z]
     orientation = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
@@ -100,7 +101,7 @@ def broadcast_transform(broadcast, odom, invert_tf):
     else:
         parent_frame = odom.header.frame_id
         target_frame = odom.child_frame_id
-    broadcast.sendTransform(position, orientation, rospy.Time.now(), target_frame, parent_frame)
+    broadcast.sendTransform(position, orientation, odom.header.stamp, target_frame, parent_frame)
 
 # mathmatical tools    
 def make_homogeneous_matrix(trans, rot):

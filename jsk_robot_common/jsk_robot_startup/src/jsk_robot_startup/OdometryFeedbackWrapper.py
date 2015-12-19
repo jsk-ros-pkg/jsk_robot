@@ -16,7 +16,7 @@ from scipy import signal
 from dynamic_reconfigure.server import Server
 from jsk_robot_startup.cfg import OdometryFeedbackWrapperReconfigureConfig
 
-from odometry_utils import transform_twist_to_global, transform_twist_covariance_to_global, update_pose, update_twist_covariance, update_pose_covariance, broadcast_transform, make_homogeneous_matrix
+from odometry_utils import transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_twist_covariance, update_pose_covariance, broadcast_transform, make_homogeneous_matrix
 
 class OdometryFeedbackWrapper(object):
     def __init__(self):
@@ -119,7 +119,7 @@ class OdometryFeedbackWrapper(object):
                         # update pose and twist according to the history
                         self.update_twist(self.feedback_odom.twist, hist.twist)
                         global_hist_twist = transform_local_twist_to_global(hist.pose.pose, hist.twist.twist)
-                        self.feedback_odom.pose.pose = update_pose(self.feedback_odom.pose, global_hist_twist, dt) # update feedback_odom according to twist of hist
+                        self.feedback_odom.pose.pose = update_pose(self.feedback_odom.pose.pose, global_hist_twist, dt) # update feedback_odom according to twist of hist
                         # update covariance
                         self.feedback_odom.twist.covariance = hist.twist.covariance
                         global_hist_twist_covariance = transform_local_twist_covariance_to_global(self.feedback_odom.pose.pose, hist.twist.covariance)
@@ -234,7 +234,7 @@ class OdometryFeedbackWrapper(object):
             # initial covariance of pose is defined as same value of source_odom
             dt = 0.0
         global_twist_covariance = transform_local_twist_covariance_to_global(result_odom.pose.pose, result_odom.twist.covariance)
-        result_odom.pose.pose.covariance = update_pose_covariance(result_odom.pose.covariance, global_twist_covariance, dt)
+        result_odom.pose.covariance = update_pose_covariance(result_odom.pose.covariance, global_twist_covariance, dt)
         self.odom = result_odom
 
     def update_twist(self, twist, new_twist):
