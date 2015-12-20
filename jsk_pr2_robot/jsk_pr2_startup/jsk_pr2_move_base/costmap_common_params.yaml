@@ -1,4 +1,4 @@
-publish_frequency: 10.0
+update_frequency: 10.0
 unknown_cost_value: 0
 obstacle_layer:
   origin_z: 0.0
