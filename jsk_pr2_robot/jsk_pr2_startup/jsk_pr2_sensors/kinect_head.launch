@@ -72,6 +72,7 @@
     <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py" output="screen"
           if="$(arg launch_openni)">
       <param name="camera" value="kinect_head" />
+      <param name="sleep_cycle" value="60" />
       <remap from="image" to="/kinect_head_c2/rgb/image_rect_color" />
     </node>
   </group>
