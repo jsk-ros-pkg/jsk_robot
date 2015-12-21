@@ -3,7 +3,7 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Point, Quaternion, Twist, Vector3, TwistWithCovariance
+from geometry_msgs.msg import Point, Quaternion, Twist, Vector3, TwistWithCovariance, TransformStamped
 from std_msgs.msg import Float64, Empty
 import tf
 import time
@@ -15,10 +15,11 @@ from odometry_utils import make_homogeneous_matrix, update_twist_covariance, upd
 
 class OdometryOffset(object):
     def __init__(self):
-        rospy.init_node("OdometryFeedbackWrapper", anonymous=True)
-        self.listener = tf.TransformListener(True, rospy.Duration(120))
+        rospy.init_node("OdometryOffset", anonymous=True)
         self.offset_matrix = None
         self.prev_odom = None
+        self.base_odom = None
+        self.base_to_init_transform = make_homogeneous_matrix([0, 0, 0], [0, 0, 0, 1])
         self.lock = threading.Lock()
         # execute rate
         self.rate = float(rospy.get_param("~rate", 100))
@@ -29,7 +30,6 @@ class OdometryOffset(object):
             self.broadcast = tf.TransformBroadcaster()
             self.invert_tf = rospy.get_param("~invert_tf", True)
         self.odom_frame = rospy.get_param("~odom_frame", "offset_odom")
-        self.base_odom_frame = rospy.get_param("~base_odom_frame", "odom_init")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.tf_duration = rospy.get_param("~tf_duration", 1)
         # for filter (only used when use_twist_filter is True)
@@ -55,7 +55,8 @@ class OdometryOffset(object):
                                 rospy.get_param("~sigma_yaw", 0.01)]
             self.reconfigure_server = Server(OdometryOffsetReconfigureConfig, self.reconfigure_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
-        self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
+        self.base_odom_sub = rospy.Subscriber("~base_odom", Odometry, self.base_odom_callback)
+        self.init_transform_sub = rospy.Subscriber("~init_transform", TransformStamped, self.init_transform_callback) # init_transform is assumed to be transform of base_odom -> init_odom
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
 
     def reconfigure_callback(self, config, level):
@@ -68,47 +69,48 @@ class OdometryOffset(object):
         rospy.loginfo("[%s]" + "velocity sigma updated: x: {0}, y: {1}, z: {2}, roll: {3}, pitch: {4}, yaw: {5}".format(*self.v_err_sigma), rospy.get_name())
         return config
 
+    def calculate_offset(self, source_odom):
+        # tf relationships: init_odom -> source_odom -> body_link <- base_odom <- init_odom
+        # offset_odom is init_odom -> source_odom
+        # TODO: check timestamps of base_odom and source_odom and fix if necessary
+        if not self.base_odom:
+            rospy.loginfo("[%s] base_odom is not subscribed yet", rospy.get_name())
+            return None
+        source_odom_matrix = make_homogeneous_matrix([getattr(source_odom.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(source_odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]]) # source_odom -> body_link
+        base_odom_matrix = make_homogeneous_matrix([getattr(self.base_odom.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(self.base_odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> body_link
+        return (numpy.linalg.inv(self.base_to_init_transform).dot(base_odom_matrix)).dot(numpy.linalg.inv(source_odom_matrix)) # T(init->src) * T(src->body) = T(init->base) * T(base->body)
+
     def execute(self):
         while not rospy.is_shutdown():
             self.r.sleep()
 
-    def calculate_offset(self, odom):
-        try:
-            self.listener.waitForTransform(self.base_odom_frame, odom.child_frame_id, odom.header.stamp, rospy.Duration(self.tf_duration))
-            (trans,rot) = self.listener.lookupTransform(self.base_odom_frame, odom.child_frame_id, odom.header.stamp)
-        except:
-            rospy.logwarn("[%s] failed to solve tf in initialize_odometry: %s to %s", rospy.get_name(), self.base_odom_frame, odom.child_frame_id)
-            return None
-        base_odom_to_base_link = make_homogeneous_matrix(trans, rot) # base_odom -> base_link
-        base_link_to_odom = numpy.linalg.inv(make_homogeneous_matrix([odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z],
-                                                                     [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y,
-                                                                      odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])) # base_link -> odom
-        return base_odom_to_base_link.dot(base_link_to_odom) # base_odom -> odom
-        
-    def init_signal_callback(self, msg):
-        time.sleep(1) # wait to update odom_init frame
+    def init_transform_callback(self, msg):
         with self.lock:
-            self.offset_matrix = None
+            self.base_to_init_transform = make_homogeneous_matrix([getattr(msg.transform.translation, attr) for attr in ["x", "y", "z"]], [getattr(msg.transform.rotation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> init_odom
             self.prev_odom = None
+            self.base_odom = None
+            self.offset_matrix = None
             if self.use_twist_filter:
                 self.filter_buffer = []
-            
+
+    def base_odom_callback(self, msg):
+        with self.lock:
+            self.base_odom = msg
+                            
     def source_odom_callback(self, msg):
         with self.lock:
             if self.offset_matrix != None:
-                source_odom_matrix = make_homogeneous_matrix([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z],
-                                                             [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
-                                                              msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
+                source_odom_matrix = make_homogeneous_matrix([getattr(msg.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(msg.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]])
                 new_odom = copy.deepcopy(msg)
                 new_odom.header.frame_id = self.odom_frame
                 new_odom.child_frame_id = self.base_link_frame
                 twist_list = [new_odom.twist.twist.linear.x, new_odom.twist.twist.linear.y, new_odom.twist.twist.linear.z, new_odom.twist.twist.angular.x, new_odom.twist.twist.angular.y, new_odom.twist.twist.angular.z]
-
+                
                 # use median filter to cancel spike noise of twist when use_twist_filter is true
                 if self.use_twist_filter:                    
                     twist_list = self.median_filter(twist_list)
                     new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
-
+                    
                 # overwrite twist covariance when calculate_covariance flag is True
                 if self.overwrite_pdf:
                     if all([abs(x) < 1e-6 for x in twist_list]):
@@ -147,13 +149,10 @@ class OdometryOffset(object):
                 self.pub.publish(new_odom)
                 if self.publish_tf:
                     broadcast_transform(self.broadcast, new_odom, self.invert_tf)
-
                 self.prev_odom = new_odom
-                    
+                
             else:
-                current_offset_matrix = self.calculate_offset(msg)
-                if current_offset_matrix != None:
-                    self.offset_matrix = current_offset_matrix
+                self.offset_matrix = self.calculate_offset(msg)
 
     def median_filter(self, data):
         self.filter_buffer.append(data)
