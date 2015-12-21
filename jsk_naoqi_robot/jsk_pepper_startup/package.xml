@@ -12,7 +12,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>rostest</build_depend>
   <run_depend>joy</run_depend>
   <run_depend>naoqi_bridge</run_depend>
   <run_depend>naoqi_dashboard</run_depend>
@@ -26,6 +25,9 @@
   <run_depend>image_view</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>rostwitter</run_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>roslaunch</test_depend>
 
   <export>
   </export>
