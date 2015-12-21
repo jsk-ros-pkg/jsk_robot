@@ -1,5 +1,4 @@
 <launch>
-  <arg name="use_imu" default="false"/>
   <arg name="use_slam_feedback" default="false"/>
   <arg name="robot" default="default"/>
 
@@ -16,6 +15,7 @@
       base_odom_frame: odom_init
       odom_frame: biped_odom_offset
       base_link_frame: BODY
+      publish_tf: false
     </rosparam>
   </node>
 
@@ -28,6 +28,7 @@
       base_odom_frame: odom_init
       odom_frame: viso_odom_offset
       base_link_frame: BODY
+      publish_tf: false      
     </rosparam>
   </node>
 
@@ -43,6 +44,7 @@
     <rosparam>
       odom_frame: viso_odom_integrated
       base_link_frame: BODY
+      publish_tf: false
     </rosparam>
   </node>
 
@@ -59,7 +61,6 @@
       odom_frame: biped_odom_particle
       base_link_frame: BODY
       publish_tf: false
-      use_imu: $(arg use_imu)
     </rosparam>
   </node>
 

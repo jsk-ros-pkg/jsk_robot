@@ -14,6 +14,7 @@ viso_odom_calculator:
 biped_particle_odometry:
   particle_num: 80
   rate: 50
+  use_imu: true
 
 biped_odometry_offset:
   use_twist_filter: true

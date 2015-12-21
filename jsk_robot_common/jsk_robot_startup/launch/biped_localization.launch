@@ -1,7 +1,6 @@
 <launch>
   <arg name="set_slam_laser_params" default="true"/>
   <arg name="use_particle_odom" default="true"/>
-  <arg name="use_imu" default="false"/>
   <arg name="use_slam_feedback" default="false"/>
   <arg name="nodelet_index" default="2"/>
   <arg name="stereo_namespace" default="multisense"/>
@@ -25,16 +24,14 @@
     <arg name="stereo" default="$(arg stereo_namespace)" />
     <arg name="image" default="image_rect" />
     <arg name="use_robot_pose_ekf" default="false" />
-    <arg name="publish_viso_tf" default="true" />
+    <arg name="publish_viso_tf" default="false" />
     <arg name="invert_viso_tf" default="true" /> 
   </include>
  
   <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
-
   <group if="$(arg use_particle_odom)">
     <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch">
       <arg name="robot" value="$(arg robot)"/>
-      <arg name="use_imu" value="$(arg use_imu)"/>
       <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
     </include>
   </group>

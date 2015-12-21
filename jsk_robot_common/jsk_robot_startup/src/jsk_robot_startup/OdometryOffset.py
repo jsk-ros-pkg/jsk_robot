@@ -9,41 +9,64 @@ import tf
 import time
 import threading
 import copy
+from dynamic_reconfigure.server import Server
+from jsk_robot_startup.cfg import OdometryOffsetReconfigureConfig
+from odometry_utils import make_homogeneous_matrix, update_twist_covariance, update_pose, update_pose_covariance, broadcast_transform, transform_local_twist_to_global, transform_local_twist_covariance_to_global
 
 class OdometryOffset(object):
     def __init__(self):
         rospy.init_node("OdometryFeedbackWrapper", anonymous=True)
+        self.listener = tf.TransformListener(True, rospy.Duration(120))
+        self.offset_matrix = None
+        self.prev_odom = None
+        self.lock = threading.Lock()
         # execute rate
         self.rate = float(rospy.get_param("~rate", 100))
+        self.r = rospy.Rate(self.rate)
         # tf parameters
         self.publish_tf = rospy.get_param("~publish_tf", True)
-        self.invert_tf = rospy.get_param("~invert_tf", True)
+        if self.publish_tf:
+            self.broadcast = tf.TransformBroadcaster()
+            self.invert_tf = rospy.get_param("~invert_tf", True)
         self.odom_frame = rospy.get_param("~odom_frame", "offset_odom")
         self.base_odom_frame = rospy.get_param("~base_odom_frame", "odom_init")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.tf_duration = rospy.get_param("~tf_duration", 1)
         # for filter (only used when use_twist_filter is True)
         self.use_twist_filter = rospy.get_param("~use_twist_filter", False)
-        self.filter_buffer_size = rospy.get_param("~filter_buffer_size", 5)
-        self.filter_buffer = []
-        # for covariance calculation (only used when calculate_covariance is True)
-        self.calculate_covariance = rospy.get_param("~calculate_covariance", False)
-        self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
-        self.v_sigma = [rospy.get_param("~sigma_x", 0.05),
-                        rospy.get_param("~sigma_y", 0.1),
-                        rospy.get_param("~sigma_z", 0.0001),
-                        rospy.get_param("~sigma_roll", 0.0001),
-                        rospy.get_param("~sigma_pitch", 0.0001),
-                        rospy.get_param("~sigma_yaw", 0.01)]
-        self.broadcast = tf.TransformBroadcaster()
-        self.listener = tf.TransformListener(True, rospy.Duration(120))
-        self.r = rospy.Rate(self.rate)
-        self.offset_matrix = None
-        self.prev_odom = None
-        self.lock = threading.Lock()
+        if self.use_twist_filter:
+            self.filter_buffer_size = rospy.get_param("~filter_buffer_size", 5)
+            self.filter_buffer = []
+        # to overwrite probability density function (only used when overwrite_pdf is True)
+        self.overwrite_pdf = rospy.get_param("~overwrite_pdf", False)
+        if self.overwrite_pdf:
+            self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
+            self.v_err_mean = [rospy.get_param("~mean_x", 0.0),
+                               rospy.get_param("~mean_y", 0.0),
+                               rospy.get_param("~mean_z", 0.0),
+                               rospy.get_param("~mean_roll", 0.0),
+                               rospy.get_param("~mean_pitch", 0.0),
+                               rospy.get_param("~mean_yaw", 0.0)]
+            self.v_err_sigma = [rospy.get_param("~sigma_x", 0.05),
+                                rospy.get_param("~sigma_y", 0.1),
+                                rospy.get_param("~sigma_z", 0.0001),
+                                rospy.get_param("~sigma_roll", 0.0001),
+                                rospy.get_param("~sigma_pitch", 0.0001),
+                                rospy.get_param("~sigma_yaw", 0.01)]
+            self.reconfigure_server = Server(OdometryOffsetReconfigureConfig, self.reconfigure_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
+
+    def reconfigure_callback(self, config, level):
+        with self.lock:
+            for i, mean in enumerate(["mean_x", "mean_y", "mean_z", "mean_roll", "mean_pitch", "mean_yaw"]):
+                self.v_err_mean[i] = config[mean]
+            for i, sigma in enumerate(["sigma_x", "sigma_y", "sigma_z", "sigma_roll", "sigma_pitch", "sigma_yaw"]):
+                self.v_err_sigma[i] = config[sigma]
+        rospy.loginfo("[%s]" + "velocity mean updated: x: {0}, y: {1}, z: {2}, roll: {3}, pitch: {4}, yaw: {5}".format(*self.v_err_mean), rospy.get_name())                
+        rospy.loginfo("[%s]" + "velocity sigma updated: x: {0}, y: {1}, z: {2}, roll: {3}, pitch: {4}, yaw: {5}".format(*self.v_err_sigma), rospy.get_name())
+        return config
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -56,10 +79,10 @@ class OdometryOffset(object):
         except:
             rospy.logwarn("[%s] failed to solve tf in initialize_odometry: %s to %s", rospy.get_name(), self.base_odom_frame, odom.child_frame_id)
             return None
-        base_odom_to_base_link = self.make_homogeneous_matrix(trans, rot) # base_odom -> base_link
-        base_link_to_odom = numpy.linalg.inv(self.make_homogeneous_matrix([odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z],
-                                                                          [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y,
-                                                                           odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])) # base_link -> odom
+        base_odom_to_base_link = make_homogeneous_matrix(trans, rot) # base_odom -> base_link
+        base_link_to_odom = numpy.linalg.inv(make_homogeneous_matrix([odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z],
+                                                                     [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y,
+                                                                      odom.pose.pose.orientation.z, odom.pose.pose.orientation.w])) # base_link -> odom
         return base_odom_to_base_link.dot(base_link_to_odom) # base_odom -> odom
         
     def init_signal_callback(self, msg):
@@ -67,38 +90,49 @@ class OdometryOffset(object):
         with self.lock:
             self.offset_matrix = None
             self.prev_odom = None
-            self.filter_buffer = []
+            if self.use_twist_filter:
+                self.filter_buffer = []
             
     def source_odom_callback(self, msg):
         with self.lock:
             if self.offset_matrix != None:
-                source_odom_matrix = self.make_homogeneous_matrix([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z],
-                                                                  [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
-                                                                   msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
+                source_odom_matrix = make_homogeneous_matrix([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z],
+                                                             [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
+                                                              msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
                 new_odom = copy.deepcopy(msg)
                 new_odom.header.frame_id = self.odom_frame
                 new_odom.child_frame_id = self.base_link_frame
+                twist_list = [new_odom.twist.twist.linear.x, new_odom.twist.twist.linear.y, new_odom.twist.twist.linear.z, new_odom.twist.twist.angular.x, new_odom.twist.twist.angular.y, new_odom.twist.twist.angular.z]
 
                 # use median filter to cancel spike noise of twist when use_twist_filter is true
-                if self.use_twist_filter:
-                    vel = [new_odom.twist.twist.linear.x, new_odom.twist.twist.linear.y, new_odom.twist.twist.linear.z, new_odom.twist.twist.angular.x, new_odom.twist.twist.angular.y, new_odom.twist.twist.angular.z]
-                    vel = self.median_filter(vel)
-                    new_odom.twist.twist = Twist(Vector3(*vel[0:3]), Vector3(*vel[3: 6]))
+                if self.use_twist_filter:                    
+                    twist_list = self.median_filter(twist_list)
+                    new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
 
                 # overwrite twist covariance when calculate_covariance flag is True
-                if self.calculate_covariance:
-                    self.update_twist_covariance(new_odom.twist)
+                if self.overwrite_pdf:
+                    if all([abs(x) < 1e-6 for x in twist_list]):
+                        # shift twist according to error mean when moving (stopping state is trusted)
+                        twist_list = [x + y for x, y in zip(twist_list, self.v_err_mean)]
+                        new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
+                    # calculate twist covariance according to standard diviation
+                    if self.twist_proportional_sigma:
+                        current_sigma = [x * y for x, y in zip(twist_list, self.v_err_sigma)]
+                    else:
+                        current_sigma = self.v_err_sigma
+                    new_odom.twist.covariance = update_twist_covariance(new_odom.twist, current_sigma)
                     
                 # offset coords
                 new_odom_matrix = self.offset_matrix.dot(source_odom_matrix)
                 new_odom.pose.pose.position = Point(*list(new_odom_matrix[:3, 3]))
                 new_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(new_odom_matrix)))
 
-                if self.calculate_covariance:
+                if self.overwrite_pdf:
                     if self.prev_odom != None:
                         dt = (new_odom.header.stamp - self.prev_odom.header.stamp).to_sec()
-                        global_twist_with_covariance = self.transform_twist_with_covariance_to_global(new_odom.pose, new_odom.twist)
-                        new_odom.pose.covariance = self.update_pose_covariance(self.prev_odom.pose.covariance, global_twist_with_covariance.covariance, dt)
+                        global_twist_with_covariance = TwistWithCovariance(transform_local_twist_to_global(new_odom.pose.pose, new_odom.twist.twist),
+                                                                           transform_local_twist_covariance_to_global(new_odom.pose.pose, new_odom.twist.covariance))
+                        new_odom.pose.covariance = update_pose_covariance(self.prev_odom.pose.covariance, global_twist_with_covariance.covariance, dt)
                     else:
                         new_odom.pose.covariance = numpy.diag([0.01**2] * 6).reshape(-1,).tolist() # initial covariance is assumed to be constant
                 else:
@@ -112,7 +146,7 @@ class OdometryOffset(object):
                 # publish
                 self.pub.publish(new_odom)
                 if self.publish_tf:
-                    self.broadcast_transform(new_odom)
+                    broadcast_transform(self.broadcast, new_odom, self.invert_tf)
 
                 self.prev_odom = new_odom
                     
@@ -121,74 +155,9 @@ class OdometryOffset(object):
                 if current_offset_matrix != None:
                     self.offset_matrix = current_offset_matrix
 
-    def make_homogeneous_matrix(self, trans, rot):
-        homogeneous_matrix = tf.transformations.quaternion_matrix(rot)
-        homogeneous_matrix[:3, 3] = numpy.array(trans).reshape(1, 3)
-        return homogeneous_matrix
-
-    def broadcast_transform(self, odom):
-        position = [odom.pose.pose.position.x, odom.pose.pose.position.y, odom.pose.pose.position.z]
-        orientation = [odom.pose.pose.orientation.x, odom.pose.pose.orientation.y, odom.pose.pose.orientation.z, odom.pose.pose.orientation.w]
-        if self.invert_tf:
-            homogeneous_matrix = self.make_homogeneous_matrix(position, orientation)
-            homogeneous_matrix_inv = numpy.linalg.inv(homogeneous_matrix)
-            position = list(homogeneous_matrix_inv[:3, 3])
-            orientation = list(tf.transformations.quaternion_from_matrix(homogeneous_matrix_inv))
-            parent_frame = odom.child_frame_id
-            target_frame = odom.header.frame_id
-        else:
-            parent_frame = odom.header.frame_id
-            target_frame = odom.child_frame_id
-        self.broadcast.sendTransform(position, orientation, odom.header.stamp, target_frame, parent_frame)
-
     def median_filter(self, data):
         self.filter_buffer.append(data)
         ret = numpy.median(self.filter_buffer, axis = 0)
         if len(self.filter_buffer) >= self.filter_buffer_size:
             self.filter_buffer.pop(0) # filter_buffer has at least 1 member
         return ret
-        
-    def update_twist_covariance(self, twist):
-        twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
-        if self.twist_proportional_sigma == True:
-            current_sigma = [x * y for x, y in zip(twist_list, self.v_sigma)]
-        else:
-            if all([abs(x) < 1e-6 for x in twist_list]):
-                current_sigma = [1e-6] * 6 # trust "completely stopping" state
-            else:
-                current_sigma = self.v_sigma
-        twist.covariance = numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
-
-    def update_pose_covariance(self, pose_cov, global_twist_cov, dt):
-        ret_pose_cov = []
-        # make matirx from covariance array
-        prev_pose_cov_matrix = numpy.matrix(pose_cov).reshape(6, 6)
-        global_twist_cov_matrix = numpy.matrix(global_twist_cov).reshape(6, 6)
-        # jacobian matrix
-        # elements in pose and twist are assumed to be independent on global coordinates
-        jacobi_pose = numpy.diag([1.0] * 6)
-        jacobi_twist = numpy.diag([dt] * 6)
-        # covariance calculation
-        pose_cov_matrix = jacobi_pose.dot(prev_pose_cov_matrix.dot(jacobi_pose.T)) + jacobi_twist.dot(global_twist_cov_matrix.dot(jacobi_twist.T))
-        # update covariances as array type (twist is same as before)
-        ret_pose_cov = numpy.array(pose_cov_matrix).reshape(-1,).tolist()
-        return ret_pose_cov
-        
-    def transform_twist_with_covariance_to_global(self, pose, twist):
-        trans = [pose.pose.position.x, pose.pose.position.y, pose.pose.position.z]
-        rot = [pose.pose.orientation.x, pose.pose.orientation.y,
-               pose.pose.orientation.z, pose.pose.orientation.w]
-        rotation_matrix = tf.transformations.quaternion_matrix(rot)[:3, :3]
-        twist_cov_matrix = numpy.matrix(twist.covariance).reshape(6, 6)
-        global_velocity = numpy.dot(rotation_matrix, numpy.array([[twist.twist.linear.x],
-                                                                  [twist.twist.linear.y],
-                                                                  [twist.twist.linear.z]]))
-        global_omega = numpy.dot(rotation_matrix, numpy.array([[twist.twist.angular.x],
-                                                               [twist.twist.angular.y],
-                                                               [twist.twist.angular.z]]))
-        global_twist_cov_matrix = numpy.zeros((6, 6))
-        global_twist_cov_matrix[:3, :3] = (rotation_matrix.T).dot(twist_cov_matrix[:3, :3].dot(rotation_matrix))
-        global_twist_cov_matrix[3:6, 3:6] = (rotation_matrix.T).dot(twist_cov_matrix[3:6, 3:6].dot(rotation_matrix))
-
-        return TwistWithCovariance(Twist(Vector3(*global_velocity[:, 0]), Vector3(*global_omega[:, 0])),
-                                   global_twist_cov_matrix.reshape(-1,).tolist())

@@ -1,11 +1,15 @@
-viso_odom_calculator:
-  rate: 10
+viso_odometry_offset:
+  overwrite_pdf: true
+  twist_proportional_sigma: true
   sigma_x: 1.0
   sigma_y: 1.0
   sigma_z: 1.0
   sigma_roll: 0.5
   sigma_pitch: 0.5
   sigma_yaw: 0.5
+
+viso_odom_calculator:
+  rate: 10
   twist_proportional_sigma: true
   force_feedback_sigma: 1.0
   distribution_feedback_minimum_sigma: 0.1
@@ -14,3 +18,4 @@ viso_odom_calculator:
 biped_particle_odometry:
   particle_num: 20
   rate: 100
+  use_imu: false
