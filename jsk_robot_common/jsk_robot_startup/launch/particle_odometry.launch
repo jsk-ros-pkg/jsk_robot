@@ -10,12 +10,12 @@
         output="screen" >
     <remap from="~source_odom" to="/odom" />
     <remap from="~output" to="/biped_odom_offset" />
-    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~base_odom" to="/odom" />
+    <remap from="~init_transform" to="/footcoords/odom_init_transform" />
     <rosparam>
-      base_odom_frame: odom_init
       odom_frame: biped_odom_offset
       base_link_frame: BODY
-      publish_tf: false
+      publish_tf: true
     </rosparam>
   </node>
 
@@ -23,12 +23,12 @@
         output="screen" >
     <remap from="~source_odom" to="/viso_odom" />
     <remap from="~output" to="/viso_odom_offset" />
-    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~base_odom" to="/odom" />    
+    <remap from="~init_transform" to="/footcoords/odom_init_transform" />
     <rosparam>
-      base_odom_frame: odom_init
       odom_frame: viso_odom_offset
       base_link_frame: BODY
-      publish_tf: false      
+      publish_tf: true
     </rosparam>
   </node>
 
@@ -44,7 +44,7 @@
     <rosparam>
       odom_frame: viso_odom_integrated
       base_link_frame: BODY
-      publish_tf: false
+      publish_tf: true
     </rosparam>
   </node>
 
