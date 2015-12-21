@@ -102,22 +102,19 @@ class OdometryOffset(object):
                 new_odom = copy.deepcopy(msg)
                 new_odom.header.frame_id = self.odom_frame
                 new_odom.child_frame_id = self.base_link_frame
+                twist_list = [new_odom.twist.twist.linear.x, new_odom.twist.twist.linear.y, new_odom.twist.twist.linear.z, new_odom.twist.twist.angular.x, new_odom.twist.twist.angular.y, new_odom.twist.twist.angular.z]
 
                 # use median filter to cancel spike noise of twist when use_twist_filter is true
-                if self.use_twist_filter:
-                    vel = [new_odom.twist.twist.linear.x, new_odom.twist.twist.linear.y, new_odom.twist.twist.linear.z, new_odom.twist.twist.angular.x, new_odom.twist.twist.angular.y, new_odom.twist.twist.angular.z]
-                    vel = self.median_filter(vel)
-                    new_odom.twist.twist = Twist(Vector3(*vel[0:3]), Vector3(*vel[3: 6]))
+                if self.use_twist_filter:                    
+                    twist_list = self.median_filter(twist_list)
+                    new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
 
                 # overwrite twist covariance when calculate_covariance flag is True
                 if self.overwrite_pdf:
-                    # shift twist according to error mean
-                    new_odom.twist.twist.linear.x += self.v_err_mean[0]
-                    new_odom.twist.twist.linear.y += self.v_err_mean[1]
-                    new_odom.twist.twist.linear.z += self.v_err_mean[2]
-                    new_odom.twist.twist.angular.x += self.v_err_mean[3]
-                    new_odom.twist.twist.angular.y += self.v_err_mean[4]
-                    new_odom.twist.twist.angular.z += self.v_err_mean[5]
+                    if all([abs(x) < 1e-6 for x in twist_list]):
+                        # shift twist according to error mean when moving (stopping state is trusted)
+                        twist_list = [x + y for x, y in zip(twist_list, self.v_err_mean)]
+                        new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
                     # calculate twist covariance according to standard diviation 
                     new_odom.twist.covariance = update_twist_covariance(new_odom.twist, self.v_err_sigma, self.twist_proportional_sigma)
                     
