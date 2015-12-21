@@ -8,16 +8,14 @@
   <arg name="slam_laser_max_height" default="0.2"/>
   <arg name="slam_laser_min_height" default="-0.2"/>
   <arg name="robot" default="default"/>
-
+  
   <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
-  <group if="$(arg set_slam_laser_params)">
-    <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch">
-      <arg name="nodelet_index" value="$(arg nodelet_index)"/>
-      <arg name="laser_input" value="/multisense/cloud_self_filtered"/>
-      <arg name="assemble_base_frame" value="/biped_odom_particle" if="$(arg use_particle_odom)"/>
-      <arg name="assemble_base_frame" value="/odom_init" unless="$(arg use_particle_odom)"/>      
-    </include>
-  </group>
+  <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch" if="$(arg set_slam_laser_params)">
+    <arg name="nodelet_index" value="$(arg nodelet_index)"/>
+    <arg name="laser_input" value="/multisense/cloud_self_filtered"/>
+    <arg name="assemble_base_frame" value="/biped_odom_particle" if="$(arg use_particle_odom)"/>
+    <arg name="assemble_base_frame" value="/odom_init" unless="$(arg use_particle_odom)"/>      
+  </include>
 
   <!-- viso -->
   <include file="$(find jsk_robot_startup)/launch/viso.launch">
@@ -27,14 +25,12 @@
     <arg name="publish_viso_tf" default="false" />
     <arg name="invert_viso_tf" default="true" /> 
   </include>
- 
+  
   <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
-  <group if="$(arg use_particle_odom)">
-    <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch">
-      <arg name="robot" value="$(arg robot)"/>
-      <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
-    </include>
-  </group>
+  <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch" if="$(arg use_particle_odom)">
+    <arg name="robot" value="$(arg robot)"/>
+    <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+  </include>
 
   <include file="$(find jsk_robot_startup)/launch/gmapping.launch">
     <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
