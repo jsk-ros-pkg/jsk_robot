@@ -27,7 +27,6 @@ class OdometryFeedbackWrapper(object):
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.max_feedback_time = rospy.get_param("~max_feedback_time", 60) # if max_feedback_time <= 0, feedback is not occurs by time
         self.tf_cache_time = rospy.get_param("~tf_cache_time", 60) # determined from frequency of feedback_odom
-        self.twist_proportional_sigma = rospy.get_param("~twist_proportional_sigma", False)
         if self.publish_tf:
             self.broadcast = tf.TransformBroadcaster()
             self.invert_tf = rospy.get_param("~invert_tf", True)
