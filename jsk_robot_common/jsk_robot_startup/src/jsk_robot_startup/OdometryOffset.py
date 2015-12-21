@@ -115,8 +115,12 @@ class OdometryOffset(object):
                         # shift twist according to error mean when moving (stopping state is trusted)
                         twist_list = [x + y for x, y in zip(twist_list, self.v_err_mean)]
                         new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
-                    # calculate twist covariance according to standard diviation 
-                    new_odom.twist.covariance = update_twist_covariance(new_odom.twist, self.v_err_sigma, self.twist_proportional_sigma)
+                    # calculate twist covariance according to standard diviation
+                    if self.twist_proportional_sigma:
+                        current_sigma = [x * y for x, y in zip(twist_list, self.v_err_sigma)]
+                    else:
+                        current_sigma = self.v_err_sigma
+                    new_odom.twist.covariance = update_twist_covariance(new_odom.twist, current_sigma)
                     
                 # offset coords
                 new_odom_matrix = self.offset_matrix.dot(source_odom_matrix)

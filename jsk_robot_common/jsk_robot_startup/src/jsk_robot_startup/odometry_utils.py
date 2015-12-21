@@ -61,16 +61,13 @@ def update_quaternion(orientation, angular, dt): # angular is assumed to be glob
     return Quaternion(*numpy.array(new_quat_vec).reshape(-1,).tolist())
 
 # covariance calculation
-def update_twist_covariance(twist, v_sigma, twist_proportional_sigma): # twist is assumed to be local
+def update_twist_covariance(twist, v_sigma, min_sigma = 1e-3): # twist is assumed to be local
     twist_list = [twist.twist.linear.x, twist.twist.linear.y, twist.twist.linear.z, twist.twist.angular.x, twist.twist.angular.y, twist.twist.angular.z]
-    if twist_proportional_sigma == True:
-        current_sigma = [x * y for x, y in zip(twist_list, v_sigma)]
+    if all([abs(x) < 1e-6 for x in twist_list]):
+        current_sigma = [min_sigma] * 6 # trust "completely stopping" state
     else:
-        if all([abs(x) < 1e-6 for x in twist_list]):
-           current_sigma = [1e-6] * 6 # trust "completely stopping" state
-        else:
-           current_sigma = v_sigma
-    return numpy.diag([max(x**2, 0.001*0.001) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
+        current_sigma = v_sigma
+    return numpy.diag([max(x ** 2, min_sigma ** 2) for x in current_sigma]).reshape(-1,).tolist() # covariance should be singular
 
 def update_pose_covariance(pose_cov, global_twist_cov, dt):
     ret_pose_cov = []
