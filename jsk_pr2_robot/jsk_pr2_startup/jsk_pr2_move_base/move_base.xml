@@ -8,8 +8,8 @@
   <!-- Throttle the voxel grid that is being published for rviz -->
   <node ns="move_base_node/local_costmap" name="voxel_grid_throttle" pkg="topic_tools" type="throttle" machine="c2" args="messages voxel_grid 3.0 voxel_grid_throttled" />
 
-  <node pkg="move_base" type="move_base" name="move_base_node" machine="c2"
-        launch-prefix="nice -n +10" clear_params="true">
+  <node pkg="move_base" type="move_base" name="move_base_node" machine="c2" clear_params="true">
+    <!-- launch-prefix="nice -n +10"> -->
     <remap from="odom" to="base_odometry/odom" />
     <remap from="cmd_vel" to="navigation/cmd_vel" />
 
