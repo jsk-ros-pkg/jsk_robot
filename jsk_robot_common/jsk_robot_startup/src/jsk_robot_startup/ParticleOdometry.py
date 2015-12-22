@@ -13,7 +13,7 @@ import copy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Empty
 from sensor_msgs.msg import Imu
-from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3
+from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3, TransformStamped
 from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform
 
 class ParticleOdometry(object):
@@ -62,18 +62,11 @@ class ParticleOdometry(object):
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 10)
         self.measure_odom_sub = rospy.Subscriber("~measure_odom", Odometry, self.measure_odom_callback, queue_size = 10)
         self.imu_sub = rospy.Subscriber("~imu", Imu, self.imu_callback, queue_size = 10)
-        self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback, queue_size = 10)
+        self.init_transform_sub = rospy.Subscriber("~initial_base_link_transform", TransformStamped, self.init_transform_callback) # init_transform is assumed to be transform of init_odom -> base_link
         # init
-        self.initialize_odometry()
+        self.initialize_odometry([0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0])
 
-    def initialize_odometry(self):
-        try:
-            (trans,rot) = self.listener.lookupTransform(self.odom_init_frame, self.base_link_frame, rospy.Time(0))
-        except:
-            rospy.logwarn("[%s] failed to solve tf in initialize_odometry: %s to %s", rospy.get_name(), self.odom_init_frame, self.base_link_frame)
-            trans = [0.0, 0.0, 0.0]
-            rot = [0.0, 0.0, 0.0, 1.0]
-        rospy.loginfo("[%s]: initiailze odometry ", rospy.get_name())
+    def initialize_odometry(self, trans, rot):
         with self.lock:
             self.particles = self.initial_distribution(Pose(Point(*trans), Quaternion(*rot)))
             self.weights = [1.0 / self.particle_num] * int(self.particle_num)
@@ -217,9 +210,9 @@ class ParticleOdometry(object):
             self.measure_odom = msg
             self.measurement_updated = True # raise measurement flag
 
-    def init_signal_callback(self, msg):
-        # time.sleep(1) # wait to update odom_init frame
-        self.initialize_odometry()
+    def init_transform_callback(self, msg):
+        self.initialize_odometry([getattr(msg.transform.translation, attr) for attr in ["x", "y", "z"]],
+                                 [getattr(msg.transform.rotation, attr) for attr in ["x", "y", "z", "w"]])
 
     def imu_callback(self, msg):
         with self.lock:

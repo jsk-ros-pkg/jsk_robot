@@ -18,8 +18,7 @@ class OdometryOffset(object):
         rospy.init_node("OdometryOffset", anonymous=True)
         self.offset_matrix = None
         self.prev_odom = None
-        self.base_odom = None
-        self.base_to_init_transform = make_homogeneous_matrix([0, 0, 0], [0, 0, 0, 1])
+        self.initial_base_link_transform = make_homogeneous_matrix([0, 0, 0], [0, 0, 0, 1])
         self.lock = threading.Lock()
         # execute rate
         self.rate = float(rospy.get_param("~rate", 100))
@@ -55,8 +54,7 @@ class OdometryOffset(object):
                                 rospy.get_param("~sigma_yaw", 0.01)]
             self.reconfigure_server = Server(OdometryOffsetReconfigureConfig, self.reconfigure_callback)
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
-        self.base_odom_sub = rospy.Subscriber("~base_odom", Odometry, self.base_odom_callback)
-        self.init_transform_sub = rospy.Subscriber("~init_transform", TransformStamped, self.init_transform_callback) # init_transform is assumed to be transform of base_odom -> init_odom
+        self.init_transform_sub = rospy.Subscriber("~initial_base_link_transform", TransformStamped, self.init_transform_callback) # init_transform is assumed to be transform of init_odom -> base_link
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
 
     def reconfigure_callback(self, config, level):
@@ -70,15 +68,14 @@ class OdometryOffset(object):
         return config
 
     def calculate_offset(self, source_odom):
-        # tf relationships: init_odom -> source_odom -> body_link <- base_odom <- init_odom
+        # tf relationships: init_odom -> source_odom -> body_link <- init_odom
         # offset_odom is init_odom -> source_odom
         # TODO: check timestamps of base_odom and source_odom and fix if necessary
-        if not self.base_odom:
-            rospy.loginfo("[%s] base_odom is not subscribed yet", rospy.get_name())
+        if self.initial_base_link_transform == None:
+            rospy.loginfo("[%s] initial transform is not subscribed yet", rospy.get_name())
             return None
         source_odom_matrix = make_homogeneous_matrix([getattr(source_odom.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(source_odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]]) # source_odom -> body_link
-        base_odom_matrix = make_homogeneous_matrix([getattr(self.base_odom.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(self.base_odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> body_link
-        return (numpy.linalg.inv(self.base_to_init_transform).dot(base_odom_matrix)).dot(numpy.linalg.inv(source_odom_matrix)) # T(init->src) * T(src->body) = T(init->base) * T(base->body)
+        return self.initial_base_link_transform.dot(numpy.linalg.inv(source_odom_matrix)) # T(init->src) * T(src->body) = T(init->body)
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -86,17 +83,12 @@ class OdometryOffset(object):
 
     def init_transform_callback(self, msg):
         with self.lock:
-            self.base_to_init_transform = make_homogeneous_matrix([getattr(msg.transform.translation, attr) for attr in ["x", "y", "z"]], [getattr(msg.transform.rotation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> init_odom
+            self.initial_base_link_transform = make_homogeneous_matrix([getattr(msg.transform.translation, attr) for attr in ["x", "y", "z"]], [getattr(msg.transform.rotation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> init_odom
             self.prev_odom = None
-            self.base_odom = None
             self.offset_matrix = None
             if self.use_twist_filter:
                 self.filter_buffer = []
 
-    def base_odom_callback(self, msg):
-        with self.lock:
-            self.base_odom = msg
-                            
     def source_odom_callback(self, msg):
         with self.lock:
             if self.offset_matrix != None:
