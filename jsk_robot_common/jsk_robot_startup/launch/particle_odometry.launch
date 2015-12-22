@@ -23,7 +23,7 @@
         output="screen" >
     <remap from="~source_odom" to="/viso_odom" />
     <remap from="~output" to="/viso_odom_offset" />
-    <remap from="~base_odom" to="/odom" />    
+    <remap from="~base_odom" to="/odom" />
     <remap from="~init_transform" to="/footcoords/odom_init_transform" />
     <rosparam>
       odom_frame: viso_odom_offset
@@ -76,7 +76,7 @@
 
   <!-- convert map->base_link transform to odometry msg and use in feedback if use_slam_feedback is true -->
   <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
-        output="screen">
+        output="screen" if="$(arg use_slam_feedback)">
     <remap from="~output" to="/slam_odom" />
     <remap from="~map" to="/map" />
     <remap from="~base_odom" to="/biped_odom_particle" />
