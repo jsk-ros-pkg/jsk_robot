@@ -10,6 +10,7 @@
   <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
   <build_depend>jsk_network_tools</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>std_msgs</build_depend>
