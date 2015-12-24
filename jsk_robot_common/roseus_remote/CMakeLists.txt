@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   jsk_network_tools
   std_msgs
   roseus
+  message_generation
 )
 
 add_message_files(
@@ -20,7 +21,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES jskeus_remote
-#  CATKIN_DEPENDS jsk_network_tools jskeus
+   CATKIN_DEPENDS message_runtime std_msgs
 #  DEPENDS system_lib
 )
 
