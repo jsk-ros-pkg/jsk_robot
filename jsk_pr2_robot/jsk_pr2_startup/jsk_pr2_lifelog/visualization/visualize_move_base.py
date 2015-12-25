@@ -22,6 +22,7 @@ class DBPlay(object):
         self.downsample = rospy.get_param("~downsample", 3)
         self.label_downsample = rospy.get_param("~label_downsample", 10)
         self.duration = rospy.get_param('~duration', 10) # days
+        self.limit = rospy.get_param("~limit", 1000)
         self.msg_store = MessageStoreProxy(database=self.db_name,
                                            collection=self.col_name)
         rospy.loginfo("connected to %s.%s" % (self.db_name, self.col_name))
@@ -30,14 +31,16 @@ class DBPlay(object):
 
     def run(self):
         while not rospy.is_shutdown():
-            rospy.logdebug("$gt: %d" % (rospy.Time.now().secs - self.duration * 60 * 60 * 24))
+            rospy.loginfo("$gt: %d" % (rospy.Time.now().secs - self.duration * 60 * 60 * 24))
             if self.use_ros_time or self.use_sim_time:
+                rospy.loginfo("fetching data")
                 trans = self.msg_store.query(type=TransformStamped._type,
                                              message_query={"header.stamp.secs": {
                                                  "$lte": rospy.Time.now().secs,
                                                  "$gt": rospy.Time.now().secs - self.duration * 60 * 60 * 24
                                              }},
-                                             sort_query=[("$natural", 1)])
+                                             sort_query=[("$natural", 1)],
+                                             limit=self.limit)
             else:
                 trans = self.msg_store.query(type=TransformStamped._type,
                                              meta_query={"inserted_at": {

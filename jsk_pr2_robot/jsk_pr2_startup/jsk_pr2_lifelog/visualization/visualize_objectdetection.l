@@ -26,10 +26,12 @@
                      :meta '((:inserted_at .
                               ((:$gt . start-time))))
                      :sort '((:$natural . 1))
+                     :limit 10000
                      ))
 (setq map-to-robots (mongo::query
                      geometry_msgs::TransformStamped
                      :sort '((:$natural . 1))
+                     :limit 10000
                      ))
 
 (setq *map-to-robot* (pop map-to-robots))
