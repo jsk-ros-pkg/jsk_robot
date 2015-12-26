@@ -14,6 +14,5 @@ mark_threshold: 0
 transform_tolerance: 1.0 # 0.2
 obstacle_range: 2.5
 raytrace_range: 3.0
-inflation_layer:
+inflation:
   inflation_radius: 0.2
-inflation_radius: 0.2
