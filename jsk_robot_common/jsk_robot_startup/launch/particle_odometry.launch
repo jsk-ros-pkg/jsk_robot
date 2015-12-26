@@ -65,7 +65,7 @@
     <remap from="~measure_odom" to="/viso_odom_integrated" />
     <remap from="~output" to="/biped_odom_particle" />
     <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
-    <remap from="~imu" to="/imu" />
+    <remap from="~imu" to="/imu_rootlink" />
     <rosparam subst_value="true">
       odom_init_frame: odom_init
       odom_frame: biped_odom_particle

@@ -51,7 +51,6 @@ class ParticleOdometry(object):
                            rospy.get_param("~init_sigma_pitch", 0.0001),
                            rospy.get_param("~init_sigma_yaw", 0.05)]
         # tf
-        self.listener = tf.TransformListener(True, rospy.Duration(10))
         self.publish_tf = rospy.get_param("~publish_tf", True)        
         if self.publish_tf:
             self.broadcast = tf.TransformBroadcaster()
@@ -61,7 +60,7 @@ class ParticleOdometry(object):
         # subscriber
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback, queue_size = 10)
         self.measure_odom_sub = rospy.Subscriber("~measure_odom", Odometry, self.measure_odom_callback, queue_size = 10)
-        self.imu_sub = rospy.Subscriber("~imu", Imu, self.imu_callback, queue_size = 10)
+        self.imu_sub = rospy.Subscriber("~imu", Imu, self.imu_callback, queue_size = 10) # imu is assumed to be in base_link_frame relative coords
         self.init_transform_sub = rospy.Subscriber("~initial_base_link_transform", TransformStamped, self.init_transform_callback) # init_transform is assumed to be transform of init_odom -> base_link
         # init
         self.initialize_odometry([0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0])
@@ -164,7 +163,7 @@ class ParticleOdometry(object):
             return 1.0 # multiply 1.0 make no effects to weight
         prt_euler = self.convert_pose_to_list(prt)[3:6]
         imu_matrix = tf.transformations.quaternion_matrix([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w])[:3, :3]
-        imu_euler = tf.transformations.euler_from_matrix(numpy.dot(self.imu_rotation, imu_matrix))
+        imu_euler = tf.transformations.euler_from_matrix(numpy.dot(self.imu_rotation, imu_matrix)) # imu is assumed to be in base_link relative and imu_rotation is base_link->particle_odom transformation
         roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
         if self.use_imu_yaw:
             return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
@@ -216,15 +215,9 @@ class ParticleOdometry(object):
 
     def imu_callback(self, msg):
         with self.lock:
-            try:
-                (trans,rot) = self.listener.lookupTransform(msg.header.frame_id, self.odom_frame, msg.header.stamp)
-            except:
-                try:
-                    (trans,rot) = self.listener.lookupTransform(msg.header.frame_id, self.odom_frame, rospy.Time(0)) # retry to get newest tf data
-                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                    rospy.logwarn("[%s] failed to solve tf in calculate imu_transorm: %s to %s", rospy.get_name(), self.base_link_frame, msg.header.frame_id)
-                    return # imu is not updated when imu_rotation cannot be calculated
-            self.imu_rotation = tf.transformations.quaternion_matrix(rot)[:3, :3] # trans does not affects to orientation 
+            if self.odom == None:
+                return # cannot calculate imu_rotation
+            self.imu_rotation = numpy.linalg.inv(tf.transformations.quaternion_matrix([getattr(self.odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]])[:3, :3]) # base_link -> particle_odom
             self.imu = msg
         
     # main functions
