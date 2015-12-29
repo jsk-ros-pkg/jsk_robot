@@ -17,39 +17,54 @@
     <arg name="assemble_base_frame" value="/odom_init" unless="$(arg use_particle_odom)"/>      
   </include>
 
-  <!-- viso -->
-  <include file="$(find jsk_robot_startup)/launch/viso.launch">
-    <arg name="stereo" default="$(arg stereo_namespace)" />
-    <arg name="image" default="image_rect" />
-    <arg name="use_robot_pose_ekf" default="false" />
-    <arg name="publish_viso_tf" default="false" />
-    <arg name="invert_viso_tf" default="true" /> 
-  </include>
   
-  <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
-  <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch" if="$(arg use_particle_odom)">
-    <arg name="robot" value="$(arg robot)"/>
-    <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
-  </include>
+  <group>
+    <remap from="/tf" to="/localization/tf"/>
+    <!-- viso -->
+    <include file="$(find jsk_robot_startup)/launch/viso.launch">
+      <arg name="stereo" default="$(arg stereo_namespace)" />
+      <arg name="image" default="image_rect" />
+      <arg name="use_robot_pose_ekf" default="false" />
+      <arg name="publish_viso_tf" default="false" />
+      <arg name="invert_viso_tf" default="true" /> 
+    </include>
+    
+    <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
+    <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch" if="$(arg use_particle_odom)">
+      <arg name="robot" value="$(arg robot)"/>
+      <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+    </include>
 
-  <include file="$(find jsk_robot_startup)/launch/gmapping.launch">
-    <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
-    <arg name="odom_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/> <!-- map->biped_odom_particle->odom_init -->
-    <arg name="odom_frame" value="odom_init" unless="$(arg use_particle_odom)"/> <!-- map->odom_init -->
-    <arg name="scan_height" value="$(arg slam_laser_scan_height)" />
-    <arg name="max_height" value="$(arg slam_laser_max_height)" />
-    <arg name="min_height" value="$(arg slam_laser_min_height)" />
-    <arg name="range_max" value="30.0"/>
-    <arg name="particles" value="30.0"/>
-    <arg name="iterations" value="5.0"/>
-    <arg name="map_update_interval" value="5.0"/>
-    <arg name="temporal_update" value="-1.0" />
-    <arg name="srr" value="0.01" /> 
-    <arg name="srt" value="0.025" />
-    <arg name="str" value="0.01" />
-    <arg name="stt" value="0.025" />
-  </include>
+    <include file="$(find jsk_robot_startup)/launch/gmapping.launch">
+      <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
+      <arg name="odom_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/> <!-- map->biped_odom_particle->odom_init -->
+      <arg name="odom_frame" value="odom_init" unless="$(arg use_particle_odom)"/> <!-- map->odom_init -->
+      <arg name="scan_height" value="$(arg slam_laser_scan_height)" />
+      <arg name="max_height" value="$(arg slam_laser_max_height)" />
+      <arg name="min_height" value="$(arg slam_laser_min_height)" />
+      <arg name="range_max" value="30.0"/>
+      <arg name="particles" value="30.0"/>
+      <arg name="iterations" value="5.0"/>
+      <arg name="map_update_interval" value="5.0"/>
+      <arg name="temporal_update" value="-1.0" />
+      <arg name="srr" value="0.01" /> 
+      <arg name="srt" value="0.025" />
+      <arg name="str" value="0.01" />
+      <arg name="stt" value="0.025" />
+    </include>
 
+    <node pkg="jsk_robot_startup" type="OdometryTfManager.py" name="odom_tf_manager">
+      <param name="map_frame" value="map"/>
+      <param name="particle_frame" value="biped_odom_particle"/>
+      <param name="odom_frame" value="odom_init"/>
+    </node>    
+  </group>
+
+  <node pkg="jsk_robot_startup" type="OdometryTfBroadcaster.py" name="odom_tf_broadcaster">
+    <remap from="~map_to_partilce" to="/odom_tf_manager/map_to_particle"/>
+    <remap from="~partilce_to_odom" to="/odom_tf_manager/particle_to_odom"/>
+  </node>
+  
   <node pkg="jsk_robot_startup" type="auto_reset_slam.py" name="auto_reset_slam" />
   
 </launch>
