@@ -17,7 +17,11 @@
     <arg name="assemble_base_frame" value="/odom_init" unless="$(arg use_particle_odom)"/>      
   </include>
 
-  
+  <node pkg="jsk_topic_tools" type="relay" name="odom_tf_relay">
+    <remap from="~input" to="/tf"/>
+    <remap from="~output" to="/localization/tf"/>
+  </node>
+
   <group>
     <remap from="/tf" to="/localization/tf"/>
     <!-- viso -->
@@ -61,8 +65,8 @@
   </group>
 
   <node pkg="jsk_robot_startup" type="OdometryTfBroadcaster.py" name="odom_tf_broadcaster">
-    <remap from="~map_to_partilce" to="/odom_tf_manager/map_to_particle"/>
-    <remap from="~partilce_to_odom" to="/odom_tf_manager/particle_to_odom"/>
+    <remap from="~map_to_particle" to="/odom_tf_manager/map_to_particle"/>
+    <remap from="~particle_to_odom" to="/odom_tf_manager/particle_to_odom"/>
   </node>
   
   <node pkg="jsk_robot_startup" type="auto_reset_slam.py" name="auto_reset_slam" />
