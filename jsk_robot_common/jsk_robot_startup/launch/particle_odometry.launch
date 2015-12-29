@@ -4,15 +4,26 @@
 
   <!-- robot dependent parameters -->
   <rosparam command="load" file="$(find jsk_robot_startup)/config/$(arg robot)_odometry_params.yaml"/>
+
+  <!-- calculate transform from odom_init to base_link -->
+  <node pkg="jsk_robot_startup" type="calculate_init_to_base_link_transform.py" name="calculate_init_to_base_link_transform"
+        output="screen" >
+    <remap from="~base_odom" to="/odom" />
+    <remap from="~output" to="/init_to_base_link_transform" />
+    <remap from="~base_to_init_transform" to="/footcoords/odom_init_transform" />
+    <rosparam>
+      init_odom_frame: odom_init
+      base_link_frame: BODY
+    </rosparam>
+  </node>
   
   <!-- odometry offset to adjust origin to odom_init -->
   <node pkg="jsk_robot_startup" type="odometry_offset.py" name="biped_odometry_offset"
         output="screen" >
     <remap from="~source_odom" to="/odom" />
     <remap from="~output" to="/biped_odom_offset" />
-    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
     <rosparam>
-      base_odom_frame: odom_init
       odom_frame: biped_odom_offset
       base_link_frame: BODY
       publish_tf: false
@@ -23,12 +34,11 @@
         output="screen" >
     <remap from="~source_odom" to="/viso_odom" />
     <remap from="~output" to="/viso_odom_offset" />
-    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
     <rosparam>
-      base_odom_frame: odom_init
       odom_frame: viso_odom_offset
       base_link_frame: BODY
-      publish_tf: false      
+      publish_tf: false
     </rosparam>
   </node>
 
@@ -54,10 +64,10 @@
     <remap from="~source_odom" to="/biped_odom_offset" />
     <remap from="~measure_odom" to="/viso_odom_integrated" />
     <remap from="~output" to="/biped_odom_particle" />
-    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
     <remap from="~imu" to="/imu" />
     <rosparam subst_value="true">
-      odom_init_frame: /odom_init
+      odom_init_frame: odom_init
       odom_frame: biped_odom_particle
       base_link_frame: BODY
       publish_tf: false
@@ -76,7 +86,7 @@
 
   <!-- convert map->base_link transform to odometry msg and use in feedback if use_slam_feedback is true -->
   <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
-        output="screen">
+        output="screen" if="$(arg use_slam_feedback)">
     <remap from="~output" to="/slam_odom" />
     <remap from="~map" to="/map" />
     <remap from="~base_odom" to="/biped_odom_particle" />
