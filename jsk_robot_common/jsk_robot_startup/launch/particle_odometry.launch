@@ -86,7 +86,7 @@
 
   <!-- convert map->base_link transform to odometry msg and use in feedback if use_slam_feedback is true -->
   <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
-        output="screen" if="$(arg use_slam_feedback)">
+        output="screen">
     <remap from="~output" to="/slam_odom" />
     <remap from="~map" to="/map" />
     <remap from="~base_odom" to="/biped_odom_particle" />
