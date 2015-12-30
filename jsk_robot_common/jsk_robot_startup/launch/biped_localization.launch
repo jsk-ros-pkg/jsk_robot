@@ -58,15 +58,18 @@
     </include>
 
     <node pkg="jsk_robot_startup" type="OdometryTfManager.py" name="odom_tf_manager">
-      <param name="map_frame" value="map"/>
-      <param name="particle_frame" value="biped_odom_particle"/>
-      <param name="odom_frame" value="odom_init"/>
+      <param name="~map_frame" value="map"/>
+      <param name="~particle_frame" value="biped_odom_particle"/>
+      <param name="~odom_frame" value="odom_init"/>
+      <param name="~base_frame" value="BODY"/>
+      <param name="~scan_frame" value="pointcloud_to_scan_base"/>
     </node>    
   </group>
 
   <node pkg="jsk_robot_startup" type="OdometryTfBroadcaster.py" name="odom_tf_broadcaster">
     <remap from="~map_to_particle" to="/odom_tf_manager/map_to_particle"/>
     <remap from="~particle_to_odom" to="/odom_tf_manager/particle_to_odom"/>
+    <remap from="~base_to_scan" to="/odom_tf_manager/base_to_scan"/>
   </node>
   
   <node pkg="jsk_robot_startup" type="auto_reset_slam.py" name="auto_reset_slam" />

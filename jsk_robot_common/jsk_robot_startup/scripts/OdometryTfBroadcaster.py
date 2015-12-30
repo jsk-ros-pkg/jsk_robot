@@ -9,6 +9,7 @@ class OdometryTfBroadcaster:
         rospy.init_node("OdometryTfBroadcaster", anonymous=True)
         self.map_to_prt_sub = rospy.Subscriber("~map_to_particle", TransformStamped, self.broadcast_tf, queue_size = 1)
         self.prt_to_odom_sub = rospy.Subscriber("~particle_to_odom", TransformStamped, self.broadcast_tf, queue_size = 1)
+        self.base_to_scan_sub = rospy.Subscriber("~base_to_scan", TransformStamped, self.broadcast_tf, queue_size = 1)
         self.rate = rospy.get_param("~rate", 50)
         self.br = tf.TransformBroadcaster()
         self.r = rospy.Rate(self.rate) # 10hz
