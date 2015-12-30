@@ -54,6 +54,8 @@
           remappings:
             - from: ~input
               to: /slam_ground_scan_non_filtered/output
+            - from: /tf
+              to: /tf_null
         - name: slam_odom_scan_distance_filtered
           type: jsk_pcl/TfTransformCloud
           remappings:
