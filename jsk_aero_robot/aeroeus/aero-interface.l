@@ -66,7 +66,9 @@
 (defclass aero-upper-interface
   :super rtm-ros-robot-interface
   :slots (actual-state
-	  desired-state))
+	  desired-state
+	  object-l
+	  object-r))
 (defmethod aero-upper-interface
   (:init (&rest args)
     (send-super* :init :robot AeroUpperRobot-robot args)
@@ -78,6 +80,10 @@
     (ros::subscribe "/aero_controller/state"
 		    pr2_controllers_msgs::JointTrajectoryControllerState
 		    #'send self :controller-callback 1)
+    (ros::subscribe "/object/left_pose"
+		    geometry_msgs::Pose #'send self :tfl-callback 1)
+    (ros::subscribe "/object/right_pose"
+		    geometry_msgs::Pose #'send self :tfr-callback 1)
     )
   (:default-controller-list ()
    (list :larm-controller
@@ -236,6 +242,43 @@
 	       (cons (cons x (elt (send msg :desired :positions) i)) desired-state))
 	 (incf i))
        ))
+  (:tfl-callback (msg)
+    (let (position
+	  orientation
+	  )
+      (setq position (send msg :position))
+      (setq orientation (send msg :orientation))
+      (setq object-l (make-coords :pos (float-vector
+					(* (send position :x) 1000)
+					(* (send position :y) 1000)
+					(* (send position :z) 1000))
+				  :rot (quaternion2matrix
+					(float-vector (send orientation :x)
+						      (send orientation :y)
+						      (send orientation :z)
+						      (send orientation :w)))
+				  ))
+      ))
+  (:tfr-callback (msg)
+    (let (position
+	  orientation
+	  )
+      (setq position (send msg :position))
+      (setq orientation (send msg :orientation))
+      (setq object-r (make-coords :pos (float-vector
+					(* (send position :x) 1000)
+					(* (send position :y) 1000)
+					(* (send position :z) 1000))
+				  :rot (quaternion2matrix
+					(float-vector (send orientation :x)
+						      (send orientation :y)
+						      (send orientation :z)
+						      (send orientation :w)))
+				  ))
+      ))
+  (:tf (arm)
+    (ros::spin-once)
+    (if (eq arm :larm) object-l object-r))
 
   );; end of defmethod aero-upper-robot
 

@@ -9,32 +9,32 @@
 (ros::wait-for-service "/larm/aero_reach_controller")
 (ros::wait-for-service "/torso_larm/aero_reach_controller")
 
-(setq *tl* (instance ros::transform-listener :init))
+;; (setq *tl* (instance ros::transform-listener :init))
 
-(defun ~tf (&optional (arm nil))
-  (let (m
-	)
-    (ros::spin-once)
-    (if (eq arm :larm)
-	(setq m (send *tl* :lookup-transform "leg_base_link" "object_l"
-		      (ros::time)))
-      (setq m (send *tl* :lookup-transform "leg_base_link" "object_r"
-		    (ros::time)))
-      )
-    (if (eq m nil) (return-from ~tf nil))
-    (if (and (eps= (elt (send m :pos) 0) 0 0.01)
-	     (eps= (elt (send m :pos) 1) 0 0.01)
-	     (eps= (elt (send m :pos) 2) 0 0.01))
-	(return-from ~tf nil)
-      )
-    (setq m (make-coords :pos (v+ (send m :pos)
-				  (send (send (car (send *aero* :links))
-					      :copy-worldcoords) :pos))
-			 :rot (send m :rot)))
-    (if (boundp '*irtviewer*)
-	(send m :draw-on :flush t)
-      )
-    m))
+;; (defun ~tf (&optional (arm nil))
+;;   (let (m
+;; 	)
+;;     (ros::spin-once)
+;;     (if (eq arm :larm)
+;; 	(setq m (send *tl* :lookup-transform "leg_base_link" "object_l"
+;; 		      (ros::time)))
+;;       (setq m (send *tl* :lookup-transform "leg_base_link" "object_r"
+;; 		    (ros::time)))
+;;       )
+;;     (if (eq m nil) (return-from ~tf nil))
+;;     (if (and (eps= (elt (send m :pos) 0) 0 0.01)
+;; 	     (eps= (elt (send m :pos) 1) 0 0.01)
+;; 	     (eps= (elt (send m :pos) 2) 0 0.01))
+;; 	(return-from ~tf nil)
+;;       )
+;;     (setq m (make-coords :pos (v+ (send m :pos)
+;; 				  (send (send (car (send *aero* :links))
+;; 					      :copy-worldcoords) :pos))
+;; 			 :rot (send m :rot)))
+;;     (if (boundp '*irtviewer*)
+;; 	(send m :draw-on :flush t)
+;;       )
+;;     m))
 
 (defmethod AeroUpperRobot-robot
   (:ik-learned (arm coords &key (torso nil) (revert-if-fail t))
@@ -134,7 +134,8 @@
      (let (mt
 	   goal
 	   )
-       (setq goal (~tf arm))
+       ;; (setq goal (~tf arm))
+       (setq goal (send *ri* :tf arm))
        (if (eq goal nil) (return-from :grasp-object nil))
        ;; solve position
        (send self :ik-learned arm (make-coords :pos (send goal :pos))
