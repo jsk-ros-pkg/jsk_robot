@@ -22,6 +22,8 @@
 	)
       (setq res (ros::service-call "/aero_torso_controller" req))
       (print (send res :status))
-      (list (send res :x) (send res :z)) ))
+      (if (not (equal (send res :status) "success"))
+	  (send res :status)
+	(list (send res :x) (send res :z))) ))
 
   );; end of defmethod aero-upper-interface
