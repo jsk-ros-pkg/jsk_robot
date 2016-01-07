@@ -7,7 +7,7 @@
 (ros::wait-for-service "/aero_hand_controller")
 
 (defmethod aero-upper-interface
-  (:grasp (arm &key (tfail 0.8) (twarn -0.3))
+  (:grasp (arm &key (tfail 0.8) (twarn -0.9))
     (let (req
 	  res
 	  )
