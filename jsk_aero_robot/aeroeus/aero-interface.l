@@ -277,8 +277,15 @@
 				  ))
       ))
   (:tf (arm)
-    (ros::spin-once)
-    (if (eq arm :larm) object-l object-r))
+    (let (object
+	  )
+      (ros::spin-once)
+      (if (eq arm :larm) (setq object object-l) (setq object object-r) )
+      (if (and (eps= (elt (send object :pos) 0) 0.0)
+	       (eps= (elt (send object :pos) 1) 0.0)
+	       (eps= (elt (send object :pos) 2) 0.0))
+	  (setq object nil))
+      object))
 
   );; end of defmethod aero-upper-robot
 
