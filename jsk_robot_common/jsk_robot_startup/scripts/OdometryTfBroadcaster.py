@@ -2,6 +2,7 @@
 import rospy
 from geometry_msgs.msg import Vector3, Quaternion, TransformStamped, Transform
 import tf
+from tf.msg import tfMessage
 import numpy
 import threading
 
@@ -18,20 +19,23 @@ class OdometryTfBroadcaster:
         self.base_to_scan_msg = None
         self.base_to_scan_sub = rospy.Subscriber("~base_to_scan", TransformStamped, self.broadcast_tf, queue_size = 1)
         self.rate = rospy.get_param("~rate", 50)
-        self.br = tf.TransformBroadcaster()
-        self.r = rospy.Rate(self.rate) # 10hz
+        self.r = rospy.Rate(self.rate)
+        self.broadcaster = rospy.Publisher("/tf", tfMessage, queue_size = 100) # Make publisher for tfMessage because tf.broadcaster in python cannot receive transfomation msg list
 
     def execute(self):
+        tf_messages = []
         while not rospy.is_shutdown():
             with self.map_to_prt_lock:
                 if self.map_to_prt_msg != None:
-                    self.broadcast_tf(self.map_to_prt_msg)
+                    tf_messages.append(self.map_to_prt_msg)
             with self.prt_to_odom_lock:
                 if self.prt_to_odom_msg != None:
-                    self.broadcast_tf(self.prt_to_odom_msg)
+                    tf_messages.append(self.prt_to_odom_msg)
             with self.base_to_scan_lock:
                 if self.base_to_scan_msg != None:
-                    self.broadcast_tf(self.base_to_scan_msg)
+                    tf_messages.append(self.base_to_scan_msg)
+            if len(tf_messages) > 0:
+                self.broadcaster.publish(tf_messages)
             self.r.sleep()
 
     def map_to_prt_callback(self, msg):
@@ -46,11 +50,6 @@ class OdometryTfBroadcaster:
         with self.base_to_scan_lock:
             self.base_to_scan_msg = msg
                 
-    def broadcast_tf(self, msg):
-        self.br.sendTransform((msg.transform.translation.x, msg.transform.translation.y, msg.transform.translation.z),
-                              (msg.transform.rotation.x, msg.transform.rotation.y, msg.transform.rotation.z, msg.transform.rotation.w),
-                              msg.header.stamp, msg.child_frame_id, msg.header.frame_id)
-
 if __name__ == '__main__':
     try:
         node = OdometryTfBroadcaster()
