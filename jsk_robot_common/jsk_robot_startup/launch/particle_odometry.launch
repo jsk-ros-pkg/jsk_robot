@@ -5,6 +5,16 @@
   <!-- robot dependent parameters -->
   <rosparam command="load" file="$(find jsk_robot_startup)/config/$(arg robot)_odometry_params.yaml"/>
 
+  <node pkg="jsk_robot_startup" type="ImuRootlinkCalculator.py" name="imu_rootlink_calculator"
+        output="screen" >
+    <remap from="~input" to="/imu" />
+    <remap from="~output" to="/imu_rootlink" />
+    <rosparam>
+      base_link_frame: BODY
+    </rosparam>
+  </node>
+
+
   <!-- calculate transform from odom_init to base_link -->
   <node pkg="jsk_robot_startup" type="calculate_init_to_base_link_transform.py" name="calculate_init_to_base_link_transform"
         output="screen" >
