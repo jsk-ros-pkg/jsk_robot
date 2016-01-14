@@ -20,7 +20,7 @@
         output="screen" >
     <remap from="~base_odom" to="/odom" />
     <remap from="~output" to="/init_to_base_link_transform" />
-    <remap from="~base_to_init_transform" to="/odom_init_transform" />
+    <remap from="~base_to_init_transform" to="/footcoords/odom_init_transform" />
     <rosparam>
       init_odom_frame: odom_init
       base_link_frame: BODY
