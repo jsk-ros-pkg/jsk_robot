@@ -42,6 +42,7 @@ class ImuRootlinkCalculator(object):
                                                            msg.orientation.z, msg.orientation.w])
         imu_rootlink_quat = tf.transformations.quaternion_from_matrix(numpy.dot(imu_rotation, imu_matrix)) # base_link relative orientation
         msg.orientation = Quaternion(*imu_rootlink_quat)
+        msg.header.frame_id = self.base_link_frame
         
         # publish
         self.pub.publish(msg)
