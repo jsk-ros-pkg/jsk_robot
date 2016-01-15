@@ -9,17 +9,21 @@ biped_particle_odometry:
   rate: 50
   use_imu: true
 
-# use 2015-12-19-14-14-24 velocity model
+# use 2016-01-15-21-02-04 velocity model
 viso_odometry_offset:
-  use_twist_filter: false
+  use_twist_filter: true
+  filter_buffer_size: 10
   overwrite_pdf: true
   twist_proportional_sigma: false
   sigma_x: 0.017
-  sigma_y: 0.064
+  sigma_y: 0.062
   sigma_z: 0.3
   sigma_roll: 0.3
   sigma_pitch: 0.3
-  sigma_yaw: 0.05
+  sigma_yaw: 0.025
+  mean_x: 0.0
+  mean_y: 0.0
+  mean_yaw: 0.0
 
 biped_odometry_offset:
   use_twist_filter: true
@@ -27,10 +31,13 @@ biped_odometry_offset:
   calculate_covariance: true
   twist_proportional_sigma: false
   overwrite_pdf: true
-  sigma_x: 0.02
-  sigma_y: 0.072
+  sigma_x: 0.040
+  sigma_y: 0.130
   sigma_z: 0.001
   sigma_roll: 0.001
   sigma_pitch: 0.001
-  sigma_yaw: 0.05
+  sigma_yaw: 0.03
+  mean_x: 0.0
+  mean_y: 0.0
+  mean_yaw: 0.0
   
