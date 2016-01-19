@@ -3,14 +3,9 @@
 # Store the ObjectDetection message
 #
 
-try:
-    import roslib; roslib.load_manifest('jsk_pr2_startup')
-except:
-    pass
-
 import rospy
 import tf
-
+import rosgraph
 from geometry_msgs.msg import PoseStamped, TransformStamped
 from posedetection_msgs.msg import ObjectDetection
 
@@ -32,6 +27,7 @@ class ObjectDetectionDB(object):
         rospy.loginfo("connected to %s.%s" % (self.db_name, self.col_name))
         rospy.loginfo("map->robot: %s -> %s" % (self.map_frame, self.robot_frame))
 
+        self.master = rosgraph.Master("/rostopic")
         self.subscribers = []
 
     # DB Insertion function
@@ -77,17 +73,20 @@ class ObjectDetectionDB(object):
             rospy.logwarn("failed to object pose transform: %s", e)
 
     def _update_subscribers(self):
-        current_subscribers = rospy.client.get_published_topics()
-        targets = [x for x in current_subscribers if x[1]=='posedetection_msgs/ObjectDetection' and (not ('_agg' in x[0]))]
+        object_detection_topics = [x[0] for x in rospy.client.get_published_topics()
+                                   if x[1]=='posedetection_msgs/ObjectDetection' and (not ('_agg' in x[0]))]
+        _, subs, _ = self.master.getSystemState()
+        targets = [x[0] for x in subs if x[0] in object_detection_topics and not rospy.get_name() in x[1]]
         for sub in self.subscribers:
-            if sub.get_num_connections() == 0:
+            sub_nodes = [x[1] for x in subs if x[0] == sub.name]
+            if (not sub_nodes) or (len(sub_nodes[0]) == 1 and (rospy.get_name() in sub_nodes[0])):
                 sub.unregister()
                 self.subscribers.remove(sub)
-                rospy.loginfo('unsubscribe (%s)',sub.name)
-        for topic_info in targets:
-            if topic_info[0] in [x.name for x in self.subscribers]:
+                rospy.loginfo('unsubscribed (%s)',sub.name)
+        for topic_name in targets:
+            if topic_name in [x.name for x in self.subscribers]:
                 continue
-            sub = rospy.Subscriber(topic_info[0], ObjectDetection,
+            sub = rospy.Subscriber(topic_name, ObjectDetection,
                                    self._objectdetection_cb)
             self.subscribers += [sub]
             rospy.loginfo('start subscribe (%s)',sub.name)
