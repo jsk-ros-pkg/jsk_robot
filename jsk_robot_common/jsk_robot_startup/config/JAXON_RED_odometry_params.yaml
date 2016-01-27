@@ -5,8 +5,8 @@ viso_odom_calculator:
   max_feedback_time: 0
 
 biped_particle_odometry:
-  particle_num: 30
-  rate: 80
+  particle_num: 60
+  rate: 40
   use_imu: true
 
 # use 2015-12-19-14-14-24 velocity model
@@ -14,8 +14,8 @@ viso_odometry_offset:
   use_twist_filter: false
   overwrite_pdf: true
   twist_proportional_sigma: false
-  sigma_x: 0.017
-  sigma_y: 0.064
+  sigma_x: 0.02
+  sigma_y: 0.08
   sigma_z: 0.3
   sigma_roll: 0.3
   sigma_pitch: 0.3
@@ -30,12 +30,12 @@ biped_odometry_offset:
   calculate_covariance: true
   twist_proportional_sigma: false
   overwrite_pdf: true
-  sigma_x: 0.02
-  sigma_y: 0.072
+  sigma_x: 0.05
+  sigma_y: 0.12
   sigma_z: 0.001
   sigma_roll: 0.001
   sigma_pitch: 0.001
-  sigma_yaw: 0.05
+  sigma_yaw: 0.1
   mean_x: 0.006
   mean_y: 0.001
   mean_yaw: 0.0
