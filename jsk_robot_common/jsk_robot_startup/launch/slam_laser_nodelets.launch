@@ -1,7 +1,7 @@
 <launch>
   <arg name="nodelet_index" default="2"/>
   <arg name="laser_input" default="/multisense/cloud_self_filtered"/>
-  <arg name="assemble_base_frame" default="/odom_init"/>
+  <arg name="assemble_base_frame" default="odom_init"/>
   
   <group ns="slam_distance_filtered_laser_snapshots">
     <rosparam subst_value="true">
