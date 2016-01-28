@@ -30,7 +30,6 @@ class OdometryFeedbackWrapper(object):
         if self.publish_tf:
             self.broadcast = tf.TransformBroadcaster()
             self.invert_tf = rospy.get_param("~invert_tf", True)
-        self.listener = tf.TransformListener(True, rospy.Duration(self.tf_cache_time + 10)) # 10[sec] is safety mergin for feedback
         self.odom = None # belief of this wrapper
         self.feedback_odom = None
         self.source_odom = None
