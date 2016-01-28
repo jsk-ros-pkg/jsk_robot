@@ -66,6 +66,7 @@
   <run_depend>semantic_point_annotator</run_depend>
   <run_depend>pr2_gazebo</run_depend>
   <run_depend>pr2_navigation</run_depend>
+  <run_depend>eusurdf</run_depend>
 
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>

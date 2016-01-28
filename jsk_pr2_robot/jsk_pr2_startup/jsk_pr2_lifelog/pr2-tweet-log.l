@@ -12,6 +12,7 @@
 (defparameter *json-parse-key-function* #'string->keyword)
 (setq json::*tzoffset* -8)
 (defvar *tweet* t)
+(defparameter *query-limit* 100)
 
 (defclass log-tweet-worker
   :super propertied-object
@@ -30,6 +31,7 @@
    (ros::ros-info "[~A] checking..." name)
    (setq last-check-date (now))
    (setq check-result (funcall check-cb self))
+   (ros::ros-info "[~A] checked" name)
    check-result)
   (:tweet ()
    (ros::ros-info "[~A] tweeting..." name)
@@ -38,6 +40,7 @@
      (unless (stringp str)
        (ros::ros-warn "[~A] expected ~A is not string. skipping" name str)
        (return-from :tweet nil))
+     (ros::ros-info "[~A] tweeted" name)
      str))
   ) ;; end of defmethod
 
@@ -111,18 +114,23 @@
                                                            :single t))))
                                   (when (send *manager* :latest-enough-p (cdr q)) q)))
                 :tweet-cb #'(lambda (self q)
-                              (let* ((same-funcs (mongo::query jsk_demo_common::FunctionEvent
-                                                              :query `((:name . ,(send (car q) :name)))))
-                                     (success-rate
-                                       (/ (* 100.0 (count-if #'(lambda (x)
-                                                                 (string= "success"
-                                                                          (cdr (assoc :status (cdr x)))))
-                                                             same-funcs))
-                                          (count-if #'(lambda (x)
-                                                        (string= "start"
-                                                                 (cdr (assoc :status (cdr x)))))
-                                                    same-funcs)))
-                                     fmt)
+                              (let (same-funcs success-rate fmt)
+                                (ros::ros-warn "called tweet-cb")
+                                (setq same-funcs
+                                      (mongo::query jsk_demo_common::FunctionEvent
+                                                    :limit *query-limit*
+                                                    :query `((:name . ,(send (car q) :name)))))
+                                (ros::ros-info "[~A] found ~A same-func" (send self :name) (length same-funcs))
+                                (setq success-rate
+                                      (/ (* 100.0 (count-if #'(lambda (x)
+                                                                (string= "success"
+                                                                         (cdr (assoc :status (cdr x)))))
+                                                            same-funcs))
+                                         (count-if #'(lambda (x)
+                                                       (string= "start"
+                                                                (cdr (assoc :status (cdr x)))))
+                                                   same-funcs)))
+                                (ros::ros-info "hoge")
                                 (setq fmt (format nil "Now I'm executing ~A."
                                                   (send (car q) :name)))
                                 (if same-funcs
@@ -155,6 +163,7 @@
                                          (todays-actions
                                           (mongo::query jsk_demo_common::FunctionEvent
                                                         :query `((:name . ,(send (car q) :name)))
+                                                        :limit *query-limit*
                                                         :meta `((:status . "start")
                                                                 (:inserted_at
                                                                  . ((:$gt . ,today)))))))
@@ -178,6 +187,7 @@
                                                                                   :day 3)))
                                            (recent-failures (mongo::query jsk_demo_common::FunctionEvent
                                                                           :query `((:name . ,(send (car q) :name)))
+                                                                          :limit *query-limit*
                                                                           :meta `((:status . :fail)
                                                                                   (:inserted_at
                                                                                    . ((:$gt . ,recent-date)))))))
@@ -193,7 +203,7 @@
                 :check-cb #'(lambda (self)
                               (let ((querys (mongo::query jsk_demo_common::FunctionEvent
                                                             :meta '((:status . "start"))
-                                                            :single nil
+                                                            :limit 2
                                                             :sort '((:$natural . -1))))
                                     query1 query2)
                                 (setq query1 (car querys))
@@ -206,7 +216,8 @@
                                   query1)))
                 :tweet-cb #'(lambda (self q)
                               (let* ((all-results (mongo::query jsk_demo_common::FunctionEvent
-                                                                :query `((:header.context . ,(send (send (car q) :header) :context)))))
+                                                                :query `((:header.context . ,(send (send (car q) :header) :context)))
+                                                                :limit *query-limit*))
                                      (success-results (remove-if-not #'(lambda (x)
                                                                          (equal (cdr (assoc :status (cdr q)))
                                                                              "success"))
