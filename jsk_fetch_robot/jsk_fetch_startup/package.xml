@@ -1,0 +1,21 @@
+<package>
+  <name>jsk_fetch_startup</name>
+  <version>1.0.1</version>
+  <description>
+     jsk_fetch_startup
+  </description>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/jsk_fetch_startup</url>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>jsk_pr2_startup</run_depend>
+  <run_depend>fetch_navigation</run_depend>
+  <run_depend>rviz</run_depend>
+
+  <test_depend>rostest</test_depend>
+
+  <export>
+  </export>
+</package>
