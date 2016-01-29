@@ -134,16 +134,35 @@ def norm_pdf_multivariate(x, mean, cov_inv):
         return 0.0
 
 # tf.transformations.euler_from_quaternion is slow because the function calculates matrix inside.
+# prev_euler expects previous [roll, pitch, yaw] angle list and fix ret_euler 
 # cf. https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-def transform_quaternion_to_euler(quat):
-    zero_thre = numpy.finfo(float).eps * 4.0 # epsilon for testing whether a number is close to zero
-    roll_numerator = 2 * (quat[3] * quat[0] + quat[1] * quat[2])
-    if abs(roll_numerator) < zero_thre:
-        roll_numerator = numpy.sign(roll_numerator) * 0.0
-    yaw_numerator = 2 * (quat[3] * quat[2] + quat[0] * quat[1])
-    if abs(yaw_numerator) < zero_thre:
-        yaw_numerator = numpy.sign(yaw_numerator) * 0.0
-    return (numpy.arctan2(roll_numerator, 1 - 2 * (quat[0] ** 2 + quat[1] ** 2)),
-            numpy.arcsin(2 * (quat[3] * quat[1] - quat[2] * quat[0])),
-            numpy.arctan2(yaw_numerator, 1 - 2 * (quat[1] ** 2 + quat[2] ** 2)))
-    
+def transform_quaternion_to_euler(quat, prev_euler = None):
+    # singularity check
+    sin_half_pitch = quat[3] * quat[1] - quat[2] * quat[0]
+    if abs(sin_half_pitch) > 0.499:
+        # use tf.transformations.euler_from_quaternion only at singularity points
+        ret_euler = list(tf.transformations.euler_from_quaternion(quat))
+    else:
+        # zero check
+        zero_thre = numpy.finfo(float).eps * 4.0 # epsilon for testing whether a number is close to zero
+        roll_numerator = 2 * (quat[3] * quat[0] + quat[1] * quat[2])
+        if abs(roll_numerator) < zero_thre:
+            roll_numerator = numpy.sign(roll_numerator) * 0.0
+        yaw_numerator = 2 * (quat[3] * quat[2] + quat[0] * quat[1])
+        if abs(yaw_numerator) < zero_thre:
+            yaw_numerator = numpy.sign(yaw_numerator) * 0.0
+        ret_euler = [numpy.arctan2(roll_numerator, 1 - 2 * (quat[0] ** 2 + quat[1] ** 2)),
+                     numpy.arcsin(2 * sin_half_pitch),
+                     numpy.arctan2(yaw_numerator, 1 - 2 * (quat[1] ** 2 + quat[2] ** 2))]
+    # consider arctan/arcsin range
+    # TODO: This solution is not fundamental because it does not consider ununiqueness of euler angles
+    if prev_euler != None:
+        # roll: arctan2 is in range of [-pi, pi]
+        while abs(prev_euler[0] - ret_euler[0]) > numpy.pi:
+            ret_euler[0] += numpy.sign(prev_euler[0] - ret_euler[0]) * 2 * numpy.pi
+        # pitch: arcsin is in range of [-pi/2, pi/2]
+        while abs(prev_euler[1] - ret_euler[1]) > numpy.pi / 2:
+            ret_euler[1] += numpy.sign(prev_euler[1] - ret_euler[1]) * numpy.pi
+        while abs(prev_euler[2] - ret_euler[2]) > numpy.pi:
+            ret_euler[2] += numpy.sign(prev_euler[2] - ret_euler[2]) * 2 * numpy.pi
+    return ret_euler
