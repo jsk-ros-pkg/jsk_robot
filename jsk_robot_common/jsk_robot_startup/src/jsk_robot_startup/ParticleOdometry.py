@@ -44,6 +44,7 @@ class ParticleOdometry(object):
         self.particles = None
         self.weights = []
         self.measurement_updated = False
+        self.prev_rpy = None
         self.init_sigma = [rospy.get_param("~init_sigma_x", 0.1),
                            rospy.get_param("~init_sigma_y", 0.1),
                            rospy.get_param("~init_sigma_z", 0.0001),
@@ -83,6 +84,7 @@ class ParticleOdometry(object):
             self.measurement_updated = False
             self.imu = None
             self.imu_rotation = None
+            self.prev_rpy = None
             
     ## particle filter functions
     # input: particles(list of pose), source_odom(control input)  output: list of sampled particles(pose)
@@ -198,6 +200,8 @@ class ParticleOdometry(object):
         self.pub.publish(self.odom)
         if self.publish_tf:
             broadcast_transform(self.broadcast, self.odom, self.invert_tf)
+        # update prev_rpy to prevent jump of angles
+        self.prev_rpy = transform_quaternion_to_euler([self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w], self.prev_rpy)
 
     ## callback functions
     def source_odom_callback(self, msg):        
@@ -237,7 +241,7 @@ class ParticleOdometry(object):
         
     ## utils
     def convert_pose_to_list(self, pose):
-        euler = transform_quaternion_to_euler((pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w))
+        euler = transform_quaternion_to_euler((pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w), self.prev_rpy)
         return [pose.position.x, pose.position.y, pose.position.z, euler[0], euler[1], euler[2]]
 
     def convert_list_to_pose(self, lst):
