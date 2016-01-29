@@ -158,11 +158,7 @@ def transform_quaternion_to_euler(quat, prev_euler = None):
     # TODO: This solution is not fundamental because it does not consider ununiqueness of euler angles
     if prev_euler != None:
         # roll: arctan2 is in range of [-pi, pi]
-        while abs(prev_euler[0] - ret_euler[0]) > numpy.pi:
-            ret_euler[0] += numpy.sign(prev_euler[0] - ret_euler[0]) * 2 * numpy.pi
-        # pitch: arcsin is in range of [-pi/2, pi/2]
-        while abs(prev_euler[1] - ret_euler[1]) > numpy.pi / 2:
-            ret_euler[1] += numpy.sign(prev_euler[1] - ret_euler[1]) * numpy.pi
-        while abs(prev_euler[2] - ret_euler[2]) > numpy.pi:
-            ret_euler[2] += numpy.sign(prev_euler[2] - ret_euler[2]) * 2 * numpy.pi
+        for i in range(3):
+            while abs(prev_euler[i] - ret_euler[i]) > numpy.pi:
+                ret_euler[i] += numpy.sign(prev_euler[i] - ret_euler[i]) * 2 * numpy.pi
     return ret_euler
