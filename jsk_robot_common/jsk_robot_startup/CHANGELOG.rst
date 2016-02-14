@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.2 (2016-02-14)
+------------------
 * [jsk_robot_startup] Make distribution more larger in x and y in JAXON_RED
 * [jsk_robot_startup] Use prev_rpy to prevent orientation jump at around 180[deg]. This approach may not work at singular points because it only consider arctan/arcsin uncertainty
 * [jsk_robot_startup] theta + pi is not same pose as theta

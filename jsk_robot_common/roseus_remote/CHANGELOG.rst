@@ -2,8 +2,8 @@
 Changelog for package roseus_remote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.2 (2016-02-14)
+------------------
 * [roseus_remote] Fix missing configurations
   See
   - https://github.com/ros/ros_tutorials/blob/jade-devel/roscpp_tutorials/CMakeLists.txt
