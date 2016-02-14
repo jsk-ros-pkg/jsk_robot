@@ -13,6 +13,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <run_depend>joy</run_depend>
+  <run_depend>naoqi_apps</run_depend>
   <run_depend>naoqi_bridge</run_depend>
   <run_depend>naoqi_dashboard</run_depend>
   <run_depend>nao_apps</run_depend>
