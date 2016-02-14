@@ -2,6 +2,132 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup] Make distribution more larger in x and y in JAXON_RED
+* [jsk_robot_startup] Use prev_rpy to prevent orientation jump at around 180[deg]. This approach may not work at singular points because it only consider arctan/arcsin uncertainty
+* [jsk_robot_startup] theta + pi is not same pose as theta
+* [jsk_robot_startup] Consider previous euler angle in transform_quaternion_to_euler, but this solution is temporal
+* [jsk_robot_startup] Automatically clear octomap when robot stands on the ground
+* [jsk_robot_startup] Add octomap launch using slam
+  Added:
+  - jsk_robot_common/jsk_robot_startup/launch/slam_octomap.launch
+* [jsk_robot_startup] Update yaw rotation sigma for ignoring stopping state model
+* [jsk_robot_startup] Remove / from tf frame name which is not supported by tf2
+* [jsk_robot_startup] Make distribution larger to make estimation more robust to pose
+* [jsk_robot_startup] Also fix old version odometry param definitions in defaut_odometry_params.yaml
+* [jsk_robot_startup] Tune HRP2JSKNT odometry params
+* [jsk_robot_startup] Fix default and min/max values in OdometryOffsetReconfigure
+* [jsk_robot_startup] Fix odometry param definitions for HRP2JSKNT which was a old version
+* [jsk_robot_startup] Use odom_init_transform from footcoords instead of HrpsysSeqStateROSBridge
+* [jsk_robot_startup] Fix frame_id of imu_rootlink to base_link
+* [jsk_robot_startup] Add ImuRootlinkCalculator, calculate base_link relative imu orientation for ParticleOdometry to be compatible with HrpsysSeqStateROSBridge
+* [jsk_robot_startup] It seems that transformations in tfMessage needs to be sorted by timestamp
+* [jsk_robot_startup] Use original publisher for tfMessage because tf.broadcaster cannot receive transformation msg list
+* [jsk_robot_startup] Put broadcast_tf function together in execute function to reduce tf rate
+* [jsk_robot_startup] Configure odometry parameters for JAXON_RED
+* [jsk_robot_startup] Publish slam_odom topic because transformations of odometry topics are already separated into /localization/tf
+* [jsk_robot_startup] Fix bag in stop condicion check when overwrite pdf
+* [jsk_robot_startup] Output base_link->pointcloud_scan transform to /tf for simualted scan
+* [jsk_robot_startup] Remap /tf to /tf_null to reduce unnecessary tf
+* [jsk_robot_startup] Fix topic name bugs and remap bags
+* [jsk_robot_startup] Separate odometry transform and make only one broadcaster
+* [jsk_robot_startup] Use odom_init_transform from HrpsysSeqStateROSBridge
+* [jsk_robot_startup] Use imu_rootlink, base_link_frame relative imu orientation
+* [jsk_robot_startup] Use calculate_init_to_base_link_transform as initial transform of odometry_offset and particle odometry
+* [jsk_robot_startup] Add node to calculate odom_init->base_link transform using odom->base_link and odom->odom_init topics without tf
+* [jsk_robot_startup] publish slam_odom only when use_slam_feedback is true
+* [jsk_robot_startup] Fix launch remaps and params for new offset calculation
+* [jsk_robot_startup] Remove tf listener and use odometry and transformation topics in offset calculation
+* [jsk_robot_startup] Remove unnecessary groups in biped_localization.launch
+* [jsk_robot_startup] Remove transform listener in feedback wrapper which is no longer needed
+* [jsk_robot_startup] forgot import broadcast_transform in ParticleOdometry
+* [jsk_robot_startup] Twist proportional sigma option should be processed by individual class, not common utils
+* [jsk_robot_startup] Remove twist_proportional_sigma from OdometryFeedbackWrapper
+* [jsk_robot_startup] Trust stopping status when mean offset is accumulated to twist in OdometryOffset
+* [jsk_robot_startup] Fix import bug of CameraToBaseOffset
+* [jsk_robot_startup] Set default publish_tf as False in unnecessary tfs and do not make broadcast when publish_tf is false
+* [jsk_robot_startup] Update default odometry paremeter set to overwrite viso covariance in OdometryOffset
+* [jsk_robot_startup] Use common odometry utilities in ParticleOdometry
+* [jsk_robot_startup] Put odometry calculation together in OdometryOffset and OdometryFeedbackWrapper is only calculate feedback
+* [jsk_robot_startup] Fix bags related to feedback wrapper and odoemtry utils
+* [jsk_robot_startup] Remove lookup transforms using odometry topic information
+* [jsk_robot_startup] Separate commonly used utilities for odometry calculation
+* [jsk_robot_startup] Remove use_imu option from launch files and describe in config file
+* [jsk_robot_startup] Fix calculation for initial offset of viso camera offset to reduce linalg.inv
+* [jsk_robot_startup] Fix calculation for imu rotation and modify base coordinate from base_link to odom
+* [jsk_robot_startup] Calculate imu rotation when imu coordinate is not same as global
+* [jsk_robot_startup] Initialize imu buffer in __init_\_ for ParticleOdometry
+* [jsk_robot_startup] Tune odometry parameters for JAXON using calculate_covariance option
+* [jsk_robot_startup] Trust stop state in covariance calculation in OdometryOffset when twist_proportional_sigma is false
+* [jsk_robot_startup] Preserve odometry information when calculate_covarinace is True
+* [jsk_robot_startup] Add options to overwrite covariance in odometry_offset
+* [jsk_robot_startup] Adjust timestamp for viso offset calculation in camera_to_base_offset
+* [jsk_robot_startup] Fix camera offset calculation
+* [jsk_robot_startup] Add offset script to compensate camera motion relative to base_link in viso
+* [jsk_robot_startup] Add jaxon odometry parameter files
+* [jsk_robot_startup/lifelog/mongodb_local.launch] add launch file for local mongodb
+* [jsk_robot_startup] Tune filter and viso parameters for HRP2JSKNT
+* [jsk_robot_startup] Enable twist filter in HRP2JSKNT
+* [jsk_robot_startup] fix fogotten Vector3 import
+* [jsk_robot_startup] Remove source_skip_dt of ParticleOdometry and implement median filter in OdometryOffset
+* [jsk_robot_startup] Add source_skip_dt for HRP2JSKNT
+* [jsk_robot_startup] Tune robot specific params for HRP2JSKNT
+* [jsk_robot_startup] Separate parameter config file from launch to tune robot specific params
+* [jsk_robot_startup] Pass soruce_odom without dt check when source_odom is not initialized
+* [jsk_robot_startup] Add source_skip_dt to detect and skip stacked odometry
+* [jsk_robot_startup] Update twist covariance in calculate odometry for feedback wrapper
+* {jsk_pr2_robot, jsk_robot_startup}/README.md: fix section/subsection
+* [jsk_robot_startup] Rewrite weighted gaussian covariance estimation using numpy to speed up
+* README.md: fix section/subsection
+* [jsk_robot_startup] numpy was more efficient in average and covairance calculation, but weighted cov is supported from numpy 1.10
+* [jsk_robot_startup] Calculate weighted mean and covariance directly, not through numpy
+* [jsk_robot_startup] Calculate inverse matrix for norm_pdf_multivariate before weighting
+* Merge branch 'speed-up-particle-odometry' of http://github.com/orikuma/jsk_robot into speed-up-particle-odometry
+* [jsk_robot_startup] Replace tf.transformations.euler_from_quaternion to transform_quaternion_to_euler
+* [jsk_robot_startup] sampling number of multivariate_normal should be integer
+* [jsk_robot_startup] Call multivariate_normal once in sampling
+* [jsk_robot_startup] stereo_namespace is no longer used in particle_odometry because viso is separated
+* [jsk_robot_startup] Pass update when global twist cannot be calcluated because of tf problem
+* [jsk_robot_startup] Separate viso from particle_odometry.launch
+* [jsk_robot_startup] Modify constant height for slam through rqt_reconfigure
+* [jsk_robot_startup] Add height options for slam_laser_scan
+* [jsk_robot_startup] Fix forgotten subst_value in rosparam of slam_odom_scan_distance_filtered
+* [jsk_robot_startup] Add stereo_namespace for viso to set multisense prefix
+* [jsk_robot_startup] Separate laser nodelets for slam to reuse in other system
+* Merge pull request `#490 <https://github.com/jsk-ros-pkg/jsk_robot/issues/490>`_ from orikuma/closed-loop-slam-odom-system
+  [jsk_robot_startup] Add launch file to launch full SLAM and odometry system for biped robot
+* [jsk_robot_startup] Add option to toggle setting multisense_laser options and using slam feedback
+* [jsk_robot_startup] Add use_salm_feedback option to particle_odometry.launch to select standalone odometry or slam combination
+* [jsk_robot_startup] Add full launch file for localization, which has integrate slam laser pointcloud parameters from multisense_local.launch of robots
+* [jsk_robot_startup] Fix source_odom of viso feedbackwrapper: viso_odom->viso_odom_offset and make update rate from 50 to 100 instead of particles 50 to 20.
+* [jsk_robot_startup] Add options for gmapping: iterations, lsigma, temporal_update and map_update_interval. defaults are same as gmapping default.
+* [jsk_robot_startup] Add range_max option to determine simulated laser_scan range
+* [jsk_robot_startup] Move viso_gaussian_point_cloud to use_ekf block
+* [jsk_robot_startup] Broadcast /biped_odom_particle as parent of init_odom
+* [jsk_robot_startup] Add OdomDiffTransformPublisher to broadcast tf as difference of target and intermediate frame
+* [jsk_robot_startup] Enable map infromation feedback and modify some parameters for particle odometry
+* [jsk_robot_startup] Add script to convert map information from slam to odometry msg
+* [jsk_robot_startup] Time feedback is prevented when max_feedback_time <= 0
+* [jsk_robot_startup] Normalize quaternion and fix matrix for quaternion integration
+* [jsk_robot_startup] Use direct diviasion as same as particle odometry in odometry feedback wrapper
+* [jsk_robot_startup] Use quaternion diviasion directly instead of using euler angle
+* [jsk_robot_startup] Add some comments
+* [jsk_robot_startup] Add odometry_offset to odometry_integration.launch
+* [jsk_robot_startup] Update rate of particle odometries
+* [jsk_robot_startup] Add queue_size option
+* [jsk_robot_startup] Fix parameters for particle odometry
+* [jsk_robot_startup] Add distribution_feedback_minimum_sigma, limit minimum sigma for check distribution error and do not execute feedback when feedback_odom has too small distribution
+* [jsk_robot_startup] Fix offset calculation: wrong multipling homogeneous matrix order
+* [jsk_robot_startup] Add use_imu_yaw option
+* [jsk_robot_startup] Add comment
+* [jsk_robot_startup] delegate offset calculation to OdometryOffset.py
+* [jsk_robot_startup] Calculate transformation instead of integrate velocity in feedback wrapper
+* [jsk_robot_startup] Use odometry feedback to prevent drift of viso
+* [jsk_robot_startup] Integrate odometry when odometry feedback is enabled
+* [jsk_robot_startup] Resume trapezoidal odometry integration and add init_sigma param
+* Contributors: Yuki Furuta, Kei Okada, Kohei Kimura, Ryohei Ueda, Iori Kumagai
+
 1.0.1 (2015-11-19)
 ------------------
 * [jsk_robot_startup] Fix namespace of param for pointcloud_to_laserscan

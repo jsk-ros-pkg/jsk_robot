@@ -2,6 +2,12 @@
 Changelog for package jsk_robot_utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* pr2_description have trouble at this moment https://github.com/PR2/pr2_common/pull/248
+* add jsk_network_tools to find_package to generate roseus messages
+* Contributors: Kei Okada
+
 1.0.1 (2015-11-19)
 ------------------
 

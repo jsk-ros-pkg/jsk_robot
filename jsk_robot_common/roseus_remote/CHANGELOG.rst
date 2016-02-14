@@ -2,6 +2,22 @@
 Changelog for package roseus_remote
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [roseus_remote] Fix missing configurations
+  See
+  - https://github.com/ros/ros_tutorials/blob/jade-devel/roscpp_tutorials/CMakeLists.txt
+  - https://github.com/ros/ros_tutorials/blob/jade-devel/roscpp_tutorials/package.xml
+  Lint tool to check this kind of things
+  - https://github.com/fkie/catkin_lint
+  Modified:
+  - jsk_robot_common/roseus_remote/CMakeLists.txt
+  - jsk_robot_common/roseus_remote/package.xml
+* Fix genjava problem caused by not listed message_generation
+  Modified:
+  - jsk_robot_common/roseus_remote/package.xml
+* Contributors: Kentaro Wada
+
 1.0.1 (2015-11-19)
 ------------------
 

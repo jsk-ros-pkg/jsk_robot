@@ -2,6 +2,13 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* jsk_pepper_startup: enable test https://github.com/furushchev/jsk_robot/commit/4b39a93b972008f5155e27a201b67a061c527a26
+* [jsk_pepper_startup/CMakeLists.txt] disable test for a while
+* [jsk_pepper_startup] use roslaunch_add_file_check instead of roslaunch-check in test file and skip hydro
+* Contributors: Yuki Furuta, Kei Okada
+
 1.0.1 (2015-11-19)
 ------------------
 * move jsk_pepper_startup under jsk_naoqi_robot

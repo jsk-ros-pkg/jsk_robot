@@ -2,6 +2,9 @@
 Changelog for package naoeus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.1 (2015-11-19)
 ------------------
 * naoeus/nao-interface.l: add nao-robot class and nao function

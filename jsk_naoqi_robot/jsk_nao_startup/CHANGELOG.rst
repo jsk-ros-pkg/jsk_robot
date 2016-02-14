@@ -2,6 +2,9 @@
 Changelog for package jsk_nao_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.1 (2015-11-19)
 ------------------
 * move jsk_nao_startup under jsk_naoqi_robot

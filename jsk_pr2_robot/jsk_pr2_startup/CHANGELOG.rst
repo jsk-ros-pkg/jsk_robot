@@ -2,6 +2,30 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_pr2_startup/jsk_pr2_lifelog/objectdetection_db.py] unsubscribe objectdetection topics which has no other subscribers
+* [jsk_pr2_startup/jsk_pr2_move_base/costmap_common_params.yaml] fix: initial inflation range
+* [jsk_pr2_startup/jsk_pr2_lifelog] add limit for querying lifelog related documents
+* [jsk_pr2_startup/package.xml] add eusurdf to run_depend
+  ref: https://github.com/jsk-ros-pkg/jsk_robot/issues/512
+* [jsk_pr2_startup/jsk_pr2_sensors/check_openni_node.py] refactor check_openni_node.py
+* [jsk_pr2_startup/jsk_pr2_move_base] remove nice +10 of move_base_node
+* [jsk_pr2_startup/jsk_pr2_move_base] increase update frequency to 10.0 Hz
+* [jsk_pr2_startup/pr2_gazebo.launch] change gripper stall_velocity_threshold param to avoid stuck on move-gripper :wait t
+* [jsk_pr2_startup/pr2_gazebo.launch] add relay to /kinect_head_c2/depth_registered/points_throttle
+* [jsk_pr2_startup/jsk_pr2_move_base/initialpose_publisher.l] add initialpose_publisher.l
+* [jsk_pr2_startup/sample/pr2_gazebo_73b2|610.launch] add initial pose args
+* [jsk_pr2_startup/pr2_gazebo.launch] fix: disable launch only for real robot; avoid check_cable
+* [jsk_pr2_startup/package.xml] add missing run dependencies
+* [jsk_pr2_startup/jsk_pr2_move_base] split global_costmap_params for avoiding segfault
+* [jsk_pr2_startup] Divide hand / base Tracking in Each Node for cameraman rocon
+* Merge branch 'add-rocon' of github.com:aginika/jsk_robot into add-rocon
+* add rocon launch/configs
+* add rocon launch/configs
+* update .rosinstall for pr2 demos
+* Contributors: Yuki Furuta, Yuto Inagaki
+
 1.0.1 (2015-11-19)
 ------------------
 * Record battery info before pwer go off `#474 <https://github.com/jsk-ros-pkg/jsk_robot/issues/474>`_ 

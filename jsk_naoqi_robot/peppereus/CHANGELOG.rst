@@ -2,6 +2,9 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.1 (2015-11-19)
 ------------------
 * move peppereus under jsk_naoqi_robot
