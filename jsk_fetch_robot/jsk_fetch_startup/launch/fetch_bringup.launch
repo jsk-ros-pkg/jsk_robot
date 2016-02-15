@@ -35,4 +35,36 @@
     <arg name="map_keepout_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
     <arg name="use_keepout" default="true" />
   </include>
+  <rosparam ns="move_base/global_costmap">
+inflater:
+  inflation_radius: 1.00 # 0.7
+  cost_scaling_factor: 20.0 # 10.0
+update_frequency: 4.0 # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+  </rosparam>
+  <rosparam ns="move_base/local_costmap">
+inflater:
+  inflation_radius: 0.32 # 0.7
+  cost_scaling_factor: 100.0 # 25.0 default 10, increasing factor decrease the cost value
+  </rosparam>
+  <rosparam ns="move_base">
+TrajectoryPlannerROS:
+  max_vel_x: 0.75 # 1.0
+  # to escape from stuck
+  min_vel_x: 0.25 # 0.15
+  acc_lim_th: 4.0 # 3.2
+  min_in_place_vel_theta: 0.3 # 0.3
+# Recovery behaviors
+recovery_behavior_enabled: true
+recovery_behaviors:
+  - name: "conservative_reset"
+    type: "clear_costmap_recovery/ClearCostmapRecovery"
+    reset_distance: 3.0
+  - name: "rotate_recovery"
+    type: "rotate_recovery/RotateRecovery"
+    frequency: 20.0
+    sim_granularity: 0.017
+  - name: "aggressive_reset"
+    type: "clear_costmap_recovery/ClearCostmapRecovery"
+    reset_distance: 0.5 # 0.5
+  </rosparam>
 </launch>
