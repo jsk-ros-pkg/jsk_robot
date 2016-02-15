@@ -28,7 +28,7 @@ install(DIRECTORY config launch data
 #############
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest roslaunch)
-  roslaunch_add_file_check(launch/fetch.launch)
+  roslaunch_add_file_check(launch/fetch_bringup.launch)
   roslaunch_add_file_check(launch/rviz.launch)
 endif()
 
