@@ -22,7 +22,7 @@ mkdir -p ros/hydro/src
 cd ros/hydro
 wstool init src
 git clone https://github.com/jsk-ros-pkg/jsk_robot.git src/jsk-ros-pkg/jsk_robot
-ln -sf jsk-ros-pkg/jsk_robot/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2.rosinstall src/.rosinstall
+wget -O src/.rosinstall https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2.rosinstall
 wstool update -t src
 catkin b
 ```
