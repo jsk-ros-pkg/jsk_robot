@@ -10,6 +10,7 @@ biped_particle_odometry:
   use_imu: true
 
 biped_particle_odometry_iir_filter:
+  cutoff: 5
   rate: 40
 
 # use 2015-12-19-14-14-24 velocity model
