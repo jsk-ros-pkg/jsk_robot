@@ -3,7 +3,7 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Quaternion, Point
+from geometry_msgs.msg import Quaternion, Point, TransformStamped
 import tf
 import copy
 import threading
@@ -16,8 +16,8 @@ class OdometryIIRFilter(object):
         # parameters
         self.rate = float(rospy.get_param("~rate", 100))
         self.odom_frame = rospy.get_param("~odom_frame", "filtered_odom")
-        filter_dim = rospy.get_param("~filter_dimension", 2)
-        cutoff = min(float(rospy.get_param("~cutoff", 10)), self.rate / 2.0) # must be larger than nyquist frequency
+        self.filter_dim = rospy.get_param("~filter_dimension", 2)
+        self.cutoff = min(float(rospy.get_param("~cutoff", 10)), self.rate / 2.0) # must be larger than nyquist frequency
         self.odom = None
         self.filtered_odom = None
         self.prev_rpy = None
@@ -26,7 +26,7 @@ class OdometryIIRFilter(object):
         self.lock = threading.Lock()
         self.filters = []
         for i in range(6):
-            self.filters.append(IIRFilter(filter_dim, v_cutoff / self.rate))
+            self.filters.append(IIRFilter(self.filter_dim, self.cutoff / self.rate))
         # tf
         self.publish_tf = rospy.get_param("~publish_tf", True)
         if self.publish_tf:
@@ -39,12 +39,13 @@ class OdometryIIRFilter(object):
         self.init_transform_sub = rospy.Subscriber("~initial_base_link_transform", TransformStamped, self.init_transform_callback)
 
     def initialize_filter(self):
-        self.odom = None
-        self.filtered_odom = None
-        self.prev_rpy = None
-        self.filters = []
-        for i in range(6):
-            self.filters.append(IIRFilter(filter_dim, v_cutoff / self.rate))
+        with self.lock:
+            self.odom = None
+            self.filtered_odom = None
+            self.prev_rpy = None
+            self.filters = []
+            for i in range(6):
+                self.filters.append(IIRFilter(self.filter_dim, self.cutoff / self.rate))
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -54,7 +55,6 @@ class OdometryIIRFilter(object):
     def init_transform_callback(self, msg):
         self.initialize_filter()
             
-
     def source_odom_callback(self, msg):
         with self.lock:
             self.odom = msg
