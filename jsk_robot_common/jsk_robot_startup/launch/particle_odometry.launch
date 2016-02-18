@@ -85,7 +85,7 @@
   </node>
 
   <!-- Apply low pass filter to result of particle filter -->
-  <node pkg="jsk_robot_startup" type="odometry_iir_filter.py" name="biped_particle_odometry_filtered"
+  <node pkg="jsk_robot_startup" type="odometry_iir_filter.py" name="biped_particle_odometry_iir_filter"
         output="screen">
     <remap from="~source_odom" to="/biped_odom_particle_raw" />
     <remap from="~output" to="/biped_odom_particle" />
