@@ -105,7 +105,7 @@ class OdometryOffset(object):
                     
                 # overwrite twist covariance when calculate_covariance flag is True
                 if self.overwrite_pdf:
-                    if not all([abs(x) < 1e-6 for x in twist_list]):
+                    if not all([abs(x) < 1e-3 for x in twist_list]):
                         # shift twist according to error mean when moving (stopping state is trusted)
                         twist_list = [x + y for x, y in zip(twist_list, self.v_err_mean)]
                         new_odom.twist.twist = Twist(Vector3(*twist_list[0:3]), Vector3(*twist_list[3: 6]))
