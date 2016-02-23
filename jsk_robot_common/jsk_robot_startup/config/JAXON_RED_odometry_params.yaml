@@ -20,7 +20,7 @@ viso_odometry_offset:
   twist_proportional_sigma: false
   sigma_x: 0.05
   sigma_y: 0.1
-  sigma_z: 0.3
+  sigma_z: 0.03
   sigma_roll: 0.3
   sigma_pitch: 0.3
   sigma_yaw: 0.06
@@ -36,7 +36,7 @@ biped_odometry_offset:
   overwrite_pdf: true
   sigma_x: 0.075
   sigma_y: 0.15
-  sigma_z: 0.001
+  sigma_z: 0.015
   sigma_roll: 0.001
   sigma_pitch: 0.001
   sigma_yaw: 0.15
