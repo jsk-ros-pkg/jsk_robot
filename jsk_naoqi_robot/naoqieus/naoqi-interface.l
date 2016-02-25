@@ -81,13 +81,13 @@
    (&optional (arm :arms))
    (send self :move-hand 0.0 arm)
    )
-   (:speak
+  (:speak
    (str)
    (let ((speech_msg (instance std_msgs::String :init)))
      (send speech_msg :data str)
      (ros::publish "/speech" speech_msg))
    )
-    (:animated-speak
+  (:animated-speak
    (str)
    (let ((animated_speech_msg (instance std_msgs::String :init)))
      (send animated_speech_msg :data str)
