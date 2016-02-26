@@ -40,6 +40,25 @@
      ))
   (:servo-on () (call-empty-service "pepper_robot/pose/wakeup"))
   (:servo-off () (call-empty-service "pepper_robot/pose/rest"))
+  (:show-image 
+   (file)
+   (let (ret)
+     (ros::wait-for-service "show_image")
+     (setq ret (instance naoqi_bridge_msgs::ShowImageRequest :init))
+     (send ret :file_name :data file)
+     (setq res (ros::service-call "show_image" ret))
+     (send res :status :data)
+     ))
+  (:show-webview 
+   (file) 
+   (let (ret)
+     (ros::wait-for-service "show_webview")
+     (setq ret (instance naoqi_bridge_msgs::ShowImageRequest :init))
+     (send ret :file_name :data file)
+     (setq res (ros::service-call "show_webview" ret))
+     (send res :status :data)
+     ))
+  (:hide-image () (call-empty-service "hide_image"))
   )
 
 (defmethod pepper-robot
