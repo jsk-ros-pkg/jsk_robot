@@ -2,8 +2,8 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.3 (2016-03-05)
+------------------
 * modified :get-life method
 * :enable-life, :disable-life, :get-life are added
 * modified indent

@@ -2,8 +2,8 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.3 (2016-03-05)
+------------------
 * add jsk_fetch_robot package
 * Contributors: Kei Okada
 

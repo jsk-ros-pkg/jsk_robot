@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.3 (2016-03-05)
+------------------
 * jsk_robot_startup/lifelog: fix `#259 <https://github.com/jsk-ros-pkg/jsk_robot/issues/259>`_ rename mongod_watcher.py -> mongod_kill_watcher.py
 * [jsk_robot_startup] Tune cutoff freq for iir filter in JAXON_RED
 * [jsk_robot_startup] Adjust filter rate to 40Hz, which is same as raw particle_odometry rate
