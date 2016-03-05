@@ -141,6 +141,13 @@
      (setq ret (instance nao_interaction_msgs::AudioMasterVolumeRequest :init))
      (send ret :master_volume :data volume)
      (setq ret (ros::service-call "nao_audio/master_volume" ret))))
+  (:enable-life () (call-empty-service (format nil "~A/pose/life/enable" naoqi-namespace)))	
+  (:disable-life () (call-empty-service (format nil "~A/pose/life/disable" naoqi-namespace)))
+  (:get-life ()
+	     (ros::wait-for-service (format nil "~A/pose/life/getState" naoqi-namespace))
+	     (setq req (instance naoqi_bridge_msgs::GetAlifeStateRequest :init))
+	     (setq res (ros::service-call (format nil "~A/pose/life/getState" naoqi-namespace) req))
+	     (send res :status :data)
+	     )
   )
-
 ;;
