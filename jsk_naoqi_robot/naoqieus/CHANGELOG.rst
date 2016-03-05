@@ -2,6 +2,15 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* modified :get-life method
+* :enable-life, :disable-life, :get-life are added
+* modified indent
+* add animated-speak method (`#557 <https://github.com/jsk-ros-pkg/jsk_robot/issues/557>`_ )
+* naoqieus/cmake/compile_naoqi_model.cmake: .l depends on .yaml
+* Contributors: Kanae Kochigami, Kei Okada
+
 1.0.2 (2016-02-14)
 ------------------
 

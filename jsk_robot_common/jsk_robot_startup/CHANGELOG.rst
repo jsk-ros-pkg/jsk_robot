@@ -2,6 +2,16 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* jsk_robot_startup/lifelog: fix `#259 <https://github.com/jsk-ros-pkg/jsk_robot/issues/259>`_ rename mongod_watcher.py -> mongod_kill_watcher.py
+* [jsk_robot_startup] Tune cutoff freq for iir filter in JAXON_RED
+* [jsk_robot_startup] Adjust filter rate to 40Hz, which is same as raw particle_odometry rate
+* [jsk_robot_startup] Rename node of IIRFilter
+* [jsk_robot_startup] Fix some bags in IIRFilter
+* [jsk_robot_startup] Apply iir filter to particle odometry to improve stability of map
+* Contributors: Kei Okada, Iori Kumagai
+
 1.0.2 (2016-02-14)
 ------------------
 * [jsk_robot_startup] Make distribution more larger in x and y in JAXON_RED

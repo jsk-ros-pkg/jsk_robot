@@ -2,6 +2,9 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.2 (2016-02-14)
 ------------------
 * [jsk_pr2_startup/jsk_pr2_lifelog/objectdetection_db.py] unsubscribe objectdetection topics which has no other subscribers

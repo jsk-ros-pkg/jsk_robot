@@ -2,6 +2,9 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.2 (2016-02-14)
 ------------------
 * jsk_pepper_startup: enable test https://github.com/furushchev/jsk_robot/commit/4b39a93b972008f5155e27a201b67a061c527a26
