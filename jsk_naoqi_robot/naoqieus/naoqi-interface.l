@@ -19,6 +19,7 @@
    (ros::advertise "/cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "/speech" std_msgs::String 1)
    (ros::advertise (format nil "~A/pose/joint_angles" naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise "/animated_speech" std_msgs::String 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   (format nil "~A/pose/joint_stiffness_trajectory" naoqi-namespace)
@@ -80,11 +81,17 @@
    (&optional (arm :arms))
    (send self :move-hand 0.0 arm)
    )
-   (:speak
+  (:speak
    (str)
    (let ((speech_msg (instance std_msgs::String :init)))
      (send speech_msg :data str)
      (ros::publish "/speech" speech_msg))
+   )
+  (:animated-speak
+   (str)
+   (let ((animated_speech_msg (instance std_msgs::String :init)))
+     (send animated_speech_msg :data str)
+     (ros::publish "/animated_speech" animated_speech_msg))
    )
   (:stop-grasp
    (&optional (arm :arms))
