@@ -4,13 +4,13 @@
 (require "package://pr2eus/pr2-interface.l")
 
 (defclass fetch-interface
-  :super robot-interface
+  :super robot-move-base-interface
   :slots ()
   )
 
 (defmethod fetch-interface
   (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot  args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
