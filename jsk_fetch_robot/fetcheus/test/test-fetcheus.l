@@ -8,8 +8,8 @@
 (deftest instantiate-fetch
   (setq *fetch* (fetch)))
 
-;(deftest instantiate-fetch-interface
-;  (setq *ri* (instance fetch-interface :init)))
+(deftest instantiate-fetch-interface
+  (setq *ri* (instance fetch-interface :init)))
 
 (run-all-tests)
 (exit)
