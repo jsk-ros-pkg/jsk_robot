@@ -32,7 +32,15 @@ if (EXISTS ${fetch_urdf})
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ${fetch_urdf})
 
-  add_custom_target(generate_fetch_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/fetch.l)
+  # get collada-dom version
+  find_package(PkgConfig)
+  pkg_check_modules(COLLADA collada-dom>=2.4.4 )
+  if ( ${COLLADA_FOUND} )
+    add_custom_target(generate_fetch_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/fetch.l)
+  else()
+    pkg_check_modules(COLLADA collada-dom)
+    message(WARNING "urdf_to_collada requries collada-dom >= 2.4.4, installed version is ${COLLADA_VERSION}")
+  endif()
 endif()
 
 
