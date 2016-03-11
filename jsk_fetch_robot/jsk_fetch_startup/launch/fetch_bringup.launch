@@ -1,6 +1,6 @@
 <launch>
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
-  <arg name="boot_sound" value="false" />
+  <arg name="boot_sound" default="false" />
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
