@@ -55,6 +55,20 @@
         )) ;; do list
     )) ;; let
 
+;; test to check the robot back to the original pose, if the ik failed
+(deftest test-robot-ik-revert
+  (let (robot av)
+    (setq robot (instance baxter-robot :init))
+    (send robot :reset-pose)
+    (send robot :larm :angle-vector #f(0 0 0 0 0 0 0))
+    (send robot :rarm :wrist-p :joint-angle 10 :relative t)
+    (setq av (send robot :angle-vector))
+    (send robot :rarm :inverse-kinematics (make-coords)) ;; failing is ok
+    (assert (eps-v= (send robot :angle-vector) av 5) "unable to revert after ik failed")
+    (send robot :larm :inverse-kinematics (make-coords)) ;; failing is ok
+    (assert (eps-v= (send robot :angle-vector) av 5) "unable to revert after ik failed")
+    ))
+
 (deftest test-robot-l/r-reverse
   (let (robot reversed)
     (setq robot (instance baxter-robot :init))
