@@ -81,6 +81,22 @@
    (&optional (arm :arms))
    (send self :move-hand 0.0 arm)
    )
+  (:grasp-with-specified-ratio
+   (ratio &optional (arm :arms))
+   (if (and (not (eq arm :rarm)) (not (eq arm :larm)) (not (eq arm :arms)))
+	 (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
+   (if (> ratio 1.0) 
+       (progn
+	 (format t "~A is invalid. 1.0 is adapted. (The range is between 0.0 and 1.0) " ratio)
+	 (setq ratio 1.0)
+	 ))
+   (if (< ratio 0.0) 
+       (progn
+	 (format t "~A is invalid. 0.0 is adapted. (The range is between 0.0 and 1.0) " ratio)
+	 (setq ratio 0.0)
+	 ))
+   (send self :move-hand ratio arm)
+   )
   (:speak
    (str)
    (let ((speech_msg (instance std_msgs::String :init)))
