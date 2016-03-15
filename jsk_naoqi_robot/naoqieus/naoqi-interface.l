@@ -79,6 +79,10 @@
      ))
   (:start-grasp
    (&optional (angle-ratio 0.0) (arm :arms))
+   (if (or (eq angle-ratio :rarm) (eq angle-ratio :rarm) (eq angle-ratio :rarm))
+       (progn
+	 (setq arm angle-ratio)
+	 (setq angle-ratio 0.0)))
    (if (and (not (eq arm :rarm)) (not (eq arm :larm)) (not (eq arm :arms)))
        (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
    (if (> angle-ratio 0.5) 
@@ -107,6 +111,10 @@
    )
   (:stop-grasp
    (&optional (angle-ratio 1.0) (arm :arms))
+   (if (or (eq angle-ratio :rarm) (eq angle-ratio :rarm) (eq angle-ratio :rarm))
+       (progn
+	 (setq arm angle-ratio)
+	 (setq angle-ratio 1.0)))
    (if (and (not (eq arm :rarm)) (not (eq arm :larm)) (not (eq arm :arms)))
        (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
    (if (> angle-ratio 1.0) 
