@@ -3,29 +3,27 @@
 (defmethod baxter-robot
   (:inverse-kinematics
    (target-coords &rest args &key (avoid-collision-distance 5) &allow-other-keys)
-   (let ((r))
+   (let ((r) (prev-av (send self :angle-vector)))
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
        (format *error-output* "; failed for normal ik, staring from relaxed position~%")
        (let  ((step 0.0)
-              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords))
-              (av (send self :angle-vector)))
+              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance :debug-view nil args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp nil :dump-command nil args))
-         (if (and (null r) (and (memq :revert-if-fail args)) (null (cadr (memq :revert-if-fail args))))
+         (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
              ;; when fail and :rever-if-fail is nil
-             (send robot :angle-vector av))
+             (send self :angle-vector prev-av))
          ))
      (unless r ;;
        (format *error-output* "; failed for normal ik, try to move arms vely slowly~%")
        (let  ((step 0.0)
-              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords))
-              (av (send self :angle-vector)))
+              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (setq r t)
          (while (and r (<= step 1.0))
            (setq r (send-super* :inverse-kinematics (midcoords step current-coords target-coords) :avoid-collision-distance avoid-collision-distance :debug-view nil :warnp nil :dump-command nil args))
            (incf step 0.01))
-         (unless r (send self :angle-vector av))))
+         (unless r (send self :angle-vector prev-av))))
      (unless r ;; start from ik-frendly position
        (format *error-output* "; failed for slow ik, try to start from good position~%")
        (let* ((move-joints (send-all (cadr (memq :link-list args)) :joint))
@@ -36,9 +34,9 @@
                          (send j :joint-angle a)))
                  (send self :joint-list) av)
          (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
-         (if (and (null r) (and (memq :revert-if-fail args)) (null (cadr (memq :revert-if-fail args))))
+         (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
              ;; when fail and :rever-if-fail is nil
-             (send robot :angle-vector av))
+             (send self :angle-vector prev-av))
          ))
      r))
   (:l/r-reverse
