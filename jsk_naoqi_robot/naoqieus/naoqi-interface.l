@@ -78,8 +78,21 @@
      (ros::publish (format nil "~A/pose/joint_angles" naoqi-namespace) start_grasp_msg)
      ))
   (:start-grasp
-   (&optional (arm :arms))
-   (send self :move-hand 0.0 arm)
+   (&optional (angle-ratio 0.0) (arm :arms))
+   (if (memq angle-ratio '(:larm :rarm :arms))
+       (progn
+	 (setq arm angle-ratio)
+	 (setq angle-ratio 0.0)))
+   (if (not (memq arm '(:larm :rarm :arms))) (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
+   (cond ((> angle-ratio 0.5) 
+	  (format t "~A is invalid. 0.5 is adapted. (The range is between 0.0 and 0.5) " angle-ratio)
+	  (setq angle-ratio 0.5)
+	  )
+	 ((< angle-ratio 0.0) 
+	  (format t "~A is invalid. 0.0 is adapted. (The range is between 0.0 and 1.0) " angle-ratio)
+	  (setq angle-ratio 0.0)
+	  ))
+   (send self :move-hand angle-ratio arm)
    )
   (:speak
    (str)
@@ -94,8 +107,21 @@
      (ros::publish "/animated_speech" animated_speech_msg))
    )
   (:stop-grasp
-   (&optional (arm :arms))
-   (send self :move-hand 1.0 arm)
+   (&optional (angle-ratio 1.0) (arm :arms))
+   (if (memq angle-ratio '(:larm :rarm :arms))
+       (progn
+	 (setq arm angle-ratio)
+	 (setq angle-ratio 1.0)))
+   (if (not (memq arm '(:larm :rarm :arms))) (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
+   (cond ((> angle-ratio 1.0) 
+	  (format t "~A is invalid. 1.0 is adapted. (The range is between 0.5 and 1.0) " angle-ratio)
+	  (setq angle-ratio 1.0)
+	  )
+	 ((< angle-ratio 0.5) 
+	  (format t "~A is invalid. 0.5 is adapted. (The range is between 0.5 and 1.0) " angle-ratio)
+	  (setq angle-ratio 0.5)
+	  ))
+   (send self :move-hand angle-ratio arm)
    )
   ;;
   (:go-pos
