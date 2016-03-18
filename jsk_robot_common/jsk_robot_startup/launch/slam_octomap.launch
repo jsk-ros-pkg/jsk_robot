@@ -1,6 +1,7 @@
 <launch>
+  <arg name="input_cloud" default="/robot_center_pointcloud_bbox_clipped/output"/>
   <node pkg="jsk_pcl_ros" type="tf_transform_cloud" name="laser_origin_cloud">
-    <remap from="~input" to="/robot_center_pointcloud/output" />
+    <remap from="~input" to="$(arg input_cloud)" />
     <rosparam>
       target_frame_id: head_root
     </rosparam>
