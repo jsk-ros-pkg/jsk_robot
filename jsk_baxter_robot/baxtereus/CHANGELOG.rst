@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.4 (2016-03-21)
+------------------
 * baxtereus/baxter-util.l: fix code to revert the original posture, if ik failed
 * test/test-baxter.l: add test to check the robot revert to start posture, if ik failed
 * Contributors: Kei Okada

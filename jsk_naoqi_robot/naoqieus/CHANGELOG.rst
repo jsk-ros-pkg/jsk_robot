@@ -2,8 +2,8 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.4 (2016-03-21)
+------------------
 * [naoqi-interface.l] add angle-ratio parameter to :start-grasp, :stop-grasp
 * Contributors: Kanae Kochigami
 
