@@ -2,6 +2,9 @@
 Changelog for package jsk_baxter_desktop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.3 (2016-03-05)
 ------------------
 

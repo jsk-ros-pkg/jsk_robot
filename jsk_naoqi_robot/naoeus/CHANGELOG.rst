@@ -2,6 +2,9 @@
 Changelog for package naoeus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.3 (2016-03-05)
 ------------------
 * add end-coords for nao robot

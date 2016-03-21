@@ -2,6 +2,11 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* package.xml add naoqi_pose depends to  jsk_pepper_startup
+* Contributors: Kei Okada
+
 1.0.3 (2016-03-05)
 ------------------
 
