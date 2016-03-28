@@ -1,6 +1,13 @@
 <launch>
+  <param name="robot/type" value="nao" />
+  <param name="robot/name" command='bash -c "getent hosts $NAO_IP | tr -s \" \" | cut -d\  -f 2 | cut -d. -f 1"' />
+  <arg name="nao_ip" value="$(env NAO_IP)"/>
+  <arg name="roscore_ip" value="$(env ROS_IP)"/>
+  <arg name="network_interface"   default="eth0" />
   <include file="$(find nao_bringup)/launch/nao_full.launch" >
-    <arg name="force_python" value="true"/>
+    <arg name="nao_ip" value="$(arg nao_ip)"/>
+    <arg name="roscore_ip" value="$(arg roscore_ip)"/>
+    <arg name="network_interface" value="$(arg network_interface)"/>
   </include>
   <include file="$(find nao_apps)/launch/speech.launch" />
   <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch" />
