@@ -39,24 +39,44 @@
   ;;
   (:error-vector () (map float-vector #'rad2deg (send self :state :effort)))
   ;;
-  (:servo-on () (send self :send-stiffness-controller 1.0))
-  (:servo-off () (send self :send-stiffness-controller 0.0))
   (:send-stiffness-controller
-   (stiffness)
+   (joint  stiffness)
    (let ((goal (send joint-stiffness-trajectory-action :make-goal-instance))
-	 (joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
+	 joint-name)
      (send goal :header :seq 1)
      (send goal :header :stamp (ros::time-now))
-     (setq joint-names (append joint-names (list "RHand" "LHand")))
-     (send goal :goal :trajectory :joint_names joint-names)
+     (case joint  
+       (:larm
+	(setq joint-name (list "LArm")))
+       (:rarm 
+	(setq joint-name (list "RArm")))
+       (:head
+	(setq joint-name (list "Head")))
+       (:lhand
+	(setq joint-name (list "LHand")))
+       (:rhand
+	(setq joint-name (list "RHand")))
+       )
+     (send goal :goal :trajectory :joint_names joint-name)
      (send goal :goal :trajectory :header :stamp (ros::time-now))
      (send goal :goal :trajectory :points
 	   (list (instance trajectory_msgs::JointTrajectoryPoint
 			   :init
-			   :positions (fill (instantiate float-vector (length joint-names)) stiffness)
+			   :positions (fill (instantiate float-vector (length joint-name)) stiffness)
 			   :time_from_start (ros::time 1))))
      (send joint-stiffness-trajectory-action :send-goal goal)
      ))
+  (:servo-on () 
+	     (if (boundp '*nao*) 
+		 (call-empty-service "nao_robot/pose/wakeup"))
+	     (if (boundp '*pepper*)
+		 (call-empty-service "pepper_robot/pose/wakeup")))
+	     
+  (:servo-off () 
+	      (if (boundp '*nao*) 
+		 (call-empty-service "nao_robot/pose/rest"))
+	      (if (boundp '*pepper*)
+		 (call-empty-service "pepper_robot/pose/rest")))
   ;;
   (:move-hand
    (value &optional (arm :arms))
