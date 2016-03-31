@@ -100,9 +100,14 @@
   (:start-grasp
    (&optional (angle-ratio 0.0) (arm :arms))
    (if (memq angle-ratio '(:larm :rarm :arms))
-       (progn
-	 (setq arm angle-ratio)
-	 (setq angle-ratio 0.0)))
+       (if (numberp arm)
+	   (progn
+	     (setq tmp arm)
+	     (setq arm angle-ratio)
+	     (setq angle-ratio tmp))
+	 (progn
+	   (setq arm angle-ratio)
+	   (setq angle-ratio 0.0))))
    (if (not (memq arm '(:larm :rarm :arms))) (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
    (cond ((> angle-ratio 0.5) 
 	  (format t "~A is invalid. 0.5 is adapted. (The range is between 0.0 and 0.5) " angle-ratio)
@@ -117,9 +122,14 @@
   (:stop-grasp
    (&optional (angle-ratio 1.0) (arm :arms))
    (if (memq angle-ratio '(:larm :rarm :arms))
-       (progn
-	 (setq arm angle-ratio)
-	 (setq angle-ratio 1.0)))
+       (if (numberp arm)
+	   (progn
+	     (setq tmp arm)
+	     (setq arm angle-ratio)
+	     (setq angle-ratio tmp))
+	 (progn
+	   (setq arm angle-ratio)
+	   (setq angle-ratio 1.0))))
    (if (not (memq arm '(:larm :rarm :arms))) (format t "~A is invalid. Allowable parameters are :rarm, :larm, :arms. " arm))
    (cond ((> angle-ratio 1.0) 
 	  (format t "~A is invalid. 1.0 is adapted. (The range is between 0.5 and 1.0) " angle-ratio)
