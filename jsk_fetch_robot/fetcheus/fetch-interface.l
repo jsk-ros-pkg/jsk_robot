@@ -5,7 +5,7 @@
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots ()
+  :slots (gripper-action)
   )
 
 (defmethod fetch-interface
@@ -14,6 +14,11 @@
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
+     (setq gripper-action
+           (instance ros::simple-action-client :init
+                     "/gripper_controller/gripper_action"
+                     control_msgs::GripperCommandAction
+                     :groupname groupname))
      ))
   (:default-controller ()
    (append
@@ -41,6 +46,23 @@
      (cons :controller-state "/head_controller/follow_joint_trajectory/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "head_pan_joint" "head_tilt_joint")))))
+  (:start-grasp
+    (&key (effort) (wait t))
+    (send self :go-grasp :pos 0 :effort effort :wait wait))
+  (:stop-grasp
+    (&key (effort) (wait t))
+    (send self :go-grasp :pos 0.1 :effort effort :wait wait))
+  (:go-grasp
+    (&key (pos 0) (effort) (wait t))
+    (setq effort (or effort 20))
+    (let (goal result)
+      (setq goal (instance control_msgs::GripperCommandActionGoal :init))
+      (send goal :goal :command :position pos)
+      (send goal :goal :command :max_effort effort)
+      (send gripper-action :send-goal goal)
+      (when wait (send gripper-action :wait-for-result))
+      (setq result (send gripper-action :get-result))
+      result))
   ;;
   )
 
