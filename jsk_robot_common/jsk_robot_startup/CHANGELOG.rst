@@ -2,6 +2,11 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup] Use robot_center_pointcloud_bbox_clipped as input for octomap server
+* Contributors: leus
+
 1.0.4 (2016-03-21)
 ------------------
 * [jsk_robot_startup] Overwrite pdf threshould was too small: 1e-6->1e-3

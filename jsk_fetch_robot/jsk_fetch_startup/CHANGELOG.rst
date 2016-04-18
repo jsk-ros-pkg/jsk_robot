@@ -2,6 +2,9 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.4 (2016-03-21)
 ------------------
 * fetch_bringup.launch: fix arg boot_sound

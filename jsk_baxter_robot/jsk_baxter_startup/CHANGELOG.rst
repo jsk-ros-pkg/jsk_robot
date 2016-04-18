@@ -2,6 +2,14 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Install jsk_baxter_tools
+* Add document for 'xdisplay_image_topic.py'
+* Convert to BGR image
+  to handle mono and rgba images
+* Contributors: Kentaro Wada
+
 1.0.4 (2016-03-21)
 ------------------
 

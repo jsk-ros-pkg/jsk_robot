@@ -2,6 +2,14 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Control gripper from robot interface
+* Fix arm end coords of 'fetch.l'
+  Modified:
+  - jsk_fetch_robot/fetcheus/fetch.yaml
+* Contributors: Kentaro Wada
+
 1.0.4 (2016-03-21)
 ------------------
 * check collad-dom version before convert from urdf to collada
