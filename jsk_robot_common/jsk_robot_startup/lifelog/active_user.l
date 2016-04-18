@@ -24,7 +24,16 @@
           *angle*    (- (send msg :angle)    *start-angle*))))
 
 (defun joint-cb (msg)
-  (setq *position* (concatenate float-vector (subseq (send msg :position) 12 16) (subseq (send msg :position) 17)))
+  ;;
+  (cond ((and (ros::has-param "/robot/type") ;; for pr2
+              (string= (ros::has-param "/robot/type") "pr2"))
+         (setq *position* (concatenate float-vector (subseq (send msg :position) 12 16) (subseq (send msg :position) 17))))
+        ((ros::has-param "/rethink/software_version") ;; baxter
+         (if (< (length (send msg :position)) 12)
+             (return-from joint-cb nil))
+         (setq *position* (send msg :position)))
+        (t
+         (setq *position* (send msg :position))))
   (update-activeness)
   )
 
