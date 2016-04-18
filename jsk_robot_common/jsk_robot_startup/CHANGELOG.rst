@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2016-04-18)
+------------------
 * [jsk_robot_startup] Use robot_center_pointcloud_bbox_clipped as input for octomap server
 * Contributors: leus
 

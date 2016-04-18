@@ -2,8 +2,8 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2016-04-18)
+------------------
 * fixed program when the order of two optional params is upside down
 * move send-stiffness-controller, servo-on, servo-off methods to naoqi-interface
 * Contributors: Kanae Kochigami

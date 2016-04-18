@@ -2,8 +2,8 @@
 Changelog for package jsk_nao_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2016-04-18)
+------------------
 * add params for new naoqi_driver.launch
 * Contributors: Kanae Kochigami
 

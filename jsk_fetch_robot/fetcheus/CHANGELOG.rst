@@ -2,8 +2,8 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2016-04-18)
+------------------
 * Control gripper from robot interface
 * Fix arm end coords of 'fetch.l'
   Modified:

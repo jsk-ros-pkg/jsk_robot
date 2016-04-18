@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2016-04-18)
+------------------
 * [jsk_pr2_startup/CMakeLists.txt] install launch files related gazebo
 * Merge pull request `#577 <https://github.com/jsk-ros-pkg/jsk_robot/issues/577>`_ from mmurooka/add-run-dependency
   [jsk_pr2_startup/package.xml] add run_dependency.

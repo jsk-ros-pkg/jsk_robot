@@ -2,8 +2,8 @@
 Changelog for package naoeus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.5 (2016-04-18)
+------------------
 * move send-stiffness-controller, servo-on, servo-off methods to naoqi-interface
 * Contributors: Kanae Kochigami
 
