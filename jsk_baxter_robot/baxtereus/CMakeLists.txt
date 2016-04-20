@@ -6,7 +6,6 @@ project(baxtereus)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roseus
-  rostest
   collada_urdf
   euscollada
 #  baxter_description
@@ -55,4 +54,10 @@ install(DIRECTORY euslisp test
 
 install(FILES baxter.l baxter-interface.l baxter-util.l baxter-moveit.l baxter.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
-add_rostest(test/test-baxter.test)
+##########
+## Test ##
+##########
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest(test/test-baxter.test DEPENDENCIES compile_baxter)
+endif()
