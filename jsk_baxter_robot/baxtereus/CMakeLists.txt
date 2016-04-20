@@ -21,41 +21,26 @@ catkin_package(
 ###########
 ## Build ##
 ###########
-if(EXISTS ${baxter_description_SOURCE_PREFIX}/urdf)
-  set(_baxter_urdf ${baxter_description_SOURCE_PREFIX}/urdf)
-else()
-  set(_baxter_urdf ${baxter_description_PREFIX}/share/baxter_description/urdf)
-endif()
-set(_urdf_to_collada ${collada_urdf_PREFIX}/lib/collada_urdf/urdf_to_collada)
-set(_collada2eus ${euscollada_PREFIX}/lib/euscollada/collada2eus)
 
-message("baxter_urdf: ${_baxter_urdf}")
-message("urdf_to_collada: ${_urdf_to_collada}")
-message("collada2eus: ${_collada2eus}")
-
-# as of 2014/1/20, *_simple.DAE files are commited in https://github.com/k-okada/baxter_common
-# as of 2014/10/31 we use git://github.com/rethink-rlinsalata/baxter_common.git@k_rob-simple_meshes
-# as of 2015/05/01 we use git://github.com/k-okada/baxter_common.git@fix_simple_urdf
-if(EXISTS ${_baxter_urdf}/baxter_simple.urdf)
-  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.urdf
-    COMMAND sed s/_collision.STL/_collision.DAE/ ${_baxter_urdf}/baxter_simple.urdf > ${PROJECT_SOURCE_DIR}/baxter.urdf
-    DEPENDS ${_baxter_urdf}/baxter_simple.urdf)
-else()
-  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.urdf
-    COMMAND cp ${_baxter_urdf}/baxter.urdf ${PROJECT_SOURCE_DIR}/baxter.urdf
-    DEPENDS ${_baxter_urdf}/baxter.urdf)
-endif()
-if(NOT EXISTS ${PROJECT_SOURCE_DIR}/baxter.l)
-  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.dae
-    COMMAND echo "${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/baxter.urdf baxter.dae"
-    COMMAND ${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/baxter.urdf ${PROJECT_SOURCE_DIR}/baxter.dae
-    DEPENDS ${PROJECT_SOURCE_DIR}/baxter.urdf)
-  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.l
-    COMMAND echo "${_collada2eus} baxter.dae baxter.l"
-    COMMAND ${_collada2eus} ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${PROJECT_SOURCE_DIR}/baxter.l
-    DEPENDS ${PROJECT_SOURCE_DIR}/baxter.dae ${PROJECT_SOURCE_DIR}/baxter.yaml ${_collada2eus})
-  add_custom_target(compile_baxter ALL DEPENDS ${PROJECT_SOURCE_DIR}/baxter.l)
-endif()
+# ---------------------------------
+# Generate Baxter's eus robot model
+# ---------------------------------
+# xacro -> urdf
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.urdf
+  COMMAND rosrun xacro xacro --inorder baxter.urdf.xacro end_effector:=false > baxter.urdf
+  DEPENDS baxter.urdf.xacro
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+# urdf -> collada
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.dae
+  COMMAND rosrun collada_urdf urdf_to_collada baxter.urdf baxter.dae
+  DEPENDS baxter.urdf
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+# colllda -> eus
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/baxter.l
+  COMMAND rosrun euscollada collada2eus baxter.dae baxter.yaml baxter.l
+  DEPENDS baxter.dae baxter.yaml ${_collada2eus}
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+add_custom_target(compile_baxter ALL DEPENDS ${PROJECT_SOURCE_DIR}/baxter.l)
 
 
 install(DIRECTORY euslisp test
