@@ -7,8 +7,8 @@
   <arg name="slam_laser_scan_height" default="0.5"/>
   <arg name="slam_laser_max_height" default="0.2"/>
   <arg name="slam_laser_min_height" default="-0.2"/>
-  <arg name="robot" default="default"/>
-  
+  <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
+
   <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
   <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch" if="$(arg set_slam_laser_params)">
     <arg name="nodelet_index" value="$(arg nodelet_index)"/>
@@ -35,7 +35,7 @@
     
     <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
     <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch" if="$(arg use_particle_odom)">
-      <arg name="robot" value="$(arg robot)"/>
+      <arg name="parameter_yaml" value="$(arg parameter_yaml)"/>
       <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
     </include>
 

@@ -1,9 +1,9 @@
 <launch>
   <arg name="use_slam_feedback" default="false"/>
-  <arg name="robot" default="default"/>
+  <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
 
   <!-- robot dependent parameters -->
-  <rosparam command="load" file="$(find jsk_robot_startup)/config/$(arg robot)_odometry_params.yaml"/>
+  <rosparam command="load" file="$(arg parameter_yaml)"/>
 
   <node pkg="jsk_robot_startup" type="ImuRootlinkCalculator.py" name="imu_rootlink_calculator"
         output="screen" >
