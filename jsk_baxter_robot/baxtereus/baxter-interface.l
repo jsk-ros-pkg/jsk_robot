@@ -1,5 +1,5 @@
 (load "package://pr2eus/robot-interface.l")
-(require :baxter "package://baxtereus//baxter-util.l")
+(require :baxter "package://baxtereus//baxter.l")
 (load "package://pr2eus/speak.l")
 (ros::load-ros-manifest "control_msgs")
 (ros::load-ros-manifest "baxter_core_msgs")
