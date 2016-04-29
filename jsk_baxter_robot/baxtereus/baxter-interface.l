@@ -13,8 +13,12 @@
   :slots (gripper-sequence-id right-gripper-action left-gripper-action
 			      right-gripper-type left-gripper-type))
 (defmethod baxter-interface
-  (:init (&rest args)
-   (prog1 (send-super* :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface" args)
+  (:init (&key (robot nil) &rest args)
+   (prog1
+     (send-super* :init
+                  :robot (or robot baxter-robot)
+                  :joint-states-topic "/robot/joint_states"
+                  :groupname "baxter_interface" args)
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
      (send self :add-controller :head-controller)
