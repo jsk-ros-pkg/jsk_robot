@@ -14,7 +14,7 @@ from nav_msgs.msg import Odometry
 from std_msgs.msg import Empty
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3, TransformStamped
-from jsk_recognition_msgs.msg import HistogramWithRangeArray, HistogramWithRange, HistogramWithRangeBins
+from jsk_recognition_msgs.msg import HistogramWithRangeArray, HistogramWithRange, HistogramWithRangeBin
 from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform
 
 class ParticleOdometry(object):
@@ -239,7 +239,7 @@ class ParticleOdometry(object):
             self.publish_odometry()
             if self.publish_histogram:
                 histgram_msg = self.make_histogram_array(self.particles, self.source_odom.header.stamp)
-                self.pub_hist(histgram_msg)
+                self.pub_hist.publish(histgram_msg)
 
     def execute(self):
         while not rospy.is_shutdown():
@@ -309,9 +309,9 @@ class ParticleOdometry(object):
         for i, d in enumerate(data):
             hist, bins = numpy.histogram(d, bins=50)
             for count, min_value, max_value in zip(hist, bins[:-1], bins[1:]):
-                msg_bin = HistogramWithRangeBins()
+                msg_bin = HistogramWithRangeBin()
                 msg_bin.max_value = max_value
                 msg_bin.min_value = min_value
                 msg_bin.count = count
-                histgram_array_msg.histgrams[i].bins.append(msg_bin)
-        return histgram_array_msg
+                histogram_array_msg.histograms[i].bins.append(msg_bin)
+        return histogram_array_msg
