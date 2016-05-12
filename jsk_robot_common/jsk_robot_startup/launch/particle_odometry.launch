@@ -81,6 +81,7 @@
       odom_frame: biped_odom_particle_raw
       base_link_frame: BODY
       publish_tf: false
+      publish_histogram: false
     </rosparam>
   </node>
 

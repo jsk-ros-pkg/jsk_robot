@@ -6,8 +6,16 @@ viso_odom_calculator:
 
 biped_particle_odometry:
   particle_num: 60
+  valid_particle_num: 20
   rate: 40
   use_imu: true
+  init_sigma_x: 0.05
+  init_sigma_y: 0.05
+  init_sigma_z: 0.001
+  init_sigma_roll: 0.001
+  sigma_pitch: 0.001
+  sigma_yaw: 0.05
+  
 
 biped_particle_odometry_iir_filter:
   cutoff: 5
