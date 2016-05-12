@@ -2,6 +2,12 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.5 (2016-04-18)
+------------------
+* fixed program when the order of two optional params is upside down
+* move send-stiffness-controller, servo-on, servo-off methods to naoqi-interface
+* Contributors: Kanae Kochigami
+
 1.0.4 (2016-03-21)
 ------------------
 * [naoqi-interface.l] add angle-ratio parameter to :start-grasp, :stop-grasp

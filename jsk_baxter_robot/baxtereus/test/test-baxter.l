@@ -26,6 +26,24 @@
 
 (setq *pod-bin* '(#f(950.0 280.0 1695.0) #f(950.0 -2.449294e-14 1695.0) #f(950.0 -280.0 1695.0) #f(950.0 280.0 1465.0) #f(950.0 -2.449294e-14 1465.0) #f(950.0 -280.0 1465.0) #f(950.0 280.0 1235.0) #f(950.0 -2.449294e-14 1235.0) #f(950.0 -280.0 1235.0) #f(950.0 280.0 975.0) #f(950.0 -2.449294e-14 975.0) #f(950.0 -280.0 975.0)))
 
+(setq *pod-bin-cube* (list
+                       (send (make-cube 370 230 200) :locate #f(1210 270  1760) :world) ;; bin a
+                       (send (make-cube 370 270 200) :locate #f(1210 0    1760) :world) ;; bin b
+                       (send (make-cube 370 230 200) :locate #f(1210 -270 1760) :world) ;; bin c
+                       (send (make-cube 370 230 200) :locate #f(1210 270  1510) :world) ;; bin d
+                       (send (make-cube 370 270 200) :locate #f(1210 0    1510) :world) ;; bin e
+                       (send (make-cube 370 230 200) :locate #f(1210 -270 1510) :world) ;; bin f
+                       (send (make-cube 370 230 200) :locate #f(1210 270  1280) :world) ;; bin g
+                       (send (make-cube 370 270 200) :locate #f(1210 0    1280) :world) ;; bin h
+                       (send (make-cube 370 230 200) :locate #f(1210 -270 1280) :world) ;; bin i
+                       (send (make-cube 370 230 200) :locate #f(1210 270  1020) :world) ;; bin j
+                       (send (make-cube 370 270 200) :locate #f(1210 0    1020) :world) ;; bin k
+                       (send (make-cube 370 230 200) :locate #f(1210 -270 1020) :world) ;; bin l
+                       ))
+
+(setq *pod-bin-ik-limit*
+      (list 1300 1200 1300 0 0 1200 0 0 1200 0 1300 1100))
+
 (deftest test-robot-ik-bin
   (let (robot)
     (setq robot (instance baxter-robot :init))
@@ -68,6 +86,108 @@
     (send robot :larm :inverse-kinematics (make-coords)) ;; failing is ok
     (assert (eps-v= (send robot :angle-vector) av 5) "unable to revert after ik failed")
     ))
+
+(deftest test-robot-ik-bin-cube
+  (let (robot)
+    (setq robot (instance baxter-robot :init))
+    (send (send robot :rarm :end-coords)
+          :newcoords (make-coords :pos #f(50 0 310)
+                                  :rpy (float-vector 0 -pi/2 0)))
+    (send (send robot :larm :end-coords)
+          :newcoords (make-coords :pos #f(50 0 310)
+                                  :rpy (float-vector 0 -pi/2 0)))
+    (send robot :locate #f(0 0 950) :world)
+    (objects (append (list robot) *pod-bin-cube*))
+    (setq step-dist 100)
+    (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
+      (setq limit (car cube-data))
+      (setq cube (cadr cube-data))
+      (setq x (elt (send (send cube :worldcoords) :pos) 0))
+      (setq y (elt (send (send cube :worldcoords) :pos) 1))
+      (setq z (elt (send (send cube :worldcoords) :pos) 2))
+      (setq dx (x-of-cube cube))
+      (setq dy (y-of-cube cube))
+      (setq dz (z-of-cube cube))
+      (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
+        ((> tmp-x (+ x (/ dx 2))) t)
+        (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
+          ((> tmp-y (+ y (/ dy 2))) t)
+          (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (+ tmp-z step-dist)))
+            ((> tmp-z (+ z (/ dz 2))) t)
+            (setq pos (float-vector tmp-x tmp-y tmp-z))
+            (assert
+              (or
+                (send robot :rarm :inverse-kinematics
+                  (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                  :rotation-axis t
+                  :debug-view :no-message)
+                (send robot :larm :inverse-kinematics
+                  (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                  :rotation-axis t
+                  :debug-view :no-message)
+                (> tmp-x limit))
+              "fail to solve ik")
+            )
+          )
+        )
+      )
+    )
+  )
+
+(deftest test-robot-ik-safe-bin-cube
+  (let (robot)
+    (setq robot (instance baxter-robot-safe :init))
+    (send (send robot :rarm :end-coords)
+          :newcoords (make-coords :pos #f(50 0 310)
+                                  :rpy (float-vector 0 -pi/2 0)))
+    (send (send robot :larm :end-coords)
+          :newcoords (make-coords :pos #f(50 0 310)
+                                  :rpy (float-vector 0 -pi/2 0)))
+    (send robot :locate #f(0 0 950) :world)
+    (objects (append (list robot) *pod-bin-cube*))
+    (setq step-dist 100)
+    (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
+      (setq limit (car cube-data))
+      (setq cube (cadr cube-data))
+      (setq x (elt (send (send cube :worldcoords) :pos) 0))
+      (setq y (elt (send (send cube :worldcoords) :pos) 1))
+      (setq z (elt (send (send cube :worldcoords) :pos) 2))
+      (setq dx (x-of-cube cube))
+      (setq dy (y-of-cube cube))
+      (setq dz (z-of-cube cube))
+      (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
+        ((> tmp-x (+ x (/ dx 2))) t)
+        (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
+          ((> tmp-y (+ y (/ dy 2))) t)
+          (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (+ tmp-z step-dist)))
+            ((> tmp-z (+ z (/ dz 2))) t)
+            (setq pos (float-vector tmp-x tmp-y tmp-z))
+            (assert
+              (or
+                (and
+                  (send robot :reset-pose)
+                  (send robot :rarm :inverse-kinematics
+                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    :rotation-axis t
+                    :debug-view :no-message)
+                  )
+                (and
+                  (send robot :reset-pose)
+                  (send robot :larm :inverse-kinematics
+                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    :rotation-axis t
+                    :debug-view :no-message)
+                  )
+                (> tmp-x limit)
+                )
+                "fail to solve ik"
+              )
+            )
+          )
+        )
+      )
+    )
+  )
 
 (deftest test-robot-l/r-reverse
   (let (robot reversed)

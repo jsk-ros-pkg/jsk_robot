@@ -2,6 +2,9 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.5 (2016-04-18)
+------------------
+
 1.0.4 (2016-03-21)
 ------------------
 * baxtereus/baxter-util.l: fix code to revert the original posture, if ik failed

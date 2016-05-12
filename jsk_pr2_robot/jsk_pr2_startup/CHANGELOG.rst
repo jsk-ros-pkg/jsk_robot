@@ -2,6 +2,16 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.5 (2016-04-18)
+------------------
+* [jsk_pr2_startup/CMakeLists.txt] install launch files related gazebo
+* Merge pull request `#577 <https://github.com/jsk-ros-pkg/jsk_robot/issues/577>`_ from mmurooka/add-run-dependency
+  [jsk_pr2_startup/package.xml] add run_dependency.
+* [jsk_pr2_startup/package.xml] add run_dependency.
+* [jsk_pr2_startup/jsk_pr2.rosinstall] update jsk_robot to 1.0.2
+  for applying the fix in `#539 <https://github.com/jsk-ros-pkg/jsk_robot/issues/539>`_
+* Contributors: Yuki Furuta, Kei Okada, Masaki Murooka
+
 1.0.4 (2016-03-21)
 ------------------
 
@@ -35,7 +45,7 @@ Changelog for package jsk_pr2_startup
 1.0.1 (2015-11-19)
 ------------------
 * Record battery info before pwer go off `#474 <https://github.com/jsk-ros-pkg/jsk_robot/issues/474>`_ 
-* Contributors:  Chi Wun Au
+* Contributors: Chi Wun Au
 
 1.0.0 (2015-11-06)
 ------------------

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_robot_startup</name>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <description>The jsk_robot_startup package</description>
   <maintainer email="inagaki@todo.todo">inagaki</maintainer>
   <license>BSD</license>
@@ -21,6 +21,7 @@
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>gmapping</run_depend>
   <run_depend>pointcloud_to_laserscan</run_depend>
+  <run_depend>jsk_recognition_msgs</run_depend>
   <export>
   </export>
 </package>
