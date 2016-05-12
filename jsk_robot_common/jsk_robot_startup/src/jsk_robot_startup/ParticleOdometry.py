@@ -26,7 +26,7 @@ class ParticleOdometry(object):
         # instance valiables
         self.rate = float(rospy.get_param("~rate", 100))
         self.particle_num = float(rospy.get_param("~particle_num", 100))
-        self.output_particle_num = min(float(rospy.get_param("~valid_particle_num", int(self.particle_num / 2.0))), self.particle_num)
+        self.valid_particle_num = min(float(rospy.get_param("~valid_particle_num", int(self.particle_num / 2.0))), self.particle_num)
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.odom_init_frame = rospy.get_param("~odom_init_frame", "odom_init")
@@ -202,7 +202,7 @@ class ParticleOdometry(object):
         self.odom.twist = self.source_odom.twist
         # use only important particels
         combined_prt_weight = zip(self.particles, self.weights)
-        selected_prt_weight = zip(*sorted(combined_prt_weight, key = itemgetter(1), reverse = True)[:int(self.output_particle_num)]) # [(p0, w0), (p1, w1), ..., (pN, wN)] -> [(sorted_p0, sorted_w0), (sorted_p1, sorted_w1), ..., (sorted_pN', sorted_wN')] -> [(sorted_p0, ..., sorted_pN'), (sorted_w0, ..., sorted_wN')]
+        selected_prt_weight = zip(*sorted(combined_prt_weight, key = itemgetter(1), reverse = True)[:int(self.valid_particle_num)]) # [(p0, w0), (p1, w1), ..., (pN, wN)] -> [(sorted_p0, sorted_w0), (sorted_p1, sorted_w1), ..., (sorted_pN', sorted_wN')] -> [(sorted_p0, ..., sorted_pN'), (sorted_w0, ..., sorted_wN')]
         # estimate gaussian distribution for Odometry msg 
         mean, cov = self.guess_normal_distribution(selected_prt_weight[0], selected_prt_weight[1])
         self.odom.pose.pose = self.convert_list_to_pose(mean)
