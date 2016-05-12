@@ -26,7 +26,7 @@ class ParticleOdometry(object):
         # instance valiables
         self.rate = float(rospy.get_param("~rate", 100))
         self.particle_num = float(rospy.get_param("~particle_num", 100))
-        self.valid_particle_num = min(float(rospy.get_param("~valid_particle_num", int(self.particle_num / 2.0))), self.particle_num)
+        self.valid_particle_num = min(float(rospy.get_param("~valid_particle_num", int(self.particle_num / 2.0))), self.particle_num) # select valid_particle_num particles in ascending weight sequence when estimating normal distributions
         self.odom_frame = rospy.get_param("~odom_frame", "feedback_odom")
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.odom_init_frame = rospy.get_param("~odom_init_frame", "odom_init")
