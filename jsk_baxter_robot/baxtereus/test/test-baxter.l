@@ -118,11 +118,11 @@
             (assert
               (or
                 (send robot :rarm :inverse-kinematics
-                  (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                  (make-cascoords :pos pos)
                   :rotation-axis t
                   :debug-view :no-message)
                 (send robot :larm :inverse-kinematics
-                  (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                  (make-cascoords :pos pos)
                   :rotation-axis t
                   :debug-view :no-message)
                 (> tmp-x limit))
@@ -167,14 +167,14 @@
                 (and
                   (send robot :reset-pose)
                   (send robot :rarm :inverse-kinematics
-                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    (make-cascoords :pos pos)
                     :rotation-axis t
                     :debug-view :no-message)
                   )
                 (and
                   (send robot :reset-pose)
                   (send robot :larm :inverse-kinematics
-                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    (make-cascoords :pos pos)
                     :rotation-axis t
                     :debug-view :no-message)
                   )
