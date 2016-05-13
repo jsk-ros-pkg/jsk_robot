@@ -7,8 +7,7 @@
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
        (format *error-output* "; failed for normal ik, staring from relaxed position~%")
-       (let  ((step 0.0)
-              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
+       (let  ((current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance :debug-view nil args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp nil :dump-command nil args))
          (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
