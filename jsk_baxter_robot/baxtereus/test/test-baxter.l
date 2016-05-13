@@ -98,7 +98,7 @@
                                   :rpy (float-vector 0 -pi/2 0)))
     (send robot :locate #f(0 0 950) :world)
     (objects (append (list robot) *pod-bin-cube*))
-    (setq step-dist 100)
+    (setq step-dist 200)
     (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
       (setq limit (car cube-data))
       (setq cube (cadr cube-data))
@@ -118,11 +118,11 @@
             (assert
               (or
                 (send robot :rarm :inverse-kinematics
-                  (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                  (make-cascoords :pos pos)
                   :rotation-axis t
                   :debug-view :no-message)
                 (send robot :larm :inverse-kinematics
-                  (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                  (make-cascoords :pos pos)
                   :rotation-axis t
                   :debug-view :no-message)
                 (> tmp-x limit))
@@ -145,7 +145,7 @@
                                   :rpy (float-vector 0 -pi/2 0)))
     (send robot :locate #f(0 0 950) :world)
     (objects (append (list robot) *pod-bin-cube*))
-    (setq step-dist 100)
+    (setq step-dist 200)
     (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
       (setq limit (car cube-data))
       (setq cube (cadr cube-data))
@@ -167,14 +167,14 @@
                 (and
                   (send robot :reset-pose)
                   (send robot :rarm :inverse-kinematics
-                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    (make-cascoords :pos pos)
                     :rotation-axis t
                     :debug-view :no-message)
                   )
                 (and
                   (send robot :reset-pose)
                   (send robot :larm :inverse-kinematics
-                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    (make-cascoords :pos pos)
                     :rotation-axis t
                     :debug-view :no-message)
                   )
