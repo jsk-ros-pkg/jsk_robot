@@ -3,12 +3,18 @@
 (defmethod baxter-robot
   (:inverse-kinematics
    (target-coords &rest args &key (avoid-collision-distance 5) &allow-other-keys)
+   "Compute Inverse Kinematics with some strategies.
+    The computation runs until the IK is solved as below:
+
+      1. From current pose.
+      2. Split points between current and target coords from each.
+      3. From prepared poses. Poses in `:ik-prepared-poses` methods are used,
+          and if it is not defined `:untuck-pose` is used."
    (let ((r) (prev-av (send self :angle-vector)))
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
        (format *error-output* "; failed for normal ik, staring from relaxed position~%")
-       (let  ((step 0.0)
-              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
+       (let  ((current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance :debug-view nil args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp nil :dump-command nil args))
          (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
@@ -25,15 +31,21 @@
            (incf step 0.01))
          (unless r (send self :angle-vector prev-av))))
      (unless r ;; start from ik-frendly position
-       (format *error-output* "; failed for slow ik, try to start from good position~%")
+       (format *error-output* "; failed for slow ik, try to start from prepared poses~%")
        (let* ((move-joints (send-all (cadr (memq :link-list args)) :joint))
-              (av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list))))
-         (send self :untuck-pose)
-         (mapcar #'(lambda (j a)
-                     (if (not (memq j move-joints))
-                         (send j :joint-angle a)))
-                 (send self :joint-list) av)
-         (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
+              (av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
+              (ik-prepared-poses (if (memq :ik-prepared-poses (send self :methods)) (send self :ik-prepared-poses) '(:untuck-pose))))
+         (dolist (pose ik-prepared-poses)
+           (unless r
+             (format *error-output* "; starting from prepared pose '~A'~%" pose)
+             (send self pose)
+             (mapcar #'(lambda (j a)
+                         (if (not (memq j move-joints))
+                           (send j :joint-angle a)))
+                     (send self :joint-list) av)
+             (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
+             )
+           )
          (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
              ;; when fail and :rever-if-fail is nil
              (send self :angle-vector prev-av))
