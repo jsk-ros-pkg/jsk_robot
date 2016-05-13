@@ -3,6 +3,13 @@
 (defmethod baxter-robot
   (:inverse-kinematics
    (target-coords &rest args &key (avoid-collision-distance 5) &allow-other-keys)
+   "Compute Inverse Kinematics with some strategies.
+    The computation runs until the IK is solved as below:
+
+      1. From current pose.
+      2. Split points between current and target coords from each.
+      3. From prepared poses. Poses in `:ik-prepared-poses` methods are used,
+          and if it is not defined `:untuck-pose` is used."
    (let ((r) (prev-av (send self :angle-vector)))
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
