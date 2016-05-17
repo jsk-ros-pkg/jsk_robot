@@ -1,4 +1,4 @@
-#!/bin/env roseus
+#!/usr/bin/env roseus
 
 (require :unittest "lib/llib/unittest.l")
 (load "package://fetcheus/fetch-interface.l")
