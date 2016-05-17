@@ -18,6 +18,9 @@
   <run_depend>pr2eus</run_depend> <!-- for robot interface -->
   <run_depend>fetch_description</run_depend>
 
+  <test_depend>fetch_gazebo</test_depend>
+  <test_depend>fetch_moveit_config</test_depend>
+
   <export>
   </export>
 </package>
