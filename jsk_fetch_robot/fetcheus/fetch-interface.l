@@ -2,10 +2,11 @@
 
 (require "package://fetcheus/fetch.l")
 (require "package://pr2eus/pr2-interface.l")
+(require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action)
+  :slots (gripper-action moveit-robot)
   )
 
 (defmethod fetch-interface
@@ -19,7 +20,68 @@
                      "/gripper_controller/gripper_action"
                      control_msgs::GripperCommandAction
                      :groupname groupname))
+     (setq moveit-robot (instance fetch-robot :init))
+     (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
      ))
+  (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
+  (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
+  (:angle-vector ;; this verison uses :angle-vector-sequence for sendding trajectory, this enable us to use :wait-interpolation method so we choose this for now
+   (av &optional (tm 3000) &rest args)
+   "Send joind angle to robot with self-collision motion planning, this method retuns immediately, so use :wait-interpolation to block until the motion stops.
+- av : joint angle vector [rad]
+- tm : (time to goal in [msec]) ;; currently this value is ignored
+- use-torso : set t to use torso
+"
+   (let (req ret arm (use-torso nil))
+     (if (cadr (member :use-torso args)) (setq use-torso t))
+     (send moveit-robot :angle-vector av)
+     (setq req (send self :planning-environment :motion-plan (if use-torso :arm-with-torso :arm) :planner-id "RRTConnectkConfigDefault"))
+     (when req
+       (let (tmp-av avs tmp-tm prev-tm tms trajectory joint-list joint-id)
+         (setq trajectory (send req :trajectory :joint_trajectory))
+         (setq joint-list (mapcar #'(lambda (x) (send moveit-robot (intern (string-upcase x) *keyword-package*))) (send trajectory :joint_names)))
+         (setq joint-id (mapcar #'(lambda (x) (position x (send moveit-robot :joint-list))) joint-list))
+         (setq prev-tm 0)
+         (dolist (p (send trajectory :points))
+           (setq tmp-av (copy-seq av))
+           (fill tmp-av 0)
+           (dotimes (i (length joint-list))
+             (send (elt joint-list i) :ros-joint-angle (elt (send p :positions) i))
+             (setf (elt tmp-av (elt joint-id i)) (send (elt joint-list i) :joint-angle)))
+           (push tmp-av avs)
+           (setq tmp-tm (* 1000 (send (send p :time_from_start) :to-sec)))
+           (push (- tmp-tm prev-tm) tms) ;; tmp-tm is time_from_start where as tms is time from previos points
+           (setq prev-tm tmp-tm)
+           )
+         (nreverse avs)
+         (nreverse tms)
+         (if (> tm tmp-tm 0)
+             (dotimes (i (length tms))
+               (setf (elt tms i) (* (elt tms i) (/ tm tmp-tm )))))
+         (send self :angle-vector-sequence-raw avs tms)
+         ))
+     ))
+#|
+  (:angle-vector
+   (av &optional (tm 3000) &rest args)
+   "Send joind angle to robot with self-collision motion planning, this method retuns immediately, so use :wait-interpolation to block until the motion stops.
+- av : joint angle vector [rad]
+- tm : (time to goal in [msec]) ;; currently this value is ignored
+- use-torso : set t to use torso
+- wait : set t to wait interpolation
+"
+   (let (req ret arm (use-torso nil) (wait nil))
+     (if (cadr (member :use-torso args)) (setq use-torso t))
+     (if (cadr (member :wait args)) (setq wait t))
+     (send moveit-robot :angle-vector av)
+     (setq req (send self :planning-environment :motion-plan (if use-torso :arm-with-torso :arm) :planner-id "RRTConnectkConfigDefault"))
+     (when req
+       (setq ret (send self :planning-environment :execute-trajectory (send req :trajectory) :wait wait))
+       (setq msg (cdr (assoc (send ret :error_code :val) *moveit-error-code-list*)) )
+       (ros::ros-info ";; angle-vector returns ~A" msg)
+       (equal msg "SUCCESS")
+       )))
+|#
   (:default-controller ()
    (append
     (send self :arm-controller)
@@ -76,6 +138,52 @@
   
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
   (when create-viewer (objects (list *fetch*)))
+  )
+
+(defclass fetch-moveit-environment
+  :super moveit-environment)
+(defmethod fetch-moveit-environment
+  (:init (&key ((:robot rb) *fetch*) &rest args)
+         (send-super* :init :robot rb :frame-id "base_link" args))
+  (:default-configuration ()
+   (list (list :arm
+               (cons :group-name "arm")
+               (cons :target-link
+                     (send self :search-link-from-name "wrist_roll_link"))
+               (cons :joint-list (send robot :rarm :joint-list))
+               )
+         (list :arm-with-torso
+               (cons :group-name "arm_with_torso")
+               (cons :target-link
+                     (send self :search-link-from-name "wrist_roll_link"))
+               (cons :joint-list (append
+                                  (send robot :torso :joint-list)
+                                  (send robot :rarm :joint-list)))
+               )
+#|
+    <group name="arm">
+        <joint name="shoulder_pan_joint" />
+        <joint name="shoulder_lift_joint" />
+        <joint name="upperarm_roll_joint" />
+        <joint name="elbow_flex_joint" />
+        <joint name="forearm_roll_joint" />
+        <joint name="wrist_flex_joint" />
+        <joint name="wrist_roll_joint" />
+    </group>
+    <group name="arm_with_torso">
+        <joint name="torso_lift_joint" />
+        <joint name="shoulder_pan_joint" />
+        <joint name="shoulder_lift_joint" />
+        <joint name="upperarm_roll_joint" />
+        <joint name="elbow_flex_joint" />
+        <joint name="forearm_roll_joint" />
+        <joint name="wrist_flex_joint" />
+        <joint name="wrist_roll_joint" />
+    </group>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="gripper" parent_link="wrist_roll_link" group="gripper" />
+|#
+         ))
   )
 
 #|
