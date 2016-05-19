@@ -44,3 +44,15 @@ add following source code for debugging.
 cd  catkin_ws/src
 wstool set pepper_robot --git pepper_robot http://github.com/ros-naoqi/pepper_robot
 ```
+
+naoeus
+======
+
+how to make nao model on euslisp
+--------------------------------
+
+Install nao mesh files from deb with manual approval of license
+```
+sudo apt-get install ros-<ros version>-nao-meshes 
+catkin build
+```
