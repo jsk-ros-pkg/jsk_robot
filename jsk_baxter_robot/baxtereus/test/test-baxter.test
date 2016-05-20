@@ -1,3 +1,4 @@
 <launch>
   <test pkg="baxtereus" type="test-baxter.l" test-name="baxter_lisp" time-limit="10000" />
+  <test pkg="baxtereus" type="test-baxter-end-coords.l" test-name="baxter_end_coords" time-limit="60" />
 </launch>

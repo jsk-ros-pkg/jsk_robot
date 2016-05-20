@@ -13,7 +13,6 @@
   <build_depend>baxter_description</build_depend>
   <build_depend>collada_urdf</build_depend>
   <build_depend>euscollada</build_depend>
-  <build_depend>rostest</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>pr2eus</build_depend>
   <build_depend>xacro</build_depend>
@@ -22,7 +21,8 @@
   <run_depend>baxter_tools</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
-  <run_depend>rostest</run_depend>
+
+  <test_depend>rostest</test_depend>
 
   <export>
   </export>

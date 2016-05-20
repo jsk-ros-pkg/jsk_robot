@@ -49,7 +49,11 @@ install(DIRECTORY euslisp test
 
 install(FILES baxter.l baxter-interface.l baxter-util.l baxter-moveit.l baxter.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
+
+##########
+## Test ##
+##########
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
-  add_rostest(test/test-baxter.test)
+  add_rostest(test/test-baxter.test DEPENDENCIES compile_baxter)
 endif()
