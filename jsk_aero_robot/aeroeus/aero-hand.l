@@ -39,5 +39,21 @@
       (setq res (ros::service-call "/aero_hand_controller" req))
       (print (send res :status))
       ))
+  (:grasp-angle (arm angle)
+;; rarm :  open-limit -50 close-limit 50
+;; larm :  open-limit 50  close-limit -50
 
+    (let (req
+	  res
+	  )
+      (setq req (instance
+		 aero_startup::AeroHandControllerRequest
+		 :init))
+      (cond ((eq arm :larm) (progn (send req :hand "left") (send req :larm_angle angle)))
+	    ((eq arm :rarm) (progn (send req :hand "right") (send req :rarm_angle angle)))
+	    )
+      (send req :command "grasp-angle")
+      (setq res (ros::service-call "/aero_hand_controller" req))
+      (print (send res :status))
+      ))
   );; end of defmethod aero-upper-interface
