@@ -1,5 +1,6 @@
 <launch>
   <arg name="use_slam_feedback" default="false"/>
+  <arg name="use_odometry_iir_filter" default="false"/>
   <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
 
   <!-- robot dependent parameters -->
@@ -69,11 +70,13 @@
   </node>
 
   <!-- odometry integration with particle filter -->  
-  <node pkg="jsk_robot_startup" type="particle_odometry.py" name="biped_particle_odometry"
-        output="screen">
+
+  <!-- <node pkg="jsk_robot_startup" type="particle_odometry.py" name="biped_particle_odometry" output="screen"> -->
+  <node pkg="jsk_robot_startup" type="ekf_gpf_odometry.py" name="biped_particle_odometry" output="screen">
     <remap from="~source_odom" to="/biped_odom_offset" />
     <remap from="~measure_odom" to="/viso_odom_integrated" />
-    <remap from="~output" to="/biped_odom_particle_raw" />
+    <remap from="~output" to="/biped_odom_particle_raw" if="$(arg use_odometry_iir_filter)" />
+    <remap from="~output" to="/biped_odom_particle" unless="$(arg use_odometry_iir_filter)"/>
     <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
     <remap from="~imu" to="/imu_rootlink" />
     <rosparam subst_value="true">
@@ -86,8 +89,7 @@
   </node>
 
   <!-- Apply low pass filter to result of particle filter -->
-  <node pkg="jsk_robot_startup" type="odometry_iir_filter.py" name="biped_particle_odometry_iir_filter"
-        output="screen">
+  <node pkg="jsk_robot_startup" type="odometry_iir_filter.py" name="biped_particle_odometry_iir_filter" output="screen" if="$(arg use_odometry_iir_filter)">
     <remap from="~source_odom" to="/biped_odom_particle_raw" />
     <remap from="~output" to="/biped_odom_particle" />
     <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
