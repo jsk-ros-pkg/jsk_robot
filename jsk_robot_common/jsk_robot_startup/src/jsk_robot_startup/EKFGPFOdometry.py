@@ -8,21 +8,17 @@ import threading
 import itertools
 import tf
 import time
-import copy
 from operator import itemgetter 
 
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Empty
-from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3, TransformStamped
 from ParticleOdometry import ParticleOdometry
 from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform
 
 class EKFGPFOdometry(ParticleOdometry):
-    ## initialize
     def __init__(self):
-        super(ParticleOdometry, self).__init__()
-        
+        ParticleOdometry.__init__(self)
+
     def initialize_odometry(self, trans, rot):
         with self.lock:
             self.particles = None
@@ -65,11 +61,11 @@ class EKFGPFOdometry(ParticleOdometry):
         self.odom.pose = new_pose_with_covariance
                     
     ## particle filter functions
-    # sampling poses from EKF result (current_pose)
-    def sampling(self, current_pose):
-        pose_mean = self.convert_pose_to_list(current_odom.pose.pose)
-        pose_cov_matrix = zip(*[iter(current_odom.pose.covariance)]*6)
-        return numpy.random.multivariate_normal(pose_mean, pose_cov_matrix, int(self.particle_num)).tolist()
+    # sampling poses from EKF result (current_pose_with_covariance)
+    def sampling(self, current_pose_with_covariance):
+        pose_mean = self.convert_pose_to_list(current_pose_with_covariance.pose)
+        pose_cov_matrix = zip(*[iter(current_pose_with_covariance.covariance)]*6)
+        return [self.convert_list_to_pose(x) for x in numpy.random.multivariate_normal(pose_mean, pose_cov_matrix, int(self.particle_num)).tolist()]
 
     def approximate_odometry(self, particles, weights):
         # use only important particels
