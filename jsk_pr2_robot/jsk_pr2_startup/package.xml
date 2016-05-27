@@ -4,7 +4,8 @@
   <description>
      jsk_pr2_startup
   </description>
-  <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
   <license>BSD</license>
   <url>http://ros.org/wiki/jsk_pr2_startup</url>
   <buildtool_depend>catkin</buildtool_depend>

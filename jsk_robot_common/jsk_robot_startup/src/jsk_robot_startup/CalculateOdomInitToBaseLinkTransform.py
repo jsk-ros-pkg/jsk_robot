@@ -19,9 +19,9 @@ class CalculateOdomInitToBaseLinkTransform(object):
         # execute rate
         self.rate = float(rospy.get_param("~rate", 10))
         self.r = rospy.Rate(self.rate)
+        self.pub = rospy.Publisher("~output", TransformStamped, queue_size = 1, latch = True)
         self.base_odom_sub = rospy.Subscriber("~base_odom", Odometry, self.base_odom_callback)
         self.base_to_init_transform_sub = rospy.Subscriber("~base_to_init_transform", TransformStamped, self.base_to_init_transform_callback) # init_transform is assumed to be transform of base_odom -> init_odom
-        self.pub = rospy.Publisher("~output", TransformStamped, queue_size = 1, latch = True)
 
     def calculate_init_to_base_link_transform(self, base_odom, base_to_init_transform, stamp):
         # tf relationships: init_odom <- base_odom -> base_link
