@@ -7,7 +7,7 @@ if($ENV{ROS_DISTRO} STREQUAL "hydro")
   return()
 endif()
 
-find_package(catkin REQUIRED fetch_description rostest)
+find_package(catkin REQUIRED fetch_description)
 
 catkin_package()
 
@@ -44,5 +44,10 @@ if (EXISTS ${fetch_urdf})
 endif()
 
 
-add_rostest(test/fetcheus.test)
+if(CATKIN_ENABLE_TESTING)
+  find_package(catkin REQUIRED COMPONENTS rostest)
+  add_rostest(test/fetcheus.test)
+  add_rostest(test/fetch-moveit.test)
+endif()
+
 
