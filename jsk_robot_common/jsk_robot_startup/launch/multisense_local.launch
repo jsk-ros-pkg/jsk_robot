@@ -1,0 +1,145 @@
+<launch>
+  <arg name="ip_address" default="" />
+  <arg name="mtu"        default="1500" />
+  <arg name="SELF_FILTER_PARAM" default="" />
+  <arg name="ODOMETRY_PARAM"    default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
+  <arg name="RUN_DRIVER" default="true" />
+  <arg name="USE_RESIZE" default="true" />
+  <arg name="HEIGHTMAP_FILTER_Z" default="1.3" />
+
+  <remap from="/multisense/joint_states" to="/joint_states" />
+  <node pkg="pr2_navigation_self_filter" type="self_filter"
+        name="laser_self_filter_local" output="screen">
+    <remap from="cloud_in"  to="/multisense/lidar_scan_filtered" />
+    <remap from="cloud_out" to="/multisense/cloud_self_filtered" />
+    <rosparam command="load" file="$(arg SELF_FILTER_PARAM)" />
+  </node>
+
+  <group>
+    <include file="$(find jsk_tilt_laser)/launch/multisense.launch" >
+      <arg name="ip_address" value="$(arg ip_address)"/>
+      <arg name="mtu" value="$(arg mtu)" />
+      <arg name="use_robot_description" value="false"/>
+      <arg name="not_use_sensor_tf_prefix" value="true"/>
+      <arg name="not_use_robot_state_publisher" value="true" />
+      <arg name="use_resize" value="$(arg USE_RESIZE)" />
+      <arg name="local" value="true" />
+      <arg name="run_laser_pipeline" value="true" />
+      <arg name="run_distance_filters" value="false" />
+      <arg name="fixed_frame_id" value="odom" />
+      <arg name="assemble_cloud" value="/multisense/cloud_self_filtered" />
+      <arg name="run_driver" value="$(arg RUN_DRIVER)" />
+    </include>
+  </group>
+  <!-- Add throttled small image -->
+  <group ns="multisense_local">
+    <group ns="manager">
+      <rosparam>
+      </rosparam>
+    </group>
+  </group>
+
+  <group ns="tilt_laser_listener">
+    <rosparam>
+      skip_number: 10
+    </rosparam>
+  </group>
+  <!-- node for different type of tilt_laser assembling -->
+  <group ns="distance_filtered_laser_snapshots">
+    <rosparam subst_value="true">
+      laser_type: infinite_spindle_half
+      joint_name: motor_joint
+      use_laser_assembler: true
+      not_use_laser_assembler_service: true
+      overwrap_angle: 0.15
+      skip_number: 1
+      clear_assembled_scans: true
+      twist_frame_id: head_hokuyo_frame
+    </rosparam>
+  </group>
+  <group ns="distance_filtered_laser">
+    <rosparam subst_value="true">
+      laser_type: infinite_spindle_half
+      joint_name: motor_joint
+      use_laser_assembler: true
+      not_use_laser_assembler_service: true
+      overwrap_angle: 0.15
+      skip_number: 1
+      clear_assembled_scans: false
+      twist_frame_id: head_hokuyo_frame
+    </rosparam>
+  </group>
+
+  <!-- Add more laser scan rules -->
+  <group ns="multisense_laser">
+    <rosparam>
+      nodelets_1:
+        - name: distance_filtered_laser_snapshots
+          type: jsk_pcl/TiltLaserListener
+          remappings:
+            - from: ~input
+              to: /joint_states
+            - from: ~input/cloud
+              to: /odom_scan_distance_filtered/output
+        - name: distance_filtered_laser
+          type: jsk_pcl/TiltLaserListener
+          remappings:
+            - from: ~input
+              to: /joint_states
+            - from: ~input/cloud
+              to: /odom_scan_distance_filtered/output
+        - name: ground_scan_non_filtered
+          type: jsk_pcl/TfTransformCloud
+          remappings:
+             - from: ~input
+               to: /multisense/cloud_self_filtered
+        - name: ground_scan_z_filter
+          type: pcl/PassThrough
+          remappings:
+             - from: ~input
+               to: /ground_scan_non_filtered/output
+        - name: odom_scan_distance_filtered
+          type: jsk_pcl/TfTransformCloud
+          remappings:
+             - from: ~input
+               to: /ground_scan_z_filter/output
+    </rosparam>
+  </group>
+  <group ns="ground_scan_non_filtered">
+    <rosparam>
+      target_frame_id: ground
+    </rosparam>
+  </group>
+  <group ns="ground_scan_z_filter">
+    <rosparam subst_value="true">
+      filter_field_name: z
+      filter_limit_min: -5.0
+      filter_limit_max: $(arg HEIGHTMAP_FILTER_Z) # set for reset-pose
+    </rosparam>
+  </group>
+  <group ns="odom_scan_distance_filtered">
+    <rosparam>
+      target_frame_id: odom
+    </rosparam>
+  </group>
+
+  <include file="$(find jsk_robot_startup)/launch/biped_localization.launch">
+    <arg name="set_slam_laser_params" value="true"/>
+    <arg name="use_particle_odom" default="true"/>
+    <arg name="nodelet_index" value="2"/>
+    <arg name="stereo_namespace" value="multisense_local"/>
+    <arg name="slam_laser_scan_height" value="2.0"/>
+    <arg name="slam_laser_max_height" value="0.5"/>
+    <arg name="slam_laser_min_height" value="-0.5"/>
+    <arg name="parameter_yaml" default="$(arg ODOMETRY_PARAM)"/>
+  </include>
+
+  <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch">
+    <arg name="USE_NODELET_MANAGER" value="false"/>
+    <arg name="NODELET_MANAGER_NAME" value="multisense_laser"/>
+    <arg name="NODELET_INDEX" value="3"/>
+    <arg name="INPUT" value="/distance_filtered_laser_snapshots/output_cloud" />
+    <arg name="DEBUG_VIEW" value="false" />
+  </include>
+  <node pkg="jsk_robot_startup" type="auto_reset_heightmap.py" name="auto_reset_heightmap" />
+</launch>
