@@ -40,8 +40,8 @@
       (print (send res :status))
       ))
   (:grasp-angle (arm angle)
-;; rarm :  open-limit -50 close-limit 50
-;; larm :  open-limit 50  close-limit -50
+;; rarm :  open-limit 50 close-limit -50
+;; larm :  open-limit -50  close-limit 50
 
     (let (req
 	  res
