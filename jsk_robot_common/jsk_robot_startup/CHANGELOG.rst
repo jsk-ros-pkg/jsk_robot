@@ -2,6 +2,29 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_robot_startup] Define publisher before callback definition (`#615 <https://github.com/jsk-ros-pkg/jsk_robot/issues/615>`_)
+* Combine EKF and GPF for more constant odometry output (`#617 <https://github.com/jsk-ros-pkg/jsk_robot/issues/617>`_)
+  * [jsk_robot_startup] Add script for odometry calculation with combination of EKF and GPF
+  * [jsk_robot_startup] Fix some misses
+  * [jsk_robot_startup] Use ekf+gpf odometry instead of particle odometry and thus iir filter is no longer used
+  * [jsk_robot_startup] Tune jaxon_red odometry param
+* [jsk_robot_startup] add multisense_local.launch
+* Use only important partilces when estimating output distribution of particle odom  (`#601 <https://github.com/jsk-ros-pkg/jsk_robot/issues/601>`_)
+  * [jsk_robot_startup] Use only important particles to guess output distribution
+  * [jsk_robot_startup] Rename parameter name for valid particles
+  * [jsk_robot_startup] Use 1/3 particles for estimate normal distribution and make initial distribution narrower
+  * [jsk_robot_startup] Rename value name to match with rosparam name
+  * [jsk_robot_startup] Add comments
+* activate_user.l : fix for non pr2 robot, see `#589 <https://github.com/jsk-ros-pkg/jsk_robot/issues/589>`_ (`#590 <https://github.com/jsk-ros-pkg/jsk_robot/issues/590>`_)
+* [jsk_robot_startup] Add jsk_recognition_msgs to dependency because of histgram msgs
+* [jsk_robot_startup] Fix typo
+* [jsk_robot_startup] Add publish_histogram option to visualize particles
+* [jsk_robot_startup] Use parameter_yaml arg instead of ROBOT environmental value for odometry params
+* [jsk_robot_startup] Tune z direction parameter for JAXON_RED odometry
+* Contributors: Iori Kumagai, Kei Okada, Yohei Kakiuchi
+
 1.0.5 (2016-04-18)
 ------------------
 * [jsk_robot_startup] Use robot_center_pointcloud_bbox_clipped as input for octomap server

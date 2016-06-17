@@ -2,6 +2,14 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* feteus-interface.l : always use moveit within :angle-vector (`#620 <https://github.com/jsk-ros-pkg/jsk_robot/issues/620>`_)
+  * fetcheus: fetch-interface.l : always use moveit within :angle-vector
+  * fetcheus : add test for fetch-moveit-interface
+  * feetcheus : fix typo in fetcheus.test
+* Contributors: Kei Okada
+
 1.0.5 (2016-04-18)
 ------------------
 * Control gripper from robot interface

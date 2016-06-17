@@ -2,6 +2,13 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix too long file name in deb build (`#618 <https://github.com/jsk-ros-pkg/jsk_robot/issues/618>`_)
+  * fix too long file name in deb build
+  * update maintainer names
+* Contributors: Kei Okada
+
 1.0.5 (2016-04-18)
 ------------------
 * [jsk_pr2_startup/CMakeLists.txt] install launch files related gazebo

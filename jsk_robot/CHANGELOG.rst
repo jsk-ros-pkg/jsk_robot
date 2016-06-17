@@ -1,12 +1,14 @@
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package jsk_robot_utils
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Changelog for package jsk_robot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
 
 1.0.5 (2016-04-18)
 ------------------
+* Add metapackage
+* Contributors: Kentaro Wada
 
 1.0.4 (2016-03-21)
 ------------------
@@ -16,21 +18,18 @@ Forthcoming
 
 1.0.2 (2016-02-14)
 ------------------
-* pr2_description have trouble at this moment https://github.com/PR2/pr2_common/pull/248
-* add jsk_network_tools to find_package to generate roseus messages
-* Contributors: Kei Okada
 
 1.0.1 (2015-11-19)
 ------------------
 
-1.0.0 (2015-11-06)
-------------------
+1.0.0 (2015-11-06 15:17)
+------------------------
 
-0.0.13 (2015-11-06)
--------------------
+0.0.13 (2015-11-06 15:04)
+-------------------------
 
-0.0.12 (2015-11-06)
--------------------
+0.0.12 (2015-11-06 14:47)
+-------------------------
 
 0.0.11 (2015-09-01)
 -------------------
@@ -43,8 +42,6 @@ Forthcoming
 
 0.0.8 (2015-07-16)
 ------------------
-* [jsk_robot_utils] Add jsk_robot_utils package and move script to compress/decompress joint angles from jsk_network_tools to jsk_robot_utils
-* Contributors: Ryohei Ueda
 
 0.0.7 (2015-06-11)
 ------------------

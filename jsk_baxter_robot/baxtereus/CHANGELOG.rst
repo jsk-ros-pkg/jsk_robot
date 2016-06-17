@@ -2,6 +2,18 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [baxtereus] make ik-bin test faster (`#604 <https://github.com/jsk-ros-pkg/jsk_robot/issues/604>`_)
+  * [baxtereus] ik-bin test fix coords pos
+  * [baxtereus] make ik-bin test faster
+* [baxtereus] Compute IK from prepared poses (using :ik-prepared-poses methods) (`#602 <https://github.com/jsk-ros-pkg/jsk_robot/issues/602>`_)
+  * Refactor: Remove no need variable
+  * Compute IK from prepared poses (using :ik-prepared-poses methods)
+  * Documentation for :inverse-kinematics in baxter-util.l
+* add ik-bin-test for apc
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 1.0.5 (2016-04-18)
 ------------------
 
