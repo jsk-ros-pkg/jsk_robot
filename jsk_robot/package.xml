@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>jsk_robot</name>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <description>
    <p>Metapackage that contains robot packages for jsk-ros-pkg</p>
   </description>

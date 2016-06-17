@@ -2,8 +2,8 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.6 (2016-06-17)
+------------------
 * feteus-interface.l : always use moveit within :angle-vector (`#620 <https://github.com/jsk-ros-pkg/jsk_robot/issues/620>`_)
   * fetcheus: fetch-interface.l : always use moveit within :angle-vector
   * fetcheus : add test for fetch-moveit-interface

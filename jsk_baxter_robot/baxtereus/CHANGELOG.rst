@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.6 (2016-06-17)
+------------------
 * [baxtereus] make ik-bin test faster (`#604 <https://github.com/jsk-ros-pkg/jsk_robot/issues/604>`_)
   * [baxtereus] ik-bin test fix coords pos
   * [baxtereus] make ik-bin test faster

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>naoqieus</name>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <description>The naoqieus package</description>
 
   <maintainer email="kei.okada@gmail.com">Kei Okada</maintainer>

@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.6 (2016-06-17)
+------------------
 * [jsk_robot_startup] Define publisher before callback definition (`#615 <https://github.com/jsk-ros-pkg/jsk_robot/issues/615>`_)
 * Combine EKF and GPF for more constant odometry output (`#617 <https://github.com/jsk-ros-pkg/jsk_robot/issues/617>`_)
   * [jsk_robot_startup] Add script for odometry calculation with combination of EKF and GPF
