@@ -211,6 +211,8 @@
     (send msg :velocity (instantiate float-vector (length (send msg :name))))
     (send msg :effort (instantiate float-vector (length (send msg :name))))
     (send ri :ros-state-callback msg)
+    ;; torso_t0 should not be contained in robot-state
+    (assert (not (member "torso_t0" (cdr (assoc :name (assoc 'robot-state (send ri :slots)))) :test #'string=)))
     ))
 
 (deftest test-baxter-init
