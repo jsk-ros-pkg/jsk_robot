@@ -15,7 +15,7 @@
                    :init
                    :position (instance geometry_msgs::Point
                                 :init
-                                :x x :y y :z 0)
+                                :x (* 0.001 x) :y (* 0.001 y) :z 0)
                    :orientation (instance geometry_msgs::Quaternion
                                    :init
                                    :x (sin (* 0.5 (deg2rad theta)))
