@@ -197,6 +197,14 @@
       (assert (= (elt (send robot :rarm :angle-vector) i) (elt reversed i))))
     ))
 
+(deftest test-baxter-all-ik
+  (let (robot ik-all)
+    (setq robot (instance baxter-robot :init))
+    (setq ik-all (send robot :larm :inverse-kinematics (make-coords :pos #f(1000 0 400)) :return-all-ik t))
+    (assert (= (length ik-all) (+ 3 (or (and (find-method robot :ik-prepared-poses) (length (send robot :ik-prepared-poses))) 1))) "length ik-all is normal + relaxed + slow + num of prepared-poses")
+    ))
+
+
 (load "package://baxtereus/baxter-interface.l")
 (deftest test-baxter-interface
   (let (robot ri msg)
