@@ -56,9 +56,10 @@ class EKFGPFOdometry(ParticleOdometry):
     # EKF
     def ekf_update(self, current_odom, source_odom):
         dt = (source_odom.header.stamp - current_odom.header.stamp).to_sec()
-        new_pose_with_covariance = self.update_pose_with_covariance(current_odom.pose, source_odom.twist, dt)
-        # update odom (only pose)
-        self.odom.pose = new_pose_with_covariance
+        if dt > 0:
+            new_pose_with_covariance = self.update_pose_with_covariance(current_odom.pose, source_odom.twist, dt)
+            # update odom (only pose)
+            self.odom.pose = new_pose_with_covariance
                     
     ## particle filter functions
     # sampling poses from EKF result (current_pose_with_covariance)
