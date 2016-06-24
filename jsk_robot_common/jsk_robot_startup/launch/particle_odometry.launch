@@ -79,9 +79,10 @@
     <remap from="~output" to="/biped_odom_particle" unless="$(arg use_odometry_iir_filter)"/>
     <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
     <remap from="~imu" to="/imu_rootlink" />
+    <param name="~odom_frame" value="/biped_odom_particle_raw" if="$(arg use_odometry_iir_filter)" />
+    <param name="~odom_frame" value="/biped_odom_particle" unless="$(arg use_odometry_iir_filter)" />
     <rosparam subst_value="true">
       odom_init_frame: odom_init
-      odom_frame: biped_odom_particle_raw
       base_link_frame: BODY
       publish_tf: false
       publish_histogram: false
