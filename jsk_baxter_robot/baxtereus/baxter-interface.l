@@ -233,7 +233,7 @@
   (:angle-vector-sequence (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
 		 ;; force add current position to the top of avs
 		 (if (atom tms) (setq tms (list tms)))
-		 (push (send self :state :potentio-vector) avs)
+		 (push (send self :state :potentio-vector :wait-until-update t) avs)
 		 (push 50 tms)
 		 (when (= (length avs) 2) ;; when input avs is 1
 		   (setq avs (list (elt avs 0) (midpoint 0.5 (elt avs 0) (elt avs 1)) (elt avs 1)))
