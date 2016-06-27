@@ -17,7 +17,7 @@ biped_particle_odometry:
   init_sigma_roll: 0.001
   sigma_pitch: 0.001
   sigma_yaw: 0.05
-  min_sampling_rate: 2
+  min_sampling_rate: 5
 
 biped_particle_odometry_iir_filter:
   cutoff: 5
