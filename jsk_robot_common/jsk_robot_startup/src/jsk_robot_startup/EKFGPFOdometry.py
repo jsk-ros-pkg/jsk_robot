@@ -18,7 +18,7 @@ from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler,
 class EKFGPFOdometry(ParticleOdometry):
     def __init__(self):
         ParticleOdometry.__init__(self)
-        self.min_sampling_rate = float(rospy.get_param("~min_sampling_rate", self.rate))
+        self.min_sampling_rate = float(rospy.get_param("~min_sampling_rate", self.rate)) # execute sampling every time topic is subscribed when this value is not larger than 0
         self.last_sampling_time = rospy.Time.now()
 
     def initialize_odometry(self, trans, rot):
@@ -38,7 +38,6 @@ class EKFGPFOdometry(ParticleOdometry):
             self.imu = None
             self.imu_rotation = None
             self.prev_rpy = None
-            
 
     # EKF
     def ekf_update(self, current_odom, source_odom):
@@ -55,7 +54,7 @@ class EKFGPFOdometry(ParticleOdometry):
             self.measure_odom = msg
             if not self.odom or not self.source_odom:
                 return
-            elif (self.measure_odom.header.stamp - self.last_sampling_time).to_sec() > 1.0 / self.min_sampling_rate:
+            elif self.min_sampling_rate <= 0 or (self.measure_odom.header.stamp - self.last_sampling_time).to_sec() > 1.0 / self.min_sampling_rate:
                 # sampling
                 self.particles = self.sampling(self.odom.pose)
                 # weighting
