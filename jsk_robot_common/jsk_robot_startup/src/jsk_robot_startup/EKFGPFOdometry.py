@@ -18,6 +18,8 @@ from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler,
 class EKFGPFOdometry(ParticleOdometry):
     def __init__(self):
         ParticleOdometry.__init__(self)
+        self.min_sampling_rate = float(rospy.get_param("~min_sampling_rate", self.rate)) # execute sampling every time topic is subscribed when this value is not larger than 0
+        self.last_sampling_time = rospy.Time.now()
 
     def initialize_odometry(self, trans, rot):
         with self.lock:
@@ -25,7 +27,7 @@ class EKFGPFOdometry(ParticleOdometry):
             self.weights = []
             self.odom = Odometry()
             self.odom.pose.pose = Pose(Point(*trans), Quaternion(*rot))
-            self.odom.pose.covariance = numpy.diag([x ** 2 for x in self.init_sigma])
+            self.odom.pose.covariance = numpy.diag([x ** 2 for x in self.init_sigma]).reshape(-1,).tolist()
             self.odom.twist.twist = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
             self.odom.twist.covariance = numpy.diag([0.001**2]*6).reshape(-1,).tolist()
             self.odom.header.stamp = rospy.Time.now()
@@ -33,35 +35,37 @@ class EKFGPFOdometry(ParticleOdometry):
             self.odom.child_frame_id = self.base_link_frame
             self.source_odom = None
             self.measure_odom = None
-            self.measurement_updated = False
             self.imu = None
             self.imu_rotation = None
             self.prev_rpy = None
-            
-    ## top odometry calculations 
-    def calc_odometry(self):
-        self.ekf_update(self.odom, self.source_odom)
-        if self.measurement_updated:
-            # sampling
-            self.particles = self.sampling(self.odom.pose)
-            # weighting
-            self.weights = self.weighting(self.particles, self.min_weight)
-            # resampling
-            self.particles = self.resampling(self.particles, self.weights)
-            # estimate new pdf 
-            self.approximate_odometry(self.particles, self.weights)
-            # wait next measurement
-            self.measurement_updated = False
 
     # EKF
     def ekf_update(self, current_odom, source_odom):
         dt = (source_odom.header.stamp - current_odom.header.stamp).to_sec()
-        new_pose_with_covariance = self.update_pose_with_covariance(current_odom.pose, source_odom.twist, dt)
-        # update odom (only pose)
-        self.odom.pose = new_pose_with_covariance
+        if dt > 0:
+            new_pose_with_covariance = self.update_pose_with_covariance(current_odom.pose, source_odom.twist, dt)
+            # update odom (only pose)
+            self.odom.pose = new_pose_with_covariance
                     
     ## particle filter functions
     # sampling poses from EKF result (current_pose_with_covariance)
+    def measure_odom_callback(self, msg):
+        with self.lock:
+            self.measure_odom = msg
+            if not self.odom or not self.source_odom:
+                return
+            elif self.min_sampling_rate <= 0 or (self.measure_odom.header.stamp - self.last_sampling_time).to_sec() > 1.0 / self.min_sampling_rate:
+                # sampling
+                self.particles = self.sampling(self.odom.pose)
+                # weighting
+                self.weights = self.weighting(self.particles, self.min_weight)
+                # resampling
+                self.particles = self.resampling(self.particles, self.weights)
+                # estimate new pdf 
+                self.approximate_odometry(self.particles, self.weights)
+                # wait next measurement
+                self.last_sampling_time = self.measure_odom.header.stamp
+            
     def sampling(self, current_pose_with_covariance):
         pose_mean = self.convert_pose_to_list(current_pose_with_covariance.pose)
         pose_cov_matrix = zip(*[iter(current_pose_with_covariance.covariance)]*6)
@@ -93,7 +97,7 @@ class EKFGPFOdometry(ParticleOdometry):
             rospy.logwarn("[%s]: odometry is not initialized", rospy.get_name())
             return
         else:
-            self.calc_odometry()
+            self.ekf_update(self.odom, self.source_odom)
             self.publish_odometry()
             if self.publish_histogram:
                 histgram_msg = self.make_histogram_array(self.particles, self.source_odom.header.stamp)
