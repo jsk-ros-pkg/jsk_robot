@@ -6,6 +6,7 @@
   <arg name="RUN_DRIVER" default="true" />
   <arg name="USE_RESIZE" default="true" />
   <arg name="HEIGHTMAP_FILTER_Z" default="1.3" />
+  <arg name="USE_BIPED_LOCALIZATION" default="true" />
 
   <remap from="/multisense/joint_states" to="/joint_states" />
   <node pkg="pr2_navigation_self_filter" type="self_filter"
@@ -123,7 +124,7 @@
     </rosparam>
   </group>
 
-  <include file="$(find jsk_robot_startup)/launch/biped_localization.launch">
+  <include file="$(find jsk_robot_startup)/launch/biped_localization.launch" if="$(arg USE_BIPED_LOCALIZATION)">
     <arg name="set_slam_laser_params" value="true"/>
     <arg name="use_particle_odom" default="true"/>
     <arg name="nodelet_index" value="2"/>
