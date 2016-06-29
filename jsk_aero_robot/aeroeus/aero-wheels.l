@@ -25,5 +25,11 @@
                                    )
                    ))
        )
+    (send base-coords :translate (float-vector x y 0))
+    (send base-coords :rotate (deg2rad theta) :z)
     )
+  (:base-coords
+   ()
+   base-coords)
+   )	     
   );; end of defmethod aero-upper-interface

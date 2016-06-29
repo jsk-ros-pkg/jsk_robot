@@ -68,7 +68,8 @@
   :slots (actual-state
 	  desired-state
 	  object-l
-	  object-r))
+	  object-r
+	  base-coords))
 (defmethod aero-upper-interface
   (:init (&rest args)
     (send-super* :init :robot AeroUpperRobot-robot args)
@@ -84,6 +85,7 @@
 		    geometry_msgs::Pose #'send self :tfl-callback 1)
     (ros::subscribe "/object/right_pose"
 		    geometry_msgs::Pose #'send self :tfr-callback 1)
+    (setf base-coords (make-cascoords))
     )
   (:default-controller-list ()
    (list :larm-controller
