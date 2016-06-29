@@ -18,6 +18,7 @@
 
   <run_depend>jsk_pepper_startup</run_depend>
   <run_depend>peppereus</run_depend>
+  <run_depend>nao_interaction_launchers</run_depend>
 
   <export>
 
