@@ -197,6 +197,7 @@
       (assert (= (elt (send robot :rarm :angle-vector) i) (elt reversed i))))
     ))
 
+(when (string> (unix::getenv "ROS_DISTRO") "hydro")
 (load "package://baxtereus/baxter-interface.l")
 (deftest test-baxter-interface
   (let (robot ri msg)
@@ -217,6 +218,7 @@
 
 (deftest test-baxter-init
   (baxter-init))
+) ;; when
 
 
 (run-all-tests)
