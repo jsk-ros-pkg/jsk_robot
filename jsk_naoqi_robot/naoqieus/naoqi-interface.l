@@ -213,5 +213,13 @@
 	     (setq res (ros::service-call (format nil "~A/pose/life/getState" naoqi-namespace) req))
 	     (send res :status :data)
 	     )
+  (:set-external-collision-protection-status 
+   (type status)
+   (ros::wait-for-service "/set_external_collision_protection_status")
+   (setq req (instance naoqi_bridge_msgs::SetExternalCollisionProtectionEnabledRequest :init))
+   (send req :name (instance naoqi_bridge_msgs::ExternalCollisionProtectionNames :init :data type))
+   (send req :status status)
+   (setq res (ros::service-call "/set_external_collision_protection_status" req))
+   (send res :success))
   )
 ;;
