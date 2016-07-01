@@ -18,6 +18,7 @@
         if="$(arg face_detect)">
     <remap from="camera" to="$(arg camera)" />
     <remap from="image_topic" to="$(arg image_topic)" />
+    <remap from="rgb_ns" to="rgb" />
     <remap from="/$(arg camera)/rgb/image" to="/$(arg camera)/rgb/$(arg image_topic)" />
     <!-- <remap from="image" to="$(arg image_topic)" /> -->
     <remap from="depth_topic" to="$(arg depth_topic)" />
