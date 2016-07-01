@@ -221,5 +221,13 @@
    (send req :status status)
    (setq res (ros::service-call "/set_external_collision_protection_status" req))
    (send res :success))
+  (:get-external-collision-protection-status 
+   (type)
+   (ros::wait-for-service "/get_external_collision_protection_status")
+   (setq req (instance naoqi_bridge_msgs::GetExternalCollisionProtectionEnabledRequest :init))
+   (send req :name (instance naoqi_bridge_msgs::ExternalCollisionProtectionNames :init :data type))
+   (setq res (ros::service-call "/get_external_collision_protection_status" req))
+   (send res :status)
+   )
   )
 ;;
