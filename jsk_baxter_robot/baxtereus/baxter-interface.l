@@ -233,17 +233,10 @@
   (:angle-vector-sequence (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
 		 ;; force add current position to the top of avs
 		 (if (atom tms) (setq tms (list tms)))
-		 (push (send self :state :potentio-vector :wait-until-update t) avs)
-		 (push 50 tms)
-		 (when (= (length avs) 2) ;; when input avs is 1
-		   (setq avs (list (elt avs 0) (midpoint 0.5 (elt avs 0) (elt avs 1)) (elt avs 1)))
-		   (cond ((numberp (elt tms 1))
-			  (setq tms (list (elt tms 0) (/ (elt tms 1) 2) (/ (elt tms 1) 2))))
-			 (t
-			  (setq tms (list (elt tms 0) (elt tms 1) (elt tms 1))))))
-		 (when (= (length avs) 3) ;; when input avs is 1 or 2
-		   (setq avs (append avs (list (elt avs 2))))
-		   (setq tms (append tms (list 50))))
+     ;; from v1.1.1 if num_points is 1, it will use current position to the first element of trajectory point https://github.com/RethinkRobotics/baxter_interface/commit/b38ec257fece0711adb260ed6bc161096aa3ecae
+     (when (>= (length avs) 2)
+       (push (send self :state :potentio-vector :wait-until-update t) avs)
+       (push 50 tms))
      (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   
