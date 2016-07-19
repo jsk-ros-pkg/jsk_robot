@@ -26,3 +26,24 @@ angle-vector:
 
 ## TODO: end-coords tokuni base
 ## FIXME: base_linkが浮いてる
+## end-coords
+##
+head-end-coords:
+  parent : CameraTop_frame
+  translate : [0, 0, 0]
+  rotate    : [0, 1, 0, 90]
+
+rarm-end-coords:
+  parent : r_gripper
+  translate : [0.02, 0, 0]
+  rotate    : [1, 0, 0, -90]
+
+larm-end-coords:
+  parent : l_gripper
+  translate : [0.02, 0, 0]
+  rotate    : [1, 0, 0, 90]	
+  
+rleg-end-coords:
+  parent : base_footprint
+  translate : [0, 0, 0]
+  rotate    : [0, 1, 0, 90]
