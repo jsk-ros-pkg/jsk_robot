@@ -2,6 +2,7 @@
   <arg name="use_slam_feedback" default="false"/>
   <arg name="use_odometry_iir_filter" default="false"/>
   <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
+  <arg name="map_topic" default="/map"/>
 
   <!-- robot dependent parameters -->
   <rosparam command="load" file="$(arg parameter_yaml)"/>
@@ -114,7 +115,7 @@
   <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
         output="screen">
     <remap from="~output" to="/slam_odom" />
-    <remap from="~map" to="/map" />
+    <remap from="~map" to="$(arg map_topic)" />
     <remap from="~base_odom" to="/biped_odom_particle" />
     <rosparam>
       rate: 10
