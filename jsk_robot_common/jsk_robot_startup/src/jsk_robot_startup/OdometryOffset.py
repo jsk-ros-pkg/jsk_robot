@@ -113,7 +113,10 @@ class OdometryOffset(object):
                     if self.twist_proportional_sigma:
                         current_sigma = [x * y for x, y in zip(twist_list, self.v_err_sigma)]
                     else:
-                        current_sigma = self.v_err_sigma
+                        if all([abs(x) < 1e-3 for x in twist_list]):
+                            current_sigma = [1e-6] * 6 # trust stopping state
+                        else:
+                            current_sigma = self.v_err_sigma
                     new_odom.twist.covariance = update_twist_covariance(new_odom.twist, current_sigma)
                     
                 # offset coords
