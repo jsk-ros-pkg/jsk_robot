@@ -17,6 +17,7 @@ from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3, TransformStamped
 from jsk_recognition_msgs.msg import HistogramWithRangeArray, HistogramWithRange, HistogramWithRangeBin
 from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform
+from diagnostic_msgs.msg import *
 
 class ParticleOdometry(object):
     ## initialize
@@ -61,6 +62,7 @@ class ParticleOdometry(object):
             self.invert_tf = rospy.get_param("~invert_tf", True)
         # publisher
         self.pub = rospy.Publisher("~output", Odometry, queue_size = 1)
+        self.diag_pub = rospy.Publisher('~diagnostics', DiagnosticArray)
         # histogram
         self.publish_histogram = rospy.get_param("~publish_histogram", False)
         if self.publish_histogram:
@@ -116,8 +118,8 @@ class ParticleOdometry(object):
             except numpy.linalg.LinAlgError:
                 rospy.logwarn("[%s] covariance matrix is not singular.", rospy.get_name())
                 weights = [min_weight] * len(particles)
-            if all([x == min_weight for x in weights]):
-                rospy.logwarn("[%s] likelihood is too small and all weights are limited by min_weight.", rospy.get_name())
+            # if all([x == min_weight for x in weights]):
+            #     rospy.logwarn("[%s] likelihood is too small and all weights are limited by min_weight.", rospy.get_name())
             normalization_coeffs = sum(weights) # normalization and each weight is assumed to be larger than 0
             weights = [w / normalization_coeffs for w in weights]
         return weights
@@ -212,6 +214,8 @@ class ParticleOdometry(object):
             broadcast_transform(self.broadcast, self.odom, self.invert_tf)
         # update prev_rpy to prevent jump of angles
         self.prev_rpy = transform_quaternion_to_euler([self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w], self.prev_rpy)
+        # diagnostics
+        self.update_diagnostics(self.particles, self.weights, self.odom.header.stamp)
 
     ## callback functions
     def source_odom_callback(self, msg):        
@@ -320,3 +324,16 @@ class ParticleOdometry(object):
                 msg_bin.count = count
                 histogram_array_msg.histograms[i].bins.append(msg_bin)
         return histogram_array_msg
+    def update_diagnostics(self, particles, weights, stamp):
+        diagnostic = DiagnosticArray()
+        diagnostic.header.stamp = stamp
+        # TODO: check particles
+
+        # check weights
+        status = DiagnosticStatus(name = "Weights", level = DiagnosticStatus.OK, message = "Clear")
+        if all([x == self.min_weight for x in weights]):
+            status.level = DiagnosticStatus.WARN
+            status.message = "likelihood is too small and all weights are limited by min_weight"
+        diagnostic.status.append(status)
+
+        self.diag_pub.publish(diagnostic)

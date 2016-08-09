@@ -88,6 +88,8 @@ class EKFGPFOdometry(ParticleOdometry):
         self.pub.publish(self.odom)
         if self.publish_tf:
             broadcast_transform(self.broadcast, self.odom, self.invert_tf)
+        # diagnostics
+        self.update_diagnostics(self.particles, self.weights, self.odom.header.stamp)
         # update prev_rpy to prevent jump of angles
         self.prev_rpy = transform_quaternion_to_euler([self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w], self.prev_rpy)
         
