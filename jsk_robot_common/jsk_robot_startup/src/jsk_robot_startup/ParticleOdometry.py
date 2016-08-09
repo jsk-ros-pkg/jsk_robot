@@ -330,7 +330,7 @@ class ParticleOdometry(object):
         # TODO: check particles
 
         # check weights
-        status = DiagnosticStatus(name = "Weights", level = DiagnosticStatus.OK, message = "Clear")
+        status = DiagnosticStatus(name = "{0}: Weights".format(rospy.get_name()), level = DiagnosticStatus.OK, message = "Clear")
         if all([x == self.min_weight for x in weights]):
             status.level = DiagnosticStatus.WARN
             status.message = "likelihood is too small and all weights are limited by min_weight"
