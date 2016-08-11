@@ -40,12 +40,19 @@ class EKFGPFOdometry(ParticleOdometry):
             self.prev_rpy = None
 
     # EKF
+    def source_odom_callback(self, msg):        
+        with self.lock:
+            self.source_odom = msg
+            self.ekf_update(self.odom, self.source_odom)
+    
     def ekf_update(self, current_odom, source_odom):
         dt = (source_odom.header.stamp - current_odom.header.stamp).to_sec()
         if dt > 0:
+            # update current_odom (only update pose, stamp and twist are copied from source_odom)
+            current_odom.header.stamp = source_odom.header.stamp
+            current_odom.twist = source_odom.twist
             new_pose_with_covariance = self.update_pose_with_covariance(current_odom.pose, source_odom.twist, dt)
-            # update odom (only pose)
-            self.odom.pose = new_pose_with_covariance
+            current_odom.pose = new_pose_with_covariance
                     
     ## particle filter functions
     # sampling poses from EKF result (current_pose_with_covariance)
@@ -83,8 +90,6 @@ class EKFGPFOdometry(ParticleOdometry):
 
     def publish_odometry(self):
         # refrect source_odom informations
-        self.odom.header.stamp = self.source_odom.header.stamp
-        self.odom.twist = self.source_odom.twist
         self.pub.publish(self.odom)
         if self.publish_tf:
             broadcast_transform(self.broadcast, self.odom, self.invert_tf)
@@ -99,7 +104,6 @@ class EKFGPFOdometry(ParticleOdometry):
             rospy.logwarn("[%s]: odometry is not initialized", rospy.get_name())
             return
         else:
-            self.ekf_update(self.odom, self.source_odom)
             self.publish_odometry()
             if self.publish_histogram:
                 histgram_msg = self.make_histogram_array(self.particles, self.source_odom.header.stamp)
