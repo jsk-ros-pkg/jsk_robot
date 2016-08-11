@@ -41,5 +41,5 @@ if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(spline_test
     test/spline_test.cpp)
   target_link_libraries(spline_test ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-  add_rostest(test/pr2_base_trajectory_action.test)
+#  add_rostest(test/pr2_base_trajectory_action.test)
 endif()
