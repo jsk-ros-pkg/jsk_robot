@@ -45,7 +45,7 @@ for developers
 add following source code for debugging.
 ```
 cd  catkin_ws/src
-wstool set pepper_robot --git pepper_robot http://github.com/ros-naoqi/pepper_robot
+wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
 ```
 
 naoeus
