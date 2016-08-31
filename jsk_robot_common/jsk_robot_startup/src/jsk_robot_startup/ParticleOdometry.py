@@ -181,7 +181,7 @@ class ParticleOdometry(object):
         pitch_std_pdf = scipy.stats.norm.pdf((prt_euler[1] - imu_euler[1]) / self.pitch_error_sigma, loc = 0.0, scale = 1.0)
         roll_pitch_pdf = roll_std_pdf * pitch_std_pdf
         if self.use_imu_yaw:
-            return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
+            return roll_pitch_pdf * scipy.stats.norm.pdf((prt_euler[2] - imu_euler[2]) / self.yaw_error_sigma, loc = 0.0, scale = 1.0)
         else:
             return roll_pitch_pdf
 
