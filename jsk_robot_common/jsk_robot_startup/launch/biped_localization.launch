@@ -15,7 +15,7 @@
   <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch" if="$(arg set_slam_laser_params)">
     <arg name="nodelet_index" value="$(arg nodelet_index)"/>
     <arg name="laser_input" value="/multisense/cloud_self_filtered"/>
-    <arg name="assemble_base_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/>
+    <arg name="assemble_base_frame" value="map" if="$(arg use_particle_odom)"/>
     <arg name="assemble_base_frame" value="odom_init" unless="$(arg use_particle_odom)"/>
   </include>
 
