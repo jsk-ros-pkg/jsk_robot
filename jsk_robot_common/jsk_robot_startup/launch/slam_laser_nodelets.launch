@@ -1,7 +1,7 @@
 <launch>
   <arg name="nodelet_index" default="2"/>
   <arg name="laser_input" default="/multisense/cloud_self_filtered"/>
-  <arg name="assemble_base_frame" default="odom_init"/>
+  <arg name="assemble_base_frame" default="map"/>
   
   <group ns="slam_distance_filtered_laser_snapshots">
     <rosparam subst_value="true">
@@ -36,14 +36,14 @@
             - from: ~input
               to: /joint_states
             - from: ~input/cloud
-              to: /slam_odom_scan_distance_filtered/output
+              to: /slam_scan_distance_filtered/output
         - name: slam_distance_filtered_laser
           type: jsk_pcl/TiltLaserListener
           remappings:
             - from: ~input
               to: /joint_states
             - from: ~input/cloud
-              to: /slam_odom_scan_distance_filtered/output
+              to: /slam_scan_distance_filtered/output
         - name: slam_ground_scan_non_filtered
           type: jsk_pcl/TfTransformCloud
           remappings:
@@ -56,7 +56,7 @@
               to: /slam_ground_scan_non_filtered/output
             - from: /tf
               to: /tf_null
-        - name: slam_odom_scan_distance_filtered
+        - name: slam_scan_distance_filtered
           type: jsk_pcl/TfTransformCloud
           remappings:
             - from: ~input
@@ -72,12 +72,13 @@
     <rosparam>
       filter_field_name: z
       filter_limit_min: -5.0
-      filter_limit_max: 2.5
+      filter_limit_max: 3.0
     </rosparam>
   </group>
-  <group ns="slam_odom_scan_distance_filtered">
+  <group ns="slam_scan_distance_filtered">
     <rosparam subst_value="true">
       target_frame_id: $(arg assemble_base_frame)
     </rosparam>
   </group>
+
 </launch>  

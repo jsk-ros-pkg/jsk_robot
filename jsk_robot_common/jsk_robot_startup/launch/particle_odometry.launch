@@ -121,6 +121,7 @@
     <rosparam>
       rate: 10
       map_frame: map
+      pub_only_map_updated: false
     </rosparam>
   </node>
   
