@@ -127,16 +127,16 @@
   <include file="$(find jsk_robot_startup)/launch/biped_localization.launch" if="$(arg USE_BIPED_LOCALIZATION)">
     <arg name="set_slam_laser_params" value="true"/>
     <arg name="use_particle_odom" default="true"/>
+    <arg name="use_slam_feedback" value="true"/>
     <arg name="nodelet_index" value="2"/>
     <arg name="stereo_namespace" value="multisense_local"/>
-    <arg name="slam_laser_scan_height" value="2.0"/>
+    <arg name="slam_laser_scan_height" value="2.5"/>
     <arg name="slam_laser_max_height" value="0.5"/>
     <arg name="slam_laser_min_height" value="-0.5"/>
     <arg name="parameter_yaml" default="$(arg ODOMETRY_PARAM)"/>
     <arg name="use_gmapping" value="true"/>
     <arg name="use_rtabmap" value="false"/>
   </include>
-
   <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch">
     <arg name="USE_NODELET_MANAGER" value="false"/>
     <arg name="NODELET_MANAGER_NAME" value="multisense_laser"/>
