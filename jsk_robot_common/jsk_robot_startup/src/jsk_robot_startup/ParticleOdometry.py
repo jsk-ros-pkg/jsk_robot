@@ -166,7 +166,8 @@ class ParticleOdometry(object):
 
     def z_error_pdf(self, particle_z):
         z_error = particle_z - self.source_odom.pose.pose.position.z
-        return scipy.stats.norm.pdf(z_error, loc = 0.0, scale = self.z_error_sigma) # scale is standard divasion
+        # return scipy.stats.norm.pdf(z_error, loc = 0.0, scale = self.z_error_sigma) # scale is standard divasion
+        return scipy.stats.norm.pdf(z_error / self.z_error_sigma, loc = 0.0, scale = 1.0) # standard pdf
 
     def imu_error_pdf(self, prt):
         if not self.imu:
@@ -175,9 +176,12 @@ class ParticleOdometry(object):
         prt_euler = self.convert_pose_to_list(prt)[3:6]
         imu_matrix = tf.transformations.quaternion_matrix([self.imu.orientation.x, self.imu.orientation.y, self.imu.orientation.z, self.imu.orientation.w])[:3, :3]
         imu_euler = tf.transformations.euler_from_matrix(numpy.dot(self.imu_rotation, imu_matrix)) # imu is assumed to be in base_link relative and imu_rotation is base_link->particle_odom transformation
-        roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
+        # roll_pitch_pdf = scipy.stats.norm.pdf(prt_euler[0] - imu_euler[0], loc = 0.0, scale = self.roll_error_sigma) * scipy.stats.norm.pdf(prt_euler[1] - imu_euler[1], loc = 0.0, scale = self.pitch_error_sigma)
+        roll_std_pdf = scipy.stats.norm.pdf((prt_euler[0] - imu_euler[0]) / self.roll_error_sigma, loc = 0.0, scale = 1.0) # std pdf: Z = (X - mu) / sigma
+        pitch_std_pdf = scipy.stats.norm.pdf((prt_euler[1] - imu_euler[1]) / self.pitch_error_sigma, loc = 0.0, scale = 1.0)
+        roll_pitch_pdf = roll_std_pdf * pitch_std_pdf
         if self.use_imu_yaw:
-            return roll_pitch_pdf * scipy.stats.norm.pdf(prt_euler[2] - imu_euler[2], loc = 0.0, scale = self.yaw_error_sigma)
+            return roll_pitch_pdf * scipy.stats.norm.pdf((prt_euler[2] - imu_euler[2]) / self.yaw_error_sigma, loc = 0.0, scale = 1.0)
         else:
             return roll_pitch_pdf
 
