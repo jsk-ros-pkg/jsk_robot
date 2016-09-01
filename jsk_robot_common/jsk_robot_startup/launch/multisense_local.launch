@@ -141,13 +141,13 @@
     <arg name="USE_NODELET_MANAGER" value="false"/>
     <arg name="NODELET_MANAGER_NAME" value="multisense_laser"/>
     <arg name="NODELET_INDEX" value="3"/>
-    <!-- <arg name="INPUT" value="/distance_filtered_laser_snapshots/output_cloud" /> -->
-    <arg name="INPUT" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
     <arg name="DEBUG_VIEW" value="false" />
-    <arg name="STATIC_FRAME" value="map" />
-    <arg name="STAND_FRAME" value="map" />
-    <!-- <arg name="STATIC_FRAME" default="odom" /> -->
-    <!-- <arg name="STAND_FRAME" default="odom_init" /> -->
+    <arg name="INPUT" value="/distance_filtered_laser_snapshots/output_cloud" unless="$(arg USE_BIPED_LOCALIZATION)"/>
+    <arg name="STATIC_FRAME" default="odom" unless="$(arg USE_BIPED_LOCALIZATION)"/>
+    <arg name="STAND_FRAME" default="odom_init" unless="$(arg USE_BIPED_LOCALIZATION)"/>
+    <arg name="INPUT" value="/slam_distance_filtered_laser_snapshots/output_cloud" if="$(arg USE_BIPED_LOCALIZATION)"/>
+    <arg name="STATIC_FRAME" value="map" if="$(arg USE_BIPED_LOCALIZATION)"/>
+    <arg name="STAND_FRAME" value="map" if="$(arg USE_BIPED_LOCALIZATION)"/>
   </include>
   <node pkg="jsk_robot_startup" type="auto_reset_heightmap.py" name="auto_reset_heightmap" />
 </launch>
