@@ -24,6 +24,23 @@
 	 (instance ros::simple-action-client :init
 		   (format nil "~A/pose/joint_stiffness_trajectory" naoqi-namespace)
 		   naoqi_bridge_msgs::JointTrajectoryAction))
+   (ros::advertise "/pepper_dcm/Head_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/pepper_dcm/LeftArm_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/pepper_dcm/LeftHand_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/pepper_dcm/Pelvis_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/pepper_dcm/RightArm_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/pepper_dcm/RightHand_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/pepper_dcm/Wheels_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/Head_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/LeftArm_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/LeftFoot_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/LeftHand_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/LeftLeg_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/Pelvis_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/RightArm_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/RightFoot_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/RightHand_controller/command" trajectory_msgs::JointTrajectory 1)
+   (ros::advertise "/nao_dcm/RightLeg_controller/command" trajectory_msgs::JointTrajectory 1)
    self)
   ;;
   (:naoqi-controller
@@ -36,6 +53,89 @@
      (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
+  ;;
+  (:angle-vector
+   (av &optional (tm nil) (ctype controller-type) (start-time 0) &key (scale 1) (min-time 1.0))
+   "Send joind angle to robot, this method retuns immediately, so use :wait-interpolation to block until the motion stops.
+- av : joint angle vector [rad]
+- tm : (time to goal in [msec])
+   if designated tm is faster than fastest speed, use fastest speed
+   if not specified, it will use 1/scale of the fastest speed .
+   if :fastest is specefied use fastest speed calcurated from max speed
+- ctype : controller method name
+- start-time : time to start moving
+- scale : if tm is not specified, it will use 1/scale of the fastest speed
+- min-time : minimum time to for time to goal
+"
+   (setq ctype (or ctype controller-type))  ;; use default controller-type if ctype is nil
+   (unless (gethash ctype controller-table)
+     (warn ";; controller-type: ~A not found" ctype)
+     (return-from :angle-vector))
+   ;;Check and decide tm
+   (let ((fastest-tm (* 1000 (send self :angle-vector-duration 
+                                   (send self :state :potentio-vector) av scale min-time ctype))))
+     (cond
+      ;;Fastest time Mode
+      ((equal tm :fast)
+       (setq tm fastest-tm))
+      ;;Normal Number disgnated Mode
+      ((numberp tm)
+       (if (< tm fastest-tm)
+           (setq tm fastest-tm)))
+      ;;Safe Mode (Speed will be 5 * fastest-time)
+      ((null tm)
+       (setq tm (* 5 fastest-tm)))
+      ;;Error Not Good Input
+      (t
+       (ros::ros-error ":angle-vector tm is invalid.  args: ~A" tm)
+       (error ":angle-vector tm is invalid. args: ~A" tm)))
+     )
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (if av (send self :angle-vector-simulation av tm ctype)))
+   ;; for gazebo mode
+   (when (send *ri* :robot-interface-simulation-callback) 
+     (if (boundp '*pepper*) 
+	 (progn
+	   (let* ((angle-list (send *pepper* :angle-vector)))
+	     (dotimes (i (length angle-list)) (setf (elt angle-list i) (deg2rad (elt angle-list i))))
+	     (send *ri* :gazebo-head-controller (list (elt angle-list 13) (elt angle-list 14))) 
+	     (send *ri* :gazebo-left-arm-controller (list (elt angle-list 3) (elt angle-list 4) (elt angle-list 5) (elt angle-list 6) (elt angle-list 7)))
+	     (send *ri* :gazebo-pelvis-controller (list (elt angle-list 1) (elt angle-list 2) (elt angle-list 0)))
+	     (send *ri* :gazebo-right-arm-controller (list (elt angle-list 8) (elt angle-list 9) (elt angle-list 10) (elt angle-list 11) (elt angle-list 12)))
+	     ;;(send *ri* :gazebo-left-hand-controller (list ))
+	     ;;(send *ri* :gazebo-right-hand-controller (list ))
+	     ;;(send *ri* :gazebo-wheels-controller (list ))
+	     )))
+     (if (boundp '*nao*) 
+	 (progn
+	   (let* ((angle-list (send *nao* :angle-vector)))
+	     (dotimes (i (length angle-list)) (setf (elt angle-list i) (deg2rad (elt angle-list i))))
+	     (send *ri* :gazebo-head-controller (list (elt angle-list 22) (elt angle-list 23))) 
+	     (send *ri* :gazebo-left-arm-controller (list (elt angle-list 0) (elt angle-list 1) (elt angle-list 2) (elt angle-list 3) (elt angle-list 4)))
+	     (send *ri* :gazebo-right-arm-controller (list (elt angle-list 5) (elt angle-list 6) (elt angle-list 7) (elt angle-list 8) (elt angle-list 9)))
+	     (send *ri* :gazebo-left-foot-controller (list (elt angle-list 14) (elt angle-list 15)))
+	     (send *ri* :gazebo-left-leg-controller (list (elt angle-list 11) (elt angle-list 12) (elt angle-list 13)))
+	     (send *ri* :gazebo-right-foot-controller (list (elt angle-list 20) (elt angle-list 21)))
+	     (send *ri* :gazebo-right-leg-controller (list (elt angle-list 17) (elt angle-list 18) (elt angle-list 19)))
+	     (send *ri* :gazebo-pelvis-controller (list (elt angle-list 10)))
+	     ;;(send *ri* :gazebo-left-hand-controller (list ))
+	     ;;(send *ri* :gazebo-right-hand-controller (list ))
+	     )))
+     )
+   (send robot :angle-vector av)
+   (let ((cacts (gethash ctype controller-table)))
+     (mapcar
+      #'(lambda (action param)
+	  (send self :send-ros-controller
+		action (cdr (assoc :joint-names param)) ;; action server and joint-names
+		start-time  ;; start time
+		(list
+		 (list av                                     ;; positions
+		       (instantiate float-vector (length av)) ;; velocities
+		       (/ tm 1000.0)))))                      ;; duration
+      cacts (send self ctype)))
+   av)
   ;;
   (:error-vector () (map float-vector #'rad2deg (send self :state :effort)))
   ;;
@@ -213,5 +313,191 @@
 	     (setq res (ros::service-call (format nil "~A/pose/life/getState" naoqi-namespace) req))
 	     (send res :status :data)
 	     )
+  (:gazebo-head-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "HeadYaw" "HeadPitch")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (if (boundp '*nao*) 
+	 (ros::publish "/nao_dcm/Head_controller/command" goal))
+     (if (boundp '*pepper*) 
+	 (ros::publish "/pepper_dcm/Head_controller/command" goal))
+     ))
+  (:gazebo-left-arm-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "LShoulderPitch" "LShoulderRoll" "LElbowYaw" "LElbowRoll" "LWristYaw"))
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (if (boundp '*nao*) 
+	 (ros::publish "/nao_dcm/LeftArm_controller/command" goal))
+     (if (boundp '*pepper*)
+	 (ros::publish "/pepper_dcm/LeftArm_controller/command" goal))
+     ))
+  (:gazebo-left-hand-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "LHand")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (if (boundp '*nao*) 
+	 (ros::publish "/nao_dcm/LeftHand_controller/command" goal))
+     (if (boundp '*pepper*)
+	 (ros::publish "/pepper_dcm/LeftHand_controller/command" goal))
+     ))
+  (:gazebo-pelvis-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)     
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (if (boundp '*nao*)
+	 (setq joint-name (list "LHipYawPitch")))       
+     (if (boundp `*pepper*)
+	 (setq joint-name (list "HipRoll" "HipPitch" "KneePitch")))
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (if (boundp '*nao*)
+	 (ros::publish "/nao_dcm/Pelvis_controller/command" goal))
+     (if (boundp '*pepper*)
+	 (ros::publish "/pepper_dcm/Pelvis_controller/command" goal))
+     ))
+  (:gazebo-right-arm-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "RShoulderPitch" "RShoulderRoll" "RElbowYaw" "RElbowRoll" "RWristYaw")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (if (boundp '*nao*)
+	 (ros::publish "/nao_dcm/RightArm_controller/command" goal))
+     (if (boundp '*pepper*)
+	 (ros::publish "/pepper_dcm/RightArm_controller/command" goal))
+     ))
+  (:gazebo-right-hand-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "RHand")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (if (boundp '*nao*)
+	 (ros::publish "/nao_dcm/RightHand_controller/command" goal))
+     (if (boundp '*pepper*)
+	 (ros::publish "/pepper_dcm/RightHand_controller/command" goal))
+     ))
+  (:gazebo-wheels-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "WheelFL" "WheelB" "WheelFR")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (ros::publish "/pepper_dcm/Wheels_controller/command" goal)
+     ))
+  (:gazebo-left-foot-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "LAnklePitch" "LAnkleRoll")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (ros::publish "/nao_dcm/LeftFoot_controller/command" goal)
+     ))
+  (:gazebo-left-leg-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "LHipRoll" "LHipPitch" "LKneePitch")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (ros::publish "/nao_dcm/LeftLeg_controller/command" goal)
+     ))
+  (:gazebo-right-foot-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "RAnklePitch" "RAnkleRoll")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (ros::publish "/nao_dcm/RightFoot_controller/command" goal)
+     ))
+  (:gazebo-right-leg-controller 
+   (angle-list)
+   (let ((goal (instance trajectory_msgs::JointTrajectory :init))
+	 joint-name)
+     (send goal :header :seq 1)
+     (send goal :header :stamp (ros::time-now))
+     (setq joint-name (list "RHipRoll" "RHipPitch" "RKneePitch")) 
+     (send goal :joint_names joint-name)
+     (send goal :points
+	   (list (instance trajectory_msgs::JointTrajectoryPoint
+			   :init
+			   :positions angle-list
+			   :time_from_start (ros::time 1))))
+     (ros::publish "/nao_dcm/RightLeg_controller/command" goal)
+     ))
   )
 ;;
