@@ -10,6 +10,7 @@
   <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
   <arg name="use_gmapping" default="true"/>
   <arg name="use_rtabmap" default="false"/>
+  <arg name="imu_topic" default="/imu"/>
 
   <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
   <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch" if="$(arg set_slam_laser_params)">
@@ -39,6 +40,7 @@
     <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch" if="$(arg use_particle_odom)">
       <arg name="parameter_yaml" value="$(arg parameter_yaml)"/>
       <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+      <arg name="imu_topic" value="$(arg imu_topic)"/>
     </include>
 
     <include file="$(find jsk_robot_startup)/launch/gmapping.launch" if="$(arg use_gmapping)">
