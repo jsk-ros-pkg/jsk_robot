@@ -2,7 +2,7 @@
 
 import rospy
 import numpy
-from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Quaternion, QuaternionStamped, Vector3Stamped
 from sensor_msgs.msg import Imu
 import tf
 
@@ -25,25 +25,33 @@ class ImuRootlinkCalculator(object):
             self.initial_matrix = None
             
     def imu_callback(self, msg):
-        try:
-            self.listener.waitForTransform(msg.header.frame_id, self.base_link_frame, msg.header.stamp, rospy.Duration(1.0))
-            (trans,rot) = self.listener.lookupTransform(msg.header.frame_id, self.base_link_frame, msg.header.stamp)
-        except:
-            try:
-                rospy.logwarn("[%s] failed to solve imu_to_base tf in %f. Use rospy.Time(0): %s to %s", rospy.get_name(), stamp.to_sec(), msg.header.frame_id, self.base_link_frame)
-                (trans,rot) = self.listener.lookupTransform(msg.header.frame_id, self.base_link_frame, rospy.Time(0))
-            except:
-                rospy.logwarn("[%s] failed to solve imu_to_base tf: %s to %s", rospy.get_name(), msg.header.frame_id, self.base_link_frame)
-                return
+        raw_imu_quat = QuaternionStamped()
+        raw_imu_quat.header = msg.header
+        raw_imu_quat.quaternion = msg.orientation
 
-        # only convert orientation because acceleration and angular velocity are not used in ParticleOdometry
-        imu_rotation = tf.transformations.quaternion_matrix(rot)
-        imu_matrix = tf.transformations.quaternion_matrix([msg.orientation.x, msg.orientation.y,
-                                                           msg.orientation.z, msg.orientation.w])
-        imu_rootlink_quat = tf.transformations.quaternion_from_matrix(numpy.dot(imu_rotation, imu_matrix)) # base_link relative orientation
-        msg.orientation = Quaternion(*imu_rootlink_quat)
-        msg.header.frame_id = self.base_link_frame
-        
+        raw_imu_av = Vector3Stamped()
+        raw_imu_av.header = msg.header
+        raw_imu_av.vector = msg.angular_velocity
+
+        raw_imu_acc = Vector3Stamped()
+        raw_imu_acc.header = msg.header
+        raw_imu_acc.vector = msg.linear_acceleration
+                
+        try:
+            self.listener.waitForTransform(self.base_link_frame, msg.header.frame_id, msg.header.stamp, rospy.Duration(1.0)) # gyrometer->body
+            imu_rootlink_quat = self.listener.transformQuaternion(self.base_link_frame, raw_imu_quat)
+            imu_rootlink_av = self.listener.transformVector3(self.base_link_frame, raw_imu_av)
+            imu_rootlink_acc = self.listener.transformVector3(self.base_link_frame, raw_imu_acc)
+            # todo: convert covariance
+        except:
+            rospy.logwarn("[%s] failed to solve imu_to_base tf: %s to %s", rospy.get_name(), msg.header.frame_id, self.base_link_frame)
+            return
+
+        msg.header = imu_rootlink_quat.header
+        msg.orientation = imu_rootlink_quat.quaternion
+        msg.angular_velocity = imu_rootlink_av.vector        
+        msg.linear_acceleration = imu_rootlink_acc.vector
+                
         # publish
         self.pub.publish(msg)
         

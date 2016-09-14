@@ -3,13 +3,14 @@
   <arg name="use_odometry_iir_filter" default="false"/>
   <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
   <arg name="map_topic" default="/map"/>
+  <arg name="imu_topic" default="/imu"/>
 
   <!-- robot dependent parameters -->
   <rosparam command="load" file="$(arg parameter_yaml)"/>
 
   <node pkg="jsk_robot_startup" type="ImuRootlinkCalculator.py" name="imu_rootlink_calculator"
         output="screen" >
-    <remap from="~input" to="/imu" />
+    <remap from="~input" to="$(arg imu_topic)" />
     <remap from="~output" to="/imu_rootlink" />
     <rosparam>
       base_link_frame: BODY

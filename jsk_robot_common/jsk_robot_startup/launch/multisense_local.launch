@@ -1,6 +1,7 @@
 <launch>
   <arg name="ip_address" default="" />
   <arg name="mtu"        default="1500" />
+  <arg name="imu_topic" default="/imu" />
   <arg name="SELF_FILTER_PARAM" default="" />
   <arg name="ODOMETRY_PARAM"    default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
   <arg name="RUN_DRIVER" default="true" />
@@ -136,6 +137,7 @@
     <arg name="parameter_yaml" default="$(arg ODOMETRY_PARAM)"/>
     <arg name="use_gmapping" value="true"/>
     <arg name="use_rtabmap" value="false"/>
+    <arg name="imu_topic" value="$(arg imu_topic)"/>
   </include>
   <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch">
     <arg name="USE_NODELET_MANAGER" value="false"/>
