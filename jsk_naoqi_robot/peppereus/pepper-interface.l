@@ -10,7 +10,54 @@
 
 (defmethod pepper-interface
   (:init (&rest args)
-   (send-super* :init :robot pepper-robot :naoqi-namespace "pepper_robot" args))
+   (send-super* :init :robot pepper-robot :naoqi-namespace "pepper_robot" :dcm-namespace "pepper_dcm" args)
+   (when (ros::get-param "use_sim_time" nil)
+     ;; add controllers for gazebo
+     (dolist (l (list
+		 (cons :dcm-head-controller "/pepper_dcm/Head_controller/follow_joint_trajectory")
+		 (cons :dcm-larm-controller "/pepper_dcm/LeftArm_controller/follow_joint_trajectory")
+		 (cons :dcm-lhand-controller "/pepper_dcm/LeftHand_controller/follow_joint_trajectory")
+		 (cons :dcm-pelvis-controller "/pepper_dcm/Pelvis_controller/follow_joint_trajectory")
+		 (cons :dcm-rarm-controller "/pepper_dcm/RightArm_controller/follow_joint_trajectory")
+		 (cons :dcm-rhand-controller "/pepper_dcm/RightHand_controller/follow_joint_trajectory")
+		 (cons :dcm-wheels-controller "/pepper_dcm/Wheels_controller/follow_joint_trajectory")))
+       (let ((type (car l))
+	     (name (cdr l))
+	     action)
+	 (setq action (find-if #'(lambda (ac) (string= name (send ac :name)))
+			       controller-actions))
+	 (setf (gethash type controller-table) (list action))
+	 )))
+   )
+  (:dcm-pelvis-controller
+   ()
+   (list
+    (list
+     (cons :controller-action "/pepper_dcm/Pelvis_controller/follow_joint_trajectory")
+     (cons :controller-state "/pepper_dcm/Pelvis_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "HipRoll" "HipPitch" "KneePitch")))))
+  (:naoqi-controller
+   ()
+   (if (ros::get-param "use_sim_time" nil)
+       (progn
+	 ;; only for simulation
+	 (append
+	  (send self :dcm-head-controller)
+	  (send self :dcm-larm-controller)
+	  (send self :dcm-pelvis-controller)
+	  (send self :dcm-rarm-controller)
+	  )
+	 )
+     (progn
+       (list
+	(list
+	 (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
+	 ;;(cons :controller-state "joint_trajectory")
+	 (cons :controller-state "dummy_state") ;; this is dummy
+	 (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
+	 (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name)))))
+       )))
   (:show-image 
    (file)
    (let (ret)
