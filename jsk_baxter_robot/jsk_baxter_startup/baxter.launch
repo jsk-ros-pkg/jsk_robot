@@ -56,7 +56,10 @@
   <!-- Twitter -->
   <include if="$(arg launch_tweet)"
            file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
-    <arg name="launch_mongodb" value="$(arg launch_mongodb)"/>
+  </include>
+
+  <!-- MongoDB -->
+  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
   </include>
 
   <!-- Wrench -->
