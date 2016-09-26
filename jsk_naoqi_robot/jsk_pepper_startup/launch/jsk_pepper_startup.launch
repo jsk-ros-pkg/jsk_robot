@@ -54,4 +54,8 @@ enable_turbo_button: 0  # A button
   <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch"/>
 
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" />
+
+  <node name="speaking_program_is_started_or_terminated"
+        pkg="roseus" type="roseus"
+        args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 15) (good-morning) (do-until-key (ros::spin-once)))&quot;"/>
 </launch>
