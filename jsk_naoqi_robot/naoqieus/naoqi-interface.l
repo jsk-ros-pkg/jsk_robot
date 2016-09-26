@@ -6,13 +6,14 @@
 
 (defclass naoqi-interface
   :super robot-interface
-  :slots (naoqi-namespace joint-stiffness-trajectory-action)
+  :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action)
   )
 
 (defmethod naoqi-interface
   (:init
-   (&rest args &key ((:naoqi-namespace ns) "naoqi_robot") (robot) (type :naoqi-controller) &allow-other-keys)
+   (&rest args &key ((:naoqi-namespace ns) "naoqi_robot") ((:dcm-namespace dns) "naoqi_dcm") (robot) (type :naoqi-controller) &allow-other-keys)
    (setq naoqi-namespace ns)
+   (setq dcm-namespace dns)
    (print args)
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
    (ros::advertise "/move_base_simple/goal" geometry_msgs::PoseStamped 1)
@@ -26,12 +27,114 @@
 		   naoqi_bridge_msgs::JointTrajectoryAction))
    self)
   ;;
+  (:dcm-head-controller
+   ()
+   (list
+    (list
+     (cons :controller-action 
+	   (format nil "~A/Head_controller/follow_joint_trajectory" dcm-namespace))
+     (cons :controller-state 
+	   (format nil "~A/Head_controller/state" dcm-namespace))
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "HeadYaw" "HeadPitch")))))
+  (:dcm-larm-controller
+   ()
+   (list
+    (list
+     (cons :controller-action 
+	   (format nil "~A/LeftArm_controller/follow_joint_trajectory" dcm-namespace))
+     (cons :controller-state 
+	   (format nil "~A/LeftArm_controller/state" dcm-namespace))
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "LShoulderPitch" "LShoulderRoll" "LElbowYaw" "LElbowRoll" "LWristYaw")))))
+  (:dcm-lhand-controller
+   ()
+   (list
+    (list
+     (cons :controller-action 
+	   (format nil "~A/LeftHand_controller/follow_joint_trajectory" dcm-namespace))
+     (cons :controller-state 
+	   (format nil "~A/LeftHand_controller/state" dcm-namespace))
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "LHand")))))
+  (:dcm-rarm-controller
+   ()
+   (list
+    (list
+     (cons :controller-action 
+	   (format nil "~A/RightArm_controller/follow_joint_trajectory" dcm-namespace))
+     (cons :controller-state 
+	   (format nil "~A/RightArm_controller/state" dcm-namespace))
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "RShoulderPitch" "RShoulderRoll" "RElbowYaw" "RElbowRoll" "RWristYaw")))))
+  (:dcm-rhand-controller
+   ()
+   (list
+    (list
+     (cons :controller-action 
+	   (format nil "~A/RightHand_controller/follow_joint_trajectory" dcm-namespace))
+     (cons :controller-state 
+	   (format nil "~A/RightHand_controller/state" dcm-namespace))
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "RHand")))))
+  (:dcm-pelvis-controller
+   ;; Nao: RHipYawPitch is mimic joint, Pepper: this method is overridden
+   ()
+   (list
+    (list
+     (cons :controller-action 
+	   (format nil "~A/Pelvis_controller/follow_joint_trajectory" dcm-namespace))
+     (cons :controller-state 
+	   (format nil "~A/Pelvis_controller/state" dcm-namespace))
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "LHipYawPitch")))))
+  (:dcm-lfoot-controller
+   ()
+   (list
+    (list
+     (cons :controller-action "/nao_dcm/LeftFoot_controller/follow_joint_trajectory")
+     (cons :controller-state "/nao_dcm/LeftFoot_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "LAnklePitch" "LAnkleRoll")))))
+  (:dcm-lleg-controller
+   ()
+   (list
+    (list
+     (cons :controller-action "/nao_dcm/LeftLeg_controller/follow_joint_trajectory")
+     (cons :controller-state "/nao_dcm/LeftLeg_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "LHipRoll" "LHipPitch" "LKneePitch"))))) 
+  (:dcm-rfoot-controller
+   ()
+   (list
+    (list
+     (cons :controller-action "/nao_dcm/RightFoot_controller/follow_joint_trajectory")
+     (cons :controller-state "/nao_dcm/RightFoot_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "RAnklePitch" "RAnkleRoll")))))
+  (:dcm-rleg-controller
+   ()
+   (list
+    (list
+     (cons :controller-action "/nao_dcm/RightLeg_controller/follow_joint_trajectory")
+     (cons :controller-state "/nao_dcm/RightLeg_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "RHipRoll" "RHipPitch" "RKneePitch"))))) 
+  (:dcm-wheels-controller
+   ()
+   (list
+    (list
+     (cons :controller-action "/pepper_dcm/Wheels_controller/follow_joint_trajectory")
+     (cons :controller-state "/pepper_dcm/Wheels_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "WheelFL" "WheelB" "WheelFR")))))
+  ;;
   (:naoqi-controller
    ()
    (list
     (list
      (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
-    ;;(cons :controller-state "joint_trajectory")
+     ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
      (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
