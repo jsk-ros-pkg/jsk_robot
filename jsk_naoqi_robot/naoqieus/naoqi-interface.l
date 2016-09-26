@@ -231,5 +231,40 @@
      (setq res (ros::service-call "/get_external_collision_protection_status" req))
      (send res :status)
      ))
+  (:set-move-arms-enabled 
+   (status &optional (arm :arms))
+   (let ((ret (instance naoqi_bridge_msgs::SetArmsEnabledRequest :init))
+	 (another-arm-status))
+     (ros::wait-for-service "/set_move_arms_enabled")
+     (case arm
+	   (:arms 
+	    (send ret :left_arm status)
+	    (send ret :right_arm status))
+	   (:rarm
+	    (setq another-arm-status (send *ri* :get-move-arms-enabled 0))
+	    (send ret :right_arm status)
+	    (send ret :left_arm another-arm-status))
+	   (:larm 
+	    (setq another-arm-status (send *ri* :get-move-arms-enabled 1))
+	    (send ret :right_arm another-arm-status)
+	    (send ret :left_arm status)))
+     (ros::service-call "/set_move_arms_enabled" ret))
+   )
+  (:get-move-arms-enabled
+   (&optional (arm :arms))
+   (let ((ret (instance naoqi_bridge_msgs::GetArmsEnabledRequest :init))
+	 (arm_msg (instance naoqi_bridge_msgs::Arms :init)) res)
+     (ros::wait-for-service "/get_move_arms_enabled")
+     (case arm
+	   (:larm 
+	    (send arm_msg :data 0))
+	   (:rarm 
+	    (send arm_msg :data 1))
+	   (:arms 
+	    (send arm_msg :data 2)))
+     (send ret :arm arm_msg)
+     (setq res (ros::service-call "/get_move_arms_enabled" ret))
+     (send res :status))
+   )
   )
 ;;
