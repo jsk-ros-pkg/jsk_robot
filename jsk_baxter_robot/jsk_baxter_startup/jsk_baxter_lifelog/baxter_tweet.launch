@@ -1,5 +1,4 @@
 <launch>
-  <arg name="launch_mongodb" default="true"/>
   <arg name="output" default="screen" />
 
   <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
@@ -33,5 +32,4 @@
     <param name="filename_format" value="/tmp/baxter_camera.png" />
   </node>
 
-  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch"/>
 </launch>
