@@ -18,7 +18,7 @@
 
   <!-- logging and resoring pr2 position data -->
   <node name="move_base_db"
-        pkg="jsk_pr2_startup" type="move_base_db.py"
+        pkg="jsk_robot_startup" type="move_base_db.py"
         machine="$(arg machine)"
         if="$(arg store_move_base_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
@@ -28,7 +28,7 @@
 
   <!-- logging object detection data -->
   <node name="object_detection_db"
-        pkg="jsk_pr2_startup" type="objectdetection_db.py"
+        pkg="jsk_robot_startup" type="objectdetection_db.py"
         machine="$(arg machine)"
         if="$(arg store_object_detection_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
@@ -37,7 +37,7 @@
 
   <!-- logging action result/goal data -->
   <node name="action_result_db"
-        pkg="jsk_pr2_startup" type="action_result_db.py"
+        pkg="jsk_robot_startup" type="action_result_db.py"
         machine="$(arg machine)"
         if="$(arg store_action_result_log)">
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/action_result_db_config.yaml" />
