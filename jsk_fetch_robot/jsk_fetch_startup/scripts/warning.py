@@ -89,9 +89,15 @@ class Warning:
     def cmd_vel_callback(self, msg):
         ## warn when cmd_vel is issued while the robot is charning
         rospy.logdebug("cmd_vel : x:{} y:{} z:{}, battery.is_charning {}".format(msg.linear.x,msg.linear.y,msg.angular.z,self.battery_state_msgs.is_charging))
-        breaker_status = filter(lambda n: n.name=='base_breaker', self.robot_state_msgs.breakers)[0]
+        breaker_enabled = True
+        try:
+            breaker_status = filter(lambda n: n.name=='base_breaker', self.robot_state_msgs.breakers)[0]
+            breaker_enabled = breaker_status.state == BreakerState.STATE_ENABLED
+        except Exception as e:
+            rospy.logerr("Failed to fetch breaker status: %s" % str(e))
+
         if ( fabs(msg.linear.x) > 0 or fabs(msg.linear.y) > 0 or fabs(msg.angular.z) > 0 ) and \
-           self.battery_state_msgs.is_charging == True and breaker_status.state == BreakerState.STATE_ENABLED:
+           self.battery_state_msgs.is_charging == True and breaker_enabled:
             rospy.logerr("Try to run while charging!")
             self.base_breaker(BreakerCommandRequest(enable=False))
             sound.play(4) # play builtin sound Boom!
