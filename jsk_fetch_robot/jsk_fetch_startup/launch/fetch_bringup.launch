@@ -1,6 +1,12 @@
 <launch>
-  <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
+  <arg name="launch_moveit" default="true" />
+  <arg name="launch_move_base" default="true" />
   <arg name="boot_sound" default="false" />
+  <arg name="map_frame" default="eng2" />
+
+  <param name="robot/name" value="fetch" />
+
+  <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
@@ -11,17 +17,15 @@
     <param name="buffer_size" value="120.0"/>
   </node>
 
-  <!-- jsk_pr2_startup/jsk_pr2_lifelog/db_client.launch -->
   <!-- mongodb -->
-  <param name="robot/name" value="fetch" />
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch" >
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
     <arg name="replicate" default="false" />
   </include>
-  <!-- logging and resoring pr2 position data -->
-  <arg name="map_frame" value="map" />
+
+  <!-- logging and resoring robot position data -->
   <node name="move_base_db"
         pkg="jsk_pr2_startup" type="move_base_db.py" >
     <param name="map_frame" value="$(arg map_frame)"/>
@@ -29,24 +33,38 @@
     <param name="update_cycle" value="0.1" />
   </node>
 
-  <!-- include fetch_navigation -->
-  <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
-    <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml" />
-    <arg name="map_keepout_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
-    <arg name="use_keepout" default="true" />
-  </include>
-  <rosparam ns="move_base/global_costmap">
+  <!-- jsk maps -->
+  <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch" />
+
+  <!-- include fetch moveit -->
+  <include file="$(find fetch_moveit_config)/launch/move_group.launch"
+           if="$(arg launch_moveit)" />
+
+  <group if="$(arg launch_move_base)">
+    <!-- localize the robot -->
+    <include file="$(find fetch_navigation)/launch/include/amcl.launch.xml" />
+
+    <!-- move the robot -->
+    <include file="$(find fetch_navigation)/launch/include/move_base.launch.xml">
+      <arg name="name" value="fetch" />
+      <!-- <arg name="map_topic" value="map_keepout" /> --> <!-- TODO: support keepout -->
+    </include>
+
+    <!-- tilt the head -->
+    <node pkg="fetch_navigation" type="tilt_head.py" name="tilt_head_node" />
+
+    <rosparam ns="move_base/global_costmap">
 inflater:
   inflation_radius: 0.80 # 0.7
   cost_scaling_factor: 10.0 # 10.0
-  </rosparam>
-  <rosparam ns="move_base/local_costmap">
+    </rosparam>
+    <rosparam ns="move_base/local_costmap">
 inflater:
   inflation_radius: 0.30 # 0.7
   cost_scaling_factor: 100.0 # 25.0 default 10, increasing factor decrease the cost value
 update_frequency: 10.0 # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
-  </rosparam>
-  <rosparam ns="move_base">
+    </rosparam>
+    <rosparam ns="move_base">
 base_local_planner: base_local_planner/TrajectoryPlannerROS
 TrajectoryPlannerROS:
   escape_vel: -0.1 # -0.1
@@ -63,5 +81,6 @@ recovery_behaviors:
 conservative_reset: {reset_distance: 1.0} # 3.0
 aggressive_reset: {reset_distance: 0.2} # 0.5
 move_slow_and_clear: {clearing_distance: 0.5, limited_distance: 0.3, limited_rot_speed: 0.45, limited_trans_speed: 0.25}
-  </rosparam>
+    </rosparam>
+  </group>
 </launch>

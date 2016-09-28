@@ -1,0 +1,38 @@
+<launch>
+  <arg name="launch_gazebo" default="true" />
+  <arg name="launch_gui" default="true" />
+  <arg name="launch_moveit" default="true" />
+  <arg name="launch_move_base" default="true" />
+  <arg name="paused" default="false" />
+  <arg name="world" default="worlds/empty.world" />
+  <arg name="map_frame" default="eng2" />
+
+  <arg name="INITIAL_POSE_X" default="0.0" />
+  <arg name="INITIAL_POSE_Y" default="0.0" />
+  <arg name="INITIAL_POSE_Z" default="0.0" />
+  <arg name="INITIAL_POSE_YAW" default="0.0" />
+
+  <group if="$(arg launch_gazebo)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="gui" value="$(arg launch_gui)" />
+      <arg name="headless" value="false" if="$(arg launch_gui)" />
+      <arg name="headless" value="true" unless="$(arg launch_gui)" />
+      <arg name="paused" value="$(arg paused)" />
+      <arg name="world_name" value="$(arg world)" />
+      <arg name="use_sim_time" value="true" />
+    </include>
+    <include file="$(find fetch_gazebo)/launch/include/fetch.launch.xml">
+      <arg name="x" value="$(arg INITIAL_POSE_X)" />
+      <arg name="y" value="$(arg INITIAL_POSE_Y)" />
+      <arg name="z" value="$(arg INITIAL_POSE_Z)" />
+      <arg name="yaw" value="$(arg INITIAL_POSE_YAW)" />
+    </include>
+  </group>
+
+  <include file="$(find jsk_fetch_startup)/launch/fetch_bringup.launch">
+    <arg name="launch_moveit" value="$(arg launch_moveit)" />
+    <arg name="launch_move_base" value="$(arg launch_move_base)" />
+    <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="boot_sound" value="false" />
+  </include>
+</launch>
