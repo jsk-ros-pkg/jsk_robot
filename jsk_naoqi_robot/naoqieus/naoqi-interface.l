@@ -49,16 +49,6 @@
 	   (format nil "~A/LeftArm_controller/state" dcm-namespace))
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "LShoulderPitch" "LShoulderRoll" "LElbowYaw" "LElbowRoll" "LWristYaw")))))
-  (:dcm-lhand-controller
-   ()
-   (list
-    (list
-     (cons :controller-action 
-	   (format nil "~A/LeftHand_controller/follow_joint_trajectory" dcm-namespace))
-     (cons :controller-state 
-	   (format nil "~A/LeftHand_controller/state" dcm-namespace))
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "LHand")))))
   (:dcm-rarm-controller
    ()
    (list
@@ -69,16 +59,6 @@
 	   (format nil "~A/RightArm_controller/state" dcm-namespace))
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "RShoulderPitch" "RShoulderRoll" "RElbowYaw" "RElbowRoll" "RWristYaw")))))
-  (:dcm-rhand-controller
-   ()
-   (list
-    (list
-     (cons :controller-action 
-	   (format nil "~A/RightHand_controller/follow_joint_trajectory" dcm-namespace))
-     (cons :controller-state 
-	   (format nil "~A/RightHand_controller/state" dcm-namespace))
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "RHand")))))
   (:dcm-pelvis-controller
    ;; Nao: RHipYawPitch is mimic joint, Pepper: this method is overridden
    ()
