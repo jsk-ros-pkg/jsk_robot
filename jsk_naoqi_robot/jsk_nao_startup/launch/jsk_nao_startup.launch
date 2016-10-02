@@ -9,7 +9,6 @@
     <arg name="roscore_ip" value="$(arg roscore_ip)"/>
     <arg name="network_interface" value="$(arg network_interface)"/>
   </include>
-  <include file="$(find nao_apps)/launch/speech.launch" />
   <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch" />
   <include file="$(find nao_interaction_launchers)/launch/nao_vision_interface.launch" />
  
