@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find pepper_gazebo_plugin)/launch/pepper_gazebo_plugin_Y20.launch"/>
+  <node name="move_base" pkg="move_base" type="move_base">
+    <rosparam file="$(find jsk_pepper_startup)/config/move_base.yaml" command="load" />  
+  </node>
+</launch>
