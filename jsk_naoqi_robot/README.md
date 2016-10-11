@@ -3,17 +3,20 @@ jsk_pepper_robot
 
 setup environment
 -----------------
+% First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
+
 ```
 mkdir -p catkin_ws/src
 cd  catkin_ws
 wstool init src
 wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
 wstool update -t src
+source /opt/ros/indigo/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 catkin build
 source devel/setup.bash
 ```
-% Make sure that you have already installed the ``Python NAOqi SDK`` in your computer. If not, you can download it from [here](https://community.aldebaran.com/en/resources/software). After downloading the file, unzip and rename it to ``pynaoqi``, then put it under your home folder. And then, please add python path to your ``.bashrc`` like ``export PYTHONPATH=$HOME/pynaoqi/<your naoqi sdk version>:$PYTHONPATH``. 
+% Make sure that you have already installed the ``Python NAOqi SDK`` in your computer. If not, you can download it from [here](https://community.aldebaran.com/en/resources/software). Be sure to sign in and register a developer program. After downloading the file, unzip and rename it to ``pynaoqi``, then put it under your home folder. And then, please add python path to your ``.bashrc`` like ``export PYTHONPATH=$HOME/pynaoqi/<your naoqi sdk version>:$PYTHONPATH``. 
  
 You need to set NAO_IP and ROS_IP environment variable to launch `jsk_pepper_startup.launch`
 ```
@@ -30,7 +33,7 @@ sudo apt-get install ros-indigo-pepper-meshes
 running demo
 ------------
 ```
-roslaunch jsk_pepper_startup jsk_pepper_startup.launch
+roslaunch jsk_pepper_startup jsk_pepper_startup.launch network_interface:=<YOUR_NETWORK_INTERFACE (ex. eth0)>
 ```
 ```
 roslaunch nao_apps speech.launch nao_ip:=YOUR_PEPPER_IP
