@@ -120,14 +120,6 @@
      (cons :controller-state "/nao_dcm/RightLeg_controller/state")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "RHipRoll" "RHipPitch" "RKneePitch"))))) 
-  (:dcm-wheels-controller
-   ()
-   (list
-    (list
-     (cons :controller-action "/pepper_dcm/Wheels_controller/follow_joint_trajectory")
-     (cons :controller-state "/pepper_dcm/Wheels_controller/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "WheelFL" "WheelB" "WheelFR")))))
   ;;
   (:naoqi-controller
    ()
