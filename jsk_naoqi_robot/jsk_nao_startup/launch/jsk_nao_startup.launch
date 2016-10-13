@@ -30,4 +30,8 @@
     <param name="save_all_image" value="false" />
     <param name="filename_format" value="/tmp/nao_camera.png" />
   </node>
+
+  <node name="speaking_program_is_started_or_terminated"
+        pkg="roseus" type="roseus"
+        args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 2) (good-morning) (do-until-key (ros::spin-once)))&quot;"/>
 </launch>
