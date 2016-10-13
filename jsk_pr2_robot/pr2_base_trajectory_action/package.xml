@@ -3,53 +3,36 @@
   <version>1.0.6</version>
   <description>pr2_base_trajectory_action is a node that exposes and action
      interface to move robot base along a trajectory.</description>
-  <maintainer email="t@t.com">saito</maintainer>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
 
   <license>BSD</license>
 
   <url type="website">http://ros.org/wiki/pr2_base_trajectory_action</url>
-  <!-- <url type="bugtracker"></url> -->
 
   <author>saito</author>
+  <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
 
   <!-- Dependencies which this package needs to build itself. -->
   <buildtool_depend>catkin</buildtool_depend>
 
   <!-- Dependencies needed to compile this package. -->
-  <build_depend>roscpp</build_depend>
   <build_depend>actionlib</build_depend>
+  <build_depend>angles</build_depend>
+  <build_depend>control_msgs</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
   <build_depend>trajectory_msgs</build_depend>
-  <build_depend>pr2_controllers_msgs</build_depend>
-  <build_depend>actionlib_msgs</build_depend>
-  <build_depend>pr2_mechanism_model</build_depend>
-  <build_depend>angles</build_depend>
 
   <!-- Dependencies needed after this package is compiled. -->
-  <run_depend>roscpp</run_depend>
   <run_depend>actionlib</run_depend>
+  <run_depend>control_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>nav_msgs</run_depend>
-  <run_depend>trajectory_msgs</run_depend>
-  <run_depend>pr2_controllers_msgs</run_depend>
-  <run_depend>actionlib_msgs</run_depend>
-  <run_depend>pr2_mechanism_model</run_depend>
-  <run_depend>angles</run_depend>
-
-  <!-- Dependencies needed only for running tests. -->
-  <!-- <test_depend>roscpp</test_depend> -->
-  <!-- <test_depend>actionlib</test_depend> -->
-  <!-- <test_depend>geometry_msgs</test_depend> -->
-  <!-- <test_depend>nav_msgs</test_depend> -->
-  <!-- <test_depend>trajectory_msgs</test_depend> -->
-  <!-- <test_depend>pr2_controllers_msgs</test_depend> -->
-  <!-- <test_depend>actionlib_msgs</test_depend> -->
-  <!-- <test_depend>pr2_mechanism_model</test_depend> -->
-  <!-- <test_depend>angles</test_depend> -->
+  <run_depend>rostest</run_depend>
 
 <export>
-    <cpp cflags="-I${prefix}/include"/>
 </export>
 
 </package>
