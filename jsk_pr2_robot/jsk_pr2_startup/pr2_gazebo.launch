@@ -16,7 +16,10 @@
   <arg name="INITIAL_POSE_PITCH" default="0.0" />
   <arg name="INITIAL_POSE_YAW" default="0.0" />
 
-  <include file="$(find pr2_machine)/sim.machine" />
+  <!-- set default environment variables -->
+  <env name="ROBOT" value="$(optenv ROBOT sim)" />
+  <env name="KINECT1" value="$(optenv KINECT1 true)" />
+  <env name="KINECT2" value="$(optenv KINECT2 false)" />
 
   <!-- pr2_gazebo -->
   <group if="$(arg launch_gazebo)">
