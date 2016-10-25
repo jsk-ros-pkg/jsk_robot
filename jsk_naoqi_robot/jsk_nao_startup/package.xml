@@ -50,6 +50,7 @@
   <run_depend>roseus</run_depend>
   <run_depend>rostwitter</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>nao_bringup</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
