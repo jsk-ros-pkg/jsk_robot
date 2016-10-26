@@ -13,7 +13,7 @@ wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/mast
 wstool update -t src
 source /opt/ros/indigo/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
-catkin build
+catkin build fetcheus jsk_fetch_startup
 source devel/setup.bash
 ```
 
