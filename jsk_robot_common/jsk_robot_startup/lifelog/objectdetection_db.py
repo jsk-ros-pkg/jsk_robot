@@ -20,7 +20,7 @@ class ObjectDetectionDB(object):
             rospy.logerr("please specify param \"robot/name\" (e.g. pr1012, olive)")
             exit(1)
         self.update_cycle = rospy.get_param('update_cycle', 1)
-        self.map_frame = rospy.get_param('~map_frmae', 'map')
+        self.map_frame = rospy.get_param('~map_frame', 'map')
         self.robot_frame = rospy.get_param('~robot_frame','base_footprint')
         self.tf_listener = tf.TransformListener()
         self.msg_store = MessageStoreProxy(database=self.db_name, collection=self.col_name)
