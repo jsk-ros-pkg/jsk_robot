@@ -1,8 +1,13 @@
 <launch>
-  <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
   <arg name="launch_moveit" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="boot_sound" default="false" />
+  <arg name="map_frame" default="map" />
+
+  <param name="robot/name" value="fetch" />
+
+  <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
+
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
@@ -13,9 +18,7 @@
     <param name="buffer_size" value="120.0"/>
   </node>
 
-  <!-- jsk_pr2_startup/jsk_pr2_lifelog/db_client.launch -->
   <!-- mongodb -->
-  <param name="robot/name" value="fetch" />
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch" >
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
@@ -23,7 +26,6 @@
     <arg name="replicate" default="false" />
   </include>
   <!-- logging and resoring pr2 position data -->
-  <arg name="map_frame" value="map" />
   <node name="move_base_db"
         pkg="jsk_pr2_startup" type="move_base_db.py" >
     <param name="map_frame" value="$(arg map_frame)"/>
