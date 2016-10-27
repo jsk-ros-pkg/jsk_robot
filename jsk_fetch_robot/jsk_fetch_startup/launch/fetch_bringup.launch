@@ -1,5 +1,6 @@
 <launch>
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
+  <arg name="launch_moveit" default="true" />
   <arg name="boot_sound" default="false" />
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
@@ -28,6 +29,10 @@
     <param name="robot_frame" value="base_link"/> <!-- fetch does not have base_footprint -->
     <param name="update_cycle" value="0.1" />
   </node>
+
+  <!-- include fetch moveit -->
+  <include file="$(find fetch_moveit_config)/launch/move_group.launch"
+           if="$(arg launch_moveit)" />
 
   <!-- include fetch_navigation -->
   <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
