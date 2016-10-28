@@ -15,13 +15,21 @@
   <build_depend>pr2_mechanism_controllers</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
-  <run_depend>mongodb_store</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rospy</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>geometry_msgs</run_depend>
   <run_depend>gmapping</run_depend>
-  <run_depend>pointcloud_to_laserscan</run_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
+  <run_depend>mongodb_store</run_depend>
+  <run_depend>pointcloud_to_laserscan</run_depend>
+  <run_depend>posedetection_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>rosgraph</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>tf2_py</run_depend>
   <export>
   </export>
 </package>

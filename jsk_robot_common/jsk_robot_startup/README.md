@@ -1,21 +1,9 @@
 jsk_robot_startup
 ===
 
-## lifelog/mongodb.launch
+## lifelog
 
-Launch file for logging data of robots.
-
-### setup
-
-#### specify robot identifier
-
-- set param for your own robot identifier:
-
-```bash
-rosparam set robot/name pr1012 # pr1040, baxter, pepper, etc...
-```
-
-- include `launch/mongodb.launch` in your robot startup launch file.
+see [lifelog/README.md](lifelog/README.md)
 
 ## scripts/ConstantHeightFramePublisher.py
 ![pointcloud_to_scan_base_tf_squat.png](images/pointcloud_to_scan_base_tf_squat.png)

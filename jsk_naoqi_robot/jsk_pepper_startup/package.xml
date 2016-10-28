@@ -26,6 +26,7 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
   <run_depend>teleop_twist_joy</run_depend>
+  <run_depend>jsk_robot_startup</run_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>roslaunch</test_depend>

@@ -1,0 +1,17 @@
+#!/usr/bin/env roseus
+(ros::roseus "speaking_program_is_started_or_terminated")
+(ros::load-ros-manifest "roseus")
+(ros::advertise "/speech" std_msgs::String 1)
+;; redefine https://github.com/jsk-ros-pkg/jsk_roseus/blob/1.5.3/roseus/euslisp/roseus.l#L17
+(defun ros::roseus-sigint-handler (sig code)
+  (ros::ROS-WARN (format nil "ros::roseus-sigint-handler ~A" sig))
+  (if (or (substringp "pepper" (ros::get-param "/robot/type")) 
+	  (substringp "nao" (ros::get-param "/robot/type")))
+      (ros::publish "/speech" (instance std_msgs::string :init :data "\\vct=150\\うへぇーッ\\pau=100\\プログラムが\\vct=170\\落ちましたッ\\vct=100\\"))
+    (ros::publish "/speech" (instance std_msgs::string :init :data "プログラムが落ちました")))
+  (exit 1))
+(defun good-morning ()
+  (if (or (substringp "pepper" (ros::get-param "/robot/type"))
+	  (substringp "nao" (ros::get-param "/robot/type")))
+      (ros::publish "/speech" (instance std_msgs::string :init :data "\\vct=150\\準備バンタンッ\\pau=100\\プログラムが\\vct=170\\立ち上がりましたッ\\vct=100\\"))
+    (ros::publish "/speech" (instance std_msgs::string :init :data "プログラムが立ち上がりました"))))

@@ -1,0 +1,31 @@
+<launch>
+  <!-- $(find pr2_gazebo)/launch/pr2_empty_world.launch is not used -->
+  <!-- until https://github.com/PR2/pr2_simulator/pull/123 is merged and released -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="gui" value="false" />
+    <arg name="headless" value="true" />
+    <arg name="paused" value="false" />
+    <arg name="use_sim_time" value="true" />
+  </include>
+  <!-- start pr2 robot -->
+  <include file="$(find pr2_gazebo)/launch/pr2.launch"/>
+
+  <node name="world_to_odom" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 /world /odom_combined 10" />
+
+  <group ns="base_controller">
+    <node pkg="pr2_base_trajectory_action" type="pr2_base_trajectory_action"
+          name="joint_trajectory_action" respawn="true" output="screen">
+      <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml" />
+      <param name="goal_threshold" value="10.0" /> <!-- ignore goal error -->
+      <param name="stopped_velocity_tolerance" value="0.35" /> <!-- ignore goal stopped velocity tolerance -->
+      <remap from="command" to="/base_controller/command" />
+      <remap from="odom" to="/base_odometry/odom" />
+    </node>
+  </group>
+
+  <test test-name="test_pr2_base_trajectory_action"
+        pkg="roseus" type="roseus"
+        args="$(find pr2_base_trajectory_action)/test/test_pr2_base_trajectory_action.l"
+        retry="3" time-limit="120" />
+</launch>
