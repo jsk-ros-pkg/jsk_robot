@@ -30,6 +30,11 @@
   <run_depend>tf</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>tf2_py</run_depend>
+
+  <test_depend>pr2_gazebo</test_depend>
+  <test_depend>pr2eus</test_depend>
+  <test_depend>rostest</test_depend>
+  <test_depend>roseus_mongo</test_depend>
   <export>
   </export>
 </package>

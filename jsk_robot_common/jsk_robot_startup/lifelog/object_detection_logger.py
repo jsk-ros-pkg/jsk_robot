@@ -11,7 +11,7 @@ from posedetection_msgs.msg import ObjectDetection
 
 from mongodb_store.message_store import MessageStoreProxy
 
-class ObjectDetectionDB(object):
+class ObjectDetectionLogger(object):
     def __init__(self):
         self.db_name = rospy.get_param('robot/database','jsk_robot_lifelog')
         try:
@@ -72,7 +72,7 @@ class ObjectDetectionDB(object):
         except Exception as e:
             rospy.logwarn("failed to object pose transform: %s", e)
 
-    def _update_subscribers(self):
+    def update_subscribers(self):
         object_detection_topics = [x[0] for x in rospy.client.get_published_topics()
                                    if x[1]=='posedetection_msgs/ObjectDetection' and (not ('_agg' in x[0]))]
         _, subs, _ = self.master.getSystemState()
@@ -92,11 +92,13 @@ class ObjectDetectionDB(object):
             rospy.loginfo('start subscribe (%s)',sub.name)
 
     def sleep_one_cycle(self):
-        self._update_subscribers()
         rospy.sleep(self.update_cycle)
 
+    def run(self):
+        while not rospy.is_shutdown():
+            self.update_subscribers()
+            self.sleep_one_cycle()
+
 if __name__ == "__main__":
-    rospy.init_node('objectdetecton_db')
-    obj = ObjectDetectionDB()
-    while not rospy.is_shutdown():
-        obj.sleep_one_cycle()
+    rospy.init_node('object_detecton_logger')
+    ObjectDetectionLogger().run()

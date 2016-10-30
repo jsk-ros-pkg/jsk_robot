@@ -17,8 +17,8 @@
   <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <!-- logging and resoring pr2 position data -->
-  <node name="move_base_db"
-        pkg="jsk_robot_startup" type="move_base_db.py"
+  <node name="base_trajectory_logger"
+        pkg="jsk_robot_startup" type="base_trajectory_logger.py"
         machine="$(arg machine)"
         if="$(arg store_move_base_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
@@ -27,8 +27,8 @@
   </node>
 
   <!-- logging object detection data -->
-  <node name="object_detection_db"
-        pkg="jsk_robot_startup" type="objectdetection_db.py"
+  <node name="object_detection_logger"
+        pkg="jsk_robot_startup" type="object_detection_logger.py"
         machine="$(arg machine)"
         if="$(arg store_object_detection_log)" >
     <param name="map_frame" value="$(arg map_frame)"/>
@@ -36,11 +36,29 @@
   </node>
 
   <!-- logging action result/goal data -->
-  <node name="action_result_db"
-        pkg="jsk_robot_startup" type="action_result_db.py"
+  <node name="action_logger"
+        pkg="jsk_robot_startup" type="action_logger.py"
         machine="$(arg machine)"
         if="$(arg store_action_result_log)">
-    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/action_result_db_config.yaml" />
+    <rosparam>
+      black_list:
+        type:
+          - pr2_controllers_msgs/JointTrajectoryActionGoal
+          - pr2_controllers_msgs/JointTrajectoryActionResult
+          - pr2_controllers_msgs/JointTrajectoryActionFeedback
+          - pr2_controllers_msgs/PointHeadActionGoal
+          - pr2_controllers_msgs/PointHeadActionResult
+          - pr2_controllers_msgs/PointHeadActionFeedback
+          - pr2_controllers_msgs/SingleJointPositionActionGoal
+          - pr2_controllers_msgs/SingleJointPositionActionResult
+          - pr2_controllers_msgs/SingleJointPositionActionFeedback
+          - control_msgs/SingleJointPositionActionGoal
+          - control_msgs/SingleJointPositionActionResult
+          - control_msgs/SingleJointPositionActionFeedback
+          - tf2_msgs/LookupTransformActionGoal
+          - tf2_msgs/LookupTransformActionResult
+          - tf2_msgs/LookupTransformActionFeedback
+    </rosparam>
   </node>
 
   <!-- logging other topics -->

@@ -1,0 +1,49 @@
+<launch>
+  <arg name="use_system_mongod" default="true" />
+  <arg name="map_frame" default="map" />
+
+  <!-- startup mongodb server -->
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"
+           if="$(arg use_system_mongod)">
+    <arg name="use_daemon" value="true"/>
+    <arg name="port" value="27017" />
+    <arg name="repl_set_mode" value="false" />
+    <arg name="replicate" default="false" />
+  </include>
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"
+           unless="$(arg use_system_mongod)">
+    <arg name="use_daemon" value="false"/>
+    <arg name="repl_set_mode" value="false" />
+    <arg name="replicate" default="false" />
+  </include>
+
+  <!-- logging base trajectory -->
+  <node name="base_trajectory_db"
+        pkg="jsk_robot_startup" type="base_trajectory_logger.py" >
+    <param name="map_frame" value="$(arg map_frame)"/>
+    <param name="robot_frame" value="base_link"/>
+    <param name="update_cycle" value="0.1" />
+  </node>
+
+  <!-- logging action -->
+  <node name="action_logger"
+        pkg="jsk_robot_startup" type="action_logger.py">
+    <rosparam>
+      white_list:
+        type:
+          - control_msgs/FollowJointTrajectoryActionResult
+          - control_msgs/FollowJointTrajectoryActionGoal
+          - control_msgs/FollowJointTrajectoryActionFeedback
+          - control_msgs/GripperCommandActionResult
+          - control_msgs/GripperCommandActionGoal
+          - control_msgs/GripperCommandActionFeedback
+    </rosparam>
+  </node>
+
+  <!-- logging object detection result -->
+  <node name="object_detection_logger"
+        pkg="jsk_robot_startup" type="object_detection_logger.py">
+    <param name="map_frame" value="$(arg map_frame)"/>
+    <param name="robot_frame" value="base_link"/>
+  </node>
+</launch>

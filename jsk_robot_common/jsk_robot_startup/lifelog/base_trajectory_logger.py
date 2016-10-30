@@ -10,7 +10,7 @@ except:
 import geometry_msgs
 from mongodb_store.message_store import MessageStoreProxy
 
-class MoveBaseDB(object):
+class BaseTrajectoryLogger(object):
     def __init__(self):
         self.db_name = rospy.get_param('robot/database','jsk_robot_lifelog')
         try:
@@ -107,11 +107,12 @@ class MoveBaseDB(object):
                 rospy.loginfo('published latest pose %s' % pub_msg)
             except Exception as e:
                 rospy.logerr('failed to publish initial robot pose: %s' % e)
+    def run(self):
+        while not rospy.is_shutdown():
+            self.insert_current_pose()
+            self.pub_latest_pose()
+            self.sleep_one_cycle()
 
 if __name__ == "__main__":
-    rospy.init_node('move_base_db')
-    obj = MoveBaseDB()
-    while not rospy.is_shutdown():
-        obj.insert_current_pose()
-        obj.pub_latest_pose()
-        obj.sleep_one_cycle()
+    rospy.init_node('base_trajectory_logger')
+    BaseTrajectoryLogger().run()
