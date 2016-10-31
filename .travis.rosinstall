@@ -27,3 +27,7 @@
     uri: https://github.com/procrob/face_recognition.git
     local-name: face_recognition
     version: catkin
+- git:
+    uri: https://github.com/furushchev/jsk_roseus.git
+    local-name: jsk-ros-pkg/jsk_roseus
+    version: install-test
