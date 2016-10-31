@@ -57,7 +57,7 @@ fetch-interface function APIs
 (send *fetch* :angle-vector)
   ```
 
-- get current angle values of tye real robot
+- get current angle values of the real robot
 
   ```
 (send *ri* :state :potentio-vector)
@@ -112,12 +112,12 @@ fetch-interface function APIs
 
   to grasp object
   ```
-(send *fetch* :start-grasp)
+(send *ri* :start-grasp)
   ```
-  to relace object
+  to release object
 
   ```
-(send *fetch* :stop-grasp)
+(send *ri* :stop-grasp)
   ```
 
 
