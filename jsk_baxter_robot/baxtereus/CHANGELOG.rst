@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2016-11-02)
+------------------
 * JTA insert current position to the first point, this requries https://github.com/RethinkRobotics/baxter_interface/pull/73 (`#636 <https://github.com/jsk-ros-pkg/jsk_robot/issues/636>`_)
 * fix for baxter_interface v1.1.1, which removes limitation on number of points to sent (`#635 <https://github.com/jsk-ros-pkg/jsk_robot/issues/635>`_)
   from v1.1.1 if num_points is 1, it will use current position to the first element of trajectory point https://github.com/RethinkRobotics/baxter_interface/commit/b38ec257fece0711adb260ed6bc161096aa3ecae

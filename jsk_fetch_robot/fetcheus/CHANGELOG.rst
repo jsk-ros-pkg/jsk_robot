@@ -2,8 +2,8 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2016-11-02)
+------------------
 * set :use-torso as default behavior for :angle-vector
 * set base-controller-action-name nil
 * Contributors: Kei Okada

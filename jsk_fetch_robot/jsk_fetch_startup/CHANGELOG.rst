@@ -2,8 +2,8 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2016-11-02)
+------------------
 * add network instruction to fetch README
 * [jsk_fetch_startup] add fetch bringup launch files for gazebo (`#692 <https://github.com/jsk-ros-pkg/jsk_robot/issues/692>`_ )
 

@@ -2,8 +2,8 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2016-11-02)
+------------------
 * Merge pull request `#672 <https://github.com/jsk-ros-pkg/jsk_robot/issues/672>`_ from furushchev/move-logapp
   [jsk_robot_lifelog] move logging program from jsk_pr2_startup/jsk_pr2_lifelog to jsk_robot_startup/lifelog
 * [jsk_robot_startup] Fix imu_rootlink calculation bug

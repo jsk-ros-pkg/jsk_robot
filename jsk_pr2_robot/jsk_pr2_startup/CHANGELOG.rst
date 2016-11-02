@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2016-11-02)
+------------------
 * [jsk_pr2_startup/pr2_gazebo.launch] add default environment variables for launching pr2 gazebo
 * [jsk_robot_startup] move initialpose_publisher.l from jsk_pr2_startup/jsk_pr2_move_base
 * [jsk_robot_lifelog] move logging program from jsk_pr2_startup/jsk_pr2_lifelog to jsk_robot_startup/lifelog
