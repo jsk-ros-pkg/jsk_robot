@@ -36,7 +36,7 @@
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
    (let ((use-torso t))
      (if (and (member :use-torso args) (null (cadr (member :use-torso args)))) (setq use-torso nil))
-     (send self :angle-vector-motion-plan av :move-arm :rarm :total-time tm :start-offset-time 0.01 :use-torso use-torso)
+     (send self :angle-vector-motion-plan av :move-arm :rarm :total-time tm :start-offset-time 0.01 :use-torso use-torso :clear-velocities t)
    ))
   ;;
   (:default-controller ()
