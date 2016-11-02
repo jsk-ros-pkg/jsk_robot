@@ -11,7 +11,7 @@
 
 (defmethod fetch-interface
   (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
@@ -32,9 +32,11 @@
 - tm : (time to goal in [msec]) ;; currently this value is ignored
 - use-torso : set t to use torso
 "
-   (let ((use-torso nil))
-     (if (cadr (member :use-torso args)) (setq use-torso t))
-     (send self :angle-vector-motion-plan av :move-arm :rarm :use-torso use-torso)
+   (when (not (numberp tm))
+     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+   (let ((use-torso t))
+     (if (and (member :use-torso args) (null (cadr (member :use-torso args)))) (setq use-torso nil))
+     (send self :angle-vector-motion-plan av :move-arm :rarm :total-time tm :start-offset-time 0.01 :use-torso use-torso)
    ))
   ;;
   (:default-controller ()
