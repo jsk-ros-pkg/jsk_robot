@@ -119,7 +119,32 @@ fetch-interface function APIs
   ```
 (send *ri* :stop-grasp)
   ```
+  
+move fetch arm in gazebo by inverse kinematics.
+```
+roslaunch fetch_gazebo simulation.launch
+roslaunch fetch_moveit_config move_group.launch 
 
+source ~/catkin_ws/devel/setup.bash
+(load "package://fetcheus/fetch-interface.l") ;; load modules
+(setq *fetch* (fetch))          ;; creat a robot model
+(objects (list *fetch*))        ;; display the robot model
+(setq *ri* (instance fetch-interface :init)) ;; make connection to the real robot
+(send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1000))
+(send *ri* :angle-vector (send *fetch* :angle-vector))
+```
+
+specify the　position of fetch.
+```
+(send *ri* :state :worldcoords)
+```
+
+move fetch base in gazebo.
+```
+roslaunch fetch_gazebo playground.launch
+roslaunch fetch_nav.launch
+(send *ri* :go-pos 1 0 0)
+```
 
 FAQ
 ---
