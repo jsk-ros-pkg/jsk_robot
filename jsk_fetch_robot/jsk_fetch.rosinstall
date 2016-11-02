@@ -1,0 +1,9 @@
+- git:
+    local-name: jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: 1.0.7
+- git:
+    local-name: jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: 0.3.6
+
