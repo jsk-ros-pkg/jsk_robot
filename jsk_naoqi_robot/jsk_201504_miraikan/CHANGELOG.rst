@@ -2,6 +2,13 @@
 Changelog for package jsk_201504_miraikan
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_201504_miraikan] modified motion speed and added README (`#624 <https://github.com/jsk-ros-pkg/jsk_robot/issues/624>`_)
+  * [jsk_201504_miraikan] modified motion speed and added README
+  * add mp3 files for Chinese demo
+* Contributors: Kanae Kochigami
+
 1.0.6 (2016-06-17)
 ------------------
 

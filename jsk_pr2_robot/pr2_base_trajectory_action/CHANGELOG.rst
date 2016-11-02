@@ -2,6 +2,20 @@
 Changelog for package pr2_base_trajectory_action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [pr2_base_trajectory_action/CMakeLists.txt] temp disable test
+* [pr2_base_trajectory_action] remove dependency to pr2_controller_msgs
+  * refactor codes
+  * remove pr2 related packages from dependencies
+  * use control_msgs/FollowJointTrajectoryAction
+  * support feedback message
+  * added test codes
+  * some bugfixes of old codes
+  * checked on real robot
+  * update launch files
+* Contributors: Yuki Furuta
+
 1.0.6 (2016-06-17)
 ------------------
 

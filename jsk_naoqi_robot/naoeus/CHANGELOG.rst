@@ -2,6 +2,12 @@
 Changelog for package naoeus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_naoqi_robot] add roseus in find_package
+* add controllers
+* Contributors: Kanae Kochigami
+
 1.0.6 (2016-06-17)
 ------------------
 

@@ -2,6 +2,24 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#673 <https://github.com/jsk-ros-pkg/jsk_robot/issues/673>`_ from kochigami/add-grasp-method-to-gazebo
+  [naoqieus] add grasp method in gazebo
+* [naoqieus, peppereus] delete wheel controller
+* delete dcm hand controllers
+* modify move-hand to use in gazebo
+* Merge pull request `#665 <https://github.com/jsk-ros-pkg/jsk_robot/issues/665>`_ from kochigami/add-set-get-move-arms-enabled
+  [naoqieus] add set (get) move arms enabled
+* Merge pull request `#655 <https://github.com/jsk-ros-pkg/jsk_robot/issues/655>`_ from kochigami/override-angle-vector
+  [peppereus] add gazebo controller method
+* [naoqieus] add set (get) move arms enabled
+* add controllers
+* [naoqieus] use let for local variables in set(get)-external-collision-protection-status
+* add gazebo controller method and override angle-vector
+* add get-external-collision-protection-status method
+* Contributors: Kanae Kochigami, Kei Okada
+
 1.0.6 (2016-06-17)
 ------------------
 

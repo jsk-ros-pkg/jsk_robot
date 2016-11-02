@@ -2,6 +2,20 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* JTA insert current position to the first point, this requries https://github.com/RethinkRobotics/baxter_interface/pull/73 (`#636 <https://github.com/jsk-ros-pkg/jsk_robot/issues/636>`_)
+* fix for baxter_interface v1.1.1, which removes limitation on number of points to sent (`#635 <https://github.com/jsk-ros-pkg/jsk_robot/issues/635>`_)
+  from v1.1.1 if num_points is 1, it will use current position to the first element of trajectory point https://github.com/RethinkRobotics/baxter_interface/commit/b38ec257fece0711adb260ed6bc161096aa3ecae
+* [baxter-interface.l] Wait until all joint states are updated before moving `#627 <https://github.com/jsk-ros-pkg/jsk_robot/issues/627>`_ (`#628 <https://github.com/jsk-ros-pkg/jsk_robot/issues/628>`_)
+  * Wait until all joint states are updated before moving
+  * baxtereus/CMakeLists.txt: re-write using CATKIN_ENABLE_TESTING
+  * baxtereus/test/test-baxter.l: test-baxter-interface only available after indigo
+* [baxter-interface.l] fix removing torso joint in :ros-state-callback (`#622 <https://github.com/jsk-ros-pkg/jsk_robot/issues/622>`_)
+  * [baxtereus/test/test-baxter.l] add test to check that torso joint is not contained in robot-state.
+  * [baxtereus/baxter-interface.l] fix removing torso joint in :ros-state-callback of baxter-interface class.
+* Contributors: Kei Okada, Masaki Murooka
+
 1.0.6 (2016-06-17)
 ------------------
 * [baxtereus] make ik-bin test faster (`#604 <https://github.com/jsk-ros-pkg/jsk_robot/issues/604>`_)

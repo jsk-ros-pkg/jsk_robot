@@ -2,6 +2,12 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* separate mongoDB launch from baxter_tweet
+* Use minjerk as the default interpolation method
+* Contributors: Kentaro Wada, Shingo Kitagawa
+
 1.0.6 (2016-06-17)
 ------------------
 

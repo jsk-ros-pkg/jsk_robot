@@ -2,6 +2,12 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* set :use-torso as default behavior for :angle-vector
+* set base-controller-action-name nil
+* Contributors: Kei Okada
+
 1.0.6 (2016-06-17)
 ------------------
 * feteus-interface.l : always use moveit within :angle-vector (`#620 <https://github.com/jsk-ros-pkg/jsk_robot/issues/620>`_)

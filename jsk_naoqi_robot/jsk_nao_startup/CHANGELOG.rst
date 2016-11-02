@@ -2,6 +2,13 @@
 Changelog for package jsk_nao_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_nao_startup] same as `#675 <https://github.com/jsk-ros-pkg/jsk_robot/issues/675>`_
+* add nao_bringup to run depend
+* [jsk_naoqi_robot] speak when program is started (by unix:sleep) or terminated (by overriden roseus-sigint-handler)
+* Contributors: Kanae Kochigami
+
 1.0.6 (2016-06-17)
 ------------------
 

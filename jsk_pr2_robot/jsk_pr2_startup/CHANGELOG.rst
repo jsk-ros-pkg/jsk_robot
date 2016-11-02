@@ -2,6 +2,24 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [jsk_pr2_startup/pr2_gazebo.launch] add default environment variables for launching pr2 gazebo
+* [jsk_robot_startup] move initialpose_publisher.l from jsk_pr2_startup/jsk_pr2_move_base
+* [jsk_robot_lifelog] move logging program from jsk_pr2_startup/jsk_pr2_lifelog to jsk_robot_startup/lifelog
+* [jsk_pr2_startup] remove meta package from dependencies
+* [pr2_base_trajectory_action] remove dependency to pr2_controller_msgs
+  * refactor codes
+  * remove pr2 related packages from dependencies
+  * use control_msgs/FollowJointTrajectoryAction
+  * support feedback message
+  * added test codes
+  * some bugfixes of old codes
+  * checked on real robot
+  * update launch files
+* [jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_sensors/people_detection.launch] add remap rgb_ns -> rgb (`#630 <https://github.com/jsk-ros-pkg/jsk_robot/issues/630>`_)
+* Contributors: Yuki Furuta
+
 1.0.6 (2016-06-17)
 ------------------
 * fix too long file name in deb build (`#618 <https://github.com/jsk-ros-pkg/jsk_robot/issues/618>`_)

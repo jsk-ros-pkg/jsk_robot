@@ -2,6 +2,14 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add launch_joy in jsk_pepper_startup launch
+* [jsk_naoqi_robot] speak when program is started (by unix:sleep) or terminated (by overriden roseus-sigint-handler)
+* [jsk_pepper_startup] remove meta package dependencies
+* [jsk_pepper_startup] add launch_twitter arg for jsk_pepper_startup.launch
+* Contributors: Kanae Kochigami, Shingo Kitagawa, Yuki Furuta
+
 1.0.6 (2016-06-17)
 ------------------
 * change from naoqi_msgs to naoqi_bridge_msgs (`#614 <https://github.com/jsk-ros-pkg/jsk_robot/issues/614>`_)
