@@ -25,9 +25,9 @@
     <rosparam>
       white_list:
         type:
-        - Pr2GripperCommandActionGoal
-        - Pr2GripperCommandActionResult
-        - Pr2GripperCommandActionFeedback
+        - pr2_controllers_msgs/Pr2GripperCommandActionGoal
+        - pr2_controllers_msgs/Pr2GripperCommandActionResult
+        - pr2_controllers_msgs/Pr2GripperCommandActionFeedback
     </rosparam>
   </node>
 
@@ -42,6 +42,6 @@
 
   <!-- test node -->
   <test test-name="test_robot_logger" pkg="roseus" type="roseus"
-        args="$(find jsk_robot_startup)/test/lifelog/test-logger-pr2.l"
+        args="$(find jsk_robot_startup)/lifelog/test/test-logging-pr2.l"
         retry="3" />
 </launch>

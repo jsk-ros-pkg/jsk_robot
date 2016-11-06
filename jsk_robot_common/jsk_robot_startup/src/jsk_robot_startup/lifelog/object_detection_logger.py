@@ -8,7 +8,7 @@ import tf
 import rosgraph
 from geometry_msgs.msg import PoseStamped, TransformStamped
 from posedetection_msgs.msg import ObjectDetection
-from .logger_base import LoggerBase
+from logger_base import LoggerBase
 
 class ObjectDetectionLogger(LoggerBase):
     def __init__(self):
@@ -22,7 +22,7 @@ class ObjectDetectionLogger(LoggerBase):
         self.subscribers = []
 
     # DB Insertion function
-    def _insert_pose_to_db(self, map_to_robot, robot_to_obj):
+    def __insert_pose_to_db(self, map_to_robot, robot_to_obj):
         try:
             self.insert(map_to_robot)
             self.insert(robot_to_obj)
@@ -30,7 +30,7 @@ class ObjectDetectionLogger(LoggerBase):
         except Exception as e:
             rospy.logwarn('failed to insert to db' + e)
 
-    def _lookup_transform(self, target_frame, source_frame, time=rospy.Time(0), timeout=rospy.Duration(0.0)):
+    def __lookup_transform(self, target_frame, source_frame, time=rospy.Time(0), timeout=rospy.Duration(0.0)):
         self.tf_listener.waitForTransform(target_frame, source_frame, time, timeout)
         res = self.tf_listener.lookupTransform(target_frame, source_frame, time)
         ret = TransformStamped()
@@ -46,10 +46,10 @@ class ObjectDetectionLogger(LoggerBase):
         ret.transform.rotation.w = res[1][3]
         return ret
 
-    def _objectdetection_cb(self, msg):
+    def __objectdetection_cb(self, msg):
         try:
             self.tf_listener.waitForTransform(self.robot_frame, self.map_frame, msg.header.stamp, rospy.Duration(1.0))
-            map_to_robot = self._lookup_transform(self.robot_frame, self.map_frame, msg.header.stamp)
+            map_to_robot = self.__lookup_transform(self.robot_frame, self.map_frame, msg.header.stamp)
         except Exception as e:
             rospy.logwarn("failed to lookup tf: %s", e)
             return
@@ -59,7 +59,7 @@ class ObjectDetectionLogger(LoggerBase):
                 spose = PoseStamped(header=msg.header,pose=obj.pose)
                 tpose = self.tf_listener.transformPose(self.robot_frame, spose)
                 obj.pose = tpose.pose
-                self._insert_pose_to_db(map_to_robot, obj)
+                self.__insert_pose_to_db(map_to_robot, obj)
         except Exception as e:
             rospy.logwarn("failed to object pose transform: %s", e)
 
@@ -73,15 +73,14 @@ class ObjectDetectionLogger(LoggerBase):
             if (not sub_nodes) or (len(sub_nodes[0]) == 1 and (rospy.get_name() in sub_nodes[0])):
                 sub.unregister()
                 self.subscribers.remove(sub)
-                rospy.loginfo('unsubscribed (%s)',sub.name)
+                rospy.logdebug('unsubscribed (%s)', sub.name)
         for topic_name in targets:
             if topic_name in [x.name for x in self.subscribers]:
                 continue
             sub = rospy.Subscriber(topic_name, ObjectDetection,
-                                   self._objectdetection_cb)
+                                   self.__objectdetection_cb)
             self.subscribers += [sub]
-            rospy.loginfo('start subscribe (%s)',sub.name)
-
+            rospy.logdebug('start subscribe (%s)', sub.name)
 
     def run(self):
         while not rospy.is_shutdown():

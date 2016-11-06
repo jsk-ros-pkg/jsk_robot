@@ -17,7 +17,7 @@ import actionlib_msgs.msg
 import sensor_msgs.msg
 from sensor_msgs.msg import JointState
 
-from .logger_base import LoggerBase
+from logger_base import LoggerBase
 
 
 class ActionLogger(LoggerBase):
@@ -87,13 +87,22 @@ class ActionLogger(LoggerBase):
             rospy.logdebug("inserted action_result message: %s (%s) -> %s", topic, type_name, res)
         except Exception as e:
             rospy.logerr("failed to insert action result: %s (%s) -> %s", topic, type_name, e)
-    
+
     def __insert_action_feedback(self, topic, type_name, msg):
         try:
             res = self.insert(msg)
             rospy.logdebug("inserted action_feedback message: %s (%s) -> %s", topic, type_name, res)
         except Exception as e:
             rospy.logerr("failed to insert action goal: %s (%s) -> %s", topic, type_name, e)
+
+    def __insert_joint_states(self, msg):
+        try:
+            if msg.header.stamp in self.joint_states_inserted:
+                return
+            res = self.insert(msg)
+            rospy.logdebug("inserted joint_states message: %s", res)
+        except Exception as e:
+            rospy.logerr("failed to insert joint states: %s", e)
 
     # if the message type is goal or result, return the callback
     def __message_callback_type(self, name, type_name, type_obj):

@@ -27,7 +27,7 @@ class LoggerBase(object):
 
     def insert(self, msg, meta={}):
         if self.task_id is not None:
-            meta.update({ "TASK_ID": self.task_id })
+            meta.update({ "task_id": self.task_id })
         return self.msg_store.insert(msg, meta)
 
     def spinOnce(self):
