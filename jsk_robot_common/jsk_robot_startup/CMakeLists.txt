@@ -3,9 +3,20 @@ project(jsk_robot_startup)
 
 find_package(catkin REQUIRED COMPONENTS
   dynamic_reconfigure
+  message_generation
+  roseus # for geneus
 )
 
 catkin_python_setup()
+
+add_message_files(
+  FILES
+  ActionEvent.msg
+)
+
+generate_messages(
+  DEPENDENCIES std_msgs
+)
 
 generate_dynamic_reconfigure_options(
   config/OdometryOffsetReconfigure.cfg
@@ -14,10 +25,6 @@ generate_dynamic_reconfigure_options(
 )
 
 catkin_package(
-)
-
-include_directories(
-  ${catkin_INCLUDE_DIRS}
 )
 
 install(DIRECTORY lifelog util
