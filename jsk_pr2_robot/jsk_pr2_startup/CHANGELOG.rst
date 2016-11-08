@@ -2,6 +2,9 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * [jsk_pr2_startup/pr2_gazebo.launch] add default environment variables for launching pr2 gazebo

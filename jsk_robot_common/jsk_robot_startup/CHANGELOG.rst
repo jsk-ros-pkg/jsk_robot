@@ -2,6 +2,9 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * Merge pull request `#672 <https://github.com/jsk-ros-pkg/jsk_robot/issues/672>`_ from furushchev/move-logapp

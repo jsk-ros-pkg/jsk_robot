@@ -2,6 +2,9 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * add network instruction to fetch README

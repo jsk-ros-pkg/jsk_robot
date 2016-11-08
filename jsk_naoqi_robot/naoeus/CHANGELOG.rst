@@ -2,6 +2,9 @@
 Changelog for package naoeus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * [jsk_naoqi_robot] add roseus in find_package

@@ -2,6 +2,9 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * JTA insert current position to the first point, this requries https://github.com/RethinkRobotics/baxter_interface/pull/73 (`#636 <https://github.com/jsk-ros-pkg/jsk_robot/issues/636>`_)

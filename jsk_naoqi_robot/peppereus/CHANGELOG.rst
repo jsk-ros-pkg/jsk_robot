@@ -2,6 +2,9 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * [naoqieus, peppereus] delete wheel controller

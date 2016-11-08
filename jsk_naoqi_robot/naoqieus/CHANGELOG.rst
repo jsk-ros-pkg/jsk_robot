@@ -2,6 +2,9 @@
 Changelog for naoqieus
 ^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * Merge pull request `#673 <https://github.com/jsk-ros-pkg/jsk_robot/issues/673>`_ from kochigami/add-grasp-method-to-gazebo

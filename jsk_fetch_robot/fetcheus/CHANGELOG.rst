@@ -2,6 +2,15 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* :angle-vector, add :clear-velocities t, this requries https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/255
+* add test to check https://github.com/jsk-ros-pkg/jsk_robot/issues/702
+* :inverse-kinematics do not update link-list if given
+* use fetch-utils.l from fetch-interface.l
+* add fetch-utils.l
+* Contributors: Kei Okada
+
 1.0.7 (2016-11-02)
 ------------------
 * set :use-torso as default behavior for :angle-vector

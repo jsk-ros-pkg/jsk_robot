@@ -2,6 +2,9 @@
 Changelog for package jsk_nao_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.7 (2016-11-02)
 ------------------
 * [jsk_nao_startup] same as `#675 <https://github.com/jsk-ros-pkg/jsk_robot/issues/675>`_
