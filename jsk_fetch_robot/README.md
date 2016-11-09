@@ -165,8 +165,7 @@ fetch-interface function APIs
 - speak
  
  ```
-  (load "package://pr2eus/speak.l")
-  (speak-en "hello")
+  (send *ri* :speak "hello")
  ```
 
 FAQ
