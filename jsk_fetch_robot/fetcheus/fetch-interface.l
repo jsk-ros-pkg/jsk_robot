@@ -83,6 +83,9 @@
       (setq result (send gripper-action :get-result))
       result))
   ;;
+  (:speak (text)
+    (let ()
+      (speak-en text :topic-name "/sound_play")))
   )
 
 (defun fetch-init (&optional (create-viewer))
