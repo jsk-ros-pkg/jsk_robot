@@ -2,6 +2,9 @@
 Changelog for package jsk_pepper_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.8 (2016-11-08)
 ------------------
 

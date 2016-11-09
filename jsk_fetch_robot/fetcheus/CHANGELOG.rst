@@ -2,6 +2,11 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add :speak methods to fetch-interface
+* Contributors: Kei Okada
+
 1.0.8 (2016-11-08)
 ------------------
 * :angle-vector, add :clear-velocities t, this requries https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/255

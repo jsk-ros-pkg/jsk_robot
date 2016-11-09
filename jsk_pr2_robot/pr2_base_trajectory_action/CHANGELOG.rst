@@ -2,6 +2,9 @@
 Changelog for package pr2_base_trajectory_action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.8 (2016-11-08)
 ------------------
 
