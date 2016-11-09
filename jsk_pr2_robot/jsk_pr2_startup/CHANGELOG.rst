@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.9 (2016-11-09)
+------------------
 * Update jsk_pr2.rosinstall
 * Contributors: Kentaro Wada
 

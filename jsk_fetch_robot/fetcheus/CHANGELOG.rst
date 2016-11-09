@@ -2,8 +2,8 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.9 (2016-11-09)
+------------------
 * add :speak methods to fetch-interface
 * Contributors: Kei Okada
 
