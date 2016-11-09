@@ -2,6 +2,18 @@
 Changelog for package peppereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.8 (2016-11-08)
+------------------
+
+1.0.7 (2016-11-02)
+------------------
+* [naoqieus, peppereus] delete wheel controller
+* [jsk_naoqi_robot] add roseus in find_package
+* add controllers
+* rotation of rleg endcoords modified
+* [peppereus] add head, larm, rarm, rleg end coords (`#637 <https://github.com/jsk-ros-pkg/jsk_robot/issues/637>`_)
+* Contributors: Kanae Kochigami
+
 1.0.6 (2016-06-17)
 ------------------
 

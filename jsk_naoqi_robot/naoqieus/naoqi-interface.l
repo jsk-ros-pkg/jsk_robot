@@ -21,6 +21,8 @@
    (ros::advertise "/speech" std_msgs::String 1)
    (ros::advertise (format nil "~A/pose/joint_angles" naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
    (ros::advertise "/animated_speech" std_msgs::String 1)
+   (ros::advertise (format nil "~A/RightHand_controller/command" dcm-namespace) trajectory_msgs::JointTrajectory 1)
+   (ros::advertise (format nil "~A/LeftHand_controller/command" dcm-namespace)  trajectory_msgs::JointTrajectory 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   (format nil "~A/pose/joint_stiffness_trajectory" naoqi-namespace)
@@ -47,16 +49,6 @@
 	   (format nil "~A/LeftArm_controller/state" dcm-namespace))
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "LShoulderPitch" "LShoulderRoll" "LElbowYaw" "LElbowRoll" "LWristYaw")))))
-  (:dcm-lhand-controller
-   ()
-   (list
-    (list
-     (cons :controller-action 
-	   (format nil "~A/LeftHand_controller/follow_joint_trajectory" dcm-namespace))
-     (cons :controller-state 
-	   (format nil "~A/LeftHand_controller/state" dcm-namespace))
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "LHand")))))
   (:dcm-rarm-controller
    ()
    (list
@@ -67,16 +59,6 @@
 	   (format nil "~A/RightArm_controller/state" dcm-namespace))
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "RShoulderPitch" "RShoulderRoll" "RElbowYaw" "RElbowRoll" "RWristYaw")))))
-  (:dcm-rhand-controller
-   ()
-   (list
-    (list
-     (cons :controller-action 
-	   (format nil "~A/RightHand_controller/follow_joint_trajectory" dcm-namespace))
-     (cons :controller-state 
-	   (format nil "~A/RightHand_controller/state" dcm-namespace))
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "RHand")))))
   (:dcm-pelvis-controller
    ;; Nao: RHipYawPitch is mimic joint, Pepper: this method is overridden
    ()
@@ -175,23 +157,51 @@
   ;;
   (:move-hand
    (value &optional (arm :arms))
-   (let ((start_grasp_msg (instance naoqi_bridge_msgs::JointAnglesWithSpeed :init)))
-     (send start_grasp_msg :header :stamp (ros::time-now))
-     (send start_grasp_msg :header :seq 1)
-     (send start_grasp_msg :speed 0.5)
-     (send start_grasp_msg :relative 0)
-     (case arm  
-       (:arms
-	(send start_grasp_msg :joint_names (list "RHand" "LHand"))
-	(send start_grasp_msg :joint_angles (list value value)))
-       (:rarm 
-	(send start_grasp_msg :joint_names (list "RHand"))
-	(send start_grasp_msg :joint_angles (list value)))
-       (:larm 
-	(send start_grasp_msg :joint_names (list "LHand"))
-	(send start_grasp_msg :joint_angles (list value))))
-     (ros::publish (format nil "~A/pose/joint_angles" naoqi-namespace) start_grasp_msg)
-     ))
+   (if (ros::get-param "use_sim_time" nil)
+       (progn
+	 (let ((goal (instance trajectory_msgs::JointTrajectory :init)))
+	   (setq value (- 1.0 value))
+	   (if (or (eq arm :rarm) (eq arm :arms))
+	       (progn
+		 (send goal :header :seq 1)
+		 (send goal :header :stamp (ros::time-now))
+		 (send goal :joint_names (list "RHand"))
+		 (send goal :points
+		       (list (instance trajectory_msgs::JointTrajectoryPoint
+				       :init
+				       :positions (list value)
+				       :time_from_start (ros::time 1))))
+		 (ros::publish (format nil "~A/RightHand_controller/command" dcm-namespace) goal)))
+	   (if (or (eq arm :larm) (eq arm :arms))
+	       (progn
+		 (send goal :header :seq 1)
+		 (send goal :header :stamp (ros::time-now))
+		 (send goal :joint_names (list "LHand"))
+		 (send goal :points
+		       (list (instance trajectory_msgs::JointTrajectoryPoint
+				       :init
+				       :positions (list value)
+				       :time_from_start (ros::time 1))))
+		 (ros::publish (format nil "~A/LeftHand_controller/command" dcm-namespace) goal)))
+	   ))
+     (progn
+       (let ((start_grasp_msg (instance naoqi_bridge_msgs::JointAnglesWithSpeed :init)))
+	 (send start_grasp_msg :header :stamp (ros::time-now))
+	 (send start_grasp_msg :header :seq 1)
+	 (send start_grasp_msg :speed 0.5)
+	 (send start_grasp_msg :relative 0)
+	 (case arm  
+	       (:arms
+		(send start_grasp_msg :joint_names (list "RHand" "LHand"))
+		(send start_grasp_msg :joint_angles (list value value)))
+	       (:rarm 
+		(send start_grasp_msg :joint_names (list "RHand"))
+		(send start_grasp_msg :joint_angles (list value)))
+	       (:larm 
+		(send start_grasp_msg :joint_names (list "LHand"))
+		(send start_grasp_msg :joint_angles (list value))))
+	 (ros::publish (format nil "~A/pose/joint_angles" naoqi-namespace) start_grasp_msg))))
+     )
   (:start-grasp
    (&optional (angle-ratio 0.0) (arm :arms))
    (if (memq angle-ratio '(:larm :rarm :arms))
