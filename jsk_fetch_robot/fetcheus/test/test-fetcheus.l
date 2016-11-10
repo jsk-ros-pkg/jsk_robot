@@ -36,7 +36,19 @@
 
 
 (deftest instantiate-fetch-interface
-  (setq *ri* (instance fetch-interface :init)))
+  (let (diff-av)
+    (setq *ri* (instance fetch-interface :init))
+    ;;
+    (send *fetch* :reset-pose)
+    (send *ri* :angle-vector (send *fetch* :angle-vector))
+    (setq diff-av (v- (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
+    (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
+
+    (send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1300)))
+    (send *ri* :angle-vector (send *fetch* :angle-vector))
+    (setq diff-av (v- (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
+    (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
+    ))
 
 (run-all-tests)
 (exit)
