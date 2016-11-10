@@ -32,6 +32,10 @@
 - tm : (time to goal in [msec]) ;; currently this value is ignored
 - use-torso : set t to use torso
 "
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
+   ;;
    (when (not (numberp tm))
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
    (let ((use-torso t))
