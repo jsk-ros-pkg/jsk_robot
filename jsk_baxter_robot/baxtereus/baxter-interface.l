@@ -1,4 +1,4 @@
-(load "package://pr2eus/robot-interface.l")
+(require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 (require :baxter "package://baxtereus//baxter-util.l")
 (load "package://pr2eus/speak.l")
 (ros::load-ros-manifest "control_msgs")
@@ -11,7 +11,7 @@
 (defclass baxter-interface
   :super robot-interface
   :slots (gripper-sequence-id right-gripper-action left-gripper-action
-			      right-gripper-type left-gripper-type))
+			      right-gripper-type left-gripper-type moveit-robot))
 (defmethod baxter-interface
   (:init (&rest args)
    (prog1 (send-super* :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface" args)
@@ -44,6 +44,8 @@
 
      (setq gripper-sequence-id 0)
      (ros::spin-once)
+     (setq moveit-robot (instance baxter-robot :init))
+     (send self :set-moveit-environment (instance baxter-moveit-environment :init :robot moveit-robot))
      ))
   (:right-property-cb (msg)
    (setq right-gripper-type (send msg :id))
@@ -251,6 +253,70 @@
      (send-super :ros-state-callback msg)
      ))
   ) ;; defclass baxter-interface
+
+(defclass baxter-moveit-environment
+  :super moveit-environment)
+(defmethod baxter-moveit-environment
+  (:init (&key ((:robot rb) *baxter*) &rest args)
+         (send-super* :init :robot rb :frame-id "world" args))
+  (:default-configuration ()
+   (list (list :rarm
+               (cons :group-name "right_arm")
+               (cons :target-link
+                     (send self :search-link-from-name "right_gripper"))
+               (cons :joint-list (send robot :rarm :joint-list))
+               )
+         (list :larm
+               (cons :group-name "left_arm")
+               (cons :target-link
+                     (send self :search-link-from-name "left_gripper"))
+               (cons :joint-list (send robot :larm :joint-list))
+               )
+         )
+#|
+  <group name="left_arm">
+    <chain base_link="torso" tip_link="left_gripper"/>
+  </group>
+  <group name="right_arm">
+    <chain base_link="torso" tip_link="right_gripper"/>
+  </group>
+  <group name="both_arms">
+    <group name="right_arm"/>
+    <group name="left_arm"/>
+  </group>
+  <group name="left_hand">
+    <chain base_link="left_hand" tip_link="left_gripper"/>
+  </group>
+  <group name="right_hand">
+    <chain base_link="right_hand" tip_link="right_gripper"/>
+  </group>
+  <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+  <end_effector group="left_hand" name="left_hand_eef" parent_group="left_arm" parent_link="left_gripper"/>
+  <end_effector group="right_hand" name="right_hand_eef" parent_group="right_arm" parent_link="right_gripper"/>
+  <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+  <group_state group="left_arm" name="left_neutral">
+    <joint name="left_e0" value="0"/>
+    <joint name="left_e1" value="0.75"/>
+    <joint name="left_s0" value="0"/>
+    <joint name="left_s1" value="-0.55"/>
+    <joint name="left_w0" value="0"/>
+    <joint name="left_w1" value="1.26"/>
+    <joint name="left_w2" value="0"/>
+  </group_state>
+  <group_state group="right_arm" name="right_neutral">
+    <joint name="right_e0" value="0"/>
+    <joint name="right_e1" value="0.75"/>
+    <joint name="right_s0" value="0"/>
+    <joint name="right_s1" value="-0.55"/>
+    <joint name="right_w0" value="0"/>
+    <joint name="right_w1" value="1.26"/>
+    <joint name="right_w2" value="0"/>
+  </group_state>
+  <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+  <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+  <virtual_joint child_link="torso" name="world_joint" parent_frame="world" type="floating"/>
+|#
+   ))
 
 
 (defun baxter-init (&key (safe t) (type :default-controller))
