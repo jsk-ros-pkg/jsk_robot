@@ -13,7 +13,9 @@
   :slots (gripper-sequence-id right-gripper-action left-gripper-action
 			      right-gripper-type left-gripper-type moveit-robot))
 (defmethod baxter-interface
-  (:init (&rest args)
+  (:init (&rest args &key ((:moveit-environment mvit-env) (instance baxter-moveit-environment))
+                ((:moveit-robot mvit-rb) (instance baxter-robot :init))
+                &allow-other-keys)
    (prog1 (send-super* :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface" args)
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
@@ -44,8 +46,8 @@
 
      (setq gripper-sequence-id 0)
      (ros::spin-once)
-     (setq moveit-robot (instance baxter-robot :init))
-     (send self :set-moveit-environment (instance baxter-moveit-environment :init :robot moveit-robot))
+     (if mvit-rb (setq moveit-robot mvit-rb))
+     (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot)))
      ))
   (:right-property-cb (msg)
    (setq right-gripper-type (send msg :id))
