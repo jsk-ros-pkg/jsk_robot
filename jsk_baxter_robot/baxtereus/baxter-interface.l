@@ -273,7 +273,9 @@
                (cons :joint-list (send robot :larm :joint-list))
                )
          )
-#|
+#| SRDF generated from baxter.srdf.xacro in baxter_moveit_config
+   url: https://github.com/ros-planning/moveit_robots/blob/kinetic-devel/baxter/baxter_moveit_config/config/baxter.srdf.xacro
+
   <group name="left_arm">
     <chain base_link="torso" tip_link="left_gripper"/>
   </group>
