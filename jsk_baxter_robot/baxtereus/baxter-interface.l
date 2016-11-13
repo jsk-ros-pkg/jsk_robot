@@ -232,14 +232,32 @@
      (ros::publish "/robot/head/command_head_nod" msg)
      )
    )
-  (:angle-vector (av &optional (tm :fast) (ctype controller-type) (start-time 0) &rest args)
-		 (send* self :angle-vector-sequence (list av) (list tm) ctype start-time args))
-  (:angle-vector-sequence (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
+  (:angle-vector-raw (av &optional (tm :fast) (ctype controller-type) (start-time 0) &rest args)
+		 (send* self :angle-vector-sequence-raw (list av) (list tm) ctype start-time args))
+  (:angle-vector-sequence-raw (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
 		 ;; force add current position to the top of avs
 		 (if (atom tms) (setq tms (list tms)))
      (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
 		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
-  
+  (:angle-vector
+   (av &optional (move-arm :arms) (tm 3000) &rest args)
+   "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
+- av : joint angle vector [rad]
+- tm : (time to goal in [msec]) ;; currently this value is ignored
+"
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
+   (when (not (numberp tm))
+     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+   (if (and (get self :moveit-environment)
+            (send (get self :moveit-environment) :robot))
+     (if (or (eq move-arm :rarm) (eq move-arm :larm))
+       (send self :angle-vector-motion-plan av :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t)
+       (ros::warn ":angle-vector currently not support :arms, define :move-arm"))
+     (progn
+       (ros::warn "moveit environment is not correctly set, execute :angle-vector-raw instead")
+       (return-from :angle-vector (send* self :angle-vector-raw av tm args)))))
   (:ros-state-callback
    (msg)
    (let ((robot-msg-names (send msg :name)) (torso-index))
