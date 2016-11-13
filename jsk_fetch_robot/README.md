@@ -20,7 +20,7 @@ source devel/setup.bash
 connecting to the robot
 -----------------------
 
-% You need to install `ros-ingio-jsk-tools` to use `rosset*` tools, otherwise use setenv command
+% You need to install `ros-indigo-jsk-tools` to use `rosset*` tools, otherwise use setenv command
 
 ```
 rossetip             % set ROS_IP and ROS_HOSTNAME
@@ -47,6 +47,19 @@ run `roseus` under emacs's shell environment (`M-x shell`), when you start new s
 
 or run `(fetch-init)` after you load `"package://fetcheus/fetch-interface.l"`
 
+gazebo simulation
+------------------------
+
+Can be used for simulating robot's movements. Unable to communicate to the real robot when running the simulation.
+
+first, in one terminal
+```
+roslaunch fetch_gazebo simulation.launch
+```
+then, in another terminal
+```
+roslaunch fetch_moveit_config move_group.launch
+```
 
 fetch-interface function APIs
 -----------------------------
@@ -114,37 +127,46 @@ fetch-interface function APIs
   ```
 (send *ri* :start-grasp)
   ```
+  
   to release object
-
   ```
 (send *ri* :stop-grasp)
   ```
   
-move fetch arm in gazebo by inverse kinematics.
-```
-roslaunch fetch_gazebo simulation.launch
-roslaunch fetch_moveit_config move_group.launch 
+- inverse kinematics
 
-source ~/catkin_ws/devel/setup.bash
-(load "package://fetcheus/fetch-interface.l") ;; load modules
-(setq *fetch* (fetch))          ;; creat a robot model
-(objects (list *fetch*))        ;; display the robot model
-(setq *ri* (instance fetch-interface :init)) ;; make connection to the real robot
-(send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1000))
-(send *ri* :angle-vector (send *fetch* :angle-vector))
-```
-
-specify the　position of fetch.
-```
-(send *ri* :state :worldcoords)
-```
-
-move fetch base in gazebo.
-```
-roslaunch fetch_gazebo playground.launch
-roslaunch fetch_nav.launch
-(send *ri* :go-pos 1 0 0)
-```
+  including torso movement
+  ```
+(send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1200)) :debug-view t)
+  ```
+  
+  using only arm movement
+  ```
+(send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1200)) :degug-view t)
+  ```
+  
+  coordinates can be made with 
+  ```
+  (make-coords :pos #f(0 0 0) :rpy (float-vector 0 0 pi))
+  ```
+  
+- moving the robot
+ 
+ move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
+ ```
+ (send *ri* :go-pos 1 0 0)
+ ```
+ 
+ move to point (0 8150 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
+ ```
+ (send *ri* :move-to (make-coords :pos #f(0 8150 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
+ ```
+ 
+- speak
+ 
+ ```
+  (send *ri* :speak "hello")
+ ```
 
 FAQ
 ---
@@ -158,4 +180,4 @@ FAQ
 /opt/ros/indigo/share/euslisp/jskeus/eus/Linux64/bin/irteusgl 0 error:  file "package://fetcheus/fetch-interface.l" not found in (error "file ~s not found" fname)
 ```
 
-  You mgiht be forget to `source setup.bash` before you run `roseus`
+  You might be forget to `source setup.bash` before you run `roseus`
