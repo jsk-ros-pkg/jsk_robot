@@ -249,14 +249,14 @@
    (when (send self :simulation-modep)
      (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
    (when (not (numberp tm))
-     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+     (warning-message 3 ":angle-vector tm is not a number, use :angle-vector av tm args~%"))
    (if (and (get self :moveit-environment)
             (send (get self :moveit-environment) :robot))
      (if (or (eq move-arm :rarm) (eq move-arm :larm))
        (send self :angle-vector-motion-plan av :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t)
-       (ros::warn ":angle-vector currently not support :arms, define :move-arm"))
+       (warning-message 3 ":angle-vector currently not support :arms, define :move-arm~%"))
      (progn
-       (ros::warn "moveit environment is not correctly set, execute :angle-vector-raw instead")
+       (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
        (return-from :angle-vector (send* self :angle-vector-raw av tm args)))))
   (:ros-state-callback
    (msg)
