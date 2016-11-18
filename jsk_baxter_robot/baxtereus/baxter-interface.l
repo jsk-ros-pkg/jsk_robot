@@ -253,7 +253,7 @@
    (if (and (get self :moveit-environment)
             (send (get self :moveit-environment) :robot))
      (if (or (eq move-arm :rarm) (eq move-arm :larm))
-       (send self :angle-vector-motion-plan av :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t)
+       (send-super :angle-vector-motion-plan av :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t)
        (warning-message 3 ":angle-vector currently not support :arms, define :move-arm~%"))
      (progn
        (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
