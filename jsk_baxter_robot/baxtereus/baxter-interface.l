@@ -233,12 +233,12 @@
      )
    )
   (:angle-vector-raw (av &optional (tm :fast) (ctype controller-type) (start-time 0) &rest args)
-		 (send* self :angle-vector-sequence-raw (list av) (list tm) ctype start-time args))
+    (send* self :angle-vector-sequence-raw (list av) (list tm) ctype start-time args))
   (:angle-vector-sequence-raw (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
-		 ;; force add current position to the top of avs
-		 (if (atom tms) (setq tms (list tms)))
-     (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
-		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
+    ;; force add current position to the top of avs
+    (if (atom tms) (setq tms (list tms)))
+    (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+    (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   (:angle-vector
    (av &optional (move-arm :arms) (tm 3000) &rest args)
    "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
