@@ -264,20 +264,21 @@
          (unless tm (setq tm :fast))
          (return-from :angle-vector (send* self :angle-vector-raw av tm ctype args))))))
   (:angle-vector-sequence
-   (avs &optional tm &rest args)
+   (avs &optional tm (ctype controller-type) &rest args)
    (let ((arm :arms))
+     (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
      (when (position :move-arm args)
        (setq arm (elt args (+ (position :move-arm args) 1))))
      ;; for simulation mode
      (when (send self :simulation-modep)
-       (return-from :angle-vector-sequence (send* self :angle-vector-sequence-raw avs tm args)))
+       (return-from :angle-vector-sequence (send* self :angle-vector-sequence-raw avs tm ctype args)))
      (if (and (get self :moveit-environment)
               (send (get self :moveit-environment) :robot))
        (progn
          (when (not (numberp tm))
            (warning-message 3 ":angle-vector-sequence tm is not a number, use :angle-vector-sequence av tm args"))
          (unless tm (setq tm 3000))
-         (send-super :angle-vector-motion-plan avs :move-arm arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+         (send-super :angle-vector-motion-plan avs :ctype ctype :move-arm arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
        (progn
          (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-sequence-raw instead~%")
          (unless tm (setq tm :fast))
