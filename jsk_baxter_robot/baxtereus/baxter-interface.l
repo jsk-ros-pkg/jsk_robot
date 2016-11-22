@@ -257,9 +257,7 @@
          (when (not (numberp tm))
            (warning-message 3 ":angle-vector tm is not a number, use :angle-vector av tm args"))
          (unless tm (setq tm 3000))
-         (if (or (eq arm :rarm) (eq arm :larm))
-           (send-super :angle-vector-motion-plan av :move-arm arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t)
-           (warning-message 3 ":angle-vector currently not support :arms, define :move-arm~%")))
+         (send-super :angle-vector-motion-plan av :move-arm arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
        (progn
          (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
          (unless tm (setq tm :fast))
@@ -297,6 +295,17 @@
                (cons :target-link
                      (send self :search-link-from-name "left_gripper"))
                (cons :joint-list (send robot :larm :joint-list))
+               )
+         (list :arms
+               ;; can not use inverse-kinematics
+               ;; currently only supports angle-vector
+               (cons :group-name "both_arms")
+               (cons :target-link
+                     (list
+                       (send self :search-link-from-name "left_gripper")
+                       (send self :search-link-from-name "right_gripper")))
+               (cons :joint-list (append (send robot :larm :joint-list)
+                                         (send robot :rarm :joint-list)))
                )
          )
 #| SRDF generated from baxter.srdf.xacro in baxter_moveit_config
