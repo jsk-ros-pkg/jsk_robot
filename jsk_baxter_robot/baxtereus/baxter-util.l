@@ -13,7 +13,7 @@
    (let ((r) (prev-av (send self :angle-vector)))
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
-       (format *error-output* "; failed for normal ik, staring from relaxed position~%")
+       (format *error-output* "; failed for normal ik, starting from relaxed position~%")
        (let  ((current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance :debug-view nil args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp nil :dump-command nil args))
@@ -22,7 +22,7 @@
              (send self :angle-vector prev-av))
          ))
      (unless r ;;
-       (format *error-output* "; failed for normal ik, try to move arms vely slowly~%")
+       (format *error-output* "; failed for normal ik, try to move arms very slowly~%")
        (let  ((step 0.0)
               (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (setq r t)
