@@ -232,55 +232,51 @@
      (ros::publish "/robot/head/command_head_nod" msg)
      )
    )
-  (:angle-vector-raw (av &optional (tm :fast) (ctype controller-type) (start-time 0) &rest args)
-    (send* self :angle-vector-sequence-raw (list av) (list tm) ctype start-time args))
+  (:angle-vector-raw (av &optional (tm :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
+    (send self :angle-vector-sequence-raw (list av) (list tm) ctype start-time :scale scale :min-time min-time))
   (:angle-vector-sequence-raw (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
     ;; force add current position to the top of avs
     (if (atom tms) (setq tms (list tms)))
     (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
     (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
   (:angle-vector
-   (av &optional tm &rest args)
+   (av &optional tm (ctype controller-type) (start-time 0) &key (move-arm :arms) (scale 2.2) (min-time 0.05))
    "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
 - av : joint angle vector [rad]
 - tm : (time to goal in [msec]) ;; currently this value is ignored
 "
-   (let ((arm :arms))
-     (when (position :move-arm args)
-       (setq arm (elt args (+ (position :move-arm args) 1))))
-     ;; for simulation mode
-     (when (send self :simulation-modep)
-       (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
-     (if (and (get self :moveit-environment)
-              (send (get self :moveit-environment) :robot))
-       (progn
-         (when (not (numberp tm))
-           (warning-message 3 ":angle-vector tm is not a number, use :angle-vector av tm args"))
-         (unless tm (setq tm 3000))
-         (send-super :angle-vector-motion-plan av :move-arm arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
-       (progn
-         (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
-         (unless tm (setq tm :fast))
-         (return-from :angle-vector (send* self :angle-vector-raw av tm args))))))
+   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector (send self :angle-vector-raw av tm ctype start-time :scale scale :min-time min-time)))
+   (if (and (get self :moveit-environment)
+            (send (get self :moveit-environment) :robot))
+     (progn
+       (unless tm (setq tm 3000))
+       (when (not (numberp tm))
+         (warning-message 3 ":angle-vector tm is not a number, use :angle-vector av tm args"))
+       (send-super :angle-vector-motion-plan av :ctype ctype :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+     (progn
+       (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
+       (unless tm (setq tm :fast))
+       (return-from :angle-vector (send self :angle-vector-raw av tm ctype start-time :scale scale :min-time min-time)))))
   (:angle-vector-sequence
-   (avs &optional tm &rest args)
-   (let ((arm :arms))
-     (when (position :move-arm args)
-       (setq arm (elt args (+ (position :move-arm args) 1))))
-     ;; for simulation mode
-     (when (send self :simulation-modep)
-       (return-from :angle-vector-sequence (send* self :angle-vector-sequence-raw avs tm args)))
-     (if (and (get self :moveit-environment)
-              (send (get self :moveit-environment) :robot))
-       (progn
-         (when (not (numberp tm))
-           (warning-message 3 ":angle-vector-sequence tm is not a number, use :angle-vector-sequence av tm args"))
-         (unless tm (setq tm 3000))
-         (send-super :angle-vector-motion-plan avs :move-arm arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
-       (progn
-         (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-sequence-raw instead~%")
-         (unless tm (setq tm :fast))
-         (return-from :angle-vector-sequence (send* self :angle-vector-sequence-raw avs tm args))))))
+   (avs &optional tm (ctype controller-type) (start-time 0) &key (move-arm :arms) (scale 2.2) (min-time 0.05))
+   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector-sequence (send self :angle-vector-sequence-raw avs tm ctype start-time :scale scale :min-time min-time)))
+   (if (and (get self :moveit-environment)
+            (send (get self :moveit-environment) :robot))
+     (progn
+       (unless tm (setq tm 3000))
+       (when (not (numberp tm))
+         (warning-message 3 ":angle-vector-sequence tm is not a number, use :angle-vector-sequence av tm args"))
+       (send-super :angle-vector-motion-plan avs :ctype ctype :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+     (progn
+       (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-sequence-raw instead~%")
+       (unless tm (setq tm :fast))
+       (return-from :angle-vector-sequence (send self :angle-vector-sequence-raw avs tm ctype start-time :scale scale :min-time min-time)))))
   (:ros-state-callback
    (msg)
    (let ((robot-msg-names (send msg :name)) (torso-index))
