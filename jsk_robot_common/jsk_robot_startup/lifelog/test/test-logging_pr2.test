@@ -5,7 +5,10 @@
   <param name="robot/name" value="test_collection" />
 
   <!-- setup mongodb server -->
-  <include file="$(find roseus_mongo)/test/temp_mongodb_store.xml" />
+  <include file="$(find mongodb_store)/launch/mongodb_store_inc.launch">
+    <arg name="test_mode" value="true" />
+    <arg name="machine" value="$(arg machine)" />
+  </include>
 
   <include file="$(find pr2_gazebo)/launch/pr2_empty_world.launch" />
 
