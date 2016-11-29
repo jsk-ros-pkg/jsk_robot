@@ -251,11 +251,14 @@
      (return-from :angle-vector (send self :angle-vector-raw av tm ctype start-time :scale scale :min-time min-time)))
    (if (and (get self :moveit-environment)
             (send (get self :moveit-environment) :robot))
-     (progn
-       (unless tm (setq tm 3000))
-       (when (not (numberp tm))
-         (warning-message 3 ":angle-vector tm is not a number, use :angle-vector av tm args"))
-       (send-super :angle-vector-motion-plan av :ctype ctype :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+     (if (or (numberp tm) (null tm))
+       (progn
+         (unless tm (setq tm 3000))
+         (send-super :angle-vector-motion-plan av :ctype ctype :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+       (progn
+         (warning-message 3 ":angle-vector tm is not a number, execute :angle-vector-raw instead~%")
+         (unless tm (setq tm :fast))
+         (return-from :angle-vector (send self :angle-vector-raw av tm ctype start-time :scale scale :min-time min-time))))
      (progn
        (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
        (unless tm (setq tm :fast))
@@ -268,11 +271,14 @@
      (return-from :angle-vector-sequence (send self :angle-vector-sequence-raw avs tm ctype start-time :scale scale :min-time min-time)))
    (if (and (get self :moveit-environment)
             (send (get self :moveit-environment) :robot))
-     (progn
-       (unless tm (setq tm 3000))
-       (when (not (numberp tm))
-         (warning-message 3 ":angle-vector-sequence tm is not a number, use :angle-vector-sequence av tm args"))
-       (send-super :angle-vector-motion-plan avs :ctype ctype :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+     (if (or (numberp tm) (null tm))
+       (progn
+         (unless tm (setq tm 3000))
+         (send-super :angle-vector-motion-plan avs :ctype ctype :move-arm move-arm :total-time tm :start-offset-time 0.01 :use-torso nil :clear-velocities t))
+       (progn
+         (warning-message 3 ":angle-vector-sequence tm is not a number, execute :angle-vector-sequence-raw instead~%")
+         (unless tm (setq tm :fast))
+         (return-from :angle-vector-sequence (send self :angle-vector-sequence-raw avs tm ctype start-time :scale scale :min-time min-time))))
      (progn
        (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-sequence-raw instead~%")
        (unless tm (setq tm :fast))
