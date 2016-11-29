@@ -57,6 +57,30 @@ Leap status     : Normal
 it works, if you get `127.127.1.1` for `Reference ID`, something wrong
 
 
+## Network
+### General description
+Fetch has wired and wireless network connections.
+If we use both of wired and wireless connections as DHCP, DNS holds two IP addresses for same hostname (fetch15 in this case).
+This cause problems in network such as ROS communication or ssh connection.
+
+The solution we take now (2016/11/01) is using wired connection as static IP.
+By doing so, DNS holds only one IP adress (for wireless connection) for fetch hostname.
+
+### Case description
+If you see the following result, it is OK.
+```
+$ nslookup fetch15.jsk.imi.i.u-tokyo.ac.jp
+Server:         127.0.1.1
+Address:        127.0.1.1#53
+
+Name:           fetch15.jsk.imi.i.u-tokyo.ac.jp
+Address: 133.11.216.145
+```
+
+If two or more IP addresses apper, something is wrong.
+Please connect display, open a window of network manager, and check that wired connection uses static IP.
+
+
 ## Administration
 
 - 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf

@@ -2,6 +2,26 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.9 (2016-11-09)
+------------------
+* add :speak methods to fetch-interface
+* Contributors: Kei Okada
+
+1.0.8 (2016-11-08)
+------------------
+* :angle-vector, add :clear-velocities t, this requries https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/255
+* add test to check https://github.com/jsk-ros-pkg/jsk_robot/issues/702
+* :inverse-kinematics do not update link-list if given
+* use fetch-utils.l from fetch-interface.l
+* add fetch-utils.l
+* Contributors: Kei Okada
+
+1.0.7 (2016-11-02)
+------------------
+* set :use-torso as default behavior for :angle-vector
+* set base-controller-action-name nil
+* Contributors: Kei Okada
+
 1.0.6 (2016-06-17)
 ------------------
 * feteus-interface.l : always use moveit within :angle-vector (`#620 <https://github.com/jsk-ros-pkg/jsk_robot/issues/620>`_)

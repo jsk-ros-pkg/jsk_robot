@@ -2,6 +2,56 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.9 (2016-11-09)
+------------------
+
+1.0.8 (2016-11-08)
+------------------
+
+1.0.7 (2016-11-02)
+------------------
+* Merge pull request `#672 <https://github.com/jsk-ros-pkg/jsk_robot/issues/672>`_ from furushchev/move-logapp
+  [jsk_robot_lifelog] move logging program from jsk_pr2_startup/jsk_pr2_lifelog to jsk_robot_startup/lifelog
+* [jsk_robot_startup] Fix imu_rootlink calculation bug
+* [jsk_naoqi_robot] speak when program is started (by unix:sleep) or terminated (by overriden roseus-sigint-handler)
+* [jsk_robot_startup] move initialpose_publisher.l from jsk_pr2_startup/jsk_pr2_move_base
+* [jsk_robot_lifelog] move logging program from jsk_pr2_startup/jsk_pr2_lifelog to jsk_robot_startup/lifelog
+* removed unnecessary packages from find_package in CMakeLists.txt
+* [jsk_robot_startup] Rewrite ImuRootlinkCalculator using tf api functions to remove transformation bag
+* [jsk_robot_startup] Add imu topic argument to localization launch files
+* [jsk_robot_startup] Preserve compatibility in heightmap accumulation when USE_BIPED_LOCALIZATION is false
+* Fix slam pointcloud accumulation (`#649 <https://github.com/jsk-ros-pkg/jsk_robot/issues/649>`_)
+  * [jsk_robot_startup] Publish slam_odom continuously
+  * [jsk_robot_startup] Enable use_slam_feedback option
+  * [jsk_robot_startup] Fix slam_laser_nodelets name and use slam based pointcloud for heightmap
+  * [jsk_robot_startup] Use map as assemble_base_frame
+* [jsk_robot_startup] Use standard normal distribution in yaw error weights
+* [jsk_robot_startup] Use standard normal distribution for error weighting function to prevent too large weights when small sigma is given
+* Apply ekf update in source odom callback (`#643 <https://github.com/jsk-ros-pkg/jsk_robot/issues/643>`_)
+  * [jsk_robot_startup] Publish diagnostics for debug when publish odometry
+  * [jsk_robot_startup] Add node name to diagnostics status
+  * [jsk_robot_startup] Remap diagnostics topic to global
+  * [jsk_robot_startup] Apply ekf_update in source_odom_callback and update twist and header in ekf_update
+* Publish diagnostics in odometry (`#642 <https://github.com/jsk-ros-pkg/jsk_robot/issues/642>`_)
+  * [jsk_robot_startup] Publish diagnostics for debug when publish odometry
+  * [jsk_robot_startup] Add node name to diagnostics status
+  * [jsk_robot_startup] Remap diagnostics topic to global
+* [jsk_robot_startup] Make cov smaller when robot is stopping to trust stopping state (`#641 <https://github.com/jsk-ros-pkg/jsk_robot/issues/641>`_)
+* [jsk_robot_startup] Add launch files for rtabmap (`#639 <https://github.com/jsk-ros-pkg/jsk_robot/issues/639>`_)
+  * [jsk_robot_startup] Add launch files for rtabmap
+  * [jsk_robot_startup] Add respawn option to rtabmap
+* [jsk_robot_common/jsk_robot_startup/util/start_launch_sound.py] PLAY_START -> PLAY_ONCE (`#631 <https://github.com/jsk-ros-pkg/jsk_robot/issues/631>`_)
+* [jsk_robot_startup] Fix transformation from odom to map in slam_odom topic
+* Prevent particle degeneration (`#629 <https://github.com/jsk-ros-pkg/jsk_robot/issues/629>`_)
+  * [jsk_robot_startup] Run ekf_update only when dt > 0 (= source_odom is updated)
+  * [jsk_robot_startup] Move GPF process to measuremnt callback and add min_sampling_rate option
+  * [jsk_robot_startup] Tune JAXON_RED odometry params to prevent particle degeneration
+  * [jsk_robot_startup] Run sampling every time when min_sampling_rate is not larger than 0
+  * [jsk_robot_startup] Tune min_sampling_rate for JAXON_RED
+* [jsk_robot_startup] Fix oodm_frame of biped_odom_particle when use_odometry_iir_filter is false (`#626 <https://github.com/jsk-ros-pkg/jsk_robot/issues/626>`_)
+* [jsk_robot_startup/multisense_local.launch] Add biped_localization flag
+* Contributors: Yuki Furuta, Iori Kumagai, Kanae Kochigami, Kei Okada, Kohei Kimura, Masahiro Bando, leus, Satoshi Otsubo
+
 1.0.6 (2016-06-17)
 ------------------
 * [jsk_robot_startup] Define publisher before callback definition (`#615 <https://github.com/jsk-ros-pkg/jsk_robot/issues/615>`_)
