@@ -170,10 +170,11 @@ fetch-interface function APIs
  (send *ri* :move-to (make-coords :pos #f(0 8150 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
  ```
  
-- speak
+- use text-to-speech engine to speak text
  
  ```
   (send *ri* :speak "hello")
+  (send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
  ```
 
 FAQ
