@@ -1,0 +1,34 @@
+<launch>
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
+  <arg name="launch_tf_buffer" default="true" />
+  <arg name="launch_image_resized" default="true" />
+  <arg name="launch_image_roi" default="true" />
+  <arg name="launch_interactive_controller" default="true" />
+
+  <arg name="tf_update_rate" default="1.0" />
+
+  <!-- for tf topic buffer server -->
+  <group if="$(arg launch_tf_buffer)">
+    <include file="$(find jsk_topic_tools)/launch/robot_tf_buffer_server.launch">
+      <arg name="TF_UPDATE_RATE" value="$(arg tf_update_rate)"/>
+      <arg name="TF_CONFIG" value="$(find jsk_topic_tools)/config/pr2_tf_buffer.yaml"/>
+    </include>
+  </group>
+  
+  <!-- for image resized -->
+  <include if="$(arg launch_image_resized)"
+	   file="$(find jsk_pr2_startup)/jsk_pr2_image_transport/pr2_image_transport.launch"/>
+
+  <!-- for image roi -->
+  <include if="$(arg launch_image_roi)"
+	   file="$(find jsk_pr2_startup)/jsk_pr2_image_transport/pr2_roi_transport.launch"/>
+
+  <!-- for interactive controller -->
+  <node if="$(arg launch_interactive_controller)"
+        machine="c2" pkg="roseus" type="roseus" name="robot_actions"
+	args="$(find jsk_interactive_marker)/euslisp/robot-actions.l"
+	output="screen">
+    <param name="robot" value="PR2"/>
+  </node>
+</launch>

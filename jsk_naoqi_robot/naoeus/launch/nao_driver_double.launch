@@ -1,0 +1,10 @@
+<launch>
+  <include file="$(find naoeus)/launch/nao_driver_ns.launch">
+    <arg name="nao_name" value="nao1"/>
+  </include>
+
+  <include file="$(find naoeus)/launch/nao_driver_ns.launch">
+    <arg name="nao_name" value="nao2"/>
+    <arg name="nao_port" value="9560" />
+  </include>
+</launch>

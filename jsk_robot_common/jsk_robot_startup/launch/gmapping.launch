@@ -1,0 +1,60 @@
+<!-- original : navigation_global/move_base.xml (electric) -->
+<launch>
+  <arg name="scan_frame_parent" default="BODY" /> 
+  <arg name="scan_frame" default="pointcloud_to_scan_base" />
+  <arg name="map_frame" default="map"/>
+  <arg name="odom_frame" default="odom"/>
+  <arg name="cloud_in" default="/multisense/organized_image_points2_color" />
+  <arg name="scan_height" default="1.0" /> <!-- height from odom [m] -->
+  <arg name="max_height" default="0.5" /> <!-- vertical range of laser scan from scan_frame [m] -->
+  <arg name="min_height" default="-0.5" />
+  <arg name="angle_max" default="2.35619" /> <!-- horizontal range of laser scan [rad] -->
+  <arg name="angle_min" default="-2.35619" />
+  <arg name="range_max" default="30.0" />  
+  <arg name="use_fixed_frame" default="true" />
+  <arg name="particles" default="30" />
+  <arg name="iterations" default="5" />
+  <arg name="lsigma" default="0.075" />
+  <arg name="temporal_update" default="-1.0" />
+  <arg name="map_update_interval" default="5.0" />
+  <arg name="minimum_score" default="0.0" /> <!-- make greater when gmapping cause jumpping estimated pose -->
+  <arg name="delta" default="0.025" /> <!-- map resolution -->
+  <arg name="srr" default="0.025" />  <!-- accuracy of odometry: default values are from turtlebot -->
+  <arg name="srt" default="0.05" />
+  <arg name="str" default="0.025" />
+  <arg name="stt" default="0.05" />
+  
+  <include file="$(find jsk_robot_startup)/launch/pointcloud_to_laserscan.launch">
+    <arg name="scan_frame" value="$(arg scan_frame)" />
+    <arg name="scan_frame_parent" value="$(arg scan_frame_parent)" />
+    <arg name="scan_frame_odom" value="$(arg odom_frame)"/>
+    <arg name="cloud_in" value="$(arg cloud_in)" />
+    <arg name="scan_height" value="$(arg scan_height)" />
+    <arg name="max_height" value="$(arg max_height)" /> 
+    <arg name="min_height" value="$(arg min_height)" />
+    <arg name="angle_max" value="$(arg angle_max)" />
+    <arg name="angle_min" value="$(arg angle_min)" />
+    <arg name="range_max" value="$(arg range_max)" />    
+    <arg name="use_fixed_frame" value="$(arg use_fixed_frame)" />
+  </include>
+  
+  <node pkg="gmapping" type="slam_gmapping"
+        name="gmapping_node" output="screen" respawn="true" >
+    <remap from="scan" to="/pointcloud_scan" />
+    <param name="base_frame" value="$(arg scan_frame)" />
+    <param name="map_frame" value="$(arg map_frame)"/>
+    <param name="odom_frame" value="$(arg odom_frame)"/>
+    <param name="map_update_interval" value="$(arg map_update_interval)" />
+    <param name="maxUrange" value="$(arg range_max)" />
+    <param name="lsigma" value="$(arg lsigma)" />
+    <param name="temporalUpdate" value="$(arg temporal_update)" />
+    <param name="iterations" value="$(arg iterations)" />
+    <param name="minimumScore" value="$(arg minimum_score)" />    
+    <param name="delta" value="$(arg delta)" />
+    <param name="particles" value="$(arg particles)" />
+    <param name="srr" value="$(arg srr)"/>
+    <param name="srt" value="$(arg srt)"/>
+    <param name="str" value="$(arg str)"/>
+    <param name="stt" value="$(arg srt)"/>
+  </node>
+</launch>

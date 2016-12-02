@@ -1,0 +1,41 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+
+head:
+  - head_pan   : head-neck-y
+larm:
+  - left_s0          : larm-shoulder-y
+  - left_s1          : larm-shoulder-p
+  - left_e0          : larm-shoulder-r
+  - left_e1          : larm-elbow-p
+  - left_w0          : larm-elbow-r
+  - left_w1          : larm-wrist-p
+  - left_w2          : larm-wrist-r
+rarm:
+  - right_s0         : rarm-shoulder-y
+  - right_s1         : rarm-shoulder-p
+  - right_e0         : rarm-shoulder-r
+  - right_e1         : rarm-elbow-p
+  - right_w0         : rarm-elbow-r
+  - right_w1         : rarm-wrist-p
+  - right_w2         : rarm-wrist-r
+
+angle-vector:
+  reset-pose : [0, 20, -25, -40, 60, -20, 80, 0, -20, -25, 40, 60, 20, 80, 0, 0]
+  reset-manip-pose  : [0,  -5,  -57, -68, 111, 38, 59, 0,  5,  -57,   68, 111, -38, 59, 0]
+  untuck-pose : [0,  -5,  -57, -68, 111, 38, 59, 0,  5,  -57,   68, 111, -38, 59, 0] # this is reset-manip-pose
+  tuck-pose   : [0, -57, -119, 152, 146,  0,  0, 0, 57, -119, -152, 136,   0,  0, 0]
+
+larm-end-coords:
+  parent : left_hand
+  translate : [0, 0, 0.10]
+  rotate : [0, -1.0, 0, 90]
+rarm-end-coords:
+  parent : right_hand
+  translate : [0, 0, 0.10]
+  rotate : [0, -1, 0, 90]
+head-end-coords:
+  parent : head_camera
+  translate : [0, 0, 0]
+  rotate : [ 0, 0, 1, 0]

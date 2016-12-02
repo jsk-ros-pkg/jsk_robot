@@ -1,0 +1,5 @@
+<launch>
+  <!-- start test -->
+  <test test-name="naoeus_test" pkg="roseus" type="roseus"
+	args="$(find naoeus)/test/test-naoeus.l" time-limit="1800" />
+</launch>

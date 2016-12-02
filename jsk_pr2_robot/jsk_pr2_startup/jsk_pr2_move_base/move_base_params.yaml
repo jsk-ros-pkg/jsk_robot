@@ -1,0 +1,6 @@
+# this file is a copy of pr2_navigation_config/move_base/move_base_params.yaml 
+
+controller_frequency: 10.0
+controller_patience: 15.0
+clearing_radius: 0.59
+footprint_padding: 0.015

@@ -1,0 +1,87 @@
+# jsk_fetch_startup
+
+## SetUp (Running following commands in the first time)
+
+
+### upstart
+```
+su -c 'rosrun jsk_fetch_startup install_upstart.sh'
+```
+
+### mongodb
+
+```
+sudo mkdir -p /var/lib/robot/mongodb_store/
+
+# to see the db items from http://lcoalhost/rockmongo
+sudo apt-get install apache2 libapache2-mod-php5 php5-mongo
+wget "http://rockmongo.com/downloads/go?id=14" -O rockmongo.zip
+unzip rockmongo.zip
+sudo mv rockmongo-1.1.7 /var/www/html/rockmongo
+# manually change following line in /var/www/html/rockmongo/config.php
+# $MONGO["servers"][$i]["control_auth"] = false; // true;//enable control users, works only if mongo_auth=false
+```
+
+## Maintenance
+
+### re-roslaunch jsk_fetch_startup fetch_bringup.launch
+```
+sudo service jsk-fetch-startup restart
+```
+as of 2016/10/26, it uses launch files under `~k-okada/catkin_ws`
+
+### re-roslaunch fetch_bringup fetch.launch
+```
+sudo service robot restart
+```
+
+### [Clock Synchronization](https://github.com/fetchrobotics/docs/blob/0c1c63ab47952063bf60280e74b4ff3ae07fd914/source/computer.rst)
+
+install `chrony` and add ```server `gethostip -d fetch15` offline minpoll 8``` to /etc/chrony/chrony.conf, restart chronyd by `sudo /etc/init.d/chrony restart` and wait for few seconds, if you get
+```
+$ chronyc tracking
+Reference ID    : 133.11.216.145 (fetch15.jsk.imi.i.u-tokyo.ac.jp)
+Stratum         : 4
+Ref time (UTC)  : Wed Oct 26 12:32:56 2016
+System time     : 0.000006418 seconds fast of NTP time
+Last offset     : 0.003160040 seconds
+RMS offset      : 0.003160040 seconds
+Frequency       : 11.749 ppm fast
+Residual freq   : -137.857 ppm
+Skew            : 6.444 ppm
+Root delay      : 0.185045 seconds
+Root dispersion : 0.018803 seconds
+Update interval : 2.1 seconds
+Leap status     : Normal
+```
+it works, if you get `127.127.1.1` for `Reference ID`, something wrong
+
+
+## Network
+### General description
+Fetch has wired and wireless network connections.
+If we use both of wired and wireless connections as DHCP, DNS holds two IP addresses for same hostname (fetch15 in this case).
+This cause problems in network such as ROS communication or ssh connection.
+
+The solution we take now (2016/11/01) is using wired connection as static IP.
+By doing so, DNS holds only one IP adress (for wireless connection) for fetch hostname.
+
+### Case description
+If you see the following result, it is OK.
+```
+$ nslookup fetch15.jsk.imi.i.u-tokyo.ac.jp
+Server:         127.0.1.1
+Address:        127.0.1.1#53
+
+Name:           fetch15.jsk.imi.i.u-tokyo.ac.jp
+Address: 133.11.216.145
+```
+
+If two or more IP addresses apper, something is wrong.
+Please connect display, open a window of network manager, and check that wired connection uses static IP.
+
+
+## Administration
+
+- 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf
+```

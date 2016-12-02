@@ -1,0 +1,22 @@
+<launch>
+  <arg name="INITIAL_POSE_X" default="1.0" />
+  <arg name="INITIAL_POSE_Y" default="0.0" />
+  <arg name="INITIAL_POSE_YAW" default="0.0" />
+
+  <include file="$(find jsk_fetch_startup)/launch/fetch_gazebo_bringup.launch">
+    <arg name="world" value="$(find eusurdf)/worlds/room73b2.world" />
+    <arg name="map_frame" value="eng2" />
+    <arg name="INITIAL_POSE_X" value="$(arg INITIAL_POSE_X)" />
+    <arg name="INITIAL_POSE_Y" value="$(arg INITIAL_POSE_Y)" />
+  </include>
+
+  <node name="initial_pose_publisher" output="screen"
+        pkg="jsk_robot_startup" type="initialpose_publisher.l">
+    <rosparam subst_value="true">
+      initial_pose_frame: /eng2/7f/73B2
+      initial_pose_x: $(arg INITIAL_POSE_X)
+      initial_pose_y: $(arg INITIAL_POSE_Y)
+      initial_pose_yaw: $(arg INITIAL_POSE_YAW)
+    </rosparam>
+  </node>
+</launch>

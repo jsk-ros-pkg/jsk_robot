@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon[ja_JP]=/opt/ros/@ROS_DISTRO@/stacks/pr2_gui/pr2_dashboard/icons/rosout-green-untoggled.png
+Name[ja_JP]=PR2 Dashboard @PR2_NAME@
+Exec=/bin/bash -i -c "DISPLAY=:0.0 ROS_MASTER_URI=http://@PR2_NAME@:11311 rosrun pr2_dashboard pr2_dashboard"
+Name=PR2 Dashboard @PR2_NAME@
+Icon=/opt/ros/@ROS_DISTRO@/stacks/pr2_gui/pr2_dashboard/icons/rosout-green-untoggled.png

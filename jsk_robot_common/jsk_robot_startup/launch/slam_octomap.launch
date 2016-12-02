@@ -1,0 +1,23 @@
+<launch>
+  <arg name="input_cloud" default="/robot_center_pointcloud_bbox_clipped/output"/>
+  <node pkg="jsk_pcl_ros" type="tf_transform_cloud" name="laser_origin_cloud">
+    <remap from="~input" to="$(arg input_cloud)" />
+    <rosparam>
+      target_frame_id: head_root
+    </rosparam>
+  </node>
+  <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">                        
+    <param name="resolution" value="0.1" />
+    <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->                          
+    <param name="frame_id" type="string" value="map" />
+    <!-- maximum range to integrate (speedup!) -->                                                    
+    <param name="sensor_model/max_range" value="5.0" />                                               
+    <rosparam>
+      sensor_model/miss: 0.4
+      sensor_model/hit: 0.6
+    </rosparam>
+    <!-- data source to integrate (PointCloud2) -->                                                   
+    <remap from="cloud_in" to="laser_origin_cloud/output" />
+  </node>
+</launch>
+

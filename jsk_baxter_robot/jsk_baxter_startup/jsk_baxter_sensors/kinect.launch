@@ -1,0 +1,39 @@
+<launch>
+  <arg name="launch_openni" default="true" />
+
+  <include file="$(find openni_launch)/launch/openni.launch"
+           if="$(arg launch_openni)">
+    <arg name="camera" value="openni"/>
+    <arg name="depth_registration" value="true"/>
+  </include>
+
+  <!-- self filter -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/self_filter.launch"/>
+
+  <!-- checkerboard -->
+  <group ns="/camera/rgb/" >
+    <!-- <param name="single" value="1" /> -->
+    <param name="display" type="int" value="1" />
+    <param name="rect0_size_x" value="0.027" />
+    <param name="rect0_size_y" value="0.027" />
+    <param name="grid0_size_x" value="6" />
+    <param name="grid0_size_y" value="5" />
+    <param name="type0" value="test_object" />
+
+    <node name="checkerboard_detector" pkg="checkerboard_detector"
+          type="checkerboard_detector">
+      <remap from="image" to="/openni/rgb/image_rect_color" />
+      <remap from="camera_info" to="/openni/rgb/camera_info" />
+    </node>
+
+    <node name="objectdetection_tf_publisher"
+          pkg="checkerboard_detector"
+          type="objectdetection_tf_publisher.py" >
+      <param name="latest_publish" value="true"/>
+    </node>
+  </group>
+  <node pkg="tf" type="static_transform_publisher" name="base_to_checkerboard" args="0.425 0.04 0.25 -0.1 3.1 0.02 /object /world 100" />
+  <node pkg="dynamic_tf_publisher" name="tf_publish" type="tf_publish.py"/>
+
+  <!-- end checkerboard  -->
+</launch>

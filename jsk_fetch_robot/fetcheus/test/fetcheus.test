@@ -1,0 +1,5 @@
+<launch>
+  <!-- start test -->
+  <test test-name="fetcheus_test" pkg="fetcheus" type="test-fetcheus.l"
+	time-limit="1800" />
+</launch>

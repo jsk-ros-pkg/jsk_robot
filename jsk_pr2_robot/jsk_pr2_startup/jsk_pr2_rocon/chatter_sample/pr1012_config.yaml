@@ -1,0 +1,7 @@
+# This launch file is automatically generated.
+default_pulls:
+  - gateway: jsk_pr1040_.*
+default_advertisements:
+  - name: /hoge
+    node: None
+    type: publisher

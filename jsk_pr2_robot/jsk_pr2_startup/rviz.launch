@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="rviz" type="rviz" name="jsk_startup_rviz"
+        args="-d $(find jsk_pr2_startup)/config/jsk_startup.rviz" />
+</launch>

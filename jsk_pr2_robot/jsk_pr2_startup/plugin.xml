@@ -1,0 +1,24 @@
+<library path="src">
+  <class name="rqt_pr2_imagesnapshot"
+         type="jsk_pr2_startup.image_snapshot.ImageSnapShotGUI"
+         base_class_type="rqt_gui_py::Plugin">
+    <description>
+      ImageSnapShotGUI descriptions
+    </description>
+    <qtgui>
+      <group>
+        <label>Robot</label>
+        <icon type="theme">folder</icon>
+        <statustip>Plugins related to specific robots.</statustip>
+      </group>
+      <group>
+        <label>PR2</label>
+         <icon type="theme">folder</icon>
+        <statustip>PR2 specific rqt plugins</statustip>
+      </group>
+      <label>ImageSnapShotGUI</label>
+      <icon type="theme">utilities-system-monitor</icon>
+      <statustip>ImageSnapShotGUI descriptions</statustip>
+    </qtgui>
+  </class>
+</library>

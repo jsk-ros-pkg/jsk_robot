@@ -1,0 +1,181 @@
+<launch>
+  <node pkg="jsk_robot_startup" type="start_launch_sound.py"
+        name="start_launch_sound" />
+  <arg name="map_frame" default="eng2" />
+  <arg name="launch_openni" default="false" />
+  <arg name="launch_move_base" default="true" />
+  <arg name="launch_imagesift" default="false" />
+  <arg name="launch_facedetection" default="false" />
+  <arg name="launch_sound_play" default="true" />
+  <arg name="launch_mjpeg_server" default="false" />
+  <arg name="launch_gripper_sensor" default="true" />
+  <arg name="launch_safety_warning" default="true" />
+  <arg name="launch_tablet" default="true" />
+  <arg name="launch_jsk_pcl" default="true" />
+  <arg name="launch_db" default="true" />
+  <arg name="launch_hark" default="true" />
+  <arg name="launch_teleoperation" default="true" />
+  <arg name="launch_people_detection" default="true" />
+  <arg name="launch_look_forward" default="true" />
+  <arg name="launch_twitter" default="true" />
+  <arg name="launch_visualize_log" default="true" />
+  <arg name="slow_camera_framerate" default="true" />
+  <arg name="launch_c3_startup" default="false" />
+  <arg name="USER_NAME" default="false" />
+
+  <!-- DB_CLIENT.LAUNCH Configuration -->
+  <arg name="store_move_base_log" default="true" />
+  <arg name="store_object_detection_log" default="true" />
+  <arg name="store_action_result_log" default="true" />
+  <arg name="store_tf" default="true" />
+  <arg name="store_joint_states" default="true" />
+  <arg name="store_camera_rgb" default="true" />
+  <arg name="store_camera_depth" default="true" />
+  <arg name="store_people" default="true" />
+
+  <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
+           if="$(arg launch_c3_startup)" />
+  <include file="$(find pr2_machine)/$(env ROBOT).machine"
+           unless="$(arg launch_c3_startup)" />
+  <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
+
+  <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius -->
+  <include if="$(arg launch_move_base)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+    <arg name="launch_look_forward" value="$(arg launch_look_forward)"/>
+  </include>
+
+  <!-- special start: use when launuch_move_base is false-->
+  <group unless="$(arg launch_move_base)" >
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch"/>
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop.xml" />
+  </group>
+
+  <!-- We do not launch dynamic_tf_publisher for default anymore.
+       <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
+       type="tf_publish.py" /> -->
+
+  <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
+    <arg name="MACHINE" value="c2" />
+  </include>
+
+  <!-- japanese speech node -->
+  <node if="$(arg launch_sound_play)"
+        pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
+    <env name="PATH" value="$(find voice_text):$(env PATH)" />
+    <!-- <env name="PATH" value="$(find aques_talk):$(env PATH)" /> -->
+    <remap from="robotsound" to="robotsound_jp" />
+    <remap from="sound_play" to="robotsound_jp" />
+  </node>
+
+  <!-- start sift on narrow left-->
+  <!-- <group if="$(arg launch_imagesift)" -->
+  <!--        ns="/narrow_stereo/left" > -->
+  <!--   <node machine="c1" name="throttle" pkg="topic_tools" -->
+  <!--         type="throttle" args="messages image_rect 2.0"/> -->
+  <!--   <node machine="c2" name="sift" pkg="imagesift" type="imagesift" -->
+  <!--         args="image:=image_rect_throttle" -->
+  <!--         launch-prefix="nice -n +10"/> -->
+  <!-- </group> -->
+
+  <!-- kinect node -->
+  <include if="$(arg launch_openni)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
+    <arg name="launch_openni" value="$(arg launch_openni)" />
+  </include>
+
+  <!-- face detection node -->
+  <!-- <node if="$(arg launch_facedetection)" -->
+  <!--       pkg="face_detector" type="face_detector" name="face_detector" -->
+  <!--       args="stereo:=narrow_stereo image:=image_rect" machine="c2" > -->
+  <!--        <param name="classifier_name" type="string" value="frontalface" /> -->
+  <!--        <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/> -->
+  <!--        <param name="classifier_reliability" type="double" value="0.9"/> -->
+  <!--        <param name="do_continuous" type="bool" value="true" /> -->
+  <!--        <param name="do_publish_faces_of_unknown_size" type="bool" value="false" /> -->
+  <!--        <param name="do_display" type="string" value="none" /> -->
+  <!--        <param name="output" type="string" value="none" /> -->
+  <!-- </node> -->
+
+  <!-- logging node for PR2  -->
+  <include if="$(arg launch_db)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch" >
+    <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="store_move_base_log" value="$(arg store_move_base_log)" />
+    <arg name="store_object_detection_log" value="$(arg store_object_detection_log)" />
+    <arg name="store_action_result_log" value="$(arg store_action_result_log)" />
+    <arg name="store_tf" value="$(arg store_tf)" />
+    <arg name="store_joint_states" value="$(arg store_joint_states)" />
+    <arg name="store_camera_rgb" value="$(arg store_camera_rgb)" />
+    <arg name="store_camera_depth" value="$(arg store_camera_depth)" />
+    <arg name="store_people" value="$(arg store_people)" />
+
+    <arg name="twitter" value="$(arg launch_twitter)"/>
+    <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
+  </include>
+
+  <!-- pr2 warning -->
+  <!-- battery warning -->
+  <group if="$(arg launch_safety_warning)" >
+  <node name="battery_warning" pkg="roseus"
+        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+  <node name="battery_visualization" pkg="jsk_pr2_startup"
+        type="battery_visualization.py" />
+  <node name="battery_debug_log" pkg="jsk_pr2_startup"
+        type="battery_debug_log.py" />
+  </group>
+
+  <!-- mjpeg_server for web -->
+  <node if="$(arg launch_mjpeg_server)"
+        pkg="mjpeg_server" type="mjpeg_server"  name="mjpeg_server" output="screen">
+    <param name="port" type="int" value="8080" />
+  </node>
+
+  <!-- for gripper sensor actions -->
+  <group if="$(arg launch_gripper_sensor)">
+    <group ns="l_gripper_sensor_controller">
+      <param name="publish_skip" value="100" /> <!--10Hz-->
+    </group>
+    <group ns="r_gripper_sensor_controller">
+      <param name="publish_skip" value="100" /> <!--10Hz-->
+    </group>
+    <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  </group>
+
+  <!-- for iPad or android apps -->
+  <include if="$(arg launch_jsk_pcl)"
+           file="$(find jsk_pcl_ros)/launch/pointcloud_screenpoint.launch" >
+    <arg name="image" value="/kinect_head/rgb" />
+    <arg name="cloud_machine" value="c2" />
+    <arg name="camera_info" value="camera_info_input_mux"/>
+    <arg name="points" value="points_input_mux"/>
+  </include>
+  <include if="$(arg launch_tablet)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
+
+  <!-- for HARK -->
+  <include if="$(arg launch_hark)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
+
+  <!-- joy mux -->
+  <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
+        respawn="true" args="/joy /joy_org /joy_other" >
+    <remap from="mux" to="multiple_joystick_mux"/>
+  </node>
+
+  <include if="$(arg launch_teleoperation)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_teleop_robot.launch" />
+  <include if="$(arg slow_camera_framerate)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/camera_framerate.launch" />
+
+  <include if="$(arg launch_c3_startup)"
+	   file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+    <arg name="MACHINE" value="c3"/>
+    <arg name="launch_battery" value="true"/>
+  </include>
+  <include if="$(arg launch_people_detection)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/people_detection.launch" />
+  <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
+        machine="c2"
+        name="finish_launch_sound" />
+</launch>

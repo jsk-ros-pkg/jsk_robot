@@ -1,0 +1,40 @@
+<!-- original : navigation_global/move_base.xml (electric) -->
+<launch>
+  <!-- source pointcloud -->
+  <arg name="cloud_in" default="/multisense/organized_image_points2_color" />
+  <!-- base frame to scan -->  
+  <arg name="scan_frame" default="pointcloud_to_scan_base" />
+  <!-- scan range -->
+  <arg name="max_height" default="0.5" /> <!-- vertical range of laser scan from scan_frame [m] -->
+  <arg name="min_height" default="-0.5" />
+  <arg name="angle_max" default="2.35619" /> <!-- horizontal range of laser scan [rad] -->
+  <arg name="angle_min" default="-2.35619" />
+  <arg name="range_max" default="50.0" />
+  <!-- fixed frame -->
+  <arg name="scan_height" default="1.0" />
+  <arg name="scan_frame_parent" default="BODY" />
+  <arg name="scan_frame_odom" default="odom"/>
+  <arg name="use_fixed_frame" default="true" /> <!-- target_frame should be ignored when use_fixed_frame is false -->
+
+  <group if="$(arg use_fixed_frame)" >
+    <node pkg="jsk_robot_startup" type="ConstantHeightFramePublisher.py" name="pointcloud_to_laserscan_constant_height_frame" output="screen" >
+      <param name="~parent_frame" value="$(arg scan_frame_parent)" />
+      <param name="~odom_frame" value="$(arg scan_frame_odom)" />
+      <param name="~height" value="$(arg scan_height)" />
+      <param name="~frame_name" value="$(arg scan_frame)" />
+    </node>
+  </group>
+  
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node" output="screen" >
+    <remap from="cloud_in" to="$(arg cloud_in)" />
+    <remap from="scan" to="pointcloud_scan" />
+    <param name="target_frame" value="$(arg scan_frame)" />
+    <param name="max_height" value="$(arg max_height)" />
+    <param name="min_height" value="$(arg min_height)" />
+    <param name="angle_max" value="$(arg angle_max)" />
+    <param name="angle_min" value="$(arg angle_min)" />
+    <param name="range_min" value="1.5" />
+    <param name="range_max" value="$(arg range_max)" />
+    <param name="use_inf" value="true" />
+  </node>
+</launch>

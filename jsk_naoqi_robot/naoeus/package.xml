@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>naoeus</name>
+  <version>1.0.9</version>
+  <description>The naoeus package</description>
+
+  <maintainer email="kei.okada@gmail.com">Kei Okada</maintainer>
+
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>nao_apps</build_depend>
+  <build_depend>naoqieus</build_depend> <!-- for robot interface -->
+  <build_depend>nao_description</build_depend>
+  <build_depend>rostest</build_depend>
+
+  <run_depend>nao_apps</run_depend>
+  <run_depend>naoqieus</run_depend> <!-- for robot interface -->
+  <run_depend>nao_description</run_depend>
+
+  <export>
+  </export>
+</package>

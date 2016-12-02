@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_201504_miraikan</name>
+  <version>1.0.9</version>
+  <description>The jsk_201504_miraikan package</description>
+
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+
+  <author email="kochigami@jsk.imi.i.u-tokyo.ac.jp">Kanae Kochigami</author>
+  <author email="jiang@jsk.imi.i.u-tokyo.ac.jp">Jun Jiang</author>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>jsk_pepper_startup</build_depend>
+  <build_depend>peppereus</build_depend>
+
+  <run_depend>jsk_pepper_startup</run_depend>
+  <run_depend>peppereus</run_depend>
+  <run_depend>nao_interaction_launchers</run_depend>
+
+  <export>
+
+  </export>
+</package>

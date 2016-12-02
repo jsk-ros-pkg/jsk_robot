@@ -1,0 +1,129 @@
+<launch>
+  <arg name="use_slam_feedback" default="false"/>
+  <arg name="use_odometry_iir_filter" default="false"/>
+  <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
+  <arg name="map_topic" default="/map"/>
+  <arg name="imu_topic" default="/imu"/>
+
+  <!-- robot dependent parameters -->
+  <rosparam command="load" file="$(arg parameter_yaml)"/>
+
+  <node pkg="jsk_robot_startup" type="ImuRootlinkCalculator.py" name="imu_rootlink_calculator"
+        output="screen" >
+    <remap from="~input" to="$(arg imu_topic)" />
+    <remap from="~output" to="/imu_rootlink" />
+    <rosparam>
+      base_link_frame: BODY
+    </rosparam>
+  </node>
+
+
+  <!-- calculate transform from odom_init to base_link -->
+  <node pkg="jsk_robot_startup" type="calculate_init_to_base_link_transform.py" name="calculate_init_to_base_link_transform"
+        output="screen" >
+    <remap from="~base_odom" to="/odom" />
+    <remap from="~output" to="/init_to_base_link_transform" />
+    <remap from="~base_to_init_transform" to="/footcoords/odom_init_transform" />
+    <rosparam>
+      init_odom_frame: odom_init
+      base_link_frame: BODY
+    </rosparam>
+  </node>
+  
+  <!-- odometry offset to adjust origin to odom_init -->
+  <node pkg="jsk_robot_startup" type="odometry_offset.py" name="biped_odometry_offset"
+        output="screen" >
+    <remap from="~source_odom" to="/odom" />
+    <remap from="~output" to="/biped_odom_offset" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
+    <rosparam>
+      odom_frame: biped_odom_offset
+      base_link_frame: BODY
+      publish_tf: false
+    </rosparam>
+  </node>
+
+  <node pkg="jsk_robot_startup" type="odometry_offset.py" name="viso_odometry_offset"
+        output="screen" >
+    <remap from="~source_odom" to="/viso_odom" />
+    <remap from="~output" to="/viso_odom_offset" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
+    <rosparam>
+      odom_frame: viso_odom_offset
+      base_link_frame: BODY
+      publish_tf: false
+    </rosparam>
+  </node>
+
+  <!-- odometry feedback to prevent drift -->
+  <node pkg="jsk_robot_startup" type="odom_feedback_wrapper.py" name="viso_odom_calculator"
+        output="screen" >
+    <remap from="~init_signal" to="/odom_init_trigger" />
+    <remap from="~source_odom" to="/viso_odom_offset" />
+    <remap from="~feedback_odom" to="/slam_odom" if="$(arg use_slam_feedback)"/>
+    <remap from="~feedback_odom" to="/biped_odom_particle" unless="$(arg use_slam_feedback)"/>
+    <remap from="~output" to="/viso_odom_integrated" />
+    <!-- common params (robot dependent params are described in yaml) -->
+    <rosparam>
+      odom_frame: viso_odom_integrated
+      base_link_frame: BODY
+      publish_tf: false
+    </rosparam>
+  </node>
+
+  <!-- odometry integration with particle filter -->  
+
+  <!-- <node pkg="jsk_robot_startup" type="particle_odometry.py" name="biped_particle_odometry" output="screen"> -->
+  <node pkg="jsk_robot_startup" type="ekf_gpf_odometry.py" name="biped_particle_odometry" output="screen">
+    <remap from="~source_odom" to="/biped_odom_offset" />
+    <remap from="~measure_odom" to="/viso_odom_integrated" />
+    <remap from="~output" to="/biped_odom_particle_raw" if="$(arg use_odometry_iir_filter)" />
+    <remap from="~output" to="/biped_odom_particle" unless="$(arg use_odometry_iir_filter)"/>
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
+    <remap from="~imu" to="/imu_rootlink" />
+    <remap from="~diagnostics" to="/diagnostics" />
+    <param name="~odom_frame" value="/biped_odom_particle_raw" if="$(arg use_odometry_iir_filter)" />
+    <param name="~odom_frame" value="/biped_odom_particle" unless="$(arg use_odometry_iir_filter)" />
+    <rosparam subst_value="true">
+      odom_init_frame: odom_init
+      base_link_frame: BODY
+      publish_tf: false
+      publish_histogram: false
+    </rosparam>
+  </node>
+
+  <!-- Apply low pass filter to result of particle filter -->
+  <node pkg="jsk_robot_startup" type="odometry_iir_filter.py" name="biped_particle_odometry_iir_filter" output="screen" if="$(arg use_odometry_iir_filter)">
+    <remap from="~source_odom" to="/biped_odom_particle_raw" />
+    <remap from="~output" to="/biped_odom_particle" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
+    <rosparam subst_value="true">
+      odom_frame: biped_odom_particle
+      publish_tf: false
+    </rosparam>
+  </node>
+  
+  <!-- make biped_odom_particle->odom_init transform to use biped_odom_particle in gmapping  -->
+  <node pkg="jsk_robot_startup" type="OdomDiffTransformPublisher.py" name="biped_odom_particle_diff_transform_publisher" output="screen">
+    <remap from="~input_odom" to="/biped_odom_particle" />
+    <rosparam>
+      target_frame: biped_odom_particle
+      intermediate_frame: odom_init
+      base_frame: BODY
+    </rosparam>
+  </node>
+
+  <!-- convert map->base_link transform to odometry msg and use in feedback if use_slam_feedback is true -->
+  <node pkg="jsk_robot_startup" type="SlamMapTfToOdometry.py" name="slam_map_to_odometry"
+        output="screen">
+    <remap from="~output" to="/slam_odom" />
+    <remap from="~map" to="$(arg map_topic)" />
+    <remap from="~base_odom" to="/biped_odom_particle" />
+    <rosparam>
+      rate: 10
+      map_frame: map
+      pub_only_map_updated: false
+    </rosparam>
+  </node>
+  
+</launch>

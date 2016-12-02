@@ -1,0 +1,84 @@
+<launch>
+  <arg name="nodelet_index" default="2"/>
+  <arg name="laser_input" default="/multisense/cloud_self_filtered"/>
+  <arg name="assemble_base_frame" default="map"/>
+  
+  <group ns="slam_distance_filtered_laser_snapshots">
+    <rosparam subst_value="true">
+      laser_type: infinite_spindle_half
+      joint_name: motor_joint
+      use_laser_assembler: true
+      not_use_laser_assembler_service: true
+      overwrap_angle: 0.15
+      skip_number: 1
+      clear_assembled_scans: true
+      twist_frame_id: head_hokuyo_frame
+    </rosparam>
+  </group>
+  <group ns="slam_distance_filtered_laser">
+    <rosparam subst_value="true">
+      laser_type: infinite_spindle_half
+      joint_name: motor_joint
+      use_laser_assembler: true
+      not_use_laser_assembler_service: true
+      overwrap_angle: 0.15
+      skip_number: 1
+      clear_assembled_scans: false
+      twist_frame_id: head_hokuyo_frame
+    </rosparam>
+  </group>
+  <group ns="multisense_laser">
+    <rosparam subst_value="true">
+      nodelets_$(arg nodelet_index):
+        - name: slam_distance_filtered_laser_snapshots
+          type: jsk_pcl/TiltLaserListener
+          remappings:
+            - from: ~input
+              to: /joint_states
+            - from: ~input/cloud
+              to: /slam_scan_distance_filtered/output
+        - name: slam_distance_filtered_laser
+          type: jsk_pcl/TiltLaserListener
+          remappings:
+            - from: ~input
+              to: /joint_states
+            - from: ~input/cloud
+              to: /slam_scan_distance_filtered/output
+        - name: slam_ground_scan_non_filtered
+          type: jsk_pcl/TfTransformCloud
+          remappings:
+            - from: ~input
+              to: $(arg laser_input)
+        - name: slam_ground_scan_z_filter
+          type: pcl/PassThrough
+          remappings:
+            - from: ~input
+              to: /slam_ground_scan_non_filtered/output
+            - from: /tf
+              to: /tf_null
+        - name: slam_scan_distance_filtered
+          type: jsk_pcl/TfTransformCloud
+          remappings:
+            - from: ~input
+              to: /slam_ground_scan_z_filter/output
+    </rosparam>
+  </group>
+  <group ns="slam_ground_scan_non_filtered">
+    <rosparam>
+      target_frame_id: ground
+    </rosparam>
+  </group>
+  <group ns="slam_ground_scan_z_filter">
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: -5.0
+      filter_limit_max: 3.0
+    </rosparam>
+  </group>
+  <group ns="slam_scan_distance_filtered">
+    <rosparam subst_value="true">
+      target_frame_id: $(arg assemble_base_frame)
+    </rosparam>
+  </group>
+
+</launch>  

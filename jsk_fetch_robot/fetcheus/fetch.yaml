@@ -1,0 +1,25 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+
+torso:
+  - torso_lift_joint    : torso-waist-z
+rarm:
+  - shoulder_pan_joint  : rarm-shoulder-y
+  - shoulder_lift_joint : rarm-shoulder-p
+  - upperarm_roll_joint : rarm-shoulder-r
+  - elbow_flex_joint    : rarm-elbow-p
+  - forearm_roll_joint  : rarm-elbow-r
+  - wrist_flex_joint    : rarm-wrist-p
+  - wrist_roll_joint    : rarm-wrist-r
+head:
+  - head_pan_joint      : head-neck-y
+  - head_tilt_joint     : head-neck-p
+
+angle-vector:
+  reset-pose : [2.86479, 75.6304, 80.2141, -11.4592, 98.5487, 0.0, 95.111, 0.0, 0.0, 0.0]
+
+rarm-end-coords:
+  parent : gripper_link
+  translate : [0, 0, 0]
+  rotate : [0, 0, 1, 0]

@@ -1,0 +1,75 @@
+<launch>
+  <arg name="launch_servo" default="true"/>
+  <arg name="launch_joint_trajectory" default="true"/>
+  <arg name="launch_gripper_action" default="true"/>
+  <arg name="launch_openni" default="false"/>
+  <arg name="launch_kinect2" default="true"/>
+  <arg name="launch_voice_echo" default="true"/>
+  <arg name="launch_moveit" default="true"/>
+  <arg name="launch_teleop" default="false"/>
+  <arg name="launch_tweet" default="true"/>
+  <arg name="launch_mongodb" default="true"/>
+  <arg name="launch_wrench" default="true"/>
+  <arg name="launch_time_signal" default="true"/>
+  <arg name="start_openni" default="true"/>
+  <arg name="USER_NAME" default="false"/>
+  <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
+  <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
+
+  <!-- Start Servo (Maybe This should not be here)-->
+  <node if="$(arg launch_servo)" pkg="baxter_tools" name="baxter_servo_node" type="enable_robot.py" args="-e" output="screen" clear_params="true"/>
+
+  <!-- Startup joint trajectory will enable send command from eus-->
+  <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="baxter_joint_trajectory" type="joint_trajectory_action_server.py" args="--interpolation minjerk" output="screen"/>
+  <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="head_joint_trajectory" type="head_action_server.py" args="" output="screen"/>
+  <node if="$(arg launch_gripper_action)" pkg="baxter_interface" name="baxter_gripper_action_server" type="gripper_action_server.py" args="" output="screen"/>
+
+  <!-- Use Custom OpenNI-->
+  <include if="$(arg launch_openni)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kinect.launch" >
+    <arg name="launch_openni" value="$(arg start_openni)" />
+  </include>
+
+  <!-- Use Custom Kinect2-->
+  <include if="$(arg launch_kinect2)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kinect2.launch" >
+    <arg name="launch_openni" value="$(arg start_openni)" />
+  </include>
+
+  <!-- Fix camera info -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/camera_info_fixer.launch" />
+
+  <!-- Set the Mike to the PC-->
+  <include if="$(arg launch_voice_echo)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/voice.launch" >
+  </include>
+
+  <include if="$(arg launch_moveit)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_moveit/moveit.launch" >
+  </include>
+
+  <!-- Do teleop with baxter_examples' joint_position_joystick.py-->
+  <include if="$(arg launch_teleop)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_joy/baxter_joy.launch" >
+  </include>
+
+  <!-- Twitter -->
+  <include if="$(arg launch_tweet)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
+  </include>
+
+  <!-- MongoDB -->
+  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+  </include>
+
+  <!-- Wrench -->
+  <include if="$(arg launch_wrench)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/virtual_force.launch" >
+  </include>
+
+  <!-- Time signal -->
+  <node if="$(arg launch_time_signal)"
+	pkg="roseus" type="roseus" name="time_signal" output="screen"
+	args="$(find jsk_robot_startup)/lifelog/time-signal.l" />
+
+</launch>

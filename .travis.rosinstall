@@ -1,0 +1,29 @@
+- git:
+   uri: http://github.com/RethinkRobotics/baxter_common.git
+   local-name: RethinkRobotics/baxter_common
+- git:
+    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+    local-name: jsk-ros-pkg/jsk_demos
+- git:
+    uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
+    local-name: jsk-ros-pkg/jsk_smart_apps
+- git:
+    uri: https://github.com/jsk-ros-pkg/openrave_planning.git
+    local-name: jsk-ros-pkg/openrave_planning
+- git:
+    uri: https://github.com/code-iai/SnapMapICP.git
+    local-name: tum-ros-pkg/highlevel/SnapMapICP
+# - git:
+#     uri: https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation.git
+#     local-name: SharedAutonomyToolkit/shared_autonomy_manipulation
+#     version: hydro-devel
+- git:
+    uri: https://github.com/code-iai/SnapMapICP.git
+    local-name: tum-ros-pkg/highlevel/SnapMapICP
+- git:
+    uri: https://github.com/tork-a/rwt_ros.git
+    local-name: rwt_ros
+- git:
+    uri: https://github.com/procrob/face_recognition.git
+    local-name: face_recognition
+    version: catkin

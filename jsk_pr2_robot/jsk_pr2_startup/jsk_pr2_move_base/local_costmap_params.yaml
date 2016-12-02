@@ -1,0 +1,40 @@
+plugins:
+  - {name: obstacles,  type: "costmap_2d::VoxelLayer" }
+  - {name: inflation,  type: "costmap_2d::InflationLayer" }
+  - {name: people,     type: "social_navigation_layers::ProxemicLayer" }
+  - {name: passing,    type: "social_navigation_layers::PassingLayer" }
+
+obstacles:
+  observation_sources: base_scan_marking base_scan tilt_scan ground_object_cloud # people_substruct_cloud
+  base_scan_marking: {sensor_frame: base_laser_link, topic: /base_scan_marking, data_type: PointCloud2, expected_update_rate: 0.2, observation_persistence: 0.1, marking: true, clearing: true, min_obstacle_height: 0.08, max_obstacle_height: 2.0 }
+  base_scan: {topic: /base_scan, data_type: LaserScan, sensor_frame: /base_laser_link, clearing: true, marking: false, expected_update_rate: 0.1 }
+  tilt_scan: {sensor_frame: laser_tilt_link, topic: /tilt_scan, data_type: LaserScan, expected_update_rate: 0.2, observation_persistence: 0.2, marking: false, clearing: true, min_obstacle_height: -20.00, max_obstacle_height: 40.0 }
+  ground_object_cloud: {sensor_frame: laser_tilt_link, topic: /ground_object_cloud_mux, data_type: PointCloud2, expected_update_rate: 0.2, observation_persistence: 0.7, marking: true, clearing: false, min_obstacle_height: -0.10, max_obstacle_height: 1.80}
+#  people_substruct_cloud: {sensor_frame: base_link, topic: /people_substruct_cloud, data_type: PointCloud2, expected_update_rate: 10, observation_persistence: 0.0, marking: false, clearing: true, min_obstacle_height: 0.08, max_obstacle_height: 2.0}
+people:
+  enabled: true
+  cutoff: 16.0
+  amplitude: 20.0
+  covariance: 0.25
+  factor: 5.0
+  keep_time: 0.2
+passing:
+  enabled: true
+  cutoff: 17.0
+  amplitude: 20.0
+  covariance: 0.15
+  factor: 5.0
+  keep_time: 0.2
+
+# copied from pr2_navigation_global/config/local_costmap_params.yaml
+publish_voxel_map: true
+global_frame: odom_combined
+robot_base_frame: base_footprint
+publish_frequency: 2.0
+static_map: false
+rolling_window: true
+width: 4.0 # 3.0
+height: 4.0 # 3.0
+resolution: 0.025 # 0.06
+origin_x: 0.0
+origin_y: 0.0

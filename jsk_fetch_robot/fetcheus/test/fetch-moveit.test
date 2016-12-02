@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find fetch_gazebo)/launch/playground.launch" />
+  <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+  <!-- start test -->
+  <test test-name="fetch_moveit_test" pkg="fetcheus" type="test-fetch-moveit.l"
+	retry="1" time-limit="600" />
+</launch>

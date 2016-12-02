@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_rocon/pr2s_rocon_common/pr1012_rocon.launch">
+    <arg name="config_path" value="$(find jsk_pr2_startup)/jsk_pr2_rocon/cameraman_sample/pr1012_config.yaml" />
+  </include>
+
+  <node pkg="topic_tools" name="relay" type="relay" args="/pr1012_head_pos_from_73b2_in_pr2 /pr1012_head_pos_from_73b2"/>
+</launch>

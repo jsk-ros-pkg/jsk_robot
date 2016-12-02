@@ -1,0 +1,22 @@
+<launch>
+  <!-- choose from {ps3 xbox logitech} -->
+  <!-- DON'T insert space in value!!!!!-->
+  <arg name="device_type" default="ps3"/>
+  <arg name="device_name" default="/dev/input/ps3joy" />
+  <arg name="joy_topic"   default="joy"/>
+  <arg name="enable_joint_position_joystick" default="true"/>
+
+  <!-- publish /joy topic-->
+  <node pkg="joy" type="joy_node" name="baxter_joy" output="log">
+    <remap from="joy" to="$(arg joy_topic)"/>
+    <param name="dev" value="$(arg device_name)"/>
+  </node>
+
+  <!-- subscribe /joy and move baxter arm-->
+  <node if="$(arg enable_joint_position_joystick)"
+	pkg="baxter_examples"
+	name="baxter_joint_position_with_$(arg device_type)"
+	type="joint_position_joystick.py"
+	args=" -j $(arg device_type)"
+	output="log"/>
+</launch>

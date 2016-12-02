@@ -1,0 +1,9 @@
+<launch>
+  <test test-name="angle_vector_compress_test" pkg="roseus" type="roseus"
+        args="$(find jsk_robot_utils)/test/angle-vector-compress-test.l"
+        time-limit="1800">
+    <!-- error_threshold means the threshold of difference
+         between each raw angle of angle-vector and decompressed one -->
+    <param name="error_threshold" value="0.1" type="double"/>
+  </test>
+</launch>

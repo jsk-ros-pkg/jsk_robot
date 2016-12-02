@@ -1,0 +1,96 @@
+<launch>
+  <arg name="set_slam_laser_params" default="true"/>
+  <arg name="use_particle_odom" default="true"/>
+  <arg name="use_slam_feedback" default="false"/>
+  <arg name="nodelet_index" default="2"/>
+  <arg name="stereo_namespace" default="multisense"/>
+  <arg name="slam_laser_scan_height" default="0.5"/>
+  <arg name="slam_laser_max_height" default="0.2"/>
+  <arg name="slam_laser_min_height" default="-0.2"/>
+  <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
+  <arg name="use_gmapping" default="true"/>
+  <arg name="use_rtabmap" default="false"/>
+  <arg name="imu_topic" default="/imu"/>
+
+  <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
+  <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch" if="$(arg set_slam_laser_params)">
+    <arg name="nodelet_index" value="$(arg nodelet_index)"/>
+    <arg name="laser_input" value="/multisense/cloud_self_filtered"/>
+    <arg name="assemble_base_frame" value="map" if="$(arg use_particle_odom)"/>
+    <arg name="assemble_base_frame" value="odom_init" unless="$(arg use_particle_odom)"/>
+  </include>
+
+  <node pkg="jsk_topic_tools" type="relay" name="odom_tf_relay">
+    <remap from="~input" to="/tf"/>
+    <remap from="~output" to="/localization/tf"/>
+  </node>
+
+  <group>
+    <remap from="/tf" to="/localization/tf"/>
+    <!-- viso -->
+    <include file="$(find jsk_robot_startup)/launch/viso.launch">
+      <arg name="stereo" default="$(arg stereo_namespace)" />
+      <arg name="image" default="image_rect" />
+      <arg name="use_robot_pose_ekf" default="false" />
+      <arg name="publish_viso_tf" default="false" />
+      <arg name="invert_viso_tf" default="true" /> 
+    </include>
+    
+    <!-- <include file="$(find jsk_robot_startup)/launch/odometry_integration.launch"/>     -->
+    <include file="$(find jsk_robot_startup)/launch/particle_odometry.launch" if="$(arg use_particle_odom)">
+      <arg name="parameter_yaml" value="$(arg parameter_yaml)"/>
+      <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
+      <arg name="imu_topic" value="$(arg imu_topic)"/>
+    </include>
+
+    <include file="$(find jsk_robot_startup)/launch/gmapping.launch" if="$(arg use_gmapping)">
+      <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
+      <arg name="odom_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/> <!-- map->biped_odom_particle->odom_init -->
+      <arg name="odom_frame" value="odom_init" unless="$(arg use_particle_odom)"/> <!-- map->odom_init -->
+      <arg name="scan_height" value="$(arg slam_laser_scan_height)" />
+      <arg name="max_height" value="$(arg slam_laser_max_height)" />
+      <arg name="min_height" value="$(arg slam_laser_min_height)" />
+      <arg name="range_max" value="30.0"/>
+      <arg name="particles" value="30.0"/>
+      <arg name="iterations" value="5.0"/>
+      <arg name="map_update_interval" value="5.0"/>
+      <arg name="temporal_update" value="-1.0" />
+      <arg name="srr" value="0.01" /> 
+      <arg name="srt" value="0.025" />
+      <arg name="str" value="0.01" />
+      <arg name="stt" value="0.025" />
+    </include>
+
+    <include file="$(find jsk_robot_startup)/launch/rtabmap.launch" if="$(arg use_rtabmap)">
+      <arg name="use_rviz" default="false" />
+      <arg name="use_stereo_odometry" default="false" />
+      <arg name="use_rtabmap" default="true" />
+      <arg name="odom_topic" default="/biped_odom_particle" /> <!-- only used when use_stereo_odometry is false -->
+      <arg name="base_frame_id" default="BODY" />
+      <arg name="odom_frame_id" default="biped_odom_particle" />
+      <arg name="map_frame_id" default="map" />
+      <arg name="publish_tf" default="true" />
+      <arg name="left_image" default="/multisense_local/left/image_rect"/>
+      <arg name="right_image" default="/multisense_local/right/image_rect"/>
+      <arg name="left_camera_info" default="/multisense_local/left/camera_info"/>
+      <arg name="right_camera_info" default="/multisense_local/right/camera_info"/>
+    </include>
+
+    <node pkg="jsk_robot_startup" type="OdometryTfManager.py" name="odom_tf_manager">
+      <param name="~map_frame" value="map"/>
+      <param name="~particle_frame" value="biped_odom_particle"/>
+      <param name="~odom_frame" value="odom_init"/>
+      <param name="~base_frame" value="BODY"/>
+      <param name="~scan_frame" value="pointcloud_to_scan_base"/>
+    </node>    
+  </group>
+
+  <node pkg="jsk_robot_startup" type="OdometryTfBroadcaster.py" name="odom_tf_broadcaster">
+    <remap from="~map_to_particle" to="/odom_tf_manager/map_to_particle"/>
+    <remap from="~particle_to_odom" to="/odom_tf_manager/particle_to_odom"/>
+    <remap from="~base_to_scan" to="/odom_tf_manager/base_to_scan"/>
+  </node>
+  
+  <node pkg="jsk_robot_startup" type="auto_reset_slam.py" name="auto_reset_slam" />
+  
+</launch>

@@ -1,0 +1,45 @@
+<launch>
+  <arg name="db_path" default="/var/lib/robot/mongodb_store"/>
+  <arg name="port" default="62345" />
+  <arg name="repl_set_mode" default="false" />
+  <arg name="use_daemon" default="false" />
+  <arg name="db_name" default="jsk_robot_lifelog"/>
+  <arg name="machine" default="localhost" />
+
+  <arg name="replicate" default="true" />
+  <arg name="replicator_dump_path" default="/tmp/replicator_dumps" />
+
+  <param name="robot/database" value="$(arg db_name)" />
+
+  <!-- Replication -->
+  <group if="$(arg replicate)">
+    <rosparam command="load"
+              file="$(find jsk_robot_startup)/lifelog/mongodb_replication_params.yaml" />
+    <node name="replication_client"
+          pkg="jsk_robot_startup" type="periodic_replicator_client.py"
+          output="screen">
+    </node>
+  </group>
+
+  <!-- MongoDB -->
+  <include file="$(find mongodb_store)/launch/mongodb_store_inc.launch">
+    <arg name="db_path" value="$(arg db_path)" />
+    <arg name="port" value="$(arg port)" />
+    <arg name="use_daemon" value="$(arg use_daemon)" />
+    <arg name="machine" value="$(arg machine)" />
+    <arg name="use_repl_set" value="true"
+         if="$(arg repl_set_mode)" />
+    <arg name="repl_set" value="rs0"
+         if="$(arg repl_set_mode)" />
+    <arg name="replicator_dump_path" value="$(arg replicator_dump_path)" />
+  </include>
+
+  <!-- when mongod is deployed as repl set mode, it is uncertain to be killed. -->
+  <!-- This is watcher checking if mongod exits successfully, and when not, kill mongod process. -->
+  <node name="mongod_kill_watcher"
+        pkg="jsk_robot_startup" type="mongod_kill_watcher.py"
+        machine="$(arg machine)"
+        if="$(arg repl_set_mode)">
+    <param name="db_path" value="$(arg db_path)" />
+  </node>
+</launch>

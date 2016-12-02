@@ -1,0 +1,61 @@
+<launch>
+  <arg name="CREATE_MANAGER" default="true" />
+  <arg name="MANAGER_NAME" default="roi_image_proc_manager" />
+
+  <node if="$(arg CREATE_MANAGER)"
+        pkg="nodelet" type="nodelet" name="$(arg MANAGER_NAME)"
+        args="manager" output="screen"/>
+
+  <arg name="DECIMATE_CAMERA" default="/kinect_head_c2/rgb" />
+  <arg name="DECIMATE_IMAGE" default="image_rect_mono" />
+  <arg name="DECIMATE_OUTPUT_CAMERA" default="roi_camera_output" />
+  <!--arg name="DECIMATE_OUTPUT_IMAGE" default="image_raw" /-->
+
+  <node pkg="nodelet" type="nodelet" name="roi_crop_decimate"
+        args="load image_proc/crop_decimate $(arg MANAGER_NAME)"
+        machine="c2"
+        clear_params="true" >
+    <remap from="camera/image_raw" to="$(arg DECIMATE_CAMERA)/$(arg DECIMATE_IMAGE)" />
+    <remap from="camera_out" to="$(arg DECIMATE_OUTPUT_CAMERA)" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="roi_crop_lh_decimate"
+        args="load image_proc/crop_decimate $(arg MANAGER_NAME)"
+        machine="c2"
+        clear_params="true" >
+    <remap from="camera/image_raw" to="/l_forearm_cam/rotated/image" />
+    <remap from="/l_forearm_cam/rotated/camera_info"
+           to="/l_forearm_cam/camera_info" />
+    <remap from="camera_out" to="roi_camera_output_lh" />
+  </node>
+  <node pkg="nodelet" type="nodelet" name="roi_crop_rh_decimate"
+        args="load image_proc/crop_decimate $(arg MANAGER_NAME)"
+        machine="c2"
+        clear_params="true" >
+    <remap from="camera/image_raw" to="/r_forearm_cam/rotated/image" />
+    <remap from="/r_forearm_cam/rotated/camera_info"
+           to="/r_forearm_cam/camera_info" />
+    <remap from="camera_out" to="roi_camera_output_rh" />
+  </node>
+
+  <node pkg="jsk_pr2_startup" type="roi-reconfigure-call.l"
+        machine="c2"
+        name="roi_reconfigure_call" output="screen" respawn="true" >
+  </node>
+
+  <node pkg="jsk_topic_tools" type="topic_buffer_server"
+        machine="c2"
+        name="roi_topic_buffer_server"
+        args=" /roi_camera_output/image_raw"
+        output="screen"/>
+  <node pkg="jsk_topic_tools" type="topic_buffer_server"
+        machine="c2"
+        name="roi_lh_topic_buffer_server"
+        args=" /roi_camera_output_lh/image_raw"
+        output="screen"/>
+  <node pkg="jsk_topic_tools" type="topic_buffer_server"
+        machine="c2"
+        name="roi_rh_topic_buffer_server"
+        args=" /roi_camera_output_rh/image_raw"
+        output="screen"/>
+
+</launch>

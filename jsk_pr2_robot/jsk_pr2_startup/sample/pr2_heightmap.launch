@@ -1,0 +1,22 @@
+<launch>
+  <arg name="input_cloud" default="/tilt_scan_shadow_filtered"/>
+  <!-- <arg name="input_cloud" default="/kinect_head_c2/depth_registered/points"/> -->
+
+  <!-- Too remove Ceiling Plane -->
+  <node pkg="nodelet" type="nodelet" name="pass_through_z"
+      args="standalone pcl/PassThrough">
+  <remap from="~input" to="$(arg input_cloud)" />
+    <rosparam>
+      filter_field_name: z 
+      filter_limit_min: 0
+      filter_limit_max: 1.2
+    </rosparam>
+  </node>
+
+  <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch">
+    <arg name="STAND_FRAME" value="map"/>
+    <arg name="ROBOT_FRAME" value="base_footprint"/>
+    <arg name="DEBUG_VIEW" default="false" />
+    <arg name="INPUT" value="pass_through_z/output"/>
+  </include>
+</launch>

@@ -1,0 +1,57 @@
+<launch>
+  <!-- roslaunch local_app_manager app_manager.launch -->
+
+  <include file="$(find jsk_android_gui_api9)/cameras_and_points_mux.launch">
+    <arg name="USE_NODELET" value="false"/>
+  </include>
+
+  <node name="tablet_receiver_default" pkg="jsk_smart_gui" respawn="true"
+        machine="c2"
+        type="tablet_receiver.l" output="screen" args="(execute-main)" >
+    <param name="~ray_srv" value="/pointcloud_screenpoint_nodelet/screen_to_point"/>
+  </node>
+
+  <node name="tablet_receiver_emergency" pkg="jsk_smart_gui" respawn="true"
+        machine="c2"
+        type="emergency_stop.l" output="screen" args="(execute-main)" />
+
+  <node name="image_input_mux_throttle" pkg="jsk_topic_tools" type="lightweight_throttle">
+    <remap from="~input" to="/image_input_mux" />
+    <remap from="~output" to="/image_input_mux_throttle" />
+    <rosparam>
+      update_rate: 5
+    </rosparam>
+  </node>
+
+  <node pkg="image_view2" name="image_view2_for_tablet"
+        machine="c2"
+        type="image_view2" output="screen" respawn="true">
+    <remap from="image" to="/image_input_mux_throttle"/>
+    <remap from="camera_info" to="/camera_info_input_mux"/>
+    <remap from="image_marked" to="/tablet/marked/image_raw"/>
+    <param name="blurry" value="true"/>
+    <param name="use_window" value="false"/>
+  </node>
+
+  <node pkg="topic_tools" type="mux" respawn="true"
+        name="marked_camera_info"
+        args="/tablet/marked/camera_info /camera_info_input_mux">
+    <remap from="mux" to="marked_camera_info_mux"/>
+    <param name="lazy" value="true"/>
+  </node>
+
+  <node ns="/tablet/marked" pkg="image_proc" type="image_proc"
+        machine="c2"
+        respawn="true" name="marked_image_proc"/>
+
+  <node name="tablet_marked_image_throttle" pkg="jsk_topic_tools" type="lightweight_throttle">
+    <remap from="~input" to="/tablet/marked/image_rect_color/compressed" />
+    <remap from="~output" to="/tablet/marked/image_rect_color/compressed_throttle" />
+    <rosparam>
+      update_rate: 5
+    </rosparam>
+  </node>
+  <node pkg="jsk_rviz_plugins"
+        type="rviz_mouse_point_to_tablet.py"
+        name="rviz_mouse_point_to_tablet" />
+</launch>

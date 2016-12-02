@@ -1,0 +1,30 @@
+<package>
+  <name>jsk_fetch_startup</name>
+  <version>1.0.9</version>
+  <description>
+     jsk_fetch_startup
+
+     data/boost_sound.wav is downloaded from https://www.youtube.com/watch?v=HM-xG0qXaeA
+  </description>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/jsk_fetch_startup</url>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>jsk_maps</run_depend>
+  <run_depend>fetch_navigation</run_depend>
+  <run_depend>fetch_driver_msgs</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>tf2_ros</run_depend>
+
+  <!-- for fetch_naviation -->
+  <run_depend>amcl</run_depend>
+  <run_depend>map_server</run_depend>
+  <run_depend>move_base</run_depend>
+
+  <test_depend>rostest</test_depend>
+
+  <export>
+  </export>
+</package>
