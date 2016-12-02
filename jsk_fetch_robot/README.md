@@ -100,6 +100,13 @@ fetch-interface function APIs
 (send *ri* :angle-vector (send *fetch* :angle-vector) 5000)
   ```
 
+  only neck
+```
+(send *fetch :head :neck-y :joint-angle 50)
+(send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+(send *ri* :wait-interpolation)
+```
+
 - get angle value of individual joint
   ```
 (send *fetch* :torso :waist-z :joint-angle)
