@@ -23,16 +23,6 @@
   <arg name="launch_c3_startup" default="false" />
   <arg name="USER_NAME" default="false" />
 
-  <!-- DB_CLIENT.LAUNCH Configuration -->
-  <arg name="store_move_base_log" default="true" />
-  <arg name="store_object_detection_log" default="true" />
-  <arg name="store_action_result_log" default="true" />
-  <arg name="store_tf" default="true" />
-  <arg name="store_joint_states" default="true" />
-  <arg name="store_camera_rgb" default="true" />
-  <arg name="store_camera_depth" default="true" />
-  <arg name="store_people" default="true" />
-
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
            if="$(arg launch_c3_startup)" />
   <include file="$(find pr2_machine)/$(env ROBOT).machine"
@@ -101,15 +91,6 @@
   <include if="$(arg launch_db)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch" >
     <arg name="map_frame" value="$(arg map_frame)" />
-    <arg name="store_move_base_log" value="$(arg store_move_base_log)" />
-    <arg name="store_object_detection_log" value="$(arg store_object_detection_log)" />
-    <arg name="store_action_result_log" value="$(arg store_action_result_log)" />
-    <arg name="store_tf" value="$(arg store_tf)" />
-    <arg name="store_joint_states" value="$(arg store_joint_states)" />
-    <arg name="store_camera_rgb" value="$(arg store_camera_rgb)" />
-    <arg name="store_camera_depth" value="$(arg store_camera_depth)" />
-    <arg name="store_people" value="$(arg store_people)" />
-
     <arg name="twitter" value="$(arg launch_twitter)"/>
     <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
   </include>
