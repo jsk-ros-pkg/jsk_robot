@@ -110,7 +110,7 @@ class ActionLogger(LoggerBase):
         if type(type_obj.header) != std_msgs.msg.Header: return None # ignore non-standard header message
         if hasattr(type_obj,'goal_id') and hasattr(type_obj,'goal') and type(type_obj.goal_id) == actionlib_msgs.msg.GoalID:
             return (lambda msg: self.__action_goal_cb(name,type_name,msg)) # action goal
-        elif hasattr(type_obj,'status') and type(type_obj.status) == actionlib_msgs.msg.GoalStatus:
+        elif hasattr(type_obj,'status') and isinstance(type_obj.status, actionlib_msgs.msg.GoalStatus):
             if hasattr(type_obj,'result'):
                 return (lambda msg: self.__action_result_cb(name,type_name,msg)) # action result
             elif hasattr(type_obj, 'feedback'):
