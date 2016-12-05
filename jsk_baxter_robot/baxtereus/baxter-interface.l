@@ -388,12 +388,17 @@
    ))
 
 
-(defun baxter-init (&key (safe t) (type :default-controller))
-  (if (not (boundp '*ri*))
-      (setq *ri* (instance baxter-interface :init :type type)))
-  (if (not (boundp '*baxter*))
-      (if safe
-	  (setq *baxter* (instance baxter-robot-safe :init))
-	(setq *baxter* (instance baxter-robot :init))))
-  (send *ri* :calib-grasp :arms)
-  )
+(defun baxter-init (&key (safe t) (type :default-controller) (moveit t))
+  (let (mvit-env mvit-rb)
+    (when moveit
+      (setq mvit-env (instance baxter-moveit-environment))
+      (setq mvit-rb (instance baxter-robot :init)))
+    (if (not (boundp '*ri*))
+        (setq *ri* (instance baxter-interface :init :type type
+                             :moveit-environment mvit-env
+                             :moveit-robot mvit-rb)))
+    (if (not (boundp '*baxter*))
+        (if safe
+        (setq *baxter* (instance baxter-robot-safe :init))
+      (setq *baxter* (instance baxter-robot :init))))
+    (send *ri* :calib-grasp :arms)))
