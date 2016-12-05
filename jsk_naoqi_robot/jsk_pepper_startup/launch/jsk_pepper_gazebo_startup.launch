@@ -1,6 +1,32 @@
 <launch>
-  <include file="$(find pepper_gazebo_plugin)/launch/pepper_gazebo_plugin_Y20.launch"/>
-  <node name="move_base" pkg="move_base" type="move_base">
-    <rosparam file="$(find jsk_pepper_startup)/config/move_base.yaml" command="load" />  
+  <param name="/use_sim_time" value="true"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+     <arg name="world_name" value="$(find eusurdf)/worlds/room73b2.world"/>
+  </include>
+  <include file="$(find pepper_description)/launch/pepper_upload.launch" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+	args="-param robot_description -urdf -x -0.5 -y 1 -z 0.88 -model pepper_MP" />
+  <include file="$(find pepper_control)/launch/pepper_control_trajectory_all.launch"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    <param name="publish_frequency" value="50.0"/>
+    <param name="tf_prefix"         value=""/>
   </node>
+  <node name="move_base_node" pkg="move_base" type="move_base" respawn="false" output="screen">
+    <rosparam file="$(find jsk_pepper_startup)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find jsk_pepper_startup)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find jsk_pepper_startup)/config/global_costmap_params.yaml" command="load"/>
+    <rosparam file="$(find jsk_pepper_startup)/config/local_costmap_params.yaml" command="load"/>
+    <rosparam file="$(find jsk_pepper_startup)/config/move_base_params.yaml" command="load" />
+    <rosparam file="$(find jsk_pepper_startup)/config/base_local_planner_params.yaml" command="load" />
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="world_to_eng2"
+        args="0 0 0 0 0 0 /world /eng2 100"/>
+  <include file="$(find jsk_maps)/launch/start_map_eng2_main.launch" />
+  <node pkg="tf" type="static_transform_publisher" name="eng_7f_to_73B2"
+        args="0 6.9 0 0 0 0 /eng2/7f /eng2/7f/73B2 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+        args="0 0 0 0 0 0 /map /odom 100"/> 
+  <node pkg="tf" type="static_transform_publisher" name="odom_to_baselink"
+        args="0 0 0 0 0 0 /odom /base_link 100"/>
+
 </launch>
