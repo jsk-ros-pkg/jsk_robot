@@ -77,7 +77,7 @@
     (send self :go-grasp :pos 0.1 :effort effort :wait wait))
   (:go-grasp
     (&key (pos 0) (effort) (wait t))
-    (setq effort (or effort 20))
+    (setq effort (or effort 40))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
       (send goal :goal :command :position pos)

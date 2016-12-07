@@ -2,6 +2,7 @@
   <node pkg="jsk_robot_startup" type="start_launch_sound.py"
         name="start_launch_sound" />
   <arg name="map_frame" default="eng2" />
+  <arg name="launch_map" default="true" />
   <arg name="launch_openni" default="false" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_imagesift" default="false" />
@@ -55,7 +56,8 @@
        <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
        type="tf_publish.py" /> -->
 
-  <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
+  <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch"
+           if="$(arg launch_map)">
     <arg name="MACHINE" value="c2" />
   </include>
 

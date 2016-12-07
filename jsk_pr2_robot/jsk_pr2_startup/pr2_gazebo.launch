@@ -9,6 +9,7 @@
   <arg name="num_worker_threads" default="4" />
   <arg name="launch_pr2" default="true" />
   <arg name="map_frame" default="eng2" />
+  <arg name="launch_map" default="true" />
   <arg name="INITIAL_POSE_X" default="0.0" />
   <arg name="INITIAL_POSE_Y" default="0.0" />
   <arg name="INITIAL_POSE_Z" default="0.0" />
@@ -132,6 +133,7 @@
   <include file="$(find jsk_pr2_startup)/pr2.launch"
            if="$(arg launch_pr2)">
     <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="launch_map" value="$(arg launch_map)" />
     <arg name="launch_openni" value="false" />
     <arg name="launch_db" value="false" />
     <arg name="launch_hark" value="false" />

@@ -1,0 +1,4 @@
+- git:
+    local-name: code-iai/iai_maps
+    uri: https://github.com/code-iai/iai_maps
+    version: master

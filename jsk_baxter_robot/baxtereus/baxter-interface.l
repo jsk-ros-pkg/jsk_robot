@@ -232,14 +232,68 @@
      (ros::publish "/robot/head/command_head_nod" msg)
      )
    )
-  (:angle-vector (av &optional (tm :fast) (ctype controller-type) (start-time 0) &rest args)
-		 (send* self :angle-vector-sequence (list av) (list tm) ctype start-time args))
-  (:angle-vector-sequence (avs &optional (tms :fast) (ctype controller-type) (start-time 0) &key (scale 2.2) (min-time 0.05))
-		 ;; force add current position to the top of avs
-		 (if (atom tms) (setq tms (list tms)))
-     (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
-		 (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
-  
+  (:angle-vector-raw (av &optional (tm :fast) (ctype controller-type) (start-time 0)
+                         &key (scale 2.2) (min-time 0.05) &allow-other-keys)
+    (send self :angle-vector-sequence-raw (list av) (list tm) ctype start-time :scale scale :min-time min-time))
+  (:angle-vector-sequence-raw (avs &optional (tms :fast) (ctype controller-type) (start-time 0)
+                                   &key (scale 2.2) (min-time 0.05) &allow-other-keys)
+    ;; force add current position to the top of avs
+    (if (atom tms) (setq tms (list tms)))
+    (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+    (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
+  (:angle-vector
+   (av &optional tm (ctype controller-type) (start-time 0) &rest args
+       &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+   "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
+- av : joint angle vector [rad]
+- tm : (time to goal in [msec]) ;; currently this value is ignored
+"
+   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
+   (if (and (get self :moveit-environment)
+            (send (get self :moveit-environment) :robot))
+     (if (or (numberp tm) (null tm))
+       (progn
+         (unless tm (setq tm 3000))
+         (send-super* :angle-vector-motion-plan av :ctype ctype :move-arm move-arm :total-time tm
+                      :start-offset-time start-offset-time :clear-velocities clear-velocities
+                      :use-torso nil args))
+       (progn
+         (warning-message 3 ":angle-vector tm is not a number, execute :angle-vector-raw instead~%")
+         (unless tm (setq tm :fast))
+         (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args))))
+     (progn
+       (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
+       (unless tm (setq tm :fast))
+       (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))))
+  (:angle-vector-sequence
+   (avs &optional tm (ctype controller-type) (start-time 0) &rest args
+        &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector-sequence
+                  (send* self :angle-vector-sequence-raw avs tm ctype start-time args)))
+   (if (and (get self :moveit-environment)
+            (send (get self :moveit-environment) :robot))
+     (if (or (numberp tm) (null tm))
+       (progn
+         (unless tm (setq tm 3000))
+         (send-super* :angle-vector-motion-plan avs :ctype ctype :move-arm move-arm :total-time tm
+                      :start-offset-time start-offset-time :clear-velocities clear-velocities
+                      :use-torso nil args))
+       (progn
+         (warning-message 3 ":angle-vector-sequence tm is not a number, execute :angle-vector-sequence-raw instead~%")
+         (unless tm (setq tm :fast))
+         (return-from :angle-vector-sequence
+                      (send* self :angle-vector-sequence-raw avs tm ctype start-time args))))
+     (progn
+       (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-sequence-raw instead~%")
+       (unless tm (setq tm :fast))
+       (return-from :angle-vector-sequence
+                    (send* self :angle-vector-sequence-raw avs tm ctype start-time args)))))
   (:ros-state-callback
    (msg)
    (let ((robot-msg-names (send msg :name)) (torso-index))
@@ -273,6 +327,17 @@
                (cons :target-link
                      (send self :search-link-from-name "left_gripper"))
                (cons :joint-list (send robot :larm :joint-list))
+               )
+         (list :arms
+               ;; can not use inverse-kinematics
+               ;; currently only supports angle-vector
+               (cons :group-name "both_arms")
+               (cons :target-link
+                     (list
+                       (send self :search-link-from-name "left_gripper")
+                       (send self :search-link-from-name "right_gripper")))
+               (cons :joint-list (append (send robot :larm :joint-list)
+                                         (send robot :rarm :joint-list)))
                )
          )
 #| SRDF generated from baxter.srdf.xacro in baxter_moveit_config
@@ -323,12 +388,17 @@
    ))
 
 
-(defun baxter-init (&key (safe t) (type :default-controller))
-  (if (not (boundp '*ri*))
-      (setq *ri* (instance baxter-interface :init :type type)))
-  (if (not (boundp '*baxter*))
-      (if safe
-	  (setq *baxter* (instance baxter-robot-safe :init))
-	(setq *baxter* (instance baxter-robot :init))))
-  (send *ri* :calib-grasp :arms)
-  )
+(defun baxter-init (&key (safe t) (type :default-controller) (moveit t))
+  (let (mvit-env mvit-rb)
+    (when moveit
+      (setq mvit-env (instance baxter-moveit-environment))
+      (setq mvit-rb (instance baxter-robot :init)))
+    (if (not (boundp '*ri*))
+        (setq *ri* (instance baxter-interface :init :type type
+                             :moveit-environment mvit-env
+                             :moveit-robot mvit-rb)))
+    (if (not (boundp '*baxter*))
+        (if safe
+        (setq *baxter* (instance baxter-robot-safe :init))
+      (setq *baxter* (instance baxter-robot :init))))
+    (send *ri* :calib-grasp :arms)))
