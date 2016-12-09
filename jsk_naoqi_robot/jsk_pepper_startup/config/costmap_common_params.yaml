@@ -1,4 +1,4 @@
-#robot_base_frame: base_link
+#robot_base_frame: /base_link
 
 #transform_tolerance: 0.5
 

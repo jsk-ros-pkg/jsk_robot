@@ -5,7 +5,7 @@
   </include>
   <include file="$(find pepper_description)/launch/pepper_upload.launch" />
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-	args="-param robot_description -urdf -x -0.5 -y 1 -z 0.88 -model pepper_MP" />
+       args="-param robot_description -urdf -x -0.5 -y 1 -z 0.88 -model pepper_MP" />
   <include file="$(find pepper_control)/launch/pepper_control_trajectory_all.launch"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher">
     <param name="publish_frequency" value="50.0"/>
@@ -25,8 +25,14 @@
   <node pkg="tf" type="static_transform_publisher" name="eng_7f_to_73B2"
         args="0 6.9 0 0 0 0 /eng2/7f /eng2/7f/73B2 100"/>
   <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
-        args="0 0 0 0 0 0 /map /odom 100"/> 
+        args="0 0 0 0 0 0 /map /odom 100"/>
   <node pkg="tf" type="static_transform_publisher" name="odom_to_baselink"
         args="0 0 0 0 0 0 /odom /base_link 100"/>
 
 </launch>
+
+  <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/> -->
+  <!-- <node pkg="stage_ros" type="stageros" name="stageros" args="$(find eusurdf)/worlds/room73b2.world" respawn="false" > -->
+  <!--   <param name="base_watchdog_timeout" value="0.2"/> -->
+  <!-- </node> -->
+  <!-- "$(find navigation_stage)/stage_config/maps/willow-full-0.025.pgm 0.025" -->
