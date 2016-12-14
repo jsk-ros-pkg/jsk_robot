@@ -78,7 +78,7 @@
 	  base-coords))
 (defmethod aero-upper-interface
   (:init (&rest args)
-    (send-super* :init :robot AeroUpperRobot-robot args)
+    (send-super* :init :robot AeroUpperRobot-robot :joint-states-topic "joint_states_isolated" args)
     (mapcar #'(lambda (ctype)
                 (send self :add-controller ctype))
             (send self :default-controller-list))
