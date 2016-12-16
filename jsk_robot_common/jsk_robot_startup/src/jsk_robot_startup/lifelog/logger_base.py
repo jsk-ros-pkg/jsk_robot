@@ -25,10 +25,10 @@ class LoggerBase(object):
         self.msg_store = MessageStoreProxy(database=self.db_name, collection=self.col_name)
         rospy.loginfo("connected to %s.%s" % (self.db_name, self.col_name))
 
-    def insert(self, msg, meta={}):
+    def insert(self, msg, meta={}, wait=False):
         if self.task_id is not None:
             meta.update({ "task_id": self.task_id })
-        return self.msg_store.insert(msg, meta)
+        return self.msg_store.insert(msg, meta, wait=wait)
 
     def spinOnce(self):
         rospy.sleep(self.update_cycle)
