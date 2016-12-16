@@ -2,6 +2,7 @@
 ;; Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 
 (ros::load-ros-manifest "jsk_robot_startup")
+(ros::load-ros-manifest "tf2_msgs")
 (require :mongo-client "package://roseus_mongo/euslisp/mongo-client.l")
 
 (defparameter *task-name* :none)
@@ -15,11 +16,24 @@
       (if (and task-id (stringp task-id))
           task-id
           (string (read (piped-fork "uuidgen -t"))))))
-  (setq *task-id* (ros::get-param "/task_id"))
-  (ros::ros-info "start task ~A (id: ~A)" *task-name* *task-id*))
+  (while (null *task-id*)
+    (setq *task-id* (ros::get-param "/task_id")))
+  (ros::ros-info "start task ~A (id: ~A)" *task-name* *task-id*)
+  (let (tfmsg)
+    (ros::subscribe "/tf_static" tf2_msgs::TFMessage
+                    #'(lambda (m) (setq tfmsg m)))
+    (while (null tfmsg) (unix::usleep (* 50 1000)) (ros::spin-once))
+    (ros::unsubscribe "/tf_static")
+    (mongo::insert tfmsg
+                   :meta `((:task_name . ,*task-name*)
+                           (:task_id . ,*task-id*)))
+    (ros::ros-info "inserted static tf frames: ~A" tfmsg))
+  t)
+
 
 (defun end-task ()
   (ros::ros-info "end task ~A (id: ~A)" *task-name* *task-id*)
+  (ros::delete-param "/task_id")
   (setq *task-name* :none)
   (setq *task-id* nil))
 
