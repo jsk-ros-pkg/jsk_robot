@@ -106,7 +106,7 @@
 	 (send (send self :right_e0) :max-joint-velocity 1)
 	 (send (send self :right_s0) :max-joint-velocity 1.4)
          )
-  (:self-collision-check (&key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &rest args &allow-other-keys)
+  (:self-collision-check (&rest args &key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &allow-other-keys)
                          (send-super* :self-collision-check :pairs pairs args))
   )
 
