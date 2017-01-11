@@ -2,9 +2,9 @@
 
 (defmethod baxter-robot
   (:ik-prepared-poses
-   (&optional poses)
+   (&optional (poses :null))
    (let ((ik-prepared-poses (or (get self :ik-prepared-poses) '(:untuck-pose))))
-     (if (null poses)
+     (if (eq poses :null)
          (return-from :ik-prepared-poses ik-prepared-poses)
        (setf (get self :ik-prepared-poses) poses))
      poses))
