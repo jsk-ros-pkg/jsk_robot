@@ -128,18 +128,30 @@
   <param name="r_gripper_controller/gripper_action_node/stall_velocity_threshold" value="0.33" type="double"/>
   <param name="l_gripper_controller/gripper_action_node/stall_velocity_threshold" value="0.33" type="double"/>
 
+  <!-- move base for gazebo -->
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+    <arg name="gazebo" value="true" />
+    <arg name="launch_teleop_joystick" value="false" />
+    <arg name="launch_navigation" value="true" />
+  </include>
+
   <!-- pr2.launch -->
   <include file="$(find jsk_pr2_startup)/pr2.launch"
            if="$(arg launch_pr2)">
-    <arg name="map_frame" value="$(arg map_frame)" />
-    <arg name="launch_openni" value="false" />
-    <arg name="launch_db" value="false" />
-    <arg name="launch_hark" value="false" />
-    <arg name="launch_teleoperation" value="false" />
-    <arg name="launch_safety_warning" value="false" />
-    <arg name="launch_twitter" value="false" />
-    <arg name="launch_gripper_sensor" value="false" />
-    <arg name="slow_camera_framerate" value="false" />
     <arg name="launch_c3_startup" value="false" />
+    <arg name="launch_db" value="true" />
+    <arg name="launch_gripper_sensor" value="false" />
+    <arg name="launch_hark" value="false" />
+    <arg name="launch_move_base" value="false" />
+    <arg name="launch_openni" value="false" />
+    <arg name="launch_people_detection" value="false" />
+    <arg name="launch_safety_warning" value="false" />
+    <arg name="launch_tablet" value="false" />
+    <arg name="launch_teleoperation" value="false" />
+    <arg name="launch_twitter" value="false" />
+    <arg name="launch_visualize_log" value="false" />
+    <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="slow_camera_framerate" value="false" />
   </include>
+
 </launch>

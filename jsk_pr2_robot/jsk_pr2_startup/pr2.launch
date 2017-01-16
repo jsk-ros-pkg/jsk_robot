@@ -37,8 +37,10 @@
 
   <!-- special start: use when launuch_move_base is false-->
   <group unless="$(arg launch_move_base)" >
-    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch"/>
-    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop.xml" />
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+      <arg name="launch_teleop_joystick" value="true" />
+      <arg name="launch_navigation" value="false" />
+    </include>
   </group>
 
   <!-- We do not launch dynamic_tf_publisher for default anymore.
