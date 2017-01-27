@@ -69,6 +69,7 @@ class Warning:
         self.diagnostics_status_sub = rospy.Subscriber("diagnostics", DiagnosticArray, self.diagnostics_status_callback, queue_size = 1)
         self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
         #
+        self.robot_state_msgs = RobotState()
         self.battery_state_msgs = BatteryState()
         self.twist_msgs = Twist()
         #
