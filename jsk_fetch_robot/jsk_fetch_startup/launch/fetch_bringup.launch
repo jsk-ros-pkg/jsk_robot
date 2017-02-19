@@ -4,7 +4,8 @@
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="map" />
 
-  <param name="robot/name" value="fetch" />
+  <param name="robot/type" value="fetch" />
+  <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
 
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
