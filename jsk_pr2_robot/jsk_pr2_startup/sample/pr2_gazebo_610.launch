@@ -13,7 +13,7 @@
   <node name="initial_pose_publisher" output="screen"
         pkg="jsk_robot_startup" type="initialpose_publisher.l">
     <rosparam subst_value="true">
-      initial_pose_frame: /eng8/6f/610
+      transform_frame: /eng8/6f/610
       initial_pose_x: $(arg INITIAL_POSE_X)
       initial_pose_y: $(arg INITIAL_POSE_Y)
       initial_pose_yaw: $(arg INITIAL_POSE_YAW)
