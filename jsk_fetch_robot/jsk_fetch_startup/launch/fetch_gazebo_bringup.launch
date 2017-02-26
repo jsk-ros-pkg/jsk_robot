@@ -5,7 +5,7 @@
   <arg name="launch_move_base" default="true" />
   <arg name="paused" default="false" />
   <arg name="world" default="worlds/empty.world" />
-  <arg name="map_frame" default="map" />
+  <arg name="map_frame" default="eng2" />
 
   <arg name="INITIAL_POSE_X" default="0.0" />
   <arg name="INITIAL_POSE_Y" default="0.0" />
@@ -24,9 +24,8 @@
     <include file="$(find fetch_gazebo)/launch/include/fetch.launch.xml">
       <arg name="x" value="$(arg INITIAL_POSE_X)" />
       <arg name="y" value="$(arg INITIAL_POSE_Y)" />
-      <!-- wait for https://github.com/fetchrobotics/fetch_gazebo/pull/16 -->
-      <!-- <arg name="z" value="$(arg INITIAL_POSE_Z)" /> -->
-      <!-- <arg name="yaw" value="$(arg INITIAL_POSE_YAW)" /> -->
+      <arg name="z" value="$(arg INITIAL_POSE_Z)" />
+      <arg name="yaw" value="$(arg INITIAL_POSE_YAW)" />
     </include>
   </group>
 
