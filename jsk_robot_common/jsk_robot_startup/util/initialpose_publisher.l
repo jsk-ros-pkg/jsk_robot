@@ -3,6 +3,7 @@
 ;; Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 
 (ros::load-ros-manifest "geometry_msgs")
+(ros::load-ros-manifest "topic_tools")
 (ros::roseus "initialpose_publisher")
 (ros::rate 1)
 
@@ -12,6 +13,42 @@
 (defparameter *initial-pose-y* (* (ros::get-param "~initial_pose_y" 0.0) 1000.0))
 (defparameter *initial-pose-yaw* (ros::get-param "~initial_pose_yaw" 0.0))
 (defparameter *amcl-pose* nil)
+
+(defun explode-frame (frame)
+  "eng2/7f/73B2 -> ('eng2' '7f' '73B2')"
+  (reverse (lisp::explode-directory-names frame)))
+(defun join-frame (frame)
+  "('eng2' '7f' '73B2') -> eng2/7f/73B2"
+  (let ((str (car frame)))
+    (dolist (s (cdr frame))
+      (setq str (concatenate string str "/" s)))
+    str))
+
+(defun set-map-tf (&optional (ns "map_tf_mux") (timeout 10))
+  (let ((srv-list (format nil "~A/list" ns))
+        (srv-select (format nil "~A/select" ns))
+        (target (explode-frame *transform-frame*))
+        (floor-list))
+    (dolist (srv (list srv-list srv-select))
+      (ros::ros-info "waiting for service ~A (timeout: ~A)" srv timeout)
+      (unless (ros::wait-for-service srv timeout)
+        (ros::ros-error "service ~A not found. Could not set initial map tf" srv)
+        (return-from set-map-tf nil)))
+    (setq floor-list
+          (mapcar #'explode-frame
+                  (send (ros::service-call srv-list (instance topic_tools::MuxListRequest :init)) :topics)))
+    (dolist (floor floor-list)
+      (when (and
+             (<= (length floor) (length target))
+             (every #'identity
+                   (mapcar #'substringp (subseq target 0 (length floor)) floor)))
+        (ros::service-call srv-select (instance topic_tools::MuxSelectRequest :init
+                                                :topic (join-frame floor)))
+        (ros::ros-info "successfully set map tf to ~A" (join-frame floor))
+        (return-from set-map-tf t)))
+    (ros::ros-error "target frame ~A not found in selectable list ~A"
+                    target (mapcar #'join-frame floor-list))
+    nil))
 
 (defun make-initial-pose (x y yaw &optional (frame-id "map"))
   (unless (boundp '*tfl*)
@@ -50,6 +87,9 @@
                              *initial-pose-y*
                              *initial-pose-yaw*
                              *transform-frame*))
+
+    (set-map-tf)
+
     (dotimes (i 30)
       (ros::spin-once)
       (ros::sleep)
