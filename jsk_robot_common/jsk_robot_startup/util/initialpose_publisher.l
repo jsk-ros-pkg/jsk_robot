@@ -7,6 +7,8 @@
 (ros::roseus "initialpose_publisher")
 (ros::rate 1)
 
+(defparameter *initial-pose-topic* "/initialpose")
+(defparameter *amcl-topic* "/amcl_pose")
 (defparameter *transform-base* (ros::get-param "~transform_base" "map"))
 (defparameter *transform-frame* (ros::get-param "~transform_frame" "eng2/7f/73B2"))
 (defparameter *initial-pose-x* (* (ros::get-param "~initial_pose_x" 0.0) 1000.0))
@@ -78,9 +80,9 @@
 
 (defun main ()
   (let (msg amcl-cds init-cds cds-diff)
-    (ros::advertise "/initialpose" geometry_msgs::PoseWithCovarianceStamped 1 t)
+    (ros::advertise *initial-pose-topic* geometry_msgs::PoseWithCovarianceStamped 1 t)
     (unix:sleep 1)
-    (ros::subscribe "/amcl_pose" geometry_msgs::PoseWithCovarianceStamped #'amcl-pose-cb)
+    (ros::subscribe *amcl-topic* geometry_msgs::PoseWithCovarianceStamped #'amcl-pose-cb)
 
     (setq msg
           (make-initial-pose *initial-pose-x*
@@ -99,11 +101,11 @@
         (setq amcl-cds (ros::tf-pose->coords (send *amcl-pose* :pose :pose)))
         (setq cds-diff (+ (norm (send init-cds :difference-position amcl-cds))
                           (norm (send init-cds :difference-rotation amcl-cds))))
-        (ros::ros-info "error of /initialpose and /amcl_pose: ~A" cds-diff)
+        (ros::ros-info "error of ~A and ~A: ~A" *initial-pose-topic* *amcl-topic* cds-diff)
         (when (< cds-diff 100)
           (return-from main t))
-        (ros::publish "/initialpose" msg)))
-    (ros::ros-error "failed to change initial pose")))
+        (ros::publish *initial-pose-topic* msg)))
+    (ros::ros-error "failed to change initial pose")
+    nil))
 
-(main)
-(exit)
+(if (main) (exit 0) (exit 1))
