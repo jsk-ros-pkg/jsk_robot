@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="jsk_robot_startup" type="WheelOdometryPublisher.py" name="wheel_odometry_publisher">
+    <remap from="~init_odom" to="/odom" />
+    <remap from="~velocity" to="/tricycle_linear_vel_local" />
+    <remap from="~omega" to="/tricycle_angular_vel_local" /> 
+  </node>
+</launch>
