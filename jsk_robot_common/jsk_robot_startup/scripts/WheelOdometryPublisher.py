@@ -3,8 +3,8 @@
 import rospy
 import numpy
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float64
-from geometry_msgs.msg import Twist
+from std_msgs.msg import Float64, Empty
+from geometry_msgs.msg import Twist, Point, Quaternion
 import tf
 import sys
 import threading
@@ -15,12 +15,12 @@ class WheelOdometryPublisher:
         rospy.init_node("WheelOdometryPublisher", anonymous=True)
         self.pub = rospy.Publisher("~output", Odometry, queue_size=10)
         self.broadcast = tf.TransformBroadcaster()
-        self.listener = tf.TransformListener()
+        # self.listener = tf.TransformListener()
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
         self.rate = float(rospy.get_param("~rate", 100))
         self.odom_frame = rospy.get_param("~odom_frame", "wheel_odom")
-        self.base_link_frame = rospy.get_param("~base_link_frame", "base_footprint") 
+        self.base_link_frame = rospy.get_param("~base_link_frame", "base_footprint")
         self.odom = None
         self.dt = 1.0 / self.rate
         self.v_sigma = [rospy.get_param("~sigma_x", 0.05),
@@ -34,25 +34,51 @@ class WheelOdometryPublisher:
         self.sigma_roll_orientation = rospy.get_param("~sigma_roll_orientation", 0.01)
         self.velocity = 0.0
         self.omega = 0.0
-        self.init_odom = False
         self.lock = threading.Lock()
         self.r = rospy.Rate(self.rate)
         self.velocity_sub = rospy.Subscriber("~velocity", Float64, self.velocity_callback)
         self.omega_sub = rospy.Subscriber("~omega", Float64, self.omega_callback)
-        self.odom_init_sub = rospy.Subscriber("~init_odom", Odometry, self.odom_init_callback)
+        # self.odom_init_sub = rospy.Subscriber("~init_odom", Odometry, self.odom_init_callback)
+        self.init_trigger_sub = rospy.Subscriber("~init_trigger", Empty, self.init_trigger_callback)
+        self.init_odometry()
 
     def execute(self):
         while not rospy.is_shutdown():
             self.update()
             self.r.sleep()
 
-    def odom_init_callback(self, msg):
-        # initialize
-        if not self.init_odom:
-            self.odom = msg
-            self.odom.header.frame_id = self.odom_frame
-            self.odom.child_frame_id = self.base_link_frame
-            self.init_odom = True
+    def init_odometry(self):
+        self.odom = Odometry()
+        self.odom.pose.pose.position = Point(0, 0, 0)
+        self.odom.pose.pose.orientation = Quaternion(0, 0, 0, 1)
+        self.odom.header.stamp = rospy.Time.now()
+        self.odom.header.frame_id = self.odom_frame
+        self.odom.child_frame_id = self.base_link_frame
+
+    def init_trigger_callback(self, msg):
+        self.init_odometry()
+
+    # def odom_init_callback(self, msg):
+    #     # initialize
+    #     if not self.init_odom:
+    #         try:
+    #             (trans,rot) = self.listener.lookupTransform(self.base_link_frame, msg.child_frame_id, rospy.Time(0))
+    #         except:
+    #             rospy.logwarn("failed to solve tf: %s to %s", msg.child_frame_id, self.base_link_frame)
+    #             return
+            
+    #         self.odom = msg
+    #         self.odom.header.frame_id = self.odom_frame
+    #         self.odom.child_frame_id = self.base_link_frame
+
+    #         trans_matrix = make_homogeneous_matrix(trans, rot)
+    #         odom_matrix =  make_homogeneous_matrix([getattr(msg.pose.pose.position, attr) for attr in ["x", "y", "z"]],
+    #                                                [getattr(msg.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]])
+    #         init_matrix = trans_matrix.dot(odom_matrix)
+    #         self.odom.pose.pose.position = Point(*list(init_matrix[:3, 3]))
+    #         self.odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(init_matrix)))
+    #         self.odom.pose.covariance = numpy.diag([0.01**2]*6).reshape(-1,).tolist()
+    #         self.init_odom = True
 
     def velocity_callback(self, msg):
         with self.lock:
@@ -71,7 +97,7 @@ class WheelOdometryPublisher:
         return quaternion
 
     def update(self):
-        if not self.init_odom:
+        if self.odom == None:
             return
         with self.lock:
             self.calc_odometry()
