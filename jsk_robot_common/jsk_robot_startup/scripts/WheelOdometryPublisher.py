@@ -4,6 +4,7 @@ import rospy
 import numpy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float64
+from geometry_msgs.msg import Twist
 import tf
 import sys
 import threading
@@ -31,7 +32,7 @@ class WheelOdometryPublisher:
         self.sigma_z_pose = rospy.get_param("~sigma_z_pose", 0.01)
         self.sigma_pitch_orientation = rospy.get_param("~sigma_pitch_orientation", 0.01)
         self.sigma_roll_orientation = rospy.get_param("~sigma_roll_orientation", 0.01)
-        self.v = 0.0
+        self.velocity = 0.0
         self.omega = 0.0
         self.init_odom = False
         self.lock = threading.Lock()
@@ -55,7 +56,7 @@ class WheelOdometryPublisher:
 
     def velocity_callback(self, msg):
         with self.lock:
-            self.v = msg.data
+            self.velocity = msg.data
             
     def omega_callback(self, msg):
         with self.lock:
@@ -84,34 +85,44 @@ class WheelOdometryPublisher:
         self.odom.child_frame_id = self.base_link_frame
         self.pub.publish(self.odom)
 
-    def calc_odometry(self, theta):
-        global_twist = Twist()
+    def calc_odometry(self):
         theta = self.orientation_to_theta(self.odom.pose.pose.orientation) # theta(t-1)
+    
+        local_twist = Twist()
+        local_twist.linear.x = self.velocity
+        local_twist.linear.y = 0.0
+        local_twist.linear.z = 0.0
+        local_twist.angular.x = 0.0
+        local_twist.angular.y = 0.0
+        local_twist.angular.z = self.omega       
         
-        # update pose, only consider 2d
+        global_twist = Twist()
         global_twist.linear.x = self.velocity * numpy.cos(theta)
         global_twist.linear.y = self.velocity * numpy.sin(theta)
         global_twist.linear.z = 0.0
         global_twist.angular.x = 0.0
         global_twist.angular.y = 0.0
         global_twist.angular.z = self.omega
-        self.odom.pose.pose = update_pose(self.odom.pose, global_twist, self.dt)
+
+        # update pose, only consider 2d
+        self.odom.pose.pose = update_pose(self.odom.pose.pose, global_twist, self.dt)
+        self.odom.twist.twist = local_twist
 
         # update covariance, only use x, y, theta of covariance
         if abs(self.velocity) < 1e-3 and abs(self.omega) < 1e-3: # trust stop state
             local_twist_cov = numpy.diag([0.01 ** 2] * 6).reshape(-1,).tolist()
         else:
             local_twist_cov = numpy.diag([x ** 2 for x in self.v_sigma]).reshape(-1,).tolist()
-        global_twist_cov = transform_local_twist_covariance_to_global(self.odom.pose.pose, local_twist_cov)
+        global_twist_cov_matrix = numpy.matrix(transform_local_twist_covariance_to_global(self.odom.pose.pose, local_twist_cov)).reshape(6, 6)
         # only use x, y, theta of covariance
-        2d_twist_cov = numpy.matrix([global_twist_cov_matrix[0, 0], global_twist_cov_matrix[0, 1], global_twist_cov_matrix[0, 5],
+        plane_twist_cov = numpy.matrix([global_twist_cov_matrix[0, 0], global_twist_cov_matrix[0, 1], global_twist_cov_matrix[0, 5],
                                      global_twist_cov_matrix[1, 0], global_twist_cov_matrix[1, 1], global_twist_cov_matrix[1, 5],
                                      global_twist_cov_matrix[5, 0], global_twist_cov_matrix[5, 1], global_twist_cov_matrix[5, 5]]).reshape(3, 3)
         # previous pose matrix
         prev_pose_cov = numpy.matrix(self.odom.pose.covariance).reshape(6, 6)
-        2d_prev_pose_cov = numpy.matrix([self.pose_cov[0, 0], self.pose_cov[0, 1], self.pose_cov[0, 5],
-                                         self.pose_cov[1, 0], self.pose_cov[1, 1], self.pose_cov[1, 5],
-                                         self.pose_cov[5, 0], self.pose_cov[5, 1], self.pose_cov[5, 5]]).reshape(3, 3)
+        plane_prev_pose_cov = numpy.matrix([prev_pose_cov[0, 0], prev_pose_cov[0, 1], prev_pose_cov[0, 5],
+                                         prev_pose_cov[1, 0], prev_pose_cov[1, 1], prev_pose_cov[1, 5],
+                                         prev_pose_cov[5, 0], prev_pose_cov[5, 1], prev_pose_cov[5, 5]]).reshape(3, 3)
         # jacobian matrix
         jacobi_pose = numpy.matrix([1.0, 0.0, -self.velocity * numpy.sin(theta) * self.dt,
                                     0.0, 1.0, self.velocity * numpy.cos(theta) * self.dt,
@@ -120,13 +131,13 @@ class WheelOdometryPublisher:
                                      numpy.sin(theta) * self.dt, numpy.cos(theta) * self.dt, 0.0,
                                      0.0, 0.0, self.dt]).reshape(3, 3)
         # covariance calculation
-        2d_pose_cov = jacobi_pose.dot(2d_prev_pose_cov.dot(jacobi_pose.T)) + jacobi_twist.dot(2d_twist_cov.dot(jacobi_twist.T))
-        self.odom.pose.covariance = [2d_pose_cov[0, 0], 2d_pose_cov[0, 1], 0.0, 0.0, 0.0, 2d_pose_cov[0, 2],
-                                     2d_pose_cov[1, 0], 2d_pose_cov[1, 1], 0.0, 0.0, 0.0, 2d_pose_cov[1, 2],
+        plane_pose_cov = jacobi_pose.dot(plane_prev_pose_cov.dot(jacobi_pose.T)) + jacobi_twist.dot(plane_twist_cov.dot(jacobi_twist.T))
+        self.odom.pose.covariance = [plane_pose_cov[0, 0], plane_pose_cov[0, 1], 0.0, 0.0, 0.0, plane_pose_cov[0, 2],
+                                     plane_pose_cov[1, 0], plane_pose_cov[1, 1], 0.0, 0.0, 0.0, plane_pose_cov[1, 2],
                                      0.0, 0.0, self.sigma_z_pose ** 2,  0.0, 0.0, 0.0,
                                      0.0, 0.0, 0.0, self.sigma_roll_orientation ** 2,  0.0, 0.0,
                                      0.0, 0.0, 0.0, 0.0, self.sigma_pitch_orientation ** 2,  0.0,
-                                     2d_pose_cov[2, 0], 2d_pose_cov[2, 1], 0.0, 0.0, 0.0, 2d_pose_cov[2, 2]]
+                                     plane_pose_cov[2, 0], plane_pose_cov[2, 1], 0.0, 0.0, 0.0, plane_pose_cov[2, 2]]
         self.odom.twist.covariance = local_twist_cov
 
 if __name__ == '__main__':
