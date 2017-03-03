@@ -1,7 +1,13 @@
 <launch>
+  <!-- <node pkg="tf" type="static_transform_publisher" name="TF_BODY_bicycle_center" args="0.291126 0.0 -0.803782 0.0 -0.175 0.0 BODY bicycle_center 100"/> -->
+  <node pkg="tf" type="static_transform_publisher" name="TF_BODY_bicycle_center" args="-0.291126 0.0 0.803782 0.0 0.175 0.0 bicycle_center BODY 100"/>
+
   <node pkg="jsk_robot_startup" type="WheelOdometryPublisher.py" name="wheel_odometry_publisher">
-    <remap from="~init_odom" to="/odom" />
+    <param name="base_link_frame" value="bicycle_center"/>
+    <param name="invert_tf" value="false"/>
+    <param name="publish_tf" value="true"/>
     <remap from="~velocity" to="/tricycle_linear_vel_local" />
-    <remap from="~omega" to="/tricycle_angular_vel_local" /> 
+    <remap from="~omega" to="/tricycle_angular_vel_local" />
+    <remap from="~output" to="/wheel_odom" />    
   </node>
 </launch>
