@@ -28,7 +28,7 @@
     <remap from="~base_to_init_transform" to="/footcoords/odom_init_transform" />
     <rosparam subst_value="true">
       init_odom_frame: odom_init
-      base_link_frame: $(arg base_link_frame)
+      body_link_frame: $(arg base_link_frame)
     </rosparam>
   </node>
   
