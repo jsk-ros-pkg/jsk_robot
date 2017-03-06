@@ -5,7 +5,7 @@
   <node pkg="jsk_robot_startup" type="WheelOdometryPublisher.py" name="wheel_odometry_publisher">
     <param name="base_link_frame" value="bicycle_center"/>
     <param name="invert_tf" value="false"/>
-    <param name="publish_tf" value="true"/>
+    <param name="publish_tf" value="false"/>
     <param name="odom_frame" value="odom"/>    
     <remap from="~velocity" to="/tricycle_linear_vel_local" />
     <remap from="~omega" to="/tricycle_angular_vel_local" />
