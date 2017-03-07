@@ -1,10 +1,11 @@
-language: python
+language: generic
 cache:
+  apt: true
+  pip: true
   directories:
     - $HOME/.ccache
 sudo: required
-virtualenv:
-  system_site_packages: true
+dist: trusty
 notifications:
   email:
     on_success: always
@@ -14,32 +15,29 @@ env:
   global:
     - ROSWS=wstool
     - BUILDER=catkin
-    - USE_TRAVIS=true
+    - USE_DOCKER=true
     - ROS_PARALLEL_JOBS="-j2"
     - CATKIN_PARALLEL_JOBS="-p2"
     - ROS_PARALLEL_TEST_JOBS="-j4"
     - CATKIN_PARALLEL_TEST_JOBS="-p1"
+  matrix:
+    - ROS_DISTRO=hydro    USE_DEB=true
+    - ROS_DISTRO=hydro    USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon"
+    - ROS_DISTRO=indigo   USE_DEB=true
+    - ROS_DISTRO=indigo   USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-indigo-convex-decomposition ros-indigo-ivcon"
+    - ROS_DISTRO=jade     USE_DEB=true
+    - ROS_DISTRO=jade     USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-jade-convex-decomposition ros-jade-ivcon"
+    - ROS_DISTRO=kinetic  USE_DEB=true
+    - ROS_DISTRO=kinetic  USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-kinetic-convex-decomposition ros-kinetic-ivcon"
 matrix:
   fast_finish: true
-  include:
-    - dist: precise
-      env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status-rate 0.002"
-    - dist: precise
-      env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon" CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status-rate 0.002"
-    - dist: trusty
-      env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true CATKIN_TOOLS_BUILD_OPTIONS="--summarize --limit-status-rate 0.002"
-    - dist: trusty
-      env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-indigo-convex-decomposition ros-indigo-ivcon" CATKIN_TOOLS_BUILD_OPTIONS="--summarize --limit-status-rate 0.002"
   allow_failures:
-    - dist: precise
-      env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon" CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status-rate 0.002"
-    - dist: trusty
-      env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-indigo-convex-decomposition ros-indigo-ivcon" CATKIN_TOOLS_BUILD_OPTIONS="--summarize --limit-status-rate 0.002"
-install:
-  # create another virtualenv to avoid https://github.com/travis-ci/travis-ci/issues/4948
-  - deactivate
-  - virtualenv --system-site-packages rosbuild
-  - source rosbuild/bin/activate
+    - env: ROS_DISTRO=hydro    USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon"
+    - env: ROS_DISTRO=indigo   USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-indigo-convex-decomposition ros-indigo-ivcon"
+    - env: ROS_DISTRO=jade     USE_DEB=true
+    - env: ROS_DISTRO=jade     USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-jade-convex-decomposition ros-jade-ivcon"
+    - env: ROS_DISTRO=kinetic  USE_DEB=true
+    - env: ROS_DISTRO=kinetic  USE_DEB=false NOT_TEST_INSTALL=true EXTRA_DEB="ros-kinetic-convex-decomposition ros-kinetic-ivcon"
 before_script:
   # to install pepper_meshes, nao_meshes, the licenses have to be accepted
   - if [ "$ROS_DISTRO" == "indigo" ]; then export BEFORE_SCRIPT="echo \"ros-indigo-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true\" | sudo debconf-set-selections; sudo apt-get install -y -qq ros-$ROS_DISTRO-pepper-meshes"; fi
