@@ -10,5 +10,14 @@
     <remap from="~velocity" to="/tricycle_linear_vel_local" />
     <remap from="~omega" to="/tricycle_angular_vel_local" />
     <remap from="~output" to="/wheel_odom" />    
+    <rosparam>
+      rate: 200
+      sigma_x: 0.1
+      sigma_y: 0.05
+      sigma_z: 0.001
+      sigma_roll: 0.001
+      sigma_pitch: 0.001
+      sigma_yaw: 0.05
+    </rosparam>
   </node>
 </launch>
