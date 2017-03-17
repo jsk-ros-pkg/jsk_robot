@@ -14,12 +14,12 @@ viso_odometry_offset:
   filter_buffer_size: 10
   overwrite_pdf: true
   twist_proportional_sigma: false
-  sigma_x: 0.015
+  sigma_x: 0.01
   sigma_y: 0.05
   sigma_z: 0.3
   sigma_roll: 0.3
   sigma_pitch: 0.3
-  sigma_yaw: 0.015
+  sigma_yaw: 0.01
   mean_x: 0.0
   mean_y: 0.0
   mean_yaw: 0.0
