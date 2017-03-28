@@ -1,0 +1,18 @@
+<launch>
+  <arg name="BASE_LINK_FRAME" default="$(arg BASE_LINK_FRAME)"/>
+  <arg name="velocity_topic" default="$(arg velocity_topic)"/>
+  <arg name="omega_topic" default="$(arg omega_topic)"/>
+  <arg name="WHEEL_ODOM_PARAM" default="$(arg WHEEL_ODOM_PARAM)"/>
+
+  <node pkg="jsk_robot_startup" type="WheelOdometryPublisher.py" name="wheel_odometry_publisher">
+    <param name="base_link_frame" value="$(arg BASE_LINK_FRAME)"/>
+    <param name="invert_tf" value="false"/>
+    <param name="publish_tf" value="false"/>
+    <param name="odom_frame" value="odom"/>
+    <remap from="~velocity" to="$(arg velocity_topic)" />
+    <remap from="~omega" to="$(arg omega_topic)" />
+    <remap from="~output" to="/wheel_odom" />
+    <!-- vehicle dependent parameters -->
+    <rosparam command="load" file="$(arg WHEEL_ODOM_PARAM)"/>
+  </node>
+</launch>
