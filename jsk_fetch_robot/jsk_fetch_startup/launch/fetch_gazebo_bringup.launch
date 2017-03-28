@@ -24,8 +24,9 @@
     <include file="$(find fetch_gazebo)/launch/include/fetch.launch.xml">
       <arg name="x" value="$(arg INITIAL_POSE_X)" />
       <arg name="y" value="$(arg INITIAL_POSE_Y)" />
-      <arg name="z" value="$(arg INITIAL_POSE_Z)" />
-      <arg name="yaw" value="$(arg INITIAL_POSE_YAW)" />
+      <!-- wait for https://github.com/fetchrobotics/fetch_gazebo/pull/16 -->
+      <!-- <arg name="z" value="$(arg INITIAL_POSE_Z)" /> -->
+      <!-- <arg name="yaw" value="$(arg INITIAL_POSE_YAW)" /> -->
     </include>
   </group>
 
