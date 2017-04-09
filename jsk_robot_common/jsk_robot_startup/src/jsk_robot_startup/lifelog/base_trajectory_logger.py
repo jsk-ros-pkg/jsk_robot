@@ -16,7 +16,8 @@ class BaseTrajectoryLogger(LoggerBase):
         self.map_frame = rospy.get_param('~map_frame','map')
         self.robot_frame = rospy.get_param('~robot_frame','base_link')
         self.tf_listener = tf2_ros.BufferClient("tf2_buffer_server")
-        self.initialpose_pub = rospy.Publisher('/initialpose', geometry_msgs.msg.PoseWithCovarianceStamped, queue_size=1)
+        self.initialpose_pub = rospy.Publisher('/initialpose', geometry_msgs.msg.PoseWithCovarianceStamped,
+                                               queue_size=1, latch=True)
         rospy.loginfo("map->robot: %s -> %s" % (self.map_frame, self.robot_frame))
 
         self.current_pose = None
