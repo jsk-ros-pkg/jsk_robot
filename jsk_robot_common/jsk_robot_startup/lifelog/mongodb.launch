@@ -9,6 +9,8 @@
   <arg name="replicate" default="true" />
   <arg name="replicator_dump_path" default="/tmp/replicator_dumps" />
 
+  <arg name="test_mode" default="false" />
+
   <param name="robot/database" value="$(arg db_name)" />
 
   <!-- Replication -->
@@ -32,6 +34,7 @@
     <arg name="repl_set" value="rs0"
          if="$(arg repl_set_mode)" />
     <arg name="replicator_dump_path" value="$(arg replicator_dump_path)" />
+    <arg name="test_mode" value="$(arg test_mode)" />
   </include>
 
   <!-- when mongod is deployed as repl set mode, it is uncertain to be killed. -->

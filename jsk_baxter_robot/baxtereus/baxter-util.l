@@ -1,6 +1,13 @@
 (require :baxter "package://baxtereus/baxter.l")
 
 (defmethod baxter-robot
+  (:ik-prepared-poses
+   (&optional (poses :null))
+   (let ((ik-prepared-poses (or (get self :ik-prepared-poses) '(:untuck-pose))))
+     (if (eq poses :null)
+         (return-from :ik-prepared-poses ik-prepared-poses)
+       (setf (get self :ik-prepared-poses) poses))
+     poses))
   (:inverse-kinematics
    (target-coords &rest args &key (avoid-collision-distance 5) &allow-other-keys)
    "Compute Inverse Kinematics with some strategies.
@@ -13,7 +20,7 @@
    (let ((r) (prev-av (send self :angle-vector)))
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
-       (format *error-output* "; failed for normal ik, staring from relaxed position~%")
+       (format *error-output* "; failed for normal ik, starting from relaxed position~%")
        (let  ((current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance :debug-view nil args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp nil :dump-command nil args))
@@ -22,7 +29,7 @@
              (send self :angle-vector prev-av))
          ))
      (unless r ;;
-       (format *error-output* "; failed for normal ik, try to move arms vely slowly~%")
+       (format *error-output* "; failed for normal ik, try to move arms very slowly~%")
        (let  ((step 0.0)
               (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (setq r t)
@@ -34,7 +41,7 @@
        (format *error-output* "; failed for slow ik, try to start from prepared poses~%")
        (let* ((move-joints (send-all (cadr (memq :link-list args)) :joint))
               (av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
-              (ik-prepared-poses (if (memq :ik-prepared-poses (send self :methods)) (send self :ik-prepared-poses) '(:untuck-pose))))
+              (ik-prepared-poses (send self :ik-prepared-poses)))
          (dolist (pose ik-prepared-poses)
            (unless r
              (format *error-output* "; starting from prepared pose '~A'~%" pose)
@@ -99,7 +106,7 @@
 	 (send (send self :right_e0) :max-joint-velocity 1)
 	 (send (send self :right_s0) :max-joint-velocity 1.4)
          )
-  (:self-collision-check (&key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &rest args &allow-other-keys)
+  (:self-collision-check (&rest args &key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &allow-other-keys)
                          (send-super* :self-collision-check :pairs pairs args))
   )
 

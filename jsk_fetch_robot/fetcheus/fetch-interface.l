@@ -1,6 +1,6 @@
 (ros::roseus "fetch")
 
-(require "package://fetcheus/fetch.l")
+(require "package://fetcheus/fetch-utils.l")
 (require "package://pr2eus/pr2-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
@@ -11,7 +11,7 @@
 
 (defmethod fetch-interface
   (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
@@ -32,9 +32,15 @@
 - tm : (time to goal in [msec]) ;; currently this value is ignored
 - use-torso : set t to use torso
 "
-   (let ((use-torso nil))
-     (if (cadr (member :use-torso args)) (setq use-torso t))
-     (send self :angle-vector-motion-plan av :move-arm :rarm :use-torso use-torso)
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
+   ;;
+   (when (not (numberp tm))
+     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+   (let ((use-torso t))
+     (if (and (member :use-torso args) (null (cadr (member :use-torso args)))) (setq use-torso nil))
+     (send self :angle-vector-motion-plan av :move-arm :rarm :total-time tm :start-offset-time 0.01 :use-torso use-torso :clear-velocities t)
    ))
   ;;
   (:default-controller ()
@@ -71,7 +77,7 @@
     (send self :go-grasp :pos 0.1 :effort effort :wait wait))
   (:go-grasp
     (&key (pos 0) (effort) (wait t))
-    (setq effort (or effort 20))
+    (setq effort (or effort 40))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
       (send goal :goal :command :position pos)
@@ -81,6 +87,9 @@
       (setq result (send gripper-action :get-result))
       result))
   ;;
+  (:speak (text &rest args)
+    (let ()
+      (apply #'speak-en text :topic-name "/sound_play" args)))
   )
 
 (defun fetch-init (&optional (create-viewer))

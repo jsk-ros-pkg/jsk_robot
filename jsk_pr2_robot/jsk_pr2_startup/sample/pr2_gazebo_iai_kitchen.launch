@@ -1,23 +1,25 @@
 <launch>
-  <arg name="INITIAL_POSE_X" default="1.0" />
+  <arg name="INITIAL_POSE_X" default="0.0" />
   <arg name="INITIAL_POSE_Y" default="0.0" />
   <arg name="INITIAL_POSE_YAW" default="0.0" />
   <include file="$(find jsk_pr2_startup)/pr2_gazebo.launch">
-    <arg name="world" value="$(find eusurdf)/worlds/room610.world" />
-    <arg name="map_frame" value="eng8"/>
+    <arg name="launch_map" value="false" />
     <arg name="INITIAL_POSE_X" value="$(arg INITIAL_POSE_X)" />
     <arg name="INITIAL_POSE_Y" value="$(arg INITIAL_POSE_Y)" />
     <arg name="INITIAL_POSE_YAW" value="$(arg INITIAL_POSE_YAW)" />
   </include>
 
-  <node name="initial_pose_publisher" output="screen"
-        pkg="jsk_robot_startup" type="initialpose_publisher.l">
     <rosparam subst_value="true">
-      transform_frame: /eng8/6f/610
+      transform_frame: iai_kitchen/world
       initial_pose_x: $(arg INITIAL_POSE_X)
       initial_pose_y: $(arg INITIAL_POSE_Y)
       initial_pose_yaw: $(arg INITIAL_POSE_YAW)
     </rosparam>
   </node>
 
+  <!-- Spawn iai kitchen -->
+  <include file="$(find iai_kitchen)/launch/gazebo_spawn_kitchen.launch"/>
+
+  <!-- launch iai map -->
+  <include file="$(find iai_maps)/launch/iai_maps.launch" />
 </launch>

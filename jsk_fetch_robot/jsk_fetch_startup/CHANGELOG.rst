@@ -2,6 +2,29 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.9 (2016-11-09)
+------------------
+
+1.0.8 (2016-11-08)
+------------------
+
+1.0.7 (2016-11-02)
+------------------
+* add network instruction to fetch README
+* [jsk_fetch_startup] add fetch bringup launch files for gazebo (`#692 <https://github.com/jsk-ros-pkg/jsk_robot/issues/692>`_ )
+
+  * add gazebo/fetch_gazebo_73b2.launch
+  * add fetch_gazebo_bringup.launch
+  * fetch_bringup.launch: cleanup launch file
+  * fetch_bringup.launch: add launch_move_base args
+  * add fetch_driver_msgs to package.xml
+  * fetch_bringup.launch: add launch_moveit args
+  * add more admin docs
+
+* [jsk_robot_lifelog] move logging program from  jsk_pr2_startup/jsk_pr2_lifelog to jsk_robot_startup/lifelog (`#672 <https://github.com/jsk-ros-pkg/jsk_robot/issues/672>`_ )
+* [jsk_fetch_startup/scripts/warning.py] bugfix: error with no robot_state msg is subscribed
+* Contributors: Kei Okada, Masaki Murooka, Yuki Furuta
+
 1.0.6 (2016-06-17)
 ------------------
 

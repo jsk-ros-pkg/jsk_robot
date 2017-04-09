@@ -6,6 +6,13 @@
   <arg name="machine" default="c2" />
   <arg name="output" default="screen" />
 
+  <!-- logger for additional topics -->
+  <arg name="store_tf" default="false" />
+  <arg name="store_joint_states" default="false" />
+  <arg name="store_camera_rgb" default="false" />
+  <arg name="store_camera_depth" default="false" />
+  <arg name="store_people" default="false" />
+
   <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <!-- logging and resoring pr2 position data -->

@@ -9,6 +9,7 @@
   <arg name="num_worker_threads" default="4" />
   <arg name="launch_pr2" default="true" />
   <arg name="map_frame" default="eng2" />
+  <arg name="launch_map" default="true" />
   <arg name="INITIAL_POSE_X" default="0.0" />
   <arg name="INITIAL_POSE_Y" default="0.0" />
   <arg name="INITIAL_POSE_Z" default="0.0" />
@@ -142,6 +143,7 @@
     <arg name="launch_db" value="true" />
     <arg name="launch_gripper_sensor" value="false" />
     <arg name="launch_hark" value="false" />
+    <arg name="launch_map" value="$(arg launch_map)" />
     <arg name="launch_move_base" value="false" />
     <arg name="launch_openni" value="false" />
     <arg name="launch_people_detection" value="false" />
