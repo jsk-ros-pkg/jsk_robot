@@ -127,7 +127,7 @@
 
   (:calib-grasp
    (&optional (arm :arms) &key ((:pos pos) 100))
-   (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_calibrate* arm))
+   (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_calibrate* arm :pos pos))
 
   (:start-grasp
    (&optional (arm :arms) &key (effort 50))
