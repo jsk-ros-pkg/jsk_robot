@@ -3,6 +3,7 @@
 # Store the ObjectDetection message
 #
 
+import datetime
 import rospy
 import rosgraph
 from geometry_msgs.msg import PoseStamped, TransformStamped
@@ -28,10 +29,10 @@ class ObjectDetectionLogger(LoggerBase):
         rospy.loginfo("%s initialized" % rospy.get_name())
 
     # DB Insertion function
-    def __insert_pose_to_db(self, map_to_robot, robot_to_obj):
+    def __insert_pose_to_db(self, map_to_robot, robot_to_obj, header):
         try:
             self.insert(map_to_robot)
-            self.insert(robot_to_obj)
+            self.insert(robot_to_obj, meta={"detected_at": datetime.datetime.fromtimestamp(header.stamp.to_sec())})
             rospy.loginfo('inserted map2robot: %s, robot2obj: %s' % (map_to_robot, robot_to_obj))
         except Exception as e:
             rospy.logwarn('failed to insert to db' + e)
@@ -49,7 +50,7 @@ class ObjectDetectionLogger(LoggerBase):
                 spose = PoseStamped(header=msg.header,pose=obj.pose)
                 tpose = self.tf_listener.transform(self.robot_frame, spose, self.tf_timeout)
                 obj.pose = tpose.pose
-                self.__insert_pose_to_db(map_to_robot, obj)
+                self.__insert_pose_to_db(map_to_robot, obj, msg.header)
             except Exception as e:
                 rospy.logwarn("failed to object pose transform: %s", e)
 
