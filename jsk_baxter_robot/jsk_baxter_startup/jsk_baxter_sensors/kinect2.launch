@@ -1,9 +1,11 @@
 <launch>
   <arg name="launch_openni" default="true" />
+  <arg name="depth_method" default="default" />
 
   <include file="$(find kinect2_bridge)/launch/kinect2_bridge.launch"
            if="$(arg launch_openni)">
     <arg name="use_machine" value="false"/>
+    <arg name="depth_method" value="$(arg depth_method)" />
   </include>
 
   <!-- self filter -->

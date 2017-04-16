@@ -4,6 +4,7 @@
   <arg name="launch_gripper_action" default="true"/>
   <arg name="launch_openni" default="false"/>
   <arg name="launch_kinect2" default="true"/>
+  <arg name="kinect2_depth_method" default="default" />
   <arg name="launch_voice_echo" default="true"/>
   <arg name="launch_moveit" default="true"/>
   <arg name="launch_teleop" default="false"/>
@@ -28,12 +29,14 @@
   <include if="$(arg launch_openni)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kinect.launch" >
     <arg name="launch_openni" value="$(arg start_openni)" />
+    <arg name="depth_method" value="cpu" />
   </include>
 
   <!-- Use Custom Kinect2-->
   <include if="$(arg launch_kinect2)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kinect2.launch" >
     <arg name="launch_openni" value="$(arg start_openni)" />
+    <arg name="depth_method" value="$(arg kinect2_depth_method)" />
   </include>
 
   <!-- Fix camera info -->
