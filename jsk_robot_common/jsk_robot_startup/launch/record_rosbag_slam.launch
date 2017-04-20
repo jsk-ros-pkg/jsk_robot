@@ -1,0 +1,37 @@
+<launch>
+  <arg name="save_dir" default="$(env HOME)/.ros/slam_rosbag"/>
+  <arg name="save_robot_model" default="true"/>
+  <arg name="save_openni" default="false" />
+  <arg name="save_multisense" default="false" />
+  <arg name="save_all_image" default="false" />
+  <arg name="camera_namespace" default="multisense"/>
+  <arg name="other_topics" default=""/>
+  <arg name="other_regex_topics" default="" />
+
+  <include file="$(find jsk_data)/launch/common_record.launch">
+    <arg name="bagfile_prefix" value="slam_rosbag"/>
+    <arg name="camera_namespace" value="$(arg camera_namespace)" />
+    <arg name="save_openni2" value="$(arg save_openni)" />
+    <arg name="save_openni" value="false" />
+    <arg name="save_robot_model" value="$(arg save_robot_model)" />
+    <arg name="save_all_image" value="$(arg save_all_image)" />
+    <arg name="save_multisense" value="$(arg save_multisense)" />
+    <arg name="other_topics" value="$(arg other_topics)
+                                    /imu
+                                    /map
+                                    /ground_truth_odom
+                                    /odom
+                                    /viso_odom
+                                    /viso_odom_integrated
+                                    /biped_odom_particle
+                                    /biped_odom_particle_raw
+                                    /biped_odom_offset
+                                    /viso_odom_offset
+                                    /slam_odom
+                                    "
+                                    />
+    <arg name="other_regex_topics" value="$(arg other_regex_topics)" />
+    <arg name="save_dir" value="$(arg save_dir)" />
+  </include>
+
+</launch>
