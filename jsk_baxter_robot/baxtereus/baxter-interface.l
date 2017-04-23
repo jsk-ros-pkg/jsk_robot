@@ -123,17 +123,11 @@
 
   (:clear-calib-grasp
    (&optional (arm :arms))
-   (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
-     (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*CMD_CLEAR_CALIBRATION* a)
-     )
-   )
+   (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*CMD_CLEAR_CALIBRATION* arm))
 
   (:calib-grasp
    (&optional (arm :arms) &key ((:pos pos) 100))
-   (dolist (a (if (eq arm :arms) (list "left" "right") (list (if (eq arm :rarm) "right" "left"))))
-     (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_calibrate* a)
-     )
-   )
+   (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_calibrate* arm :pos pos))
 
   (:start-grasp
    (&optional (arm :arms) &key (effort 50))
@@ -183,20 +177,18 @@
   (:command-grasp
    (cmd arm &key ((:pos pos) nil))
    (ros::spin-once)
-   (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
-     (if (equal arm "right")
-	 (send ee-cmd :id right-gripper-type)
-       (send ee-cmd :id left-gripper-type)
-       )
-     (send ee-cmd :command cmd)
-     (send ee-cmd :sender "/baxter_interface")
-     (send ee-cmd :sequence gripper-sequence-id)
-     (if pos
-         (send ee-cmd :args (format nil "{\"position\": ~A}" pos)))
-     (ros::publish (format nil "/robot/end_effector/~A_gripper/command" arm) ee-cmd)
-     (setq gripper-sequence-id (1+ gripper-sequence-id))
-     )
-   )
+   (dolist (tmp-arm (if (eq arm :arms) (list :larm :rarm) (list arm)))
+     (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
+       (if (eq tmp-arm :rarm)
+         (send ee-cmd :id right-gripper-type)
+         (send ee-cmd :id left-gripper-type))
+       (send ee-cmd :command cmd)
+       (send ee-cmd :sender "/baxter_interface")
+       (send ee-cmd :sequence gripper-sequence-id)
+       (when pos (send ee-cmd :args (format nil "{\"position\": ~A}" pos)))
+       (ros::publish (format nil "/robot/end_effector/~A_gripper/command"
+                             (if (eq tmp-arm :rarm) "right" "left")) ee-cmd)
+       (setq gripper-sequence-id (1+ gripper-sequence-id)))))
 
   (:set-baxter-face 
    (filepath)
