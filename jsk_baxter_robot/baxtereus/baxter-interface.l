@@ -130,7 +130,7 @@
    (send self :command-grasp baxter_core_msgs::EndEffectorCommand::*cmd_calibrate* arm :pos pos))
 
   (:start-grasp
-   (&optional (arm :arms) &key (effort 50) (wait nil))
+   (&optional (arm :arms) &key (effort 50) (wait t))
    (send self :go-grasp arm :pos 0 :effort effort :wait wait)
    (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
 	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
@@ -140,7 +140,7 @@
    )
 
   (:stop-grasp
-   (&optional (arm :arms) &key (effort 50) (wait nil))
+   (&optional (arm :arms) &key (effort 50) (wait t))
    (send self :go-grasp arm :pos 100 :effort effort :wait wait)
    (if (or ( and (equal arm :arms) (or (equal right-gripper-type *suction*) (equal left-gripper-type *suction*)))
 	   ( and (equal arm :rarm) (equal right-gripper-type *suction*))
