@@ -50,6 +50,19 @@
     (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
     ))
 
+;; https://github.com/jsk-ros-pkg/jsk_robot/pull/771/files
+(deftest fetch-head-look-at
+  (let ((robot (fetch)))
+    (send robot :init-pose)
+    (send robot :rarm :inverse-kinematics (make-coords :pos #f(700 350 700)))
+    (send robot :look-at-hand :rarm)
+
+    (warning-message 2 "head angle-vector ~A" (send robot :head :angle-vector))
+    (assert (v< #f(25 25) (send robot :head :angle-vector)))
+    (assert (v< (send robot :head :angle-vector) #f(30 30)))
+    ))
+
+
 (run-all-tests)
 (exit)
 
