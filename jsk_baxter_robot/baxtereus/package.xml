@@ -22,9 +22,16 @@
   <run_depend>baxter_description</run_depend>
   <run_depend>baxter_interface</run_depend>
   <run_depend>baxter_tools</run_depend>
+  <run_depend>jsk_baxter_startup</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
   <run_depend>rostest</run_depend>
+
+  <test_depend>baxter_core_msgs</test_depend>
+  <test_depend>baxter_gazebo</test_depend>
+  <test_depend>baxter_sim_io</test_depend>
+  <test_depend>baxter_moveit_config</test_depend>
+  <test_depend>rosgraph_msgs</test_depend>
 
   <export>
   </export>
