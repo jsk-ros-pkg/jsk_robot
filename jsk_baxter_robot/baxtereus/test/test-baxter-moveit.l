@@ -9,15 +9,22 @@
 (ros::roseus "baxter-moveit")
 
 (deftest test-baxter-moveit ()
-  (let (ri robot av)
-    (while (null (and (one-shot-subscribe "/clock" rosgraph_msgs::Clock)
-                      (one-shot-subscribe "/robot/state" baxter_core_msgs::AssemblyState)))
+  (let ((waiting-count 0) ri robot av)
+    (while
+      (null (and (one-shot-subscribe "/clock" rosgraph_msgs::Clock :timeout 3000)
+                 (one-shot-subscribe "/robot/state" baxter_core_msgs::AssemblyState :timeout 3000)))
       (ros::ros-info "waiting gazebo")
+      (setq waiting-count (incf waiting-count))
+      (assert (> 300 waiting-count) "gazebo did not start.")
       (unix::sleep 3))
     (ros::ros-info "gazebo ready")
 
-    (while (null (one-shot-subscribe "/move_group/status" actionlib_msgs::GoalStatusArray))
+    (setq waiting-count 0)
+    (while
+      (null (one-shot-subscribe "/move_group/status" actionlib_msgs::GoalStatusArray :timeout 3000))
       (ros::ros-info "waiting moveit")
+      (setq waiting-count (incf waiting-count))
+      (assert (> 300 waiting-count) "moveit did not start.")
       (unix::sleep 3))
     (ros::ros-info "moveit ready")
 
