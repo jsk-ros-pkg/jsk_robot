@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<!--
+This file is copied from baxter_description/urdf/baxter.urdf.xacro.
+Original work: BSD License copyright of Rethink Robotics Inc.
+Modified work: BSD License copyright of JSK Lab.
+-->
+<robot name="baxter" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:arg name="gazebo" default="false"/>
+  <xacro:arg name="pedestal" default="true"/>
+  <xacro:arg name="end_effector" default="true"/>
+  <!-- Baxter Base URDF -->
+  <xacro:include filename="$(find baxter_description)/urdf/baxter_base/baxter_base.urdf.xacro">
+    <xacro:arg name="gazebo" value="${gazebo}"/>
+  </xacro:include>
+
+  <!-- Baxter Pedestal -->
+  <xacro:if value="$(arg pedestal)">
+    <xacro:include filename="$(find baxter_description)/urdf/pedestal/pedestal.xacro">
+      <xacro:arg name="gazebo" value="${gazebo}"/>
+    </xacro:include>
+  </xacro:if>
+
+  <xacro:if value="$(arg end_effector)">
+    <!-- Left End Effector -->
+    <xacro:include filename="$(find baxter_description)/urdf/left_end_effector.urdf.xacro" />
+    <!-- Right End Effector -->
+    <xacro:include filename="$(find baxter_description)/urdf/right_end_effector.urdf.xacro" />
+  </xacro:if>
+
+</robot>
