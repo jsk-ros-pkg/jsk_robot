@@ -29,6 +29,7 @@
 
   <test_depend>baxter_core_msgs</test_depend>
   <test_depend>baxter_gazebo</test_depend>
+  <test_depend>baxter_sim_controllers</test_depend>
   <test_depend>baxter_sim_io</test_depend>
   <test_depend>joint_state_controller</test_depend>
   <test_depend>baxter_moveit_config</test_depend>
