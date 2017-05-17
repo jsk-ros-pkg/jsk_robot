@@ -229,10 +229,10 @@
     (send self :angle-vector-sequence-raw (list av) (list tm) ctype start-time :scale scale :min-time min-time))
   (:angle-vector-sequence-raw (avs &optional (tms :fast) (ctype controller-type) (start-time 0)
                                    &key (scale 2.2) (min-time 0.05) &allow-other-keys)
-    ;; force add current position to the top of avs
     (if (atom tms) (setq tms (list tms)))
     (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
-    (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time))
+    ;; if first tm of tms is zero, that means time_from_start of first trajectory point will be zero
+    (send-super :angle-vector-sequence avs tms ctype start-time :scale scale :min-time min-time :allow-initial-av t))
   (:angle-vector
    (av &optional tm (ctype controller-type) (start-time 0) &rest args
        &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
