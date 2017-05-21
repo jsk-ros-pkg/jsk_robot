@@ -1,23 +1,21 @@
-#!/bin/bash
-set +e
+#!/bin/bash -i
+
 PR2_NAME=$1
 if [ "$1" == "" ]; then PR2_NAME="pr1012"; fi
 shift
 
-HOST_NAME=$(hostname)
-export PS1=@USER_NAME@
-source ~/.bashrc
+rossetip
+rossetmaster $PR2_NAME
 
-export ROS_IP=`LANGUAGE=en LANG=C LC_ALL=C ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'`
-export ROS_MASTER_URI=http://$@BLANK@{PR2_NAME}:11311
 ## for desktop
 sleep 1
-rosrun pr2_dashboard pr2_dashboard &
+rosrun @PR2_DASHBOARD_EXE@ @PR2_DASHBOARD_EXE@ &
 if [ "$ROS_DISTRO" = "fuerte" ]; then
-    xterm -sb -rightbar -sl 99999 +s -title "RVIZ ($@BL@{PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.vcg" &
-elif [ "$ROS_DISTRO" = "groovy" ]; then
-    xterm -sb -rightbar -sl 99999 +s -title "RVIZ ($@BL@{PR2_NAME})" -e "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.rviz" &
+  CFG_SUFFIX=vcg
+else
+  CFG_SUFFIX=rviz
 fi
+xterm -sb -rightbar -sl 99999 +s -title "RVIZ ($@BL@{PR2_NAME})" -e /bin/bash -l -i -c "rosrun rviz rviz -d $(rospack find jsk_pr2_startup)/config/jsk_startup.$CFG_SUFFIX" &
 
 ## for robot
 sleep 1
