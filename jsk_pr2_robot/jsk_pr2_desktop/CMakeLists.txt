@@ -1,4 +1,7 @@
-cmake_minimum_required(VERSION 2.4.6)
+cmake_minimum_required(VERSION 2.8.3)
+project(jsk_pr2_desktop)
+
+find_package(catkin REQUIRED COMPONENTS jsk_pr2_startup)
 
 set(SETUP_DIRECTORY $ENV{XDG_DESKTOP_DIR})
 if ("${SETUP_DIRECTORY}" STREQUAL "")
@@ -11,6 +14,15 @@ set(PR2_USER applications)
 set(USER_NAME $ENV{USER})
 set(ROS_DISTRO $ENV{ROS_DISTRO})
 set(MAKE_CLEAN_FILES "")
+
+if(${ROS_DISTRO} STREQUAL "hydro")
+  set(PR2_DASHBOARD_ICON /opt/ros/hydro/stacks/pr2_gui/pr2_dashboard/icons/rosout-green-untoggled.png)
+  set(PR2_DASHBOARD_EXE "pr2_dashboard")
+else()
+  set(PR2_DASHBOARD_ICON task-past-due)
+  set(PR2_DASHBOARD_EXE "rqt_pr2_dashboard")
+endif()
+
 # scripts
 configure_file(${PROJECT_SOURCE_DIR}/pr2_jsk_startup.sh.in
   ${PROJECT_SCRIPTS_DIR}/pr2_jsk_startup.sh)
