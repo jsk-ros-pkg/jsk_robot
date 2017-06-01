@@ -15,8 +15,9 @@
 (defmethod baxter-interface
   (:init (&rest args &key ((:moveit-environment mvit-env) (instance baxter-moveit-environment))
                 ((:moveit-robot mvit-rb) (instance baxter-robot :init))
+                ((:robot robot) baxter-robot)
                 &allow-other-keys)
-   (prog1 (send-super* :init :robot baxter-robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface" args)
+   (prog1 (send-super* :init :robot robot :joint-states-topic "/robot/joint_states" :groupname "baxter_interface" args)
      (send self :add-controller :larm-controller)
      (send self :add-controller :rarm-controller)
      (send self :add-controller :head-controller)
