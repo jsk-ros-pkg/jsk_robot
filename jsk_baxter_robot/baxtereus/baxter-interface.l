@@ -13,7 +13,8 @@
   :slots (gripper-sequence-id right-gripper-action left-gripper-action
 			      right-gripper-type left-gripper-type moveit-robot))
 (defmethod baxter-interface
-  (:init (&rest args &key ((:moveit-environment mvit-env) (instance baxter-moveit-environment))
+  (:init (&rest args &key ((:robot robot) baxter-robot)
+                ((:moveit-environment mvit-env) (instance baxter-moveit-environment))
                 ((:moveit-robot mvit-rb) (instance baxter-robot :init))
                 ((:robot robot) baxter-robot)
                 &allow-other-keys)
