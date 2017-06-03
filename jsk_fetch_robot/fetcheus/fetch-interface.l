@@ -104,6 +104,40 @@
   (when create-viewer (objects (list *fetch*)))
   )
 
+(defparameter *fetch-reset-pose*
+  (float-vector 0 0 0 0 0 0 0 0 0 0))
+(defparameter *fetch-tuckarm-intermediate-pose*
+  (float-vector 0.0 75.6304 0.0 -80.2141 98.5487 0.0 95.111 0.0 0.0 0.0))
+(defparameter *fetch-tuckarm-pose*
+  (float-vector 0.0 75.6304 80.2141 -11.4592 98.5487 0.0 95.111 0.0 0.0 0.0))
+
+(defun check-tuckarm-pose (&key (thre 20) &rest args)
+  (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
+  (let ((angle (map float-vector #'(lambda (d) (- d (* 360 (round (/ d 360.0)))))
+                    (send *fetch* :angle-vector)))
+        (weight (float-vector 0 5 2 1 0.5 0.5 0.1 0 0 0)))
+    (< (norm (map float-vector #'* (v- angle *fetch-tuckarm-pose*) weight)) thre)))
+
+(defun fetch-tuckarm-pose ()
+  (when (check-tuckarm-pose)
+    (return-from fetch-tuckarm-pose t))
+  (send *ri* :angle-vector-sequence
+        (list *fetch-reset-pose*
+              *fetch-tuckarm-intermediate-pose*
+              *fetch-tuckarm-pose*)
+        (list 10000 4000 7500))
+  (send *ri* :wait-interpolation))
+
+(defun fetch-untackarm-pose ()
+  (unless (check-tuckarm-pose)
+    (return-from fetch-untackarm-pose t))
+  (send *ri* :angle-vector-sequence
+        (list *fetch-tuckarm-pose*
+              *fetch-tuckarm-intermediate-pose*
+              *fetch-reset-pose*)
+        (list 7500 4000 10000))
+  (send *ri* :wait-interpolation))
+
 (defclass fetch-moveit-environment
   :super moveit-environment)
 (defmethod fetch-moveit-environment
