@@ -39,20 +39,20 @@
 
 (when (ros::has-param "/active_user/motor_subscribe")
   (if (ros::get-param "/active_user/motor_subscribe")
-      (ros::subscribe "motor_state" std_msgs::Bool #'motor-cb)
+      (ros::subscribe "motor_state" std_msgs::Bool #'motor-cb 1)
     (setq *servo-on* t)
     )
   )
 
 (when (ros::has-param "/active_user/odom_subscribe")
   (if (ros::get-param "/active_user/odom_subscribe")
-      (ros::subscribe "odom_state" pr2_mechanism_controllers::Odometer #'odom-cb)
+      (ros::subscribe "odom_state" pr2_mechanism_controllers::Odometer #'odom-cb 1)
     )
   )
 
 (when (ros::has-param "/active_user/joint_state_subscribe")
   (if (ros::get-param "/active_user/joint_state_subscribe")
-      (ros::subscribe "joint_states" sensor_msgs::JointState  #'joint-cb)
+      (ros::subscribe "joint_states" sensor_msgs::JointState  #'joint-cb 1)
     )
   )
 
@@ -188,4 +188,9 @@
     (ros::set-param "/active_user/elapsed_time" *elapsed-sec*))
   )
 
-(ros::spin)
+(ros::rate 1)
+(while (ros::ok)
+  (ros::spin-once)
+  (ros::sleep))
+
+(exit)
