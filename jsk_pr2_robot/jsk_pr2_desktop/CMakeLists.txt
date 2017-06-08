@@ -3,11 +3,7 @@ project(jsk_pr2_desktop)
 
 find_package(catkin REQUIRED COMPONENTS jsk_pr2_startup)
 
-set(SETUP_DIRECTORY $ENV{XDG_DESKTOP_DIR})
-if ("${SETUP_DIRECTORY}" STREQUAL "")
-  set(SETUP_DIRECTORY $ENV{HOME}/Desktop)
-endif ("${SETUP_DIRECTORY}" STREQUAL "")
-
+set(SETUP_DIRECTORY $ENV{HOME}/.local/share/applications)
 set(PROJECT_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(PROJECT_SCRIPTS_DIR ${PROJECT_SOURCE_DIR}/scripts)
 set(PR2_USER applications)
