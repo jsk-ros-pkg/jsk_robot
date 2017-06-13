@@ -243,7 +243,7 @@
        &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
    "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
 - av : joint angle vector [rad]
-- tm : (time to goal in [msec]) ;; currently this value is ignored
+- tm : time to goal in [msec]
 "
    (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
    ;; for simulation mode
@@ -263,6 +263,10 @@
   (:angle-vector-sequence
    (avs &optional tm (ctype controller-type) (start-time 0) &rest args
         &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+   "Send joind angle sequence to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
+- avs : sequence of joint angle vector [rad]
+- tm  : time to goal in [msec]
+"
    (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
    ;; for simulation mode
    (when (send self :simulation-modep)
