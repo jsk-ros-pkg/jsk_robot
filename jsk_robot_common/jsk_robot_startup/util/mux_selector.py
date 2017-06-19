@@ -1,27 +1,50 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+
+
+"""
+mux_selector.py : check and select mux input topic on condition of specified topic
+
+Usage:
+
+rosrun jsk_robot_startup mux_selector.py /joy1 'm.buttons[9]==1' /cmd_vel1 /joy2 'm.buttons[9]==1' /cmd_vel2
+This node takes three arguments for one topic.
+The first one is the topic to be monitored.
+When a message from this topic is received, it is assigned as a variable `m`.
+If a condition specified as the second argument,
+this node calls a service to select the topic specified as the third argument.
+"""
 
 import rospy
 import thread
 import sys
-
 import rostopic
-
 from topic_tools.srv import MuxSelect
+import traceback
+
 
 def callback (m, expr, topic, index):
     global selects, lockobj
     lockobj.acquire()
     try:
-        if(eval(expr)):
+        ok = eval(expr)
+    except Exception as e:
+        rospy.logerr("Failed to check condition (%s): %s" % (expr, str(e)))
+        lockobj.acquire()
+        return
+    try:
+        if(ok):
             selects[index] = (topic, rospy.Time.now())
         else:
             selects[index] = (None, rospy.Time.now())
-    except Error, e:
-        rospy.loginfo('error:'+str(e))
+    except Exception as e:
+        rospy.logerr('Rrror: '+str(e))
+        rospy.logerr(traceback.format_exc())
     lockobj.release()
+
 
 def gen_callback(expr, select, index):
     return (lambda m: callback(m, expr, select, index))
+
 
 def add_trigger(topic, expr, select, index):
     topic_type, _, _ = rostopic.get_topic_type(topic)
@@ -44,6 +67,7 @@ def add_trigger(topic, expr, select, index):
         return None
 
     return sub
+
 
 def update_trigger(conditions):
     # setting triggers
@@ -108,4 +132,5 @@ if __name__ == "__main__":
             before = next_topic
             looprate.sleep()
     except Exception, e:
-        rospy.loginfo('error:'+str(e))
+        rospy.logerr('Error: '+str(e))
+        rospy.logerr(traceback.format_exc())
