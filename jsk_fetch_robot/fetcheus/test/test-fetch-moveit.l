@@ -33,7 +33,7 @@
     (assert (> (send (ros::time- tm-1 tm-0) :to-sec) 3) "collsion avoidance motion is too fast")
 
     (setq tm-0 (ros::time-now))
-    (while (null (send *ri* :angle-vector (send *fetch* :reset-pose) 2000 :use-torso t)))
+    (while (null (send *ri* :angle-vector (send *fetch* :reset-pose) 2000 nil 0 :use-torso t)))
     (send *ri* :wait-interpolation)
     (setq tm-1 (ros::time-now))
     (ros::ros-info "time for duration ~A" (send (ros::time- tm-1 tm-0) :to-sec))
