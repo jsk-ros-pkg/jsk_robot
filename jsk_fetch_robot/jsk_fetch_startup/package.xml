@@ -23,6 +23,10 @@
   <run_depend>map_server</run_depend>
   <run_depend>move_base</run_depend>
 
+  <!-- for fetch teleop -->
+  <run_depend>fetch_bringup</run_depend>
+  <run_depend>safe_teleop_base</run_depend>
+
   <test_depend>rostest</test_depend>
 
   <export>
