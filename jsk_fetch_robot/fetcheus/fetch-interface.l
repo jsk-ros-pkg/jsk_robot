@@ -25,24 +25,45 @@
      ))
   (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
-  (:angle-vector ;; this verison uses :angle-vector-sequence for sendding trajectory, this enable us to use :wait-interpolation method so we choose this for now
-   (av &optional (tm 3000) &rest args)
+  (:angle-vector
+   (av &optional (tm 3000) (ctype controller-type) (start-time 0) &rest args
+       &key (use-torso t) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
    "Send joind angle to robot with self-collision motion planning, this method retuns immediately, so use :wait-interpolation to block until the motion stops.
 - av : joint angle vector [rad]
-- tm : (time to goal in [msec]) ;; currently this value is ignored
+- tm : time to goal in [msec]
 - use-torso : set t to use torso
 "
+   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
    ;; for simulation mode
    (when (send self :simulation-modep)
      (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
    ;;
    (when (not (numberp tm))
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
-   (let ((use-torso t))
-     (if (and (member :use-torso args) (null (cadr (member :use-torso args)))) (setq use-torso nil))
-     (send self :angle-vector-motion-plan av :move-arm :rarm :total-time tm :start-offset-time 0.01 :use-torso use-torso :clear-velocities t)
-   ))
-  ;;
+   (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
+               :start-offset-time start-offset-time :clear-velocities clear-velocities
+               :use-torso use-torso args))
+  (:angle-vector-sequence
+   (avs &optional tms (ctype controller-type) (start-time 0) &rest args
+        &key (use-torso t) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+   "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
+- avs : sequence of joint angle vector [rad]
+- tms : list of time to goal from previous angle-vector point in [msec]
+- use-torso : set t to use torso
+"
+   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   ;; for simulation mode
+   (when (send self :simulation-modep)
+     (return-from :angle-vector-sequence
+                  (send* self :angle-vector-sequence-raw avs tms ctype start-time args)))
+   (unless (and (listp tms) (every #'numberp tms))
+     (ros::warn ":angle-vector-sequence tms is not a list of number, use :angle-vector-sequence av tms args"))
+   (if tms
+     (setq tms (apply #'+ tms))
+     (setq tms 3000))
+   (send* self :angle-vector-motion-plan avs :ctype ctype :move-arm :rarm :total-time tms
+               :start-offset-time start-offset-time :clear-velocities clear-velocities
+               :use-torso use-torso args))
   (:default-controller ()
    (append
     (send self :arm-controller)
