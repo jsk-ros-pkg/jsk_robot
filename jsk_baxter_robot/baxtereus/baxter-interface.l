@@ -261,29 +261,32 @@
        (unless tm (setq tm :fast))
        (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))))
   (:angle-vector-sequence
-   (avs &optional tm (ctype controller-type) (start-time 0) &rest args
+   (avs &optional tms (ctype controller-type) (start-time 0) &rest args
         &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
    "Send joind angle sequence to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
 - avs : sequence of joint angle vector [rad]
-- tm  : time to goal in [msec]
+- tms : list of time to goal from previous angle-vector point in [msec]
 "
    (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
    ;; for simulation mode
    (when (send self :simulation-modep)
      (return-from :angle-vector-sequence
-                  (send* self :angle-vector-sequence-raw avs tm ctype start-time args)))
+                  (send* self :angle-vector-sequence-raw avs tms ctype start-time args)))
    (if (and (get self :moveit-environment)
             (send (get self :moveit-environment) :robot))
      (progn
-       (unless tm (setq tm 3000))
-       (send-super* :angle-vector-motion-plan avs :ctype ctype :move-arm move-arm :total-time tm
+       (setq tms
+             (if tms
+               (if (and (listp tms) (every #'numberp tms)) (apply #'+ tms) tms)
+               3000))
+       (send-super* :angle-vector-motion-plan avs :ctype ctype :move-arm move-arm :total-time tms
                     :start-offset-time start-offset-time :clear-velocities clear-velocities
                     :use-torso nil args))
      (progn
        (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-sequence-raw instead~%")
-       (unless tm (setq tm :fast))
+       (unless tms (setq tms :fast))
        (return-from :angle-vector-sequence
-                    (send* self :angle-vector-sequence-raw avs tm ctype start-time args)))))
+                    (send* self :angle-vector-sequence-raw avs tms ctype start-time args)))))
   (:ros-state-callback
    (msg)
    (let ((robot-msg-names (send msg :name)) (torso-index))
