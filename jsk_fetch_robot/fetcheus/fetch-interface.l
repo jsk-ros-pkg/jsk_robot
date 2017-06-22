@@ -26,32 +26,56 @@
   (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
-   (av &optional (tm 3000) (ctype controller-type) (start-time 0) &rest args
-       &key (use-torso t) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+   (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
+                                       ;;  &key (use-torso t) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
    "Send joind angle to robot with self-collision motion planning, this method retuns immediately, so use :wait-interpolation to block until the motion stops.
 - av : joint angle vector [rad]
 - tm : time to goal in [msec]
 - use-torso : set t to use torso
 "
-   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   (let ((ctype controller-type) (start-time 0)
+         (use-torso t) (start-offset-time 0.01) (clear-velocities t))
+   ;; as of 0.3.x, :angle-vector (robot-interface) :acceps tm ctype start-time as optional arguments, but in here we prefer old API
+   (if (= (length args) 1) ;; args must be ctype
+       (setq ctype (car args)
+             args (cdr args)))
+   (if (and (>= (length args) 2) (null (member (car args) '(:use-torso :start-offset-time :clear-velocities))));; args must be ctype start-time
+       (setq ctype (car args)
+             start-time (cadr args)
+             args (cddr args)))
+   (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
+   (if (member :start-offset-time args) (setq use-torso (cadr (member :start-offset-time args))))
+   (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
-     (return-from :angle-vector (send* self :angle-vector-raw av tm args)))
+     (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
    ;;
    (when (not (numberp tm))
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
                :start-offset-time start-offset-time :clear-velocities clear-velocities
-               :use-torso use-torso args))
+               :use-torso use-torso args)))
   (:angle-vector-sequence
-   (avs &optional tms (ctype controller-type) (start-time 0) &rest args
-        &key (use-torso t) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+   (avs &optional tms &rest args) ;; (ctype controller-type) (start-time 0) &rest args
+                                  ;; &key (use-torso t) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
    "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
 - avs : sequence of joint angle vector [rad]
 - tms : list of time to goal from previous angle-vector point in [msec]
 - use-torso : set t to use torso
 "
-   (setq ctype (or ctype controller-type))  ;; use default if ctype is nil
+   (let ((ctype controller-type) (start-time 0)
+         (use-torso t) (start-offset-time 0.01) (clear-velocities t))
+   ;; as of 0.3.x, :angle-vector (robot-interface) :acceps tm ctype start-time as optional arguments, but in here we prefer old API
+   (if (= (length args) 1) ;; args must be ctype
+       (setq ctype (car args)
+             args (cdr args)))
+   (if (and (>= (length args) 2) (null (member (car args) '(:use-torso :start-offset-time :clear-velocities))));; args must be ctype start-time
+       (setq ctype (car args)
+             start-time (cadr args)
+             args (cddr args)))
+   (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
+   (if (member :start-offset-time args) (setq use-torso (cadr (member :start-offset-time args))))
+   (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
      (return-from :angle-vector-sequence
@@ -63,7 +87,7 @@
      (setq tms 3000))
    (send* self :angle-vector-motion-plan avs :ctype ctype :move-arm :rarm :total-time tms
                :start-offset-time start-offset-time :clear-velocities clear-velocities
-               :use-torso use-torso args))
+               :use-torso use-torso args)))
   (:default-controller ()
    (append
     (send self :arm-controller)
