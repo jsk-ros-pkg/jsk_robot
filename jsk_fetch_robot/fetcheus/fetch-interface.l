@@ -38,12 +38,12 @@
    (if (= (length args) 1) ;; args must be ctype
        (setq ctype (car args)
              args (cdr args)))
-   (if (and (>= (length args) 2) (null (member (car args) '(:use-torso :clear-velocities))));; args must be ctype start-time
+   (if (and (>= (length args) 2) (null (member (car args) '(:use-torso :start-time :clear-velocities))));; args must be ctype start-time
        (setq ctype (car args)
              start-time (cadr args)
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
-   (if (member :start-offset-time args) (setq use-torso (cadr (member :start-offset-time args))))
+   (if (member :start-time args) (setq use-torso (cadr (member :start-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
@@ -67,12 +67,12 @@
    (if (= (length args) 1) ;; args must be ctype
        (setq ctype (car args)
              args (cdr args)))
-   (if (and (>= (length args) 2) (null (member (car args) '(:use-torso :clear-velocities))));; args must be ctype start-time
+   (if (and (>= (length args) 2) (null (member (car args) '(:use-torso :start-time :clear-velocities))));; args must be ctype start-time
        (setq ctype (car args)
              start-time (cadr args)
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
-   (if (member :start-offset-time args) (setq use-torso (cadr (member :start-offset-time args))))
+   (if (member :start-time args) (setq use-torso (cadr (member :start-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
