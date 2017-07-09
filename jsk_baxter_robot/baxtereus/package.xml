@@ -25,6 +25,7 @@
   <run_depend>jsk_baxter_startup</run_depend>
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
+  <run_depend>pr2eus_moveit</run_depend>
   <run_depend>rostest</run_depend>
 
   <test_depend>baxter_core_msgs</test_depend>
