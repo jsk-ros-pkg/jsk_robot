@@ -30,7 +30,7 @@ if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest roslaunch)
   # https://github.com/ros/ros_comm/pull/730
   set(roslaunch_check_script ${PROJECT_SOURCE_DIR}/scripts/roslaunch-check)
-  roslaunch_add_file_check(launch/fetch_bringup.launch)
+  # roslaunch_add_file_check(launch/fetch_bringup.launch)
   roslaunch_add_file_check(launch/rviz.launch)
   set(roslaunch_check_script ${roslaunch_DIR}/../scripts/roslaunch-check)
 endif()
