@@ -1,6 +1,23 @@
 <launch>
-  <!-- <arg name="" value=""/> -->
-  <!-- <param name="depth_registered" value="true"/> -->
-  <!-- <node pkg="" name="" type="" args="" output="screen" clear_params="true"/> -->
-  <!-- <include file="$(find )/.launch"/> -->
+
+  <arg name="load_robot_description" default="false"/>
+  <arg name="right_electric_gripper" default="false"/>
+  <arg name="left_electric_gripper" default="false"/>
+  <arg name="left_tip_name" default="left_gripper"/>
+  <arg name="right_tip_name" default="right_gripper"/>
+
+  <include file="$(find baxter_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="$(arg load_robot_description)"/>
+    <arg name="left_electric_gripper" value="$(arg left_electric_gripper)"/>
+    <arg name="right_electric_gripper" value="$(arg right_electric_gripper)"/>
+    <arg name="left_tip_name" value="$(arg left_tip_name)"/>
+    <arg name="right_tip_name" value="$(arg right_tip_name)"/>
+  </include>
+
+  <include file="$(find baxter_moveit_config)/launch/move_group.launch">
+    <arg name="kinect" value="false" />
+    <arg name="xtion" value="false" />
+    <arg name="allow_trajectory_execution" value="true"/>
+  </include>
+
 </launch>

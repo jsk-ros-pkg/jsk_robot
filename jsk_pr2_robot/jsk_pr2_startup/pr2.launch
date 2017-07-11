@@ -64,13 +64,12 @@
   </include>
 
   <!-- japanese speech node -->
-  <node if="$(arg launch_sound_play)"
-        pkg="sound_play" type="soundplay_node.py" name="sound_node_jp">
-    <env name="PATH" value="$(find voice_text):$(env PATH)" />
-    <!-- <env name="PATH" value="$(find aques_talk):$(env PATH)" /> -->
-    <remap from="robotsound" to="robotsound_jp" />
-    <remap from="sound_play" to="robotsound_jp" />
-  </node>
+  <include file="$(find voice_text)/launch/voice_text.launch"
+           if="$(arg launch_sound_play)">
+    <arg name="use_machine" value="false" />
+    <arg name="sound_play_machine" value="c1" />
+    <arg name="voice_text_machine" value="c2" />
+  </include>
 
   <!-- start sift on narrow left-->
   <!-- <group if="$(arg launch_imagesift)" -->

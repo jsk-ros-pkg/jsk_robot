@@ -46,6 +46,8 @@
 
   <include if="$(arg launch_moveit)"
            file="$(find jsk_baxter_startup)/jsk_baxter_moveit/moveit.launch" >
+      <arg name="left_electric_gripper" value="$(arg launch_gripper_action)" />
+      <arg name="right_electric_gripper" value="$(arg launch_gripper_action)" />
   </include>
 
   <!-- Do teleop with baxter_examples' joint_position_joystick.py-->
