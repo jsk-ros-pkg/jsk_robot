@@ -102,11 +102,11 @@ fetch-interface function APIs
 
 - send current head joint angles of robot model to real robot, this command only control joints of head limb. (DO NOT USE THIS COMMAND EXCEPT **HEAD**)
 
- ```
+```
 (send *fetch :head :neck-y :joint-angle 50)
 (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
 (send *ri* :wait-interpolation)
- ```
+```
 
 - get angle value of individual joint
 ```
@@ -140,7 +140,13 @@ fetch-interface function APIs
 ```
 (send *ri* :stop-grasp)
 ```
-  
+
+  to know the result of grasp
+```
+(setq grasp-result (send *ri* :start-grasp))
+(send grasp-result :position)
+```
+
 - inverse kinematics
 
   including torso movement
@@ -159,23 +165,23 @@ fetch-interface function APIs
 ```
   
 - moving the robot
- 
- move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
- ```
- (send *ri* :go-pos 1 0 0)
- ```
- 
- move to point (0 8150 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
- ```
- (send *ri* :move-to (make-coords :pos #f(0 8150 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
- ```
- 
+
+  move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
+  ```
+  (send *ri* :go-pos 1 0 0)
+  ```
+
+  move to point (0 8150 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
+  ```
+  (send *ri* :move-to (make-coords :pos #f(0 8150 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
+  ```
+
 - use text-to-speech engine to speak text
- 
- ```
+
+  ```
   (send *ri* :speak "hello")
   (send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
- ```
+  ```
 
 FAQ
 ---
