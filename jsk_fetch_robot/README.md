@@ -140,6 +140,12 @@ fetch-interface function APIs
 ```
 (send *ri* :stop-grasp)
 ```
+
+  to know the result of grasp
+```
+(setq grasp-result (send *ri* :start-grasp))
+(send grasp-result :position)
+```
   
 - inverse kinematics
 
