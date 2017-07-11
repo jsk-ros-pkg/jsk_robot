@@ -12,12 +12,14 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>pr2eus</build_depend> <!-- for robot interface -->
+  <build_depend>pr2eus_moveit</build_depend> <!-- for robot interface -->
   <build_depend>fetch_description</build_depend>
-  <build_depend>rostest</build_depend>
 
   <run_depend>pr2eus</run_depend> <!-- for robot interface -->
+  <run_depend>pr2eus_moveit</run_depend> <!-- for robot interface -->
   <run_depend>fetch_description</run_depend>
 
+  <test_depend>rostest</test_depend>
   <test_depend>fetch_gazebo</test_depend>
   <test_depend>fetch_moveit_config</test_depend>
 
