@@ -35,6 +35,7 @@ if(CATKIN_ENABLE_TESTING)
   #roslaunch_add_file_check(launch/fetch_bringup.launch launch_teleop:=false)
   roslaunch_add_file_check(test/roslaunch-check-fetch_bringup.xml)
   roslaunch_add_file_check(launch/rviz.launch)
+  roslaunch_add_file_check(launch/fetch_gazebo_bringup.launch)
   set(roslaunch_check_script ${roslaunch_DIR}/../scripts/roslaunch-check)
 endif()
 
