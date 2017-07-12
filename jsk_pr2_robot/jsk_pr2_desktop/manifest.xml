@@ -1,0 +1,15 @@
+<package>
+  <description brief="jsk_pr2_desktop">
+
+    JSK PR2 Desktop
+
+  </description>
+  <author>JSK PR2 Group</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jsk_pr2_desktop</url>
+
+  <depend package="jsk_pr2_startup"/>
+</package>
+
+
