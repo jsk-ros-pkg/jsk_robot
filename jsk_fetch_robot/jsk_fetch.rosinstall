@@ -1,11 +1,9 @@
 - git:
     local-name: jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: af1ad69
+    version: 824b165
 - git:
     local-name: jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
     version: 0.3.7
-- git:
-    local-name: FA-I-sensor
-    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+

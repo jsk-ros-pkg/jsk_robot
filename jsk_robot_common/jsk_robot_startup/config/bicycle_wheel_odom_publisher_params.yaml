@@ -1,0 +1,8 @@
+# /wheel_odometry_publisher parameters for bicycle
+rate: 200
+sigma_x: 0.2
+sigma_y: 0.05
+sigma_z: 0.001
+sigma_roll: 0.001
+sigma_pitch: 0.001
+sigma_yaw: 0.5

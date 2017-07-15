@@ -67,9 +67,4 @@ install(FILES baxter.l baxter-interface.l baxter-util.l baxter.yaml DESTINATION 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(test/test-baxter.test)
-  if ("$ENV{ROS_DISTRO}" STRGREATER "hydro")  # > hydro
-    add_rostest(test/baxter-moveit.test)
-  else()
-    message(WARNING "Skip baxter-moveit.test")
-  endif()
 endif()
