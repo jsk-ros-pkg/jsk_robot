@@ -1,5 +1,6 @@
 <launch>
   <arg name="launch_moveit" default="true" />
+  <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="map" />
@@ -37,6 +38,10 @@
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
            if="$(arg launch_moveit)" />
+
+  <!-- teleop -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
+	   if="$(arg launch_teleop)" />
 
   <group if="$(arg launch_move_base)">
     <!-- include fetch_navigation -->
