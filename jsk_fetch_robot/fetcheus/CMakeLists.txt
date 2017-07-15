@@ -43,6 +43,19 @@ if (EXISTS ${fetch_urdf})
   endif()
 endif()
 
+#############
+## Install ##
+#############
+
+install(DIRECTORY test
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)
+
+install(FILES fetch.dae fetch.l fetch-interface.l fetch-utils.l fetch.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+############
+##  Test  ##
+############
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
