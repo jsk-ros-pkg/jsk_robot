@@ -2,6 +2,19 @@
 Changelog for package jsk_robot_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Enable safe teleop for fetch (`#801 <https://github.com/jsk-ros-pkg/jsk_robot/issues/801>`_ )
+  * [jsk_fetch_startup] move unsafe_warning.l to jsk_robot_startup / enable unsafe_warning on fetch
+  * [jsk_pr2_startup] move mux_selector.py to jsk_robot_startup
+
+* run active_user.l with 1hz (`#787 <https://github.com/jsk-ros-pkg/jsk_robot/issues/787>`_ )
+* [jsk_robot_startup, multisense_local.launch] add USE_HEIGHTMAP parameter (`#783 <https://github.com/jsk-ros-pkg/jsk_robot/issues/783>`_ )
+* [jsk_robot_startup] add record launch files for SLAM (`#760 <https://github.com/jsk-ros-pkg/jsk_robot/issues/760>`_)
+* [jsk_robot_startup][mongodb.launch] pass through arg test_mode (`#755 <https://github.com/jsk-ros-pkg/jsk_robot/issues/755>`_)
+* [jsk_robot_startup] Tuned odometry params for jaxon (`#732 <https://github.com/jsk-ros-pkg/jsk_robot/issues/732>`_)
+* Contributors: Kei Okada, Yohei Kakiuchi, Yuki Furuta, Iori Kumagai
+
 1.0.9 (2016-11-09)
 ------------------
 

@@ -2,6 +2,27 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
+* Enable safe teleop for fetch (`#801 <https://github.com/jsk-ros-pkg/jsk_robot/issues/801>`_)
+  * fetch_gazebo_bringup.launch and fetch_teleop.xml both starts cmd_vel_mux, add roslaunch_add_file_check  fetch_gazebo_bringup.launch
+  * add roslaunch_depends.py from https://github.com/ros/ros_comm/pull/998 to support if, https://github.com/ros/ros_comm/issues/953 could not load launch file with args directory
+  * jsk_fetch_startup/package.xml: missing joy, topic_tools, fetch_teleop depends
+  * launch/fetch_teleop.xml run unsafe_warning.l directory, not by roseus package
+  * jsk_fetch_startup/package.xml: missing fetch_moveit_config depends
+  * [jsk_fetch_startup] exclude fetch_bringup.launch from check
+  * [jsk_fetch_startup] move unsafe_warning.l to jsk_robot_startup / enable unsafe_warning on fetch
+  * [jsk_fetch_startup] add launch for safe teleop
+
+* [jsk_pr2_startup] fix: init pose parameter typo for gazebo (`#753 <https://github.com/jsk-ros-pkg/jsk_robot/issues/753>`_)
+  * [jsk_fetch_startup][fetch_gazebo_73b2.launch] fix: param name typo
+
+* [jsk_fetch_startup][fetch_bringup.launch] fix: robot/type robot/name (`#752 <https://github.com/jsk-ros-pkg/jsk_robot/issues/752>`_)
+* [jsk_fetch_startup][warning.py] fix: suppress warning: 'self.robot_state_msgs is not initialized' (`#750 <https://github.com/jsk-ros-pkg/jsk_robot/issues/750>`_ )
+
+* Contributors: Kei Okada, Yuki Furuta
+
 1.0.9 (2016-11-09)
 ------------------
 

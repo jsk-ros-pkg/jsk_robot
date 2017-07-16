@@ -1,9 +1,12 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Changelog for package jsk_robot_utils
+Changelog for package jsk_pr2_desktop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Forthcoming
 -----------
+* [jsk_pr2_desktop] change install destination to ~/.local/share/applications (`#788 <https://github.com/jsk-ros-pkg/jsk_robot/issues/788>`_ )
+* catkinize jsk_pr2_desktop (`#781 <https://github.com/jsk-ros-pkg/jsk_robot/issues/781>`_)
+* Contributors: Yuki Furuta, Kei Okada
 
 1.0.9 (2016-11-09)
 ------------------
@@ -28,21 +31,18 @@ Forthcoming
 
 1.0.2 (2016-02-14)
 ------------------
-* pr2_description have trouble at this moment https://github.com/PR2/pr2_common/pull/248
-* add jsk_network_tools to find_package to generate roseus messages
-* Contributors: Kei Okada
 
 1.0.1 (2015-11-19)
 ------------------
 
-1.0.0 (2015-11-06)
-------------------
+1.0.0 (2015-11-06 15:17)
+------------------------
 
-0.0.13 (2015-11-06)
--------------------
+0.0.13 (2015-11-06 15:04)
+-------------------------
 
-0.0.12 (2015-11-06)
--------------------
+0.0.12 (2015-11-06 14:47)
+-------------------------
 
 0.0.11 (2015-09-01)
 -------------------
@@ -54,11 +54,6 @@ Forthcoming
 ------------------
 
 0.0.8 (2015-07-16)
-------------------
-* [jsk_robot_utils] Add jsk_robot_utils package and move script to compress/decompress joint angles from jsk_network_tools to jsk_robot_utils
-* Contributors: Ryohei Ueda
-
-0.0.7 (2015-06-11)
 ------------------
 
 0.0.6 (2015-04-10)
@@ -78,3 +73,8 @@ Forthcoming
 
 0.0.1 (2014-12-25)
 ------------------
+* Merge branch 'master' of https://github.com/jsk-ros-pkg/jsk_robot
+* Merge pull request `#149 <https://github.com/jsk-ros-pkg/jsk_robot/issues/149>`_ from aginika/move-pr2-packages-under-jsk-pr2-robot
+  move pr2 related package under jsk_pr2_robot
+* move pr2 related package under jsk_pr2_robot
+* Contributors: Ryohei Ueda, aginika
