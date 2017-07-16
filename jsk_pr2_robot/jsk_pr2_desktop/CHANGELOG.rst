@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_desktop
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-07-16)
+------------------
 * [jsk_pr2_desktop] change install destination to ~/.local/share/applications (`#788 <https://github.com/jsk-ros-pkg/jsk_robot/issues/788>`_ )
 * catkinize jsk_pr2_desktop (`#781 <https://github.com/jsk-ros-pkg/jsk_robot/issues/781>`_)
 * Contributors: Yuki Furuta, Kei Okada

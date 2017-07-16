@@ -2,8 +2,8 @@
 Changelog for package fetcheus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-07-16)
+------------------
 * fetcheus/CMakeLists.txt : add install rule (`#763 <https://github.com/jsk-ros-pkg/jsk_robot/issues/763>`_)
 * [Fetch] jsk_fetch_robot/fetcheus/fetch-interface.l :angle-vector,
   :angle-vector-sequence supports old API (`#795 <https://github.com/jsk-ros-pkg/jsk_robot/issues/795>`_ )

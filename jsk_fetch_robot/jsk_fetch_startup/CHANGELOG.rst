@@ -2,8 +2,8 @@
 Changelog for package jsk_fetch_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-07-16)
+------------------
 
 * Enable safe teleop for fetch (`#801 <https://github.com/jsk-ros-pkg/jsk_robot/issues/801>`_)
   * fetch_gazebo_bringup.launch and fetch_teleop.xml both starts cmd_vel_mux, add roslaunch_add_file_check  fetch_gazebo_bringup.launch

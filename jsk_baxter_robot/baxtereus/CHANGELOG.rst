@@ -2,8 +2,8 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-07-16)
+------------------
 * baxtereus: test/*.test: time-limit=100000 is too large need to set 300-600 (`#802 <https://github.com/jsk-ros-pkg/jsk_robot/issues/802>`_)
   * test/*.test: time-limit=100000 is too large need to set 300-600
 

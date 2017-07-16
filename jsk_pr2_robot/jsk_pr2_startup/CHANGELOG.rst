@@ -2,8 +2,8 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-07-16)
+------------------
 * Enable safe teleop for fetch (`#801 <https://github.com/jsk-ros-pkg/jsk_robot/issues/801>`_)
   * [jsk_fetch_startup] move unsafe_warning.l to jsk_robot_startup / enable unsafe_warning on fetch
   * [jsk_pr2_startup] move mux_selector.py to jsk_robot_startup

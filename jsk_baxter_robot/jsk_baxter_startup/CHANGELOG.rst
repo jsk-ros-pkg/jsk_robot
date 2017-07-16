@@ -2,8 +2,8 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-07-16)
+------------------
 * [baxtereus][jsk_baxter_startup] add baxter moveit test (`#779 <https://github.com/jsk-ros-pkg/jsk_robot/issues/779>`_)
   * add initialize_baxter in jsk_baxter_tools
     originally from jsk_2015_01_baxter_apc
