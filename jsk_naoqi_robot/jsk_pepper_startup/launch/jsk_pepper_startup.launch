@@ -4,7 +4,7 @@
   <arg name="nao_ip" value="$(env NAO_IP)"/>
   <arg name="roscore_ip" value="$(env ROS_IP)"/>
   <arg name="network_interface"   default="eth0" />
-  <arg name="launch_twitter" default="true" />
+  <arg name="launch_twitter" default="false" />
   <arg name="launch_joy" default="true" />
   <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
@@ -47,7 +47,7 @@ enable_turbo_button: 0  # A button
     <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
     <node pkg="rostwitter" name="tweet" type="tweet.py" />
     <node pkg="image_view" name="image_saver" type="image_saver" >
-      <remap from="image" to="/camera/front/camera/image_raw" />
+      <remap from="image" to="/pepper_robot/camera/front/image_raw" />
       <param name="save_all_image" value="false" />
       <param name="filename_format" value="/tmp/pepper_camera.png" />
     </node>
