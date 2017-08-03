@@ -17,6 +17,7 @@
       2. Split points between current and target coords from each.
       3. From prepared poses. Poses in `:ik-prepared-poses` methods are used,
           and if it is not defined `:untuck-pose` is used."
+   (ros::ros-info "call ik of ~A" baxter-robot)
    (let ((r) (prev-av (send self :angle-vector)))
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp nil :dump-command nil args))
      (unless r ;;
@@ -42,6 +43,7 @@
        (let* ((move-joints (send-all (cadr (memq :link-list args)) :joint))
               (av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
               (ik-prepared-poses (send self :ik-prepared-poses)))
+         (print (list "===============>" ik-prepared-poses))
          (dolist (pose ik-prepared-poses)
            (unless r
              (format *error-output* "; starting from prepared pose '~A'~%" pose)
