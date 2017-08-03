@@ -1,7 +1,9 @@
 <launch>
   <arg name="gui" default="false" />
+  <arg name="headless" default="true" />
   <include file="$(find baxter_gazebo)/launch/baxter_world.launch">
     <arg name="gui" value="$(arg gui)" />
+    <arg name="headless" value="$(arg headless)" />
   </include>
 
   <include file="$(find baxter_moveit_config)/launch/planning_context.launch">
@@ -14,5 +16,5 @@
 
   <!-- start test -->
   <test test-name="baxter_moveit_test" pkg="baxtereus" type="test-baxter-moveit.l"
-	retry="1" time-limit="600"/>
+	retry="3" time-limit="300"/>
 </launch>
