@@ -371,5 +371,45 @@
      (setq res (ros::service-call "/get_move_arms_enabled" ret))
      (send res :status))
    )
+  (:get-led-color-name
+   ()
+   (format t ":white, :red, :green, :blue, :yellow, :magenta, :cyan")
+   )
+  (:fade-led-with-color-name
+   (color &optional (group_name "FaceLeds") (duration_to_fade 1.0))
+   (let ((ret (instance naoqi_bridge_msgs::FadeRGBWithColorNameRequest :init))
+	 (color_msg (instance naoqi_bridge_msgs::ColorName :init)) res)
+     (ros::wait-for-service "/fade_led_rgb_with_color_name")
+     (send ret :name group_name)
+     (send ret :duration_to_fade duration_to_fade)
+     (case color
+	   (:white
+	    (send color_msg :name 0))
+	   (:red
+	    (send color_msg :name 1))
+	   (:green
+	    (send color_msg :name 2))
+	   (:blue
+	    (send color_msg :name 3))
+	   (:yellow
+	    (send color_msg :name 4))
+	   (:magenta
+	    (send color_msg :name 5))
+	   (:cyan
+	    (send color_msg :name 6))
+	   )
+     (send ret :color_name color_msg)
+     (setq res (ros::service-call "/fade_led_rgb_with_color_name" ret))
+     (send res :success))
+   )
+  (:reset-led
+   (&optional (group_name "FaceLeds"))
+   (let ((ret (instance naoqi_bridge_msgs::ResetLEDRequest :init))
+	 res)
+     (ros::wait-for-service "/reset_led")
+     (send ret :name group_name)
+     (setq res (ros::service-call "/reset_led" ret))
+     (send res :success))
+   )
   )
 ;;
