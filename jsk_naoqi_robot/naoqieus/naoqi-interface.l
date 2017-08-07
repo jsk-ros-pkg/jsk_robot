@@ -371,5 +371,22 @@
      (setq res (ros::service-call "/get_move_arms_enabled" ret))
      (send res :status))
    )
+  (:set-volume
+   (volume)
+   (let ((ret (instance naoqi_bridge_msgs::SetVolumeRequest :init))
+	 res)
+     (ros::wait-for-service "/naoqi_driver/set_volume")
+     (send ret :volume volume)
+     (setq res (ros::service-call "/naoqi_driver/set_volume" ret))
+     (send res :success))
+   )
+  (:get-volume
+   ()
+   (let ((ret (instance naoqi_bridge_msgs::GetVolumeRequest :init))
+	  res)
+     (ros::wait-for-service "/naoqi_driver/get_volume")
+     (setq res (ros::service-call "/naoqi_driver/get_volume" ret))
+     (send res :volume))
+   )
   )
 ;;
