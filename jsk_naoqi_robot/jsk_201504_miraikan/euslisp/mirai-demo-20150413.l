@@ -4,14 +4,9 @@
 (ros::load-ros-manifest "peppereus")
 (require :pepper-interface "package://peppereus/pepper-interface.l")
 (load "package://jsk_201504_miraikan/euslisp/pepper-motions.l")
-(require "models/arrow-object.l")
 (unless (boundp '*ri*)
   (pepper-init))
-(unless (boundp '*irtviewer*)
-  (setq *irtviewer* (make-irtviewer)))
-(unless (string= (send *ri* :get-life) "disabled")
-  (send *ri* :disable-life))
-(send *ri* :servo-on)
+
 (send *ri* :angle-vector (send *pepper* :reset-pose))
 
 ;; 音声ファイルを再生し、動く関数
@@ -30,7 +25,6 @@
   )
 
 (defun demo(&optional (language :ja))
-  (send *ri* :set-master-volume 45) ;;90
   (send *ri* :stop-grasp)
   (case language
 	(:ja
@@ -45,10 +39,6 @@
 	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
 	 ;;(ros::wait-for-service "nao_speech/set_parameters")
 	 ;;(ros::service-call "nao_speech/set_parameters" req_voice)
-
-	 (unless (string= (send *ri* :get-life) "disabled")
-	   (send *ri* :disable-life))
-	 (send *ri* :servo-on)
 
 	 (speak_move "\\vct=180\\稲葉岡田研究室にようこそ\\pau=1000\\私はペッパー\\pau=500\\人と一緒に暮らすために作られたロボットです\\vct=130\\" *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
 	 (speak_move "\\vct=180\\家事が苦手で\\pau=500\\産業ロボットのような器用なアームはないですが\\pau=500\\言葉を通して人と交流することができますし\\pau=500\\人の声を認識したり\\pau=500\\センサーによって触覚を感じられたりします\\pau=1000\\そして\\pau=500\\人の顔を見て覚えられますよ。\\vct=130\\" *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
@@ -84,10 +74,6 @@
 	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
 	 ;;(ros::wait-for-service "nao_speech/set_parameters")
 	 ;;(ros::service-call "nao_speech/set_parameters" req_voice)
-	  
-	 (unless (string= (send *ri* :get-life) "disabled")
-	   (send *ri* :disable-life))
-	 (send *ri* :servo-on)
 	 
 	 (speak_move "Welcome to JSK laboratory. I am pepper, \\pau=500\\a robot which is designed to live with human beings." *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
 	 (speak_move "Although I'm not good at doing housework,\\pau500\\ nor do I have dexterous arms like industrial robots do, \\pau=500\\I'm able to communicate with humans through language, \\pau=500\\recognize human' voices,\\pau=500\\ feel touch and remember the faces of humans whom I have seen." *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
@@ -106,7 +92,7 @@
 (ros::ros-warn "demo :chi")
 (ros::ros-warn "if English,")
 (ros::ros-warn "demo :en")
-
+(ros::ros-warn "Please make sure autonomous life is killed, then servo me on!")
 
 ;;(demo)
 
