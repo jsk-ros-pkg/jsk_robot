@@ -43,7 +43,6 @@
        (let* ((move-joints (send-all (cadr (memq :link-list args)) :joint))
               (av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
               (ik-prepared-poses (send self :ik-prepared-poses)))
-         (print (list "===============>" ik-prepared-poses))
          (dolist (pose ik-prepared-poses)
            (unless r
              (format *error-output* "; starting from prepared pose '~A'~%" pose)
