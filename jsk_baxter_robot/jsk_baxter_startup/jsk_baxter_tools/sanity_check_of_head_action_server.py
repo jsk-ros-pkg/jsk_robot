@@ -80,10 +80,12 @@ def main():
     pos_init = head.pan()
 
     hc = HeadClient()
-    hc.command(position=pos_init - 0.3, velocity=1.0)
-    hc.wait()
-    hc.command(position=pos_init + 0.3, velocity=1.0)
-    hc.wait()
+    if pos_init > (-1.39 + 0.3):
+        hc.command(position=pos_init - 0.3, velocity=1.0)
+        hc.wait()
+    if pos_init < (1.39 - 0.3):
+        hc.command(position=pos_init + 0.3, velocity=1.0)
+        hc.wait()
     hc.command(position=pos_init, velocity=1.0)
     hc.wait()
 
