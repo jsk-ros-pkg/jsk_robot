@@ -75,8 +75,9 @@
            file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
   </include>
 
-  <!-- MongoDB -->
-  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+  <!-- Logging -->
+  <include if="$(arg launch_mongodb)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_lifelog.launch">
   </include>
 
   <!-- Wrench -->

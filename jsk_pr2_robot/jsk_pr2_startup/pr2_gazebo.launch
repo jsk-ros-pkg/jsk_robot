@@ -139,20 +139,20 @@
   <!-- pr2.launch -->
   <include file="$(find jsk_pr2_startup)/pr2.launch"
            if="$(arg launch_pr2)">
-    <arg name="map_frame" value="$(arg map_frame)" />
-    <arg name="launch_map" value="$(arg launch_map)" />
-    <arg name="launch_openni" value="false" />
-    <arg name="launch_db" value="false" />
     <arg name="launch_c3_startup" value="false" />
+    <arg name="launch_db" value="true" />
     <arg name="launch_gripper_sensor" value="false" />
     <arg name="launch_hark" value="false" />
+    <arg name="launch_map" value="$(arg launch_map)" />
     <arg name="launch_move_base" value="false" />
+    <arg name="launch_openni" value="false" />
     <arg name="launch_people_detection" value="false" />
     <arg name="launch_safety_warning" value="false" />
     <arg name="launch_tablet" value="false" />
     <arg name="launch_teleoperation" value="false" />
     <arg name="launch_twitter" value="false" />
     <arg name="launch_visualize_log" value="false" />
+    <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="slow_camera_framerate" value="false" />
   </include>
 
