@@ -1,0 +1,56 @@
+<launch>
+  <arg name="machine" default="localhost" />
+  <arg name="gui" default="false" />
+  <machine name="localhost" address="localhost" default="true" />
+
+  <param name="robot/database" value="test_database" />
+  <param name="robot/name" value="test_collection" />
+
+  <!-- setup mongodb server -->
+  <include file="$(find mongodb_store)/launch/mongodb_store_inc.launch">
+    <arg name="test_mode" value="true" />
+    <arg name="machine" value="$(arg machine)" />
+  </include>
+
+  <env name="KINECT1" value="true" />
+  <env name="KINECT2" value="false" />
+  <include file="$(find pr2_gazebo)/launch/pr2_empty_world.launch">
+    <arg name="gui" value="$(arg gui)" />
+  </include>
+
+  <!-- startup base_trajectory_logger -->
+  <node name="base_trajectory_logger"
+        pkg="jsk_robot_startup" type="base_trajectory_logger.py" output="screen">
+    <rosparam>
+      map_frame:    odom_combined
+      robot_frame:  base_footprint
+      update_cycle: 0.1
+    </rosparam>
+  </node>
+
+  <!-- startup action_logger -->
+  <node name="action_logger"
+        pkg="jsk_robot_startup" type="action_logger.py" output="screen">
+    <rosparam>
+      white_list:
+        type:
+        - pr2_controllers_msgs/Pr2GripperCommandActionGoal
+        - pr2_controllers_msgs/Pr2GripperCommandActionResult
+        - pr2_controllers_msgs/Pr2GripperCommandActionFeedback
+    </rosparam>
+  </node>
+
+  <!-- startup object_detection_logger -->
+  <node name="object_detection_logger"
+        pkg="jsk_robot_startup" type="object_detection_logger.py" output="screen">
+    <rosparam>
+      map_frame: odom_combined
+      robot_frame: base_footprint
+    </rosparam>
+  </node>
+
+  <!-- test node -->
+  <test test-name="test_robot_logger" pkg="roseus" type="roseus"
+        args="$(find jsk_robot_startup)/lifelog/test/test-logger.l"
+        retry="2" />
+</launch>
