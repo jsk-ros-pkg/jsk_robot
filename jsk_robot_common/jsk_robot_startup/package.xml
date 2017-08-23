@@ -26,6 +26,7 @@
   <run_depend>roscpp</run_depend>
   <run_depend>rosgraph</run_depend>
   <run_depend>rospy</run_depend>
+  <run_depend>roseus_mongo</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>tf2_ros</run_depend>
