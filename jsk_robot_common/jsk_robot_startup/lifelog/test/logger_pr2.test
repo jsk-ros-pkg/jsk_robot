@@ -12,8 +12,6 @@
     <arg name="machine" value="$(arg machine)" />
   </include>
 
-  <env name="KINECT1" value="true" />
-  <env name="KINECT2" value="false" />
   <include file="$(find pr2_gazebo)/launch/pr2_empty_world.launch">
     <arg name="gui" value="$(arg gui)" />
   </include>
