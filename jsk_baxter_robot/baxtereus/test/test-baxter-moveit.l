@@ -8,6 +8,14 @@
 (ros::load-ros-manifest "baxtereus")
 (ros::roseus "baxter-moveit")
 
+;; add ros::duration-sleep
+;; https://github.com/jsk-ros-pkg/jsk_roseus/pull/459
+(defun sleep-rostime (n)
+  (let ((tm0 (ros::time-now)) (tm1 (ros::time-now)))
+    (while (<= (send (ros::time- tm1 tm0) :to-sec) n)
+      (unix::sleep 1)
+      (setq tm1 (ros::time-now)))))
+
 (deftest test-baxter-moveit-init ()
   (let ((waiting-count 0))
     (while
@@ -16,7 +24,7 @@
       (ros::ros-info "waiting gazebo")
       (setq waiting-count (incf waiting-count))
       (assert (> 300 waiting-count) "gazebo did not start.")
-      (unix::sleep 3))
+      (sleep-rostime 3))
     (ros::ros-info "gazebo ready")
 
     (setq waiting-count 0)
@@ -25,7 +33,7 @@
       (ros::ros-info "waiting moveit")
       (setq waiting-count (incf waiting-count))
       (assert (> 300 waiting-count) "moveit did not start.")
-      (unix::sleep 3))
+      (sleep-rostime 3))
     (ros::ros-info "moveit ready")
 
     (setq *ri* (instance baxter-interface :init))
