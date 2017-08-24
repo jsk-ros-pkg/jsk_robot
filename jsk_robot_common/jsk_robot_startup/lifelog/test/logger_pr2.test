@@ -52,5 +52,5 @@
   <!-- test node -->
   <test test-name="test_robot_logger" pkg="roseus" type="roseus"
         args="$(find jsk_robot_startup)/lifelog/test/test-logger.l"
-        retry="2" />
+        retry="2" time-limit="300" />
 </launch>

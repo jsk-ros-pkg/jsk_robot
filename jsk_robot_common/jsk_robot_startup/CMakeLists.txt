@@ -25,5 +25,7 @@ install(DIRECTORY lifelog util
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  add_rostest(lifelog/test/logger_pr2.test KINECT1=true)
+  if("$ENV{ROS_DISTRO}" STRGREATER "hydro")
+    add_rostest(lifelog/test/logger_pr2.test KINECT1=true)
+  endif()
 endif()
