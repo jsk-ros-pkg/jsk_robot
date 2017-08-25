@@ -1,7 +1,4 @@
 - git:
-    uri: http://github.com/RethinkRobotics/baxter_common.git
-    local-name: RethinkRobotics/baxter_common
-- git:
     uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
     local-name: jsk-ros-pkg/jsk_smart_apps
 - git:
