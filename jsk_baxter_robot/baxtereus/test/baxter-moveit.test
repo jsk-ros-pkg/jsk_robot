@@ -1,0 +1,20 @@
+<launch>
+  <arg name="gui" default="false" />
+  <arg name="headless" default="true" />
+  <include file="$(find baxter_gazebo)/launch/baxter_world.launch">
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="headless" value="$(arg headless)" />
+  </include>
+
+  <include file="$(find baxter_moveit_config)/launch/planning_context.launch">
+    <arg name="left_electric_gripper" value="true" />
+    <arg name="right_electric_gripper" value="true" />
+  </include>
+
+  <node name="initialize_baxter" pkg="jsk_baxter_startup"
+        type="initialize_baxter.py" args="--moveit" output="screen" />
+
+  <!-- start test -->
+  <test test-name="baxter_moveit_test" pkg="baxtereus" type="test-baxter-moveit.l"
+	retry="3" time-limit="300"/>
+</launch>

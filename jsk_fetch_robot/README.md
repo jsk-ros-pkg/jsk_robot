@@ -66,50 +66,50 @@ fetch-interface function APIs
 
 - get current angle values of the robot model
 
-  ```
+```
 (send *fetch* :angle-vector)
-  ```
+```
 
 - get current angle values of the real robot
 
-  ```
+```
 (send *ri* :state :potentio-vector)
-  ```
+```
 
 - update joint angle values of the robot model from the real robot
 
-  ```
+```
 (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
-  ```
+```
 
 - set angle values to the robot model
 
-  ```
+```
 (send *fetch* :angle-vector #f(150 75 80 -10 100 0 95 0 0 0))
-  ```
+```
 
 - set "reset pose" to the robot model
 
-  ```
+```
 (send *fetch* :reset-pose)
-  ```
+```
 
 - send current joint angles of robot model to real robot in 5000 \[ms\] (CAUTION, this will move the real robot)
 
-  ```
+```
 (send *ri* :angle-vector (send *fetch* :angle-vector) 5000)
-  ```
+```
 
 - send current head joint angles of robot model to real robot, this command only control joints of head limb. (DO NOT USE THIS COMMAND EXCEPT **HEAD**)
 
-   ```
+ ```
 (send *fetch :head :neck-y :joint-angle 50)
 (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
 (send *ri* :wait-interpolation)
-   ```
+ ```
 
 - get angle value of individual joint
-  ```
+```
 (send *fetch* :torso :waist-z :joint-angle)
 (send *fetch* :rarm :shoulder-y :joint-angle)
 (send *fetch* :rarm :shoulder-p :joint-angle)
@@ -120,43 +120,49 @@ fetch-interface function APIs
 (send *fetch* :rarm :wrist-r :joint-angle)
 (send *fetch* :head :neck-y :joint-angle)
 (send *fetch* :head :neck-p :joint-angle)
-  ```
+```
 
 - set angle value of indiviual joint, use \[mm\] for linear joint and \[deg\] for rotational joint
 
-  ```
+```
 (send *fetch* :torso :waist-z :joint-angle 150)
 (send *fetch* :rarm :shoulder-y :joint-angle 75)
-  ```
+```
 
 - control gripper
 
   to grasp object
-  ```
+```
 (send *ri* :start-grasp)
-  ```
+```
   
   to release object
-  ```
+```
 (send *ri* :stop-grasp)
-  ```
+```
+
+  to know the result of grasp
+```
+(setq grasp-result (send *ri* :start-grasp))
+(send grasp-result :position)
+```
   
 - inverse kinematics
 
   including torso movement
-  ```
+```
 (send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1200)) :debug-view t)
-  ```
+```
   
   using only arm movement
-  ```
+```
 (send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1200)) :degug-view t)
-  ```
+```
   
   coordinates can be made with 
-  ```
+```
   (make-coords :pos #f(0 0 0) :rpy (float-vector 0 0 pi))
-  ```
+```
   
 - moving the robot
  
@@ -180,9 +186,9 @@ fetch-interface function APIs
 FAQ
 ---
 
-- `could not fid package [fetcheus]`
+- `could not find package [fetcheus]`
 
-  ```
+```
 1.irteusgl$ (load "package://fetcheus/fetch-interface.l") ; load modules
 [rospack] Error: package 'fetcheus' not found
 ;; could not find pacakge [fetcheus]

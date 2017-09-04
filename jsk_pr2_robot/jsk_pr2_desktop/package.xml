@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_pr2_desktop</name>
+  <version>1.1.0</version>
+  <description>Desktop Shortcuts for JSK PR2</description>
+
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="youhei@jsk.imi.i.u-tokyo.ac.jp">Youhei Kakiuchi</maintainer>
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
+
+  <license>BSD</license>
+
+  <author email="youhei@jsk.imi.i.u-tokyo.ac.jp">Youhei Kakiuchi</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>jsk_pr2_startup</build_depend>
+  <run_depend>jsk_pr2_startup</run_depend>
+</package>

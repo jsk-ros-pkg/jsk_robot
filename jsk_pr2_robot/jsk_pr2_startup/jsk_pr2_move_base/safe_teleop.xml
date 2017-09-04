@@ -24,7 +24,7 @@
     <remap from="mux" to="vel_type_mux" />
   </node>
   <!-- args is (topic, condition, select)* -->
-  <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+  <node pkg="jsk_robot_startup" type="mux_selector.py" machine="c2"
 	name="vel_type_selector" respawn="true" output="screen"
 	args="/joy 'm.buttons[10]==1' /teleop/joy_vel /navigation/cmd_vel 'True' /navigation/cmd_vel">
     <remap from="mux" to="vel_type_mux" />
@@ -45,7 +45,7 @@
 	args="base_controller/command_unchecked /navigation/unsafe_vel /navigation/safe_vel">
     <remap from="mux" to="cmd_vel_mux" />
   </node>
-  <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+  <node pkg="jsk_robot_startup" type="mux_selector.py" machine="c2"
 	name="cmd_vel_selector" respawn="true" output="screen"
 	args="/joy 'm.buttons[9]==0 and m.buttons[10]==1' /navigation/safe_vel /input_vel 'True' /navigation/safe_vel">
     <remap from="mux" to="cmd_vel_mux" />
@@ -58,6 +58,6 @@
 
   <!-- warning 5 sec when unsafe -->
   <node pkg="roseus" type="roseus" name="unsafe_warning" respawn="true"
-	args="$(find jsk_pr2_startup)/jsk_pr2_warning/unsafe_warning.l"/>
+	args="$(find jsk_robot_startup)/lifelog/unsafe_warning.l"/>
 
 </launch>

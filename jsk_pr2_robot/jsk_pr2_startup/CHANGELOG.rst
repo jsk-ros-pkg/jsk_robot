@@ -2,6 +2,23 @@
 Changelog for package jsk_pr2_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2017-07-16)
+------------------
+* Enable safe teleop for fetch (`#801 <https://github.com/jsk-ros-pkg/jsk_robot/issues/801>`_)
+  * [jsk_fetch_startup] move unsafe_warning.l to jsk_robot_startup / enable unsafe_warning on fetch
+  * [jsk_pr2_startup] move mux_selector.py to jsk_robot_startup
+
+* [jsk_pr2_startup][pr2.launch] update voice_text launch (`#796 <https://github.com/jsk-ros-pkg/jsk_robot/issues/796>`_)
+* [jsk_pr2_startup] fix: pr2 move_base local cost map does not work on gazebo (`#736 <https://github.com/jsk-ros-pkg/jsk_robot/issues/736>`_)
+* [jsk_pr2_startup] fix: init pose parameter typo for gazebo (`#753 <https://github.com/jsk-ros-pkg/jsk_robot/issues/753>`_)
+  * [jsk_pr2_startup] fix param for initialpose_publisher.l
+
+* [jsk_pr2_startup] IAI kitchen gazebo startup launch (`#695 <https://github.com/jsk-ros-pkg/jsk_robot/issues/695>`_ )
+  * [jsk_pr2_startup] add iai_kitchen gazebo startup launch
+  * [jsk_pr2_startup/pr2.launch] add launch_map option
+
+* Contributors: Kei Okada, Yuki Furuta
+
 1.0.9 (2016-11-09)
 ------------------
 * Update jsk_pr2.rosinstall

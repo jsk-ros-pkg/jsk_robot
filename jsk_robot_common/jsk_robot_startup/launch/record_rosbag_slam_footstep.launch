@@ -1,0 +1,30 @@
+<launch>
+  <arg name="save_dir" default="$(env HOME)/.ros/slam_rosbag"/>
+  <arg name="save_robot_model" default="true"/>
+  <arg name="save_openni" default="false" />
+  <arg name="save_multisense" default="false" />
+  <arg name="save_all_image" default="false" />
+  <arg name="camera_namespace" default="multisense"/>
+  <arg name="other_topics" default=""/>
+  <arg name="other_regex_topics" default="" />
+
+  <include file="$(find jsk_robot_startup)/launch/record_rosbag_slam.launch">
+    <arg name="camera_namespace" value="$(arg camera_namespace)" />
+    <arg name="save_openni" value="$(arg save_openni)" />
+    <arg name="save_robot_model" value="$(arg save_robot_model)" />
+    <arg name="save_all_image" value="$(arg save_all_image)" />
+    <arg name="save_multisense" value="$(arg save_multisense)" />
+    <arg name="other_topics" value="$(arg other_topics)
+                                    /footstep_planner/goal
+                                    /footstep_planner/result
+                                    /jaxon_footstep_controller/goal
+                                    /jaxon_footstep_controller/result
+                                    /distance_filtered_laser_snapshots/output_cloud
+                                    /slam_distance_filtered_laser_snapshots/output_cloud
+                                    /accumulated_heightmap_pointcloud_static/output
+                                    "/>
+    <arg name="other_regex_topics" value="$(arg other_regex_topics)
+                                          " />
+    <arg name="save_dir" value="$(arg save_dir)" />
+  </include>
+</launch>

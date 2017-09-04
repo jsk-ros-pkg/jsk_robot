@@ -60,7 +60,10 @@ def check_roslaunch(f):
     errors = []
     # check for missing deps
     try:
-        base_pkg, file_deps, missing = roslaunch.depends.roslaunch_deps([f])
+        # https://github.com/ros/ros_comm/pull/998
+        from roslaunch_depends import roslaunch_deps
+        ase_pkg, file_deps, missing = roslaunch_deps([f])
+        #base_pkg, file_deps, missing = roslaunch.depends.roslaunch_deps([f])
     except rospkg.common.ResourceNotFound as r:
         errors.append("Could not find package [%s] included from [%s]"%(str(r), f))
         missing = {}

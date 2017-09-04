@@ -8,6 +8,7 @@
   <arg name="USE_RESIZE" default="true" />
   <arg name="HEIGHTMAP_FILTER_Z" default="1.3" />
   <arg name="USE_BIPED_LOCALIZATION" default="true" />
+  <arg name="USE_HEIGHTMAP" default="true" />
 
   <remap from="/multisense/joint_states" to="/joint_states" />
   <node pkg="pr2_navigation_self_filter" type="self_filter"
@@ -139,7 +140,7 @@
     <arg name="use_rtabmap" value="false"/>
     <arg name="imu_topic" value="$(arg imu_topic)"/>
   </include>
-  <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch">
+  <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch" if="$(arg USE_HEIGHTMAP)" >
     <arg name="USE_NODELET_MANAGER" value="false"/>
     <arg name="NODELET_MANAGER_NAME" value="multisense_laser"/>
     <arg name="NODELET_INDEX" value="3"/>

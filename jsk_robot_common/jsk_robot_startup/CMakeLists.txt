@@ -22,3 +22,10 @@ include_directories(
 
 install(DIRECTORY lifelog util
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION} USE_SOURCE_PERMISSIONS)
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  # Disabled since cannot set environment variables for rostest for now.
+  # see https://github.com/PR2/pr2_simulator/pull/126
+  # add_rostest(lifelog/test/logger_pr2.test)
+endif()
