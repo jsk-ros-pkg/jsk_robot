@@ -130,9 +130,15 @@
       (setq result (send gripper-action :get-result))
       result))
   ;;
-  (:speak (text &rest args)
-    (let ()
-      (apply #'speak-en text :topic-name "/sound_play" args)))
+  (:speak-en (text &rest args)
+    (apply #'speak-en text :topic-name "/sound_play" args))
+  (:speak-jp (text &rest args)
+    (apply #'speak-jp text :topic-name "/robotsound_jp" args))
+  (:speak (text &rest args &key (lang :en) &allow-other-keys)
+    (case lang
+      (:en (send* self :speak-en text (remprop :lang args)))
+      (:ja (send* self :speak-jp text (remprop :lang args)))
+      (t (error "Unsupported language ~A" lang))))
   )
 
 (defun fetch-init (&optional (create-viewer))
