@@ -3,7 +3,9 @@
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="boot_sound" default="false" />
-  <arg name="map_frame" default="map" />
+  <arg name="map_frame" default="eng2" />
+  <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
+  <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -34,11 +36,16 @@
            if="$(arg launch_teleop)" />
 
   <group if="$(arg launch_move_base)">
+    <!-- jsk_maps -->
+    <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
+      <arg name="launch_map_server" value="false" />
+    </include>
+
     <!-- include fetch_navigation -->
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
-      <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml" />
-      <arg name="map_keepout_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
-      <arg name="use_keepout" default="true" />
+      <arg name="map_file" value="$(arg map_file)" />
+      <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
+      <arg name="use_keepout" value="true" />
     </include>
     <rosparam ns="move_base/global_costmap">
 inflater:
