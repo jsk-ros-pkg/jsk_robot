@@ -34,9 +34,8 @@
      (send minjerk :start-interpolation)
      (send minjerk :pass-time (/ tm 10))
      (dotimes (i 10)
-       (setq avs (cons (send minjerk :pass-time (/ tm 10)) avs)))
-     (setq avs (reverse avs))
-     (send* self :angle-vector-sequence-raw avs (/ tm 10) args)))
+       (setq avs (append avs (list (send minjerk :pass-time (/ tm 10))))))
+     (send* self :angle-vector-sequence-raw avs (make-list 10 :initial-element (/ tm 10)) args)))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
