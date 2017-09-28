@@ -129,10 +129,6 @@
       (when wait (send gripper-action :wait-for-result))
       (setq result (send gripper-action :get-result))
       result))
-  ;;
-  (:speak (text &rest args)
-    (let ()
-      (apply #'speak-en text :topic-name "/sound_play" args)))
   )
 
 (defun fetch-init (&optional (create-viewer))

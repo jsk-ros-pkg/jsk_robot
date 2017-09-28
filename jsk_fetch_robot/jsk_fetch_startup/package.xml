@@ -18,6 +18,7 @@
   <run_depend>fetch_driver_msgs</run_depend>
   <run_depend>rviz</run_depend>
   <run_depend>tf2_ros</run_depend>
+  <run_depend>voice_text</run_depend>
 
   <!-- for fetch_naviation -->
   <run_depend>amcl</run_depend>
