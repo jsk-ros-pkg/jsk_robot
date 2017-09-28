@@ -27,7 +27,7 @@
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
    (send-super* :state (if (member :wait-until-update args) args (append args (list :wait-until-update t)))))
   (:angle-vector-raw (av &optional (tm 3000) &key (divide 4) &rest args)
-   (let (avs tms (minjerk (instance minjerk-interpolator :init)))
+   (let (avs (minjerk (instance minjerk-interpolator :init)))
      (send minjerk :reset
            :position-list (list (send self :state :potentio-vector :wait-until-update t) av)
            :time-list (list tm))
