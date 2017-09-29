@@ -41,12 +41,16 @@
     ;;
     (send *fetch* :reset-pose)
     (send *ri* :angle-vector (send *fetch* :angle-vector))
+    (send *ri* :wait-interpolation)
     (setq diff-av (v- (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
+    (setq diff-av (concatenate float-vector (subseq diff-av 0 1) (map float-vector #'(lambda (x) (cond ((> x 180) (- x 360)) ((< x -180) (+ x 360)) (t x))) (subseq diff-av 1))))
     (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
 
     (send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1300)))
     (send *ri* :angle-vector (send *fetch* :angle-vector))
+    (send *ri* :wait-interpolation)
     (setq diff-av (v- (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
+    (setq diff-av (concatenate float-vector (subseq diff-av 0 1) (map float-vector #'(lambda (x) (cond ((> x 180) (- x 360)) ((< x -180) (+ x 360)) (t x))) (subseq diff-av 1))))
     (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
     ))
 
@@ -65,4 +69,3 @@
 
 (run-all-tests)
 (exit)
-
