@@ -23,6 +23,9 @@
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
      ))
+  (:state (&rest args)
+   ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
+   (send-super* :state (if (member :wait-until-update args) args (append args (list :wait-until-update t)))))
   (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
