@@ -1,0 +1,101 @@
+<launch>
+  <arg name="throttled_rate" default="5.0" />
+  <arg name="launch_manager" default="false" />
+  <arg name="throttle_head_rgb" default="true" />
+  <arg name="throttle_head_depth" default="true" />
+  <arg name="throttle_head_cloud" default="true" />
+  <arg name="throttle_base_scan" default="true" />
+
+  <arg unless="$(arg launch_manager)"
+       name="manager" default="head_camera/head_camera_nodelet_manager" />
+  <arg if="$(arg launch_manager)"
+       name="manager" default="throttle_nodelet_manager" />
+
+  <node name="$(arg manager)" pkg="nodelet" type="nodelet" args="manager"
+        if="$(arg launch_manager)" />
+
+  <group ns="head_camera">
+    <group ns="depth_registered">
+      <node name="downsample_cloud"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/ResizePointsPublisher /$(arg manager)"
+            if="$(arg throttle_head_cloud)"
+            respawn="true">
+        <remap from="~input" to="points" />
+        <remap from="~output" to="points/quater" />
+        <rosparam>
+          step_x: 4
+          step_y: 4
+        </rosparam>
+      </node>
+      <node name="throttle_cloud"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            if="$(arg throttle_head_cloud)"
+            respawn="true">
+        <remap from="~input" to="points/quater" />
+        <remap from="~output" to="points/quater/throttled" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
+      <node name="throttle_image"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            if="$(arg throttle_head_depth)"
+            ns="hw_registered"
+            respawn="true">
+        <remap from="~input" to="image_rect_raw" />
+        <remap from="~output" to="image_rect_raw/throttled" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
+    </group>
+    <group ns="rgb"
+           if="$(arg throttle_head_rgb)">
+      <node name="throttle_camera_info"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="camera_info"/>
+        <remap from="~output" to="camera_info/throttled" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
+      <node name="throttle_rgb"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="image_rect_color" />
+        <remap from="~output" to="image_rect_color/throttled" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
+      <node name="downsample_half"
+            pkg="nodelet" type="nodelet"
+            args="load image_proc/resize /$(arg manager)"
+            respawn="true">
+        <remap from="image" to="image_rect_color" />
+        <remap from="~image" to="half/image_rect_color" />
+        <remap from="~camera_info" to="half/camera_info" />
+        <rosparam>
+          scale_width: 0.5
+          scale_height: 0.5
+        </rosparam>
+      </node>
+      <node name="downsample_quater"
+            pkg="nodelet" type="nodelet"
+            args="load image_proc/resize /$(arg manager)"
+            respawn="true">
+        <remap from="image" to="image_rect_color" />
+        <remap from="~image" to="quater/image_rect_color" />
+        <remap from="~camera_info" to="quater/camera_info" />
+        <rosparam>
+          scale_width: 0.25
+          scale_height: 0.25
+        </rosparam>
+      </node>
+    </group>
+  </group>
+
+  <node name="base_scan_throttle" pkg="topic_tools" type="throttle"
+        args="messages base_scan $(arg throttled_rate) base_scan/throttled"
+        if="$(arg throttle_base_scan)">
+    <param name="lazy" value="true" />
+  </node>
+</launch>
