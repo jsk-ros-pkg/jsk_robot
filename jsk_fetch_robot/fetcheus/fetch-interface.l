@@ -35,7 +35,8 @@
      (send minjerk :pass-time (/ tm 10))
      (dotimes (i 10)
        (setq avs (append avs (list (send minjerk :pass-time (/ tm 10))))))
-     (send* self :angle-vector-sequence-raw avs (make-list 10 :initial-element (/ tm 10)) args)))
+     (send* self :angle-vector-sequence-raw avs (make-list 10 :initial-element (/ tm 10)) args)
+     (send robot :angle-vector (car (last avs)))))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
@@ -280,10 +281,10 @@
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
-
+  
   (ros::spin-once)
   (send *ri* :spin-once)
-
+  
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
   (when create-viewer (objects (list *fetch*)))
   )
