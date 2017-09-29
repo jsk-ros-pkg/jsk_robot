@@ -11,7 +11,7 @@
 
 (defmethod fetch-interface
   (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" :base-controller-action-name nil args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
@@ -137,6 +137,135 @@
     (let ()
       (apply #'speak-en text :topic-name "/sound_play" args)))
   )
+
+;; interface for simple base actions
+(defmethod fetch-interface
+  (:send-cmd-vel-raw (x d &key (topic-name "/base_controller/command"))
+    (when (send self :simulation-modep)
+      (return-from :send-cmd-vel-raw t))
+    (unless (ros::get-topic-publisher topic-name)
+      (ros::advertise topic-name geometry_msgs::Twist 1)
+      (unix:sleep 1))
+    (let ((msg (instance geometry_msgs::Twist :init)))
+      (send msg :linear :x x)
+      (send msg :angular :z d)
+      (ros::publish topic-name msg)))
+  (:go-velocity
+    (x y d ;; [m/sec] [m/sec] [rad/sec]
+       &optional (msec 1000) ;; msec is total animation time [msec]
+       &key (stop t) (wait t))
+    (unless (not (zerop y))
+      (ros::ros-error
+        "Setting velocity in y-axis is not valid for non-holonomic robot")
+      (return-from :go-velocity nil))
+    (unless wait
+      (ros::ros-error ":go-velocity without wait is unsupported")
+      (return-from :go-velocity nil))
+    (setq msec (- msec (ros::get-param "/base_controller/timeout" 0.25)))
+    (ros::rate 100)
+    (let ((start-time (ros::time-now)))
+      (while (and (ros::ok)
+                  (< (* 1000.0 (send (ros::time- (ros::time-now) start-time) :to-sec)) msec))
+        (send self :spin-once)
+        (send self :send-cmd-vel-raw x d)
+        (ros::sleep)))
+    (when stop
+      (send self :send-cmd-vel-raw 0 0))
+    (ros::rate 10)
+    t)
+  (:go-pos-unsafe
+    (&rest args)
+    (send self :put :go-pos-unsafe-no-wait-goal (coerce args float-vector))
+    (send self :go-pos-unsafe-wait)
+    t)
+  (:go-pos-unsafe-no-wait
+    (x y &optional (d 0)) ;; [m] [m] [degree]
+    (ros::ros-warn ":go-pos-unsafe-no-wait is not supported for this robot.")
+    (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
+    t)
+  (:go-pos-unsafe-wait
+    (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
+          (translation-gain 1.0) (rotation-gain 1.0))
+    (unless (send self :get :go-pos-unsafe-no-wait-goal)
+      (ros::ros-error ":go-pos-unsafe-wait is called without goal")
+      (return-from :go-pos-unsafe-wait nil))
+    (ros::rate 100)
+    (labels ((shortest-angle
+              (d0 d1)
+              (atan2 (sin (- d0 d1)) (cos (- d0 d1)))))
+      (let* ((goal (send self :get :go-pos-unsafe-no-wait-goal))
+             (x (aref goal 0))
+             (y (aref goal 1))
+             (d (aref goal 2))
+             (forward-p (>= x 0))
+             (d0 (if forward-p (atan2 y x) (atan2 (- y) (- x))))
+             (d1 (distance (float-vector 0 0) (float-vector x y)))
+             (d2 (shortest-angle (- d d0) 0))
+             org-cds cur-cds diffrot diffpos err)
+        (send self :remprop :go-pos-unsafe-no-wait-goal)
+
+        ;; yaw-x-yaw approach
+        (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)" d0 d1 d2)
+
+        ;; yaw
+        (send *ri* :spin-once)
+        (setq org-cds (send self :state :odom :pose))
+        (ros::ros-debug "org-cds: ~A" org-cds)
+        (while (ros::ok)
+          (send *ri* :spin-once)
+          (setq cur-cds (send *ri* :state :odom :pose))
+          (setq diffrot (aref (send org-cds :difference-rotation cur-cds) 2))
+          (setq err (shortest-angle d0 diffrot))
+          (ros::ros-debug "diffrot: ~A, err: ~A" diffrot err)
+          (when (< (abs err) rotation-threshold)
+            (unless (send self :simulation-modep)
+              (send *ri* :send-cmd-vel-raw 0 0)) ;; stop
+            (return))
+          (when (send self :simulation-modep)
+            (send *ri* :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
+            (send *ri* :draw-objects))
+          (send *ri* :send-cmd-vel-raw 0 (* rotation-gain err))
+          (ros::sleep))
+
+        ;; x
+        (setq org-cds (send *ri* :state :odom :pose))
+        (while (ros::ok)
+          (send *ri* :spin-once)
+          (setq cur-cds (send *ri* :state :odom :pose))
+          (setq diffpos (* 0.001 (norm (send org-cds :difference-position cur-cds))))
+          (setq err (- d1 diffpos))
+          (ros::ros-debug "diffpos: ~A, err: ~A" diffpos err)
+          (when (< (abs err) translation-threshold)
+            (send *ri* :send-cmd-vel-raw 0 0) ;; stop
+            (return))
+          (when (send self :simulation-modep)
+            (send *ri* :robot :newcoords
+                  (send (send *ri* :robot :copy-worldcoords)
+                        :translate (float-vector
+                                    (if forward-p 0.1 -0.1) 0 0)))
+            (send *ri* :draw-objects))
+          (send *ri* :send-cmd-vel-raw
+                (* translation-gain (if forward-p err (- err))) 0)
+          (ros::sleep))
+
+        ;; yaw
+        (setq org-cds (send *ri* :state :odom :pose))
+        (while (ros::ok)
+          (send *ri* :spin-once)
+          (setq cur-cds (send *ri* :state :odom :pose))
+          (setq diffrot (aref (send org-cds :difference-rotation cur-cds) 2))
+          (setq err (shortest-angle d2 diffrot))
+          (ros::ros-debug "diffrot: ~A, err: ~A" diffrot err)
+          (when (< (abs err) rotation-threshold)
+            (send *ri* :send-cmd-vel-raw 0 0) ;; stop
+            (return))
+          (when (send self :simulation-modep)
+            (send *ri* :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
+            (send *ri* :draw-objects))
+          (send *ri* :send-cmd-vel-raw 0 (* rotation-gain err))
+          (ros::sleep))
+        t)))
+) ;; fetch-interface (simple base actions)
 
 (defun fetch-init (&optional (create-viewer))
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
