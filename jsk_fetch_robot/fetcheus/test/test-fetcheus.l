@@ -42,14 +42,14 @@
     (send *fetch* :reset-pose)
     (send *ri* :angle-vector (send *fetch* :angle-vector))
     (send *ri* :wait-interpolation)
-    (setq diff-av (v- (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
-    (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
+    (setq diff-av (send *ri* :sub-angle-vector (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
+    (assert (eps= (norm diff-av) 0.0 10.0) (format nil "diff-av ~A" diff-av))
 
     (send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1300)))
     (send *ri* :angle-vector (send *fetch* :angle-vector))
     (send *ri* :wait-interpolation)
-    (setq diff-av (v- (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
-    (assert (eps= (norm diff-av) 0.0 5.0) (format nil "diff-av ~A" diff-av))
+    (setq diff-av (send *ri* :sub-angle-vector (send *ri* :state :potentio-vector) (send *fetch* :angle-vector)))
+    (assert (eps= (norm diff-av) 0.0 10.0) (format nil "diff-av ~A" diff-av))
     ))
 
 ;; https://github.com/jsk-ros-pkg/jsk_robot/pull/771/files
