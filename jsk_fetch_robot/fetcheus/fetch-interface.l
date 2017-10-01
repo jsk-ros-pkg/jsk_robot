@@ -1,7 +1,7 @@
 (ros::roseus "fetch")
 
 (require "package://fetcheus/fetch-utils.l")
-(require "package://pr2eus/pr2-interface.l")
+(require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
 (defclass fetch-interface
