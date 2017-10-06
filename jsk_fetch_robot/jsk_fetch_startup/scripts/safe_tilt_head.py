@@ -31,6 +31,11 @@
 #
 # Tilt head for navigation obstacle avoidance.
 #
+# Note:
+# This file is originally copied from
+# https://github.com/fetchrobotics/fetch_ros/blob/0.7.12/fetch_navigation/scripts/tilt_head.py
+# and modified to integrate with safe teleoperation.
+#
 
 from threading import Lock
 
