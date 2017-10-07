@@ -26,7 +26,17 @@
   (:state (&rest args)
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
    (send-super* :state (if (member :wait-until-update args) args (append args (list :wait-until-update t)))))
-  (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
+  (:angle-vector-raw (av &optional (tm 3000) &rest args)
+   (let (avs (minjerk (instance minjerk-interpolator :init)))
+     (send minjerk :reset
+           :position-list (list (send self :state :potentio-vector :wait-until-update t) av)
+           :time-list (list tm))
+     (send minjerk :start-interpolation)
+     (send minjerk :pass-time (/ tm 10))
+     (dotimes (i 10)
+       (setq avs (append avs (list (send minjerk :pass-time (/ tm 10))))))
+     (send* self :angle-vector-sequence-raw avs (make-list 10 :initial-element (/ tm 10)) args)
+     (send robot :angle-vector (car (last avs)))))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
