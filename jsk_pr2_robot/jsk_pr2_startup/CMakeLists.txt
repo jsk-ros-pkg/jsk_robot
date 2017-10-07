@@ -6,7 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   roseus)
 
 catkin_package(
-  CATKIN_DEPENDS jsk_network_tools jsk_robot_startup pr2_mannequin_mode pr2_gripper_sensor_action
+  CATKIN_DEPENDS jsk_network_tools
 )
 
 catkin_add_env_hooks(99.jsk_pr2_startup SHELLS bash zsh
