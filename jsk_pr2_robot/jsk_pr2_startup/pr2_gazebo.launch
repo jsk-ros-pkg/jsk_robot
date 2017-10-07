@@ -142,7 +142,7 @@
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="launch_map" value="$(arg launch_map)" />
     <arg name="launch_openni" value="false" />
-    <arg name="launch_db" value="false" />
+    <arg name="launch_db" value="true" />
     <arg name="launch_c3_startup" value="false" />
     <arg name="launch_gripper_sensor" value="false" />
     <arg name="launch_hark" value="false" />
