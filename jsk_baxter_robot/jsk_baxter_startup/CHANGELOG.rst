@@ -2,6 +2,19 @@
 Changelog for package jsk_baxter_startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2017-07-16)
+------------------
+* [baxtereus][jsk_baxter_startup] add baxter moveit test (`#779 <https://github.com/jsk-ros-pkg/jsk_robot/issues/779>`_)
+  * add initialize_baxter in jsk_baxter_tools
+    originally from jsk_2015_01_baxter_apc
+    modify to launch moveit launch
+
+* [jsk_baxter_moveit] modify jsk_baxter_moveit moveit.launch (`#765 <https://github.com/jsk-ros-pkg/jsk_robot/issues/765>`_)
+  * enable gripper in moveit when its action launched
+  * modify jsk_baxter_moveit moveit.launch
+
+* Contributors: Kei Okada, Shingo Kitagawa
+
 1.0.9 (2016-11-09)
 ------------------
 

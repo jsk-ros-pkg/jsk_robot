@@ -2,6 +2,100 @@
 Changelog for package baxtereus
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.1.0 (2017-07-16)
+------------------
+* baxtereus: test/*.test: time-limit=100000 is too large need to set 300-600 (`#802 <https://github.com/jsk-ros-pkg/jsk_robot/issues/802>`_)
+  * test/*.test: time-limit=100000 is too large need to set 300-600
+
+* [baxtereus] Fix run_depend to pr2eus_moveit (`#798 <https://github.com/jsk-ros-pkg/jsk_robot/issues/798>`_)
+  * Fix run_depend to pr2eus_moveit
+
+* [baxtereus] support tm :fast in moveit angle-vector methods (`#789 <https://github.com/jsk-ros-pkg/jsk_robot/issues/789>`_)
+  * angle-vector-sequence accept tms as list of time
+    related to https://github.com/jsk-ros-pkg/jsk_robot/pull/791#pullrequestreview-45324124
+  * test tm :fast angle-vector methods and av-sequence
+  * update doc for :angle-vecor methods
+  * support tm :fast in moveit angle-vector methods
+
+* [baxtereus] add key :robot in baxter-interface :init (`#784 <https://github.com/jsk-ros-pkg/jsk_robot/issues/784>`_)
+  * add key :robot in baxter-interface :init
+
+* [baxtereus] Use end-coords-interpolation (`#747 <https://github.com/jsk-ros-pkg/jsk_robot/issues/747>`_)
+  * Use end-coords-interpolation in baxter-interface
+
+* [baxtereus][jsk_baxter_startup] add baxter moveit test (`#779 <https://github.com/jsk-ros-pkg/jsk_robot/issues/779>`_)
+  * add baxter_sim_controllers as test_depend
+  * add gazebo moveit starting time assertion
+  * add joint_state_controller as test_depend
+  * update cmake and package for baxter moveit test
+  * add baxter moveit test
+
+* [baxtereus] set wait key default as t (`#769 <https://github.com/jsk-ros-pkg/jsk_robot/issues/769>`_)
+  * set wait key default as t
+
+* [baxtereus] add wait key in :start-grasp (`#768 <https://github.com/jsk-ros-pkg/jsk_robot/issues/768>`_)
+* [baxtereus] remove unused baxter-moveit.l (`#764 <https://github.com/jsk-ros-pkg/jsk_robot/issues/764>`_)
+  * remove baxter-moveit.l from CMakeLists.txt
+  * remove unused baxter-moveit.l, it is replaced in baxter-interface.l
+
+* [baxtereus] fix bug in :command-grasp and :calib-grasp (`#762 <https://github.com/jsk-ros-pkg/jsk_robot/issues/762>`_)
+  * pass pos in :calib-grasp
+  * pass arm as symbol to :command-grasp
+
+* add ik-prepared-poses in baxter class (`#748 <https://github.com/jsk-ros-pkg/jsk_robot/issues/748>`_)
+  * baxter-util.l : :ik-prepared-poses, enable to set nil
+  * baxter-util.l : self-collision-check, fix symbol  symbol expected for function argument error on compile
+  * define :ik-prepared-poses in baxter-robot.l
+
+* [baxtereus] pass args to angle-vector-motion-plan (`#737 <https://github.com/jsk-ros-pkg/jsk_robot/issues/737>`_)
+  * add moveit option in baxter-init
+  * pass args to angle-vector-motion-plan in baxtereus
+
+* [baxtereus] execute raw angle-vector methods in case tm is not number (`#734 <https://github.com/jsk-ros-pkg/jsk_robot/issues/734>`_)
+  * execute raw angle-vector in case tm is not number
+    common case is
+    (send *ri* :angle-vector-sequnce avs :fast)
+
+* [baxtereus] add ctype in angle-vector methods for moveit (`#730 <https://github.com/jsk-ros-pkg/jsk_robot/issues/730>`_)
+  * use &key instead of &rest in baxter angle-vector
+    use &key instead of &rest args in :angle-vector methods in baxtereus and
+    refine codes.
+  * add ctype in angle-vector-sequence for moveit
+  * add ctype in angle-vector for moveit
+
+* [baxtereus] add :angle-vector-sequence for moveit (`#728 <https://github.com/jsk-ros-pkg/jsk_robot/issues/728>`_)
+  * fix typo in baxter-util.l
+  * add :angle-vector-sequence for moveit
+    :angle-vector-sequence -> :angle-vector-sequence-motion-plan
+
+* [baxtereus] add :arms for baxter_moveit_config "both_arms" (`#731 <https://github.com/jsk-ros-pkg/jsk_robot/issues/731>`_)
+  * add :arms for baxter_moveit_config "both_arms"
+
+* [baxtereus] Fix bug to pass args in :angle-vector (`#729 <https://github.com/jsk-ros-pkg/jsk_robot/issues/729>`_)
+  * fix bug in :angle-vector
+    use :move-arm as key and pass other args to other methods
+    currently args passing was not proper
+  * fix typo in baxter-interface
+  * remove tab and use space in baxter-interface
+  * refine warning message in baxter-interface
+
+* [baxtereus] override :angle-vector and rename existing methods (`#721 <https://github.com/jsk-ros-pkg/jsk_robot/issues/721>`_)
+  * override :angle-vector and rename existing methods
+    Before                       After
+    :angle-vector-motion-plan -> :angle-vector
+    :angle-vector             -> :angle-vector-raw
+    :angle-vector-sequence    -> :angle-vector-sequence-raw
+
+* [baxtereus] add moveit init option in baxter-interface (`#719 <https://github.com/jsk-ros-pkg/jsk_robot/issues/719>`_)
+  * add moveit config init option in baxter-interface
+    this option is needed for customize baxter like jsk_baxter_apc
+  * add SRDF description in baxter-interface.l
+
+* [baxtereus] add moveit in baxter-interface (`#716 <https://github.com/jsk-ros-pkg/jsk_robot/issues/716>`_)
+  * add moveit in baxter-interface
+
+* Contributors: Kei Okada, Kentaro Wada, Shingo Kitagawa, Shun Hasegawa
+
 1.0.9 (2016-11-09)
 ------------------
 

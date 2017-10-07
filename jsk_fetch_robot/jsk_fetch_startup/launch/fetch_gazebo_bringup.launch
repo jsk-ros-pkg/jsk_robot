@@ -5,7 +5,7 @@
   <arg name="launch_move_base" default="true" />
   <arg name="paused" default="false" />
   <arg name="world" default="worlds/empty.world" />
-  <arg name="map_frame" default="map" />
+  <arg name="map_frame" default="eng2" />
 
   <arg name="INITIAL_POSE_X" default="0.0" />
   <arg name="INITIAL_POSE_Y" default="0.0" />
@@ -35,5 +35,6 @@
     <arg name="launch_move_base" value="$(arg launch_move_base)" />
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="boot_sound" value="false" />
+    <arg name="launch_teleop" value="false" /> <!-- duplicates cmd_vel_mux nodes -->
   </include>
 </launch>
