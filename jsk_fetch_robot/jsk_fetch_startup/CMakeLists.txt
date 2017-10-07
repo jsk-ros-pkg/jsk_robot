@@ -17,6 +17,9 @@ find_package(catkin)
 ###################################
 catkin_package()
 
+catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
 #############
 ## Install ##
 #############

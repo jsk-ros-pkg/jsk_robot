@@ -1,0 +1,10 @@
+- git:
+   uri: http://github.com/RethinkRobotics/baxter_common.git
+   local-name: RethinkRobotics/baxter_common
+- git:
+   uri: https://github.com/fetchrobotics/fetch_ros.git
+   local-name: fetchrobotics/fetch_ros
+- git:
+   uri: https://github.com/ros-naoqi/nao_interaction.git
+   local-name: ros-naoqi/nao_interaction
+
