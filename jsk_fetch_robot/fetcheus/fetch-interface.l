@@ -1,7 +1,7 @@
 (ros::roseus "fetch")
 
 (require "package://fetcheus/fetch-utils.l")
-(require "package://pr2eus/pr2-interface.l")
+(require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
 (defclass fetch-interface
@@ -26,7 +26,36 @@
   (:state (&rest args)
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
    (send-super* :state (if (member :wait-until-update args) args (append args (list :wait-until-update t)))))
-  (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
+  (:check-continuous-joint-move-over-180 ;; can be removed if http//github.com/jsk-ros-pkg/jsk_pr2eus/pull/322 merged
+   (diff-av)
+   (let ((i 0) add-new-trajectory-point)
+     (dolist (j (send robot :joint-list))
+       ;; for continuous rotational joint
+       (when (and (> (- (send j :max-angle) (send j :min-angle)) 360)
+                  (> (abs (elt diff-av i)) 180))
+         (ros::ros-warn "continuous joint (~A) moves ~A degree, commanded joint differs from original trajectory to avoid unintentional 360 rotation" (send j :name) (elt diff-av i))
+         (setq add-new-trajectory-point t))
+       (incf i (send j :joint-dof)))
+     add-new-trajectory-point))
+  (:angle-vector-raw (av &optional (tm 3000) &rest args)
+   (let* ((prev-av (send self :state :potentio-vector :wait-until-update t))
+          (diff-av (v- av prev-av)))
+     (when (send self :check-continuous-joint-move-over-180 diff-av)
+       (let* (avs (minjerk (instance minjerk-interpolator :init))
+                  (scale-av (send self :sub-angle-vector av prev-av))
+                  dist div)
+         (setq dist (abs (geo::find-extream (coerce diff-av cons) #'abs #'>=)))
+         (setq div (round (/ dist 120.0)))
+         (send minjerk :reset
+               :position-list (list prev-av (v+ prev-av scale-av))
+               :time-list (list tm))
+         (send minjerk :start-interpolation)
+         (send minjerk :pass-time (/ tm div))
+         (dotimes (i div)
+           (setq avs (append avs (list (send minjerk :pass-time (/ tm div))))))
+         (send* self :angle-vector-sequence-raw avs (make-list div :initial-element (/ tm div)) args)
+         (return-from :angle-vector-raw (car (last avs)))))
+     (send-super* :angle-vector av tm args)))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
