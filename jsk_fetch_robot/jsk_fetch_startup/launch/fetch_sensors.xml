@@ -43,23 +43,23 @@
             pkg="nodelet" type="nodelet"
             args="load jsk_topic_tools/Relay /$(arg manager)"
             respawn="true">
-        <remap from="~input" to="hw_registered/image_rect" />
-        <remap from="~output" to="image_rect" />
+        <remap from="~input" to="hw_registered/image_rect_raw" />
+        <remap from="~output" to="image_rect_raw" />
       </node>
       <node name="relay_image_compressed"
             pkg="nodelet" type="nodelet"
             args="load jsk_topic_tools/Relay /$(arg manager)"
             respawn="true">
-        <remap from="~input" to="hw_registered/image_rect/compressedDepth" />
-        <remap from="~output" to="image_rect/compressedDepth" />
+        <remap from="~input" to="hw_registered/image_rect_raw/compressedDepth" />
+        <remap from="~output" to="image_rect_raw/compressedDepth" />
       </node>
       <node name="throttle_image"
             pkg="nodelet" type="nodelet"
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             if="$(arg throttle_head_depth)"
             respawn="true">
-        <remap from="~input" to="image_rect" />
-        <remap from="~output" to="throttled/image_rect" />
+        <remap from="~input" to="image_rect_raw" />
+        <remap from="~output" to="throttled/image_rect_raw" />
         <param name="update_rate" value="$(arg throttled_rate)" />
       </node>
       <node name="throttle_camera_info"
