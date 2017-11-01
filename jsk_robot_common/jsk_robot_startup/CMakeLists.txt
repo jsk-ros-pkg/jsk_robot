@@ -12,13 +12,12 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Boost REQUIRED)
 find_package(OpenCV REQUIRED)
 
-
 catkin_python_setup()
 
 generate_dynamic_reconfigure_options(
-  config/OdometryOffsetReconfigure.cfg
-  config/OdometryFeedbackWrapperReconfigure.cfg
-  config/ConstantHeightFramePublisherReconfigure.cfg
+  cfg/OdometryOffsetReconfigure.cfg
+  cfg/OdometryFeedbackWrapperReconfigure.cfg
+  cfg/ConstantHeightFramePublisherReconfigure.cfg
 )
 
 catkin_package(
