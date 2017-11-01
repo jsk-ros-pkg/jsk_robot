@@ -1,6 +1,6 @@
 <launch>
   <arg name="throttled_rate" default="5.0" />
-  <arg name="launch_manager" default="false" />
+  <arg name="launch_manager" default="true" />
   <arg name="throttle_head_rgb" default="true" />
   <arg name="throttle_head_depth" default="true" />
   <arg name="throttle_head_cloud" default="true" />
@@ -11,18 +11,20 @@
   <arg if="$(arg launch_manager)"
        name="manager" default="throttle_nodelet_manager" />
 
-  <node name="$(arg manager)" pkg="nodelet" type="nodelet" args="manager"
+  <node name="$(arg manager)" pkg="nodelet" type="nodelet"
+        args="manager"
+        output="screen"
         if="$(arg launch_manager)" />
 
   <group ns="head_camera">
     <group ns="depth_registered">
-      <node name="downsample_cloud"
+      <node name="resize_cloud"
             pkg="nodelet" type="nodelet"
             args="load jsk_pcl/ResizePointsPublisher /$(arg manager)"
             if="$(arg throttle_head_cloud)"
             respawn="true">
         <remap from="~input" to="points" />
-        <remap from="~output" to="points/quater" />
+        <remap from="~output" to="quater/points" />
         <rosparam>
           step_x: 4
           step_y: 4
@@ -33,18 +35,40 @@
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             if="$(arg throttle_head_cloud)"
             respawn="true">
-        <remap from="~input" to="points/quater" />
-        <remap from="~output" to="points/quater/throttled" />
+        <remap from="~input" to="quater/points" />
+        <remap from="~output" to="quater/throttled/points" />
         <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
+      <node name="relay_image"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/Relay /$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="hw_registered/image_rect" />
+        <remap from="~output" to="image_rect" />
+      </node>
+      <node name="relay_image_compressed"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/Relay /$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="hw_registered/image_rect/compressedDepth" />
+        <remap from="~output" to="image_rect/compressedDepth" />
       </node>
       <node name="throttle_image"
             pkg="nodelet" type="nodelet"
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             if="$(arg throttle_head_depth)"
-            ns="hw_registered"
             respawn="true">
-        <remap from="~input" to="image_rect_raw" />
-        <remap from="~output" to="image_rect_raw/throttled" />
+        <remap from="~input" to="image_rect" />
+        <remap from="~output" to="throttled/image_rect" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
+      <node name="throttle_camera_info"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            if="$(arg throttle_head_depth)"
+            respawn="true">
+        <remap from="~input" to="camera_info" />
+        <remap from="~output" to="throttled/camera_info" />
         <param name="update_rate" value="$(arg throttled_rate)" />
       </node>
     </group>
@@ -55,7 +79,7 @@
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             respawn="true">
         <remap from="~input" to="camera_info"/>
-        <remap from="~output" to="camera_info/throttled" />
+        <remap from="~output" to="throttled/camera_info" />
         <param name="update_rate" value="$(arg throttled_rate)" />
       </node>
       <node name="throttle_rgb"
@@ -63,7 +87,7 @@
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             respawn="true">
         <remap from="~input" to="image_rect_color" />
-        <remap from="~output" to="image_rect_color/throttled" />
+        <remap from="~output" to="throttled/image_rect_color" />
         <param name="update_rate" value="$(arg throttled_rate)" />
       </node>
       <node name="downsample_half"

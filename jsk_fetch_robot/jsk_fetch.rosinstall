@@ -1,11 +1,27 @@
 - git:
-    local-name: jsk_robot
-    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: af1ad69
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition
+    version: 1.2.2
 - git:
-    local-name: jsk_pr2eus
+    local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
     version: 0.3.7
 - git:
     local-name: FA-I-sensor
     uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+- git:
+    local-name: ros-drivers/audio_common
+    uri: https://github.com/furushchev/audio_common.git
+    version: device
+- git:
+    local-name: ros-perception/image_pipeline
+    uri: https://github.com/ros-perception/image_pipeline
+    version: 1.12.20
+- git:
+    local-name: ros/nodelet_core
+    uri: https://github.com/ros/nodelet_core
+    version: 1.9.6
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: indigo-0.1.30
