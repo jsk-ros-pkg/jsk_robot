@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   jsk_topic_tools
   mongodb_store
   sensor_msgs
+  urdf
 )
 
 find_package(Boost REQUIRED)
@@ -18,6 +19,7 @@ generate_dynamic_reconfigure_options(
   cfg/OdometryOffsetReconfigure.cfg
   cfg/OdometryFeedbackWrapperReconfigure.cfg
   cfg/ConstantHeightFramePublisherReconfigure.cfg
+  cfg/JointStatesThrottle.cfg
 )
 
 catkin_package(
@@ -27,6 +29,7 @@ catkin_package(
 
 include_directories(
   include
+  ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -42,6 +45,12 @@ add_library(jsk_robot_lifelog SHARED ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS})
 target_link_libraries(jsk_robot_lifelog
   ${Boost_LIBRARIES}
   ${OpenCV_LIBRARIES}
+  ${catkin_LIBRARIES})
+
+add_executable(joint_states_throttle
+  src/joint_states_throttle_node.cpp)
+target_link_libraries(joint_states_throttle
+  ${Boost_LIBRARIES}
   ${catkin_LIBRARIES})
 
 install(DIRECTORY lifelog util
