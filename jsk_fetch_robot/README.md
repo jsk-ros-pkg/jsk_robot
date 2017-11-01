@@ -253,3 +253,37 @@ sudo bash
 rosrun ps3joy sixpair
 rosrun ps3joy ps3joy.py  # with pushing the center button of the joystick
 ```
+
+  You might be forget to `source setup.bash` before you run `roseus`
+
+Administration
+--------------
+
+- set global environment variables https://github.com/jsk-ros-pkg/jsk_robot/issues/859#issuecomment-341269420
+```
+$ cat /etc/profile.d/jsk.sh 
+# added by furushchev (2017.11.2)
+export ROSLAUNCH_SSH_UNKNOWN=1                 # enable to run roslaunch with " Server' not found in known_hosts" 
+export JSK_DATA_CACHE_DIR=/etc/ros/jsk_data    # store recognition data within common directories to reduce hdd usage
+```
+
+- change permissoin of log direcotry https://github.com/jsk-ros-pkg/jsk_robot/issues/859#issuecomment-341269420
+
+`logrotate` does not work correctly due to directory permission
+```
+$ sudo /usr/sbin/logrotate /etc/logrotate.d/ros
+error: skipping "/var/log/ros/fd645e8c-9a09-11e5-8547-d8cb8a40210c/head_camera-depth_registered_rectify_depth-12-stdout.log" because parent directory has insecure permissions (It's world writable or writable by group which is not "root") Set "su" directive in config file to tell logrotate which user/group should be used for rotation.
+```
+Changed `/var/log/ros` manually
+```
+sudo chmod g-w /var/log/ros
+(cd /var/log/ros && find -type d | xargs sudo chmod g-w)
+```
+c.f.
+```
+furushchev@fetch15:/var/log/ros$ ls -lFahd
+drwxrwsr-x 381 ros ros 36K Nov  2 01:45 ./
+furushchev@pr2:/var/log/ros$ ls -lFahd
+drwxr-xr-x 6 ros ros 36K 11月  1 15:25 ./
+```
+
