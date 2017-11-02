@@ -237,3 +237,15 @@ furushchev@pr2:/var/log/ros$ ls -lFahd
 drwxr-xr-x 6 ros ros 36K 11月  1 15:25 ./
 ```
 
+- change script for auto `undocking` to disable auto rotatation after unplugged
+
+```diff
+# /opt/ros/indigo/lib/fetch_auto_dock/undock_on_button.py
+44c44,47
+<         goal.rotate_in_place = True
+---
+>         # fixed by furushchev (2017/11/1)
+>         # Disabled rotate in place feature
+>         # goal.rotate_in_place = True
+>         goal.rotate_in_place = False
+```
