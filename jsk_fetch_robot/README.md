@@ -208,6 +208,15 @@ export ROSLAUNCH_SSH_UNKNOWN=1                 # enable to run roslaunch with " 
 export JSK_DATA_CACHE_DIR=/etc/ros/jsk_data    # store recognition data within common directories to reduce hdd usage
 ```
 
+**NOTE**  
+Scripts located in `/etc/profile.d` will be enabled on next login to the shell, so it is necessary to first log out and re-login to apply this change to current users.
+
+- Create directory for cache data for JSK repository
+
+```bash
+$ sudo mkdir /etc/ros/jsk_data && sudo chmod 0777 /etc/ros/jsk_data
+```
+
 - change permissoin of log direcotry https://github.com/jsk-ros-pkg/jsk_robot/issues/859#issuecomment-341269420
 
 `logrotate` does not work correctly due to directory permission
