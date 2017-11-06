@@ -57,7 +57,7 @@ namespace jsk_robot_startup
         return;
       }
 
-      pnh_->param("wait_for_insert_", wait_for_insert_, false);
+      pnh_->param("wait_for_insert", wait_for_insert_, false);
 
       NODELET_INFO_STREAM("Connecting to database " << db_name << "/" << col_name << "...");
       msg_store_.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name, db_name));
@@ -66,8 +66,10 @@ namespace jsk_robot_startup
       initialized_ = true;
     }
 
-    void LightweightLogger::inputCallback(const AnyMsgConstPtr& msg)
+    void LightweightLogger::inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event)
     {
+      const std::string& publisher_name = event.getPublisherName();
+      const boost::shared_ptr<topic_tools::ShapeShifter const>& msg = event.getConstMessage();
       jsk_topic_tools::StealthRelay::inputCallback(msg);
 
       if (!initialized_) return;
@@ -76,6 +78,7 @@ namespace jsk_robot_startup
       {
         mongo::BSONObjBuilder meta;
         meta.append("input_topic", input_topic_name_);
+        meta.append("published_by", publisher_name);
         std::string doc_id = msg_store_->insert(*msg, meta.obj(), wait_for_insert_);
         if (doc_id.empty())
           NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << ")");

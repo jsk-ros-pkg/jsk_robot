@@ -53,9 +53,8 @@ namespace jsk_robot_startup
     class LightweightLogger : public jsk_topic_tools::StealthRelay
     {
     protected:
-      typedef boost::shared_ptr<topic_tools::ShapeShifter const> AnyMsgConstPtr;
       virtual void onInit();
-      virtual void inputCallback(const AnyMsgConstPtr& msg);
+      virtual void inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event);
 
       boost::shared_ptr<mongodb_store::MessageStoreProxy> msg_store_;
       bool wait_for_insert_;
