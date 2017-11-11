@@ -183,6 +183,32 @@ fetch-interface function APIs
   (send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
  ```
 
+teleop
+------
+
+|Button|Function                        |
+|:-----|:-------------------------------|
+|0     |Open gripper                    |
+|1     |Control robot turning           |
+|2     |Control forward/backward driving|
+|3     |Close gripper                   |
+|4     |Disable motor position holding  |
+|5     |Not used                        |
+|6     |Arm tuck                        |
+|7     |Not used                        |
+|8     |Head control deadman            |
+|9     |Unsafe teleop                   |
+|10    |Primary deadman                 |
+|11    |Not used                        |
+|12    |Torso up                        |
+|13    |Dock                            |
+|14    |Torso down                      |
+|15    |Undock                          |
+|16    |Pair/unpair with robot          |
+
+![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
+![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
+
 FAQ
 ---
 
