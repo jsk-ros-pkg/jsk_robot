@@ -33,10 +33,10 @@ class TFLogger(LoggerBase):
             return
 
         transforms = []
-        for target, info in graph.items():
-            source = info["parent"]
+        for child, info in graph.items():
+            parent = info["parent"]
             try:
-                transforms += [self.tf_buffer.lookup_transform(target, source, time)]
+                transforms += [self.tf_buffer.lookup_transform(parent, child, time)]
             except ExtrapolationException:
                 pass
         if not transforms: return
