@@ -46,14 +46,14 @@ target_link_libraries(jsk_robot_lifelog
   ${Boost_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES})
-add_dependencies(jsk_robot_lifelog ${PROJECT_NAME}_gencpp)
+add_dependencies(jsk_robot_lifelog ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
 add_executable(joint_states_throttle
   src/joint_states_throttle_node.cpp)
 target_link_libraries(joint_states_throttle
   ${Boost_LIBRARIES}
   ${catkin_LIBRARIES})
-add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp)
+add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
 install(DIRECTORY lifelog util
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
