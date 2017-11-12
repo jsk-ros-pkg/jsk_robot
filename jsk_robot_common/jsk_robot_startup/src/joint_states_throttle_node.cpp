@@ -127,7 +127,7 @@ namespace jsk_robot_startup {
           }
           size_t j = std::distance(last_msg_.name.begin(), lit);
 
-          std::map<std::string, urdf::JointSharedPtr>::iterator jit =
+          std::map<std::string, boost::shared_ptr<urdf::Joint> >::iterator jit =
             robot_model_.joints_.find(msg->name[i]);
           if (jit == robot_model_.joints_.end()) {
             ROS_ERROR_STREAM_ONCE(msg->name[i] << " not found in 'robot_description'");
