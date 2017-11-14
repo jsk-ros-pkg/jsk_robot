@@ -6,13 +6,20 @@ IFS=':' read -r -a prefix_paths <<< "$CMAKE_PREFIX_PATH"
 current_prefix_path="${prefix_paths[0]}"
 
 sudo bash -c "cat <<EOF > /etc/init/jsk-fetch-startup.conf
-
+description \"spawn jsk bringup nodes for fetch\"
 env ROS_LOG_DIR=/var/log/ros
 
 start on roscore_is_up
 stop on roscore_is_down
 
 respawn
+
+env AUDIO_DEVICE=alsa_output.usb-1130_USB_AUDIO-00-AUDIO.analog-stereo
+
+# enable usb speaker if available
+pre-start script
+    exec su ros -c 'pactl set-default-sink $AUDIO_DEVICE || true'
+end script
 
 script
     exec su ros -c \". ${current_prefix_path}/setup.bash && roslaunch ${jsk_fetch_startup}/launch/fetch_bringup.launch boot_sound:=true\"

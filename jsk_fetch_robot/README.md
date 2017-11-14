@@ -161,7 +161,7 @@ fetch-interface function APIs
   
   coordinates can be made with 
 ```
-  (make-coords :pos #f(0 0 0) :rpy (float-vector 0 0 pi))
+  (make-coords :pos #f(0 0 0) :rpy (float-vector pi 0 0))
 ```
   
 - moving the robot
@@ -171,9 +171,9 @@ fetch-interface function APIs
  (send *ri* :go-pos 1 0 0)
  ```
  
- move to point (0 8150 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
+ move to point (-1000 7000 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
  ```
- (send *ri* :move-to (make-coords :pos #f(0 8150 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
+ (send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
  ```
  
 - use text-to-speech engine to speak text

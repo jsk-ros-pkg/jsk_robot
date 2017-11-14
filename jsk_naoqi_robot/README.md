@@ -25,6 +25,9 @@ export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp" % OR IP address like "133.11.216.x
 export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 ```
 
+% Temporary caution
+You have to refer to [this PR](https://github.com/ros-naoqi/pepper_robot/pull/40) in order to execute ```pepper_full.launch```.
+
 Install pepper mesh files with manual approval of license
 ```
 sudo apt-get install ros-indigo-pepper-meshes
@@ -49,6 +52,21 @@ add following source code for debugging.
 ```
 cd  catkin_ws/src
 wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
+```
+
+trouble shooting
+----------------
+If you failed in launching jsk_pepper_startup.launch,
+please check below.
+
+1. Please try deleting all the terminals you created before, and even rebooting your PC.
+If another terminal of ```roscore``` has been left and the connected network has changed recently, connecting your PC and pepper may fail.
+
+2. If the log shows below (*), please reboot pepper.
+(*)
+```
+front_cameraCamera Handle is empty - cannot retrieve image
+front_cameraMight be a NAOqi problem. Try to restart the ALVideoDevice.
 ```
 
 peppereus

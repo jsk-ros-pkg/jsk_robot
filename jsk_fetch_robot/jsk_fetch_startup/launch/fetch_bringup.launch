@@ -30,6 +30,9 @@
     <arg name="map_frame" value="$(arg map_frame)" />
   </include>
 
+  <!-- downsample / throttle sensor data -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" />
+
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
            if="$(arg launch_moveit)" />
