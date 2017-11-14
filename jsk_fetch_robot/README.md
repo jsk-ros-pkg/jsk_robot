@@ -132,56 +132,82 @@ fetch-interface function APIs
 - control gripper
 
   to grasp object
-```
-(send *ri* :start-grasp)
-```
-  
+  ```
+  (send *ri* :start-grasp)
+  ```
+
   to release object
-```
-(send *ri* :stop-grasp)
-```
+  ```
+  (send *ri* :stop-grasp)
+  ```
 
   to know the result of grasp
-```
-(setq grasp-result (send *ri* :start-grasp))
-(send grasp-result :position)
-```
-  
+  ```
+  (setq grasp-result (send *ri* :start-grasp))
+  (send grasp-result :position)
+  ```
+
 - inverse kinematics
 
   including torso movement
-```
-(send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1200)) :debug-view t)
-```
-  
+  ```
+  (send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1200)) :debug-view t)
+  ```
+
   using only arm movement
-```
-(send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1200)) :degug-view t)
-```
-  
-  coordinates can be made with 
-```
+  ```
+  (send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1200)) :degug-view t)
+  ```
+
+  coordinates can be made with
+  ```
   (make-coords :pos #f(0 0 0) :rpy (float-vector pi 0 0))
-```
-  
+  ```
+
 - moving the robot
- 
- move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
- ```
- (send *ri* :go-pos 1 0 0)
- ```
- 
- move to point (-1000 7000 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
- ```
- (send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
- ```
- 
+
+   move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
+   ```
+   (send *ri* :go-pos 1 0 0)
+   ```
+
+   move to point (-1000 7000 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
+   ```
+   (send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
+   ```
+
 - use text-to-speech engine to speak text
- 
+
  ```
   (send *ri* :speak "hello")
   (send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
  ```
+
+teleop
+------
+
+|Button|Function                        |
+|:-----|:-------------------------------|
+|0     |Open gripper                    |
+|1     |Control robot turning           |
+|2     |Control forward/backward driving|
+|3     |Close gripper                   |
+|4     |Disable motor position holding  |
+|5     |Not used                        |
+|6     |Arm tuck                        |
+|7     |Not used                        |
+|8     |Head control deadman            |
+|9     |Unsafe teleop                   |
+|10    |Primary deadman                 |
+|11    |Not used                        |
+|12    |Torso up                        |
+|13    |Dock                            |
+|14    |Torso down                      |
+|15    |Undock                          |
+|16    |Pair/unpair with robot          |
+
+![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
+![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
 
 FAQ
 ---
