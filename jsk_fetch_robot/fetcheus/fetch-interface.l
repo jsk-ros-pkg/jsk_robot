@@ -152,6 +152,10 @@
     (send self :go-grasp :pos 0.1 :effort effort :wait wait))
   (:go-grasp
     (&key (pos 0) (effort) (wait t))
+    (when (send self :simulation-modep)
+      (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
+      (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
+      (return-from :go-grasp t))
     (setq effort (or effort 40))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
