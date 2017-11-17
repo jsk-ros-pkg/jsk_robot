@@ -4,6 +4,7 @@
   <arg name="save_depth" default="true" />
   <arg name="save_tf" default="true" />
   <arg name="save_joint_states" default="true" />
+  <arg name="save_speech" default="true" />
   <arg name="save_smach" default="true" />
   <arg name="save_base_trajectory" default="false" />
   <arg name="save_object_detection" default="false" />
@@ -182,6 +183,17 @@
         - /server_name/smach/container_init
         - /server_name/smach/container_status
         - /server_name/smach/container_structure
+      </rosparam>
+    </node>
+
+    <node if="$(arg save_speech)"
+          name="speech_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /Tablet/voice
       </rosparam>
     </node>
 

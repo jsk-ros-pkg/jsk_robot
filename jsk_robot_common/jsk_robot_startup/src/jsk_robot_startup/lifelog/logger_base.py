@@ -8,6 +8,7 @@ from mongodb_store.message_store import MessageStoreProxy
 
 class LoggerBase(object):
     def __init__(self, db_name='jsk_robot_lifelog', col_name=None):
+        super(LoggerBase, self).__init__()
         self.db_name = rospy.get_param('/robot/database','jsk_robot_lifelog')
         try:
             if col_name is None:
