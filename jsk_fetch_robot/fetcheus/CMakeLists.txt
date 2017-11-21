@@ -7,7 +7,12 @@ if($ENV{ROS_DISTRO} STREQUAL "hydro")
   return()
 endif()
 
-find_package(catkin REQUIRED fetch_description)
+find_package(catkin REQUIRED
+    collada_urdf
+    euscollada
+    fetch_description
+    roseus
+)
 
 catkin_package()
 

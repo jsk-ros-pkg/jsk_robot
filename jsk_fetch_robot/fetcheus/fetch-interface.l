@@ -3,7 +3,8 @@
 (require "package://fetcheus/fetch-utils.l")
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
-(ros::roseus-add-msgs "fetch_driver_msgs")
+
+(ros::load-ros-manifest "fetcheus")
 
 (defclass fetch-interface
   :super robot-move-base-interface
