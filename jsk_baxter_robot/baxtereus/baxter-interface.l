@@ -1,8 +1,7 @@
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 (require :baxter "package://baxtereus//baxter-util.l")
 (load "package://pr2eus/speak.l")
-(ros::load-ros-manifest "control_msgs")
-(ros::load-ros-manifest "baxter_core_msgs")
+(ros::load-ros-manifest "baxtereus")
 
 (defparameter *suction* 65537) ;;vacuum
 (defparameter *electoric* 65538)
