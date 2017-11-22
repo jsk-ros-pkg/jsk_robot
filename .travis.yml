@@ -18,6 +18,7 @@ env:
     - ROSWS=wstool
     - BUILDER=catkin
     - USE_TRAVIS=true
+    - USE_DOCKER=true
     - ROS_PARALLEL_JOBS="-j2"
     - CATKIN_PARALLEL_JOBS="-p2"
     - ROS_PARALLEL_TEST_JOBS="-j1"
