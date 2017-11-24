@@ -152,6 +152,10 @@
     (send self :go-grasp :pos 0.1 :effort effort :wait wait))
   (:go-grasp
     (&key (pos 0) (effort) (wait t))
+    (when (send self :simulation-modep)
+      (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
+      (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
+      (return-from :go-grasp t))
     (setq effort (or effort 40))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
@@ -164,7 +168,7 @@
   ;;
   (:speak (text &rest args)
     (let ()
-      (apply #'speak-en text :topic-name "/sound_play" args)))
+      (send-super* :speak text :topic-name "/sound_play" args)))
   )
 
 ;; interface for simple base actions
@@ -300,10 +304,10 @@
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
-  
+
   (ros::spin-once)
   (send *ri* :spin-once)
-  
+
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
   (when create-viewer (objects (list *fetch*)))
   )
