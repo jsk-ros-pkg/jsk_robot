@@ -11,10 +11,8 @@
   <arg if="$(arg launch_manager)"
        name="manager" default="throttle_nodelet_manager" />
 
-  <node name="$(arg manager)" pkg="nodelet" type="nodelet"
-        args="manager"
-        output="screen"
-        if="$(arg launch_manager)" />
+  <node name="$(arg manager)" pkg="nodelet" type="nodelet" args="manager"
+        if="$(arg launch_manager)" respawn="true" output="screen" />
 
   <group ns="head_camera">
     <group ns="depth_registered">
