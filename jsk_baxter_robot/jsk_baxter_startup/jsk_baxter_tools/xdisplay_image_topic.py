@@ -50,22 +50,15 @@ class XdisplayImageTopic(object):
             return
 
         # Baxter's xdisplay is 1024x600
-        MAX_WIDTH = 1024
-        MAX_HEIGHT = 600
+        MAX_WIDTH = 1920
+        MAX_HEIGHT = 1200
 
         # resize image
         br = cv_bridge.CvBridge()
         img = br.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         h, w = img.shape[:2]
-        if h > MAX_HEIGHT:
-            scale = 1. * MAX_HEIGHT / h
-            h = MAX_HEIGHT
-            w = int(scale * w)
-        if w > MAX_WIDTH:
-            scale = 1. * MAX_WIDTH / w
-            w = MAX_WIDTH
-            h = int(scale * h)
-        img = cv2.resize(img, (w, h))
+        scale = min(1.0 * MAX_HEIGHT / h, 1.0 * MAX_WIDTH / w)
+        img = cv2.resize(img, None, None, fx=scale, fy=scale)
 
         # centerize image
         centerized_shape = (MAX_HEIGHT, MAX_WIDTH, 3)

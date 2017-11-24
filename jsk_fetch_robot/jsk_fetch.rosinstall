@@ -25,3 +25,9 @@
     local-name: strands-project/mongodb_store
     uri: https://github.com/strands-project/mongodb_store.git
     version: indigo-0.1.30
+# when fetch_moveit_config 0.7.13 is released in apt, lines below can be removed.
+# please check http://packages.fetchrobotics.com/ros/ubuntu/pool/main/r/ros-indigo-fetch-moveit-config/
+- tar:
+    local-name: fetch_ros/fetch_moveit_config
+    uri: https://github.com/fetchrobotics-gbp/fetch_ros-release/archive/release/indigo/fetch_moveit_config/0.7.13-0.tar.gz
+    version: fetch_ros-release-release-indigo-fetch_moveit_config-0.7.13-0

@@ -1,6 +1,6 @@
 <launch>
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
-
+  <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
 
   <node name="joy" pkg="joy" type="joy_node">
@@ -57,4 +57,8 @@
 
   <!-- audible warning on unsafe teleop -->
   <node pkg="jsk_robot_startup" type="unsafe_warning.l" name="unsafe_warning" respawn="true" />
+
+  <!-- auto dock -->
+  <include file="$(find fetch_auto_dock)/launch/auto_dock.launch"
+	   if="$(arg enable_auto_dock)"/>
 </launch>
