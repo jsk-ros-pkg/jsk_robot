@@ -8,10 +8,8 @@ if($ENV{ROS_DISTRO} STREQUAL "hydro")
 endif()
 
 find_package(catkin REQUIRED
-    collada_urdf
-    euscollada
     fetch_description
-    roseus
+    roseus # required in indigo
 )
 
 catkin_package()
