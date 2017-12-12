@@ -209,6 +209,11 @@ teleop
 ![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
 ![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
 
+
+Online Manual
+-------------
+[Fetch Robotics Online Manual](http://docs.fetchrobotics.com/FetchRobotics.pdf)
+
 FAQ
 ---
 
