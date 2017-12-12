@@ -1,190 +1,10 @@
-jsk_fetch_robot
-================
+# jsk_fetch_robot
 
-setup environment
------------------
-% First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
+## Online Manual
 
-```
-mkdir -p catkin_ws/src
-cd  catkin_ws
-wstool init src
-wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch.rosinstall
-wstool update -t src
-source /opt/ros/indigo/setup.bash
-rosdep install -y -r --from-paths src --ignore-src
-catkin build fetcheus jsk_fetch_startup
-source devel/setup.bash
-```
+[Fetch Robotics Online Manual](http://docs.fetchrobotics.com/FetchRobotics.pdf)
 
-connecting to the robot
------------------------
-
-% You need to install `ros-indigo-jsk-tools` to use `rosset*` tools, otherwise use setenv command
-
-```
-rossetip             % set ROS_IP and ROS_HOSTNAME
-rossetmaster fetch15 % set ROS_MASTER_URI
-```
-
-to confirm your shell environment, check with rviz
-```
-source ~/catkin_ws/devel/setup.bash
-roslaunch jsk_fetch_robot rviz.launch
-```
-
-control robot via roseus
-------------------------
-
-run `roseus` under emacs's shell environment (`M-x shell`), when you start new shell, do not forget to run `rossetip`, `rossetmaster fetch15` and `source ~/catkin_ws/devel/setup.bash`
-
-```
-(load "package://fetcheus/fetch-interface.l") ;; load modules
-(setq *fetch* (fetch))          ;; creat a robot model
-(objects (list *fetch*))        ;; display the robot model
-(setq *ri* (instance fetch-interface :init)) ;; make connection to the real robot
-```
-
-or run `(fetch-init)` after you load `"package://fetcheus/fetch-interface.l"`
-
-gazebo simulation
-------------------------
-
-Can be used for simulating robot's movements. Unable to communicate to the real robot when running the simulation.
-
-first, in one terminal
-```
-roslaunch fetch_gazebo simulation.launch
-```
-then, in another terminal
-```
-roslaunch fetch_moveit_config move_group.launch
-```
-
-fetch-interface function APIs
------------------------------
-
-- get current angle values of the robot model
-
-```
-(send *fetch* :angle-vector)
-```
-
-- get current angle values of the real robot
-
-```
-(send *ri* :state :potentio-vector)
-```
-
-- update joint angle values of the robot model from the real robot
-
-```
-(send *fetch* :angle-vector (send *ri* :state :potentio-vector))
-```
-
-- set angle values to the robot model
-
-```
-(send *fetch* :angle-vector #f(150 75 80 -10 100 0 95 0 0 0))
-```
-
-- set "reset pose" to the robot model
-
-```
-(send *fetch* :reset-pose)
-```
-
-- send current joint angles of robot model to real robot in 5000 \[ms\] (CAUTION, this will move the real robot)
-
-```
-(send *ri* :angle-vector (send *fetch* :angle-vector) 5000)
-```
-
-- send current head joint angles of robot model to real robot, this command only control joints of head limb. (DO NOT USE THIS COMMAND EXCEPT **HEAD**)
-
- ```
-(send *fetch :head :neck-y :joint-angle 50)
-(send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-(send *ri* :wait-interpolation)
- ```
-
-- get angle value of individual joint
-```
-(send *fetch* :torso :waist-z :joint-angle)
-(send *fetch* :rarm :shoulder-y :joint-angle)
-(send *fetch* :rarm :shoulder-p :joint-angle)
-(send *fetch* :rarm :shoulder-r :joint-angle)
-(send *fetch* :rarm :elbow-p :joint-angle)
-(send *fetch* :rarm :elbow-r :joint-angle)
-(send *fetch* :rarm :wrist-p :joint-angle)
-(send *fetch* :rarm :wrist-r :joint-angle)
-(send *fetch* :head :neck-y :joint-angle)
-(send *fetch* :head :neck-p :joint-angle)
-```
-
-- set angle value of indiviual joint, use \[mm\] for linear joint and \[deg\] for rotational joint
-
-```
-(send *fetch* :torso :waist-z :joint-angle 150)
-(send *fetch* :rarm :shoulder-y :joint-angle 75)
-```
-
-- control gripper
-
-  to grasp object
-  ```
-  (send *ri* :start-grasp)
-  ```
-
-  to release object
-  ```
-  (send *ri* :stop-grasp)
-  ```
-
-  to know the result of grasp
-  ```
-  (setq grasp-result (send *ri* :start-grasp))
-  (send grasp-result :position)
-  ```
-
-- inverse kinematics
-
-  including torso movement
-  ```
-  (send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1200)) :debug-view t)
-  ```
-
-  using only arm movement
-  ```
-  (send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1200)) :degug-view t)
-  ```
-
-  coordinates can be made with
-  ```
-  (make-coords :pos #f(0 0 0) :rpy (float-vector pi 0 0))
-  ```
-
-- moving the robot
-
-   move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
-   ```
-   (send *ri* :go-pos 1 0 0)
-   ```
-
-   move to point (-1000 7000 0) [mm], based on absolute map positions (CAUTION, this will move the real robot)
-   ```
-   (send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
-   ```
-
-- use text-to-speech engine to speak text
-
- ```
-  (send *ri* :speak "hello")
-  (send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
- ```
-
-teleop
-------
+## Teleop Commands
 
 |Button|Function                        |
 |:-----|:-------------------------------|
@@ -211,12 +31,203 @@ teleop
 ![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
 
 
-Online Manual
--------------
-[Fetch Robotics Online Manual](http://docs.fetchrobotics.com/FetchRobotics.pdf)
+## How to Run
 
-FAQ
----
+
+### Setup Environment
+
+First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
+
+```bash
+mkdir -p catkin_ws/src
+cd  catkin_ws
+wstool init src
+wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch.rosinstall
+wstool update -t src
+source /opt/ros/indigo/setup.bash
+rosdep install -y -r --from-paths src --ignore-src
+catkin build fetcheus jsk_fetch_startup
+source devel/setup.bash
+```
+
+### Connecting to Fetch
+
+You need to install `ros-indigo-jsk-tools` to use `rosset*` tools, otherwise use setenv command
+
+```bash
+rossetip             % set ROS_IP and ROS_HOSTNAME
+rossetmaster fetch15 % set ROS_MASTER_URI
+```
+
+Inorder to confirm your shell environment, check with rviz
+
+```bash
+source ~/catkin_ws/devel/setup.bash
+roslaunch jsk_fetch_robot rviz.launch
+```
+
+### Control Fetch via roseus
+
+Run `roseus` under emacs's shell environment (`M-x shell`).
+When you start new shell, do not forget to run `rossetip`, `rossetmaster fetch15` and `source ~/catkin_ws/devel/setup.bash`
+
+```lisp
+(load "package://fetcheus/fetch-interface.l") ;; load modules
+(setq *fetch* (fetch))          ;; creat a robot model
+(objects (list *fetch*))        ;; display the robot model
+(setq *ri* (instance fetch-interface :init)) ;; make connection to the real robot
+```
+
+or
+
+```lisp
+(load "package://fetcheus/fetch-interface.l") ;; load modules
+(fetch-init)
+```
+
+### Gazebo Simulation
+
+Gazebo can be used for simulating robot's movements.
+It is unable to communicate to the real robot when running the simulation.
+
+```bash
+roslaunch fetch_gazebo simulation.launch
+roslaunch fetch_moveit_config move_group.launch
+```
+
+## Fetcheus APIs
+
+### Common
+
+- Get current angle values of the robot model
+
+```lisp
+(send *fetch* :angle-vector)
+```
+
+- Get current angle values of the real robot
+
+```lisp
+(send *ri* :state :potentio-vector)
+```
+
+- Update joint angle values of the robot model from the real robot
+
+```lisp
+(send *fetch* :angle-vector (send *ri* :state :potentio-vector))
+```
+
+- Set angle values to the robot model
+
+```lisp
+(send *fetch* :angle-vector #f(150 75 80 -10 100 0 95 0 0 0))
+```
+
+- Set `reset-pose` to the robot model
+
+```lisp
+(send *fetch* :reset-pose)
+```
+
+- Send current joint angles of robot model to real robot in 5000 \[ms\] (CAUTION, this will move the real robot)
+
+```lisp
+(send *ri* :angle-vector (send *fetch* :angle-vector) 5000)
+```
+
+- Send current head joint angles of robot model to real robot, this command only control joints of head limb. (DO NOT USE THIS COMMAND EXCEPT **HEAD**)
+
+ ```lisp
+(send *fetch :head :neck-y :joint-angle 50)
+(send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+(send *ri* :wait-interpolation)
+ ```
+
+- Get angle value of individual joint
+
+```lisp
+(send *fetch* :torso :waist-z :joint-angle)
+(send *fetch* :rarm :shoulder-y :joint-angle)
+(send *fetch* :rarm :shoulder-p :joint-angle)
+(send *fetch* :rarm :shoulder-r :joint-angle)
+(send *fetch* :rarm :elbow-p :joint-angle)
+(send *fetch* :rarm :elbow-r :joint-angle)
+(send *fetch* :rarm :wrist-p :joint-angle)
+(send *fetch* :rarm :wrist-r :joint-angle)
+(send *fetch* :head :neck-y :joint-angle)
+(send *fetch* :head :neck-p :joint-angle)
+```
+
+- Set angle value of indiviual joint, use \[mm\] for linear joint and \[deg\] for rotational joint
+
+```lisp
+(send *fetch* :torso :waist-z :joint-angle 150)
+(send *fetch* :rarm :shoulder-y :joint-angle 75)
+```
+
+### Gripper Control
+
+- Grasp object
+
+```lisp
+(send *ri* :start-grasp)
+```
+
+- Release object
+
+```lisp
+(send *ri* :stop-grasp)
+```
+
+- Know the result of grasp
+
+```lisp
+(setq grasp-result (send *ri* :start-grasp))
+(send grasp-result :position)
+```
+
+### Inverse Kinematics
+
+- Including torso movement
+
+```lispj
+(send *fetch* :inverse-kinematics (make-coords :pos #f(800 0 1200)) :debug-view t)
+```
+
+- Using only arm
+```lisp
+(send *fetch* :rarm :inverse-kinematics (make-coords :pos #f(800 0 1200)) :degug-view t)
+```
+
+coordinates can be made with
+```lisp
+(make-coords :pos #f(0 0 0) :rpy (float-vector pi 0 0))
+```
+
+### Mobile Base
+
+- Move 1 [m] forward, based on relative position (CAUTION, this will move the real robot)
+
+```lisp
+(send *ri* :go-pos 1 0 0)
+```
+
+- Move to position `#f(-1000 7000 0)` [mm], based on absolute map positions (CAUTION, this will move the real robot)
+
+```lisp
+(send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
+```
+
+### Speak
+
+- Use text-to-speech engine to speak text
+
+```lisp
+(send *ri* :speak "hello")
+(send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
+```
+
+## FAQ
 
 - `could not find package [fetcheus]`
 
@@ -227,4 +238,4 @@ FAQ
 /opt/ros/indigo/share/euslisp/jskeus/eus/Linux64/bin/irteusgl 0 error:  file "package://fetcheus/fetch-interface.l" not found in (error "file ~s not found" fname)
 ```
 
-  You might be forget to `source setup.bash` before you run `roseus`
+You might be forget to `source setup.bash` before you run `roseus`
