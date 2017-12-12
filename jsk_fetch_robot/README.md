@@ -205,6 +205,7 @@ teleop
 |14    |Torso down                      |
 |15    |Undock                          |
 |16    |Pair/unpair with robot          |
+|9 & 11|**Software Runstop**            |
 
 ![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
 ![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
