@@ -55,8 +55,8 @@ source devel/setup.bash
 You need to install `ros-indigo-jsk-tools` to use `rosset*` tools, otherwise use setenv command
 
 ```bash
-rossetip             % set ROS_IP and ROS_HOSTNAME
-rossetmaster fetch15 % set ROS_MASTER_URI
+rossetip             ## set ROS_IP and ROS_HOSTNAME
+rossetmaster fetch15 ## set ROS_MASTER_URI
 ```
 
 Inorder to confirm your shell environment, check with rviz
