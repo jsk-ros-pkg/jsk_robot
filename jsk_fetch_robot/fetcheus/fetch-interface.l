@@ -58,7 +58,7 @@
            (setq avs (append avs (list (send minjerk :pass-time (/ tm div))))))
          (send* self :angle-vector-sequence-raw avs (make-list div :initial-element (/ tm div)) args)
          (return-from :angle-vector-raw (car (last avs)))))
-     (send-super* :angle-vector av tm args)))
+     (send-super* :angle-vector-sequence (list prev-av av) (make-list 2 :initial-element (/ tm 2.0)) args)))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
