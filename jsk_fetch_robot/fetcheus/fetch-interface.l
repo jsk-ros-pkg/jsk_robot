@@ -4,6 +4,8 @@
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
+(ros::load-ros-manifest "fetcheus")
+
 (defclass fetch-interface
   :super robot-move-base-interface
   :slots (gripper-action moveit-robot)
@@ -15,6 +17,7 @@
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
+     (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
      (setq gripper-action
            (instance ros::simple-action-client :init
                      "/gripper_controller/gripper_action"
@@ -152,6 +155,10 @@
     (send self :go-grasp :pos 0.1 :effort effort :wait wait))
   (:go-grasp
     (&key (pos 0) (effort) (wait t))
+    (when (send self :simulation-modep)
+      (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
+      (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
+      (return-from :go-grasp t))
     (setq effort (or effort 40))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
@@ -161,6 +168,17 @@
       (when wait (send gripper-action :wait-for-result))
       (setq result (send gripper-action :get-result))
       result))
+  (:fetch-gripper-state-callback
+    (msg)
+    (let ((msg (car (send msg :joints))))
+      (dolist (slot '((position . 2) (velocity . 2) (effort . 1)))
+	(send self :set-robot-state1 (intern (format nil "GRIPPER-~A" (string (car slot))) *keyword-package*) (* (cdr slot) (send msg (intern (string (car slot)) *keyword-package*)))))))
+  (:gripper (key)
+   "get information about gripper
+Arguments:
+ - key (:position :velocity :effort)
+Example: (send self :gripper :position) => 0.00"
+   (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
   ;;
   (:speak (text &rest args)
     (let ()
