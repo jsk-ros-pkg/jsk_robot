@@ -2,6 +2,13 @@
 
 This is EUSLISP interface to control aero.
 
+## Build aeroeus
+
+```
+catkin build aeroeus  # nothing to build, to recognize from rospack
+source ~/.bashrc
+```
+
 ## Run euslisp
 
 ```
