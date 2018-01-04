@@ -3,7 +3,7 @@
 (require :aero-arm "package://aero_description/models/aero-arm-upper.l")
 
 (ros::load-ros-manifest "trajectory_msgs")
-(ros::load-ros-manifest "pr2_controllers_msgs")
+(ros::load-ros-manifest "control_msgs")
 
 
 (defmethod AeroArmRobot-robot
@@ -74,7 +74,7 @@
     (ros::roseus "aero_upper_interface")
     (ros::advertise "/aero_controller/command" trajectory_msgs::JointTrajectory)
     (ros::subscribe "/aero_controller/state"
-		    pr2_controllers_msgs::JointTrajectoryControllerState
+		    control_msgs::JointTrajectoryControllerState
 		    #'send self :controller-callback 1)
     )
   (:default-controller-list ()
