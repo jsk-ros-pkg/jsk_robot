@@ -159,7 +159,7 @@
       (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
       (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
       (return-from :go-grasp t))
-    (setq effort (or effort 40))
+    (setq effort (or effort 50))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
       (send goal :goal :command :position pos)
