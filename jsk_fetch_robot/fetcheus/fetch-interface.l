@@ -148,18 +148,17 @@
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "head_pan_joint" "head_tilt_joint")))))
   (:start-grasp
-    (&key (effort) (wait t))
-    (send self :go-grasp :pos 0 :effort effort :wait wait))
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp :pos 0 args))
   (:stop-grasp
-    (&key (effort) (wait t))
-    (send self :go-grasp :pos 0.1 :effort effort :wait wait))
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp :pos 0.1 args))
   (:go-grasp
-    (&key (pos 0) (effort) (wait t))
+    (&key (pos 0) (effort 50) (wait t))
     (when (send self :simulation-modep)
       (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
       (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
       (return-from :go-grasp t))
-    (setq effort (or effort 50))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
       (send goal :goal :command :position pos)
