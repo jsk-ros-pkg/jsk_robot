@@ -9,6 +9,7 @@
   <arg name="save_base_trajectory" default="false" />
   <arg name="save_object_detection" default="false" />
   <arg name="save_action" default="false" />
+  <arg name="save_app" default="true" />
 
   <!-- namespace -->
   <arg name="camera_ns" default="kinect_head" />
@@ -224,6 +225,19 @@
           pkg="jsk_robot_startup" type="action_logger.py"
           machine="$(arg machine)"
           respawn="$(arg respawn)" />
+
+    <!-- app manager -->
+    <node if="$(arg save_app)"
+          name="app_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        subst_param: true
+        topics:
+        - /$(param robot/name)/app_list
+      </rosparam>
+    </node>
 
   </group> <!-- lifelog ns -->
 </launch>
