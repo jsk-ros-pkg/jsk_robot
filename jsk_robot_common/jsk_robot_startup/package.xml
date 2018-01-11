@@ -18,6 +18,7 @@
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>urdf</build_depend>
   <run_depend>actionlib_msgs</run_depend>
+  <run_depend>app_manager</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>gmapping</run_depend>
@@ -27,10 +28,12 @@
   <run_depend>nodelet</run_depend>
   <run_depend>pointcloud_to_laserscan</run_depend>
   <run_depend>posedetection_msgs</run_depend>
+  <run_depend>rosbridge_server</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>roseus_mongo</run_depend>
   <run_depend>rosgraph</run_depend>
   <run_depend>rospy</run_depend>
-  <run_depend>roseus_mongo</run_depend>
+  <run_depend>roswww</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>tf2_ros</run_depend>
