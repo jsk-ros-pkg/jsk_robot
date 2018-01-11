@@ -171,4 +171,9 @@
     <arg name="replicator_dump_path" value="/removable/replicator_dumps" /> <!-- use removable hdd on c2 -->
     <arg name="machine" value="c2" />
   </include>
+
+  <!-- app manager -->
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
+  </include>
 </launch>
