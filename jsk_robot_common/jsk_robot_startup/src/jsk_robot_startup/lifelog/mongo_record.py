@@ -8,7 +8,7 @@ import rospy
 import rostopic
 from logger_base import LoggerBase
 
-REGEX = re.compile(r"\$\(param\s*(\S+)\s*\)")
+REGEX = re.compile(r"\$\{param\s*(\S+)\s*\}")
 
 
 class MongoRecord(LoggerBase):
