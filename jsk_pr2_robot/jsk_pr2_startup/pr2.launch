@@ -3,7 +3,7 @@
         name="start_launch_sound" />
   <arg name="map_frame" default="eng2" />
   <arg name="launch_map" default="true" />
-  <arg name="launch_openni" default="false" />
+  <arg name="launch_kinect" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_imagesift" default="false" />
   <arg name="launch_facedetection" default="false" />
@@ -72,10 +72,8 @@
   <!-- </group> -->
 
   <!-- kinect node -->
-  <include if="$(arg launch_openni)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
-    <arg name="launch_openni" value="$(arg launch_openni)" />
-  </include>
+  <include if="$(arg launch_kinect)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
 
   <!-- face detection node -->
   <!-- <node if="$(arg launch_facedetection)" -->

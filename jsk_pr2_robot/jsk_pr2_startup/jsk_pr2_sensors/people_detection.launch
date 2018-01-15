@@ -6,7 +6,7 @@
   <arg name="leg_detect" default="true" />
   <arg name="publish_people" default="true" />
 
-  <arg name="camera" default="kinect_head_c2" />
+  <arg name="camera" default="kinect_head" />
   <arg name="image_topic" default="image_rect_color" />
   <arg name="depth_topic" default="image_raw" />
   <arg name="fixed_frame" default="kinect_head_rgb_optical_frame" />
