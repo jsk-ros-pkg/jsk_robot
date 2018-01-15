@@ -11,6 +11,7 @@
 # parameters:
 #    joint_tolerance: store the past joint_states (sec)
 
+import re
 import rospy
 
 import std_msgs.msg
@@ -30,7 +31,7 @@ class ActionLogger(LoggerBase):
         LoggerBase.__init__(self)
 
         self.queue_size = rospy.get_param("~queue_size", 30)
-
+        self.action_regex = re.compile(".*Action(Result|Goal|Cancel)$")
         self.joint_tolerance = 1.0
         self.joint_states = []
         self.joint_states_inserted = [] # list of time stamp
@@ -131,7 +132,7 @@ class ActionLogger(LoggerBase):
     # subscriber updater
     def update_subscribers(self):
         # check new publishers
-        topics = rospy.client.get_published_topics()
+        topics = [t for t in rospy.client.get_published_topics() if self.action_regex.match(t[1])]
         if self.action_name_white_list:
             topics = [t for t in topics if t[0] in self.action_name_white_list]
         if self.action_type_white_list:
