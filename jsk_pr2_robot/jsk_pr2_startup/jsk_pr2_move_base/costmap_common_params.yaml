@@ -1,18 +1,50 @@
-update_frequency: 10.0
-unknown_cost_value: 0
+robot_base_frame: base_footprint
+robot_radius: 0.5
+transform_tolerance: 1.0  # 0.2
+
+# parameters for static_layer
+static_layer:
+  map_topic: map
+  subscribe_to_updates: true
+
+# parameters for obstacle_layer
 obstacle_layer:
-  origin_z: 0.0
+  observation_sources: base_scan_marking tilt_scan_filtered
+  base_scan_marking:
+    data_type: PointCloud2
+    topic: base_scan_marking
+    sensor_frame: base_laser_link
+    marking: true
+    clearing: true
+    observation_persistence: 1.0
+    expected_update_rate: 0.25
+    min_obstacle_height: 0.25
+    max_obstacle_height: 0.35
+    obstacle_range: 2.5
+    raytrace_range: 3.0
+  tilt_scan_filtered:
+    data_type: PointCloud2
+    topic: tilt_scan_filtered
+    sensor_frame: laser_tilt_link
+    marking: true
+    clearing: true
+    observation_persistence: 1.0
+    expected_update_rate: 0.25
+    min_obstacle_height: 0.0
+    max_obstacle_height: 2.0
+    obstacle_range: 2.5
+    raytrace_range: 3.0
+  # global filtering parameters
+  max_obstacle_height: 2.0
+  obstacle_range: 2.5
+  raytrace_range: 3.0
+  # voxel costmap
   z_voxels: 16
-  z_resolution: 0.1125
-  unknown_threshold: 8
-  mark_threshold: 0
-origin_z: 0.0
-z_voxels: 16
-z_resolution: 0.1125
-unknown_threshold: 8
-mark_threshold: 0
-transform_tolerance: 1.0 # 0.2
-obstacle_range: 2.5
-raytrace_range: 3.0
-inflation:
-  inflation_radius: 0.2
+  z_resolution: 0.125
+  publish_voxel_map: false
+  footprint_clearing_enabled: true
+
+# parameters for inflation_layer
+inflation_layer:
+  inflation_radius: 0.30
+  cost_scaling_factor: 100.0
