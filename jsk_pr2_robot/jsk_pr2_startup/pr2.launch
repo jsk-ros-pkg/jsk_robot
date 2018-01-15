@@ -102,12 +102,20 @@
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
-  <node name="battery_warning" pkg="roseus"
-        type="roseus" args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
-  <node name="battery_visualization" pkg="jsk_pr2_startup"
-        type="battery_visualization.py" />
-  <node name="battery_debug_log" pkg="jsk_pr2_startup"
-        type="battery_debug_log.py" />
+    <node name="battery_warning" pkg="roseus" type="roseus"
+          args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+    <node name="battery_visualization"
+          pkg="jsk_pr2_startup" type="battery_visualization.py" />
+    <node name="battery_logger"
+          pkg="jsk_pr2_startup" type="battery_logger.py">
+      <rosparam subst_value="true">
+        loggers:
+          - type: file
+            out_dir: /var/log/ros/battery
+          - type: dweet
+            prefix: pr2-battery
+      </rosparam>
+    </node>
   </group>
 
   <!-- mjpeg_server for web -->
