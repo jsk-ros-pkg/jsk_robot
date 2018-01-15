@@ -60,7 +60,8 @@
            if="$(arg launch_sound_play)">
     <arg name="use_machine" value="false" />
     <arg name="sound_play_machine" value="c1" />
-    <arg name="voice_text_machine" value="c2" />
+    <arg name="voice_text_machine" value="c1" />
+    <arg name="sound_play_respawn" value="true" />
   </include>
 
   <!-- start sift on narrow left-->
