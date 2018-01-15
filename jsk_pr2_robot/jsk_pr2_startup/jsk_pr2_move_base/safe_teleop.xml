@@ -53,8 +53,10 @@
   </node>
 
   <!-- check cable and filter baser_controller/command -->
-  <node pkg="roseus" type="roseus" name="check_cable" respawn="true"
-	args="$(find jsk_pr2_startup)/jsk_pr2_move_base/check_cable.l"/>
+  <node pkg="roseus" type="roseus" name="cable_warning" respawn="true"
+        args="$(find jsk_pr2_startup)/jsk_pr2_warning/cable_warning.l">
+    <param name="check_network" value="false" />
+  </node>
 
   <!-- warning 5 sec when unsafe -->
   <node pkg="roseus" type="roseus" name="unsafe_warning" respawn="true"
