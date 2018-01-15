@@ -28,7 +28,7 @@ class SlamMapTfToOdometry:
             self.r.sleep()
 
     def map_callback(self, msg):
-        if self.pub_only_map_updated and self.slam_odom != None:
+        if self.pub_only_map_updated and self.slam_odom is not None:
             with self.lock:
                 self.pub.publish(self.slam_odom)
 

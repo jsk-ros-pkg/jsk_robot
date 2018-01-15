@@ -71,7 +71,7 @@ class OdometryOffset(object):
         # tf relationships: init_odom -> source_odom -> body_link <- init_odom
         # offset_odom is init_odom -> source_odom
         # TODO: check timestamps of base_odom and source_odom and fix if necessary
-        if self.initial_base_link_transform == None:
+        if self.initial_base_link_transform is None:
             rospy.loginfo("[%s] initial transform is not subscribed yet", rospy.get_name())
             return None
         source_odom_matrix = make_homogeneous_matrix([getattr(source_odom.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(source_odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]]) # source_odom -> body_link
@@ -91,7 +91,7 @@ class OdometryOffset(object):
 
     def source_odom_callback(self, msg):
         with self.lock:
-            if self.offset_matrix != None:
+            if self.offset_matrix is not None:
                 source_odom_matrix = make_homogeneous_matrix([getattr(msg.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(msg.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]])
                 new_odom = copy.deepcopy(msg)
                 new_odom.header.frame_id = self.odom_frame
@@ -125,7 +125,7 @@ class OdometryOffset(object):
                 new_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(new_odom_matrix)))
 
                 if self.overwrite_pdf:
-                    if self.prev_odom != None:
+                    if self.prev_odom is not None:
                         dt = (new_odom.header.stamp - self.prev_odom.header.stamp).to_sec()
                         global_twist_with_covariance = TwistWithCovariance(transform_local_twist_to_global(new_odom.pose.pose, new_odom.twist.twist),
                                                                            transform_local_twist_covariance_to_global(new_odom.pose.pose, new_odom.twist.covariance))
