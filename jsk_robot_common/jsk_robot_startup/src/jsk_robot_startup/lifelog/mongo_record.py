@@ -3,24 +3,40 @@
 # Author: furushchev <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 
 import argparse
+import re
 import rospy
 import rostopic
 from logger_base import LoggerBase
 
+REGEX = re.compile(r"\$\{param\s*(\S+)\s*\}")
+
 
 class MongoRecord(LoggerBase):
     def __init__(self, argv=None):
+        subst_param = False
         if argv is None:
             self.topics = rospy.get_param("~topics")
             self.blocking = rospy.get_param("~blocking", False)
             self.queue_size = rospy.get_param("~queue_size", 1)
+            subst_param = rospy.get_param("~subst_param", False)
         else:
             args = self.parse_args(argv)
             self.topics = args.topics
             self.blocking = args.blocking
             self.queue_size = args.queue_size
-
+            subst_param = args.subst_param
         self.subscribers = {}
+
+        if subst_param:
+            topics = []
+            for t in self.topics:
+                keys = REGEX.findall(t)
+                splitted = REGEX.split(t)
+                for i in range(len(splitted)):
+                    if splitted[i] in keys:
+                        splitted[i] = rospy.get_param(splitted[i])
+                topics.append(str().join(splitted))
+            self.topics = topics
 
         LoggerBase.__init__(self)
 
@@ -33,6 +49,8 @@ class MongoRecord(LoggerBase):
         p.add_argument("-q", "--queue-size", type=int,
                        help="Queue size of each subscriber",
                        default=1)
+        p.add_argument("-s", "--subst-param", action="store_true",
+                       help="Enable substring param (e,g, '$(param robot/name)/list')")
         return p.parse_args(argv)
 
     def check_topic(self):

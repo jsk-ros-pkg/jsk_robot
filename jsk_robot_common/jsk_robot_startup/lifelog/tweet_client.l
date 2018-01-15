@@ -75,22 +75,23 @@
         (ros::service-call "/tweet_image_mux/add" (instance topic_tools::muxaddrequest :init :topic with-image)))
       (setq prev-image-topic
             (send (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic with-image)) :prev_topic))))
+  (unless prev-image-topic
+    (send (one-shot-subscribe "/tweet_image_mux/selected" std_msgs::String) :data))
 
   ;; retrieve image
   (call-empty-service "/tweet_image_saver/save" :wait t)
-  (when prev-image-topic
-    (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic)))
+  (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic))
 
-    (ros::ros-info "tweeting ~A" twit-str)
-    (cond
-     (with-image
-      (ros::publish "/tweet"
-                    (instance std_msgs::String :init
-                              :data (format nil "~A ~A"
-                                            twit-str (format nil "/tmp/tweet_image.jpg")))))
-     (t
-      (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))
-      ))
-    (when speek (speak-jp "ついーとしました"))
-    )
+  (ros::ros-info "tweeting ~A" twit-str)
+  (cond
+    (with-image
+        (ros::publish "/tweet"
+                      (instance std_msgs::String :init
+                                :data (format nil "~A ~A"
+                                              twit-str (format nil "/tmp/tweet_image.jpg")))))
+    (t
+     (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))
+     ))
+  (when speek (speak-jp "ついーとしました"))
+  )
 

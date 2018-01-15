@@ -1,0 +1,7 @@
+apps:
+  - app: jsk_pr2_startup/jsk_pr2_startup
+    display: jsk pr2 startup
+  - app: jsk_pr2_startup/hello_world
+    display: PR2 hello world
+  - app: jsk_pr2_startup/tweet
+    display: PR2 tweet

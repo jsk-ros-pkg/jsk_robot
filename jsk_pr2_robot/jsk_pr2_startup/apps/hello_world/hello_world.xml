@@ -1,0 +1,6 @@
+<launch>
+  <node name="run_hello_world" pkg="sound_play" type="say.py"
+        args="こんにちは --">
+    <remap from="robotsound" to="robotsound_jp"/>
+  </node>
+</launch>
