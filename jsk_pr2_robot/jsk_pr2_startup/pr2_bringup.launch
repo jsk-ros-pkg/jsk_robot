@@ -1,4 +1,11 @@
 <launch>
+  <arg name="launch_stereo_camera" default="true" />
+  <arg name="launch_runtime_logger" default="false" />
+  <arg name="launch_hd_monitor" default="false" />
+  <arg name="launch_wifi_ddwrt" default="false" />
+  <arg name="launch_network_detector" default="false" />
+  <arg name="launch_app_manager" default="true" />
+
   <param name="/use_sim_time" value="false"/>
   <include file="$(find pr2_machine)/pr2.machine" />
 
@@ -91,28 +98,32 @@
   </group>
 
   <!-- Stereo Camera and synchronization -->
-  <include file="$(find pr2_bringup)/config/dualstereo_camera.launch"/>
+  <include file="$(find pr2_bringup)/config/dualstereo_camera.launch"
+           if="$(arg launch_stereo_camera)"/>
 
   <!-- Forearm Camera -->
   <include file="$(find pr2_bringup)/config/r_forearm_cam.launch" />
   <include file="$(find pr2_bringup)/config/l_forearm_cam.launch" />
 
   <!-- Sound -->
-  <node pkg="sound_play" type="soundplay_node.py" machine="c1" name="sound_play"> 
+  <node pkg="sound_play" type="soundplay_node.py" machine="c1" name="sound_play" respawn="true">
     <remap from="sound_play" to="robotsound" />
   </node>
 
   <!-- Runtime Diagnostics and Motor Trace Logging -->
   <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
-      args="-o /hwlog/pr2_diagnostics --split --size=200 --bz2 /diagnostics -e '/motor_trace/.*'" />
+	args="-o /hwlog/pr2_diagnostics --split --size=200 --bz2 /diagnostics -e '/motor_trace/.*'"
+	if="$(arg launch_runtime_logger)" />
 
   <!-- NTP monitoring script reports clock sync on diagnostics -->
   <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="10.68.255.1 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
   <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --diag-hostname=c2" machine="c2"/>
 
   <!-- Disk usage monitoring script monitors HD temperature, usage on diagnostics -->
-  <node pkg="pr2_computer_monitor" name="realtime_hd_monitor" type="hd_monitor.py" args="$(optenv HOME /home) --diag-hostname=c1" machine="c1"/>
-  <node pkg="pr2_computer_monitor" name="two_hd_monitor" type="hd_monitor.py" args="--diag-hostname=c2" machine="c2"/>
+  <group if="$(arg launch_hd_monitor)">
+    <node pkg="pr2_computer_monitor" name="realtime_hd_monitor" type="hd_monitor.py" args="$(optenv HOME /home) --diag-hostname=c1" machine="c1"/>
+    <node pkg="pr2_computer_monitor" name="two_hd_monitor" type="hd_monitor.py" args="--diag-hostname=c2" machine="c2"/>
+  </group>
 
   <!-- Monitor CPU temp, usage -->
   <node pkg="pr2_computer_monitor" name="realtime_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c1" machine="c1" >
@@ -124,13 +135,14 @@
   </node>
 
   <!-- Monitor Wifi/ddwrt -->
-  <node pkg="pr2_computer_monitor" name="ddwrt_diag" type="wifi_monitor.py" machine="c1" />
-  <node name="wifi_ddwrt" pkg="wifi_ddwrt" type="ddwrt.py">
-    <param name="username" type="string" value="root" />
-    <param name="password" type="string" value="willow" />
-    <param name="router" type="string" value="wifi-router" />
-   </node>
-
+  <group if="$(arg launch_wifi_ddwrt)">
+    <node pkg="pr2_computer_monitor" name="ddwrt_diag" type="wifi_monitor.py" machine="c1" />
+    <node name="wifi_ddwrt" pkg="wifi_ddwrt" type="ddwrt.py">
+      <param name="username" type="string" value="root" />
+      <param name="password" type="string" value="willow" />
+      <param name="router" type="string" value="wifi-router" />
+    </node>
+  </group>
   
   <!-- Diagnostics aggregation -->
   <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg" />
@@ -147,7 +159,7 @@
     <param name="sensor_timeout" value="1.0"/>
     <param name="publish_tf" value="true"/>
     <param name="odom_used" value="true"/>
-    <param name="imu_used" value="true"/>
+    <param name="imu_used" value="false"/> <!-- using Imu causes rolling -->
     <param name="vo_used" value="false"/>
     <remap from="odom" to="base_odometry/odom" />
     <remap from="imu_data" to="torso_lift_imu/data" />
@@ -158,11 +170,13 @@
     <param name="buffer_size" value="120.0"/>
   </node>
 
-  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector" output="screen">
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector"
+        if="$(arg launch_network_detector)">
     <param name="interface_name" value="wan0"/>
   </node>
 
   <!-- logging database -->
+  <!-- NOTE: parameter robot/type and robot/name are defined at /etc/ros/robot.yaml -->
   <!-- expected mongod server runs on c2 -->
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
     <arg name="use_daemon" value="true"/>
@@ -173,7 +187,8 @@
   </include>
 
   <!-- app manager -->
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+           if="$(arg launch_app_manager)">
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
   </include>
 </launch>

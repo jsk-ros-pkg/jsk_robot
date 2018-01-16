@@ -1,13 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_pr2_startup)
-find_package(catkin REQUIRED COMPONENTS
-  jsk_network_tools
-  move_base_msgs
-  roseus)
+find_package(catkin REQUIRED)
 
-catkin_package(
-  CATKIN_DEPENDS jsk_network_tools
-)
+catkin_package()
 
 catkin_add_env_hooks(99.jsk_pr2_startup SHELLS bash zsh
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)

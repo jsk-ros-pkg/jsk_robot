@@ -48,7 +48,7 @@
   <group ns="head_traj_controller">
     <node pkg="topic_tools" type="mux" name="command_mux" respawn="true"
           args="command command_dummy  command_deadman" machine="c2"/>
-    <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+    <node pkg="jsk_robot_startup" type="mux_selector.py" machine="c2"
           name="command_selector" respawn="true"
           args="/joy 'm.buttons[11]==1' command_deadman">
       <param name="default_select" value="command_dummy"/>
@@ -57,7 +57,7 @@
   <group ns="torso_controller">
     <node pkg="topic_tools" type="mux" name="command_mux" respawn="true"
           args="command command_dummy  command_deadman" machine="c2"/>
-    <node pkg="jsk_pr2_startup" type="mux_selector.py" machine="c2"
+    <node pkg="jsk_robot_startup" type="mux_selector.py" machine="c2"
           name="command_selector" respawn="true"
           args="/joy 'm.buttons[10]==1' command_deadman">
       <param name="default_select" value="command_dummy"/>

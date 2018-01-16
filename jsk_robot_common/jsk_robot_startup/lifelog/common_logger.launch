@@ -235,7 +235,7 @@
       <rosparam subst_value="true">
         subst_param: true
         topics:
-        - /${param robot/name}/app_list
+        - /${param /robot/name}/app_list
       </rosparam>
     </node>
 
