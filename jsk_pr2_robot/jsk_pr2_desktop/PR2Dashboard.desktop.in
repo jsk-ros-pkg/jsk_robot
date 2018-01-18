@@ -6,4 +6,4 @@ Icon=@PR2_DASHBOARD_ICON@
 Icon[ja_JP]=@PR2_DASHBOARD_ICON@
 Name=PR2 Dashboard @PR2_NAME@
 Name[ja_JP]=PR2 Dashboard @PR2_NAME@
-Exec=/bin/bash -l -i -c "DISPLAY=:0.0 ROS_MASTER_URI=http://@PR2_NAME@:11311 @PROJECT_SCRIPTS_DIR@/auto_restart rosrun @PR2_DASHBOARD_EXE@ @PR2_DASHBOARD_EXE@"
+Exec=/bin/bash -l -i -c "DISPLAY=:0.0 ROS_MASTER_URI=http://@PR2_NAME@:11311 rosrun @PR2_DASHBOARD_EXE@ @PR2_DASHBOARD_EXE@"
