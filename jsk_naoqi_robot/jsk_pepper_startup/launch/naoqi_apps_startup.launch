@@ -1,0 +1,4 @@
+<launch>
+  <arg name="launch_people_perception" default="true" />    
+  <include file="$(find naoqi_apps)/launch/people_perception.launch" if="$(arg launch_people_perception)"/>
+</launch>
