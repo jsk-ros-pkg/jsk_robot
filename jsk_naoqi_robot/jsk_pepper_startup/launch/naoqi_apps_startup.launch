@@ -1,4 +1,8 @@
 <launch>
   <arg name="launch_people_perception" default="true" />    
+  <include file="$(find naoqi_apps)/launch/people_perception_topic.launch" if="$(arg launch_people_perception)"/>
+  <include file="$(find naoqi_apps)/launch/face_characteristics.launch" if="$(arg launch_people_perception)"/>
+  <include file="$(find naoqi_apps)/launch/gaze_analysis.launch" if="$(arg launch_people_perception)"/>
   <include file="$(find naoqi_apps)/launch/people_perception.launch" if="$(arg launch_people_perception)"/>
+  <include file="$(find naoqi_apps)/launch/engagement_zones.launch" if="$(arg launch_people_perception)"/>
 </launch>
