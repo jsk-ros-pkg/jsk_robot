@@ -75,7 +75,7 @@ class ActionLogger(LoggerBase):
             return True  # drop
 
         try:
-            res = self.insert(msg)
+            res = self.insert(msg, meta={'input_topic': topic})
             self.last_inserted_time[key] = stamp
             rospy.logdebug("inserted message: %s (%s) -> %s", topic, type_name, res)
             return True

@@ -42,7 +42,7 @@ class TFLogger(LoggerBase):
         if not transforms: return
 
         try:
-            self.insert(TFMessage(transforms))
+            self.insert(TFMessage(transforms), meta={'input_topic': '/tf'})
         except Exception as e:
             rospy.logerr(e)
 
