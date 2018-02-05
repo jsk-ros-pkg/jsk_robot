@@ -8,6 +8,7 @@ import re
 
 from sound_play.libsoundplay import SoundClient
 
+from actionlib_msgs.msg import GoalStatus, GoalStatusArray
 from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus
 from fetch_driver_msgs.msg import RobotState
 from geometry_msgs.msg import Twist
@@ -63,17 +64,27 @@ class DiagnosticsSpeakThread(threading.Thread):
 class Warning:
     def __init__(self):
         time.sleep(1)
-        self.battery_sub = rospy.Subscriber("battery_state", BatteryState, self.battery_callback, queue_size = 1)
-        self.cmd_vel_sub = rospy.Subscriber("base_controller/command", Twist, self.cmd_vel_callback, queue_size = 1)
-        self.robot_state_sub = rospy.Subscriber("robot_state", RobotState, self.robot_state_callback, queue_size = 1)
-        self.diagnostics_status_sub = rospy.Subscriber("diagnostics", DiagnosticArray, self.diagnostics_status_callback, queue_size = 1)
-        self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
-        #
         self.robot_state_msgs = RobotState()
         self.battery_state_msgs = BatteryState()
         self.twist_msgs = Twist()
         #
         self.diagnostics_speak_thread = {}
+        self.auto_undocking = False
+        #
+        self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
+        #
+        self.battery_sub = rospy.Subscriber("battery_state", BatteryState, self.battery_callback, queue_size = 1)
+        self.cmd_vel_sub = rospy.Subscriber("base_controller/command", Twist, self.cmd_vel_callback, queue_size = 1)
+        self.robot_state_sub = rospy.Subscriber("robot_state", RobotState, self.robot_state_callback, queue_size = 1)
+        self.diagnostics_status_sub = rospy.Subscriber("diagnostics", DiagnosticArray, self.diagnostics_status_callback, queue_size = 1)
+        self.undock_sub = rospy.Subscriber("/undock/status", GoalStatusArray, self.undock_status_callback)
+
+    def undock_status_callback(self, msg):
+        for status in msg.status_list:
+            if status.status == GoalStatus.ACTIVE:
+                self.auto_undocking = True
+                return
+        self.auto_undocking = False
 
     def robot_state_callback(self, msg):
         self.robot_state_msgs = msg
@@ -98,7 +109,8 @@ class Warning:
             rospy.logerr("Failed to fetch breaker status: %s" % str(e))
 
         if ( fabs(msg.linear.x) > 0 or fabs(msg.linear.y) > 0 or fabs(msg.angular.z) > 0 ) and \
-           self.battery_state_msgs.is_charging == True and breaker_enabled:
+           self.battery_state_msgs.is_charging == True and breaker_enabled and \
+           self.auto_undocking != True:
             rospy.logerr("Try to run while charging!")
             self.base_breaker(BreakerCommandRequest(enable=False))
             sound.play(4) # play builtin sound Boom!

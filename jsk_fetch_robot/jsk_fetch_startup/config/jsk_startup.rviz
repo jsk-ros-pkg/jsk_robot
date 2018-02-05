@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.625293
-    Tree Height: 403
+    Tree Height: 725
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -24,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: KinectCamera
+    SyncSource: KinectPointCloud
 Visualization Manager:
   Class: ""
   Displays:
@@ -201,6 +201,141 @@ Visualization Manager:
         {}
       Update Interval: 0
       Value: false
+    - Alpha: 0.7
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /map
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 0; 127
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Billboards
+      Line Width: 0.05
+      Name: NavigationPath
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /move_base/NavfnROS/plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 0; 0
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Billboards
+      Line Width: 0.03
+      Name: GlobalPath
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /move_base/TrajectoryPlannerROS/global_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 25; 255; 0
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.03
+      Name: LocalPath
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Color: 255; 85; 255
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /move_base/TrajectoryPlannerROS/local_plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 255; 0; 0
+      Enabled: true
+      Name: FootPrint
+      Topic: /move_base/global_costmap/footprint
+      Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /spots_marker_array
+      Name: SpotLabel
+      Namespaces:
+        text: true
+      Queue Size: 100
+      Value: true
+    - Class: jsk_rviz_plugin/PictogramArray
+      Enabled: true
+      Name: SpotPictogram
+      Topic: /spots_pictogram
+      Unreliable: false
+      Value: true
+    - Alpha: 0.3
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: false
+      Name: SafeCostMap
+      Topic: /safe_teleop_base/local_costmap/costmap
+      Unreliable: false
+      Value: false
+    - Alpha: 0.35
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: LocalCostMap
+      Topic: /move_base/local_costmap/costmap
+      Unreliable: false
+      Value: true
+    - Alpha: 0.35
+      Class: rviz/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: GlobalCostMap
+      Topic: /move_base/global_costmap/costmap
+      Unreliable: false
+      Value: true
+    - Arrow Length: 0.2
+      Class: rviz/PoseArray
+      Color: 255; 25; 0
+      Enabled: false
+      Name: AMCLParticle
+      Topic: /particlecloud
+      Unreliable: false
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -226,106 +361,11 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.07
       Style: Spheres
-      Topic: /base_scan
+      Topic: /base_scan/throttled
+      Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 0.7
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
-      Enabled: true
-      Name: Map
-      Topic: /map
-      Value: true
-    - Class: rviz/MarkerArray
-      Enabled: false
-      Marker Topic: /spots_marker_array
-      Name: Spot
-      Namespaces:
-        {}
-      Queue Size: 100
-      Value: false
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 255; 0; 127
-      Enabled: true
-      Line Style: Billboards
-      Line Width: 0.05
-      Name: NavigationPath
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Topic: /move_base/NavfnROS/plan
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 255; 0; 0
-      Enabled: true
-      Line Style: Billboards
-      Line Width: 0.03
-      Name: GlobalPath
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Topic: /move_base/TrajectoryPlannerROS/global_plan
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 25; 255; 0
-      Enabled: true
-      Line Style: Lines
-      Line Width: 0.03
-      Name: LocalPath
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Topic: /move_base/TrajectoryPlannerROS/local_plan
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 255; 0; 0
-      Enabled: true
-      Name: FootPrint
-      Topic: /move_base/global_costmap/footprint
-      Value: true
-    - Alpha: 0.3
-      Class: rviz/Map
-      Color Scheme: costmap
-      Draw Behind: false
-      Enabled: false
-      Name: SafeCostMap
-      Topic: /safe_teleop_base/local_costmap/costmap
-      Value: false
-    - Alpha: 0.35
-      Class: rviz/Map
-      Color Scheme: costmap
-      Draw Behind: false
-      Enabled: true
-      Name: LocalCostMap
-      Topic: /move_base/local_costmap/costmap
-      Value: true
-    - Alpha: 0.35
-      Class: rviz/Map
-      Color Scheme: costmap
-      Draw Behind: false
-      Enabled: true
-      Name: GlobalCostMap
-      Topic: /move_base/global_costmap/costmap
-      Value: true
-    - Arrow Length: 0.2
-      Class: rviz/PoseArray
-      Color: 255; 25; 0
-      Enabled: false
-      Name: PoseArray
-      Topic: /particlecloud
-      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -338,7 +378,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: false
+      Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Max Intensity: 4096
@@ -348,40 +388,25 @@ Visualization Manager:
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 4
       Size (m): 0.008
-      Style: Flat Squares
-      Topic: /kinect_head_c2/depth_registered/half/points
+      Style: Points
+      Topic: /head_camera/depth_registered/quater/throttled/points
+      Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
-    - Class: rviz/Camera
-      Enabled: true
-      Image Rendering: background and overlay
-      Image Topic: /head_camera/rgb/image_rect_color
-      Name: KinectCamera
-      Overlay Alpha: 0.7
-      Queue Size: 2
-      Transport Hint: raw
       Value: true
-      Visibility:
-        BaseScan: true
-        FootPrint: true
-        GlobalCostMap: true
-        GlobalPath: true
-        Grid: true
-        KinectPointCloud: false
-        LocalCostMap: true
-        LocalPath: true
-        Map: true
-        NavigationPath: true
-        PoseArray: true
-        RobotModel: true
-        SafeCostMap: true
-        Spot: true
-        TF: true
-        Value: true
-      Zoom Factor: 1
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: KinectRGB
+      Topic: /head_camera/rgb/quater/image_rect_color
+      Value: true
+      alpha: 0.8
+      height: 128
+      keep aspect ratio: true
+      left: 10
+      top: 10
+      width: 320
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -420,10 +445,10 @@ Visualization Manager:
         Z: 0
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.785398
+      Pitch: 1.0104
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 0.785398
+      Yaw: 0.200398
     Saved: ~
 Window Geometry:
   Displays:
@@ -431,9 +456,7 @@ Window Geometry:
   Height: 1003
   Hide Left Dock: false
   Hide Right Dock: false
-  KinectCamera:
-    collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001ad00000361fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006100fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000000280000021e000000d600fffffffb00000018004b0069006e00650063007400430061006d006500720061010000024c0000013d0000001600fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000018004e006100720072006f007700430061006d0065007200610000000244000001460000000000000000000000010000010f00000361fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000002800000361000000ac00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000780000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000065c0000003efc0100000002fb0000000800540069006d006501000000000000065c000002f500fffffffb0000000800540069006d00650100000000000004500000000000000000000003940000036100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000016a00000360fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005e00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000360000000d000fffffffb00000018004b0069006e00650063007400430061006d0065007200610000000373000000160000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000018004e006100720072006f007700430061006d0065007200610000000244000001460000000000000000000000010000010f00000360fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000002800000360000000aa00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000780000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000065c0000003efc0100000002fb0000000800540069006d006501000000000000065c0000026a00fffffffb0000000800540069006d00650100000000000004500000000000000000000003d70000036000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -443,5 +466,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1628
-  X: 238
-  Y: 47
+  X: 208
+  Y: 17

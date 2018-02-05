@@ -1,0 +1,4 @@
+<launch>
+  <node name="run_software_runstop" pkg="rostopic" type="rostopic"
+        args="pub -1 /enable_software_runstop std_msgs/Bool 'data: true'" />
+</launch>

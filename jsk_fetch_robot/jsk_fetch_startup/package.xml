@@ -11,8 +11,10 @@
   <url>http://ros.org/wiki/jsk_fetch_startup</url>
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>image_proc</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>jsk_maps</run_depend>
+  <run_depend>fetcheus</run_depend>
   <run_depend>fetch_navigation</run_depend>
   <run_depend>fetch_moveit_config</run_depend>
   <run_depend>fetch_driver_msgs</run_depend>

@@ -1,6 +1,6 @@
 <launch>
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
-
+  <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
 
   <node name="joy" pkg="joy" type="joy_node">
@@ -47,9 +47,18 @@
   <node name="safe_teleop_base" pkg="safe_teleop_base" type="safe_teleop_base">
     <remap from="base_velocity" to="/teleop/cmd_vel/unsafe" />
     <remap from="~safe_vel"     to="/teleop/cmd_vel/safe" />
-    <rosparam file="$(find jsk_fetch_startup)/config/safe_teleop_params.yaml" command="load" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
   </node>
+
+  <node name="safe_tilt_head" pkg="jsk_fetch_startup" type="safe_tilt_head.py" />
 
   <!-- audible warning on unsafe teleop -->
   <node pkg="jsk_robot_startup" type="unsafe_warning.l" name="unsafe_warning" respawn="true" />
+
+  <!-- auto dock -->
+  <include file="$(find fetch_auto_dock)/launch/auto_dock.launch"
+	   if="$(arg enable_auto_dock)"/>
 </launch>
