@@ -58,5 +58,5 @@ enable_turbo_button: 0  # A button
 
   <node name="speaking_program_is_started_or_terminated"
         pkg="roseus" type="roseus"
-        args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 15) (good-morning) (do-until-key (ros::spin-once)))&quot;"/>
+        args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 10) (good-morning) (do-until-key (ros::spin-once)))&quot;"/>
 </launch>
