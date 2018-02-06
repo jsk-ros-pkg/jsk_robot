@@ -23,7 +23,7 @@
      (unless r ;;
        (format *error-output* "; failed for normal ik, starting from relaxed position~%")
        (let  ((current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
-         (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance :debug-view nil args)
+         (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp warnp :dump-command dump-command args))
          (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
              ;; when fail and :rever-if-fail is nil
@@ -35,7 +35,7 @@
               (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
          (setq r t)
          (while (and r (<= step 1.0))
-           (setq r (send-super* :inverse-kinematics (midcoords step current-coords target-coords) :avoid-collision-distance avoid-collision-distance :debug-view nil :warnp warnp :dump-command dump-command args))
+           (setq r (send-super* :inverse-kinematics (midcoords step current-coords target-coords) :avoid-collision-distance avoid-collision-distance :warnp warnp :dump-command dump-command args))
            (incf step 0.01))
          (unless r (send self :angle-vector prev-av))))
      (unless r ;; start from ik-frendly position
