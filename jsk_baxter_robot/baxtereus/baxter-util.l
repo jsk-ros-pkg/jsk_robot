@@ -85,7 +85,7 @@
 
 (defclass baxter-robot-safe
   :super baxter-robot
-  :slots ())
+  :slots (collision-ignore-pairs))
 (defmethod baxter-robot-safe
   (:init (&rest args)
          (send-super* :init args)
@@ -108,6 +108,9 @@
 					       ))
          (setq larm-collision-avoidance-links collision-avoidance-links)
          (setq rarm-collision-avoidance-links collision-avoidance-links)
+         (setq collision-ignore-pairs
+               (list (cons (send self :larm :shoulder-r :child-link) (send self :larm :elbow-r :child-link))
+                     (cons (send self :rarm :shoulder-r :child-link) (send self :rarm :elbow-r :child-link))))
 	 (send (send self :left_w2) :max-joint-velocity 1)
 	 (send (send self :left_w1) :max-joint-velocity 2)
 	 (send (send self :left_w0) :max-joint-velocity 2.5)
@@ -120,6 +123,21 @@
 	 (send (send self :right_e0) :max-joint-velocity 1)
 	 (send (send self :right_s0) :max-joint-velocity 1.4)
          )
+  (:collision-ignore-pairs (&optional pairs)
+    (when pairs (setq collision-ignore-pairs pairs))
+    collision-ignore-pairs)
+  (:remove-collision-pairs (pairs remove-pairs)
+    (dolist (pair remove-pairs)
+      (delete-if #'(lambda (x)
+                     (or (and (eq (car x) (car pair))
+                              (eq (cdr x) (cdr pair)))
+                         (and (eq (car x) (cdr pair))
+                              (eq (cdr x) (car pair)))))
+                 pairs))
+    pairs)
+  (:collision-check-pairs
+    (&key (links collision-avoidance-links) (ignore-pairs (send self :collision-ignore-pairs)))
+    (send self :remove-collision-pairs (send-super :collision-check-pairs :links links) ignore-pairs))
   (:self-collision-check (&rest args &key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &allow-other-keys)
                          (send-super* :self-collision-check :pairs pairs args))
   )
