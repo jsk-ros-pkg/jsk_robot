@@ -48,7 +48,6 @@
       - pr2_controllers_msgs/Pr2GripperCommandActionFeedback
       - pr2_controllers_msgs/Pr2GripperCommandActionGoal
       - pr2_controllers_msgs/Pr2GripperCommandActionResult
-      - sound_play/SoundRequestActionFeedback
       - sound_play/SoundRequestActionResult
       - sound_play/SoundRequestActionGoal
   </rosparam>
