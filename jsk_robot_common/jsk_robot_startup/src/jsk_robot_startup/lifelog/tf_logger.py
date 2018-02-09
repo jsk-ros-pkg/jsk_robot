@@ -15,17 +15,17 @@ class TFLogger(LoggerBase):
     def __init__(self):
         LoggerBase.__init__(self)
 
-        self.log_rate = rospy.get_param('~log_rate', 1.0)
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
         rospy.wait_for_service("~tf2_frames")
         self.get_frames = rospy.ServiceProxy("~tf2_frames", FrameGraph)
 
-        self.timer = rospy.Timer(rospy.Duration(self.log_rate), self.timer_callback)
+        self.update_rate = rospy.get_param("~update_rate", 1.0)
+        self.timer = rospy.Timer(rospy.Duration(self.update_rate), self.timer_callback)
 
     def timer_callback(self, event):
-        time = event.last_real or event.current_real - rospy.Duration(self.log_rate)
+        time = event.last_real or event.current_real - rospy.Duration(self.update_rate)
         try:
             graph = yaml.load(self.get_frames().frame_yaml)
         except Exception as e:
@@ -47,9 +47,10 @@ class TFLogger(LoggerBase):
             rospy.logerr(e)
 
     def run(self):
+        r = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
-            rospy.sleep(0.1)
             self.spinOnce()
+            r.sleep()
 
 
 if __name__ == '__main__':

@@ -26,7 +26,7 @@ class ActionLogger(LoggerBase):
 
         self.queue_size = rospy.get_param("~queue_size", 30)
         self.action_regex = re.compile(".*Action(Result|Goal|Feedback)$")
-
+        self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.max_rate = rospy.get_param("~max_rate", 3.0)
         self.last_inserted_time = defaultdict(rospy.Time)
 
@@ -163,10 +163,11 @@ class ActionLogger(LoggerBase):
             rospy.logdebug("unsubscribe %s" % t)
 
     def run(self):
+        r = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
             self.update_subscribers()
             self.spinOnce()
-
+            r.sleep()
 
 if __name__ == "__main__":
     rospy.init_node('action_logger')
