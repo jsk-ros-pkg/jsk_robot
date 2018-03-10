@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Detail of visualization_msgs/msg/Marker.msg of Indigo and that of Kinetic are a little bit different, so checksums of them are different of course. That means on Kinetic you cannot subscribe the topic of which type is visualization_msgs/Marker published on  Indigo.
+# Use this script on Kinetic when you want to subscribe the topic of which type is visualization_msgs/MarkerArray published on Indigo.
+# By executing this script, you can subscribe /marker_msg_from_indigo_to_kinetic topic, the content of which is the same with visualization_msgs/MarkerArray published on Indigo.
+
 import os
 import rospy
 from visualization_msgs.msg import Marker, MarkerArray
