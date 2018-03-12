@@ -371,5 +371,22 @@
      (setq res (ros::service-call "/get_move_arms_enabled" ret))
      (send res :status))
    )
+  (:set-language
+   (language)
+   (let ((ret (instance naoqi_bridge_msgs::SetStringRequest :init))
+	 res)
+     (ros::wait-for-service "/naoqi_driver/set_language")
+     (send ret :data language)
+     (setq res (ros::service-call "/naoqi_driver/set_language" ret))
+     (send res :success))
+   )
+  (:get-language
+   ()
+   (let ((ret (instance naoqi_bridge_msgs::GetStringRequest :init))
+	 res)
+     (ros::wait-for-service "/naoqi_driver/get_language")
+     (setq res (ros::service-call "/naoqi_driver/get_language" ret))
+     (send res :data))
+   )
   )
 ;;
