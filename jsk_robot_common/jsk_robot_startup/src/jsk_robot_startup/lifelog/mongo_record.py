@@ -18,12 +18,14 @@ class MongoRecord(LoggerBase):
             self.topics = rospy.get_param("~topics")
             self.blocking = rospy.get_param("~blocking", False)
             self.queue_size = rospy.get_param("~queue_size", 1)
+            self.update_rate = rospy.get_param("~update_rate", 1.0)
             subst_param = rospy.get_param("~subst_param", False)
         else:
             args = self.parse_args(argv)
             self.topics = args.topics
             self.blocking = args.blocking
             self.queue_size = args.queue_size
+            self.update_rate = args.update_rate
             subst_param = args.subst_param
         self.subscribers = {}
 
@@ -51,6 +53,8 @@ class MongoRecord(LoggerBase):
                        default=1)
         p.add_argument("-s", "--subst-param", action="store_true",
                        help="Enable substring param (e,g, '$(param robot/name)/list')")
+        p.add_argument("-r", "--update-rate", type=float,
+                       help="Update rate for checking topics")
         return p.parse_args(argv)
 
     def check_topic(self):
@@ -73,7 +77,7 @@ class MongoRecord(LoggerBase):
                     wait=self.blocking)
 
     def run(self):
-        rate = rospy.Rate(1.0)
+        rate = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
             self.check_topic()
             self.spinOnce()
@@ -81,4 +85,15 @@ class MongoRecord(LoggerBase):
 
 
 if __name__ == '__main__':
-    pass
+    import sys
+    rospy.init_node("mongo_record", anonymous=True)
+
+    if len(sys.argv) != len(rospy.myargv()):
+        # spawn by roslaunch
+        rec = MongoRecord()
+    else:
+        # spawn by command
+        rec = MongoRecord(sys.argv[1:])
+
+    rec.run()
+

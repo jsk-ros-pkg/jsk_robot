@@ -15,7 +15,7 @@
     <arg name="save_joint_states" value="true" />
     <arg name="save_base_trajectory" value="true" />
     <arg name="save_object_detection" value="false" />
-    <arg name="save_action" value="false" />
+    <arg name="save_action" value="true" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="localhost" value="false" />
@@ -34,23 +34,22 @@
   </rosparam>
 
   <rosparam ns="lifelog/action_logger">
-    black_list:
+    white_list:
       type:
-      - pr2_controllers_msgs/JointTrajectoryActionGoal
-      - pr2_controllers_msgs/JointTrajectoryActionResult
-      - pr2_controllers_msgs/JointTrajectoryActionFeedback
+      - control_msgs/FollowJointTrajectoryActionFeedback
+      - control_msgs/FollowJointTrajectoryActionGoal
+      - control_msgs/FollowJointTrajectoryActionResult
+      - pr2_common_action_msgs/TuckArmsActionFeedback
+      - pr2_common_action_msgs/TuckArmsActionGoal
+      - pr2_common_action_msgs/TuckArmsActionResult
+      - pr2_controllers_msgs/PointHeadActionFeedback
       - pr2_controllers_msgs/PointHeadActionGoal
       - pr2_controllers_msgs/PointHeadActionResult
-      - pr2_controllers_msgs/PointHeadActionFeedback
-      - pr2_controllers_msgs/SingleJointPositionActionGoal
-      - pr2_controllers_msgs/SingleJointPositionActionResult
-      - pr2_controllers_msgs/SingleJointPositionActionFeedback
-      - control_msgs/SingleJointPositionActionGoal
-      - control_msgs/SingleJointPositionActionResult
-      - control_msgs/SingleJointPositionActionFeedback
-      - tf2_msgs/LookupTransformActionGoal
-      - tf2_msgs/LookupTransformActionResult
-      - tf2_msgs/LookupTransformActionFeedback
+      - pr2_controllers_msgs/Pr2GripperCommandActionFeedback
+      - pr2_controllers_msgs/Pr2GripperCommandActionGoal
+      - pr2_controllers_msgs/Pr2GripperCommandActionResult
+      - sound_play/SoundRequestActionResult
+      - sound_play/SoundRequestActionGoal
   </rosparam>
 
   <!-- tweeting robot warning data and etc. -->

@@ -57,7 +57,9 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="/$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)" />
         <remap from="~output" to="rgb/$(arg camera_info_topic)" />
-        <param name="update_rate" value="$(arg log_rate)"/>
+        <rosparam subst_value="true">
+          update_rate: $(arg log_rate)
+        </rosparam>
       </node>
       <node name="throttle_rgb"
             pkg="nodelet" type="nodelet"
@@ -66,7 +68,9 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)/compressed"/>
         <remap from="~output" to="rgb/$(arg rgb_topic)/compressed" />
-        <param name="update_rate" value="$(arg log_rate)" />
+        <rosparam subst_value="true">
+          update_rate: $(arg log_rate)
+        </rosparam>
       </node>
 
       <!-- logger -->
@@ -103,7 +107,9 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="/$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)" />
         <remap from="~output" to="depth/camera_info" />
-        <param name="update_rate" value="$(arg log_rate)"/>
+        <rosparam subst_value="true">
+          update_rate: $(arg log_rate)
+        </rosparam>
       </node>
       <node name="throttle_depth"
             pkg="nodelet" type="nodelet"
@@ -112,7 +118,9 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)/compressedDepth"/>
         <remap from="~output" to="depth/$(arg depth_topic)/compressedDepth" />
-        <param name="update_rate" value="$(arg log_rate)" />
+        <rosparam subst_value="true">
+          update_rate: $(arg log_rate)
+        </rosparam>
       </node>
 
       <!-- logger -->
@@ -147,7 +155,7 @@
           respawn="$(arg respawn)"
           if="$(arg save_tf)">
       <rosparam subst_value="true">
-        log_rate: $(arg log_rate)
+        update_rate: $(arg log_rate)
       </rosparam>
     </node>
 
@@ -204,9 +212,11 @@
           pkg="jsk_robot_startup" type="base_trajectory_logger.py"
           machine="$(arg machine)"
           respawn="$(arg respawn)">
-      <param name="map_frame" value="$(arg map_frame_id)"/>
-      <param name="robot_frame" value="$(arg base_frame_id)"/>
-      <param name="update_cycle" value="$(arg log_rate)" />
+      <rosparam subst_value="true">
+        update_rate: $(arg log_rate)
+        map_frame: $(arg map_frame_id)
+        robot_frame: $(arg base_frame_id)
+      </rosparam>
     </node>
 
     <!-- object detection logger -->
@@ -215,8 +225,10 @@
           pkg="jsk_robot_startup" type="object_detection_logger.py"
           machine="$(arg machine)"
           respawn="$(arg respawn)">
-      <param name="map_frame" value="$(arg map_frame_id)"/>
-      <param name="robot_frame" value="$(arg base_frame_id)"/>
+      <rosparam subst_value="true">
+        map_frame: $(arg map_frame_id)
+        robot_frame: $(arg base_frame_id)
+      </rosparam>
     </node>
 
     <!-- action logger -->
