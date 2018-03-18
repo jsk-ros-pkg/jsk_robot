@@ -26,7 +26,7 @@ sudo mv rockmongo-1.1.7 /var/www/html/rockmongo
 
 Below is a flow of commands from Joystick sent to base controller:
 
-![safe_teleop_system](https://github.com/jsk-ros-pkg/jsk_robot/files/1822736/fetch_safe_teleop.pdf)
+![safe_teleop_system](https://user-images.githubusercontent.com/19769486/37566992-dab73142-2b03-11e8-94bc-4d1914c967b0.png)
 
 ![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
 ![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
