@@ -22,6 +22,10 @@
     (setq robot (instance baxter-robot-safe :init))
     (send robot :angle-vector #f(0.0 74.2987 -79.5074 -174.983 146.163 -63.5022 -67.4432 39.1892 -20.0 -25.0 40.0 60.0 20.0 80.0 0.0))
     (assert (send robot :self-collision-check))
+    (send robot :untuck-pose)
+    (send robot :larm :move-end-pos #f(0 -120 0) :world)
+    (send robot :rarm :move-end-pos #f(0 120 0) :world)
+    (assert (send robot :self-collision-check))
     ))
 
 (setq *pod-bin* '(#f(950.0 280.0 1695.0) #f(950.0 -2.449294e-14 1695.0) #f(950.0 -280.0 1695.0) #f(950.0 280.0 1465.0) #f(950.0 -2.449294e-14 1465.0) #f(950.0 -280.0 1465.0) #f(950.0 280.0 1235.0) #f(950.0 -2.449294e-14 1235.0) #f(950.0 -280.0 1235.0) #f(950.0 280.0 975.0) #f(950.0 -2.449294e-14 975.0) #f(950.0 -280.0 975.0)))
