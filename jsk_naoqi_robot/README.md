@@ -11,7 +11,7 @@ NAO
   - contains ROS launch files for NAO
 
 [**_naoeus_**](naoeus/README.md)
-  - package for controlling NAO via roseus<
+  - package for controlling NAO via roseus
 
 Pepper
 ------
