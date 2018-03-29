@@ -7,7 +7,7 @@ The package name comes from Naoqi OS they use.
 NAO
 ---
 
-[**_jsk_nao_startup_**](jsk_nao_startup/README.md)
+**_jsk_nao_startup_**
   - contains ROS launch files for NAO
 
 [**_naoeus_**](naoeus/README.md)
