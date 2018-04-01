@@ -388,5 +388,23 @@
      (setq res (ros::service-call "/naoqi_driver/get_language" ret))
      (send res :data))
    )
+  (:set-background-movement-enabled
+   (status)
+   (let ((ret (instance std_srvs::SetBoolRequest :init))
+	  res)
+     (ros::wait-for-service "/background_movement/set_enabled")
+     (send ret :data status)
+     (setq res (ros::service-call "/background_movement/set_enabled" ret))
+     (send res :success)
+     ))
+  (:get-background-movement-enabled
+   ()
+   (let ((ret (instance std_srvs::TriggerRequest :init))
+	 res)
+     (ros::wait-for-service "/background_movement/is_enabled")
+     (setq res (ros::service-call "/background_movement/is_enabled" ret))
+     (send res :success)
+     )
+   )
   )
 ;;
