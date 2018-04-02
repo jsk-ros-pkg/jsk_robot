@@ -125,8 +125,9 @@
 (ros::advertise "/robotsound" sound_play::SoundRequest 10)
 (ros::advertise "/robotsound_jp" sound_play::SoundRequest 5)
 
-(ros::rate 1)
+(ros::rate 0.1)
 (while (ros::ok)
   (ros::spin-once)
   (battery-warning)
-    (ros::sleep))
+  (ros::sleep))
+(exit)

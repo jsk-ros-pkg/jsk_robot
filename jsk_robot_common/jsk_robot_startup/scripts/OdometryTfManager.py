@@ -27,13 +27,13 @@ class OdometryTfManager:
     def publish_transform_stamped(self):
         stamp = rospy.Time.now()
         map_to_prt_tf = self.make_transform_stamped(stamp, self.map_frame, self.particle_frame)
-        if map_to_prt_tf != None:
+        if map_to_prt_tf is not None:
             self.map_to_prt_pub.publish(map_to_prt_tf)
         prt_to_odom_tf = self.make_transform_stamped(stamp, self.particle_frame, self.odom_frame)
-        if prt_to_odom_tf != None:
+        if prt_to_odom_tf is not None:
             self.prt_to_odom_pub.publish(prt_to_odom_tf)
         base_to_scan_tf = self.make_transform_stamped(stamp, self.base_frame, self.scan_frame)
-        if base_to_scan_tf != None:
+        if base_to_scan_tf is not None:
             self.base_to_scan_pub.publish(base_to_scan_tf)
 
     def make_transform_stamped(self, stamp, parent_frame, child_frame):

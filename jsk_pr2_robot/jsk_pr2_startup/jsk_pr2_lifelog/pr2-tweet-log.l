@@ -209,6 +209,7 @@
                                 (setq query1 (car querys))
                                 (setq query2 (cadr querys))
                                 (when (and
+                                       query1 query2
                                        (not (string=
                                              (send (send (car query1) :header) :context)
                                              (send (send (car query2) :header) :context)))

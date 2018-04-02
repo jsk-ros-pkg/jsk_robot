@@ -216,7 +216,7 @@ class OdometryFeedbackWrapper(object):
         result_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(result_homogeneous_matrix)))
 
         # calculate pose covariance (do not use odometry source)
-        if self.odom != None:
+        if self.odom is not None:
             result_odom.pose.covariance =  self.odom.pose.covariance # do not use source_odom covariance in pose
             dt = (self.source_odom.header.stamp - self.odom.header.stamp).to_sec()
         else:

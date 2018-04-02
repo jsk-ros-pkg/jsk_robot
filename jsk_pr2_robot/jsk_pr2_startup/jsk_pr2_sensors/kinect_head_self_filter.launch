@@ -1,0 +1,19 @@
+<launch>
+  <arg name="machine" default="c1" />
+  <arg name="respawn" default="true" />
+  <arg name="camera" default="kinect_head" />
+
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
+  <group ns="$(arg camera)/depth_registered">
+    <node pkg="pr2_navigation_self_filter" type="self_filter" name="openni_cloud_self_filter"
+          respawn="$(arg respawn)" machine="$(arg machine)">
+      <remap from="cloud_in" to="points" />
+      <remap from="cloud_out" to="points_self_filtered" />
+      <param name="subsample_value" type="double" value="0.0"/>
+      <param name="use_rgb" type="bool" value="true"/>
+      <param name="keep_organized" type="bool" value="true"/>
+      <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_self_filter.yaml" />
+    </node>
+  </group>
+</launch>

@@ -237,7 +237,7 @@ class ParticleOdometry(object):
 
     def imu_callback(self, msg):
         with self.lock:
-            if self.odom == None:
+            if self.odom is None:
                 return # cannot calculate imu_rotation
             self.imu_rotation = numpy.linalg.inv(tf.transformations.quaternion_matrix([getattr(self.odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]])[:3, :3]) # base_link -> particle_odom
             self.imu = msg
@@ -279,7 +279,7 @@ class ParticleOdometry(object):
         # w2_sum = 0.0
         # mean = numpy.average(particles_list, axis = 0, weights = weights)
         # for prt, w in zip(particles_list, weights):
-        #     if cov == None:
+        #     if cov is None:
         #         cov = w * numpy.vstack(prt - mean) * (prt - mean)
         #     else:
         #         cov += w * numpy.vstack(prt - mean) * (prt - mean)

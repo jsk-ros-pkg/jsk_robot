@@ -1,0 +1,7 @@
+apps:
+  - app: jsk_fetch_startup/hello_world
+    display: fetch hello world
+  - app: jsk_fetch_startup/auto_dock
+    display: fetch auto docking
+  - app: jsk_fetch_startup/software_runstop
+    display: fetch software runstop
