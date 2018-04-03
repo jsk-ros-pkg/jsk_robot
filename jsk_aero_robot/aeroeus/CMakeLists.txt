@@ -5,3 +5,5 @@ find_package(catkin REQUIRED)
 
 catkin_package(
 )
+
+install(FILES aero-typeF_fcsc-interface.l aero-hand.l aero-wheels.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
