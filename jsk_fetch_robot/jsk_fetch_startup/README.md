@@ -80,6 +80,19 @@ Address: 133.11.216.145
 If two or more IP addresses apper, something is wrong.
 Please connect display, open a window of network manager, and check that wired connection uses static IP.
 
+### Access point
+See
+`/etc/wpa_supplicant/wpa_supplicant.conf`
+
+### Network status log
+Log is
+`/var/log/wifi.log`
+
+Logging script is
+```
+/home/fetch/log-wifi-link.sh
+/etc/init/jsk-log-wifi.conf
+```
 
 ## Administration
 
