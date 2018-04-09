@@ -81,16 +81,19 @@ If two or more IP addresses apper, something is wrong.
 Please connect display, open a window of network manager, and check that wired connection uses static IP.
 
 ### Access point
-See
-`/etc/wpa_supplicant/wpa_supplicant.conf`
+Define access point setting, such as ssid:
+```
+/etc/wpa_supplicant/wpa_supplicant.conf
+```
 
 ### Network status log
-Log is
-`/var/log/wifi.log`
-
-Logging script is
+You can see network status log, such as radio field intensity or data signaling rate:
 ```
-/home/fetch/log-wifi-link.sh
+/var/log/wifi.log
+```
+
+Logging script is initialized at:
+```
 /etc/init/jsk-log-wifi.conf
 ```
 
