@@ -239,3 +239,16 @@ coordinates can be made with
 ```
 
 You might be forget to `source setup.bash` before you run `roseus`
+
+- Can't connect joystick to Fetch.
+
+Sometimes, we encounter the problem of connecting joystick with Fetch.
+There is an instruction in [the official documentation](http://docs.fetchrobotics.com/faq.html#why-won-t-my-robot-move-when-i-use-my-ps3-joystick),
+but we found following is also effective if the official one does not work.  
+Following [ps3joy documentation](http://wiki.ros.org/ps3joy/Tutorials/PairingJoystickAndBluetoothDongle),
+
+```bash
+sudo bash
+rosrun ps3joy sixpair
+rosrun ps3joy ps3joy.py  # with pushing the center button of the joystick
+```
