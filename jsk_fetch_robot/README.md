@@ -248,6 +248,7 @@ but we found following is also effective if the official one does not work.
 Following [ps3joy documentation](http://wiki.ros.org/ps3joy/Tutorials/PairingJoystickAndBluetoothDongle),
 
 ```bash
+ssh fetch15
 sudo bash
 rosrun ps3joy sixpair
 rosrun ps3joy ps3joy.py  # with pushing the center button of the joystick
