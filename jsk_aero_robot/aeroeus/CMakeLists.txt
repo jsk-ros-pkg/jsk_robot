@@ -6,4 +6,6 @@ find_package(catkin REQUIRED)
 catkin_package(
 )
 
-install(FILES aero-typeF_fcsc-interface.l aero-hand.l aero-wheels.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+## rosrun euscollada collada2eus_urdfmodel $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
+
+install(FILES aero-interface.l aero-hand.l aero-wheels.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
