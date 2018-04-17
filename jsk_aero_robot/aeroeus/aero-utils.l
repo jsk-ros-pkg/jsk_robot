@@ -95,7 +95,8 @@
        arm
      (intern (format nil "~A-~A"
                      (string arm) (string range))
-             *keyword-package*)))
+             *keyword-package*))
+   )
   ;;
   (:inverse-kinematics
    (target-coords &rest args &key ik-group move-target &allow-other-keys)
@@ -113,6 +114,13 @@
                 :move-joints-hook
                 #'(lambda () (send self :update-mimic-joints))
                 args)
+   )
+  (:set-from-IK
+   (target-coords &rest args &key (arm :larm) (range :arm) (end-effector) &allow-other-keys)
+   (send* self :inverse-kinematics target-coords
+          :ik-group (send self :ik-group :arm arm :range range)
+          :move-target (send self :ik-target :arm arm :name end-effector)
+          args)
    )
   ;;
   (:calc-jacobian-for-interlocking-joints
@@ -155,6 +163,11 @@
          (cons knee_joint_jt
                knee_joint_mimic_jt)
          ))
+  (:angle-vector (&rest args)
+   (prog1
+       (send-super* :angle-vector args)
+     (send self :update-mimic-joints))
+   )
   )
 
 (defun aero-robot () (setq *aero* (instance aero-lifter-ik :init)))

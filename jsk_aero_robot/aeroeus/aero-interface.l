@@ -108,7 +108,7 @@
    )
   (:start-grasp
    (&optional (arm :arms) &key ((:gain g) 0.01))
-
+   (send hand-interface :grasp arm)
    )
   (:stop-grasp
    (&optional (arm :arms) &key (wait nil))
