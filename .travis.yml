@@ -46,4 +46,5 @@ before_script:
   # to install pepper_meshes, nao_meshes, the licenses have to be accepted
   - if [ "$ROS_DISTRO" == "indigo" ]; then export BEFORE_SCRIPT="echo \"ros-indigo-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true\" | sudo debconf-set-selections; sudo apt-get install -y -qq ros-$ROS_DISTRO-pepper-meshes"; fi
   - if [ "$ROS_DISTRO" == "indigo" ]; then export BEFORE_SCRIPT="echo \"ros-indigo-nao-meshes ros-nao-meshes/accepted-ros-nao-meshes boolean true\" | sudo debconf-set-selections; sudo apt-get install -y -qq ros-$ROS_DISTRO-nao-meshes"; fi
+  - if [ "$ROS_DISTRO" == "kinetic" ]; then export BEFORE_SCRIPT="wstool merge -t . ./jsk-ros-pkg/jsk_robot/jsk_fetch_robot/jsk_fetch.rosinstall.kinetic; wstool update"; fi
 script: source .travis/travis.sh
