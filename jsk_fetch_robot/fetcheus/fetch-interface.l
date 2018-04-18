@@ -4,7 +4,8 @@
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
-(ros::load-ros-manifest "fetcheus")
+(ros::load-ros-package "fetcheus")
+(ros::load-ros-package "fetch_driver_msgs")
 
 (defclass fetch-interface
   :super robot-move-base-interface
