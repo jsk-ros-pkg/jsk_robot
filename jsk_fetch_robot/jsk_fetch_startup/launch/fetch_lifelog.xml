@@ -10,13 +10,11 @@
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
-    <arg name="replicate" default="false" />
   </include>
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"
            unless="$(arg use_system_mongod)">
     <arg name="use_daemon" value="false"/>
     <arg name="repl_set_mode" value="false" />
-    <arg name="replicate" default="false" />
   </include>
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
@@ -32,8 +30,7 @@
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="localhost" value="true" />
-    <arg name="launch_manager" value="false" />
-    <arg name="manager" value="/throttle_nodelet_manager" />
+    <arg name="launch_manager" value="true" />
     <arg name="map_frame_id" value="$(arg map_frame)" />
     <arg name="base_frame_id" value="base_link" />
   </include>
