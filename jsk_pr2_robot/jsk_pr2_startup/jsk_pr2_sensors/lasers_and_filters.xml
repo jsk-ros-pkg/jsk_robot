@@ -21,7 +21,7 @@
   </node>
 
   <!-- Filter for tilt laser scans that hit the body of the robot -->
-  <node pkg="pr2_navigation_self_filter" type="self_filter" name="tilt_laser_self_filter" machine="c2" respawn="true" output="screen">
+  <node pkg="robot_self_filter" type="self_filter" name="tilt_laser_self_filter" machine="c2" respawn="true" output="screen">
 
     <!-- The topic for the input cloud -->
     <remap from="cloud_in" to="tilt_scan_shadow_filtered" />
@@ -48,7 +48,7 @@
   </node>
 
   <!-- Filter for base laser scans that hit the body of the robot -->
-  <node pkg="pr2_navigation_self_filter" type="self_filter" name="base_laser_self_filter" machine="c2" respawn="true" output="screen">
+  <node pkg="robot_self_filter" type="self_filter" name="base_laser_self_filter" machine="c2" respawn="true" output="screen">
 
     <!-- The topic for the input cloud -->
     <remap from="cloud_in" to="base_scan_shadow_filtered" />
