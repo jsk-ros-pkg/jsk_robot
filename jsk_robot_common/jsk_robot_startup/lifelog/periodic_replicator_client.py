@@ -102,7 +102,7 @@ class PeriodicReplicatorClient(object):
         while not self.replicate_ac.wait_for_result(timeout=rospy.Duration(5.0)):
             if rospy.is_shutdown():
                 break
-            elif self.disable_on_wireless_network and not self.network_connected:
+            elif self.monitor_network and not self.network_connected:
                 rospy.loginfo("disconnected wired network connection. canceling replication...")
                 self.replicate_ac.cancel_all_goals()
 
