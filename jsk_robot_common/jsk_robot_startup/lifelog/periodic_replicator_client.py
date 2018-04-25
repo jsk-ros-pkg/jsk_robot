@@ -5,19 +5,19 @@
 Provides a service to store ROS message objects in a mongodb database in JSON.
 """
 
+from bson import json_util
 import rospy
 import actionlib
 from actionlib_msgs.msg import GoalStatus
-from mongodb_store_msgs.msg import  MoveEntriesAction, MoveEntriesGoal, StringList
+from mongodb_store_msgs.msg import MoveEntriesAction, MoveEntriesGoal
+from mongodb_store_msgs.msg import StringList
 from datetime import datetime
 import pytz
-from threading import Thread, Event
-import sys
-import signal
-import time
 from std_msgs.msg import Bool
 
 from mongodb_store.message_store import MessageStoreProxy
+from mongodb_store_msgs.msg import StringPair, StringPairList
+from mongodb_store_msgs.srv import MongoQueryMsgRequest
 
 
 class PeriodicReplicatorClient(object):
@@ -83,12 +83,18 @@ class PeriodicReplicatorClient(object):
         except Exception as e:
             rospy.logwarn("failed to insert last replicate date to database: %s", e)
 
-    def move_entries(self, move_before=None):
+    def move_entries(self, move_before=None, delete_after_move=False, query=None):
         move_before = move_before or rospy.Duration(self.interval)
+        if query is None:
+            query = {}
+        query = StringPairList(
+            pairs=[StringPair(first=MongoQueryMsgRequest.JSON_QUERY,
+                              second=json_util.dumps(query))])
         goal = MoveEntriesGoal(database=self.database,
                                collections=StringList(self.collections),
                                move_before=move_before,
-                               delete_after_move=self.delete_after_move)
+                               delete_after_move=delete_after_move,
+                               query=query)
         self.replicate_ac.send_goal(goal,
                                     done_cb=self.done_cb,
                                     active_cb=self.active_cb,
@@ -101,7 +107,6 @@ class PeriodicReplicatorClient(object):
                 self.replicate_ac.cancel_all_goals()
 
     def timer_cb(self, event=None):
-        rospy.loginfo("timer callback %s" % event)
         if self.replicate_ac.get_state() == GoalStatus.ACTIVE:
             return
         if not self.network_ok():
@@ -119,8 +124,17 @@ class PeriodicReplicatorClient(object):
                           (now - last_replicated).to_sec(), self.interval)
             return
 
-        rospy.loginfo("Starting replication")
-        self.move_entries(rospy.Duration(self.interval))
+        rospy.loginfo("Starting to replicate persistent data")
+        # first replicate persistent data without removal
+        move_before = rospy.Duration(self.interval)
+        self.move_entries(move_before=move_before,
+                          delete_after_move=False,
+                          query={"_meta.persistent": True})
+        # then replicate all data with removal
+        rospy.loginfo("Starting to replicate target data")
+        self.move_entries(move_before=move_before,
+                          delete_after_move=self.delete_after_move,
+                          query={"_meta.persistent": {"$exists": False}})
 
     def done_cb(self, status, result):
         if status == GoalStatus.SUCCEEDED:
@@ -139,6 +153,7 @@ class PeriodicReplicatorClient(object):
 
     def network_connected_cb(self, msg):
         self.network_connected = msg.data
+
 
 if __name__ == '__main__':
     rospy.init_node("mongodb_replicator_client")

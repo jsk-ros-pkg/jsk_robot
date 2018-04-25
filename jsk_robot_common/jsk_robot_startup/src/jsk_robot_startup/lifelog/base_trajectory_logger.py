@@ -26,6 +26,7 @@ class BaseTrajectoryLogger(LoggerBase):
         LoggerBase.__init__(self)
         self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.use_amcl = rospy.get_param("~use_amcl", True)
+        self.persistent = rospy.get_param("~persistent", True)
 
         if self.use_amcl:
             self.map_frame = rospy.get_param("/amcl/global_frame_id")
@@ -103,6 +104,9 @@ class BaseTrajectoryLogger(LoggerBase):
     def run(self):
         r = rospy.Rate(self.update_rate)
         prev_pose = None
+        meta = dict()
+        if self.persistent:
+            meta.update({"persistent": True})
         while not rospy.is_shutdown():
             if not self.use_amcl:
                 self.latest_pose = self.get_pose_from_tf()
@@ -116,14 +120,15 @@ class BaseTrajectoryLogger(LoggerBase):
                         rospy.logdebug(
                             "diffthre: %f, diffpos: %f, diffrot: %f" % (thre, diffp, diffr))
                         if thre < diffp or thre / 2.0 < diffr:
-                            self.insert(self.latest_pose)
+                            self.insert(self.latest_pose, meta=meta)
                             prev_pose = self.latest_pose
                 else:
-                    self.insert(self.latest_pose)
+                    self.insert(self.latest_pose, meta=meta)
                     prev_pose = self.latest_pose
 
             self.spinOnce()
             r.sleep()
+
 
 if __name__ == "__main__":
     rospy.init_node('base_trajectory_logger')
