@@ -3,14 +3,14 @@
 
 scan_filter_chain:
 - name: shadows
-  type: ScanShadowsFilter
+  type: laser_filters/ScanShadowsFilter
   params:
     min_angle: 0
     max_angle: 170
     neighbors: 5
     window: 1
 - name: dark_shadows
-  type: LaserScanIntensityFilter
+  type: laser_filters/LaserScanIntensityFilter
   params: 
     lower_threshold: 100
     upper_threshold: 10000
