@@ -14,8 +14,8 @@
   )
 
 (defmethod nao-interface
-  (:init (&rest args)
-   (send-super* :init :robot nao-robot :naoqi-namespace "nao_robot" :dcm-namespace "nao_dcm" args)
+  (:init (&rest args &key ((:group-namespace gns) ""))
+   (send-super* :init :robot nao-robot :group-namespace gns :naoqi-namespace "nao_robot" :dcm-namespace "nao_dcm" args)
    (when (ros::get-param "use_sim_time" nil)
      ;; add controllers for gazebo 
      (dolist (l (list
@@ -55,7 +55,7 @@
      (progn
        (list
 	(list
-	 (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
+	 (cons :controller-action (format nil "~A/~A/pose/joint_trajectory" group-namespace naoqi-namespace))
 	 ;;(cons :controller-state "joint_trajectory")
 	 (cons :controller-state "dummy_state") ;; this is dummy
 	 (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
@@ -72,10 +72,10 @@
   (:reset-pose () (send self :angle-vector #f(110.0 10.0 -90.0 -40.0 0.0   110.0 -10.0 90.0 40.0 0.0  0.0 0.0 -30.0 60.0 -30.0 0.0   0.0 0.0 -30.0 60.0 -30.0 0.0  0.0 0.0)))
   )
 
-(defun nao-init (&optional (create-viewer))
+(defun nao-init (&optional (create-viewer) (group-namespace ""))
   (unless (boundp '*nao*) (nao))
   (unless (ros::ok) (ros::roseus "nao_eus_interface"))
-  (unless (boundp '*ri*) (setq *ri* (instance nao-interface :init)))
+  (unless (boundp '*ri*) (setq *ri* (instance nao-interface :init :group-namespace group-namespace)))
   
   (ros::spin-once)
   (send *ri* :spin-once)
