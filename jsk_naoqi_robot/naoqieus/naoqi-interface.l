@@ -11,7 +11,8 @@
 
 (defmethod naoqi-interface
   (:init
-   (&rest args &key ((:naoqi-namespace ns) "naoqi_robot") ((:dcm-namespace dns) "naoqi_dcm") (robot) (type :naoqi-controller) &allow-other-keys)
+   (&rest args &key ((:group-namespace gns) "") ((:naoqi-namespace ns) "naoqi_robot") ((:dcm-namespace dns) "naoqi_dcm") (robot) (type :naoqi-controller) &allow-other-keys)
+   (setq group-namespace gns)
    (setq naoqi-namespace ns)
    (setq dcm-namespace dns)
    (print args)
@@ -19,13 +20,13 @@
    (ros::advertise "/move_base_simple/goal" geometry_msgs::PoseStamped 1)
    (ros::advertise "/cmd_vel" geometry_msgs::Twist 1)
    (ros::advertise "/speech" std_msgs::String 1)
-   (ros::advertise (format nil "~A/pose/joint_angles" naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise (format nil "~A/~A/pose/joint_angles" group-namespace naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
    (ros::advertise "/animated_speech" std_msgs::String 1)
    (ros::advertise (format nil "~A/RightHand_controller/command" dcm-namespace) trajectory_msgs::JointTrajectory 1)
    (ros::advertise (format nil "~A/LeftHand_controller/command" dcm-namespace)  trajectory_msgs::JointTrajectory 1)
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
-		   (format nil "~A/pose/joint_stiffness_trajectory" naoqi-namespace)
+		   (format nil "~A/~A/pose/joint_stiffness_trajectory" group-namespace naoqi-namespace)
 		   naoqi_bridge_msgs::JointTrajectoryAction))
    self)
   ;;
@@ -107,7 +108,7 @@
    ()
    (list
     (list
-     (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
+     (cons :controller-action (format nil "~A/~A/pose/joint_trajectory" group-namespace naoqi-namespace))
      ;;(cons :controller-state "joint_trajectory")
      (cons :controller-state "dummy_state") ;; this is dummy
      (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
@@ -145,15 +146,15 @@
      ))
   (:servo-on () 
 	     (if (boundp '*nao*) 
-		 (call-empty-service "nao_robot/pose/wakeup"))
+		 (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace)))
 	     (if (boundp '*pepper*)
-		 (call-empty-service "pepper_robot/pose/wakeup")))
+		 (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace))))
 	     
   (:servo-off () 
 	      (if (boundp '*nao*) 
-		 (call-empty-service "nao_robot/pose/rest"))
+		 (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace)))
 	      (if (boundp '*pepper*)
-		 (call-empty-service "pepper_robot/pose/rest")))
+		 (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace))))
   ;;
   (:move-hand
    (value &optional (arm :arms))
@@ -200,7 +201,7 @@
 	       (:larm 
 		(send start_grasp_msg :joint_names (list "LHand"))
 		(send start_grasp_msg :joint_angles (list value))))
-	 (ros::publish (format nil "~A/pose/joint_angles" naoqi-namespace) start_grasp_msg))))
+	 (ros::publish (format nil "~A/~A/pose/joint_angles" group-namespace naoqi-namespace) start_grasp_msg))))
      )
   (:start-grasp
    (&optional (angle-ratio 0.0) (arm :arms))
@@ -310,12 +311,12 @@
      (setq ret (instance nao_interaction_msgs::AudioMasterVolumeRequest :init))
      (send ret :master_volume :data volume)
      (setq ret (ros::service-call "nao_audio/master_volume" ret))))
-  (:enable-life () (call-empty-service (format nil "~A/pose/life/enable" naoqi-namespace)))	
-  (:disable-life () (call-empty-service (format nil "~A/pose/life/disable" naoqi-namespace)))
+  (:enable-life () (call-empty-service (format nil "~A/~A/pose/life/enable" group-namespace naoqi-namespace)))
+  (:disable-life () (call-empty-service (format nil "~A/~A/pose/life/disable" group-namespace naoqi-namespace)))
   (:get-life ()
-	     (ros::wait-for-service (format nil "~A/pose/life/get_state" naoqi-namespace))
+	     (ros::wait-for-service (format nil "~A/~A/pose/life/get_state" group-namespace naoqi-namespace))
 	     (setq req (instance std_srvs::TriggerRequest :init))
-	     (setq res (ros::service-call (format nil "~A/pose/life/get_state" naoqi-namespace) req))
+	     (setq res (ros::service-call (format nil "~A/~A/pose/life/get_state" group-namespace naoqi-namespace) req))
 	     (send res :message)
 	     )
   (:set-external-collision-protection-status 

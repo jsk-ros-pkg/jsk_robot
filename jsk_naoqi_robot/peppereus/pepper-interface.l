@@ -9,8 +9,8 @@
   )
 
 (defmethod pepper-interface
-  (:init (&rest args)
-   (send-super* :init :robot pepper-robot :naoqi-namespace "pepper_robot" :dcm-namespace "pepper_dcm" args)
+  (:init (&rest args &key ((:group-namespace gns) ""))
+   (send-super* :init :robot pepper-robot :group-namespace gns :naoqi-namespace "pepper_robot" :dcm-namespace "pepper_dcm" args)
    (when (ros::get-param "use_sim_time" nil)
      ;; add controllers for gazebo
      (dolist (l (list
@@ -51,7 +51,7 @@
      (progn
        (list
 	(list
-	 (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
+	 (cons :controller-action (format nil "~A/~A/pose/joint_trajectory" group-namespace naoqi-namespace))
 	 ;;(cons :controller-state "joint_trajectory")
 	 (cons :controller-state "dummy_state") ;; this is dummy
 	 (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
@@ -107,10 +107,10 @@
   (:reset-pose () (send self :angle-vector #f(2 -2 -5 85 10 -70 -20 -40 85 -10  70  20  40 0 -0)))
   )
 
-(defun pepper-init (&optional (create-viewer))
+(defun pepper-init (&optional (create-viewer) (group-namespace ""))
   (unless (boundp '*pepper*) (pepper))
   (unless (ros::ok) (ros::roseus "pepper_eus_interface"))
-  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init)))
+  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init :group-namespace group-namespace)))
   
   (ros::spin-once)
   (send *ri* :spin-once)
