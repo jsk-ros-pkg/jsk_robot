@@ -17,6 +17,9 @@
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
+  <!-- japanese speech node -->
+  <include file="$(find voice_text)/launch/voice_text.launch" />
+
   <!-- Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
     <param name="buffer_size" value="120.0"/>

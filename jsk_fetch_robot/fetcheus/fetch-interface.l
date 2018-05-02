@@ -179,9 +179,12 @@ Arguments:
 Example: (send self :gripper :position) => 0.00"
    (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
   ;;
-  (:speak (text &rest args)
-    (let ()
-      (send-super* :speak text :topic-name "/sound_play" args)))
+  (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak text :topic-name topic-name args))
+  (:speak-en (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak-en text :topic-name topic-name args))
+  (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
+    (send-super* :speak-jp text :topic-name topic-name args))
   )
 
 ;; interface for simple base actions
