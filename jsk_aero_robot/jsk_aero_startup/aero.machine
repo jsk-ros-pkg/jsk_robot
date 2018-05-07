@@ -1,0 +1,8 @@
+<launch>
+  <machine name="aero_c" address="aero_c"
+           user="grxuser"
+           env-loader="/home/grxuser/ros/indigo/devel/env.sh"/>
+  <machine name="aero_v" address="aero_v" default="true"/>
+  <machine name="aero_app" address="aero_app" timeout="30.0"
+           env-loader="/home/leus/ros/indigo/devel/env.sh"/>
+</launch>
