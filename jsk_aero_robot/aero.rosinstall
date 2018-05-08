@@ -10,3 +10,7 @@
     local-name: sasabot/win_lin_kinect
     uri: https://github.com/sasabot/win_lin_kinect.git
     version: master
+- git:
+    local-name: longjie/ps4eye
+    uri: https://github.com/longjie/ps4eye.git
+    version: master

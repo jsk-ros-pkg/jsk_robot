@@ -10,3 +10,9 @@ install(DIRECTORY launch raw_maps
 
 install(FILES aero.machine sim.machine
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  find_package(roslaunch REQUIRED)
+  roslaunch_add_file_check(launch/aero.launch ROBOT:=sim)
+endif()

@@ -16,5 +16,10 @@
   <run_depend>aeroeus</run_depend>
   <run_depend>jsk_maps</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
-
+  <run_depend>linux_kinect</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>ps4eye</run_depend>
+  <run_depend>stereo_image_proc</run_depend>
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>tf</run_depend>
 </package>
