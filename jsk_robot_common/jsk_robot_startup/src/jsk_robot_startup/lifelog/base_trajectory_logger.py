@@ -4,6 +4,7 @@
 
 import numpy as np
 import rospy
+import pymongo
 from transformations import TransformListener
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from logger_base import LoggerBase
@@ -46,11 +47,14 @@ class BaseTrajectoryLogger(LoggerBase):
             '/initialpose', PoseWithCovarianceStamped,
             queue_size=1, latch=True)
 
-        rospy.loginfo("map->robot: %s -> %s" % (self.map_frame, self.robot_frame))
+        rospy.loginfo("map->robot frame: %s -> %s" % (self.map_frame, self.robot_frame))
 
-        self.latest_pose = self.load_latest_pose()
-        # publish initial pose if possible
-        self.publish_initial_pose(self.latest_pose)
+        try:
+            self.latest_pose = self.load_latest_pose()
+            # publish initial pose if possible
+            self.publish_initial_pose(self.latest_pose)
+        except Exception as e:
+            rospy.logerr(e)
 
         if self.use_amcl:
             self.sub_amcl = rospy.Subscriber(
@@ -58,6 +62,7 @@ class BaseTrajectoryLogger(LoggerBase):
                 self.amcl_cb, queue_size=1)
 
     def amcl_cb(self, msg):
+        rospy.logdebug("amcl_cb")
         self.latest_pose = msg
 
     def get_pose_from_tf(self):
@@ -80,9 +85,16 @@ class BaseTrajectoryLogger(LoggerBase):
 
     def load_latest_pose(self):
         try:
+            rospy.loginfo("Loading last robot pose...")
             msg, meta = self.msg_store.query(
                 PoseWithCovarianceStamped._type,
-                single=True, sort_query=[("$natural", -1)])
+                single=True,
+                sort_query=[("_meta.inserted_at", pymongo.DESCENDING)])
+            try:
+                inserted_at = meta["inserted_at"].strftime('%Y-%m-%d %H:%M:%S')
+                rospy.loginfo("Found last robot pose logged %s" % inserted_at)
+            except:
+                rospy.loginfo("Found last robot pose without metadata")
             return msg
         except Exception as e:
             rospy.logerr('failed to load latest pose from db: %s' % e)
@@ -100,6 +112,7 @@ class BaseTrajectoryLogger(LoggerBase):
 
         msg.header.stamp = rospy.Time(0)
         self.initialpose_pub.publish(msg)
+        rospy.loginfo("Published initial pose")
 
     def run(self):
         r = rospy.Rate(self.update_rate)
@@ -109,6 +122,7 @@ class BaseTrajectoryLogger(LoggerBase):
             meta.update({"persistent": True})
         while not rospy.is_shutdown():
             if not self.use_amcl:
+                rospy.logdebug("Getting latest pose from tf")
                 self.latest_pose = self.get_pose_from_tf()
             if self.latest_pose:
                 if prev_pose:
@@ -122,9 +136,13 @@ class BaseTrajectoryLogger(LoggerBase):
                         if thre < diffp or thre / 2.0 < diffr:
                             self.insert(self.latest_pose, meta=meta)
                             prev_pose = self.latest_pose
+                            rospy.loginfo("Inserted latest pose")
                 else:
                     self.insert(self.latest_pose, meta=meta)
                     prev_pose = self.latest_pose
+                    rospy.loginfo("Inserted latest pose")
+
+                self.latest_pose = None
 
             self.spinOnce()
             r.sleep()
