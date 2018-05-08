@@ -20,9 +20,9 @@
    (setq dcm-namespace dns)
    (print args)
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
-   (ros::advertise "/move_base_simple/goal" geometry_msgs::PoseStamped 1)
-   (ros::advertise "/cmd_vel" geometry_msgs::Twist 1)
-   (ros::advertise "/speech" std_msgs::String 1)
+   (ros::advertise (format nil "~A/move_base_simple/goal" group-namespace) geometry_msgs::PoseStamped 1)
+   (ros::advertise (format nil "~A/cmd_vel" group-namespace) geometry_msgs::Twist 1)
+   (ros::advertise (format nil "~A/speech" group-namespace) std_msgs::String 1)
    (ros::advertise (format nil "~A/~A/pose/joint_angles" group-namespace naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
    (ros::advertise "/animated_speech" std_msgs::String 1)
    (ros::advertise (format nil "~A/RightHand_controller/command" dcm-namespace) trajectory_msgs::JointTrajectory 1)
@@ -255,7 +255,7 @@
    (str)
    (let ((speech_msg (instance std_msgs::String :init)))
      (send speech_msg :data str)
-     (ros::publish "/speech" speech_msg))
+     (ros::publish (format nil "~A/speech" group-namespace) speech_msg))
    )
   (:animated-speak
    (str)
@@ -275,7 +275,7 @@
 			  :rpy (float-vector (deg2rad d) 0 0)))
      (send pose_msg :header :frame_id "base_footprint")
      (send pose_msg :pose (ros::coords->tf-pose c))
-     (ros::publish "/move_base_simple/goal" pose_msg)
+     (ros::publish (format nil "~A/move_base_simple/goal" group-namespace) pose_msg)
      ))
 
   (:go-velocity
@@ -293,7 +293,7 @@
      (send vel_msg :linear :x x)
      (send vel_msg :linear :y y)
      (send vel_msg :angular :z d)
-     (ros::publish "/cmd_vel" vel_msg)
+     (ros::publish (format nil "~A/cmd_vel" group-namespace) vel_msg)
      (when stop
        (unix:usleep (* 1000 msec))
        (send self :go-stop)
