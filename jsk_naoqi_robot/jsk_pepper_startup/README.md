@@ -13,8 +13,6 @@ rossetip
 roslaunch jsk_pepper_startup jsk_pepper_startup.launch network_interface:=<your network interaface (ex. eth0)>
 ```
 
-% Temporarly, you have to refer to [this PR](https://github.com/ros-naoqi/pepper_robot/pull/40) in order to execute ```pepper_full.launch```.
-
 % In order to confirm if ROS-Pepper is booting, please check with rviz.
 
 ```
@@ -51,3 +49,8 @@ If another terminal of ```roscore``` has been left and the connected network has
 front_cameraCamera Handle is empty - cannot retrieve image
 front_cameraMight be a NAOqi problem. Try to restart the ALVideoDevice.
 ```
+
+Some tips
+---------
+
+- If the getting started wizard appears on Pepper's tablet, it may be better to turn it off because some functions are blocked. (ref: [issue 926](https://github.com/jsk-ros-pkg/jsk_robot/issues/926))
