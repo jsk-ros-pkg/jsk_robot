@@ -14,7 +14,9 @@
   <!-- namespace -->
   <arg name="camera_ns" default="kinect_head" />
   <arg name="rgb_ns" default="rgb" />
+  <arg name="rgb_suffix" default="/compressed"/>
   <arg name="depth_ns" default="depth_registered" />
+  <arg name="depth_suffix" default="/compressedDepth"/>
   <arg name="camera_info_topic" default="camera_info" />
   <arg name="rgb_topic" default="image_rect_color" />
   <arg name="depth_topic" default="image_rect" />
@@ -66,8 +68,8 @@
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
-        <remap from="~input" to="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)/compressed"/>
-        <remap from="~output" to="rgb/$(arg rgb_topic)/compressed" />
+        <remap from="~input" to="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)"/>
+        <remap from="~output" to="rgb/$(arg rgb_topic)$(arg rgb_suffix)" />
         <rosparam subst_value="true">
           update_rate: $(arg log_rate)
         </rosparam>
@@ -79,7 +81,7 @@
             args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
-        <remap from="~input" to="rgb/$(arg rgb_topic)/compressed" />
+        <remap from="~input" to="rgb/$(arg rgb_topic)$(arg rgb_suffix)" />
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
@@ -116,8 +118,8 @@
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
-        <remap from="~input" to="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)/compressedDepth"/>
-        <remap from="~output" to="depth/$(arg depth_topic)/compressedDepth" />
+        <remap from="~input" to="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)"/>
+        <remap from="~output" to="depth/$(arg depth_topic)$(arg depth_suffix)" />
         <rosparam subst_value="true">
           update_rate: $(arg log_rate)
         </rosparam>
@@ -129,7 +131,7 @@
             args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
-        <remap from="~input" to="depth/$(arg depth_topic)/compressedDepth" />
+        <remap from="~input" to="depth/$(arg depth_topic)$(arg depth_suffix)" />
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
