@@ -12,6 +12,7 @@
 
   <run_depend>amcl</run_depend>
   <run_depend>app_manager</run_depend>
+  <run_depend>cmd_vel_smoother</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>diagnostic_aggregator</run_depend>
   <run_depend>dwa_local_planner</run_depend>
@@ -71,6 +72,9 @@
   <run_depend>sound_play</run_depend>
   <run_depend>topic_tools</run_depend>
   <run_depend>voice_text</run_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>roslaunch</test_depend>
 
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>

@@ -1,5 +1,6 @@
 <launch>
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <arg name="launch_tf_buffer" default="true" />
   <arg name="launch_image_resized" default="true" />

@@ -1,5 +1,5 @@
 <launch>
-  <arg name="ROBOT" default="$(optenv ROBOT sim)"/>
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
   <arg name="machine" default="c2" />
   <arg name="respawn" default="true" />
   <arg name="camera" default="kinect_head" />

@@ -1,5 +1,6 @@
 <launch>
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
   <!-- a launch file for hydro, it should be run on c2 -->
   <arg name="face_detect" default="true" />
   <arg name="leg_detect" default="true" />

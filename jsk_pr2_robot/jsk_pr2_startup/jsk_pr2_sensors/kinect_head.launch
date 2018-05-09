@@ -1,4 +1,5 @@
 <launch>
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
   <arg name="load_driver" default="true" doc="launch driver set to false on gazebo"/>
   <arg name="respawn" default="true" />
   <arg name="use_c2" default="true" doc="Launch nodes for registration on C2"/>
@@ -20,7 +21,7 @@
   <arg unless="$(arg use_c2)" name="machine" default="c1" />
   <arg     if="$(arg use_c2)" name="machine" default="c2" />
 
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <!-- openni driver on C1 -->
   <param name="/kinect_head/driver/depth_ir_offset_x" value="4.5" />
@@ -219,6 +220,7 @@
 
   <!-- self filter -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head_self_filter.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
     <arg name="respawn" value="$(arg respawn)"/>
     <arg name="camera" value="$(arg camera)" />
     <arg name="machine" value="$(arg machine)" />

@@ -1,5 +1,5 @@
 <launch>
-  <arg name="ROBOT" default="$(env ROBOT)" />
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)" />
   <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
   <node name="visualize_move_base" pkg="jsk_pr2_startup" type="visualize_move_base.py"
         machine="c1">
