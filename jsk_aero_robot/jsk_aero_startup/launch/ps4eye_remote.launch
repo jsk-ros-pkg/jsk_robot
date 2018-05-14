@@ -69,7 +69,7 @@
       <param name="speckle_size" type="double" value="100"/>
     </group>
     <include file="$(find stereo_image_proc)/launch/stereo_image_proc.launch">
-      <arg name="manager" value="$(arg manager)" />
+      <arg name="manager" value="/$(arg manager)" />
     </include>
   </group>
 
