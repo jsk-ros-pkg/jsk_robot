@@ -49,4 +49,7 @@
     <param name="camera_info_url" value="$(arg camera_info_url_default)" />
   </node>
 
+  <node name="ps4eye_auto_exposure"
+        pkg="jsk_aero_startup" type="ps4eye_auto_exposure.sh"
+        machine="$(arg machine)"/>
 </launch>

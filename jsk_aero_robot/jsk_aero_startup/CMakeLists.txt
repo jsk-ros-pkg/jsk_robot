@@ -4,7 +4,7 @@ project(jsk_aero_startup)
 find_package(catkin REQUIRED)
 catkin_package()
 
-install(DIRECTORY launch raw_maps
+install(DIRECTORY launch raw_maps scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
