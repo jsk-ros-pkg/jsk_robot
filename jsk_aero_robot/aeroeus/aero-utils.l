@@ -53,6 +53,12 @@
                  cds))
          )
        )
+     (dolist (j (list (send self :ankle_joint_mimic)
+                      (send self :knee_joint_mimic)
+                      (send self :ankle_joint_dummy)
+                      (send self :knee_joint_dummy)))
+       (send j :max-angle 180)
+       (send j :min-angle -180))
      )
    )
   (:ik-link-list
