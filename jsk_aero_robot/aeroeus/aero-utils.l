@@ -62,7 +62,7 @@
      )
    )
   (:ik-link-list
-   (&optional (ik-group :rarm))
+   (&optional (ik-group :rarm) (link-list))
    (let (ret)
      (case
       ik-group
@@ -84,6 +84,8 @@
       (:rarm-whole-body
        (setq ret (send self :link-list (send self :rarm :end-coords :parent)
                        (send self :torso :lifter-ankle :child-link))))
+      (nil
+       (setq ret link-list))
       )
      (setq ret (set-difference ret (list l_wrist_center_lk r_wrist_center_lk body_link_lk)))
      ret
@@ -112,7 +114,7 @@
                                (send self :rarm :end-coords))))
    (send-super* :inverse-kinematics target-coords
                 :move-target move-target
-                :link-list (send self :ik-link-list ik-group)
+                :link-list (send self :ik-link-list ik-group (cadr (memq :link-list args)))
                 :additional-jacobi
                 (list #'(lambda (ll) (send self :calc-jacobian-for-interlocking-joints ll)))
                 :additional-vel
