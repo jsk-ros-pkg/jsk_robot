@@ -9,10 +9,10 @@ Setup Environment
 % First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
 
 1. Install ``Python NAOqi SDK``
-You can download it from [here](https://community.aldebaran.com/en/resources/software).
-Please unzip the downloaded file.
-Please create ``pynaoqi`` folder in your home directory.
-Then put the file under your ``pynaoqi`` folder.
+You can download it from [here](https://community.aldebaran.com/en/resources/software). (You may need an account.)  
+Please unzip the downloaded file.  
+Please create ``pynaoqi`` folder in your home directory.  
+Then put the file under your ``pynaoqi`` folder.  
 
 2. Export environment variables in your ``.bashrc``
 
