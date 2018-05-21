@@ -18,6 +18,7 @@
   </include>
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+    <arg name="approximate_sync" value="true"/>
     <arg name="save_rgb" value="true" />
     <arg name="save_depth" value="true" />
     <arg name="save_tf" value="true" />
