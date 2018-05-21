@@ -30,19 +30,25 @@
   <!-- machine -->
   <arg name="localhost" default="true" />
   <arg unless="$(arg localhost)" name="machine"/>
-  <arg     if="$(arg localhost)" name="machine" value="localhost" />
+  <arg     if="$(arg localhost)" name="machine" default="localhost" />
   <machine if="$(arg localhost)" name="localhost" address="localhost" />
 
   <!-- nodelet -->
   <arg name="launch_manager" default="true" />
-  <arg     if="$(arg launch_manager)" name="manager" value="mongodb_record_nodelet_manager" />
+  <arg     if="$(arg launch_manager)" name="manager" default="mongodb_record_nodelet_manager" />
   <arg unless="$(arg launch_manager)" name="manager" />
 
   <!-- others -->
   <arg name="enable_monitor" default="false" />
+  <arg name="approximate_sync" default="false"/>
   <arg name="log_rate" default="1.0" />
   <arg name="respawn" default="false" />
   <arg name="vital_rate" default="0.1" />
+  <arg name="debug" default="false"/>
+
+  <!-- debug -->
+  <arg     if="$(arg debug)" name="nodelet_type" default="standalone" />
+  <arg unless="$(arg debug)" name="nodelet_type" default="load" />
 
   <!-- nodelet manager -->
   <node name="$(arg manager)" if="$(arg launch_manager)"
@@ -55,7 +61,7 @@
       <group if="$(arg save_depth)">
         <node name="camera_throttle"
               pkg="nodelet" type="nodelet"
-              args="load jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
+              args="$(arg nodelet_type) jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
           <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)/throttled"
@@ -67,20 +73,22 @@
           <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)/throttled"
                  to="depth/$(arg depth_topic)$(arg depth_suffix)"/>
           <rosparam subst_value="true">
-            approximate_sync: false
+            approximate_sync: $(arg approximate_sync)
             update_rate: $(arg log_rate)
             topics:
-            - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
             - /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)
-            - /$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)
+            - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
             - /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)
+            - /$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)
           </rosparam>
         </node>
       </group>
+      <!--
+      -->
       <group unless="$(arg save_depth)">
         <node name="camera_throttle"
               pkg="nodelet" type="nodelet"
-              args="load jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
+              args="$(arg nodelet_type) jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
           <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)/throttled"
@@ -88,7 +96,7 @@
           <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)/throttled"
                  to="rgb/$(arg rgb_topic)$(arg rgb_suffix)"/>
           <rosparam subst_value="true">
-            approximate_sync: false
+            approximate_sync: $(arg approximate_sync)
             update_rate: $(arg log_rate)
             topics:
             - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
@@ -101,7 +109,7 @@
       <group if="$(arg save_depth)">
         <node name="camera_throttle"
               pkg="nodelet" type="nodelet"
-              args="load jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
+              args="$(arg nodelet_type) jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
           <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)/throttled"
@@ -109,7 +117,7 @@
           <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)/throttled"
                  to="depth/$(arg depth_topic)$(arg depth_suffix)"/>
           <rosparam subst_value="true">
-            approximate_sync: false
+            approximate_sync: $(arg approximate_sync)
             update_rate: $(arg log_rate)
             topics:
             - /$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)
@@ -123,7 +131,7 @@
     <group if="$(arg save_rgb)">
       <node name="rgb_image_logger"
             pkg="nodelet" type="nodelet"
-            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            args="$(arg nodelet_type) jsk_robot_lifelog/LightweightLogger /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
         <remap from="~input" to="rgb/$(arg rgb_topic)$(arg rgb_suffix)" />
@@ -134,7 +142,7 @@
       </node>
       <node name="rgb_camera_info_logger"
             pkg="nodelet" type="nodelet"
-            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            args="$(arg nodelet_type) jsk_robot_lifelog/LightweightLogger /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
         <remap from="~input" to="rgb/$(arg camera_info_topic)" />
@@ -147,7 +155,7 @@
     <group if="$(arg save_depth)">
       <node name="depth_image_logger"
             pkg="nodelet" type="nodelet"
-            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            args="$(arg nodelet_type) jsk_robot_lifelog/LightweightLogger /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
         <remap from="~input" to="depth/$(arg depth_topic)$(arg depth_suffix)" />
@@ -158,7 +166,7 @@
       </node>
       <node name="depth_camera_info_logger"
             pkg="nodelet" type="nodelet"
-            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            args="$(arg nodelet_type) jsk_robot_lifelog/LightweightLogger /$(arg manager)"
             machine="$(arg machine)"
             respawn="$(arg respawn)">
         <remap from="~input" to="depth/$(arg camera_info_topic)" />
