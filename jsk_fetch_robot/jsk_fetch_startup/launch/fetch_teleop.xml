@@ -11,6 +11,7 @@
 
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
+    <!-- set these two motions as non-existent button 17 -->
     <param name="arm/button_arm_linear" value="17" if="$(arg disable_arm_teleop)"/>
     <param name="arm/button_arm_angular" value="17" if="$(arg disable_arm_teleop)"/>
     <param name="base/use_mux" value="false" />
