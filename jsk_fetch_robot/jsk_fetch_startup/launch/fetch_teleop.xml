@@ -2,6 +2,7 @@
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
+  <arg name="disable_arm_teleop" default="true"/>
 
   <node name="joy" pkg="joy" type="joy_node">
     <param name="autorepeat_rate" value="1"/>
@@ -10,6 +11,8 @@
 
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
+    <param name="arm/button_arm_linear" value="17" if="$(arg disable_arm_teleop)"/>
+    <param name="arm/button_arm_angular" value="17" if="$(arg disable_arm_teleop)"/>
     <param name="base/use_mux" value="false" />
   </node>
 
