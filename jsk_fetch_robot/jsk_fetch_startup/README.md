@@ -115,4 +115,4 @@ Logging script is initialized at:
 1. Click `fetch15` at `Select Robot` window
 1. Select task which are shown with icons.
 
-![select_app](https://user-images.githubusercontent.com/19769486/40870959-ccb88b22-666d-11e8-87bc-1b27d51937d5.png)
+![select_app](https://user-images.githubusercontent.com/19769486/40872010-7d21d2bc-6681-11e8-8c0b-621f199638dd.png)
