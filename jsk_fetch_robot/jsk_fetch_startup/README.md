@@ -101,3 +101,18 @@ Logging script is initialized at:
 ```
 - 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf
 ```
+
+## Apps
+### Add fetch to rwt_app_chooser
+1. Access [http://furushchev.ru/rwt_app_chooser](http://furushchev.ru/rwt_app_chooser "website").
+1. Click `ADD A ROBOT` button
+1. Select `Fetch` at `Robot type`
+1. Type `fetch15` at `Robot name`
+1. Type `ws://{fetch's IP adress}:9090/` at `Robot URI`
+1. Click `ADD ROBOT` button
+
+### Execute demos
+1. Click `fetch15` at `Select Robot` window
+1. Select task which are shown with icons.
+
+![select_app](https://user-images.githubusercontent.com/19769486/40870959-ccb88b22-666d-11e8-87bc-1b27d51937d5.png)
