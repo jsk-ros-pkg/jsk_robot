@@ -21,15 +21,16 @@
   <node pkg="teleop_twist_joy" name="teleop_twist_joy"
         type="teleop_node" if="$(arg launch_joy)">
     <rosparam>
+# stop button: Left trigger button
 axis_linear:
   x: 1.0
   y: 0.0
 scale_linear:
-  x: 0.7
-  y: 0.7
+  x: 0.2
+  y: 0.2
 scale_linear_turbo:
-  x: 1.5
-  y: 1.5
+  x: 0.5
+  y: 0.5
 
 axis_angular:
   yaw: 3
