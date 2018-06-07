@@ -23,7 +23,7 @@
   <run_depend>geometry_msgs</run_depend>
   <run_depend>gmapping</run_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
-  <run_depend>jsk_topic_tools</run_depend>
+  <run_depend version_gte="2.2.7">jsk_topic_tools</run_depend>
   <run_depend>mongodb_store</run_depend>
   <run_depend>nodelet</run_depend>
   <run_depend>pointcloud_to_laserscan</run_depend>
