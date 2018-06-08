@@ -12,6 +12,7 @@
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
     <!-- set these two motions as non-existent button 17 -->
+    <!-- from fetch_teleop version 0.7.11, arm teleop is added and it is necessary to update jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml -->
     <param name="arm/button_arm_linear" value="17" if="$(arg disable_arm_teleop)"/>
     <param name="arm/button_arm_angular" value="17" if="$(arg disable_arm_teleop)"/>
     <param name="base/use_mux" value="false" />
