@@ -6,12 +6,10 @@
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 
 (require :fetch-interface "package://fetcheus/fetch-interface.l")
-(require :eng2-scene "package://jsk_maps/src/eng2-scene.l")
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
-(defparameter *scene* (make-eng2-scene))
-
+(defparameter *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray))
 (defparameter *dock-spot* "/eng2/7f/room73B2-fetch-dock-front")
 
 (defun dock ()
@@ -53,7 +51,11 @@
   (send (send *undock-action* :get-result) :undocked))
 
 (defun go-to-dock ()
-  (send *ri* :move-to (send *scene* :spot *dock-spot*)))
+  (let ((dock-pose nil))
+    (dolist (x (send *spots* :markers)) (if (equal (send x :text) "/eng2/7f/room73B2-fetch-dock-front") (setq dock-pose (send x :pose))))
+    (send (send dock-pose :position) :y (- (send (send dock-pose :position) :y) 0.5))
+    (send *ri* :move-to (ros::tf-pose->coords dock-pose))))
+
 
 (defun auto-dock ()
   (unless (boundp '*ri*)
