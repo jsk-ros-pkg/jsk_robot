@@ -1,6 +1,26 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_robot_startup)
 
+# for ROS indigo compile without c++11 support
+if(DEFINED ENV{ROS_DISTRO})
+  if(NOT $ENV{ROS_DISTRO} STREQUAL "indigo")
+    add_compile_options(-std=c++11)
+    message(STATUS "Building with C++11 support")
+  else() 
+    message(STATUS "ROS Indigo: building without C++11 support")
+  endif()
+else()
+  message(STATUS "Environmental variable ROS_DISTRO not defined, checking OS version")
+  file(STRINGS /etc/os-release RELEASE_CODENAME
+		REGEX "VERSION_CODENAME=")
+  if(NOT ${RELEASE_CODENAME} MATCHES "trusty") 
+    add_compile_options(-std=c++11)
+    message(STATUS "OS distro is not trusty: building with C++11 support")
+  else()
+    message(STATUS "Ubuntu Trusty: building without C++11 support")
+  endif()
+endif()
+
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   dynamic_reconfigure
