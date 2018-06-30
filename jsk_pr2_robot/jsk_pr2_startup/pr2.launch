@@ -102,8 +102,7 @@
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
-    <node name="battery_warning" pkg="roseus" type="roseus"
-          args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+    <node name="battery_warning" pkg="jsk_pr2_startup" type="battery_warning.py"/>
     <node name="battery_visualization"
           pkg="jsk_pr2_startup" type="battery_visualization.py" />
     <node name="battery_logger"
