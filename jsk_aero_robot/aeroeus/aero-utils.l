@@ -68,50 +68,83 @@
       ik-group
       (:rarm
        (setq ret (send self :link-list (send self :rarm :end-coords :parent)
-                       (car (send *aero* :rarm)))))
+                       (car (send self :rarm)))))
       (:larm
        (setq ret (send self :link-list (send self :larm :end-coords :parent)
-                       (car (send *aero* :larm)))))
+                       (car (send self :larm)))))
       (:rarm-upper-body
        (setq ret (send self :link-list (send self :rarm :end-coords :parent)
                        (send self :torso :waist-y :child-link))))
       (:larm-upper-body
        (setq ret (send self :link-list (send self :larm :end-coords :parent)
                        (send self :torso :waist-y :child-link))))
-      (:larm-whole-body
-       (setq ret (send self :link-list (send self :larm :end-coords :parent)
-                       (send self :torso :lifter-ankle :child-link))))
       (:rarm-whole-body
        (setq ret (send self :link-list (send self :rarm :end-coords :parent)
                        (send self :torso :lifter-ankle :child-link))))
+      (:larm-whole-body
+       (setq ret (send self :link-list (send self :larm :end-coords :parent)
+                       (send self :torso :lifter-ankle :child-link))))
+      (:both-arm
+       (setq ret (list (send self :ik-link-list :rarm)
+                       (send self :ik-link-list :larm))))
+      (:both-arm-upper-body
+       (setq ret (list (send self :ik-link-list :rarm-upper-body)
+                       (send self :ik-link-list :larm-upper-body))))
+      (:both-arm-whole-body
+       (setq ret (list (send self :ik-link-list :rarm-whole-body)
+                       (send self :ik-link-list :larm-whole-body))))
       (nil
        (setq ret link-list))
       )
+     (unless ret
+       (warn ";; invalid ik-group ~A~%" ik-group)
+       (return-from :ik-link-list))
+     ;;
      (setq ret (set-difference ret (list l_wrist_center_lk r_wrist_center_lk body_link_lk)))
      ret
      ))
   (:ik-target (&key (name) (arm :larm))
    "return move-target for inverse-kinematics / name (nil :hand :grasp :pick :index :thumb), arm (:larm :rarm)"
-   (if name
-       (send self :get
-             (intern (format nil "EEF-~C-~A" (elt (string arm) 0) (string name)) *keyword-package*))
-     (send self arm :end-coords))
+   (cond
+    ((string= "BOTH" (subseq (string arm) 0 4))
+     (list (send self :ik-target :name name :arm :rarm)
+           (send self :ik-target :name name :arm :larm))
+     )
+    (name
+     (send self :get
+           (intern (format nil "EEF-~C-~A" (elt (string arm) 0) (string name)) *keyword-package*)))
+    (t (send self arm :end-coords))
+    )
    )
   (:ik-group (&key (range :arm) (arm :larm))
-   "return ik-group for inverse-kinematics / range (:arm :upper-body :whole-body), arm (:larm :rarm)"
+   "return ik-group for inverse-kinematics / range (:arm :upper-body :whole-body), arm (:larm :rarm :both-arm)"
    (if (eq range :arm)
        arm
      (intern (format nil "~A-~A"
                      (string arm) (string range))
              *keyword-package*))
    )
-  ;;
+  ;; ik-group :rarm :larm :both-arm :rarm-upper-body :larm-upper-body :both-arm-upper-body
+  ;;          :rarm-whole-body :larm-whole-body :both-arm-whole-body
   (:inverse-kinematics
    (target-coords &rest args &key ik-group move-target &allow-other-keys)
    (unless move-target (setq move-target
-                             (if (string= "LARM" (subseq (string ik-group) 0 4))
-                                 (send self :larm :end-coords)
-                               (send self :rarm :end-coords))))
+                             (cond
+                              ((string= "BOTH" (subseq (string ik-group) 0 4))
+                               (list (send self :rarm :end-coords)
+                                     (send self :larm :end-coords)))
+                              ((string= "LARM" (subseq (string ik-group) 0 4))
+                               (send self :larm :end-coords))
+                              (t
+                               (send self :rarm :end-coords)))
+                             ))
+   ;; check
+   (unless
+       (or (and (atom target-coords) (atom move-target))
+           (and (not (or (atom target-coords) (atom move-target)))
+                (= (length target-coords) (length move-target))))
+     (warn ";; length mismatch :target-coords ~A :move-target ~A~%" target-coords move-target)
+     (return-from :inverse-kinematics nil))
    (send-super* :inverse-kinematics target-coords
                 :move-target move-target
                 :link-list (send self :ik-link-list ik-group (cadr (memq :link-list args)))
@@ -123,6 +156,7 @@
                 #'(lambda () (send self :update-mimic-joints))
                 args)
    )
+  ;; compatibility with aero_std
   (:set-from-IK
    (target-coords &rest args &key (arm :larm) (range :arm) (end-effector) &allow-other-keys)
    (send* self :inverse-kinematics target-coords
