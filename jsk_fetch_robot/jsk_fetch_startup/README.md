@@ -22,6 +22,15 @@ sudo mv rockmongo-1.1.7 /var/www/html/rockmongo
 # $MONGO["servers"][$i]["control_auth"] = false; // true;//enable control users, works only if mongo_auth=false
 ```
 
+### Teleoperation
+
+Below is a flow of commands from Joystick sent to base controller:
+
+![safe_teleop_system](https://user-images.githubusercontent.com/19769486/37566992-dab73142-2b03-11e8-94bc-4d1914c967b0.png)
+
+![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
+![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
+
 ## Maintenance
 
 ### re-roslaunch jsk_fetch_startup fetch_bringup.launch
