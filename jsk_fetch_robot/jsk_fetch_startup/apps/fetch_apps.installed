@@ -7,3 +7,5 @@ apps:
     display: fetch software runstop
   - app: jsk_fetch_startup/welcome_to_jsk
     display: welcome to jsk
+  - app: jsk_fetch_startup/call_k_okada
+    display: call k-okada
