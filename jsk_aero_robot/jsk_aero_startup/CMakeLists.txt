@@ -14,5 +14,8 @@ install(FILES aero.machine sim.machine
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   find_package(roslaunch REQUIRED)
+  # https://github.com/ros/ros_comm/pull/998
+  set(roslaunch_check_script ${PROJECT_SOURCE_DIR}/test/roslaunch-check)
   roslaunch_add_file_check(test/aero.test.xml)
+  set(roslaunch_check_script ${roslaunch_DIR}/../scripts/roslaunch-check)
 endif()
