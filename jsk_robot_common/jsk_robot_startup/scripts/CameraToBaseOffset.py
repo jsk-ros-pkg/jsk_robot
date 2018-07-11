@@ -46,10 +46,10 @@ class CameraToBaseOffset(object):
         with self.lock:
             # calculate camera transform
             current_camera_to_base = self.calculate_camera_to_base_transform(msg.header.stamp)
-            if current_camera_to_base == None:
+            if current_camera_to_base is None:
                 return
 
-            if self.initial_matrix == None:
+            if self.initial_matrix is None:
                 self.initial_matrix = numpy.linalg.inv(current_camera_to_base)
 
             camera_relative_base_transformation = numpy.dot(self.initial_matrix, current_camera_to_base) # base_link transformation in camera coords

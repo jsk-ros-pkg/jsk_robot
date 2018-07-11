@@ -156,7 +156,7 @@ def transform_quaternion_to_euler(quat, prev_euler = None):
                      numpy.arctan2(yaw_numerator, 1 - 2 * (quat[1] ** 2 + quat[2] ** 2))]
     # consider arctan/arcsin range
     # TODO: This solution is not fundamental because it does not consider ununiqueness of euler angles
-    if prev_euler != None:
+    if prev_euler is not None:
         # roll: arctan2 is in range of [-pi, pi]
         for i in range(3):
             while abs(prev_euler[i] - ret_euler[i]) > numpy.pi:

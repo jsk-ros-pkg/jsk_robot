@@ -3,20 +3,15 @@
 # Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 #
 # This script stores actionlib goals, results and feedbacks by MongoDB
-# And store the current robot joints when recieve result.
-#
-# table configuration is bottom of this script
 #
 
-# parameters:
-#    joint_tolerance: store the past joint_states (sec)
-
+from collections import defaultdict
+import re
 import rospy
 
 import std_msgs.msg
 import actionlib_msgs.msg
 from actionlib_msgs.msg import GoalID, GoalStatus
-from sensor_msgs.msg import JointState
 
 from logger_base import LoggerBase
 
@@ -30,15 +25,14 @@ class ActionLogger(LoggerBase):
         LoggerBase.__init__(self)
 
         self.queue_size = rospy.get_param("~queue_size", 30)
+        self.action_regex = re.compile(".*Action(Result|Goal|Feedback)$")
+        self.update_rate = rospy.get_param("~update_rate", 1.0)
+        self.max_rate = rospy.get_param("~max_rate", 3.0)
+        self.last_inserted_time = defaultdict(rospy.Time)
 
-        self.joint_tolerance = 1.0
-        self.joint_states = []
-        self.joint_states_inserted = [] # list of time stamp
-        self.joint_sub = rospy.Subscriber('/joint_states', JointState, self.__joint_states_cb)
+        self.load_params()
 
-        self.__load_params()
-
-    def __load_params(self):
+    def load_params(self):
         try:
             self.action_name_white_list = rospy.get_param('~white_list')['name']
             rospy.loginfo("whitelist_name: %s", self.action_name_white_list)
@@ -61,77 +55,58 @@ class ActionLogger(LoggerBase):
             self.action_type_black_list = None
 
     # callback functions
-    def __action_goal_cb(self, topic, type_name, msg):
-        self.__insert_action_goal(topic, type_name, msg)
+    def _action_goal_cb(self, topic, type_name, msg):
+        self._insert(topic, type_name, msg, True)
 
-    def __action_result_cb(self, topic, type_name, msg):
-        self.__insert_action_result(topic, type_name, msg)
-        key_func = (lambda js: abs(js.header.stamp-msg.header.stamp))
-        nearest_state = min(self.joint_states, key=key_func)
-        self.__insert_joint_states(nearest_state)
+    def _action_result_cb(self, topic, type_name, msg):
+        self._insert(topic, type_name, msg, True)
 
-    def __action_feedback_cb(self, topic, type_name, msg):
-        self.__insert_action_feedback(topic, type_name, msg)
-
-    def __joint_states_cb(self, msg):
-        self.joint_states = [m for m in self.joint_states if (msg.header.stamp - m.header.stamp).to_sec() < self.joint_tolerance] + [msg]
-        self.joint_states_inserted = [s for s in self.joint_states_inserted if (msg.header.stamp - s).to_sec() < self.joint_tolerance]
+    def _action_feedback_cb(self, topic, type_name, msg):
+        self._insert(topic, type_name, msg, False)
 
     # insert functions
-    def __insert_action_goal(self, topic, type_name, msg):
-        try:
-            res = self.insert(msg)
-            rospy.logdebug("inserted action_goal message: %s (%s) -> %s", topic, type_name, res)
-        except Exception as e:
-            rospy.logerr("failed to insert action goal: %s (%s) -> %s", topic, type_name, e)
+    def _insert(self, topic, type_name, msg, force):
+        key = topic + '-' + type_name
+        stamp = msg.header.stamp
+        last = self.last_inserted_time[key]
+        dt = (stamp - last).to_sec()
 
-    def __insert_action_result(self, topic, type_name, msg):
-        try:
-            res = self.insert(msg)
-            rospy.logdebug("inserted action_result message: %s (%s) -> %s", topic, type_name, res)
-        except Exception as e:
-            rospy.logerr("failed to insert action result: %s (%s) -> %s", topic, type_name, e)
+        if not force and dt < 1.0 / self.max_rate:
+            return True  # drop
 
-    def __insert_action_feedback(self, topic, type_name, msg):
         try:
-            res = self.insert(msg)
-            rospy.logdebug("inserted action_feedback message: %s (%s) -> %s", topic, type_name, res)
+            res = self.insert(msg, meta={'input_topic': topic})
+            self.last_inserted_time[key] = stamp
+            rospy.logdebug("inserted message: %s (%s) -> %s", topic, type_name, res)
+            return True
         except Exception as e:
-            rospy.logerr("failed to insert action goal: %s (%s) -> %s", topic, type_name, e)
-
-    def __insert_joint_states(self, msg):
-        try:
-            if msg.header.stamp in self.joint_states_inserted:
-                return
-            res = self.insert(msg)
-            rospy.logdebug("inserted joint_states message: %s", res)
-        except Exception as e:
-            rospy.logerr("failed to insert joint states: %s", e)
+            rospy.logerr("failed to insert message: %s (%s) -> %s", topic, type_name, e)
+            return False
 
     # if the message type is goal or result, return the callback
-    def __message_callback_type(self, name, type_name, type_obj):
+    def _get_callback(self, name, type_name, type_obj):
         if not hasattr(type_obj, 'header'):
-            # ignore no header message
+            # ignore message without header
             return None
         if type(type_obj.header) != std_msgs.msg.Header:
-            # ignore non-standard header message
+            # ignore message without non-standard header
             return None
         if hasattr(type_obj, 'goal_id') and hasattr(type_obj, 'goal') and isinstance(type_obj.goal_id, GoalID):
             # action goal
-            return (lambda msg: self.__action_goal_cb(name, type_name, msg))
+            return (lambda msg: self._action_goal_cb(name, type_name, msg))
         elif hasattr(type_obj, 'status') and isinstance(type_obj.status, GoalStatus):
             if hasattr(type_obj, 'result'):
                 # action result
-                return (lambda msg: self.__action_result_cb(name, type_name, msg))
+                return (lambda msg: self._action_result_cb(name, type_name, msg))
             elif hasattr(type_obj, 'feedback'):
                 # action feedback
-                return (lambda msg: self.__action_feedback_cb(name, type_name, msg))
+                return (lambda msg: self._action_feedback_cb(name, type_name, msg))
         return None
 
     # subscriber updater
     def update_subscribers(self):
         # check new publishers
-        topics = rospy.client.get_published_topics()
+        topics = [t for t in rospy.get_published_topics() if self.action_regex.match(t[1])]
         if self.action_name_white_list:
             topics = [t for t in topics if t[0] in self.action_name_white_list]
         if self.action_type_white_list:
@@ -168,7 +143,7 @@ class ActionLogger(LoggerBase):
                 continue
 
             try:
-                cb_func = self.__message_callback_type(topic_name, msg_type, type_instance)
+                cb_func = self._get_callback(topic_name, msg_type, type_instance)
                 if cb_func is None:
                     self.useless_types += [py_topic_class]
                     continue
@@ -188,10 +163,11 @@ class ActionLogger(LoggerBase):
             rospy.logdebug("unsubscribe %s" % t)
 
     def run(self):
+        r = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
             self.update_subscribers()
             self.spinOnce()
-
+            r.sleep()
 
 if __name__ == "__main__":
     rospy.init_node('action_logger')

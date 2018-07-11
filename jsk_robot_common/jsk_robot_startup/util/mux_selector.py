@@ -50,11 +50,11 @@ def add_trigger(topic, expr, select, index):
     topic_type, _, _ = rostopic.get_topic_type(topic)
     topic_class, _, _ = rostopic.get_topic_class(topic)
 
-    if(topic_type == None):
+    if(topic_type is None):
         rospy.loginfo('%s is not published yet', topic)
         return None
 
-    if(topic_class == None):
+    if(topic_class is None):
         rospy.loginfo('%s is not builded yet', topic_type)
         return None
 
@@ -73,7 +73,7 @@ def update_trigger(conditions):
     # setting triggers
     global subs
     for index in range(len(conditions)):
-        if subs[index] != None:
+        if subs[index] is not None:
             continue
         cond = conditions[index]
         subs[index] = add_trigger(cond[0],cond[1],cond[2],index)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
         looprate = rospy.Rate(freq)
         while not rospy.is_shutdown():
             lockobj.acquire()
-            cand = [x[0] for x in selects if x[0] != None and (rospy.Time.now()-x[1]).to_sec()<deadtime]
+            cand = [x[0] for x in selects if x[0] is not None and (rospy.Time.now()-x[1]).to_sec()<deadtime]
             lockobj.release()
 
             if cand != []:
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             else:
                 next_topic = default_select
             try:
-                if before != next_topic and before != None:
+                if before != next_topic and before is not None:
                     mux_client(next_topic)
             except rospy.ServiceException, e:
                 rospy.loginfo("Service did not process request: %s", str(e))

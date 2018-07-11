@@ -3,40 +3,38 @@
 (ros::roseus-add-msgs "std_msgs")
 (ros::roseus-add-msgs "sound_play")
 (ros::roseus-add-msgs "pr2_msgs")
-(ros::roseus-add-msgs "actionlib_msgs")
-(ros::roseus-add-srvs "std_srvs")
+(load "package://pr2eus/speak.l")
 
-(setq *ac* nil *ac-tm* (ros::time 0)) ;; ac_present > 0
-(setq *net* nil) ;; netwoork is connected
-(setq *motor* t) ;; if motors working
+(defparameter *check-network-p* t)
+(defparameter *check-power-p* t)
+(defparameter *ac* t)
+(defparameter *net* t)
+(defparameter *ac-tm* (ros::time 0))
 
-(defun play_sound (sound)
-  (let ((msg (instance sound_play::SoundRequest :init)))
-    (cond
-     ((numberp sound)
-      (send msg :sound sound))
-     (t
-      (send msg :sound sound_play::SoundRequest::*play_file*)
-      (send msg :arg sound)))
-    (send msg :command sound_play::SoundRequest::*play_once*)
-    (ros::publish "/robotsound" msg)))
+(setq *ac-warning-time* (ros::time 0)) ;;last network warning
+(setq *ac-warning-sec*  5)     ;;warn at fixed intervals
 
-(defun stop_robot ()
-  (ros::service-call "/pr2_etherCAT/halt_motors" (instance std_srvs::EmptyRequest :init)))
+(setq *net-warning-time* (ros::time 0)) ;;last network warning
+(setq *net-warning-sec*  (* 60 10))     ;;warn at fixed intervals
 
-(defun motors-halted-cb (msg)
-  (setq *motor* (not (send msg :data))))
-
-(defun move-base-status-cb (msg)
-  (ros::ros-info "base status motor:~A ac:~A, net:~A, goal:~A" *motor* *ac* *net* (send-all (send msg :status_list) :status))
-  (when (and *motor*
-	     (or *ac* *net*)
-	     (some #'(lambda (x)
-		       (eq (send x :status)
-			   actionlib_msgs::GoalStatus::*active*))
-		   (send msg :status_list)))
-    (play_sound sound_play::SoundRequest::*needs_unplugging_badly*)
-    (stop_robot)))
+(defun move-base-command-cb (msg)
+  (cond
+   ((and *check-power-p* *ac*)
+    (when (< *ac-warning-sec* (send (ros::time- (ros::time-now) *ac-warning-time*) :to-sec))
+      (setq *ac-warning-time* (ros::time-now))
+      (speak-jp (format nil "電源ケーブルを抜いてください。") :wait nil)
+      )
+    )
+   ((and *check-network-p* *net*)
+    (when (< *net-warning-sec* (send (ros::time- (ros::time-now) *net-warning-time*) :to-sec))
+      (setq *net-warning-time* (ros::time-now))
+      (speak-jp (format nil "LANケーブルが刺さっています。") :wait nil)
+      )
+    (ros::publish "/base_controller/command" msg)
+    )
+   (t
+    (ros::publish "/base_controller/command" msg)
+    )))
 
 (defun check-power-state-cb (msg)
   (let ((p (send msg :relative_capacity))
@@ -54,10 +52,22 @@
   (setq *net* (send msg :data)))
 
 (ros::roseus "cable_warning")
-(ros::wait-for-service "/pr2_etherCAT/halt_motors")
-(ros::subscribe "/power_state" pr2_msgs::PowerState #'check-power-state-cb)
-(ros::subscribe "/network/connected" std_msgs::Bool #'check-network-connected-cb)
-(ros::subscribe "/pr2_etherCAT/motors_halted" std_msgs::Bool #'motors-halted-cb)
-(ros::subscribe "/move_base/status" actionlib_msgs::GoalStatusArray #'move-base-status-cb)
-(ros::advertise "/robotsound" sound_play::SoundRequest 10)
+
+(setq *check-power-p* (ros::get-param "~check_power" t))
+(setq *check-network-p* (ros::get-param "~check_network" t))
+
+(ros::ros-info "check network: ~A power: ~A" *check-network-p* *check-power-p*)
+
+(if *check-power-p*
+    (ros::subscribe "/power_state" pr2_msgs::PowerState #'check-power-state-cb)
+    (setq *ac* nil))
+(if *check-network-p*
+    (ros::subscribe "/network/connected" std_msgs::Bool #'check-network-connected-cb)
+    (setq *net* nil))
+
+(ros::advertise "/base_controller/command" geometry_msgs::Twist)
+(ros::subscribe "/base_controller/command_unchecked" geometry_msgs::Twist #'move-base-command-cb)
+
+(ros::advertise "/robotsound_jp" sound_play::SoundRequest 5)
 (ros::spin)
+(exit)

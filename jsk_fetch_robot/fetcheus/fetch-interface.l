@@ -4,6 +4,9 @@
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
+(ros::load-ros-package "fetcheus")
+(ros::load-ros-package "fetch_driver_msgs")
+
 (defclass fetch-interface
   :super robot-move-base-interface
   :slots (gripper-action moveit-robot)
@@ -15,6 +18,7 @@
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
+     (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
      (setq gripper-action
            (instance ros::simple-action-client :init
                      "/gripper_controller/gripper_action"
@@ -145,18 +149,17 @@
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "head_pan_joint" "head_tilt_joint")))))
   (:start-grasp
-    (&key (effort) (wait t))
-    (send self :go-grasp :pos 0 :effort effort :wait wait))
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp :pos 0 args))
   (:stop-grasp
-    (&key (effort) (wait t))
-    (send self :go-grasp :pos 0.1 :effort effort :wait wait))
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp :pos 0.1 args))
   (:go-grasp
-    (&key (pos 0) (effort) (wait t))
+    (&key (pos 0) (effort 50) (wait t))
     (when (send self :simulation-modep)
       (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
       (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
       (return-from :go-grasp t))
-    (setq effort (or effort 40))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
       (send goal :goal :command :position pos)
@@ -165,10 +168,24 @@
       (when wait (send gripper-action :wait-for-result))
       (setq result (send gripper-action :get-result))
       result))
+  (:fetch-gripper-state-callback
+    (msg)
+    (let ((msg (car (send msg :joints))))
+      (dolist (slot '((position . 2) (velocity . 2) (effort . 1)))
+	(send self :set-robot-state1 (intern (format nil "GRIPPER-~A" (string (car slot))) *keyword-package*) (* (cdr slot) (send msg (intern (string (car slot)) *keyword-package*)))))))
+  (:gripper (key)
+   "get information about gripper
+Arguments:
+ - key (:position :velocity :effort)
+Example: (send self :gripper :position) => 0.00"
+   (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
   ;;
-  (:speak (text &rest args)
-    (let ()
-      (send-super* :speak text :topic-name "/sound_play" args)))
+  (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak text :topic-name topic-name args))
+  (:speak-en (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak-en text :topic-name topic-name args))
+  (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
+    (send-super* :speak-jp text :topic-name topic-name args))
   )
 
 ;; interface for simple base actions
@@ -241,61 +258,61 @@
         (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)" d0 d1 d2)
 
         ;; yaw
-        (send *ri* :spin-once)
+        (send self :spin-once)
         (setq org-cds (send self :state :odom :pose))
         (ros::ros-debug "org-cds: ~A" org-cds)
         (while (ros::ok)
-          (send *ri* :spin-once)
-          (setq cur-cds (send *ri* :state :odom :pose))
+          (send self :spin-once)
+          (setq cur-cds (send self :state :odom :pose))
           (setq diffrot (aref (send org-cds :difference-rotation cur-cds) 2))
           (setq err (shortest-angle d0 diffrot))
           (ros::ros-debug "diffrot: ~A, err: ~A" diffrot err)
           (when (< (abs err) rotation-threshold)
             (unless (send self :simulation-modep)
-              (send *ri* :send-cmd-vel-raw 0 0)) ;; stop
+              (send self :send-cmd-vel-raw 0 0)) ;; stop
             (return))
           (when (send self :simulation-modep)
-            (send *ri* :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
-            (send *ri* :draw-objects))
-          (send *ri* :send-cmd-vel-raw 0 (* rotation-gain err))
+            (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
+            (send self :draw-objects))
+          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
           (ros::sleep))
 
         ;; x
-        (setq org-cds (send *ri* :state :odom :pose))
+        (setq org-cds (send self :state :odom :pose))
         (while (ros::ok)
-          (send *ri* :spin-once)
-          (setq cur-cds (send *ri* :state :odom :pose))
+          (send self :spin-once)
+          (setq cur-cds (send self :state :odom :pose))
           (setq diffpos (* 0.001 (norm (send org-cds :difference-position cur-cds))))
           (setq err (- d1 diffpos))
           (ros::ros-debug "diffpos: ~A, err: ~A" diffpos err)
           (when (< (abs err) translation-threshold)
-            (send *ri* :send-cmd-vel-raw 0 0) ;; stop
+            (send self :send-cmd-vel-raw 0 0) ;; stop
             (return))
           (when (send self :simulation-modep)
-            (send *ri* :robot :newcoords
-                  (send (send *ri* :robot :copy-worldcoords)
+            (send self :robot :newcoords
+                  (send (send self :robot :copy-worldcoords)
                         :translate (float-vector
                                     (if forward-p 0.1 -0.1) 0 0)))
-            (send *ri* :draw-objects))
-          (send *ri* :send-cmd-vel-raw
+            (send self :draw-objects))
+          (send self :send-cmd-vel-raw
                 (* translation-gain (if forward-p err (- err))) 0)
           (ros::sleep))
 
         ;; yaw
-        (setq org-cds (send *ri* :state :odom :pose))
+        (setq org-cds (send self :state :odom :pose))
         (while (ros::ok)
-          (send *ri* :spin-once)
-          (setq cur-cds (send *ri* :state :odom :pose))
+          (send self :spin-once)
+          (setq cur-cds (send self :state :odom :pose))
           (setq diffrot (aref (send org-cds :difference-rotation cur-cds) 2))
           (setq err (shortest-angle d2 diffrot))
           (ros::ros-debug "diffrot: ~A, err: ~A" diffrot err)
           (when (< (abs err) rotation-threshold)
-            (send *ri* :send-cmd-vel-raw 0 0) ;; stop
+            (send self :send-cmd-vel-raw 0 0) ;; stop
             (return))
           (when (send self :simulation-modep)
-            (send *ri* :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
-            (send *ri* :draw-objects))
-          (send *ri* :send-cmd-vel-raw 0 (* rotation-gain err))
+            (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
+            (send self :draw-objects))
+          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
           (ros::sleep))
         t)))
 ) ;; fetch-interface (simple base actions)

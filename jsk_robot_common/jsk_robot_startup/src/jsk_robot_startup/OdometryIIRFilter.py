@@ -61,7 +61,7 @@ class OdometryIIRFilter(object):
 
     def update(self):
         with self.lock:
-            if self.odom == None:
+            if self.odom is None:
                 return
             current_euler = transform_quaternion_to_euler([self.odom.pose.pose.orientation.x, self.odom.pose.pose.orientation.y, self.odom.pose.pose.orientation.z, self.odom.pose.pose.orientation.w], self.prev_rpy)
             current_6d_pose = [self.odom.pose.pose.position.x, self.odom.pose.pose.position.y, self.odom.pose.pose.position.z] + current_euler

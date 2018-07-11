@@ -1,0 +1,276 @@
+<launch>
+  <!-- options -->
+  <arg name="save_rgb" default="true" />
+  <arg name="save_depth" default="true" />
+  <arg name="save_tf" default="true" />
+  <arg name="save_joint_states" default="true" />
+  <arg name="save_speech" default="true" />
+  <arg name="save_smach" default="true" />
+  <arg name="save_base_trajectory" default="false" />
+  <arg name="save_object_detection" default="false" />
+  <arg name="save_action" default="false" />
+  <arg name="save_app" default="true" />
+
+  <!-- namespace -->
+  <arg name="camera_ns" default="kinect_head" />
+  <arg name="rgb_ns" default="rgb" />
+  <arg name="rgb_suffix" default="/compressed"/>
+  <arg name="depth_ns" default="depth_registered" />
+  <arg name="depth_suffix" default="/compressedDepth"/>
+  <arg name="camera_info_topic" default="camera_info" />
+  <arg name="rgb_topic" default="image_rect_color" />
+  <arg name="depth_topic" default="image_rect" />
+  <arg name="joint_states_topic" default="joint_states" />
+
+  <!-- frame -->
+  <arg name="base_frame_id" default="base_link" />
+  <arg name="map_frame_id" default="eng2" />
+  <arg name="sensor_frame_id" default="head_mount_kinect_rgb_optical_frame"/>
+
+  <!-- machine -->
+  <arg name="localhost" default="true" />
+  <arg unless="$(arg localhost)" name="machine"/>
+  <arg     if="$(arg localhost)" name="machine" value="localhost" />
+  <machine if="$(arg localhost)" name="localhost" address="localhost" />
+
+  <!-- nodelet -->
+  <arg name="launch_manager" default="true" />
+  <arg     if="$(arg launch_manager)" name="manager" value="mongodb_record_nodelet_manager" />
+  <arg unless="$(arg launch_manager)" name="manager" />
+
+  <!-- others -->
+  <arg name="enable_monitor" default="false" />
+  <arg name="log_rate" default="1.0" />
+  <arg name="respawn" default="false" />
+  <arg name="vital_rate" default="0.1" />
+
+  <!-- nodelet manager -->
+  <node name="$(arg manager)" if="$(arg launch_manager)"
+        pkg="nodelet" type="nodelet" args="manager" machine="$(arg machine)"
+        output="screen" respawn="$(arg respawn)"/>
+
+  <group ns="lifelog">
+    <!-- image throttle -->
+    <group if="$(arg save_rgb)">
+      <group if="$(arg save_depth)">
+        <node name="camera_throttle"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)/throttled"
+                 to="rgb/$(arg camera_info_topic)"/>
+          <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)/throttled"
+                 to="rgb/$(arg rgb_topic)$(arg rgb_suffix)"/>
+          <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)/throttled"
+                 to="depth/$(arg camera_info_topic)"/>
+          <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)/throttled"
+                 to="depth/$(arg depth_topic)$(arg depth_suffix)"/>
+          <rosparam subst_value="true">
+            approximate_sync: false
+            update_rate: $(arg log_rate)
+            topics:
+            - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
+            - /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)
+            - /$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)
+            - /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)
+          </rosparam>
+        </node>
+      </group>
+      <group unless="$(arg save_depth)">
+        <node name="camera_throttle"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)/throttled"
+                 to="rgb/$(arg camera_info_topic)"/>
+          <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)/throttled"
+                 to="rgb/$(arg rgb_topic)$(arg rgb_suffix)"/>
+          <rosparam subst_value="true">
+            approximate_sync: false
+            update_rate: $(arg log_rate)
+            topics:
+            - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
+            - /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)
+          </rosparam>
+        </node>
+      </group>
+    </group>
+    <group unless="$(arg save_rgb)">
+      <group if="$(arg save_depth)">
+        <node name="camera_throttle"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/SynchronizedThrottle /$(arg manager)"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)/throttled"
+                 to="depth/$(arg camera_info_topic)"/>
+          <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)/throttled"
+                 to="depth/$(arg depth_topic)$(arg depth_suffix)"/>
+          <rosparam subst_value="true">
+            approximate_sync: false
+            update_rate: $(arg log_rate)
+            topics:
+            - /$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)
+            - /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)
+          </rosparam>
+        </node>
+      </group>
+    </group>
+
+    <!-- image logger -->
+    <group if="$(arg save_rgb)">
+      <node name="rgb_image_logger"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            machine="$(arg machine)"
+            respawn="$(arg respawn)">
+        <remap from="~input" to="rgb/$(arg rgb_topic)$(arg rgb_suffix)" />
+        <rosparam subst_value="true">
+          enable_monitor: $(arg enable_monitor)
+          monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
+        </rosparam>
+      </node>
+      <node name="rgb_camera_info_logger"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            machine="$(arg machine)"
+            respawn="$(arg respawn)">
+        <remap from="~input" to="rgb/$(arg camera_info_topic)" />
+        <rosparam subst_value="true">
+          enable_monitor: $(arg enable_monitor)
+          monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
+        </rosparam>
+      </node>
+    </group>
+    <group if="$(arg save_depth)">
+      <node name="depth_image_logger"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            machine="$(arg machine)"
+            respawn="$(arg respawn)">
+        <remap from="~input" to="depth/$(arg depth_topic)$(arg depth_suffix)" />
+        <rosparam subst_value="true">
+          enable_monitor: $(arg enable_monitor)
+          monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
+        </rosparam>
+      </node>
+      <node name="depth_camera_info_logger"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+            machine="$(arg machine)"
+            respawn="$(arg respawn)">
+        <remap from="~input" to="depth/$(arg camera_info_topic)" />
+        <rosparam subst_value="true">
+          enable_monitor: $(arg enable_monitor)
+          monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
+        </rosparam>
+      </node>
+    </group>
+
+    <!-- tf logger -->
+    <node name="tf_logger"
+          pkg="jsk_robot_startup" type="tf_logger.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)"
+          if="$(arg save_tf)">
+      <rosparam subst_value="true">
+        update_rate: $(arg log_rate)
+      </rosparam>
+    </node>
+
+    <!-- joint states -->
+    <group if="$(arg save_joint_states)">
+      <node name="joint_states_throttle"
+            pkg="jsk_robot_startup" type="joint_states_throttle"
+            machine="$(arg machine)"
+            respawn="$(arg respawn)">
+        <remap from="~input" to="/$(arg joint_states_topic)" />
+        <rosparam subst_value="true">
+          periodic_rate: $(arg log_rate)
+        </rosparam>
+      </node>
+      <node name="joint_states_logger"
+            pkg="jsk_robot_startup" type="lightweight_logger"
+            machine="$(arg machine)"
+            respawn="$(arg respawn)">
+        <remap from="~input" to="joint_states_throttle/output" />
+        <rosparam subst_value="true">
+          enable_monitor: $(arg enable_monitor)
+          monitor_topic: /$(arg joint_states_topic)
+        </rosparam>
+      </node>
+    </group>
+
+    <node if="$(arg save_smach)"
+          name="smach_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /server_name/smach/container_init
+        - /server_name/smach/container_status
+        - /server_name/smach/container_structure
+      </rosparam>
+    </node>
+
+    <node if="$(arg save_speech)"
+          name="speech_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /Tablet/voice
+      </rosparam>
+    </node>
+
+    <!-- base trajecotry logger -->
+    <node if="$(arg save_base_trajectory)"
+          name="base_trajectory_logger"
+          pkg="jsk_robot_startup" type="base_trajectory_logger.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        update_rate: $(arg log_rate)
+        map_frame: $(arg map_frame_id)
+        robot_frame: $(arg base_frame_id)
+      </rosparam>
+    </node>
+
+    <!-- object detection logger -->
+    <node if="$(arg save_object_detection)"
+          name="object_detection_logger"
+          pkg="jsk_robot_startup" type="object_detection_logger.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        map_frame: $(arg map_frame_id)
+        robot_frame: $(arg base_frame_id)
+      </rosparam>
+    </node>
+
+    <!-- action logger -->
+    <node if="$(arg save_action)"
+          name="action_logger"
+          pkg="jsk_robot_startup" type="action_logger.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)" />
+
+    <!-- app manager -->
+    <node if="$(arg save_app)"
+          name="app_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        subst_param: true
+        topics:
+        - /${param /robot/name}/app_list
+      </rosparam>
+    </node>
+
+  </group> <!-- lifelog ns -->
+</launch>

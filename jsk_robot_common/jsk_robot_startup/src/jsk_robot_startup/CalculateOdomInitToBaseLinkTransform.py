@@ -27,7 +27,7 @@ class CalculateOdomInitToBaseLinkTransform(object):
         # tf relationships: init_odom <- base_odom -> base_link
         # offset_odom is init_odom -> base_link
         # TODO: check timestamps of base_odom and source_odom and fix if necessary
-        if base_odom == None or  base_to_init_transform == None:
+        if base_odom is None or  base_to_init_transform is None:
             return None
         base_odom_matrix = make_homogeneous_matrix([getattr(self.base_odom.pose.pose.position, attr) for attr in ["x", "y", "z"]], [getattr(self.base_odom.pose.pose.orientation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> body_link
         offset_matrix = numpy.linalg.inv(base_to_init_transform).dot(base_odom_matrix)
@@ -49,7 +49,7 @@ class CalculateOdomInitToBaseLinkTransform(object):
         with self.lock:
             base_to_init_transform = make_homogeneous_matrix([getattr(msg.transform.translation, attr) for attr in ["x", "y", "z"]], [getattr(msg.transform.rotation, attr) for attr in ["x", "y", "z", "w"]]) # base_odom -> init_odom
             self.offset_transform = self.calculate_init_to_base_link_transform(self.base_odom, base_to_init_transform, msg.header.stamp)
-            if self.offset_transform != None:
+            if self.offset_transform is not None:
                 self.pub.publish(self.offset_transform)
 
     def base_odom_callback(self, msg):
@@ -59,5 +59,5 @@ class CalculateOdomInitToBaseLinkTransform(object):
                 # offset is not initialized
                 base_to_init_transform = make_homogeneous_matrix([0, 0, 0], [0, 0, 0, 1])
                 self.offset_transform = self.calculate_init_to_base_link_transform(self.base_odom, base_to_init_transform, msg.header.stamp)
-                if self.offset_transform != None:                
+                if self.offset_transform is not None:                
                     self.pub.publish(self.offset_transform)

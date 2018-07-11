@@ -19,6 +19,7 @@
 
   <run_depend>collada_urdf</run_depend>
   <run_depend>euscollada</run_depend>
+  <run_depend>baxter_core_msgs</run_depend>
   <run_depend>baxter_description</run_depend>
   <run_depend>baxter_interface</run_depend>
   <run_depend>baxter_tools</run_depend>
@@ -28,7 +29,6 @@
   <run_depend>pr2eus_moveit</run_depend>
   <run_depend>rostest</run_depend>
 
-  <test_depend>baxter_core_msgs</test_depend>
   <test_depend>baxter_gazebo</test_depend>
   <test_depend>baxter_sim_controllers</test_depend>
   <test_depend>baxter_sim_io</test_depend>

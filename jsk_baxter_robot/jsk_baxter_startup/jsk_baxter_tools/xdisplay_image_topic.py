@@ -57,9 +57,7 @@ class XdisplayImageTopic(object):
         br = cv_bridge.CvBridge()
         img = br.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         h, w = img.shape[:2]
-        max_size = max(h, w)
-        MAX_SIZE = max(MAX_HEIGHT, MAX_WIDTH)
-        scale = 1. * MAX_SIZE / max_size
+        scale = min(1.0 * MAX_HEIGHT / h, 1.0 * MAX_WIDTH / w)
         img = cv2.resize(img, None, None, fx=scale, fy=scale)
 
         # centerize image
