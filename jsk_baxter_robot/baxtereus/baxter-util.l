@@ -89,14 +89,8 @@
 (defmethod baxter-robot-safe
   (:init (&rest args)
          (send-super* :init args)
-         (setq collision-avoidance-links (list (send self :screen_lk)
-                                               (send self :larm :wrist-r :child-link)
-                                               (send self :larm :elbow-p :child-link)
-                                               (send self :larm :elbow-r :child-link)
-                                               (send self :rarm :wrist-r :child-link)
-                                               (send self :rarm :elbow-p :child-link)
-                                               (send self :rarm :elbow-r :child-link)
-					       ))
+         ;; add screen and remove base from all links
+         (setq collision-avoidance-links (remove-if #'(lambda (x) (string= (send x :name) "base")) (append (list (send self :screen_lk)) (send self :links))))
          (setq larm-collision-avoidance-links collision-avoidance-links)
          (setq rarm-collision-avoidance-links collision-avoidance-links)
 	 (send (send self :left_w2) :max-joint-velocity 1)
@@ -111,7 +105,18 @@
 	 (send (send self :right_e0) :max-joint-velocity 1)
 	 (send (send self :right_s0) :max-joint-velocity 1.4)
          )
-  (:self-collision-check (&rest args &key (pairs (send self :collision-check-pairs :links collision-avoidance-links)) &allow-other-keys)
-                         (send-super* :self-collision-check :pairs pairs args))
+  ;; collision check methods
+  (:collision-check-pairs
+   (&rest args)
+   (let (pairs)
+     (if args (warning-message 1 ":collision-check-pairs is re-defined in baxter-robot-safe class and not intend to take any arguments ~A" args))
+     (setq pairs (send-super :collision-check-pairs :links collision-avoidance-links))
+     ;; remove collision between "upper_elbow" and "upper_forearm"
+     (setq pairs (remove-if #'(lambda (x)
+                                (subsetp (list "upper_elbow" "upper_forearm")
+                                         (list (send (car x) :name) (send (cdr x) :name))
+                                         :test #'substringp))
+                            pairs))
+     pairs))
   )
 
