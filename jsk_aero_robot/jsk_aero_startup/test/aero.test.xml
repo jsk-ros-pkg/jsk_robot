@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find jsk_aero_startup)/launch/aero.launch">
+    <arg name="ROBOT" value="sim" />
+    <arg name="use_kinect" value="false" />
+    <arg name="use_ps4eye" value="false" />    
+  </include>
+</launch>

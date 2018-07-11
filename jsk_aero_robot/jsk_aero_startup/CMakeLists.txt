@@ -14,5 +14,5 @@ install(FILES aero.machine sim.machine
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   find_package(roslaunch REQUIRED)
-  roslaunch_add_file_check(launch/aero.launch ROBOT:=sim)
+  roslaunch_add_file_check(test/aero.test.xml)
 endif()
