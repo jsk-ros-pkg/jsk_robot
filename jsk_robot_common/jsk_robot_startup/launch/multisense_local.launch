@@ -7,8 +7,10 @@
   <arg name="RUN_DRIVER" default="true" />
   <arg name="USE_RESIZE" default="true" />
   <arg name="HEIGHTMAP_FILTER_Z" default="1.3" />
-  <arg name="USE_BIPED_LOCALIZATION" default="true" />
   <arg name="USE_HEIGHTMAP" default="true" />
+  <arg name="USE_BIPED_LOCALIZATION" default="true" />
+  <arg name="BASE_LINK_FRAME" default="BODY"/>
+  <arg name="BASE_ODOM_TOPIC" default="/odom"/>
 
   <remap from="/multisense/joint_states" to="/joint_states" />
   <node pkg="pr2_navigation_self_filter" type="self_filter"
@@ -139,6 +141,8 @@
     <arg name="use_gmapping" value="true"/>
     <arg name="use_rtabmap" value="false"/>
     <arg name="imu_topic" value="$(arg imu_topic)"/>
+    <arg name="base_link_frame" value="$(arg BASE_LINK_FRAME)"/>
+    <arg name="base_odom_topic" value="$(arg BASE_ODOM_TOPIC)"/>
   </include>
   <include file="$(find jsk_footstep_planner)/launch/heightmap_perception/heightmap.launch" if="$(arg USE_HEIGHTMAP)" >
     <arg name="USE_NODELET_MANAGER" value="false"/>
