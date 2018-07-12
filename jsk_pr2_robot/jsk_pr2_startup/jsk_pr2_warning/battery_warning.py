@@ -83,7 +83,7 @@ class BatteryWarning(object):
 
         max_temp = df["Temperature (C)"].astype(float).max()
         rospy.logdebug("temperature: %s" % max_temp)
-        if max_temp > self.warning_temp:
+        if 60 > max_temp > self.warning_temp:
             self.speak("バッテリ温度%.1f度。暑いです。部屋の温度を下げてください。" % max_temp)
 
         plugged_in = df["Power Present"].eq("True").any()

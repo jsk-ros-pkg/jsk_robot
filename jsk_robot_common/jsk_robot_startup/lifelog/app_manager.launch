@@ -15,6 +15,7 @@
   <arg name="remote" default="false"
        doc="set true with valid 'machine' argument"/>
   <arg name="machine" default="localhost"/>
+  <arg name="respawn" default="true"/>
 
   <!--
   Even if you don't want to use machine tag, machine name still need to be set.
@@ -24,7 +25,7 @@
 
   <group if="$(arg launch_websocket)">
     <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket"
-          output="screen" machine="$(arg machine)">
+          output="screen" machine="$(arg machine)" respawn="$(arg respawn)">
       <rosparam subst_value="true">
         address: ""
         port: $(arg websocket_port)
@@ -41,7 +42,7 @@
 
   <node if="$(arg launch_roswww)"
         name="roswww" pkg="roswww" type="webserver.py"
-        output="screen" machine="$(arg machine)"
+        output="screen" machine="$(arg machine)" respawn="$(arg respawn)"
         args="--name roswww --webpath www --cached true
               --port $(arg roswww_port) --start_port $(arg roswww_port) --end_port $(arg roswww_port)"/>
 
@@ -50,10 +51,10 @@
   -->
   <node pkg="app_manager" type="appmaster" name="appmaster"
         args="-p 11312"
-        machine="$(arg machine)"/>
+        machine="$(arg machine)" respawn="$(arg respawn)"/>
   <node pkg="app_manager" type="app_manager" name="app_manager"
         args="--applist $(arg applist)"
-        output="screen" machine="$(arg machine)">
+        output="screen" machine="$(arg machine)" respawn="$(arg respawn)">
     <param name="interface_master" value="http://localhost:11312"/>
   </node>
 
