@@ -1,0 +1,20 @@
+<launch>
+  <arg name="use_kinect" default="true"/>
+  <arg name="use_ps4eye" default="true"/>
+
+  <group if="$(arg use_ps4eye)">
+    <include file="$(find jsk_aero_startup)/launch/ps4eye_local.launch">
+      <arg name="machine" value="aero_c"/>
+    </include>
+
+    <include file="$(find jsk_aero_startup)/launch/ps4eye_remote.launch"/>
+  </group>
+
+  <group if="$(arg use_kinect)">
+    <include file="$(find linux_kinect)/launch/kinect_rgbd_interaction.launch">
+      <arg name="log" value="true"/>
+      <arg name="frame" value="dynamic_kinect_frame"/>
+      <arg name="localradius_r" value="4.0"/>
+    </include>
+  </group>
+</launch>
