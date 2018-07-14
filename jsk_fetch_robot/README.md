@@ -308,3 +308,23 @@ drwxr-xr-x 6 ros ros 36K 11月  1 15:25 ./
 >         # goal.rotate_in_place = True
 >         goal.rotate_in_place = False
 ```
+
+- Set branch of `jsk_demos` as `master` in order to update jsk_maps
+
+- Add `pr2eus` package to `/home/fetch/ros/indigo/src/jsk-ros-pkg` to use [the newest `:speak` function](https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/332). This function will be released in `0.3.14` of `jsk_pr2eus` in the future.
+
+- Set `amcl/odom_alpha*` paramters manually in `/opt/ros/indigo/share/fetch_navigation/launch/include/amcl.launch`, to prevent jumps of self-position of fetch. Please see [this Pull Request](https://github.com/fetchrobotics/fetch_ros/pull/76). This is released in `0.7.14` of `fetch_ros`.
+
+- Fix wifi access point to catch access point with strong radio wave intensity
+
+- To add `cartesian_wrench_controller` to `default controller`,
+
+```
+source /home/fetch/fetch_controller_ws/devel/setup.bash # in /home/fetch/ros/indigo_robot/devel/setup.bash
+```
+
+- To use `respeaker` and `julius_ros` (`2.1.10` of `jsk_3rdparty`)
+
+```
+source /home/fetch/audio_ws/devel/setup.bash # in /home/fetch/ros/indigo/devel/setup.bash
+```
