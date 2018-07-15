@@ -23,6 +23,7 @@
     <arg name="launch_manager" value="false" />
     <arg name="manager" value="kinect_head/kinect_head_c2_nodelet_manager" />
     <arg name="map_frame_id" value="$(arg map_frame)" />
+    <arg name="debug" value="false"/>
   </include>
 
   <rosparam ns="lifelog/joint_states_throttle">
