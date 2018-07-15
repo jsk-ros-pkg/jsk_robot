@@ -22,6 +22,15 @@ sudo mv rockmongo-1.1.7 /var/www/html/rockmongo
 # $MONGO["servers"][$i]["control_auth"] = false; // true;//enable control users, works only if mongo_auth=false
 ```
 
+### Teleoperation
+
+Below is a flow of commands from Joystick sent to base controller:
+
+![safe_teleop_system](https://user-images.githubusercontent.com/19769486/37566992-dab73142-2b03-11e8-94bc-4d1914c967b0.png)
+
+![joystick_numbered](https://user-images.githubusercontent.com/19769486/28101905-889e9cc2-6706-11e7-9981-5704cc29f2b3.png)
+![joystick_numbered2](https://user-images.githubusercontent.com/19769486/28101906-88b5f20a-6706-11e7-987c-d94e64ac2cc1.png)
+
 ## Maintenance
 
 ### re-roslaunch jsk_fetch_startup fetch_bringup.launch
@@ -98,6 +107,21 @@ Logging script is initialized at:
 ```
 
 ## Administration
-
+```
 - 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf
 ```
+
+## Apps
+### Add fetch to rwt_app_chooser
+1. Access [http://furushchev.ru/rwt_app_chooser](http://furushchev.ru/rwt_app_chooser "website").
+1. Click `ADD A ROBOT` button
+1. Select `Fetch` at `Robot type`
+1. Type `fetch15` at `Robot name`
+1. Type `ws://{fetch's IP adress}:9090/` at `Robot URI`
+1. Click `ADD ROBOT` button
+
+### Execute demos
+1. Click `fetch15` at `Select Robot` window
+1. Select task which are shown with icons.
+
+![select_app](https://user-images.githubusercontent.com/19769486/40872010-7d21d2bc-6681-11e8-8c0b-621f199638dd.png)

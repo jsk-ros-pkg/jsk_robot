@@ -1,0 +1,56 @@
+<launch>
+  <arg name="map_frame" default="map" />
+
+  <param name="robot/database" value="jsk_robot_lifelog"/>
+  <param name="robot/type" value="aero"/>
+  <param name="robot/name" value="almond"/>
+
+  <!-- startup mongodb server -->
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+    <arg name="use_daemon" value="true"/>
+    <arg name="port" value="27017" />
+    <arg name="repl_set_mode" value="false" />
+    <arg name="replicate" default="true" />
+  </include>
+
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+    <arg name="save_rgb" value="true" />
+    <arg name="save_depth" value="true" />  <!-- stereo right -->
+    <arg name="save_tf" value="true" />
+    <arg name="save_joint_states" value="true" />
+    <arg name="save_base_trajectory" value="true" />
+    <arg name="save_object_detection" value="false" />
+    <arg name="save_action" value="true" />
+    <arg name="camera_ns" value="stereo" />
+    <arg name="rgb_ns" value="left"/>
+    <arg name="depth_ns" value="right"/>
+    <arg name="depth_suffix" value="/compressed"/>
+    <arg name="depth_topic" value="image_rect_color"/>
+    <arg name="sensor_frame_id" value="ps4eye_frame" />
+    <arg name="enable_monitor" value="false" />
+    <arg name="log_rate" value="1.0" />
+    <arg name="localhost" value="true" />
+    <arg name="launch_manager" value="true" />
+    <arg name="map_frame_id" value="$(arg map_frame)" />
+    <arg name="base_frame_id" value="base_link" />
+  </include>
+
+  <group ns="lifelog">
+    <rosparam ns="joint_states_throttle">
+      periodic: false
+      threshold: 0.01
+    </rosparam>
+
+    <rosparam ns="action_logger">
+      max_rate: 2.0
+      white_list:
+        type:
+        - control_msgs/FollowJointTrajectoryActionResult
+        - control_msgs/FollowJointTrajectoryActionGoal
+        - control_msgs/FollowJointTrajectoryActionFeedback
+        - control_msgs/GripperCommandActionResult
+        - control_msgs/GripperCommandActionGoal
+        - control_msgs/GripperCommandActionFeedback
+    </rosparam>
+  </group>
+</launch>

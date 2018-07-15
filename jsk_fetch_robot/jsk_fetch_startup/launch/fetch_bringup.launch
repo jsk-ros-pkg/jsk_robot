@@ -52,6 +52,9 @@
       <arg name="launch_map_server" value="false" />
     </include>
 
+    <!-- dock localization -->
+    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
+
     <!-- include fetch_navigation -->
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
       <arg name="map_file" value="$(arg map_file)" />
@@ -60,7 +63,7 @@
     </include>
     <rosparam ns="move_base/global_costmap">
 inflater:
-  inflation_radius: 0.80 # 0.7
+  inflation_radius: 0.30 # 0.7
   cost_scaling_factor: 10.0 # 10.0
     </rosparam>
     <rosparam ns="move_base/local_costmap">
