@@ -62,7 +62,26 @@ namespace jsk_robot_startup
       NODELET_INFO_STREAM("Connecting to database " << db_name << "/" << col_name << "...");
       msg_store_.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name, db_name));
       NODELET_INFO_STREAM("Successfully connected to database!");
+
       input_topic_name_ = pnh_->resolveName("input", true);
+
+      diagnostic_updater_.reset(
+        new jsk_topic_tools::TimeredDiagnosticUpdater(*pnh_, ros::Duration(1.0)));
+      diagnostic_updater_->setHardwareID("LightweightLogger");
+      diagnostic_updater_->add(
+        "LightweightLogger::" + input_topic_name_,
+        boost::bind(&LightweightLogger::updateDiagnostic, this, _1));
+      double vital_rate;
+      pnh_->param("vital_rate", vital_rate, 1.0);
+      vital_checker_.reset(
+        new jsk_topic_tools::VitalChecker(1.0 / vital_rate));
+      diagnostic_updater_->start();
+
+      inserted_count_ = 0;
+      insert_error_count_ = 0;
+      prev_insert_error_count_ = 0;
+      init_time_ = ros::Time::now();
+
       initialized_ = true;
     }
 
@@ -74,6 +93,8 @@ namespace jsk_robot_startup
 
       if (!initialized_) return;
 
+      vital_checker_->poke();
+
       try
       {
         mongo::BSONObjBuilder meta;
@@ -84,10 +105,33 @@ namespace jsk_robot_startup
           NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << ")");
         else
           NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << "): " << doc_id);
+        inserted_count_++;
       }
       catch (...) {
         NODELET_ERROR_STREAM("Failed to insert to db");
+        insert_error_count_++;
       }
+    }
+
+    void LightweightLogger::updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat)
+    {
+      if (ros::Time::now() - init_time_ < ros::Duration(10.0)) {
+        stat.summary(diagnostic_msgs::DiagnosticStatus::OK,
+                     getName() + " initialized");
+      } else if (!vital_checker_->isAlive()) {
+        jsk_topic_tools::addDiagnosticErrorSummary(getName(), vital_checker_, stat);
+      } else if (insert_error_count_ != prev_insert_error_count_) {
+        stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
+                     (boost::format("%s fails to insert to db for %d times") % getName() % insert_error_count_).str());
+        prev_insert_error_count_ = insert_error_count_;
+      } else {
+        stat.summary(diagnostic_msgs::DiagnosticStatus::OK,
+                     getName() + " is running");
+      }
+
+      stat.add("Inserted", inserted_count_);
+      stat.add("Insert Failure", insert_error_count_);
+      vital_checker_->registerStatInfo(stat, "Last Insert");
     }
   }
 }
