@@ -1,7 +1,8 @@
 <launch>
   <arg name="launch_stereo_camera" default="true" />
   <arg name="launch_runtime_logger" default="false" />
-  <arg name="launch_hd_monitor" default="false" />
+  <arg name="launch_hd_monitor" default="true" />
+  <arg name="launch_ntp_monitor" default="false"/>
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="false" />
   <arg name="launch_app_manager" default="true" />
@@ -116,8 +117,10 @@
 	if="$(arg launch_runtime_logger)" />
 
   <!-- NTP monitoring script reports clock sync on diagnostics -->
-  <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="10.68.255.1 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
-  <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --diag-hostname=c2" machine="c2"/>
+  <group if="$(arg launch_ntp_monitor)">
+    <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="10.68.255.1 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
+    <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --diag-hostname=c2" machine="c2"/>
+  </group>
 
   <!-- Disk usage monitoring script monitors HD temperature, usage on diagnostics -->
   <group if="$(arg launch_hd_monitor)">
@@ -127,11 +130,12 @@
 
   <!-- Monitor CPU temp, usage -->
   <node pkg="pr2_computer_monitor" name="realtime_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c1" machine="c1" >
-    <param name="check_core_temps" type="bool" value="False" />
+    <param name="check_core_temps" type="bool" value="false" />
+    <param name="enforce_clock_speed" type="bool" value="false" />
   </node>
   <node pkg="pr2_computer_monitor" name="two_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c2" machine="c2" >
-    <param name="check_core_temps" type="bool" value="False" />
-    <param name="enforce_clock_speed" type="bool" value="False" />
+    <param name="check_core_temps" type="bool" value="false" />
+    <param name="enforce_clock_speed" type="bool" value="false" />
   </node>
 
   <!-- Monitor Wifi/ddwrt -->
@@ -145,7 +149,9 @@
   </group>
   
   <!-- Diagnostics aggregation -->
-  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg" />
+  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg">
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/jsk_pr2_analyzers.yaml"/>
+  </node>
 
   <!-- Dashboard aggregation -->
   <node pkg="pr2_dashboard_aggregator" type="dashboard_aggregator.py" name="pr2_dashboard_aggregator"/>
