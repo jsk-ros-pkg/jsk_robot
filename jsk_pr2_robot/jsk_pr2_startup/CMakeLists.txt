@@ -20,3 +20,14 @@ endforeach()
 
 install(FILES install_pr1040_description.sh jsk_pr2.machine plugin.xml startup.app
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  find_package(roslaunch REQUIRED)
+  set(roslaunch_check_script ${PROJECT_SOURCE_DIR}/test/roslaunch-check)
+  roslaunch_add_file_check(pr2_bringup.launch ROS_ENV_LOADER=/opt/ros/$ENV{ROS_DISTRO}/env.sh)
+  roslaunch_add_file_check(pr2.launch ROBOT=sim LAUNCH_GRIPPER_SENSOR=false ROS_ENV_LOADER=/opt/ros/$ENV{ROS_DISTRO}/env.sh)
+  roslaunch_add_file_check(pr2.launch ROBOT=pr2 ROS_ENV_LOADER=/opt/ros/$ENV{ROS_DISTRO}/env.sh)
+  roslaunch_add_file_check(pr2_gazebo.launch)
+  set(roslaunch_check_script ${roslaunch_DIR}/../scripts/roslaunch-check)
+endif()

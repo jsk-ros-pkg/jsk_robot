@@ -1,8 +1,9 @@
 <launch>
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
   <arg name="MACHINE" default="localhost"/>
   <arg name="launch_openni" default="true" />
   <arg name="launch_battery" default="false" />
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
   <!-- openni -->
   <node if="$(arg launch_openni)"
         machine="$(arg MACHINE)"

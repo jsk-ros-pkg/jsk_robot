@@ -1,5 +1,6 @@
 <launch>
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="PR2"/>

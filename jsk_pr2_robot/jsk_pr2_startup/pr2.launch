@@ -10,7 +10,7 @@
   <arg name="launch_facedetection" default="false" />
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_mjpeg_server" default="false" />
-  <arg name="launch_gripper_sensor" default="true" />
+  <arg name="launch_gripper_sensor" default="$(optenv LAUNCH_GRIPPER_SENSOR true)" />
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="false" />
   <arg name="launch_jsk_pcl" default="false" />
@@ -24,23 +24,26 @@
   <arg name="launch_reset_motors" default="true" />
   <arg name="slow_camera_framerate" default="true" />
   <arg name="launch_c3_startup" default="false" />
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
            if="$(arg launch_c3_startup)" />
-  <include file="$(find pr2_machine)/$(env ROBOT).machine"
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine"
            unless="$(arg launch_c3_startup)" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- launch jsk-defined pr2_2dnav that respawn for change inflation_radius -->
   <include if="$(arg launch_move_base)"
            file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
     <arg name="launch_look_forward" value="$(arg launch_look_forward)"/>
   </include>
 
   <!-- special start: use when launuch_move_base is false-->
   <group unless="$(arg launch_move_base)" >
     <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+      <arg name="ROBOT" value="$(arg ROBOT)"/>
       <arg name="launch_teleop_joystick" value="true" />
       <arg name="launch_navigation" value="false" />
     </include>
@@ -76,7 +79,9 @@
 
   <!-- kinect node -->
   <include if="$(arg launch_kinect)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
+  </include>
 
   <!-- face detection node -->
   <!-- <node if="$(arg launch_facedetection)" -->
@@ -94,6 +99,7 @@
   <!-- logging node for PR2  -->
   <include if="$(arg launch_db)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/db_client.launch" >
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="twitter" value="$(arg launch_twitter)"/>
     <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
@@ -144,11 +150,13 @@
     <arg name="points" value="points_input_mux"/>
   </include>
   <include if="$(arg launch_tablet)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch"/>
 
   <!-- for HARK -->
   <include if="$(arg launch_hark)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
+  </include>
 
   <!-- joy mux -->
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"
@@ -157,17 +165,22 @@
   </node>
 
   <include if="$(arg launch_teleoperation)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_teleop_robot.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_teleop_robot.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
+  </include>
   <include if="$(arg slow_camera_framerate)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/camera_framerate.launch" />
 
   <include if="$(arg launch_c3_startup)"
-	   file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_remote_startup.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
     <arg name="MACHINE" value="c3"/>
     <arg name="launch_battery" value="true"/>
   </include>
   <include if="$(arg launch_people_detection)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/people_detection.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/people_detection.launch">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
+  </include>
 
   <include if="$(arg launch_moveit)"
            file="$(find jsk_pr2_startup)/jsk_pr2_moveit/start_pr2_moveit.launch" />

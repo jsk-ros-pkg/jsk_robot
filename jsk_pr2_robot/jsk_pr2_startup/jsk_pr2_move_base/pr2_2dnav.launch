@@ -1,14 +1,17 @@
 <!-- This file is originally pr2_2dnav/pr2_2dnav.launch --> 
 <launch>
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
   <arg name="gazebo" default="false" />
   <arg name="launch_look_forward" default="true"/>
   <arg name="launch_teleop_joystick" default="true" />
   <arg name="launch_navigation" default="true" />
 
-  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine" />
 
   <group if="$(arg launch_teleop_joystick)">
-    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch"/>
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_teleop_general_joystick.launch">
+      <arg name="ROBOT" value="$(arg ROBOT)"/>
+    </include>
     <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop.xml" />
   </group>
 

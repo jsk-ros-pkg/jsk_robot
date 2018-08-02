@@ -1,5 +1,5 @@
 <launch>
-  <arg name="ROBOT" default="$(env ROBOT)" />
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)" />
   <arg name="map_frame" default="eng2" />
   <arg name="visualize_log" default="false" />
   <arg name="twitter" default="true" />
@@ -54,9 +54,14 @@
 
   <!-- tweeting robot warning data and etc. -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_tweet.launch"
-           if="$(arg twitter)"/>
+           if="$(arg twitter)">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
+  </include>
 
   <!-- visualization of database -->
   <include file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/visualization/pr2_log_visualization.launch"
-           if="$(arg visualize_log)" />
+           if="$(arg visualize_log)">
+    <arg name="ROBOT" value="$(arg ROBOT)"/>
+  </include>
+
 </launch>
