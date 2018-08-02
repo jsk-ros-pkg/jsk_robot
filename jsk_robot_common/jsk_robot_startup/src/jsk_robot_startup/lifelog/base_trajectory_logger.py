@@ -126,7 +126,7 @@ class BaseTrajectoryLogger(LoggerBase):
                 self.latest_pose = self.get_pose_from_tf()
             if self.latest_pose:
                 if prev_pose:
-                    dt = (rospy.Time.now() - self.latest_pose.header.stamp).to_sec()
+                    dt = (rospy.Time.now() - prev_pose.header.stamp).to_sec()
                     if dt > 0:
                         thre = 0.1 + 1.0 / dt
                         diffp, diffr = diff_pose(
