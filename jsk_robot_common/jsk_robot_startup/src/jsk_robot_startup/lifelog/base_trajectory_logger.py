@@ -35,8 +35,8 @@ class BaseTrajectoryLogger(LoggerBase):
         self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.use_amcl = rospy.get_param("~use_amcl", True)
         self.persistent = rospy.get_param("~persistent", True)
-        self.thre = rospy.get_param('~thre', 5.0)
-        self.rthre = rospy.get_param('~rthre', 1.0)
+        self.thre = rospy.get_param('~thre', 0.005)
+        self.rthre = rospy.get_param('~rthre', np.deg2rad(1.0))
 
         if self.use_amcl:
             self.map_frame = rospy.get_param("/amcl/global_frame_id")
@@ -141,11 +141,9 @@ class BaseTrajectoryLogger(LoggerBase):
                     if dt > 0:
                         diffp, diffr = diff_pose(
                             prev_pose.pose.pose, self.latest_pose.pose.pose)
-                        diffp *= 1000.0
-                        diffr = np.rad2deg(diffr)
                         rospy.logdebug(
-                            "thre: %.2f[mm], rthre: %.2f[deg], "
-                            "diffpos: %.2f[mm], diffrot: %.2f[deg]"
+                            "thre: %.2f[m], rthre: %.2f[rad], "
+                            "diffpos: %.2f[m], diffrot: %.2f[rad]"
                             % (thre, rthre, diffp, diffr))
                         if thre < diffp or rthre < diffr:
                             self.insert(self.latest_pose, meta=meta)
