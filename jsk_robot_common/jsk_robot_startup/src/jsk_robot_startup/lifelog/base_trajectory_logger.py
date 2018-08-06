@@ -10,16 +10,23 @@ from geometry_msgs.msg import PoseWithCovarianceStamped
 from logger_base import LoggerBase
 
 
+def quaternion_distance(q1, q2):
+    diff_theta = 2.0 * np.arccos(
+        np.abs(np.dot(q1, q2)))
+    return diff_theta
+
+
 def diff_pose(p1, p2):
     pos1 = np.array([p1.position.x, p1.position.y, p1.position.z])
     pos2 = np.array([p2.position.x, p2.position.y, p2.position.z])
-    rot1 = np.array([p1.orientation.x, p1.orientation.y,
+    q1 = np.array([p1.orientation.x, p1.orientation.y,
                      p1.orientation.z, p1.orientation.w])
-    rot2 = np.array([p2.orientation.x, p2.orientation.y,
+    q2 = np.array([p2.orientation.x, p2.orientation.y,
                      p2.orientation.z, p2.orientation.w])
+    diff_pos = pos1 - pos2
     normp = np.linalg.norm(pos1 - pos2)
-    normr = np.linalg.norm(rot1 - rot2)
-    return normp, normr
+    diff_theta = quaternion_distance(q1, q2)
+    return normp, diff_theta
 
 
 class BaseTrajectoryLogger(LoggerBase):
@@ -28,6 +35,8 @@ class BaseTrajectoryLogger(LoggerBase):
         self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.use_amcl = rospy.get_param("~use_amcl", True)
         self.persistent = rospy.get_param("~persistent", True)
+        self.thre = rospy.get_param('~thre', 0.005)
+        self.rthre = rospy.get_param('~rthre', np.deg2rad(1.0))
 
         if self.use_amcl:
             self.map_frame = rospy.get_param("/amcl/global_frame_id")
@@ -120,20 +129,23 @@ class BaseTrajectoryLogger(LoggerBase):
         meta = dict()
         if self.persistent:
             meta.update({"persistent": True})
+        thre = self.thre
+        rthre = self.rthre
         while not rospy.is_shutdown():
             if not self.use_amcl:
                 rospy.logdebug("Getting latest pose from tf")
                 self.latest_pose = self.get_pose_from_tf()
             if self.latest_pose:
                 if prev_pose:
-                    dt = (rospy.Time.now() - self.latest_pose.header.stamp).to_sec()
+                    dt = (rospy.Time.now() - prev_pose.header.stamp).to_sec()
                     if dt > 0:
-                        thre = 0.1 + 1.0 / dt
                         diffp, diffr = diff_pose(
                             prev_pose.pose.pose, self.latest_pose.pose.pose)
                         rospy.logdebug(
-                            "diffthre: %f, diffpos: %f, diffrot: %f" % (thre, diffp, diffr))
-                        if thre < diffp or thre / 2.0 < diffr:
+                            "thre: %.2f[m], rthre: %.2f[rad], "
+                            "diffpos: %.2f[m], diffrot: %.2f[rad]"
+                            % (thre, rthre, diffp, diffr))
+                        if thre < diffp or rthre < diffr:
                             self.insert(self.latest_pose, meta=meta)
                             prev_pose = self.latest_pose
                             rospy.loginfo("Inserted latest pose")
