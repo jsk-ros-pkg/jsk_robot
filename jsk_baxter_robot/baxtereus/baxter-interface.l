@@ -238,7 +238,7 @@
                 :end-coords-interpolation end-coords-interpolation))
   (:angle-vector
    (av &optional tm (ctype controller-type) (start-time 0) &rest args
-       &key (move-arm :arms) (start-offset-time 0.01) (clear-velocities t) &allow-other-keys)
+       &key (move-arm :arms) start-offset-time (clear-velocities t) &allow-other-keys)
    "Send joind angle to robot with self-collision motion planning, this method returns immediately, so use :wait-interpolation to block until the motion stops.
 - av : joint angle vector [rad]
 - tm : time to goal in [msec]
@@ -252,8 +252,8 @@
      (progn
        (unless tm (setq tm 3000))
        (send-super* :angle-vector-motion-plan av :ctype ctype :move-arm move-arm :total-time tm
-                    :start-offset-time start-offset-time :clear-velocities clear-velocities
-                    :use-torso nil args))
+                    :start-offset-time (if start-offset-time start-offset-time start-time)
+                    :clear-velocities clear-velocities :use-torso nil args))
      (progn
        (warning-message 3 "moveit environment is not correctly set, execute :angle-vector-raw instead~%")
        (unless tm (setq tm :fast))
