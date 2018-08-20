@@ -228,17 +228,16 @@
     </node>
 
     <!-- base trajecotry logger -->
-    <node if="$(arg save_base_trajectory)"
-          name="base_trajectory_logger"
-          pkg="jsk_robot_startup" type="base_trajectory_logger.py"
-          machine="$(arg machine)"
-          respawn="$(arg respawn)">
-      <rosparam subst_value="true">
-        update_rate: $(arg log_rate)
-        map_frame: $(arg map_frame_id)
-        robot_frame: $(arg base_frame_id)
-      </rosparam>
-    </node>
+    <include if="$(arg save_base_trajectory)"
+             file="$(find jsk_robot_startup)/launch/lifelog/base_trajectory_logger.launch" >
+      <arg name="machine" value="$(arg machine)" />
+      <arg name="node_name" value="base_trajectory_logger" />
+      <arg name="localhost" value="$(arg localhost)" />
+      <arg name="respawn" value="$(arg respawn)" />
+      <arg name="update_rate" value="$(arg log_rate)" />
+      <arg name="map_frame" value="$(arg map_frame_id)" />
+      <arg name="robot_frame" value="$(arg base_frame_id)" />
+    </include>
 
     <!-- object detection logger -->
     <node if="$(arg save_object_detection)"
