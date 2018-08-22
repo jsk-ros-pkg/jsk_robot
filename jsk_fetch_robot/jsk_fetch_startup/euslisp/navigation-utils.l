@@ -60,7 +60,7 @@
     (if *is-charging*
       (progn (undock)))
     (unless *is-charging*
-      (break))
+      (return))
     (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock"))))
   ;; go to spot
   (let ((dock-pose nil))
