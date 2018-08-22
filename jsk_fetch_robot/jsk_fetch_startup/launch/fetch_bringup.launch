@@ -31,9 +31,7 @@
   </include>
 
   <!-- app manager -->
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
-    <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
-  </include>
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch"/>
 
   <!-- downsample / throttle sensor data -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" />
