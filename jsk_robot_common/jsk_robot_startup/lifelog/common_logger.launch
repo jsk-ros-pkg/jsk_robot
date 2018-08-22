@@ -39,6 +39,7 @@
   <arg unless="$(arg launch_manager)" name="manager" />
 
   <!-- others -->
+  <arg name="approximate_sync" default="true"/>
   <arg name="enable_monitor" default="false" />
   <arg name="log_rate" default="1.0" />
   <arg name="respawn" default="false" />
@@ -67,7 +68,7 @@
           <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)/throttled"
                  to="depth/$(arg depth_topic)$(arg depth_suffix)"/>
           <rosparam subst_value="true">
-            approximate_sync: false
+            approximate_sync: $(arg approximate_sync)
             update_rate: $(arg log_rate)
             topics:
             - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
@@ -88,7 +89,7 @@
           <remap from="/$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)$(arg rgb_suffix)/throttled"
                  to="rgb/$(arg rgb_topic)$(arg rgb_suffix)"/>
           <rosparam subst_value="true">
-            approximate_sync: false
+            approximate_sync: $(arg approximate_sync)
             update_rate: $(arg log_rate)
             topics:
             - /$(arg camera_ns)/$(arg rgb_ns)/$(arg camera_info_topic)
@@ -109,7 +110,7 @@
           <remap from="/$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)$(arg depth_suffix)/throttled"
                  to="depth/$(arg depth_topic)$(arg depth_suffix)"/>
           <rosparam subst_value="true">
-            approximate_sync: false
+            approximate_sync: $(arg approximate_sync)
             update_rate: $(arg log_rate)
             topics:
             - /$(arg camera_ns)/$(arg depth_ns)/$(arg camera_info_topic)
