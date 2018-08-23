@@ -53,7 +53,7 @@
     (return-from undock nil))
   (send (send *undock-action* :get-result) :undocked))
 
-(defun go-to-spot (name)
+(defun go-to-spot (name &optional (relative-coords (make-coords)))
   ;; undock if fetch is docking
   (dotimes (i 3)
     (setq *is-charging* (send (one-shot-subscribe "/battery_state" power_msgs::batterystate) :is_charging))
@@ -63,11 +63,11 @@
       (return))
     (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock"))))
   ;; go to spot
-  (let ((dock-pose nil))
-    (dolist (x (send *spots* :markers)) (if (equal (send x :text) name) (setq dock-pose (send x :pose))))
-    (send (send dock-pose :position) :y (- (send (send dock-pose :position) :y) 0.5))
-    (send *ri* :move-to (ros::tf-pose->coords dock-pose))))
+  (let ((goal-pose nil))
+    (dolist (x (send *spots* :markers)) (if (equal (send x :text) name) (setq goal-pose (send x :pose))))
+    (setq goal-pose (send (ros::tf-pose->coords goal-pose) :transform relative-coords :world))
+    (send *ri* :move-to goal-pose)))
 
 (defun auto-dock ()
-  (go-to-spot  "/eng2/7f/room73B2-fetch-dock-front")
+  (go-to-spot "/eng2/7f/room73B2-fetch-dock-front" (make-coords :pos #f(0 -1500 0)))
   (dock))
