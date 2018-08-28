@@ -61,6 +61,11 @@
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="true" />
     </include>
+    <rosparam ns="amcl">
+      update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
+      update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
+    </rosparam>
+
     <rosparam ns="move_base/global_costmap">
 inflater:
   inflation_radius: 0.30 # 0.7
