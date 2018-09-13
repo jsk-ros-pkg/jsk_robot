@@ -12,6 +12,7 @@
 
   <run_depend>amcl</run_depend>
   <run_depend>app_manager</run_depend>
+  <run_depend>cmd_vel_smoother</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>diagnostic_aggregator</run_depend>
   <run_depend>dwa_local_planner</run_depend>
