@@ -29,7 +29,7 @@ class BatteryWarning(object):
 
         # param
         self.monitor_rate = rospy.get_param("~monitor_rate", 4)
-        self.warning_temp = rospy.get_param("~warning_temperature", 41.0)
+        self.warning_temp = rospy.get_param("~warning_temperature", 42.0)
         self.min_capacity = rospy.get_param("~min_capacity", 800)
         self.warning_voltage = rospy.get_param("~warning_voltage", 14.0)
         self.critical_voltage = rospy.get_param("~critical_voltage", 13.7)
@@ -50,9 +50,10 @@ class BatteryWarning(object):
                 rospy.Duration(self.log_rate), self.log_cb)
 
     def speak(self, sentence):
-        if self.speech_history[sentence] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
+        key = sentence[:4]
+        if self.speech_history[key] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
             return
-        self.speech_history[sentence] = rospy.Time.now()
+        self.speech_history[key] = rospy.Time.now()
         req = SoundRequest()
         req.command = SoundRequest.PLAY_ONCE
         req.sound = SoundRequest.SAY
