@@ -1,6 +1,6 @@
 <launch>
-  <arg name="applist"
-       doc="dirpath where *.installed file is located"/>
+  <arg name="use_applist" default="false" doc="load apps from applist argument"/>
+  <arg name="applist" default="" doc="app dirs (space separated)"/>
 
   <arg name="launch_websocket" default="true"
        doc="launch rosbridge_websocket if true"/>
@@ -49,13 +49,9 @@
   <!--
   NOTE: Ensure the param '/robot/type' and '/robot/name' are defined when the nodes below are started.
   -->
-  <node pkg="app_manager" type="appmaster" name="appmaster"
-        args="-p 11312"
-        machine="$(arg machine)" respawn="$(arg respawn)"/>
-  <node pkg="app_manager" type="app_manager" name="app_manager"
-        args="--applist $(arg applist)"
-        output="screen" machine="$(arg machine)" respawn="$(arg respawn)">
-    <param name="interface_master" value="http://localhost:11312"/>
-  </node>
-
+  <include file="$(find app_manager)/launch/app_manager.launch">
+    <arg name="use_applist" value="$(arg use_applist)"/>
+    <arg name="applist" value="$(arg applist)"/>
+    <arg name="respawn" value="$(arg respawn)"/>
+  </include>
 </launch>
