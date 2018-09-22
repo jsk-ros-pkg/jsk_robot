@@ -12,10 +12,10 @@
   (setq *robot-name* (ros::get-param "/active_user/robot_name"))
   )
 
-(ros::rate 0.1)
-(do-until-key
+(while (ros::ok)
   (setq *user-name* (ros::get-param "/active_user/launch_user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
+  (ros::rate 0.1)
   ;; tweet depend on up time
   (let ((st (ros::get-param "/active_user/start_time")))
     (when st
