@@ -89,6 +89,8 @@ class BatteryWarning(object):
                 self.speak("バッテリ温度%.1f度。暑いです。部屋の温度を下げてください。" % max_temp)
         except KeyError:
             pass
+        except ValueError:
+            pass
 
         try:
             plugged_in = df["Power Present"].eq("True").any()
@@ -104,6 +106,8 @@ class BatteryWarning(object):
                 return
         except KeyError:
             pass
+        except ValueError:
+            pass
 
         try:
             rc = df["Remaining Capacity (mAh)"].astype(float).sub(self.min_capacity)
@@ -117,6 +121,8 @@ class BatteryWarning(object):
             elif 0 <= min_perc < 15:
                 self.speak("もう限界です！")
         except KeyError:
+            pass
+        except ValueError:
             pass
 
     def diag_cb(self, msg):
