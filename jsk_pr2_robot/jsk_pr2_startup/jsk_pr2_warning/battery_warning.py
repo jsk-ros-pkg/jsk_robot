@@ -81,33 +81,48 @@ class BatteryWarning(object):
         if self.latest_status is None:
             return
 
-        max_temp = df["Temperature (C)"].astype(float).max()
-        rospy.logdebug("temperature: %s" % max_temp)
-        if 60 > max_temp > self.warning_temp:
-            self.speak("バッテリ温度%.1f度。暑いです。部屋の温度を下げてください。" % max_temp)
+        try:
+            max_temp = df["Temperature (C)"].astype(float).max()
+            rospy.logdebug("temperature: %s" % max_temp)
+            if 60 > max_temp > self.warning_temp:
+                self.speak("バッテリ温度%.1f度。暑いです。部屋の温度を下げてください。" % max_temp)
+        except KeyError:
+            pass
+        except ValueError:
+            pass
 
-        plugged_in = df["Power Present"].eq("True").any()
-        if self.prev_plugged_in is None:
-            self.prev_plugged_in = not plugged_in
-        prev_plugged_in, self.prev_plugged_in = self.prev_plugged_in, plugged_in
-        if plugged_in:
-            if not prev_plugged_in:
-                attf_max = df["Average Time To Full (min)"].astype(int).max()
-                rospy.loginfo("Average Time to full: %s" % attf_max)
-                if attf_max > 0:
-                    self.speak("フル充電まで%s分です。" % attf_max)
-            return
+        try:
+            plugged_in = df["Power Present"].eq("True").any()
+            if self.prev_plugged_in is None:
+                self.prev_plugged_in = not plugged_in
+            prev_plugged_in, self.prev_plugged_in = self.prev_plugged_in, plugged_in
+            if plugged_in:
+                if not prev_plugged_in:
+                    attf_max = df["Average Time To Full (min)"].astype(int).max()
+                    rospy.loginfo("Average Time to full: %s" % attf_max)
+                    if attf_max > 0:
+                        self.speak("フル充電まで%s分です。" % attf_max)
+                return
+        except KeyError:
+            pass
+        except ValueError:
+            pass
 
-        rc = df["Remaining Capacity (mAh)"].astype(float).sub(self.min_capacity)
-        fc = df["Full Charge Capacity (mAh)"].astype(int).sub(self.min_capacity)
-        min_perc = int(rc.div(fc).min() * 100.0)
+        try:
+            rc = df["Remaining Capacity (mAh)"].astype(float).sub(self.min_capacity)
+            fc = df["Full Charge Capacity (mAh)"].astype(int).sub(self.min_capacity)
+            min_perc = int(rc.div(fc).min() * 100.0)
 
-        if prev_plugged_in or min_perc < 50:
-            self.speak("電池残り%s％です。" % min_perc)
-        if 15 < min_perc < 30:
-            self.speak("充電してください。")
-        elif 0 <= min_perc < 15:
-            self.speak("もう限界です！")
+            if (prev_plugged_in and plugged_in) or min_perc < 50:
+                self.speak("電池残り%s％です。" % min_perc)
+            if 15 < min_perc < 30:
+                self.speak("充電してください。")
+            elif 0 <= min_perc < 15:
+                self.speak("もう限界です！")
+        except KeyError:
+            pass
+        except ValueError:
+            pass
 
     def diag_cb(self, msg):
         stamp = msg.header.stamp.secs
