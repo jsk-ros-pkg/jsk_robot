@@ -94,7 +94,7 @@
 
 (defun update ()
   (let ((movingp nil) (servo-on nil))
-    (ros::ros-info "current: ~A" *current-status*)
+    (ros::ros-debug "current: ~A" *current-status*)
     ;; motor
     (cond
       ((assoc :motor *current-status*)
