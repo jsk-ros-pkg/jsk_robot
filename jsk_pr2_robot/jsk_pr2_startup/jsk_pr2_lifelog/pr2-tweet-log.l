@@ -9,7 +9,7 @@
 (require :tweet-client "package://jsk_robot_startup/lifelog/tweet_client.l")
 (defparameter *mongo-database* "jsk_robot_lifelog")
 (defparameter *mongo-collection* "pr1012")
-(defparameter *json-parse-key-function* #'string->keyword)
+(defparameter *json-parse-key-function* #'json::string->keyword)
 (setq json::*tzoffset* -8)
 (defvar *tweet* t)
 (defparameter *query-limit* 100)
