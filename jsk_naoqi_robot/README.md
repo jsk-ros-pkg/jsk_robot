@@ -17,12 +17,26 @@ Then put the file under your ``pynaoqi`` folder.
 2. Export environment variables in your ``.bashrc``
 
 ```
+# Python NAOqi SDK version >= 2.5.5
+export PYTHONPATH=$HOME/pynaoqi/pynaoqi-python2.7-2.5.5.5-linux64/lib/python2.7/site-packages:$PYTHONPATH
+
+# Python NAOqi SDK version < 2.5.5
 export PYTHONPATH=$HOME/pynaoqi/<your Python SDK package name>:$PYTHONPATH
+
 export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp" % OR IP address like "133.11.216.xxx"
 export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 ```
+% `pose_controller.py` in `naoqi_pose` imports `NaoqiNode` from `naoqi_node.py` in `naoqi_driver_py`.
+
+% `naoqi_node.py` imports `ALProxy` from `naoqi.py`.
+
+% `naoqi.py` is under `pynaoqi-python2.7-2.5.5.5-linux64/lib/python2.7/site-packages/`
+
 
 % NAO_IP is IP address of Pepper. Pepper tells you their address when pushing their belly button.
+
+% Please install ```ros-indigo-jsk-tools``` to use ```rossetip``` command.
+
 
 3. Install ROS packages for Pepper
 
@@ -37,12 +51,6 @@ rosdep install -y -r --from-paths src --ignore-src
 catkin build
 source devel/setup.bash
 ```
-% In addition, please install ```ros-indigo-jsk-tools``` to use ```rossetip``` command.
-Otherwise, please write the line below in your ```.bashrc```.
-
-```
-export ROS_IP="133.11.216.yyy"
-```
 
 4. (optional) For Pepper developers
 
@@ -51,6 +59,9 @@ Please add following source code for debugging.
 ```
 cd  catkin_ws/src
 wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
+wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
+wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
+wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
 ```
 
 NAO
