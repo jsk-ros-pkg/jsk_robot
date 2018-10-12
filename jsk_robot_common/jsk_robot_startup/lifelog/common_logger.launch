@@ -39,6 +39,7 @@
   <arg unless="$(arg launch_manager)" name="manager" />
 
   <!-- others -->
+  <arg name="approximate_sync" default="true"/>
   <arg name="enable_monitor" default="false" />
   <arg name="approximate_sync" default="true"/>
   <arg name="log_rate" default="1.0" />
