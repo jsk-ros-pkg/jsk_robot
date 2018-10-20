@@ -63,7 +63,7 @@ Inorder to confirm your shell environment, check with rviz
 
 ```bash
 source ~/catkin_ws/devel/setup.bash
-roslaunch jsk_fetch_robot rviz.launch
+roslaunch jsk_fetch_startup rviz.launch
 ```
 
 ### Control Fetch via roseus
