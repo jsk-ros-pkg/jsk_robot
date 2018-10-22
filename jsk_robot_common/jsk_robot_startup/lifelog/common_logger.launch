@@ -41,7 +41,6 @@
   <!-- others -->
   <arg name="approximate_sync" default="true"/>
   <arg name="enable_monitor" default="false" />
-  <arg name="approximate_sync" default="true"/>
   <arg name="log_rate" default="1.0" />
   <arg name="respawn" default="false" />
   <arg name="vital_rate" default="0.1" />
