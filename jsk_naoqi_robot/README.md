@@ -48,6 +48,8 @@ wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/mast
 wstool update -t src
 source /opt/ros/indigo/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
+sudo apt-get install ros-$ROS_DISTRO-pepper-meshes
+sudo apt-get install ros-$ROS_DISTRO-nao-meshes
 catkin build
 source devel/setup.bash
 ```
