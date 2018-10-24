@@ -30,6 +30,12 @@
     <arg name="map_frame" value="$(arg map_frame)" />
   </include>
 
+  <!-- diagnostic aggregator -->
+  <node pkg="diagnostic_aggregator" type="aggregator_node"
+        name="diag_agg" args="CPP" output="screen" >
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/fetch_analyzers.yaml" />
+  </node>
+
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
     <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>

@@ -36,6 +36,9 @@
   <run_depend>topic_tools</run_depend>
   <run_depend>fetch_teleop</run_depend>
 
+  <!-- for diagnostic aggregator -->
+  <run_depend>diagnostic_aggregator</run_depend>
+
   <test_depend>rostest</test_depend>
 
   <export>

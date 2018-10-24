@@ -1,0 +1,134 @@
+pub_rate: 1.0
+base_path: '' # Optional, prepended to all diagnostic output
+analyzers:
+  sound_play:
+    type: diagnostic_aggregator/GenericAnalyzer
+    path: SoundPlay
+    startswith: sound_play
+  breakers:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Breakers
+    analyzers:
+      base_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Base Breaker
+        startswith: base_breaker
+      battery_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Battery Breaker
+        startswith: battery_breaker
+      computer_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Computer Breaker
+        startswith: computer_breaker
+      supply_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Supply Breaker
+        startswith: supply_breaker
+      arm_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Arm Breaker
+        startswith: arm_breaker
+      gripper_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Gripper Breaker
+        startswith: gripper_breaker
+  motors:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Motor Control Boards
+    analyzers:
+      l_wheel:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Left Wheel
+        startswith: l_wheel
+      r_wheel:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Right Wheel
+        startswith: r_wheel
+      shoulder_pan:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Shoulder Pan Joint
+        startswith: shoulder_pan
+      shoulder_lift:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Shoulder Lift Joint
+        startswith: shoulder_lift
+      upperarm_roll:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Upperarm Roll Joint
+        startswith: upperarm_roll
+      elbow_flex:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Elbow Flex Joint
+        startswith: elbow_flex
+      forearm_roll:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Forearm Roll Joint
+        startswith: forearm_roll
+      wrist_flex:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Wrist Flex Joint
+        startswith: wrist_flex
+      wrist_roll:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Wrist Roll Joint
+        startswith: wrist_roll
+      head_tilt:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Head Tilt Joint
+        startswith: head_tilt
+      head_pan:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Head Pan Joint
+        startswith: head_pan
+      torso_lift:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Torso Lift Joint
+        startswith: torso_lift
+      gripper:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Gripper Joint
+        startswith: gripper_board
+  sensors:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Sensors
+    analyzers:
+      base_breaker:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Sick TIM551 Laser
+        startswith: sick_tim
+      camera:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Head Camera
+        timeout: 5.0
+        startswith: 'throttle_nodelet_manager'
+        num_items: 2
+      imu:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: IMU
+        timeout: 5.0
+        contains: ['IMU']
+      #head_camera:
+      #  type: diagnostic_aggregator/GenericAnalyzer
+      #  path:
+      #  startswith:
+  peripherals:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Peripherals
+    analyzers:
+      joy:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: PS3 Controller
+        find_and_remove_prefix: "joy:"
+  system:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: System
+    analyzers:
+      mainboard:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Mainboard
+        startswith: Mainboard
+      charger:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Charger
+        startswith: Charger
