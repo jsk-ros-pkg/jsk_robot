@@ -26,11 +26,11 @@ export PYTHONPATH=$HOME/pynaoqi/<your Python SDK package name>:$PYTHONPATH
 export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp" % OR IP address like "133.11.216.xxx"
 export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 ```
-% `pose_controller.py` in `naoqi_pose` imports `NaoqiNode` from `naoqi_node.py` in `naoqi_driver_py`.
+% `pose_controller.py` in `naoqi_pose` package imports `NaoqiNode` from `naoqi_node.py` in `naoqi_driver_py` package.
 
 % `naoqi_node.py` imports `ALProxy` from `naoqi.py`.
 
-% `naoqi.py` is under `pynaoqi-python2.7-2.5.5.5-linux64/lib/python2.7/site-packages/`
+% `naoqi.py` is located under `pynaoqi-python2.7-2.5.5.5-linux64/lib/python2.7/site-packages/`
 
 
 % NAO_IP is IP address of Pepper. Pepper tells you their address when pushing their belly button.
@@ -38,7 +38,7 @@ export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 % Please install ```ros-indigo-jsk-tools``` to use ```rossetip``` command.
 
 
-3. Install ROS packages for Pepper
+3. Install ROS packages for NAO and Pepper
 
 ```
 mkdir -p catkin_ws/src
@@ -48,18 +48,30 @@ wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/mast
 wstool update -t src
 source /opt/ros/indigo/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
-sudo apt-get install ros-$ROS_DISTRO-pepper-meshes
-sudo apt-get install ros-$ROS_DISTRO-nao-meshes
+```
+
+Then, please install Nao/ Pepper mesh files from deb with manual approval of license.  
+Please change 'indigo' to ros distro name which you use.  
+
+```
+sudo apt-get install ros-indigo-pepper-meshes
+sudo apt-get install ros-indigo-nao-meshes
+```
+
+Finally, please compile them.  
+
+```
 catkin build
 source devel/setup.bash
 ```
 
-4. (optional) For Pepper developers
+4. (optional) For NAO and Pepper developers
 
-Please add following source code for debugging.
+Please add following source codes which you need for debugging.
 
 ```
 cd  catkin_ws/src
+wstool set nao_robot --git http://github.com/ros-naoqi/nao_robot
 wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
 wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
 wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
