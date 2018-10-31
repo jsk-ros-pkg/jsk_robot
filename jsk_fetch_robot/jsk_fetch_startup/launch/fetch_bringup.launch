@@ -55,6 +55,14 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" />
 
+  <!-- speech recognition -->
+  <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"/>
+  <node name="static_transformer" pkg="tf" type="static_transform_publisher"
+        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <include file="$(find julius_ros)/launch/julius.launch">
+    <arg name="launch_audio_capture" value="false"/>
+  </include>
+
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
