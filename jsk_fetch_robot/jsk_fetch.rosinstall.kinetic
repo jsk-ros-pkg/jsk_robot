@@ -12,12 +12,12 @@
 - git:
     local-name: fetchrobotics/fetch_msgs
     uri: https://github.com/fetchrobotics/fetch_msgs.git
-    version: master
+    version: indigo-devel
 # for fetcheus
 - git:
     local-name: fetchrobotics/power_msgs
     uri: https://github.com/fetchrobotics/power_msgs.git
-    version: master
+    version: indigo-devel
 # https://github.com/fetchrobotics/fetch_ros.git is not released on kinetic.
 # XXX: below entry must be same as .travis.rosinstall.kinetic.
 - tar:
