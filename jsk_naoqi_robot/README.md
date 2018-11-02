@@ -60,9 +60,12 @@ sudo apt-get install ros-kinetic-nao-meshes
 Finally, please compile them.  
 
 ```
-catkin build
+catkin build --continue-on-failure
 source devel/setup.bash
 ```
+
+% Inside `jsk_robot` package, there are many packages which are not required for `jsk_naoqi_robot`. If we fail to compile them, building process might stop and `jsk_naoqi_robot` packages might not be compiled. We might need to continue compiling (`catkin build --continue-on-failure`) in that case.
+
 
 4. (optional) For NAO and Pepper developers
 
