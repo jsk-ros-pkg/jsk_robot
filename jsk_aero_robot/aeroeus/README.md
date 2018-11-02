@@ -11,7 +11,7 @@ source ~/.bashrc
 
 ## Create eusmodel
 ```
-rosrun euscollada collada2eus_urdfmodel $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
+rosrun euscollada collada2eus $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
 ```
 
 ## Run euslisp
