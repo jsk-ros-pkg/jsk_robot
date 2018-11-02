@@ -6,7 +6,7 @@ The package name comes from Naoqi OS they use.
 
 Setup Environment
 -----------------
-% First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
+% First, you need to install ros. For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation)
 
 1. Install ``Python NAOqi SDK``
 You can download it from [here](https://community.aldebaran.com/en/resources/software). (You may need an account.)  
@@ -35,7 +35,7 @@ export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 
 % NAO_IP is IP address of Pepper. Pepper tells you their address when pushing their belly button.
 
-% Please install ```ros-indigo-jsk-tools``` to use ```rossetip``` command.
+% Please install ```ros-kinetic-jsk-tools``` to use ```rossetip``` command.
 
 
 3. Install ROS packages for NAO and Pepper
@@ -46,16 +46,15 @@ cd  catkin_ws
 wstool init src
 wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
 wstool update -t src
-source /opt/ros/indigo/setup.bash
+source /opt/ros/kinetic/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 ```
 
 Then, please install Nao/ Pepper mesh files from deb with manual approval of license.  
-Please change 'indigo' to ros distro name which you use.  
 
 ```
-sudo apt-get install ros-indigo-pepper-meshes
-sudo apt-get install ros-indigo-nao-meshes
+sudo apt-get install ros-kinetic-pepper-meshes
+sudo apt-get install ros-kinetic-nao-meshes
 ```
 
 Finally, please compile them.  
