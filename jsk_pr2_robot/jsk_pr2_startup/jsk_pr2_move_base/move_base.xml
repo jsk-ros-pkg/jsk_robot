@@ -1,5 +1,6 @@
 <!-- original : pr2_navigation_global/move_base.xml (electric) -->
 <launch>
+  <arg name="use_teb_local_planner" default="true" />
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- Bring up the tilt_laser aware version of move_base -->
@@ -19,11 +20,14 @@
     <remap from="~clear_costmaps" to="/move_base/clear_costmaps" />
 
     <param name="base_global_planner" value="navfn/NavfnROS" />
-    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" unless="$(arg use_teb_local_planner)" />
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" if="$(arg use_teb_local_planner)" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/navfn_ros_planner.yaml" command="load"
               ns="NavfnROS" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/dwa_local_planner.yaml" command="load"
-              ns="DWAPlannerROS" />
+              ns="DWAPlannerROS" unless="$(arg use_teb_local_planner)" />
+    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/teb_local_planner_params.yaml" command="load"
+              if="$(arg use_teb_local_planner)" />
 
     <!-- Load common configuration files -->
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base_params.yaml" command="load" />
