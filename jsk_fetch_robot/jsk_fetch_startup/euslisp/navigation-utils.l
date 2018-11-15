@@ -66,6 +66,7 @@
   (let ((goal-pose nil))
     (dolist (x (send *spots* :markers)) (if (equal (send x :text) name) (setq goal-pose (send x :pose))))
     (setq goal-pose (send (ros::tf-pose->coords goal-pose) :transform relative-coords :world))
+    (send goal-pose :transform (make-coords :pos #f(0 0 29650)) :world) ;; set height of goal-pose from 2nd floor to 7th floor
     (send *ri* :move-to goal-pose)))
 
 (defun auto-dock ()
