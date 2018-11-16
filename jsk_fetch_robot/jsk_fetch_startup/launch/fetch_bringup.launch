@@ -14,7 +14,11 @@
 
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
-  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+    <rosparam>
+      lang: japanese
+    </rosparam>
+  </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
   <!-- japanese speech node -->
