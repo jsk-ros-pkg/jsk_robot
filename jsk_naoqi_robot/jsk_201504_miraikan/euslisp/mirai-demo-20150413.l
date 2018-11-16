@@ -4,27 +4,39 @@
 (ros::load-ros-manifest "peppereus")
 (require :pepper-interface "package://peppereus/pepper-interface.l")
 (load "package://jsk_201504_miraikan/euslisp/pepper-motions.l")
-(unless (boundp '*ri*)
-  (pepper-init))
 
-(send *ri* :angle-vector (send *pepper* :reset-pose))
+;; If autonomous life is on, kill it and servo on again
+(defun check-autonomous-life-is-on ()
+  (unless (boundp '*ri*)
+    (pepper-init))
+  (if (not (string= (send *ri* :get-life) "disabled"))
+      (progn
+	(send *ri* :disable-life)
+	(send *ri* :servo-on)
+	))
+  (send *ri* :angle-vector (send *pepper* :reset-pose)))
 
-;; 音声ファイルを再生し、動く関数
+;; change speaing language if needed
+(defun change-speaking-language (language)
+  (if (not (string= (send *ri* :get-language) language))
+      (send *ri* :set-language language)))
+
+;; play audio file and make a gesture
 (defun playAudioFile_move (file angle-list time-list)
   (ros::ros-info "speak")
   (send *ri* :angle-vector-sequence angle-list time-list)
-  (send *ri* :play-audio-file file)
-  )
+  (send *ri* :play-audio-file file))
 
-;; 発話し、動く関数
+;; speak and make a gesture
 (defun speak_move (speech_msg angle-list time-list)
   (ros::ros-info "speak")
   (send *ri* :speak speech_msg)
   (send *ri* :angle-vector-sequence angle-list time-list)
-  (send *ri* :wait-interpolation)
-  )
+  (send *ri* :wait-interpolation))
 
+;; main program
 (defun demo(&optional (language :ja))
+  (check-autonomous-life-is-on)
   (send *ri* :stop-grasp)
   (case language
 	(:ja
@@ -39,7 +51,7 @@
 	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
 	 ;;(ros::wait-for-service "nao_speech/set_parameters")
 	 ;;(ros::service-call "nao_speech/set_parameters" req_voice)
-
+	 (change-speaking-language "Japanese")
 	 (speak_move "\\vct=180\\稲葉岡田研究室にようこそ\\pau=1000\\私はペッパー\\pau=500\\人と一緒に暮らすために作られたロボットです\\vct=130\\" *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
 	 (speak_move "\\vct=180\\家事が苦手で\\pau=500\\産業ロボットのような器用なアームはないですが\\pau=500\\言葉を通して人と交流することができますし\\pau=500\\人の声を認識したり\\pau=500\\センサーによって触覚を感じられたりします\\pau=1000\\そして\\pau=500\\人の顔を見て覚えられますよ。\\vct=130\\" *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
 	 (speak_move "\\vct=180\\目で世界を見ることができます\\pau=1000\\私の二つの目はスリーディーカメラで\\pau=500\\実世界の三次元画像をとれて\\pau=500\\移動するとき距離を判断できます。\\vct=130\\" *pepper_run* (list 1000 1000 1000 1000 1000 1000 100 100 100 1000 1000 1000 1000))
@@ -74,7 +86,7 @@
 	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
 	 ;;(ros::wait-for-service "nao_speech/set_parameters")
 	 ;;(ros::service-call "nao_speech/set_parameters" req_voice)
-	 
+	 (change-speaking-language "English")
 	 (speak_move "Welcome to JSK laboratory. I am pepper, \\pau=500\\a robot which is designed to live with human beings." *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
 	 (speak_move "Although I'm not good at doing housework,\\pau500\\ nor do I have dexterous arms like industrial robots do, \\pau=500\\I'm able to communicate with humans through language, \\pau=500\\recognize human' voices,\\pau=500\\ feel touch and remember the faces of humans whom I have seen." *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
 	 (speak_move "I can see the world with my eyes as well. My two eyes are 3D cameras, \\pau=500\\with which I get the point cloud data of the real world, \\pau=100\\so I can judge distance when I'm moving." *pepper_run*  (list 1000 1000 1000 1000 1000 1000 100 100 100 1000 1000 1000 1000))
@@ -92,7 +104,6 @@
 (ros::ros-warn "demo :chi")
 (ros::ros-warn "if English,")
 (ros::ros-warn "demo :en")
-(ros::ros-warn "Please make sure autonomous life is killed, then servo me on!")
 
 ;;(demo)
 
