@@ -1,8 +1,15 @@
 <launch>
 
-  <node name="go_to_kitchen" pkg="roseus" type="roseus"
-        args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen-with-mail-notify.l"/>
+  <node name="patrol" pkg="roseus" type="roseus"
+        args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen-with-mail-notify.l" >
+    <rosparam file="/etc/ros/jsk_data/jsk_fetch_startup/go_to_kitchen/mail.yaml"
+              command="load" />
+  </node>
 
-  <include file="$(find jsk_fetch_startup)/launch/sample_ssd.launch" />
+  <include file="$(find jsk_patrol)/launch/ssd_object_detector.launch" >
+    <arg name="ssd_params_path"
+         value="/etc/ros/jsk_data/jsk_fetch_startup/models/73B2_kitchen_ssd_params.yaml" />
+    <arg name="input_image" value="/head_camera/rgb/image_rect_color" />
+  </include>
 
 </launch>
