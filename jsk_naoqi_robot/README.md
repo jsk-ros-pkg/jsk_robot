@@ -57,6 +57,17 @@ sudo apt-get install ros-kinetic-pepper-meshes
 sudo apt-get install ros-kinetic-nao-meshes
 ```
 
+If you have ROS kinetic, please apply [this change](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for the time being.
+
+```
+cd  catkin_ws/src
+wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
+cd naoqi_dashboard
+git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
+git fetch kochigami
+git checkout -b modify-for-kinetic kochigami/modify-for-kinetic
+```
+
 Finally, please compile them.  
 
 ```
@@ -78,6 +89,7 @@ wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
 wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
 wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
 wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
+wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
 NAO
