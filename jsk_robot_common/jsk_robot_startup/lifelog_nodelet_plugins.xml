@@ -1,0 +1,6 @@
+<library path="lib/libjsk_robot_lifelog">
+  <class name="jsk_robot_lifelog/LightweightLogger"
+         type="LightweightLogger" base_class_type="nodelet::Nodelet">
+    <description>Logger nodelet</description>
+  </class>
+</library>

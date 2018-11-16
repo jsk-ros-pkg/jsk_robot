@@ -2,11 +2,10 @@
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
   <!-- a launch file for hydro, it should be run on c2 -->
   <arg name="face_detect" default="true" />
-  <arg name="face_recognition" default="true" />
   <arg name="leg_detect" default="true" />
   <arg name="publish_people" default="true" />
 
-  <arg name="camera" default="kinect_head_c2" />
+  <arg name="camera" default="kinect_head" />
   <arg name="image_topic" default="image_rect_color" />
   <arg name="depth_topic" default="image_raw" />
   <arg name="fixed_frame" default="kinect_head_rgb_optical_frame" />
@@ -34,18 +33,6 @@
     <param name="approximate_sync" type="bool" value="true" />
     <param name="face_size_min_m" value="0.1" />
    </node>
-
-   <!-- face recognition -->
-   <group if="$(arg face_recognition)">
-     <node name="face_recognition" pkg="face_recognition" type="Fserver"
-           output="screen">
-       <param name="show_screen_flag" value="false" />
-       <param name="confidence_value" value="0.7" />
-       <remap from="/camera/image_raw" to="/kinect_head_c2/rgb/image_rect_color" />
-     </node>
-     <node name="face_recognition_starter" pkg="jsk_pr2_startup" type="face_recognition_starter.py"
-           output="screen" />
-   </group>
 
   <!-- leg detection -->
   <node name="leg_detector" pkg="leg_detector" type="leg_detector"

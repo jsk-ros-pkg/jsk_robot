@@ -11,12 +11,11 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>nao_apps</build_depend>
   <build_depend>naoqieus</build_depend> <!-- for robot interface -->
   <build_depend>nao_description</build_depend>
   <build_depend>rostest</build_depend>
 
-  <run_depend>nao_apps</run_depend>
+  <run_depend>nao_bringup</run_depend>
   <run_depend>naoqieus</run_depend> <!-- for robot interface -->
   <run_depend>nao_description</run_depend>
 

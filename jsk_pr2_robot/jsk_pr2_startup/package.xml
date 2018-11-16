@@ -9,82 +9,71 @@
   <license>BSD</license>
   <url>http://ros.org/wiki/jsk_pr2_startup</url>
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>sound_play</build_depend>
-  <build_depend>voice_text</build_depend>
-  <build_depend>image_view2</build_depend>
-  <build_depend>openni_camera</build_depend>
-  <build_depend>imagesift</build_depend>
-  <build_depend>move_base</build_depend>
-  <build_depend>dwa_local_planner</build_depend>
-  <build_depend>move_base_msgs</build_depend>
-  <build_depend>amcl</build_depend>
-  <!-- <build_depend>safe_teleop_pr2</build_depend> -->
-  <build_depend>map_server</build_depend>
-  <build_depend>jsk_network_tools</build_depend>
-  <!-- <build_depend>pr2_move_base</build_depend> -->
-  <!-- <build_depend>pr2_2dnav</build_depend> -->
-  <build_depend>pr2_base_trajectory_action</build_depend>
-  <!-- <build_depend>pr2_arm_navigation_perception</build_depend> -->
-  <build_depend>pr2_gripper_sensor_action</build_depend>
-  <build_depend>topic_tools</build_depend>
-  <build_depend>mjpeg_server</build_depend>
-  <build_depend>dynamic_tf_publisher</build_depend>
-  <!-- <build_depend>jsk_maps</build_depend> -->
-  <build_depend>jsk_pcl_ros</build_depend>
-  <build_depend>jsk_topic_tools</build_depend>
-  <!-- <build_depend>jsk_smart_gui</build_depend> -->
-  <build_depend>rostwitter</build_depend>
-  <build_depend>jsk_perception</build_depend>
-  <build_depend>resized_image_transport</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>roseus</build_depend>
-  <build_depend>rqt_gui</build_depend>
-  <build_depend>rqt_gui_py</build_depend>
-  <build_depend>rqt_py_common</build_depend>
-  <build_depend>tf2</build_depend>
-  <build_depend>tf2_ros</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>jsk_robot_startup</build_depend>
-  <build_depend>pr2_mannequin_mode</build_depend>
-  <build_depend>jsk_interactive_marker</build_depend>
-  <build_depend>face_detector</build_depend>
-  <build_depend>leg_detector</build_depend>
-  <build_depend>people_velocity_tracker</build_depend>
-  <run_depend>jsk_network_tools</run_depend>
+
+  <run_depend>amcl</run_depend>
+  <run_depend>app_manager</run_depend>
+  <run_depend>cmd_vel_smoother</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>diagnostic_aggregator</run_depend>
   <run_depend>dwa_local_planner</run_depend>
-  <run_depend>jsk_robot_startup</run_depend>
-  <run_depend>pr2_mannequin_mode</run_depend>
-  <run_depend>pr2_gripper_sensor_action</run_depend>
-  <run_depend>jsk_interactive_marker</run_depend>
-  <run_depend>social_navigation_layers</run_depend>
-  <run_depend>pr2_teleop_general</run_depend>
-  <run_depend>pr2_arm_kinematics</run_depend>
-  <run_depend>safe_teleop_base</run_depend>
-  <run_depend>face_recognition</run_depend>
-  <run_depend>semantic_point_annotator</run_depend>
-  <run_depend>pr2_gazebo</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>dynamic_tf_publisher</run_depend>
   <run_depend>eusurdf</run_depend>
-  <run_depend>jsk_maps</run_depend>
+  <run_depend>image_view2</run_depend>
+  <run_depend>image_view</run_depend>
+  <run_depend>imagesift</run_depend>
+  <run_depend>joy</run_depend>
   <run_depend>jsk_android_gui_api9</run_depend>
-  <run_depend>face_recognition</run_depend>
-  <run_depend>pr2_move_base</run_depend>
+  <run_depend>jsk_demo_common</run_depend>
+  <run_depend>jsk_interactive_marker</run_depend>
+  <run_depend>jsk_maps</run_depend>
+  <run_depend>jsk_network_tools</run_depend>
+  <run_depend>jsk_pcl_ros</run_depend>
+  <run_depend>jsk_perception</run_depend>
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>jsk_rviz_plugins</run_depend>
   <run_depend>jsk_smart_gui</run_depend>
+  <run_depend>jsk_topic_tools</run_depend>
+  <run_depend>laser_filters</run_depend>
+  <run_depend>linux_hardware</run_depend>
+  <run_depend>mongodb_store</run_depend>
+  <run_depend>move_base</run_depend>
+  <run_depend>openni_launch</run_depend>
+  <run_depend>pointcloud_to_laserscan</run_depend>
   <run_depend>pr2_arm_kinematics</run_depend>
-  <run_depend>pr2_tuck_arms_action</run_depend>
-  <run_depend>safe_teleop_base</run_depend>
-  <run_depend>pr2_teleop_general</run_depend>
+  <run_depend>pr2_base_trajectory_action</run_depend>
+  <run_depend>pr2_bringup</run_depend>
+  <run_depend>pr2_controller_manager</run_depend>
+  <run_depend>pr2_description</run_depend>
+  <run_depend>pr2_gazebo</run_depend>
+  <run_depend>pr2_gripper_sensor_action</run_depend>
+  <run_depend>pr2_machine</run_depend>
+  <run_depend>pr2_mannequin_mode</run_depend>
+  <run_depend>pr2_mechanism_controllers</run_depend>
+  <run_depend>pr2_move_base</run_depend>
+  <run_depend>pr2_moveit_config</run_depend>
+  <run_depend>pr2_msgs</run_depend>
   <run_depend>pr2_navigation_config</run_depend>
   <run_depend>pr2_navigation_global</run_depend>
   <run_depend>pr2_navigation_perception</run_depend>
-  <run_depend>pr2_navigation_self_filter</run_depend>
+  <run_depend>pr2_teleop_general</run_depend>
+  <run_depend>pr2_tuck_arms_action</run_depend>
+  <run_depend>pr2eus</run_depend>
+  <run_depend>python-numpy</run_depend>
+  <run_depend>resized_image_transport</run_depend>
+  <run_depend>robot_self_filter</run_depend>
+  <run_depend>rosbridge_server</run_depend>
+  <run_depend>rostwitter</run_depend>
+  <run_depend>roseus_mongo</run_depend>
+  <run_depend>rqt_gui</run_depend>
+  <run_depend>rqt_gui_py</run_depend>
+  <run_depend>safe_teleop_base</run_depend>
+  <run_depend>semantic_point_annotator</run_depend>
+  <run_depend>sound_play</run_depend>
+  <run_depend>topic_tools</run_depend>
+  <run_depend>voice_text</run_depend>
 
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>
-
-  <!--
-      jsk_pr2_moveit should be updated after merged pull requests listed below
-      https://github.com/ros-planning/moveit_pr2/pull/46
-      https://github.com/ros-planning/moveit_pr2/pull/47
-  -->
 </package>

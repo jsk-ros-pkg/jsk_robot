@@ -17,6 +17,7 @@ from transformations import TransformListener
 class ObjectDetectionLogger(LoggerBase):
     def __init__(self):
         LoggerBase.__init__(self)
+        self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.map_frame = rospy.get_param('~map_frame', 'map')
         self.robot_frame = rospy.get_param('~robot_frame', 'base_footprint')
         rospy.loginfo("map->robot: %s -> %s" % (self.map_frame, self.robot_frame))
@@ -77,9 +78,11 @@ class ObjectDetectionLogger(LoggerBase):
             rospy.logdebug('start subscribe (%s)', sub.name)
 
     def run(self):
+        r = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown():
             self.update_subscribers()
             self.spinOnce()
+            r.sleep()
 
 if __name__ == "__main__":
     rospy.init_node('object_detecton_logger')

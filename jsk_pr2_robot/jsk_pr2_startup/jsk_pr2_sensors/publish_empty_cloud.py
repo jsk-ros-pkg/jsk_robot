@@ -8,7 +8,7 @@ from sensor_msgs.msg import *
 # rotate x
 def talker():
     rospy.init_node('empty_cloud_publisher')
-    pub = rospy.Publisher('empty_cloud', PointCloud2)
+    pub = rospy.Publisher('empty_cloud', PointCloud2, queue_size=1)
     frame_id = rospy.get_param('~frame_id', '/base_laser_link')
     max_range = rospy.get_param('~max_range', 25.0)
     rate = rospy.get_param('~rate', 10) ## Hz

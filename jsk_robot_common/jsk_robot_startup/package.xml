@@ -7,6 +7,7 @@
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>jsk_topic_tools</build_depend>
   <build_depend>mongodb_store</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
@@ -15,27 +16,35 @@
   <build_depend>pr2_mechanism_controllers</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
+  <build_depend>urdf</build_depend>
   <run_depend>actionlib_msgs</run_depend>
+  <run_depend>app_manager</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>gmapping</run_depend>
   <run_depend>jsk_recognition_msgs</run_depend>
+  <run_depend version_gte="2.2.7">jsk_topic_tools</run_depend>
   <run_depend>mongodb_store</run_depend>
+  <run_depend>nodelet</run_depend>
   <run_depend>pointcloud_to_laserscan</run_depend>
   <run_depend>posedetection_msgs</run_depend>
+  <run_depend>rosbridge_server</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>roseus_mongo</run_depend>
   <run_depend>rosgraph</run_depend>
   <run_depend>rospy</run_depend>
-  <run_depend>roseus_mongo</run_depend>
+  <run_depend>roswww</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>tf2_py</run_depend>
   <run_depend>tf2_geometry_msgs</run_depend>
+  <run_depend>urdf</run_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>pr2_gazebo</test_depend>
 
   <export>
+    <nodelet plugin="${prefix}/lifelog_nodelet_plugins.xml" />
   </export>
 </package>

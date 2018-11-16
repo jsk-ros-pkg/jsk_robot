@@ -17,6 +17,9 @@
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
+  <!-- japanese speech node -->
+  <include file="$(find voice_text)/launch/voice_text.launch" />
+
   <!-- Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
     <param name="buffer_size" value="120.0"/>
@@ -27,6 +30,30 @@
     <arg name="map_frame" value="$(arg map_frame)" />
   </include>
 
+  <!-- diagnostic aggregator -->
+  <node pkg="diagnostic_aggregator" type="aggregator_node"
+        name="diag_agg" args="CPP" output="screen" >
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/fetch_analyzers.yaml" />
+  </node>
+
+  <!-- publish CPU status to diagnostics -->
+  <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
+        args="--diag-hostname=my_machine" >
+    <param name="check_ipmi_tool" value="false" type="bool" />
+    <param name="enforce_clock_speed" value="false" type="bool" />
+    <param name="num_cores" value="-1" type="int" />
+    <param name="load1_threshold" value="7.0"/>
+    <param name="load5_threshold" value="5.0"/>
+  </node>
+
+  <!-- app manager -->
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
+  </include>
+
+  <!-- downsample / throttle sensor data -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" />
+
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
            if="$(arg launch_moveit)" />
@@ -35,11 +62,22 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" />
 
+  <!-- speech recognition -->
+  <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"/>
+  <node name="static_transformer" pkg="tf" type="static_transform_publisher"
+        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <include file="$(find julius_ros)/launch/julius.launch">
+    <arg name="launch_audio_capture" value="false"/>
+  </include>
+
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
       <arg name="launch_map_server" value="false" />
     </include>
+
+    <!-- dock localization -->
+    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
 
     <!-- include fetch_navigation -->
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
@@ -47,9 +85,14 @@
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="true" />
     </include>
+    <rosparam ns="amcl">
+      update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
+      update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
+    </rosparam>
+
     <rosparam ns="move_base/global_costmap">
 inflater:
-  inflation_radius: 0.80 # 0.7
+  inflation_radius: 0.30 # 0.7
   cost_scaling_factor: 10.0 # 10.0
     </rosparam>
     <rosparam ns="move_base/local_costmap">

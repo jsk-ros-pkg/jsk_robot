@@ -1,0 +1,4 @@
+<launch>
+  <node name="run_auto_dock" pkg="roseus" type="roseus"
+        args="$(find jsk_fetch_startup)/euslisp/auto-dock.l"/>
+</launch>

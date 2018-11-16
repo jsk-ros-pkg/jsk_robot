@@ -26,7 +26,7 @@ class DBPlay(object):
         self.msg_store = MessageStoreProxy(database=self.db_name,
                                            collection=self.col_name)
         rospy.loginfo("connected to %s.%s" % (self.db_name, self.col_name))
-        self.pub = rospy.Publisher('/move_base_marker_array', MarkerArray)
+        self.pub = rospy.Publisher('/move_base_marker_array', MarkerArray, queue_size=1)
         self.marker_count = 0
 
     def run(self):
