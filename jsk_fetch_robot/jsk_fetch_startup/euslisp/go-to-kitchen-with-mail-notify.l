@@ -8,12 +8,14 @@
 (setq *mail-title* (ros::get-param "~mail_title"))
 (setq *from-address* (ros::get-param "~from_address"))
 (setq *to-address* (ros::get-param "~to_address"))
+(setq *message* (ros::get-param "~message"))
 
 
 (defun call-mail-service (place-name
                           mail-title
                           from-address
-                          to-address)
+                          to-address
+                          message)
   (let (service-request-instance)
     (setq service-request-instance (instance jsk_patrol::PatrolMailNotifyRequest :init))
     (send service-request-instance :place_name
@@ -24,6 +26,8 @@
           (instance std_msgs::String :init :data from-address))
     (send service-request-instance :to_address
           (instance std_msgs::String :init :data to-address))
+    (send service-request-instance :message
+          (instance std_msgs::String :init :data message))
     (ros::service-call "/mail_notify/notify" service-request-instance)))
 
 
@@ -38,7 +42,11 @@
   (send *fetch* :torso_lift_joint :joint-angle 400)
   (send *ri* :angle-vector (send *fetch* :angle-vector) 500)
   (unix:sleep 7) ;; wait for camera image stabilization
-  (call-mail-service *place-name* *mail-title* *from-address* *to-address*) ;; calling send mail service
+  (call-mail-service *place-name*
+                     *mail-title*
+                     *from-address*
+                     *to-address*
+                     *message*) ;; calling send mail service
   (send *ri* :speak-jp "かしゃっ")
   (send *fetch* :reset-pose)
   (send *ri* :angle-vector (send *fetch* :angle-vector) 500)
