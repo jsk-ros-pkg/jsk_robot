@@ -1,8 +1,10 @@
 (load "package://pr2eus/robot-interface.l")
-(ros::load-ros-manifest "naoqieus")
 
 (if (not (find-package "NAOQI_BRIDGE_MSGS"))
     (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
+
+(ros::load-ros-package "naoqi_bridge_msgs")
+(ros::load-ros-package "nao_interaction_msgs")
 
 (defclass naoqi-interface
   :super robot-interface
