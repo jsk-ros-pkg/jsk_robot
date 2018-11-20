@@ -297,7 +297,7 @@
        (unix:usleep (* 1000 msec))
        (send self :go-stop)
        )
-     ))
+     t))
   (:go-stop
    ()
    (send self :go-velocity 0 0 0 0 :stop nil))
