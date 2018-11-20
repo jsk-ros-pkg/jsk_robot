@@ -1,5 +1,6 @@
 (load "package://pr2eus/robot-interface.l")
 
+;; Treating naoqi_msgs as naoqi_bridge_msgs because ROS hydro uses naoqi_msgs, not naoqi_bridge_msgs
 (if (not (find-package "NAOQI_BRIDGE_MSGS"))
     (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
 
