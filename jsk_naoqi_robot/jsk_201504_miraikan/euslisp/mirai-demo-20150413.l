@@ -1,7 +1,6 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "greeting")
-(ros::load-ros-package "peppereus")
 (require :pepper-interface "package://peppereus/pepper-interface.l")
 (load "package://jsk_201504_miraikan/euslisp/pepper-motions.l")
 
