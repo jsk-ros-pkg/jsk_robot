@@ -7,6 +7,32 @@ What is this?
 Pepper@JSK introduces him/ herself.  
 Pepper can speak three languages (Japanese, Chinese and English).  
 
+Requirements
+------------
+
+- jsk_naoqi_robot environment: Please follow instructions [here](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/README.md)
+- naoqi_driver (kochigami-develop)
+- naoqi_bridge_msgs (kochigami-develop)
+
+For the time being, please use `kochigami-develop` branch of `naoqi_driver` and `naoqi_bridge_msgs`.
+
+```
+cd  catkin_ws/src
+wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
+wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
+wstool update
+cd naoqi_driver
+git remote add kochigami https://github.com/kochigami/naoqi_driver.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+
+
+cd ../naoqi_bridge_msgs
+git remote add kochigami https://github.com/kochigami/naoqi_bridge_msgs.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+```
+
 How to run demo?
 ----------------
 
