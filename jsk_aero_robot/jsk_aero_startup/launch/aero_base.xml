@@ -1,10 +1,22 @@
 <launch>
-  <arg name="machine" default="aero_c"/>
-  <arg name="map_file" default="$(find jsk_aero_startup)/raw_maps/room83a3.yaml"/>
+  <arg name="map_file" default="$(find jsk_aero_private)/83a3/raw_maps/room83a3_cost.yaml"/>
+  <arg name="keepout" default="false"/>
 
-  <include file="$(find jsk_aero_startup)/launch/wheel_with_static_map.xml">
-    <arg name="machine" value="$(arg machine)"/>
-    <arg name="map_file" value="$(arg map_file)"/>
+  <!-- bringup seed mover -->
+  <include file="$(find aero_startup)/aero_move_base/launch/wheel_bringup.launch"/>
+
+  <!-- Run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  <node name="pathmap_server" pkg="map_server" type="map_server" args="$(arg pathmap_file)" if="$(arg keepout)">
+    <remap from="map" to="pathmap"/>
+  </node>
+  <!-- <include file="$(find jsk_maps)/launch/start_map_eng2.launch"/> -->
+
+  <include file="$(find jsk_aero_startup)/jsk_aero_move_base/amcl.launch"/>
+  <include file="$(find jsk_aero_startup)/jsk_aero_move_base/move_base.xml">
+    <arg name="machine" value="aero_v"/>
+    <arg name="keepout" value="$(arg keepout)"/>
+    <arg name="keepout_file" value="$(arg keepout_file)"/>
   </include>
-</launch>
 
+</launch>
