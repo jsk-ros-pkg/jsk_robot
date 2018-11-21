@@ -2,9 +2,10 @@
 <launch>
   <arg name="keepout" default="false"/>
   <arg name="keepout_file" default="$(find jsk_aero_startup)/raw_maps/room83a3.yaml"/>
+  <arg name="machine" default="localhost"/>
 
   <node pkg="move_base" type="move_base" name="move_base"
-        respawn="false" output="screen">
+        respawn="false" output="screen" machine="$(arg machine)">
     <param name="base_global_planner" value="navfn/NavfnROS"/>
     <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
     <rosparam file="$(arg keepout_file)" command="load" if="$(arg keepout)"/>
