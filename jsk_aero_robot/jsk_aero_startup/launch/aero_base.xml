@@ -1,6 +1,7 @@
 <launch>
   <arg name="map_file" default="$(find jsk_aero_private)/83a3/raw_maps/room83a3_cost.yaml"/>
   <arg name="keepout" default="false"/>
+  <arg name="keepout_file" default="$(find jsk_aero_private)/83a3/raw_maps/room83a3_keepout.yaml"/>
 
   <!-- bringup seed mover -->
   <include file="$(find aero_startup)/aero_move_base/launch/wheel_bringup.launch"/>
