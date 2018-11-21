@@ -1,0 +1,12 @@
+plugins:
+  - {name: static_layer, type: "costmap_2d::StaticLayer" }
+  - {name: obstacle_layer, type: "costmap_2d::VoxelLayer" }
+  - {name: inflation_layer,  type: "costmap_2d::InflationLayer" }
+
+footprint: [[-0.4, -0.3], [-0.4, 0.3], [0.4, 0.3], [0.4, -0.3]]
+
+global_frame: map
+update_frequency: 5.0
+publish_frequency: 0.0
+static_map: true
+rolling_window: false

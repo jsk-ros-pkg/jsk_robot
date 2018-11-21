@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="keepout" default="false"/>
+  <arg name="keepout_file" default="$(find jsk_aero_startup)/raw_maps/room83a3.yaml"/>
+
+  <node pkg="move_base" type="move_base" name="move_base"
+        respawn="false" output="screen">
+    <param name="base_global_planner" value="navfn/NavfnROS"/>
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+    <rosparam file="$(arg keepout_file)" command="load" if="$(arg keepout)"/>
+
+    <!-- observation sources located in costmap_common.yaml -->
+    <rosparam file="$(find jsk_aero_startup)/jsk_aero_move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find jsk_aero_startup)/jsk_aero_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <!-- local costmap configuration -->
+    <rosparam file="$(find jsk_aero_startup)/jsk_aero_move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
+    <!-- glocal costmap configuration -->
+    <rosparam file="$(find jsk_aero_startup)/jsk_aero_move_base/global_costmap_params.yaml" command="load" ns="global_costmap"/>
+    <!-- For recovery Mode -->
+    <param name="/TrajectoryPlannerROS/max_rotational_vel" value="0.5"/>
+    <!-- TebLocalPlanner -->
+    <rosparam file="$(find jsk_aero_startup)/jsk_aero_move_base/TebLocalPlanner.yaml" command="load" />
+  </node>
+</launch>
