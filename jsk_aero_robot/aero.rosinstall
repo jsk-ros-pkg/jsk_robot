@@ -1,0 +1,16 @@
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
+- git:
+    local-name: seed-solutions/aero-ros-pkg
+    uri: https://github.com/seed-solutions/aero-ros-pkg.git
+    version: master
+- git:
+    local-name: sasabot/win_lin_kinect
+    uri: https://github.com/sasabot/win_lin_kinect.git
+    version: master
+- git:
+    local-name: longjie/ps4eye
+    uri: https://github.com/longjie/ps4eye.git
+    version: master

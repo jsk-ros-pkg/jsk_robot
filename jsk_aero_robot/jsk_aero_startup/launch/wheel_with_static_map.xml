@@ -1,0 +1,10 @@
+<launch>
+  <arg name="machine" default="aero_c"/>
+  <arg name="map_file" default="$(find jsk_aero_startup)/raw_maps/room83a3.yaml"/>
+
+  <node name="spawn_wheel_with_static_map"
+        pkg="jsk_aero_startup" type="wheel_with_static_map.sh"
+        args="pkg_root:=$(find jsk_aero_startup)
+              map_file:=$(arg map_file)"
+        machine="$(arg machine)" output="screen"/>
+</launch>

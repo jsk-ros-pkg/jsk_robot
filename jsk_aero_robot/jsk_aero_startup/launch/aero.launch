@@ -1,0 +1,24 @@
+<launch>
+  <arg name="use_base" default="true"/>
+  <arg name="use_ps4eye" default="true"/>
+  <arg name="use_kinect" default="true"/>
+  <arg name="use_lifelog" default="true"/>
+
+  <arg name="ROBOT" default="$(optenv ROBOT aero)"/>
+
+  <include file="$(find jsk_aero_startup)/$(arg ROBOT).machine"/>
+
+  <include file="$(find jsk_aero_startup)/launch/aero_base.xml"
+           if="$(arg use_base)"/>
+
+  <include file="$(find jsk_aero_startup)/launch/aero_sensors.xml">
+    <arg name="use_ps4eye" value="$(arg use_ps4eye)"/>
+    <arg name="use_kinect" value="$(arg use_kinect)"/>
+  </include>
+
+  <include file="$(find jsk_aero_startup)/launch/aero_lifelog.xml"
+           if="$(arg use_lifelog)" />
+
+  <node name="tf2_buffer_server" pkg="tf2_ros" type="buffer_server"/>
+
+</launch>

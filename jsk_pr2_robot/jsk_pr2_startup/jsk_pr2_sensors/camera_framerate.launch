@@ -1,5 +1,5 @@
 <launch>
-  <arg name="framerate" default="1.0" />
+  <arg name="framerate" default="3.0" />
   <node pkg="dynamic_reconfigure" type="dynparam"
         name="$(anon l_forearm_cam_framerate)"
         args="set --timeout=10 /l_forearm_cam imager_rate $(arg framerate)" />

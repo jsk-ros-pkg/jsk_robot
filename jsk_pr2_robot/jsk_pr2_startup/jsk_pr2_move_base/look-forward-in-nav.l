@@ -44,11 +44,11 @@
 
     (when *look-enable*
       (if (< 500 (norm (send tra :worldpos)))
-	  (send *pr2* :head :look-at (v+ #f(0 0 1300) (send tra :worldpos)))
-	(send *pr2* :head :look-at #f(0 0 1300)))
+          (send *pr2* :head :look-at (v+ #f(0 0 1300) (send tra :worldpos)))
+          (send *pr2* :head :look-at #f(1000 0 1300)))
       (if (> (abs (send *pr2* :head :neck-p :joint-angle)) 30)
-	  (ros::ros-error "error head ik ~A ~A" av (v+ #f(0 0 1300) (send tra :worldpos)))
-	(send *ri* :head-angle-vector (send *pr2* :angle-vector) 500)))
+          (ros::ros-error "error head ik ~A ~A" av (v+ #f(0 0 1300) (send tra :worldpos)))
+          (send *ri* :head-angle-vector (send *pr2* :angle-vector) 1000)))
 
     (when (and (< 3.0 (send (ros::time- (ros::time-now) *speak-timestamp*) :to-sec))
 	       (< 1000 (norm (send tra :worldpos))))
@@ -66,15 +66,13 @@
     ))
 
 ;; init
-(pr2)
-(unless (boundp '*ri*) (setq *ri* (instance pr2-interface :init)))
-(unless (boundp '*tfl*) (setq *tfl*  (instance ros::transform-listener :init)))
+(pr2-init)
+(defparameter *tfl* (instance ros::transform-listener :init))
 (ros::subscribe "/move_base_node/DWAPlannerROS/global_plan"
 		nav_msgs::Path #'global-path-cb 1)
 ;; look straight when navigation retries
 (ros::subscribe "/move_base/result"
-		move_base_msgs::MoveBaseActionResult #'result-cb 1)
-(ros::advertise "robotsound" sound_play::SoundRequest 5)
+                move_base_msgs::MoveBaseActionResult #'result-cb 1)
 
 (unix::sleep 1)
 
@@ -82,9 +80,8 @@
 (send *pr2* :angle-vector (send *ri* :state :potentio-vector))
 
 ;;
-(ros::rate 5)
 (while (ros::ok)
+  (ros::rate 1)
   (ros::sleep)
   (ros::spin-once)
   (look-at-front))
-

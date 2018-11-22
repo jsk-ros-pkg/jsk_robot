@@ -11,6 +11,8 @@
   <arg name="use_gmapping" default="true"/>
   <arg name="use_rtabmap" default="false"/>
   <arg name="imu_topic" default="/imu"/>
+  <arg name="base_odom_topic" default="/odom"/>
+  <arg name="base_link_frame" default="BODY"/>
 
   <!-- Add slam laser pointcloud nodes to multisense_laser nodelet -->
   <include file="$(find jsk_robot_startup)/launch/slam_laser_nodelets.launch" if="$(arg set_slam_laser_params)">
@@ -41,12 +43,15 @@
       <arg name="parameter_yaml" value="$(arg parameter_yaml)"/>
       <arg name="use_slam_feedback" value="$(arg use_slam_feedback)"/>
       <arg name="imu_topic" value="$(arg imu_topic)"/>
+      <arg name="base_odom_topic" value="$(arg base_odom_topic)"/>
+      <arg name="base_link_frame" value="$(arg base_link_frame)"/>
     </include>
 
     <include file="$(find jsk_robot_startup)/launch/gmapping.launch" if="$(arg use_gmapping)">
       <arg name="cloud_in" value="/slam_distance_filtered_laser_snapshots/output_cloud" />
       <arg name="odom_frame" value="biped_odom_particle" if="$(arg use_particle_odom)"/> <!-- map->biped_odom_particle->odom_init -->
       <arg name="odom_frame" value="odom_init" unless="$(arg use_particle_odom)"/> <!-- map->odom_init -->
+      <arg name="scan_frame_parent" value="$(arg base_link_frame)"/>
       <arg name="scan_height" value="$(arg slam_laser_scan_height)" />
       <arg name="max_height" value="$(arg slam_laser_max_height)" />
       <arg name="min_height" value="$(arg slam_laser_min_height)" />
@@ -66,7 +71,7 @@
       <arg name="use_stereo_odometry" default="false" />
       <arg name="use_rtabmap" default="true" />
       <arg name="odom_topic" default="/biped_odom_particle" /> <!-- only used when use_stereo_odometry is false -->
-      <arg name="base_frame_id" default="BODY" />
+      <arg name="base_frame_id" default="$(arg base_link_frame)" />
       <arg name="odom_frame_id" default="biped_odom_particle" />
       <arg name="map_frame_id" default="map" />
       <arg name="publish_tf" default="true" />
@@ -80,7 +85,7 @@
       <param name="~map_frame" value="map"/>
       <param name="~particle_frame" value="biped_odom_particle"/>
       <param name="~odom_frame" value="odom_init"/>
-      <param name="~base_frame" value="BODY"/>
+      <param name="~base_frame" value="$(arg base_link_frame)"/>
       <param name="~scan_frame" value="pointcloud_to_scan_base"/>
     </node>    
   </group>

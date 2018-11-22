@@ -1,8 +1,11 @@
 (ros::roseus "fetch")
 
 (require "package://fetcheus/fetch-utils.l")
-(require "package://pr2eus/pr2-interface.l")
+(require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
+
+(ros::load-ros-package "fetcheus")
+(ros::load-ros-package "fetch_driver_msgs")
 
 (defclass fetch-interface
   :super robot-move-base-interface
@@ -11,10 +14,11 @@
 
 (defmethod fetch-interface
   (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom" :base-controller-action-name nil args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
+     (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
      (setq gripper-action
            (instance ros::simple-action-client :init
                      "/gripper_controller/gripper_action"
@@ -23,7 +27,39 @@
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
      ))
-  (:angle-vector-raw (&rest args) (send-super* :angle-vector args))
+  (:state (&rest args)
+   ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
+   (send-super* :state (if (member :wait-until-update args) args (append args (list :wait-until-update t)))))
+  (:check-continuous-joint-move-over-180 ;; can be removed if http//github.com/jsk-ros-pkg/jsk_pr2eus/pull/322 merged
+   (diff-av)
+   (let ((i 0) add-new-trajectory-point)
+     (dolist (j (send robot :joint-list))
+       ;; for continuous rotational joint
+       (when (and (> (- (send j :max-angle) (send j :min-angle)) 360)
+                  (> (abs (elt diff-av i)) 180))
+         (ros::ros-warn "continuous joint (~A) moves ~A degree, commanded joint differs from original trajectory to avoid unintentional 360 rotation" (send j :name) (elt diff-av i))
+         (setq add-new-trajectory-point t))
+       (incf i (send j :joint-dof)))
+     add-new-trajectory-point))
+  (:angle-vector-raw (av &optional (tm 3000) &rest args)
+   (let* ((prev-av (send self :state :potentio-vector :wait-until-update t))
+          (diff-av (v- av prev-av)))
+     (when (send self :check-continuous-joint-move-over-180 diff-av)
+       (let* (avs (minjerk (instance minjerk-interpolator :init))
+                  (scale-av (send self :sub-angle-vector av prev-av))
+                  dist div)
+         (setq dist (abs (geo::find-extream (coerce diff-av cons) #'abs #'>=)))
+         (setq div (round (/ dist 120.0)))
+         (send minjerk :reset
+               :position-list (list prev-av (v+ prev-av scale-av))
+               :time-list (list tm))
+         (send minjerk :start-interpolation)
+         (send minjerk :pass-time (/ tm div))
+         (dotimes (i div)
+           (setq avs (append avs (list (send minjerk :pass-time (/ tm div))))))
+         (send* self :angle-vector-sequence-raw avs (make-list div :initial-element (/ tm div)) args)
+         (return-from :angle-vector-raw (car (last avs)))))
+     (send-super* :angle-vector av tm args)))
   (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
@@ -43,7 +79,7 @@
              start-time (cadr args)
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
-   (if (member :start-time args) (setq use-torso (cadr (member :start-time args))))
+   (if (member :start-time args) (setq start-time (cadr (member :start-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
@@ -113,14 +149,17 @@
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (list "head_pan_joint" "head_tilt_joint")))))
   (:start-grasp
-    (&key (effort) (wait t))
-    (send self :go-grasp :pos 0 :effort effort :wait wait))
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp :pos 0 args))
   (:stop-grasp
-    (&key (effort) (wait t))
-    (send self :go-grasp :pos 0.1 :effort effort :wait wait))
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp :pos 0.1 args))
   (:go-grasp
-    (&key (pos 0) (effort) (wait t))
-    (setq effort (or effort 40))
+    (&key (pos 0) (effort 50) (wait t))
+    (when (send self :simulation-modep)
+      (send robot :l_gripper_finger_joint :joint-angle (/ (* pos 1000) 2)) ;; m -> mm
+      (send robot :r_gripper_finger_joint :joint-angle (/ (* pos 1000) 2))
+      (return-from :go-grasp t))
     (let (goal result)
       (setq goal (instance control_msgs::GripperCommandActionGoal :init))
       (send goal :goal :command :position pos)
@@ -129,20 +168,163 @@
       (when wait (send gripper-action :wait-for-result))
       (setq result (send gripper-action :get-result))
       result))
+  (:fetch-gripper-state-callback
+    (msg)
+    (let ((msg (car (send msg :joints))))
+      (dolist (slot '((position . 2) (velocity . 2) (effort . 1)))
+	(send self :set-robot-state1 (intern (format nil "GRIPPER-~A" (string (car slot))) *keyword-package*) (* (cdr slot) (send msg (intern (string (car slot)) *keyword-package*)))))))
+  (:gripper (key)
+   "get information about gripper
+Arguments:
+ - key (:position :velocity :effort)
+Example: (send self :gripper :position) => 0.00"
+   (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
   ;;
-  (:speak (text &rest args)
-    (let ()
-      (apply #'speak-en text :topic-name "/sound_play" args)))
+  (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak text :topic-name topic-name args))
+  (:speak-en (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak-en text :topic-name topic-name args))
+  (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
+    (send-super* :speak-jp text :topic-name topic-name args))
   )
+
+;; interface for simple base actions
+(defmethod fetch-interface
+  (:send-cmd-vel-raw (x d &key (topic-name "/base_controller/command"))
+    (when (send self :simulation-modep)
+      (return-from :send-cmd-vel-raw t))
+    (unless (ros::get-topic-publisher topic-name)
+      (ros::advertise topic-name geometry_msgs::Twist 1)
+      (unix:sleep 1))
+    (let ((msg (instance geometry_msgs::Twist :init)))
+      (send msg :linear :x x)
+      (send msg :angular :z d)
+      (ros::publish topic-name msg)))
+  (:go-velocity
+    (x y d ;; [m/sec] [m/sec] [rad/sec]
+       &optional (msec 1000) ;; msec is total animation time [msec]
+       &key (stop t) (wait t))
+    (unless (not (zerop y))
+      (ros::ros-error
+        "Setting velocity in y-axis is not valid for non-holonomic robot")
+      (return-from :go-velocity nil))
+    (unless wait
+      (ros::ros-error ":go-velocity without wait is unsupported")
+      (return-from :go-velocity nil))
+    (setq msec (- msec (ros::get-param "/base_controller/timeout" 0.25)))
+    (ros::rate 100)
+    (let ((start-time (ros::time-now)))
+      (while (and (ros::ok)
+                  (< (* 1000.0 (send (ros::time- (ros::time-now) start-time) :to-sec)) msec))
+        (send self :spin-once)
+        (send self :send-cmd-vel-raw x d)
+        (ros::sleep)))
+    (when stop
+      (send self :send-cmd-vel-raw 0 0))
+    (ros::rate 10)
+    t)
+  (:go-pos-unsafe
+    (&rest args)
+    (send self :put :go-pos-unsafe-no-wait-goal (coerce args float-vector))
+    (send self :go-pos-unsafe-wait)
+    t)
+  (:go-pos-unsafe-no-wait
+    (x y &optional (d 0)) ;; [m] [m] [degree]
+    (ros::ros-warn ":go-pos-unsafe-no-wait is not supported for this robot.")
+    (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
+    t)
+  (:go-pos-unsafe-wait
+    (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
+          (translation-gain 1.0) (rotation-gain 1.0))
+    (unless (send self :get :go-pos-unsafe-no-wait-goal)
+      (ros::ros-error ":go-pos-unsafe-wait is called without goal")
+      (return-from :go-pos-unsafe-wait nil))
+    (ros::rate 100)
+    (labels ((shortest-angle
+              (d0 d1)
+              (atan2 (sin (- d0 d1)) (cos (- d0 d1)))))
+      (let* ((goal (send self :get :go-pos-unsafe-no-wait-goal))
+             (x (aref goal 0))
+             (y (aref goal 1))
+             (d (aref goal 2))
+             (forward-p (>= x 0))
+             (d0 (if forward-p (atan2 y x) (atan2 (- y) (- x))))
+             (d1 (distance (float-vector 0 0) (float-vector x y)))
+             (d2 (shortest-angle (- d d0) 0))
+             org-cds cur-cds diffrot diffpos err)
+        (send self :remprop :go-pos-unsafe-no-wait-goal)
+
+        ;; yaw-x-yaw approach
+        (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)" d0 d1 d2)
+
+        ;; yaw
+        (send self :spin-once)
+        (setq org-cds (send self :state :odom :pose))
+        (ros::ros-debug "org-cds: ~A" org-cds)
+        (while (ros::ok)
+          (send self :spin-once)
+          (setq cur-cds (send self :state :odom :pose))
+          (setq diffrot (aref (send org-cds :difference-rotation cur-cds) 2))
+          (setq err (shortest-angle d0 diffrot))
+          (ros::ros-debug "diffrot: ~A, err: ~A" diffrot err)
+          (when (< (abs err) rotation-threshold)
+            (unless (send self :simulation-modep)
+              (send self :send-cmd-vel-raw 0 0)) ;; stop
+            (return))
+          (when (send self :simulation-modep)
+            (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
+            (send self :draw-objects))
+          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (ros::sleep))
+
+        ;; x
+        (setq org-cds (send self :state :odom :pose))
+        (while (ros::ok)
+          (send self :spin-once)
+          (setq cur-cds (send self :state :odom :pose))
+          (setq diffpos (* 0.001 (norm (send org-cds :difference-position cur-cds))))
+          (setq err (- d1 diffpos))
+          (ros::ros-debug "diffpos: ~A, err: ~A" diffpos err)
+          (when (< (abs err) translation-threshold)
+            (send self :send-cmd-vel-raw 0 0) ;; stop
+            (return))
+          (when (send self :simulation-modep)
+            (send self :robot :newcoords
+                  (send (send self :robot :copy-worldcoords)
+                        :translate (float-vector
+                                    (if forward-p 0.1 -0.1) 0 0)))
+            (send self :draw-objects))
+          (send self :send-cmd-vel-raw
+                (* translation-gain (if forward-p err (- err))) 0)
+          (ros::sleep))
+
+        ;; yaw
+        (setq org-cds (send self :state :odom :pose))
+        (while (ros::ok)
+          (send self :spin-once)
+          (setq cur-cds (send self :state :odom :pose))
+          (setq diffrot (aref (send org-cds :difference-rotation cur-cds) 2))
+          (setq err (shortest-angle d2 diffrot))
+          (ros::ros-debug "diffrot: ~A, err: ~A" diffrot err)
+          (when (< (abs err) rotation-threshold)
+            (send self :send-cmd-vel-raw 0 0) ;; stop
+            (return))
+          (when (send self :simulation-modep)
+            (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
+            (send self :draw-objects))
+          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (ros::sleep))
+        t)))
+) ;; fetch-interface (simple base actions)
 
 (defun fetch-init (&optional (create-viewer))
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
-  
+
   (ros::spin-once)
   (send *ri* :spin-once)
-  
+
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
   (when create-viewer (objects (list *fetch*)))
   )

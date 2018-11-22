@@ -11,13 +11,18 @@
   <url>http://ros.org/wiki/jsk_fetch_startup</url>
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend version_gte="0.7.11">fetch_teleop</build_depend>
+
+  <run_depend>image_proc</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>jsk_maps</run_depend>
+  <run_depend>fetcheus</run_depend>
   <run_depend>fetch_navigation</run_depend>
   <run_depend>fetch_moveit_config</run_depend>
   <run_depend>fetch_driver_msgs</run_depend>
   <run_depend>rviz</run_depend>
   <run_depend>tf2_ros</run_depend>
+  <run_depend>voice_text</run_depend>
 
   <!-- for fetch_naviation -->
   <run_depend>amcl</run_depend>
@@ -30,6 +35,13 @@
   <run_depend>joy</run_depend>
   <run_depend>topic_tools</run_depend>
   <run_depend>fetch_teleop</run_depend>
+
+  <!-- for diagnostic aggregator -->
+  <run_depend>diagnostic_aggregator</run_depend>
+
+  <!-- for fetch speech recognition -->
+  <run_depend>julius_ros</run_depend>
+  <run_depend>respeaker_ros</run_depend>
 
   <test_depend>rostest</test_depend>
 

@@ -1,0 +1,60 @@
+<launch>
+  <arg name="applist"
+       doc="dirpath where *.installed file is located"/>
+
+  <arg name="launch_websocket" default="true"
+       doc="launch rosbridge_websocket if true"/>
+  <arg name="websocket_port" default="9090"
+       doc="port number for rosbridge_websocket server"/>
+
+  <arg name="launch_roswww" default="true"
+       doc="launch roswww server if true"/>
+  <arg name="roswww_port" default="8000"
+       doc="port number for roswww server"/>
+
+  <arg name="remote" default="false"
+       doc="set true with valid 'machine' argument"/>
+  <arg name="machine" default="localhost"/>
+
+  <!--
+  Even if you don't want to use machine tag, machine name still need to be set.
+  If remote is false, machine named 'localhost' is added to be run on local machine.
+  -->
+  <machine unless="$(arg remote)" name="$(arg machine)" address="localhost"/>
+
+  <group if="$(arg launch_websocket)">
+    <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket"
+          output="screen" machine="$(arg machine)">
+      <rosparam subst_value="true">
+        address: ""
+        port: $(arg websocket_port)
+        authenticate: false
+        retry_startup_delay: 5
+        delay_between_messages: 0
+        max_message_size: None
+        fragment_timeout: 600
+      </rosparam>
+    </node>
+    <node name="rosapi" pkg="rosapi" type="rosapi_node"
+          machine="$(arg machine)"/>
+  </group>
+
+  <node if="$(arg launch_roswww)"
+        name="roswww" pkg="roswww" type="webserver.py"
+        output="screen" machine="$(arg machine)"
+        args="--name roswww --webpath www --cached true
+              --port $(arg roswww_port) --start_port $(arg roswww_port) --end_port $(arg roswww_port)"/>
+
+  <!--
+  NOTE: Ensure the param '/robot/type' and '/robot/name' are defined when the nodes below are started.
+  -->
+  <node pkg="app_manager" type="appmaster" name="appmaster"
+        args="-p 11312"
+        machine="$(arg machine)"/>
+  <node pkg="app_manager" type="app_manager" name="app_manager"
+        args="--applist $(arg applist)"
+        output="screen" machine="$(arg machine)">
+    <param name="interface_master" value="http://localhost:11312"/>
+  </node>
+
+</launch>

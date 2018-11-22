@@ -11,6 +11,7 @@
   <arg name="launch_mongodb" default="true"/>
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
+  <arg name="sanity_check_joint_trajectory" default="true" />
   <arg name="start_openni" default="true"/>
   <arg name="USER_NAME" default="false"/>
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
@@ -20,8 +21,22 @@
   <node if="$(arg launch_servo)" pkg="baxter_tools" name="baxter_servo_node" type="enable_robot.py" args="-e" output="screen" clear_params="true"/>
 
   <!-- Startup joint trajectory will enable send command from eus-->
-  <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="baxter_joint_trajectory" type="joint_trajectory_action_server.py" args="--interpolation minjerk" output="screen"/>
-  <node if="$(arg launch_joint_trajectory)" pkg="baxter_interface" name="head_joint_trajectory" type="head_action_server.py" args="" output="screen"/>
+  <group if="$(arg launch_joint_trajectory)">
+    <node name="baxter_joint_trajectory"
+          pkg="baxter_interface" type="joint_trajectory_action_server.py"
+          args="--interpolation minjerk" output="screen"/>
+    <node name="head_joint_trajectory"
+          pkg="baxter_interface" type="head_action_server.py"
+          args="" output="screen"/>
+    <group if="$(arg sanity_check_joint_trajectory)">
+      <!-- sanity check of action servers -->
+      <node name="sanity_check_of_head_action_server"
+            pkg="jsk_baxter_startup" type="sanity_check_of_head_action_server.py" />
+      <node name="sanity_check_of_joint_trajectory_action_server"
+            pkg="jsk_baxter_startup" type="sanity_check_of_joint_trajectory_action_server.py" />
+    </group>
+  </group>
+
   <node if="$(arg launch_gripper_action)" pkg="baxter_interface" name="baxter_gripper_action_server" type="gripper_action_server.py" args="" output="screen"/>
 
   <!-- Use Custom OpenNI-->

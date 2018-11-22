@@ -1,6 +1,6 @@
 <launch>
   <arg name="input_cloud" default="/tilt_scan_shadow_filtered"/>
-  <!-- <arg name="input_cloud" default="/kinect_head_c2/depth_registered/points"/> -->
+  <!-- <arg name="input_cloud" default="/kinect_head/depth_registered/points"/> -->
 
   <!-- Too remove Ceiling Plane -->
   <node pkg="nodelet" type="nodelet" name="pass_through_z"

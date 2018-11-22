@@ -17,9 +17,9 @@ rosparam set robot/name pr1012 # pr1040, baxter, pepper, etc...
 
 - include `launch/mongodb.launch` in your robot startup launch file.
 
-## action_result_db.py
+## action_logger.py
 
-Save action result to mongodb
+Save action goal, result and feedback to database
 
 ### Parameters
 
@@ -32,13 +32,14 @@ Save action result to mongodb
   White list of logging action. Topics are specified with `name` or `type`
   
   e.g.:
-  
-  ```yaml
+
+```yaml
 name:
 - /r_arm_controller/follow_joint_trajectory/result
 type:
 - JointTrajectoryActionGoal
 - JointTrajectoryActionResult
+- JointTrajectoryActionFeedback
 - PointHeadActionGoal
 - PointHeadActionResult
 ```
@@ -49,9 +50,9 @@ type:
 
   see `~white_list` for example.
 
-## move_base_db.py
+## base_trajectory_logger.py
 
-Save base trajectory to mongodb
+Save base trajectory to database
 
 ### Parameters
 
@@ -67,9 +68,9 @@ Save base trajectory to mongodb
 
   robot base tf frame
   
-## objectdetection_db.py
+## object_detection_logger.py
 
-Save object detection result to mongodb
+Save object detection result to database
 
 ### Parameters
 

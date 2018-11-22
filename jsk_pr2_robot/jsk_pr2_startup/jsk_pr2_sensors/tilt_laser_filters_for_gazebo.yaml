@@ -10,7 +10,7 @@ scan_filter_chain:
     neighbors: 20
     window: 1
 - name: angular_bounds
-  type: LaserScanAngularBoundsFilter
+  type: laser_filters/LaserScanAngularBoundsFilter
   params:
     lower_angle: -1.22173048
     upper_angle: 1.22173048

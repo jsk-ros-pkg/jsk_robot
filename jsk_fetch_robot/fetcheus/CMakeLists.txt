@@ -7,7 +7,10 @@ if($ENV{ROS_DISTRO} STREQUAL "hydro")
   return()
 endif()
 
-find_package(catkin REQUIRED fetch_description)
+find_package(catkin REQUIRED
+    fetch_description
+    roseus # required in indigo
+)
 
 catkin_package()
 
@@ -60,7 +63,10 @@ install(FILES fetch.dae fetch.l fetch-interface.l fetch-utils.l fetch.yaml DESTI
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(test/fetcheus.test)
-  add_rostest(test/fetch-moveit.test)
+  find_package(fetch_gazebo QUIET)
+  if(fetch_gazebo_FOUND)
+    add_rostest(test/fetch-moveit.test)
+  endif()
 endif()
 
 
