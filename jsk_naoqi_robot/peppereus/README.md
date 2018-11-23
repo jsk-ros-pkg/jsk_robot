@@ -1,6 +1,8 @@
 peppereus
 =========
 
+This is a NAO-specific package for roseus interface.
+
 How to make pepper model on euslisp
 -----------------------------------
 
@@ -25,6 +27,18 @@ or
 (load "package://peppereus/pepper-interface.l") ;; load modules
 (pepper-init)
 ```
+
+How to try methods
+------------------
+
+1. [roslaunch jsk_pepper_startup.launch](../jsk_pepper_statup/README.md)
+2. Please refer to `Control Pepper via roseus`.
+3. Please try methods, you can refer to the explanations below how to try them.
+
+Methods
+-------
+
+TODO
 
 Joints of Pepper
 ----------------
