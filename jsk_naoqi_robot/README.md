@@ -92,6 +92,33 @@ wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
+Interface when controlling NAO and Pepper via roseus
+----------------------------------------------------
+
+Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver` and `naoqi_bridge_msgs` as follows:
+
+```
+cd catkin_ws/src
+wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
+git remote add kochigami https://github.com/kochigami/naoqi_driver.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+
+wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
+git remote add kochigami https://github.com/kochigami/naoqi_bridge_msgs.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+```
+
+In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+
+NAO & Pepper
+------------
+
+[**_naoqieus_**](naoqieus/README.md)
+  - common interface package for controlling NAO and Pepper via roseus
+
 NAO
 ---
 
