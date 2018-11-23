@@ -10,9 +10,31 @@ How to try methods
 
 1. [roslaunch jsk_pepper_startup.launch](../jsk_pepper_statup/README.md) or [roslaunch jsk_nao_startup.launch](../jsk_nao_statup/README.md)
 2. [launch peppereus](../peppereus/README.md) or [launch naoeus](../naoeus/README.md). Please refer to `Control NAO/ Pepper via roseus`.
-3. Please try methods, you can refer to the explanations below how to try them.
+3. Please try methods, you can refer to the explanations below how to try them. If there is a sign of `kochigami-develop`, please follow (Interface when controlling NAO and Pepper via roseus)[../README.md].  
 
 Methods
 -------
 
-TODO
+- `:set-master-volume volume` (kochigami-develop)
+
+Sets the overall output volume of the system.  
+
+`volume`: volume (int 0-100)
+
+(ALAudioDeviceProxy::setOutputVolume)[http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api]  
+(related PR)[https://github.com/jsk-ros-pkg/jsk_robot/pull/814]
+
+```
+send *ri* :set-master-volume 30 ; set master volume as 30 (0~100)
+```
+
+- `:get-master-volume` (kochigami-develop)
+
+Gets the overall output volume of the system.  
+(ALAudioDeviceProxy::getOutputVolume)[http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api]  
+(related PR)[https://github.com/jsk-ros-pkg/jsk_robot/pull/814]  
+
+```
+2.irteusgl$ send *ri* :get-master-volume
+30 ; master volume is set as 30
+```

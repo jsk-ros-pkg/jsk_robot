@@ -33,7 +33,7 @@ How to try methods
 
 1. [roslaunch jsk_nao_startup.launch](../jsk_nao_statup/README.md)
 2. Please refer to `Control NAO via roseus`.
-3. Please try methods, you can refer to the explanations below how to try them.
+3. Please try methods, you can refer to the explanations below how to try them. If there is a sign of `kochigami-develop`, please follow (Interface when controlling NAO and Pepper via roseus)[../README.md]. 
 
 Methods
 -------
