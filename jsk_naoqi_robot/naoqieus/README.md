@@ -15,7 +15,21 @@ How to try methods
 Methods
 -------
 
-- `:set-master-volume volume` (kochigami-develop)
+- `:animated-speak str` (naoqi_bridge [kochigami-develop]/ animated_speech.launch)
+
+Speak a sentence and animate it.  
+
+`str`: speech sentence (str)
+
+[ALAnimatedSpeechProxy::say](http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech-api.html#ALAnimatedSpeechProxy::say__ssCR)
+[related commit (not a PR to master)](https://github.com/kochigami/naoqi_bridge/tree/add-animated-speak)
+
+```
+; Robot speaks the sentence with some gesture.
+send *ri* :animated-speak "Hello. Nice to meet you."
+```
+
+- `:set-master-volume volume` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
 
 Sets the overall output volume of the system.  
 
@@ -28,7 +42,7 @@ Sets the overall output volume of the system.
 send *ri* :set-master-volume 30 ; set master volume as 30 (0~100)
 ```
 
-- `:get-master-volume` (kochigami-develop)
+- `:get-master-volume` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
 
 Gets the overall output volume of the system.  
 [ALAudioDeviceProxy::getOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)  
@@ -39,7 +53,7 @@ Gets the overall output volume of the system.
 30 ; master volume is set as 30
 ```
 
-- `:fade-leds led_name r g b a sec` (kochigami-develop)
+- `:fade-leds led_name r g b a sec` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
 
 Sets the color of an RGB led using RGB color code.  
 
@@ -55,7 +69,7 @@ Sets the color of an RGB led using RGB color code.
 ```
 send *ri* :fade-leds "FaceLeds" 0.5 0.5 0 0 1 ;; Robot's eyes become yellow in a 1 sec.
 ```
-- `:reset-leds led_name` (kochigami-develop)
+- `:reset-leds led_name` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
 
 Set a LED or Group of LEDs to their default state.  
 

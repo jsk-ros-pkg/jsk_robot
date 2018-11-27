@@ -96,12 +96,17 @@ Interface when controlling NAO and Pepper via roseus
 ----------------------------------------------------
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
-For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver` and `naoqi_bridge_msgs` as follows:
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
 
 ```
 cd catkin_ws/src
 wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
 git remote add kochigami https://github.com/kochigami/naoqi_driver.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+
+wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
+git remote add kochigami https://github.com/kochigami/naoqi_bridge.git
 git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 
