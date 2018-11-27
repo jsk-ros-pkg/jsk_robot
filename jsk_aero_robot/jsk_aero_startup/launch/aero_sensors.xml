@@ -1,20 +1,20 @@
 <launch>
-  <arg name="use_kinect" default="true"/>
-  <arg name="use_ps4eye" default="true"/>
+  <arg name="use_zed" default="true"/>
 
-  <group if="$(arg use_ps4eye)">
-    <include file="$(find jsk_aero_startup)/launch/ps4eye_local.launch">
-      <arg name="machine" value="aero_c"/>
-    </include>
+  <arg name="parent_frame" default="/head_base_link" />
+  <arg name="parent_transform" default="0.10 0.0 0.08 0 0 0" />
+  <arg name="parent_depth_transform" default="0.08 0.0 0.08 -1.570791 0 -1.570791" />
 
-    <include file="$(find jsk_aero_startup)/launch/ps4eye_remote.launch"/>
+  <group if="$(arg use_zed)">
+    <node name="camera_transform" pkg="tf"
+          type="static_transform_publisher"
+          args="$(arg parent_transform) $(arg parent_frame) /zed_center 10"/>
+
+    <node name="depth_camera_transform" pkg="tf"
+          type="static_transform_publisher"
+          args="$(arg parent_depth_transform) $(arg parent_frame) /zed_depth_camera 10"/>
+
+    <include file="$(find zed_wrapper)/launch/zed.launch"/>
   </group>
 
-  <group if="$(arg use_kinect)">
-    <include file="$(find linux_kinect)/launch/kinect_rgbd_interaction.launch">
-      <arg name="log" value="true"/>
-      <arg name="frame" value="dynamic_kinect_frame"/>
-      <arg name="localradius_r" value="4.0"/>
-    </include>
-  </group>
 </launch>
