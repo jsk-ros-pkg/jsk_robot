@@ -42,7 +42,7 @@ Methods
 
 By using tablet-related methods, we can show image, app, html file and web page on the tablet.  
 
-- `:show-image file` (kochigami-develop/tablet.launch) 
+- `:show-image file` (naoqi_bridge [kochigami-develop]/ tablet.launch) 
 
 Show an image on the tablet, using the cache. The image should be under `/home/nao/.local/share/PackageManager/apps/<Folder path>/html/` inside a robot.  
 (Default is "/home/nao/.local/share/PackageManager/apps/img/html/")  You can change 'Folder path' by using `:set-show-image-folder-path name`.
@@ -59,7 +59,7 @@ send *ri* :show-image "test.jpg"
 ; The ip of the robot from the tablet is 198.18.0.1, and this parent service actually calls ALTabletService::showImage("http://198.18.0.1/img/test.jpg").
 ```
 
-- `:set-show-image-folder-path name` (kochigami-develop/tablet.launch)
+- `:set-show-image-folder-path name` (naoqi_bridge [kochigami-develop]/ tablet.launch)
 
 Change the path of a file which you want to show on the tablet. This method changes the part of `Folder path` in `/home/nao/.local/share/PackageManager/apps/<Folder path>/html/`.  
 
@@ -77,7 +77,7 @@ send *ri* :set-show-image-folder-path "aaa/bbb"
 send *ri* :show-image "test.jpg"
 ```
 
-- `:get-show-image-folder-path` (kochigami-develop/tablet.launch)
+- `:get-show-image-folder-path` (naoqi_bridge [kochigami-develop]/ tablet.launch)
 
 Get the current path of a file which you want to show on the tablet.  
 
@@ -88,7 +88,7 @@ send *ri* :get-show-image-folder-path
 "/home/nao/.local/share/PackageManager/apps/img/html/"
 ```
 
-- `:show-app app` (kochigami-develop/tablet.launch)
+- `:show-app app` (naoqi_bridge [kochigami-develop]/ tablet.launch)
 
 Start new application on tablet and shows it. The index.html file of the app should be in /home/nao/.local/share/PackageManager/apps/<app>/html/. 'app' is a parameter of this method.
 
@@ -103,7 +103,7 @@ Start new application on tablet and shows it. The index.html file of the app sho
 send *ri* :show-app "img"
 ```
 
-- `:show-webview url` (kochigami-develop/tablet.launch)
+- `:show-webview url` (naoqi_bridge [kochigami-develop]/ tablet.launch)
 
 Display the webview on the tablet and load the url.
 
@@ -116,7 +116,7 @@ Display the webview on the tablet and load the url.
 send *ri* :show-webview "http://www.jsk.t.u-tokyo.ac.jp/index-j.html"
 ```
 
-- `:hide-image` (kochigami-develop/tablet.launch)
+- `:hide-image` (naoqi_bridge [kochigami-develop]/ tablet.launch)
 
 Hide image currently displayed. This method deletes every image, app, webview and shows Pepper's bubbles.  
 
