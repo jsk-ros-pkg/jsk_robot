@@ -1,6 +1,6 @@
 <launch>
   <machine name="aero_v" address="aero_v"
            user="leus"
-           env-loader="/home/leus/seisakuten_ws/devel/env.sh"/>
+           env-loader="/home/leus/ros/kinetic/devel/env.sh"/>
   <machine name="aero_c" address="aero_c" default="true"/>
 </launch>
