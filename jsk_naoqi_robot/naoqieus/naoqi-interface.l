@@ -1,8 +1,11 @@
 (load "package://pr2eus/robot-interface.l")
-(ros::load-ros-manifest "naoqieus")
 
+;; Treating naoqi_msgs as naoqi_bridge_msgs because ROS hydro uses naoqi_msgs, not naoqi_bridge_msgs
 (if (not (find-package "NAOQI_BRIDGE_MSGS"))
     (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
+
+(ros::load-ros-package "naoqi_bridge_msgs")
+(ros::load-ros-package "nao_interaction_msgs")
 
 (defclass naoqi-interface
   :super robot-interface
@@ -294,7 +297,7 @@
        (unix:usleep (* 1000 msec))
        (send self :go-stop)
        )
-     ))
+     t))
   (:go-stop
    ()
    (send self :go-velocity 0 0 0 0 :stop nil))
