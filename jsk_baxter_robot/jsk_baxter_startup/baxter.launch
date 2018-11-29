@@ -7,8 +7,8 @@
   <arg name="launch_voice_echo" default="true"/>
   <arg name="launch_moveit" default="true"/>
   <arg name="launch_teleop" default="false"/>
-  <arg name="launch_tweet" default="true"/>
-  <arg name="launch_mongodb" default="true"/>
+  <arg name="launch_tweet" default="false"/>
+  <arg name="launch_mongodb" default="false"/>
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="sanity_check_joint_trajectory" default="true" />
