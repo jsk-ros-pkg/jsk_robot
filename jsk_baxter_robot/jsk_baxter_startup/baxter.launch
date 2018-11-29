@@ -1,7 +1,7 @@
 <launch>
   <arg name="launch_servo" default="true"/>
   <arg name="launch_joint_trajectory" default="true"/>
-  <arg name="launch_gripper_action" default="true"/>
+  <arg name="launch_gripper_action" default="false"/>
   <arg name="launch_openni" default="false"/>
   <arg name="launch_kinect2" default="false"/>
   <arg name="launch_voice_echo" default="true"/>
@@ -74,8 +74,8 @@
 
   <include if="$(arg launch_moveit)"
            file="$(find jsk_baxter_startup)/jsk_baxter_moveit/moveit.launch" >
-      <arg name="left_electric_gripper" value="$(arg launch_gripper_action)" />
-      <arg name="right_electric_gripper" value="$(arg launch_gripper_action)" />
+      <arg name="left_electric_gripper" value="$(arg left_electric_gripper)" />
+      <arg name="right_electric_gripper" value="$(arg right_electric_gripper)" />
   </include>
 
   <!-- Do teleop with baxter_examples' joint_position_joystick.py-->
