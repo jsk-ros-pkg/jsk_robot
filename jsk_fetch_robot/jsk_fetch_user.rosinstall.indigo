@@ -1,0 +1,12 @@
+# This file is for work space in indigo user PC.
+
+# For proximity sensor on fetch hand.
+- git:
+    local-name: FA-I-sensor
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+    version: master
+# TODO(furushchev): describe why this is needed.
+- git:
+    local-name: ros-drivers/audio_common
+    uri: https://github.com/furushchev/audio_common.git
+    version: device
