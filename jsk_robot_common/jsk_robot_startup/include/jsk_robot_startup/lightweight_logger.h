@@ -41,8 +41,13 @@
 #ifndef LIGHTWEIGHT_LOGGER_H__
 #define LIGHTWEIGHT_LOGGER_H__
 
+#include <diagnostic_updater/diagnostic_updater.h>
+#include <diagnostic_updater/publisher.h>
 #include <topic_tools/shape_shifter.h>
+#include <jsk_topic_tools/diagnostic_utils.h>
 #include <jsk_topic_tools/stealth_relay.h>
+#include <jsk_topic_tools/timered_diagnostic_updater.h>
+#include <jsk_topic_tools/vital_checker.h>
 #include <mongodb_store/message_store.h>
 
 
@@ -55,11 +60,18 @@ namespace jsk_robot_startup
     protected:
       virtual void onInit();
       virtual void inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event);
+      virtual void updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat);
 
       boost::shared_ptr<mongodb_store::MessageStoreProxy> msg_store_;
       bool wait_for_insert_;
       bool initialized_;
       std::string input_topic_name_;
+
+      // diagnostics
+      ros::Time init_time_;
+      uint64_t inserted_count_, insert_error_count_, prev_insert_error_count_;
+      jsk_topic_tools::VitalChecker::Ptr vital_checker_;
+      jsk_topic_tools::TimeredDiagnosticUpdater::Ptr diagnostic_updater_;
     };
   }
 }
