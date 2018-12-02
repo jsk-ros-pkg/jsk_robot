@@ -24,6 +24,7 @@
    (ros::advertise (format nil "~A/cmd_vel" group-namespace) geometry_msgs::Twist 1)
    (ros::advertise (format nil "~A/speech" group-namespace) std_msgs::String 1)
    (ros::advertise (format nil "~A/~A/pose/joint_angles" group-namespace naoqi-namespace) naoqi_bridge_msgs::JointAnglesWithSpeed 1)
+   (ros::advertise (format nil "~A/animated_speech" group-namespace) std_msgs::String 1)
    (ros::advertise (format nil "~A/RightHand_controller/command" dcm-namespace) trajectory_msgs::JointTrajectory 1)
    (ros::advertise (format nil "~A/LeftHand_controller/command" dcm-namespace)  trajectory_msgs::JointTrajectory 1)
    (setq joint-stiffness-trajectory-action
@@ -255,6 +256,12 @@
    (let ((speech_msg (instance std_msgs::String :init)))
      (send speech_msg :data str)
      (ros::publish (format nil "~A/speech" group-namespace) speech_msg))
+   )
+  (:animated-speak
+   (str)
+   (let ((animated_speech_msg (instance std_msgs::String :init)))
+     (send animated_speech_msg :data str)
+     (ros::publish (format nil "~A/animated_speech" group-namespace) animated_speech_msg))
    )
   ;;
   (:go-pos
