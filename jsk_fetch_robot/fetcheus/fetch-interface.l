@@ -4,7 +4,8 @@
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 
-(ros::load-ros-manifest "fetcheus")
+(ros::load-ros-package "fetcheus")
+(ros::load-ros-package "fetch_driver_msgs")
 
 (defclass fetch-interface
   :super robot-move-base-interface
@@ -78,7 +79,7 @@
              start-time (cadr args)
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
-   (if (member :start-time args) (setq use-torso (cadr (member :start-time args))))
+   (if (member :start-time args) (setq start-time (cadr (member :start-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
@@ -179,9 +180,12 @@ Arguments:
 Example: (send self :gripper :position) => 0.00"
    (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
   ;;
-  (:speak (text &rest args)
-    (let ()
-      (send-super* :speak text :topic-name "/sound_play" args)))
+  (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak text :topic-name topic-name args))
+  (:speak-en (text &rest args &key (topic-name "sound_play") &allow-other-keys)
+    (send-super* :speak-en text :topic-name topic-name args))
+  (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
+    (send-super* :speak-jp text :topic-name topic-name args))
   )
 
 ;; interface for simple base actions

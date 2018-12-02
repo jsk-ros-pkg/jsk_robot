@@ -42,9 +42,13 @@ First, you need to install ros. For ros indigo, please refer to install guide li
 mkdir -p catkin_ws/src
 cd  catkin_ws
 wstool init src
-wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch.rosinstall
+if [ $ROS_DISTRO = "indigo" ]; then
+  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
+elif [ $ROS_DISTRO = "kinetic" ]; then
+  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
+fi
 wstool update -t src
-source /opt/ros/indigo/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 catkin build fetcheus jsk_fetch_startup
 source devel/setup.bash
@@ -63,7 +67,7 @@ Inorder to confirm your shell environment, check with rviz
 
 ```bash
 source ~/catkin_ws/devel/setup.bash
-roslaunch jsk_fetch_robot rviz.launch
+roslaunch jsk_fetch_startup rviz.launch
 ```
 
 ### Control Fetch via roseus

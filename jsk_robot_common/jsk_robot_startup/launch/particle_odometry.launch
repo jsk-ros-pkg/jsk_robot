@@ -4,6 +4,8 @@
   <arg name="parameter_yaml" default="$(find jsk_robot_startup)/config/default_odometry_params.yaml"/>
   <arg name="map_topic" default="/map"/>
   <arg name="imu_topic" default="/imu"/>
+  <arg name="base_odom_topic" default="/odom"/>
+  <arg name="base_link_frame" default="BODY"/>
 
   <!-- robot dependent parameters -->
   <rosparam command="load" file="$(arg parameter_yaml)"/>
@@ -12,8 +14,8 @@
         output="screen" >
     <remap from="~input" to="$(arg imu_topic)" />
     <remap from="~output" to="/imu_rootlink" />
-    <rosparam>
-      base_link_frame: BODY
+    <rosparam subst_value="true">
+      base_link_frame: $(arg base_link_frame)
     </rosparam>
   </node>
 
@@ -21,24 +23,24 @@
   <!-- calculate transform from odom_init to base_link -->
   <node pkg="jsk_robot_startup" type="calculate_init_to_base_link_transform.py" name="calculate_init_to_base_link_transform"
         output="screen" >
-    <remap from="~base_odom" to="/odom" />
+    <remap from="~base_odom" to="$(arg base_odom_topic)" />
     <remap from="~output" to="/init_to_base_link_transform" />
     <remap from="~base_to_init_transform" to="/footcoords/odom_init_transform" />
-    <rosparam>
+    <rosparam subst_value="true">
       init_odom_frame: odom_init
-      base_link_frame: BODY
+      body_link_frame: $(arg base_link_frame)
     </rosparam>
   </node>
   
   <!-- odometry offset to adjust origin to odom_init -->
   <node pkg="jsk_robot_startup" type="odometry_offset.py" name="biped_odometry_offset"
         output="screen" >
-    <remap from="~source_odom" to="/odom" />
+    <remap from="~source_odom" to="$(arg base_odom_topic)" />
     <remap from="~output" to="/biped_odom_offset" />
     <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
-    <rosparam>
+    <rosparam subst_value="true">
       odom_frame: biped_odom_offset
-      base_link_frame: BODY
+      base_link_frame: $(arg base_link_frame)
       publish_tf: false
     </rosparam>
   </node>
@@ -48,9 +50,9 @@
     <remap from="~source_odom" to="/viso_odom" />
     <remap from="~output" to="/viso_odom_offset" />
     <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
-    <rosparam>
+    <rosparam subst_value="true">
       odom_frame: viso_odom_offset
-      base_link_frame: BODY
+      base_link_frame: $(arg base_link_frame)
       publish_tf: false
     </rosparam>
   </node>
@@ -64,9 +66,9 @@
     <remap from="~feedback_odom" to="/biped_odom_particle" unless="$(arg use_slam_feedback)"/>
     <remap from="~output" to="/viso_odom_integrated" />
     <!-- common params (robot dependent params are described in yaml) -->
-    <rosparam>
+    <rosparam subst_value="true">
       odom_frame: viso_odom_integrated
-      base_link_frame: BODY
+      base_link_frame: $(arg base_link_frame)
       publish_tf: false
     </rosparam>
   </node>
@@ -86,7 +88,7 @@
     <param name="~odom_frame" value="/biped_odom_particle" unless="$(arg use_odometry_iir_filter)" />
     <rosparam subst_value="true">
       odom_init_frame: odom_init
-      base_link_frame: BODY
+      base_link_frame: $(arg base_link_frame)
       publish_tf: false
       publish_histogram: false
     </rosparam>
@@ -106,10 +108,10 @@
   <!-- make biped_odom_particle->odom_init transform to use biped_odom_particle in gmapping  -->
   <node pkg="jsk_robot_startup" type="OdomDiffTransformPublisher.py" name="biped_odom_particle_diff_transform_publisher" output="screen">
     <remap from="~input_odom" to="/biped_odom_particle" />
-    <rosparam>
+    <rosparam subst_value="true">
       target_frame: biped_odom_particle
       intermediate_frame: odom_init
-      base_frame: BODY
+      base_frame: $(arg base_link_frame)
     </rosparam>
   </node>
 

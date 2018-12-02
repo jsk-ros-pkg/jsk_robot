@@ -1,55 +1,45 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "greeting")
-(ros::load-ros-manifest "peppereus")
 (require :pepper-interface "package://peppereus/pepper-interface.l")
 (load "package://jsk_201504_miraikan/euslisp/pepper-motions.l")
-(require "models/arrow-object.l")
-(unless (boundp '*ri*)
-  (pepper-init))
-(unless (boundp '*irtviewer*)
-  (setq *irtviewer* (make-irtviewer)))
-(unless (string= (send *ri* :get-life) "disabled")
-  (send *ri* :disable-life))
-(send *ri* :servo-on)
-(send *ri* :angle-vector (send *pepper* :reset-pose))
 
-;; 音声ファイルを再生し、動く関数
-(defun playAudioFile_move (file angle-list time-list)
+;; If autonomous life is on, kill it and servo on again
+(defun check-autonomous-life-is-on ()
+  (unless (boundp '*ri*)
+    (pepper-init))
+  (if (not (string= (send *ri* :get-life) "disabled"))
+      (progn
+	(send *ri* :disable-life)
+	(send *ri* :servo-on)
+	))
+  (send *ri* :angle-vector (send *pepper* :reset-pose)))
+
+;; change speaing language if needed
+(defun change-speaking-language (language)
+  (if (not (string= (send *ri* :get-language) language))
+      (send *ri* :set-language language)))
+
+;; play audio file and make a gesture
+(defun play_audio_file_move (file angle-list time-list)
   (ros::ros-info "speak")
   (send *ri* :angle-vector-sequence angle-list time-list)
-  (send *ri* :play-audio-file file)
-  )
+  (send *ri* :play-audio-file file))
 
-;; 発話し、動く関数
+;; speak and make a gesture
 (defun speak_move (speech_msg angle-list time-list)
   (ros::ros-info "speak")
   (send *ri* :speak speech_msg)
   (send *ri* :angle-vector-sequence angle-list time-list)
-  (send *ri* :wait-interpolation)
-  )
+  (send *ri* :wait-interpolation))
 
+;; main program
 (defun demo(&optional (language :ja))
-  (send *ri* :set-master-volume 45) ;;90
+  (check-autonomous-life-is-on)
   (send *ri* :stop-grasp)
   (case language
 	(:ja
-	 ;; we can't use these services now, but I leave them tempolarily.
-	 ;;(setq req_language (instance dynamic_reconfigure::ReconfigureRequest :init))
-	 ;;(setq req_voice (instance dynamic_reconfigure::ReconfigureRequest :init))
-	 ;;(send req_language :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "language" :value "Japanese")))
-	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
-	 ;;(ros::wait-for-service "nao_speech/set_parameters")
-	 ;;(ros::service-call "nao_speech/set_parameters" req_language)
-	 ;;(send req_voice :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "voice" :value "maki_n16"))) 
-	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
-	 ;;(ros::wait-for-service "nao_speech/set_parameters")
-	 ;;(ros::service-call "nao_speech/set_parameters" req_voice)
-
-	 (unless (string= (send *ri* :get-life) "disabled")
-	   (send *ri* :disable-life))
-	 (send *ri* :servo-on)
-
+	 (change-speaking-language "Japanese")
 	 (speak_move "\\vct=180\\稲葉岡田研究室にようこそ\\pau=1000\\私はペッパー\\pau=500\\人と一緒に暮らすために作られたロボットです\\vct=130\\" *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
 	 (speak_move "\\vct=180\\家事が苦手で\\pau=500\\産業ロボットのような器用なアームはないですが\\pau=500\\言葉を通して人と交流することができますし\\pau=500\\人の声を認識したり\\pau=500\\センサーによって触覚を感じられたりします\\pau=1000\\そして\\pau=500\\人の顔を見て覚えられますよ。\\vct=130\\" *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
 	 (speak_move "\\vct=180\\目で世界を見ることができます\\pau=1000\\私の二つの目はスリーディーカメラで\\pau=500\\実世界の三次元画像をとれて\\pau=500\\移動するとき距離を判断できます。\\vct=130\\" *pepper_run* (list 1000 1000 1000 1000 1000 1000 100 100 100 1000 1000 1000 1000))
@@ -63,32 +53,17 @@
 	 (speak_move "\\vct=180\\今日はここで\\pau=100\\みなさんとお会いし\\pau=500\\自分のことを知ってもらえて\\pau=500\\とても嬉しいです\\pau=1000\\本当にありがとうございます。\\vct=130\\" (list *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *left_right_arm* *left_right_arm* *left_right_arm* *bow* *bow* *bow* *reset_pose*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000))
 	 )
 	(:chi
-	 (playAudioFile_move "/audio_file/M1.mp3" *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
-	 (playAudioFile_move "/audio_file/M2.mp3" *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
-	 (playAudioFile_move "/audio_file/M3.mp3" *pepper_run* (list 1000 1000 1000 1000 1000 1000 100 100 100 1000 1000 1000 1000))
-	 (playAudioFile_move "/audio_file/M4.mp3" (list *reset_pose* *reset_pose* *reset_pose* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_in_mouth* *show_the_camera_in_mouth*  *open_two_hands_widely*) (list 1000 1000 1000 1000 1000 1000 1000 1000))
-	 (playAudioFile_move "/audio_file/M5.mp3" *speaker_touch_sensor* (list 2000 1000 1000 2000 2000 1000 1000 1000 1000 1000))
-	 (playAudioFile_move "/audio_file/M6.mp3" (list  *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *touch_CPU* *touch_CPU* *touch_CPU* *reset_pose*) (list 3000 2000 2000 1000 1000 1000 2000 1000 1000))
-	 (playAudioFile_move "/audio_file/M7.mp3" (list *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *bow_slightly_to_left* *bow_slightly_to_left* *bow_slightly_to_left* *reset_pose* *reset_pose*  *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *put_two_hands_in_front_of_the_body* *bow_slightly_to_left* *bow_slightly_to_left* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *look_right* *look_left* *reset_pose*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000))
-	 (playAudioFile_move "/audio_file/M8.mp3" (list *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *left_right_arm* *left_right_arm* *left_right_arm* *bow* *bow* *bow* *reset_pose*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M1.mp3" *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M2.mp3" *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M3.mp3" *pepper_run* (list 1000 1000 1000 1000 1000 1000 100 100 100 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M4.mp3" (list *reset_pose* *reset_pose* *reset_pose* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_on_head* *show_the_camera_in_mouth* *show_the_camera_in_mouth*  *open_two_hands_widely*) (list 1000 1000 1000 1000 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M5.mp3" *speaker_touch_sensor* (list 2000 1000 1000 2000 2000 1000 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M6.mp3" (list  *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *touch_CPU* *touch_CPU* *touch_CPU* *reset_pose*) (list 3000 2000 2000 1000 1000 1000 2000 1000 1000))
+	 (play_audio_file_move "/audio_file/M7.mp3" (list *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *lift_two_hands_beside_face_and_bow_slightly_to_right* *bow_slightly_to_left* *bow_slightly_to_left* *bow_slightly_to_left* *reset_pose* *reset_pose*  *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *put_two_hands_in_front_of_the_body* *bow_slightly_to_left* *bow_slightly_to_left* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *put_two_hands_in_front_of_the_body* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *open_two_arms_widely_and_look_at_the_sky* *look_right* *look_left* *reset_pose*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000))
+	 (play_audio_file_move "/audio_file/M8.mp3" (list *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *reset_pose* *left_right_arm* *left_right_arm* *left_right_arm* *bow* *bow* *bow* *reset_pose*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000))
 	 )
 	(:en
-	 ;; we can't use these services now, but I leave them tempolarily.
-	 ;;(setq req_language (instance dynamic_reconfigure::ReconfigureRequest :init))
-	 ;;(setq req_voice (instance dynamic_reconfigure::ReconfigureRequest :init))
-	 ;;(send req_language :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "language" :value "English")))
-	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
-	 ;;(ros::wait-for-service "nao_speech/set_parameters")
-	 ;;(ros::service-call "nao_speech/set_parameters" req_language)
-	 ;;(send req_voice :config :strs (list (instance dynamic_reconfigure::StrParameter :init :name "voice" :value "Kenny22Enhanced")))
-	 ;;(ros::ros-info "wait for nao_speech/set_parameters")
-	 ;;(ros::wait-for-service "nao_speech/set_parameters")
-	 ;;(ros::service-call "nao_speech/set_parameters" req_voice)
-	  
-	 (unless (string= (send *ri* :get-life) "disabled")
-	   (send *ri* :disable-life))
-	 (send *ri* :servo-on)
-	 
+	 (change-speaking-language "English")
 	 (speak_move "Welcome to JSK laboratory. I am pepper, \\pau=500\\a robot which is designed to live with human beings." *lift_arm_and_bow* (list 1000 1000 1000 1000 1000 1000 1000))
 	 (speak_move "Although I'm not good at doing housework,\\pau500\\ nor do I have dexterous arms like industrial robots do, \\pau=500\\I'm able to communicate with humans through language, \\pau=500\\recognize human' voices,\\pau=500\\ feel touch and remember the faces of humans whom I have seen." *pepper_can_cannot* (list 2000 1000 1000 1000 1000 1000 1000 1000 1000  1000 1500 1000 1500 1000 1000 1000 1000 1000))
 	 (speak_move "I can see the world with my eyes as well. My two eyes are 3D cameras, \\pau=500\\with which I get the point cloud data of the real world, \\pau=100\\so I can judge distance when I'm moving." *pepper_run*  (list 1000 1000 1000 1000 1000 1000 100 100 100 1000 1000 1000 1000))
@@ -100,13 +75,6 @@
 	 )
 	))
 (ros::ros-warn "usage")
-(ros::ros-warn "if Japanese,")
-(ros::ros-warn "demo")
-(ros::ros-warn "if Chinese,")
-(ros::ros-warn "demo :chi")
-(ros::ros-warn "if English,")
-(ros::ros-warn "demo :en")
-
-
-;;(demo)
-
+(ros::ros-warn "if Japanese, type (demo)")
+(ros::ros-warn "if Chinese, type (demo :chi)")
+(ros::ros-warn "if English, type (demo :en)")

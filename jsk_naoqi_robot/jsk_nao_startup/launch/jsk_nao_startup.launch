@@ -4,33 +4,61 @@
   <arg name="nao_ip" value="$(env NAO_IP)"/>
   <arg name="roscore_ip" value="$(env ROS_IP)"/>
   <arg name="network_interface"   default="eth0" />
+  <arg name="launch_twitter" default="false" />
+  <arg name="launch_joy" default="true" />
   <include file="$(find nao_bringup)/launch/nao_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
     <arg name="roscore_ip" value="$(arg roscore_ip)"/>
     <arg name="network_interface" value="$(arg network_interface)"/>
   </include>
-  <include file="$(find nao_interaction_launchers)/launch/nao_audio_interface.launch" />
-  <include file="$(find nao_interaction_launchers)/launch/nao_vision_interface.launch" />
- 
-  <!-- <group ns="bottom" > -->
-  <!--   <include file="$(find naoqi_sensors)/launch/camera.launch" > -->
-  <!--     <arg name="source" value="1" /> -->
-  <!--   </include> -->
-  <!-- </group>   -->
 
-  <node pkg="jsk_robot_startup" name="nao_twitter" type="tweet.l">
-    <remap from="robot_tweet" to="nao_tweet" />
-    <param name="filename" value="/tmp/nao_camera.png" />
-    <param name="language" value="en" />
+  <node pkg="joy" type="joy_node" name="joy_node" if="$(arg launch_joy)">
+    <param name="dev" value="/dev/input/js0" />
+    <param name="deadzone" value="0.3" />
+    <param name="autorepeat_rate" value="20" />
   </node>
-  <node pkg="rostwitter" name="rostwitter" type="tweet.py" />
-  <node pkg="image_view" name="image_saver" type="image_saver" >
-    <remap from="image" to="/nao_robot/camera/top/camera/image_raw" />
-    <param name="save_all_image" value="false" />
-    <param name="filename_format" value="/tmp/nao_camera.png" />
+  <node pkg="teleop_twist_joy" name="teleop_twist_joy"
+        type="teleop_node" if="$(arg launch_joy)">
+    <rosparam>
+# stop button: Left trigger button
+axis_linear:
+  x: 1.0
+  y: 0.0
+scale_linear:
+  x: 0.1
+  y: 0.1
+scale_linear_turbo:
+  x: 0.2
+  y: 0.2
+
+axis_angular:
+  yaw: 3
+scale_angular:
+  yaw: 1.0
+scale_augular_turbo:
+  yaw: 1.5
+  yaw: 1.5
+
+enable_button: 4  # Left trigger button
+enable_turbo_button: 0  # A button
+    </rosparam>
   </node>
+
+  <group if="$(arg launch_twitter)">
+    <node pkg="jsk_robot_startup" name="nao_twitter" type="tweet.l">
+      <remap from="robot_tweet" to="nao_tweet" />
+      <param name="filename" value="/tmp/nao_camera.png" />
+      <param name="language" value="en" />
+    </node>
+    <node pkg="rostwitter" name="rostwitter" type="tweet.py" />
+    <node pkg="image_view" name="image_saver" type="image_saver" >
+      <remap from="image" to="/nao_robot/naoqi_driver/camera/front/image_raw" />
+      <param name="save_all_image" value="false" />
+      <param name="filename_format" value="/tmp/nao_camera.png" />
+    </node>
+  </group>
 
   <node name="speaking_program_is_started_or_terminated"
         pkg="roseus" type="roseus"
-        args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 2) (good-morning) (do-until-key (ros::spin-once)))&quot;"/>
+        args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 2) (good-morning) (ros::spin))&quot;"/>
 </launch>

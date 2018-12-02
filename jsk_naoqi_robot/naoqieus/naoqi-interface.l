@@ -1,8 +1,11 @@
 (load "package://pr2eus/robot-interface.l")
-(ros::load-ros-manifest "naoqieus")
 
+;; Treating naoqi_msgs as naoqi_bridge_msgs because ROS hydro uses naoqi_msgs, not naoqi_bridge_msgs
 (if (not (find-package "NAOQI_BRIDGE_MSGS"))
     (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
+
+(ros::load-ros-package "naoqi_bridge_msgs")
+(ros::load-ros-package "nao_interaction_msgs")
 
 (defclass naoqi-interface
   :super robot-interface
@@ -288,24 +291,32 @@
        (unix:usleep (* 1000 msec))
        (send self :go-stop)
        )
-     ))
+     t))
   (:go-stop
    ()
    (send self :go-velocity 0 0 0 0 :stop nil))
   (:play-audio-file (file)
    (let (ret)
-     (ros::wait-for-service "nao_audio/play_file")
+     (ros::wait-for-service "/naoqi_driver/play_audio_file")
      (setq ret (instance nao_interaction_msgs::AudioPlaybackRequest :init))
      (send ret :file_path :data file)
-     (setq ret (ros::service-call "nao_audio/play_file" ret))))
-  (:set-master-volume (volume)
-   (let (ret)
-     (ros::wait-for-service "nao_audio/master_volume")
-     (setq ret (instance nao_interaction_msgs::AudioMasterVolumeRequest :init))
+     (setq ret (ros::service-call "/naoqi_driver/play_audio_file" ret))))
+  (:set-master-volume 
+   (volume)
+   (let ((ret (instance nao_interaction_msgs::SetAudioMasterVolumeRequest :init)))
+     (ros::wait-for-service "naoqi_driver/set_master_volume")
      (send ret :master_volume :data volume)
-     (setq ret (ros::service-call "nao_audio/master_volume" ret))))
-  (:enable-life () (call-empty-service (format nil "~A/~A/pose/life/enable" group-namespace naoqi-namespace)))
-  (:disable-life () (call-empty-service (format nil "~A/~A/pose/life/disable" group-namespace naoqi-namespace)))
+     (ros::service-call "/naoqi_driver/set_master_volume" ret)
+     ))
+  (:get-master-volume
+   ()
+   (let ((ret (instance nao_interaction_msgs::GetAudioMasterVolumeRequest :init))
+	      res)
+     (ros::wait-for-service "/naoqi_driver/get_master_volume")
+     (setq res (ros::service-call "/naoqi_driver/get_master_volume" ret))
+     (send res :master_volume :data)))
+  (:enable-life () (call-empty-service (format nil "~A/pose/life/enable" naoqi-namespace)))	
+  (:disable-life () (call-empty-service (format nil "~A/pose/life/disable" naoqi-namespace)))
   (:get-life ()
 	     (ros::wait-for-service (format nil "~A/~A/pose/life/get_state" group-namespace naoqi-namespace))
 	     (setq req (instance std_srvs::TriggerRequest :init))

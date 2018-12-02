@@ -12,6 +12,7 @@
 
   <run_depend>amcl</run_depend>
   <run_depend>app_manager</run_depend>
+  <run_depend>cmd_vel_smoother</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>diagnostic_aggregator</run_depend>
   <run_depend>dwa_local_planner</run_depend>
@@ -55,12 +56,12 @@
   <run_depend>pr2_navigation_config</run_depend>
   <run_depend>pr2_navigation_global</run_depend>
   <run_depend>pr2_navigation_perception</run_depend>
-  <run_depend>pr2_navigation_self_filter</run_depend>
   <run_depend>pr2_teleop_general</run_depend>
   <run_depend>pr2_tuck_arms_action</run_depend>
   <run_depend>pr2eus</run_depend>
   <run_depend>python-numpy</run_depend>
   <run_depend>resized_image_transport</run_depend>
+  <run_depend>robot_self_filter</run_depend>
   <run_depend>rosbridge_server</run_depend>
   <run_depend>rostwitter</run_depend>
   <run_depend>roseus_mongo</run_depend>

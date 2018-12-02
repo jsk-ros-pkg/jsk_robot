@@ -1,0 +1,28 @@
+# This file is for work space in kinetic user PC.
+
+# For proximity sensor on fetch hand.
+- git:
+    local-name: FA-I-sensor
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+    version: master
+# TODO(furushchev): describe why this is needed.
+- git:
+    local-name: ros-drivers/audio_common
+    uri: https://github.com/furushchev/audio_common.git
+    version: device
+# for fetcheus
+- git:
+    local-name: fetchrobotics/fetch_msgs
+    uri: https://github.com/fetchrobotics/fetch_msgs.git
+    version: indigo-devel
+# for fetcheus
+- git:
+    local-name: fetchrobotics/power_msgs
+    uri: https://github.com/fetchrobotics/power_msgs.git
+    version: indigo-devel
+# https://github.com/fetchrobotics/fetch_ros.git is not released on kinetic.
+# XXX: below entry must be same as .travis.rosinstall.kinetic.
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 0.7.14

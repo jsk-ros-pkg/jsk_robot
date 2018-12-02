@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_aero_startup</name>
+  <version>1.1.0</version>
+  <description>The jsk_aero_startup package</description>
+  <maintainer email="youhei@jsk.imi.i.u-tokyo.ac.jp">Yohei Kakiuchi</maintainer>
+  <maintainer email="higashide@jsk.imi.i.u-tokyo.ac.jp">Taichi Higashide</maintainer>
+  <maintainer email="sasabuchi@jsk.imi.i.u-tokyo.ac.jp">Kazuhiro Sasabuchi</maintainer>
+
+  <license>BSD</license>
+
+  <author email="higashide@jsk.imi.i.u-tokyo.ac.jp">Taichi Higashide</author>
+  <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>aeroeus</run_depend>
+  <run_depend>jsk_maps</run_depend>
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>linux_kinect</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>ps4eye</run_depend>
+  <run_depend>stereo_image_proc</run_depend>
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>tf</run_depend>
+</package>
