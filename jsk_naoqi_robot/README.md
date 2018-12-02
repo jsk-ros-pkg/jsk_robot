@@ -92,6 +92,11 @@ wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
+NAO & Pepper
+------------
+
+Controlling NAO and Pepper via gazebo simulator and roseus, please refer to [here](simulator.md).
+
 NAO
 ---
 
