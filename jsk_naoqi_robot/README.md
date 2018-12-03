@@ -95,7 +95,9 @@ wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 NAO & Pepper
 ------------
 
-Controlling NAO and Pepper via gazebo simulator and roseus, please refer to [here](simulator.md).
+To connect NAO and Pepper to wifi, please refer to [here](doc/connect_to_wifi.md).
+
+To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](doc/simulator.md).
 
 NAO
 ---
