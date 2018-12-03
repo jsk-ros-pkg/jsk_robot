@@ -36,7 +36,7 @@ To initialize eus interface,
 Then, you can control AERO from euslisp, like
 
 ```
-(send *aero* :reset-manip-pose)
+(send *aero* :reset-pose)
 (send *ri* :angle-vector (send *aero* :angle-vector) 5000)
 ```
 
