@@ -95,6 +95,8 @@ wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 NAO & Pepper
 ------------
 
+To control multiple robots in one PC, please refer to [here](control_multiple_robots_in_one_pc.md).  
+
 Controlling NAO and Pepper via gazebo simulator and roseus, please refer to [here](simulator.md).
 
 NAO
