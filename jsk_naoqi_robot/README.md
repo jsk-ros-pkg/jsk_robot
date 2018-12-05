@@ -62,6 +62,7 @@ If you have ROS kinetic, please apply [this change](https://github.com/ros-naoqi
 ```
 cd  catkin_ws/src
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
+wstool update naoqi_dashboard
 cd naoqi_dashboard
 git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
 git fetch kochigami
