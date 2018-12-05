@@ -43,9 +43,9 @@ mkdir -p catkin_ws/src
 cd  catkin_ws
 wstool init src
 if [ $ROS_DISTRO = "indigo" ]; then
-  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch.rosinstall
+  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
 elif [ $ROS_DISTRO = "kinetic" ]; then
-  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch.rosinstall.kinetic
+  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
 fi
 wstool update -t src
 source /opt/ros/$ROS_DISTRO/setup.bash
