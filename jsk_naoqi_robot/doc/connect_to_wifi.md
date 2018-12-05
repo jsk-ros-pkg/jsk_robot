@@ -17,11 +17,26 @@ If a robot says no network is connected, you have to connect a robot to wired LA
 
 ## How to connect a robot to wired LAN?
 
+NAO's port is located in back of NAO's head.  
+
 ![NAO's wired LAN port](img/NAO_lan.jpg)
 
-![Pepper's wired LAN port](img/Pepper_lan.jpg)
+Pepper's port is also located in back of Pepper's head.  
+You have to take off Pepper's head cover with a special key.  
 
-Then, when you push a belly button once, a robot will speak IP address.  
+1. The special key is located in here. Please remove this cover.  
+
+![Location of a special key](img/Pepper_lan1.jpg)
+
+2. Insert this key into two holes in Pepper's head. You will remove head cover.
+
+![How to use a key](img/Pepper_lan2.jpg)
+
+3. You can see Pepper's port. 
+
+![Pepper's wired LAN port](img/Pepper_lan3.jpg)
+
+After connecting a wired LAN cable, please push a belly button once. A robot will speak IP address.  
 
 ## How to connect a robot to wireless LAN?
 
