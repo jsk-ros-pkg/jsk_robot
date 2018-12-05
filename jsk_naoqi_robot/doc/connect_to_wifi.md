@@ -19,26 +19,25 @@ If a robot says no network is connected, you have to connect a robot to wired LA
 
 ![NAO's wired LAN port](img/NAO_lan.jpg)
 
+![Pepper's wired LAN port](img/Pepper_lan.jpg)
+
 Then, when you push a belly button once, a robot will speak IP address.  
 
 ## How to connect a robot to wireless LAN?
 
-You have to access to a robot web page.
+After connecting your robot to wired network, you have to access to a robot web page.  
 
-First, write the IP address which a robot speaks to a web screen.
+For further details, please refer to [here (for NAO)](http://doc.aldebaran.com/2-4/nao/webpage.html#access-webpage-nao), [here (for Pepper)](http://doc.aldebaran.com/2-4/family/pepper_user_guide/webpage.html#accessing-the-pepper-web-page).  
 
-![Write robot IP in a web screen](img/robot_webpage1.jpg)
-
-Enter ID and password. ID is `nao` and password is `nao` for NAO, but for Pepper, it is unique because it was set by you.
 Then, you will see a robot web page.  
-
-![Robot web page top page](img/robot_webpage2.jpg)
 
 Select a button like the earth and move to Network Settings.
 
-![Network Settings](img/robot_webpage3.jpg)
+![Network Settings](img/robot_webpage.jpg)
 
-TODO
+Finally, you can connect your robot to wireless network.  
+
+For further details, please refer to [here](http://doc.aldebaran.com/2-4/nao/nao-connecting.html#standard-wifi-connection).  
 
 ## (Pepper Only) How to access to a robot web page via Pepper's tablet?
 
