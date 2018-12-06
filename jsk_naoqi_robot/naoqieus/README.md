@@ -15,7 +15,9 @@ How to try methods
 Methods
 -------
 
-- `:animated-speak str` (naoqi_bridge [kochigami-develop]/ animated_speech.launch)
+- `:animated-speak str` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/animated_speech.launch`  
 
 Speak a sentence and animate it.  
 
@@ -29,7 +31,9 @@ Speak a sentence and animate it.
 send *ri* :animated-speak "Hello. Nice to meet you."
 ```
 
-- `:set-master-volume volume` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
+- `:set-master-volume volume` (`naoqi_driver [kochigami-develop]`)
+
+`launch/naoqi_driver.launch`  
 
 Sets the overall output volume of the system.  
 
@@ -42,7 +46,9 @@ Sets the overall output volume of the system.
 send *ri* :set-master-volume 30 ; set master volume as 30 (0~100)
 ```
 
-- `:get-master-volume` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
+- `:get-master-volume` (`naoqi_driver [kochigami-develop]`)
+
+`launch/naoqi_driver.launch`  
 
 Gets the overall output volume of the system.  
 [ALAudioDeviceProxy::getOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)  
@@ -53,7 +59,9 @@ Gets the overall output volume of the system.
 30 ; master volume is set as 30
 ```
 
-- `:fade-leds led_name r g b a sec` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
+- `:fade-leds led_name r g b a sec` (`naoqi_driver [kochigami-develop]`)
+
+`launch/naoqi_driver.launch`  
 
 Sets the color of an RGB led using RGB color code.  
 
@@ -69,7 +77,9 @@ Sets the color of an RGB led using RGB color code.
 ```
 send *ri* :fade-leds "FaceLeds" 0.5 0.5 0 0 1 ;; Robot's eyes become yellow in a 1 sec.
 ```
-- `:reset-leds led_name` (naoqi_driver [kochigami-develop]/ naoqi_driver.launch)
+- `:reset-leds led_name` (`naoqi_driver [kochigami-develop]`)
+
+`launch/naoqi_driver.launch`  
 
 Set a LED or Group of LEDs to their default state.  
 
@@ -82,7 +92,9 @@ Set a LED or Group of LEDs to their default state.
 send *ri* :reset-leds "FaceLeds" ;; Pepper's eye becomes clear
 ```
 
-- `:servo-on` (naoqi_bridge/naoqi_pose [master])
+- `:servo-on` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 A robot sets motor on takes an initial pose.  
 
@@ -92,7 +104,9 @@ A robot sets motor on takes an initial pose.
 send *ri* :servo-on
 ```
 
-- `:servo-off` (naoqi_bridge/naoqi_pose [master])
+- `:servo-off` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 A robot sets motor off and takes a reset pose.  
 
@@ -102,7 +116,9 @@ A robot sets motor off and takes a reset pose.
 send *ri* :servo-off
 ```
 
-- `:speak str` (naoqi_driver [master])
+- `:speak str` (`naoqi_driver [master]`)
+
+`launch/naoqi_driver.launch`  
 
 Speak a sentence.  
 
@@ -114,7 +130,9 @@ Speak a sentence.
 send *ri* :speak "Hello. Nice to meet you."
 ```
 
-- `:start-grasp angle-ratio arm` (naoqi_bridge/naoqi_pose [master])
+- `:start-grasp angle-ratio arm` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 Start grasping.  
 
@@ -131,7 +149,9 @@ send *ri* :start-grasp
 send *ri* :start-grasp 0.3 :rarm
 ```
 
-- `:stop-grasp angle-ratio arm` (naoqi_bridge/naoqi_pose [master])
+- `:stop-grasp angle-ratio arm` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 Stop grasping.  
 
@@ -148,7 +168,9 @@ send *ri* :stop-grasp
 send *ri* :stop-grasp 0.6 :larm
 ```
 
-- `:enable-life` (naoqi_bridge/naoqi_pose [master])
+- `:enable-life` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 Enable AutonomousLife.  
 
@@ -158,7 +180,9 @@ Enable AutonomousLife.
 send *ri* :enable-life
 ```
 
-- `:disable-life` (naoqi_bridge/naoqi_pose [master])
+- `:disable-life` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 Disable AutonomousLife.  
 
@@ -168,7 +192,9 @@ Disable AutonomousLife.
 send *ri* :disable-life
 ```
 
-- `:get-life` (naoqi_bridge/naoqi_pose [master])
+- `:get-life` (`naoqi_bridge [master]`)
+
+`naoqi_pose/launch/pose_manager.launch`  
 
 Return AutonomousLife state. ("solitary", "interactive", "safeguard", "disabled")    
 
@@ -180,7 +206,9 @@ send *ri* :get-life
 "disabled"
 ```
 
-- `:set-language language` (naoqi_driver [master])
+- `:set-language language` (`naoqi_driver [master]`)
+
+`launch/naoqi_driver.launch`  
 
 Set a language which a robot speaks.  
 
@@ -192,7 +220,9 @@ Set a language which a robot speaks.
 send *ri* :set-language "Japanese" ; "English"
 ```
 
-- `:get-language` (naoqi_driver [master])
+- `:get-language` (`naoqi_driver [master]`)
+
+`launch/naoqi_driver.launch`  
 
 Get a language which a robot speaks.  
 
@@ -203,7 +233,9 @@ send *ri* :get-language
 "Japanese"
 ```
 
-- `:go-pos x y theta` (naoqi_driver [master])
+- `:go-pos x y theta` (`naoqi_driver [master]`)
+
+`launch/naoqi_driver.launch`  
 
 Move to a specified distance.  
 
@@ -218,7 +250,9 @@ Move to a specified distance.
 send *ri* :go-pos 1.0 2.0 30
 ```
 
-- `:go-velocity x y d &optional (msec 1000) &key (stop t)` (naoqi_driver [master])
+- `:go-velocity x y d &optional (msec 1000) &key (stop t)` (`naoqi_driver [master]`)
+
+`launch/naoqi_driver.launch`  
 
 Move in a specified velocity.  
 
@@ -241,7 +275,9 @@ send *ri* :go-velocity 0.2 0.3 0.1 :stop nil
 send *ri* :go-velocity 0.2 0.3 0.1 2000
 ```
 
-- `:play-audio-file file` (naoqi_driver [kochigami-develop])
+- `:play-audio-file file` (`naoqi_driver [kochigami-develop]`)
+
+`launch/naoqi_driver.launch`  
 
 Play audio file inside a robot.  
 
@@ -260,7 +296,9 @@ This is an example of how to play test.mp3 file from `/home/nao/audio_file/test.
 send *ri* :play-audio-file "/audio_file/test.mp3"
 ```
 
-- `:set-external-collision-protection-status type status` (naoqi_bridge/naoqi_apps [kochigami-develop])
+- `:set-external-collision-protection-status type status` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/external_collision_avoidance.launch`  
 
 Enable/disable external collision protection of a robot on the given name.  
 
@@ -283,7 +321,9 @@ Rarm: 4
 send *ri* :set-external-collision-protection-status 2 nil
 ```
 
-- `:get-external-collision-protection-status type` (naoqi_bridge/naoqi_apps [kochigami-develop])
+- `:get-external-collision-protection-status type` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/external_collision_avoidance.launch`  
 
 Check if the external collision protection is activated on the given name.  
 
@@ -305,7 +345,9 @@ send *ri* :get-external-collision-protection-status 2
 t
 ```
 
-- `:set-background-movement-enabled status` (naoqi_bridge/naoqi_apps [kochigami-develop])
+- `:set-background-movement-enabled status` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/background_movement.launch`  
 
 Enable or disable the background movements. For further details on background movement, please refer to [here](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement.html#albackgroundmovement).   
 
@@ -318,7 +360,9 @@ Enable or disable the background movements. For further details on background mo
 send *ri* :set-background-movement-enabled t
 ```
 
-- `:get-background-movement-enabled` (naoqi_bridge/naoqi_apps [kochigami-develop])
+- `:get-background-movement-enabled` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/background_movement.launch`  
 
 Return whether the background movements are enabled. For further details on background movement, please refer to [here](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement.html#albackgroundmovement).   
 
@@ -330,7 +374,9 @@ send *ri* :get-background-movement-enabled
 t
 ```
 
-- `:set-move-arms-enabled status &optional (arm :arms)` (naoqi_bridge/naoqi_apps [kochigami-develop])
+- `:set-move-arms-enabled status &optional (arm :arms)` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/locomotion_control.launch`  
 
 Enable shaking arms movement while moving
 
@@ -347,7 +393,9 @@ send *ri* :set-move-arms-enabled t
 send *ri* :set-move-arms-enabled nil :rarm
 ```
 
-- `:get-move-arms-enabled &optional (arm :arms)` (naoqi_bridge/naoqi_apps [kochigami-develop])
+- `:get-move-arms-enabled &optional (arm :arms)` (`naoqi_bridge [kochigami-develop]`)
+
+`naoqi_apps/launch/locomotion_control.launch`  
 
 Get the status of whether shaking arms movement is enabled while moving.  
 
