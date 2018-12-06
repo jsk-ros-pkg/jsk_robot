@@ -42,102 +42,17 @@ Methods
 
 By using tablet-related methods, we can show image, app, html file and web page on the tablet.  
 
-- `:show-image file` (`naoqi_bridge [kochigami-develop]`) 
+[:get-show-image-folder-path (naoqi_bridge [`kochigami-develop`])](doc/get_show_image_folder_path.md)  
 
-`naoqi_apps/launch/tablet.launch`  
+[:hide-image (naoqi_bridge [`kochigami-develop`])](doc/hide_image.md)  
 
-Show an image on the tablet, using the cache. The image should be under `/home/nao/.local/share/PackageManager/apps/<Folder path>/html/` inside a robot.  
-(Default is "/home/nao/.local/share/PackageManager/apps/img/html/")  You can change 'Folder path' by using `:set-show-image-folder-path name`.
+[:set-show-image-folder-path `name` (naoqi_bridge [`kochigami-develop`])](doc/set_show_image_folder_path.md)  
 
-`file`: file name (str)
+[:show-app `app` (naoqi_bridge [`kochigami-develop`])](doc/show_app.md)  
 
-[ALTabletService::showImage](http://doc.aldebaran.com/2-5/naoqi/core/altabletservice-api.html#ALTabletService::showImage__ssCR)  
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/52)
+[:show-image `file` (naoqi_bridge [`kochigami-develop`])](doc/show_image.md)  
 
-```
-; put 'test.jpg' under /home/nao/.local/share/PackageManager/apps/img/html/
-send *ri* :show-image "test.jpg"
-
-; The ip of the robot from the tablet is 198.18.0.1, and this parent service actually calls ALTabletService::showImage("http://198.18.0.1/img/test.jpg").
-```
-
-- `:set-show-image-folder-path name` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/tablet.launch`  
-
-Change the path of a file which you want to show on the tablet. This method changes the part of `Folder path` in `/home/nao/.local/share/PackageManager/apps/<Folder path>/html/`.  
-
-`name`: directory name (str, default is `img`)  
-
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/52)
-
-```
-send *ri* :set-show-image-folder-path "aaa/bbb"
-#<naoqi_bridge_msgs::setfolderpathresponse #X9b1c660>
-
-; put 'test.jpg' under /home/nao/.local/share/PackageManager/apps/aaa/bbb/html/
-; (send *ri* :get-show-image-folder-path) will return "/home/nao/.local/share/PackageManager/apps/aaa/bbb/html/"
-
-send *ri* :show-image "test.jpg"
-```
-
-- `:get-show-image-folder-path` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/tablet.launch`  
-
-Get the current path of a file which you want to show on the tablet.  
-
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/52)
-
-```
-send *ri* :get-show-image-folder-path
-"/home/nao/.local/share/PackageManager/apps/img/html/"
-```
-
-- `:show-app app` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/tablet.launch`  
-
-Start new application on tablet and shows it. The index.html file of the app should be in /home/nao/.local/share/PackageManager/apps/<app>/html/. 'app' is a parameter of this method.
-
-`app`: app name (str)
-
-[ALTabletService::loadApplication](http://doc.aldebaran.com/2-5/naoqi/core/altabletservice-api.html#ALTabletService::loadApplication__ssCR)  
-[ALTabletService::showWebview](http://doc.aldebaran.com/2-5/naoqi/core/altabletservice-api.html#altabletservice-showwebview1)  
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/52)
-
-```
-; create app named 'img' under /home/nao/.local/share/PackageManager/apps/img/html/
-send *ri* :show-app "img"
-```
-
-- `:show-webview url` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/tablet.launch`  
-
-Display the webview on the tablet and load the url.
-
-`url`: url of the web page (str)
-
-[ALTabletService::showWebview](http://doc.aldebaran.com/2-5/naoqi/core/altabletservice-api.html#ALTabletService::showWebview__ssCR)  
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/52)
-
-```
-send *ri* :show-webview "http://www.jsk.t.u-tokyo.ac.jp/index-j.html"
-```
-
-- `:hide-image` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/tablet.launch`  
-
-Hide image currently displayed. This method deletes every image, app, webview and shows Pepper's bubbles.  
-
-[ALTabletService::hideImage](http://doc.aldebaran.com/2-5/naoqi/core/altabletservice-api.html?highlight=altablet#ALTabletService::hideImage)  
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/52)
-
-```
-send *ri* :hide-image
-```
+[:show-webview `url` (naoqi_bridge [`kochigami-develop`])](doc/show_webview.md)
 
 ***Trouble Shooting***
 

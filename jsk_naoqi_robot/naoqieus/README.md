@@ -15,413 +15,52 @@ How to try methods
 Methods
 -------
 
-- `:animated-speak str` (`naoqi_bridge [kochigami-develop]`)
+[:animated-speak `str` (naoqi_bridge [`kochigami-develop`])](doc/animated_speak.md)  
 
-`naoqi_apps/launch/animated_speech.launch`  
+[:disable-life (naoqi_bridge [`master`])](doc/disable_life.md)  
 
-Speak a sentence and animate it.  
+[:enable-life (naoqi_bridge [`master`])](doc/enable_life.md)  
 
-`str`: speech sentence (str)
+[:error-vector](doc/error_vector.md)  
 
-[ALAnimatedSpeechProxy::say](http://doc.aldebaran.com/2-5/naoqi/audio/alanimatedspeech-api.html#ALAnimatedSpeechProxy::say__ssCR)
-[related commit (not a PR to master)](https://github.com/kochigami/naoqi_bridge/tree/add-animated-speak)
+[:fade-leds `led_name` `r` `g` `b` `a` `sec` (naoqi_driver [`kochigami-develop`])](doc/fade_leds.md)  
 
-```
-; Robot speaks the sentence with some gesture.
-send *ri* :animated-speak "Hello. Nice to meet you."
-```
+[:get-background-movement-enabled (naoqi_bridge [`kochigami-develop`])](doc/get_background_movement_enabled.md)  
 
-- `:set-master-volume volume` (`naoqi_driver [kochigami-develop]`)
+[:get-external-collision-protection-status `type` (naoqi_bridge [`kochigami-develop`])](doc/get_external_collision_protection_status.md)  
 
-`launch/naoqi_driver.launch`  
+[:get-language (naoqi_driver [`master`])](doc/get_language.md)  
 
-Sets the overall output volume of the system.  
+[:get-life (naoqi_bridge [`master`])](doc/get_life.md)  
 
-`volume`: volume (int 0-100)
+[:get-master-volume (naoqi_driver [`kochigami-develop`])](doc/get_master_volume.md)  
 
-[ALAudioDeviceProxy::setOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)  
-[related PR](https://github.com/jsk-ros-pkg/jsk_robot/pull/814)
+[:get-move-arms-enabled `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/get_move_arms_enabled.md)    
 
-```
-send *ri* :set-master-volume 30 ; set master volume as 30 (0~100)
-```
+[:go-pos `x` `y` `theta` (naoqi_driver [`master`])](doc/go_pos.md)  
 
-- `:get-master-volume` (`naoqi_driver [kochigami-develop]`)
+[:go-velocity `x` `y` `d` `&optional (msec 1000)` `&key (stop t)` (naoqi_driver [`master`])](doc/go_velocity.md)  
 
-`launch/naoqi_driver.launch`  
+[:play-audio-file `file` (naoqi_driver [`kochigami-develop`])](doc/play_audio_file.md)  
 
-Gets the overall output volume of the system.  
-[ALAudioDeviceProxy::getOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)  
-[related PR](https://github.com/jsk-ros-pkg/jsk_robot/pull/814)  
+[:reset-leds `led_name` (naoqi_driver [`kochigami-develop`])](doc/reset_leds.md)  
 
-```
-2.irteusgl$ send *ri* :get-master-volume
-30 ; master volume is set as 30
-```
+[:servo-on (naoqi_bridge [`master`])](doc/servo_on.md)  
 
-- `:fade-leds led_name r g b a sec` (`naoqi_driver [kochigami-develop]`)
+[:servo-off (naoqi_bridge [`master`])](doc/servo_off.md)  
 
-`launch/naoqi_driver.launch`  
+[:set-background-movement-enabled `status` (naoqi_bridge [`kochigami-develop`])](doc/set_background_movement_enabled.md)  
 
-Sets the color of an RGB led using RGB color code.  
+[:set-external-collision-protection-status `type` `status` (naoqi_bridge [`kochigami-develop`])](doc/set_external_collision_protection_status.md)  
 
-`led_name`: name of the RGB LED or Group. (string, please refer to [here](http://doc.aldebaran.com/2-5/naoqi/sensors/alleds.html#groups-short-names-and-names).)  
-`r`: intensity of red channel (float 0-1)  
-`g`: intensity of green channel (float 0-1)  
-`b`: intensity of blue channel (float 0-1)  
-`d`: time used to fade in seconds (int)  
+[:set-language `language` (naoqi_driver [`master`])](doc/set_language.md)  
 
-[ALLedsProxy::fadeRGB with RGB color code](http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#alleds-api)  
-[related PR](https://github.com/jsk-ros-pkg/jsk_robot/pull/999)
+[:set-master-volume `volume` (naoqi_driver [`kochigami-develop`])](doc/set_master_volume.md)  
 
-```
-send *ri* :fade-leds "FaceLeds" 0.5 0.5 0 0 1 ;; Robot's eyes become yellow in a 1 sec.
-```
-- `:reset-leds led_name` (`naoqi_driver [kochigami-develop]`)
+[:set-move-arms-enabled `status` `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/set_move_arms_enabled.md)  
 
-`launch/naoqi_driver.launch`  
+[:speak `str` (naoqi_driver [`master`])](doc/speak.md)  
 
-Set a LED or Group of LEDs to their default state.  
+[:start-grasp `&optional (angle-ratio 0.0) (arm :arms)` (naoqi_bridge [`master`])](doc/start_grasp.md)  
 
-`led_name`: name of the RGB LED or Group. (string, please refer to [here](http://doc.aldebaran.com/2-5/naoqi/sensors/alleds.html#groups-short-names-and-names).)  
-
-[ALLedsProxy::reset](http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#alleds-api)  
-[related PR](https://github.com/jsk-ros-pkg/jsk_robot/pull/999)
-
-```
-send *ri* :reset-leds "FaceLeds" ;; Pepper's eye becomes clear
-```
-
-- `:servo-on` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-A robot sets motor on takes an initial pose.  
-
-[ALMotionProxy::wakeUp](http://doc.aldebaran.com/2-5/naoqi/motion/control-stiffness-api.html#ALMotionProxy::wakeUp)  
-
-```
-send *ri* :servo-on
-```
-
-- `:servo-off` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-A robot sets motor off and takes a reset pose.  
-
-[ALMotionProxy::rest](http://doc.aldebaran.com/2-5/naoqi/motion/control-stiffness-api.html#ALMotionProxy::rest)
-
-```
-send *ri* :servo-off
-```
-
-- `:speak str` (`naoqi_driver [master]`)
-
-`launch/naoqi_driver.launch`  
-
-Speak a sentence.  
-
-`str`: speech sentence (str)
-
-[ALTextToSpeechProxy::say](http://doc.aldebaran.com/2-5/naoqi/audio/altexttospeech-api.html#ALTextToSpeechProxy::say__ssCR)  
-
-```
-send *ri* :speak "Hello. Nice to meet you."
-```
-
-- `:start-grasp angle-ratio arm` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-Start grasping.  
-
-`angle-ratio`: ratio of grasping (float, 0.5-1.0 (default 0.0))  
-`arm`: grasping arm type (str, `:larm`, `:rarm`, `:arms` (default `:arms`))  
-
-[ALMotion:setAngles](http://doc.aldebaran.com/2-5/naoqi/motion/control-joint-api.html#ALMotionProxy::setAngles__AL::ALValueCR.AL::ALValueCR.floatCR)  
-
-```
-; angle-ratio: 0.0, arms: :arms
-send *ri* :start-grasp
-
-; angle-ratio: 0.3, arms: :rarm
-send *ri* :start-grasp 0.3 :rarm
-```
-
-- `:stop-grasp angle-ratio arm` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-Stop grasping.  
-
-`angle-ratio`: ratio of grasping (float, 0.5-1.0 (default 1.0))  
-`arm`: grasping arm type (str, `:larm`, `:rarm`, `:arms` (default `:arms`))  
-
-[ALMotion:setAngles](http://doc.aldebaran.com/2-5/naoqi/motion/control-joint-api.html#ALMotionProxy::setAngles__AL::ALValueCR.AL::ALValueCR.floatCR)  
-
-```
-; angle-ratio: 1.0, arms: :arms
-send *ri* :stop-grasp
-
-; angle-ratio: 0.6, arms: :larm
-send *ri* :stop-grasp 0.6 :larm
-```
-
-- `:enable-life` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-Enable AutonomousLife.  
-
-[ALAutonomousLife::setState](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomouslife-api.html#ALAutonomousLifeProxy::setState__ssCR)  
-
-```
-send *ri* :enable-life
-```
-
-- `:disable-life` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-Disable AutonomousLife.  
-
-[ALAutonomousLife::setState](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomouslife-api.html#ALAutonomousLifeProxy::setState__ssCR)  
-
-```
-send *ri* :disable-life
-```
-
-- `:get-life` (`naoqi_bridge [master]`)
-
-`naoqi_pose/launch/pose_manager.launch`  
-
-Return AutonomousLife state. ("solitary", "interactive", "safeguard", "disabled")    
-
-[ALAutonomousLife::getState](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomouslife-api.html#ALAutonomousLifeProxy::getState)  
-For further details of AutonomousLife state, please refer to [here](http://doc.aldebaran.com/2-5/ref/life/state_machine_management.html#autonomouslife-states).
-
-```
-send *ri* :get-life
-"disabled"
-```
-
-- `:set-language language` (`naoqi_driver [master]`)
-
-`launch/naoqi_driver.launch`  
-
-Set a language which a robot speaks.  
-
-`language`: language (str)  
-
-[ALTextToSpeech::setLanguage](http://doc.aldebaran.com/2-5/naoqi/audio/altexttospeech-api.html#ALTextToSpeechProxy::setLanguage__ssCR)  
-
-```
-send *ri* :set-language "Japanese" ; "English"
-```
-
-- `:get-language` (`naoqi_driver [master]`)
-
-`launch/naoqi_driver.launch`  
-
-Get a language which a robot speaks.  
-
-[ALTextToSpeech::getLanguage](http://doc.aldebaran.com/2-5/naoqi/audio/altexttospeech-api.html#ALTextToSpeechProxy::getLanguage)  
-
-```
-send *ri* :get-language
-"Japanese"
-```
-
-- `:go-pos x y theta` (`naoqi_driver [master]`)
-
-`launch/naoqi_driver.launch`  
-
-Move to a specified distance.  
-
-`x`: distance along the X axis [m] (int, float)  
-`y`: distance along the Y axis [m] (int, float)  
-`theta`: rotation around the Z axis [degree] (int)
-
-[ALMotion::moveTo](http://doc.aldebaran.com/2-5/naoqi/motion/control-walk-api.html#almotionproxy-moveto1)  
-
-```
-; move to x=1.0 y=2.0 and rotate 30 degree 
-send *ri* :go-pos 1.0 2.0 30
-```
-
-- `:go-velocity x y d &optional (msec 1000) &key (stop t)` (`naoqi_driver [master]`)
-
-`launch/naoqi_driver.launch`  
-
-Move in a specified velocity.  
-
-`x`: velocity along the X axis [m/s] (int, float (-1~1))  
-`y`: velocity along the Y axis [m/s] (int, float (-1~1))  
-`theta`: velocity around the Z axis [rad/s] (int, float (-1~1))  
-`msec` (optional): how long a robot keeps moving (int, enable if `:stop t`)  
-`stop`(key value): determines whether a robot stops after moving for some time  
-
-[ALMotion::move](http://doc.aldebaran.com/2-5/naoqi/motion/control-walk-api.html#almotionproxy-move1)  
-
-```
-; move vx=0.2 m/s, vy=0.3 m/s and rotate 0.1 rad/s 
-send *ri* :go-velocity 0.2 0.3 0.1
-
-; move vx=0.2 m/s, vy=0.3 m/s and rotate 0.1 rad/s, a robot keeps moving forever 
-send *ri* :go-velocity 0.2 0.3 0.1 :stop nil
-
-; move vx=0.2 m/s, vy=0.3 m/s and rotate 0.1 rad/s, a robot keeps moving for 2 sec
-send *ri* :go-velocity 0.2 0.3 0.1 2000
-```
-
-- `:play-audio-file file` (`naoqi_driver [kochigami-develop]`)
-
-`launch/naoqi_driver.launch`  
-
-Play audio file inside a robot.  
-
-`file`: path to your audio file (str)  
-Please locate mp3, wav file under `/home/nao/`. Then, set a path to your audio file to `file`.  
-
-[ALAudioPlayer::playFile](http://doc.aldebaran.com/2-5/naoqi/audio/alaudioplayer-api.html#ALAudioPlayerProxy::playFile__ssCR)  
-
-This is an example of how to play test.mp3 file from `/home/nao/audio_file/test.mp3` path.  
-
-```
-; ssh nao@<robot IP> 
-; then, create audio_file folder and put test.mp3 file
-; scp test.mp3  nao@<robot IP>:/home/nao/audio_file/
-
-send *ri* :play-audio-file "/audio_file/test.mp3"
-```
-
-- `:set-external-collision-protection-status type status` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/external_collision_avoidance.launch`  
-
-Enable/disable external collision protection of a robot on the given name.  
-
-`type`: body parts type of a robot (int)  
-
-```
-All:  0
-Move: 1
-Arms: 2
-Larm: 3
-Rarm: 4 
-```
-
-`status`: t/ nil (bool)  
-
-[ALMotion::setExternalCollisionProtectionEnabled](http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision-api.html#ALMotionProxy::setExternalCollisionProtectionEnabled__ssCR.bCR)  
-
-```
-; disable external collision protection for Move part
-send *ri* :set-external-collision-protection-status 2 nil
-```
-
-- `:get-external-collision-protection-status type` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/external_collision_avoidance.launch`  
-
-Check if the external collision protection is activated on the given name.  
-
-`type`: body parts type of a robot (int)  
-
-```
-All:  0
-Move: 1
-Arms: 2
-Larm: 3
-Rarm: 4 
-```
-
-[ALMotion::getExternalCollisionProtectionEnabled](http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision-api.html#ALMotionProxy::getExternalCollisionProtectionEnabled__ssCR)  
-
-```
-; get status of external collision protection for Move part
-send *ri* :get-external-collision-protection-status 2 
-t
-```
-
-- `:set-background-movement-enabled status` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/background_movement.launch`  
-
-Enable or disable the background movements. For further details on background movement, please refer to [here](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement.html#albackgroundmovement).   
-
-`status`: t/ nil (bool)  
-
-[ALBackgroundMovement::setEnabled](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement-api.html#ALBackgroundMovementProxy::setEnabled__b)  
-
-```
-; enable background movement
-send *ri* :set-background-movement-enabled t
-```
-
-- `:get-background-movement-enabled` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/background_movement.launch`  
-
-Return whether the background movements are enabled. For further details on background movement, please refer to [here](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement.html#albackgroundmovement).   
-
-[ALBackgroundMovement::isEnabled](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement-api.html#ALBackgroundMovementProxy::isEnabled)  
-
-```
-; get background movement status
-send *ri* :get-background-movement-enabled
-t
-```
-
-- `:set-move-arms-enabled status &optional (arm :arms)` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/locomotion_control.launch`  
-
-Enable shaking arms movement while moving
-
-`status`: t/ nil (bool)  
-`arm` (optional): `:rarm`, `:larm`, `:arms` (default: `:arms`)   
-
-[ALMotion::setMoveArmsEnabled](http://doc.aldebaran.com/2-5/naoqi/motion/control-walk-api.html#ALMotionProxy::setMoveArmsEnabled__bCR.bCR)  
-
-```
-; move arms while moving
-send *ri* :set-move-arms-enabled t
-
-; do not move right arm while moving
-send *ri* :set-move-arms-enabled nil :rarm
-```
-
-- `:get-move-arms-enabled &optional (arm :arms)` (`naoqi_bridge [kochigami-develop]`)
-
-`naoqi_apps/launch/locomotion_control.launch`  
-
-Get the status of whether shaking arms movement is enabled while moving.  
-
-`arm` (optional): `:rarm`, `:larm`, `:arms` (default: `:arms`)   
-
-[ALMotion::getMoveArmsEnabled](http://doc.aldebaran.com/2-5/naoqi/motion/control-walk-api.html#ALMotionProxy::getMoveArmsEnabled__ssCR)  
-
-```
-; get the status of arms while moving
-send *ri* :get-move-arms-enabled
-t
-
-; get the status of right arm while moving
-send *ri* :get-move-arms-enabled :rarm
-nil
-```
-
-- `:error-vector`
-
-Return the difference of reference joint angle and sensored joint angle.
-
-Note: This method cannot be used because it requires `naoqi_driver_py/launch/naoqi_driver.launch`. We use `naoqi_driver/launch/naoqi_driver.launch` now.  
-[related PR](https://github.com/ros-naoqi/naoqi_bridge/pull/37)  
-
-```
-send *ri* :error-vector
-#f(0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0)
-```
-
+[:stop-grasp `&optional (angle-ratio 1.0) (arm :arms)` (naoqi_bridge [`master`])](doc/stop_grasp.md)  
