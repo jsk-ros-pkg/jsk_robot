@@ -147,17 +147,6 @@
 			   :time_from_start (ros::time 1))))
      (send joint-stiffness-trajectory-action :send-goal goal)
      ))
-  (:servo-on ()
-	     (if (boundp '*nao*)
-		 (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace)))
-	     (if (boundp '*pepper*)
-		 (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace))))
-
-  (:servo-off ()
-	      (if (boundp '*nao*)
-		  (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace)))
-	      (if (boundp '*pepper*)
-		  (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace))))
   ;;
   (:move-hand
    (value &optional (arm :arms))

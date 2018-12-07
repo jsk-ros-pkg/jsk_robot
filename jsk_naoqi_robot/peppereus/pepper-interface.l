@@ -57,6 +57,12 @@
 	 (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
 	 (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name)))))
        )))
+  (:servo-on
+   ()
+   (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace)))
+  (:servo-off
+   ()
+   (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace)))
   (:show-image
    (file)
    (let (ret)
