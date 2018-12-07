@@ -125,7 +125,9 @@ NAO & Pepper
 [**_naoqieus_**](naoqieus/README.md)
   - common interface package for controlling NAO and Pepper via roseus
 
-  - To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](simulator.md).
+To connect NAO and Pepper to wifi, please refer to [here](doc/connect_to_wifi.md).
+
+To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](doc/simulator.md).
 
 NAO
 ---
