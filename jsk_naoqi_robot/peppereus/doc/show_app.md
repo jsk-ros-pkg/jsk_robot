@@ -2,7 +2,7 @@
 
 ### What is this?
 
-Start new application on tablet and shows it. The index.html file of the app should be in /home/nao/.local/share/PackageManager/apps/<app>/html/. 'app' is a parameter of this method.
+Start new application on tablet and shows it. The index.html file of the app should be in `/home/nao/.local/share/PackageManager/apps/<app>/html/`. 'app' is a parameter of this method.
 
 ### Parameters
 
