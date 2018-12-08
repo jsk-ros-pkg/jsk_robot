@@ -10,7 +10,8 @@ Gets the overall output volume of the system.
 
 ### NAOqi API
 
-[ALAudioDevice::getOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)  
+[ALAudioDevice::getOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)
+
 Related PR is [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/814)  
 
 ### Sample

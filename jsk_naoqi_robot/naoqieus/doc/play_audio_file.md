@@ -17,6 +17,8 @@ Please locate mp3, wav file under `/home/nao/`. Then, set a path to your audio f
 
 [ALAudioPlayer::playFile](http://doc.aldebaran.com/2-5/naoqi/audio/alaudioplayer-api.html#ALAudioPlayerProxy::playFile__ssCR)  
 
+Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/109)
+
 ### Sample
 
 This is an example of how to play test.mp3 file from `/home/nao/audio_file/test.mp3` path.  

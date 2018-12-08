@@ -15,7 +15,8 @@ Sets the overall output volume of the system.
 ### NAOqi API
 
 [ALAudioDeviceProxy::setOutputVolume](http://doc.aldebaran.com/2-5/naoqi/audio/alaudiodevice-api.html#alaudiodevice-api)  
-Related PR is [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/814)
+
+Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/110) and [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/814)
 
 ### Sample
 

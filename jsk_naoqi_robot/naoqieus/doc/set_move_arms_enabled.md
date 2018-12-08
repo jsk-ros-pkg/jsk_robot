@@ -17,6 +17,8 @@ Enable shaking arms movement while moving
 
 [ALMotion::setMoveArmsEnabled](http://doc.aldebaran.com/2-5/naoqi/motion/control-walk-api.html#ALMotionProxy::setMoveArmsEnabled__bCR.bCR)  
 
+Related commit is [here](https://github.com/kochigami/naoqi_bridge/commit/5d36e3d1a7e13095d62831ca4568f44a43f7bc37#diff-e9b6c21fdccdb01cff79b583fc7ad7d2)
+
 ### Sample
 
 ```

@@ -15,7 +15,8 @@ Set a LED or Group of LEDs to their default state.
 ### NAOqi API
 
 [ALLedsProxy::reset](http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#alleds-api)  
-Related PR is [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/999)
+
+Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/100) and [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/999)
 
 ### Sample
 

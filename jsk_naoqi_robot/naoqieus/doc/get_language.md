@@ -12,6 +12,8 @@ Get a language which a robot speaks.
 
 [ALTextToSpeech::getLanguage](http://doc.aldebaran.com/2-5/naoqi/audio/altexttospeech-api.html#ALTextToSpeechProxy::getLanguage)  
 
+Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/87)
+
 ### Sample
 
 ```

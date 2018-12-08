@@ -16,6 +16,8 @@ Enable or disable the background movements. For further details on background mo
 
 [ALBackgroundMovement::setEnabled](http://doc.aldebaran.com/2-5/naoqi/interaction/autonomousabilities/albackgroundmovement-api.html#ALBackgroundMovementProxy::setEnabled__b)  
 
+Related commit is [here](https://github.com/ros-naoqi/naoqi_bridge/pull/82)
+
 ### Sample
 
 ```

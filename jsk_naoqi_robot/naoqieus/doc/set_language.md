@@ -16,6 +16,8 @@ Set a language which a robot speaks.
 
 [ALTextToSpeech::setLanguage](http://doc.aldebaran.com/2-5/naoqi/audio/altexttospeech-api.html#ALTextToSpeechProxy::setLanguage__ssCR)  
 
+Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/87)
+
 ### Sample
 
 ```

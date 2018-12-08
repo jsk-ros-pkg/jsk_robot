@@ -26,6 +26,8 @@ Rarm: 4
 
 [ALMotion::setExternalCollisionProtectionEnabled](http://doc.aldebaran.com/2-5/naoqi/motion/reflexes-external-collision-api.html#ALMotionProxy::setExternalCollisionProtectionEnabled__ssCR.bCR)  
 
+Related commit is [here](https://github.com/kochigami/naoqi_bridge/commit/7655dea24e26df3c0c2fae3fda20b6e96111d898#diff-e9b6c21fdccdb01cff79b583fc7ad7d2)
+
 ### Sample
 
 ```

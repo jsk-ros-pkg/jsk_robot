@@ -20,7 +20,7 @@ Sets the color of an RGB led using RGB color code.
 
 [ALLeds::fadeRGB with RGB color code](http://doc.aldebaran.com/2-5/naoqi/sensors/alleds-api.html#alleds-api)  
 
-Related PR is [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/999)
+Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/100) and [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/999)
 
 ### Sample
 
