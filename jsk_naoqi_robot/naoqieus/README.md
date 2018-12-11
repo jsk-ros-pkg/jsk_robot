@@ -23,7 +23,7 @@ Methods
 
 - [:error-vector](doc/error_vector.md)  
 
-- [:fade-leds `led_name` `r` `g` `b` `a` `sec` (naoqi_driver [`kochigami-develop`])](doc/fade_leds.md)  
+- [:fade-leds `led_name` `r` `g` `b` `sec` (naoqi_driver [`kochigami-develop`])](doc/fade_leds.md)  
 
 - [:get-background-movement-enabled (naoqi_bridge [`kochigami-develop`])](doc/get_background_movement_enabled.md)  
 

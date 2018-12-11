@@ -1,4 +1,4 @@
-## :fade-leds `led_name` `r` `g` `b` `a` `sec` (naoqi_driver [`kochigami-develop`])
+## :fade-leds `led_name` `r` `g` `b` `sec` (naoqi_driver [`kochigami-develop`])
 
 ### What is this?
 
@@ -10,7 +10,7 @@ Sets the color of an RGB led using RGB color code.
 `r`: intensity of red channel (float 0-1)  
 `g`: intensity of green channel (float 0-1)  
 `b`: intensity of blue channel (float 0-1)  
-`d`: time used to fade in seconds (int)  
+`d`: time used to fade in seconds (int/ float)  
 
 ### Location
 
@@ -25,5 +25,5 @@ Related PR is [here](https://github.com/ros-naoqi/naoqi_driver/pull/100) and [he
 ### Sample
 
 ```
-send *ri* :fade-leds "FaceLeds" 0.5 0.5 0 0 1 ;; Robot's eyes become yellow in a 1 sec.
+send *ri* :fade-leds "FaceLeds" 0.5 0.5 0 1 ;; Robot's eyes become yellow in a 1 sec.
 ```

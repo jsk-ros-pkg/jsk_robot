@@ -32,5 +32,5 @@ Related commit is [here](https://github.com/kochigami/naoqi_bridge/commit/7655de
 
 ```
 ; disable external collision protection for Move part
-send *ri* :set-external-collision-protection-status 2 nil
+send *ri* :set-external-collision-protection-status 1 nil
 ```

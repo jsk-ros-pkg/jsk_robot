@@ -8,7 +8,7 @@ Move in a specified velocity.
 
 `x`: velocity along the X axis [m/s] (int, float (-1 ~ 1))  
 `y`: velocity along the Y axis [m/s] (int, float (-1 ~ 1))  
-`theta`: velocity around the Z axis [rad/s] (int, float (-1 ~ 1))  
+`d`: velocity around the Z axis [rad/s] (int, float (-1 ~ 1))  
 `msec` (optional): how long a robot keeps moving (int, enable if `:stop t`)  
 `stop`(key value): determines whether a robot stops after moving for some time
 
