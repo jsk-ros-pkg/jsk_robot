@@ -48,8 +48,7 @@
 #include <jsk_topic_tools/stealth_relay.h>
 #include <jsk_topic_tools/timered_diagnostic_updater.h>
 #include <jsk_topic_tools/vital_checker.h>
-#include <mongodb_store/message_store.h>
-
+#include <jsk_robot_startup/message_store_singleton.h>
 
 namespace jsk_robot_startup
 {
@@ -59,13 +58,17 @@ namespace jsk_robot_startup
     {
     protected:
       virtual void onInit();
+      virtual ~LightweightLogger();
+      virtual void loadThread();
       virtual void inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event);
       virtual void updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat);
 
-      boost::shared_ptr<mongodb_store::MessageStoreProxy> msg_store_;
+      mongodb_store::MessageStoreProxy* msg_store_;
+      boost::thread deferred_load_thread_;
       bool wait_for_insert_;
       bool initialized_;
       std::string input_topic_name_;
+      std::string db_name_, col_name_;
 
       // diagnostics
       ros::Time init_time_;
