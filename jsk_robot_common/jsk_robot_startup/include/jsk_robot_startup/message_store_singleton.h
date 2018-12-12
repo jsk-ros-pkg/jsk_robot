@@ -33,50 +33,41 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 /*
- * lightweight_logger.h
- * Author: Furushchev <furushchev@jsk.imi.i.u-tokyo.ac.jp>
+ * message_store_singleton.h
+ * Author:  <furushchev@jsk.imi.i.u-tokyo.ac.jp>
  */
 
 
-#ifndef LIGHTWEIGHT_LOGGER_H__
-#define LIGHTWEIGHT_LOGGER_H__
+#ifndef MESSAGE_STORE_SINGLETON_H__
+#define MESSAGE_STORE_SINGLETON_H__
 
-#include <diagnostic_updater/diagnostic_updater.h>
-#include <diagnostic_updater/publisher.h>
-#include <topic_tools/shape_shifter.h>
-#include <jsk_topic_tools/diagnostic_utils.h>
-#include <jsk_topic_tools/stealth_relay.h>
-#include <jsk_topic_tools/timered_diagnostic_updater.h>
-#include <jsk_topic_tools/vital_checker.h>
-#include <jsk_robot_startup/message_store_singleton.h>
+#include <boost/thread.hpp>
+#include <mongodb_store/message_store.h>
+
 
 namespace jsk_robot_startup
 {
-  namespace lifelog
-  {
-    class LightweightLogger : public jsk_topic_tools::StealthRelay
-    {
-    protected:
-      virtual void onInit();
-      virtual ~LightweightLogger();
-      virtual void loadThread();
-      virtual void inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event);
-      virtual void updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat);
+namespace lifelog
+{
+class MessageStoreSingleton
+{
+ public:
+  typedef std::map<std::string, mongodb_store::MessageStoreProxy*> M_Proxy;
+  static mongodb_store::MessageStoreProxy* getInstance(
+      const std::string& collection="message_store",
+      const std::string& database="message_store",
+      const std::string& prefix="/message_store");
+  static void destroy();
+ protected:
+  static ros::NodeHandle nh_;
+  static M_Proxy instances_;
+  static boost::mutex mutex_;
+ private:
+  // prohibit constructor
+  MessageStoreSingleton(MessageStoreSingleton const&) {};
+  MessageStoreSingleton& operator=(MessageStoreSingleton const&) {};
+};
+} // lifelog
+} // jsk_robot_startup
 
-      mongodb_store::MessageStoreProxy* msg_store_;
-      boost::thread deferred_load_thread_;
-      bool wait_for_insert_;
-      bool initialized_;
-      std::string input_topic_name_;
-      std::string db_name_, col_name_;
-
-      // diagnostics
-      ros::Time init_time_;
-      uint64_t inserted_count_, insert_error_count_, prev_insert_error_count_;
-      jsk_topic_tools::VitalChecker::Ptr vital_checker_;
-      jsk_topic_tools::TimeredDiagnosticUpdater::Ptr diagnostic_updater_;
-    };
-  }
-}
-
-#endif // LIGHTWEIGHT_LOGGER_H__
+#endif // MESSAGE_STORE_SINGLETON_H__
