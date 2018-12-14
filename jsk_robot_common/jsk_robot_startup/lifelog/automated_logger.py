@@ -495,10 +495,15 @@ class NodeletManager(object):
             self.logwarn('{} already loaded'.format(name))
             return True
 
-        source, target = {}, {}
+        source, target = [], []
         if remappings:
             source = remappings.keys()
             target = [remappings[k] for k in source]
+            # resolve private namespace
+            source = [t.replace('~', name + '/') for t in source]
+            target = [t.replace('~', name + '/') for t in target]
+            for s, t in zip(source, target):
+                self.loginfo('Remap {} -> {}'.format(s, t))
         try:
             self._load_srv.wait_for_service(timeout=1)
             res = self._load_srv(
