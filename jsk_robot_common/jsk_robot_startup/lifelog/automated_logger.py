@@ -5,6 +5,7 @@
 from __future__ import print_function
 from collections import defaultdict
 import copy
+import click
 import itertools
 import subprocess as sp
 import re
@@ -13,6 +14,7 @@ import rosservice
 import rospy
 import socket
 import sys
+import time
 import traceback
 try:
     from xmlrpc.client import ServerProxy
@@ -24,13 +26,6 @@ from nodelet.srv import NodeletLoad, NodeletUnload, NodeletList
 
 KEYDELIM = '|'
 TOPICPREFIX = 'topic:'
-
-
-def error(*msg):
-    if rospy.get_name() == '/unnamed':
-        print(*msg, file=sys.stderr)
-    else:
-        rospy.logerr(*msg)
 
 
 def match(regex, s):
@@ -48,13 +43,6 @@ def detopic(name):
     if name.startswith(TOPICPREFIX):
         name = name[len(TOPICPREFIX):]
     return name
-
-
-def escape(name):
-    # if name.startswith('/'):
-    #     name = name[1:]
-    # return name.replace('/', '_')
-    return name + "_logger"
 
 
 class Edge(object):
@@ -214,7 +202,7 @@ class Graph(object):
         try:
             res = self.master.getSystemState()
         except rosgraph.masterapi.MasterException as e:
-            error('Unable to contact master', str(e), traceback.format_exc())
+            rospy.logerr('Unable to contact master', str(e), traceback.format_exc())
             return False
 
         node_topics = defaultdict(lambda: defaultdict(set))
@@ -271,6 +259,7 @@ class Graph(object):
                         added = True
                     if added:
                         topic_set.add(t)
+
         node_set.add(self.base_node)
 
         node_srv_conn = EdgeList()
@@ -294,7 +283,7 @@ class Graph(object):
             self.uri_node_cache[uri] = node
             return uri
         except Exception as e:
-            error('Failed to lookup node', str(e), traceback.format_exc())
+            rospy.logerr('Failed to lookup node', str(e), traceback.format_exc())
             if node in self.node_uri_cache:
                 return self.node_uri_cache[node]
             else:
@@ -325,7 +314,7 @@ class Graph(object):
                 socket.setdefaulttimeout(timeout)
 
             if code != 1:
-                error('Could not get bus info of node {}: {}'.format(
+                rospy.logerr('Could not get bus info of node {}: {}'.format(
                     node, msg))
                 continue
 
@@ -340,19 +329,19 @@ class Graph(object):
 
 
                 if connected:
-                    self.topics.add(topic)
-                    updated = self.node_topic_conn.add_edges(
-                        node, entopic(topic), direction) or updated
                     if dest_id.startswith('http://'):
                         dest_id = self.uri_node_cache.get(dest_id, None)
                     if dest_id in self.nodes and\
                        not match(self.blacklist_nodes, dest_id) and\
                        not match(self.blacklist_topics, topic):
+                        self.topics.add(topic)
+                        updated = self.node_topic_conn.add_edges(
+                            node, entopic(topic), direction) or updated
                         updated = self.node_node_conn.add_edges(
                             node, dest_id, direction, topic) or updated
 
         for n, err in self.bad_nodes:
-            error('bad node {}: {}'.format(n, err))
+            rospy.logerr('bad node {}: {}'.format(n, err))
 
         return updated
 
@@ -388,14 +377,20 @@ class Graph(object):
 
 
 class NodeletManager(object):
-    def __init__(self, name):
+    _managers = list()
+
+    def __init__(self, name, color):
         super(NodeletManager, self).__init__()
         self.name = name
         self.manager = None
+        if color is None:
+            color = 'white'
+        self.color = color
 
         self._list_nodelet_timeout = rospy.Duration(5.0)
         self._last_list_nodelet_stamp = rospy.Time(0)
-        self._nodelets = []
+        self._nodelets = set()
+        self._loaded_nodelets = set()
 
         self._list_srv = rospy.ServiceProxy(
             self.name + "/list", NodeletList)
@@ -406,11 +401,34 @@ class NodeletManager(object):
 
         try:
             self._list_srv.wait_for_service(timeout=0.1)
+            self.loginfo("Found existing manager")
         except rospy.exceptions.ROSException:
             self.start_manager()
 
-    def __del__(self):
-        self.stop_manager()
+    @classmethod
+    def get_manager(cls, name):
+        colors = ['green', 'yellow', 'blue', 'magenta', 'cyan', 'white',
+                  'bright_black', 'bright_green', 'bright_yellow',
+                  'bright_blue', 'bright_magenta', 'bright_cyan', 'bright_white']
+        for m in cls._managers:
+            if m.name == name:
+                return m
+        index = len(cls._managers) % len(colors)
+        m = cls(name, colors[index])
+        cls._managers.append(m)
+        return m
+
+    def logfmt(self, func, msg):
+        func(click.style('[{}] {}'.format(self.name, msg), fg=self.color))
+
+    def loginfo(self, msg):
+        self.logfmt(rospy.loginfo, msg)
+
+    def logwarn(self, msg):
+        self.logfmt(rospy.logwarn, msg)
+
+    def logerr(self, msg):
+        self.logfmt(rospy.logerr, msg)
 
     def start_manager(self):
         if self.manager is None:
@@ -421,65 +439,121 @@ class NodeletManager(object):
                 ["rosrun", "nodelet", "nodelet", "manager",
                  "__name:={}".format(name)],)
             self.manager.daemon = True
-            rospy.loginfo('started manager {}'.format(self.name))
+            self.loginfo('started manager')
 
         try:
             self._list_srv.wait_for_service(timeout=5.0)
+            return True
         except rospy.exceptions.ROSException:
-            raise rospy.exceptions.ROSException(
-                "Failed to contact a manager {}."
-                "Is manager started?".format(self.name))
+            self.logerr('Failed to start manager')
+            self.logerr(traceback.format_exc())
+            return False
 
     def stop_manager(self):
         self.unload_all()
         if self.manager is not None and\
-           self.manager.poll() is None:
-            self.manager.kill()
+           self.manager.poll() is not None:
+            start = time.time()
+            timeout = 10.0
+            self.manager.terminate()
+            while self.manager.poll() is None:
+                time.sleep(0.1)
+                elapsed = time.time() - start
+                if elapsed > timeout:
+                    self.manager.kill()
+                    self.manager.wait()
+                    break
+            retcode = self.manager.poll()
+            if retcode == 0:
+                self.loginfo('stoped manager')
+            else:
+                self.logerr('Failed to stop manager (code: {})'.format(retcode))
+                return False
+        return True
 
     @property
     def nodelets(self):
         now = rospy.Time.now()
-        if rospy.Time.now() - self.last_list_nodelet_stamp > self.list_nodelet_timeout:
-            self._nodelets = self._list_srv().nodelets
+        if rospy.Time.now() - self._last_list_nodelet_stamp > self._list_nodelet_timeout:
+            try:
+                self._list_srv.wait_for_service(timeout=1)
+                self._nodelets = set(self._list_srv().nodelets)
+            except Exception as e:
+                self.logerr("Failed to list nodelet")
+                self._nodelets = set()
         return self._nodelets
 
+    @property
+    def loaded_nodelets(self):
+        nodelets = self.nodelets
+        if nodelets:
+            self._loaded_nodelets = nodelets & self._loaded_nodelets
+        return self._loaded_nodelets
+
     def load(self, name, type, remappings=None):
-        if name in self.nodelets:
-            rospy.logwarn('nodelet {} is already loaded'.format(name))
-            return False
+        if name in self.loaded_nodelets:
+            self.logwarn('{} already loaded'.format(name))
+            return True
 
         source, target = {}, {}
         if remappings:
             source = remappings.keys()
             target = [remappings[k] for k in source]
-        res = self._load_srv(
-            name=name,
-            type=type,
-            remap_source_args=source,
-            remap_target_args=target,
-            my_argv=list(),
-            bond_id=str()
-        )
+        try:
+            self._load_srv.wait_for_service(timeout=1)
+            res = self._load_srv(
+                name=name,
+                type=type,
+                remap_source_args=source,
+                remap_target_args=target,
+                my_argv=list(),
+                bond_id=str()
+            )
+            if res.success:
+                self.loginfo("Loaded {}".format(name))
+                self._loaded_nodelets.add(name)
+            else:
+                self.logerr("Failed to load {}".format(name))
+        except rospy.exceptions.ROSException:
+            self.logerr("Failed to load {}".format(name))
+            self.logerr(traceback.format_exc())
+            return False
 
         return res.success
 
     def unload(self, name):
-        if name not in self.nodelets:
-            rospy.logwarn('nodelet {} is not loaded.'.format(name))
+        if name not in self.loaded_nodelets:
+            self.logwarn('nodelet {} is not loaded.'.format(name))
+            return True
+        try:
+            self._unload_srv.wait_for_service(timeout=1)
+            res = self._unload_srv(name=name)
+            if res.success:
+                self.loginfo("Unloaded {}".format(name))
+                self._loaded_nodelets.remove(name)
+            else:
+                self.logerr("Failed to unload {}".format(name))
+        except rospy.exceptions.ROSException:
+            self.logerr("Failed to unload {}".format(name))
+            self.logerr(traceback.format_exc())
             return False
-        res = self._unload_srv(name=name)
         return res.success
 
     def unload_all(self):
         unloaded = False
-        for name in self.nodelets:
-            unloaded = self.unload(name) and unloaded
+        try:
+            for name in self.loaded_nodelets:
+                unloaded = self.unload(name) and unloaded
+        except Exception:
+            self.logerr("Failed to unload all nodelets")
+            self.logerr(traceback.format_exc())
+            unloaded = False
         return unloaded
 
 
 class LoggerManager(NodeletManager):
-    def __init__(self, name):
-        super(LoggerManager, self).__init__(name=name)
+    def __init__(self, name, color):
+        super(LoggerManager, self).__init__(name=name, color=color)
         self.topics = set()
 
     def escape_topic(self, topic):
@@ -497,9 +571,10 @@ class LoggerManager(NodeletManager):
             type="jsk_robot_lifelog/LightweightLogger",
             remappings={'~input': topic})
         if ok:
-            rospy.loginfo('start watching {} in manager {}'.format(
-                topic, self.name))
+            self.loginfo('Started watching {}'.format(topic))
             self.topics.add(topic)
+        else:
+            self.logerr("Failed to watch {}".format(topic))
         return ok
 
     def unwatch(self, topic):
@@ -507,9 +582,10 @@ class LoggerManager(NodeletManager):
             return False
         ok = self.unload(name=self.escape_topic(topic))
         if ok:
-            rospy.loginfo('stop watching {} in manager {}'.format(
-                topic, self.name))
+            self.loginfo('Stopped watching {}'.format(topic))
             self.topics.remove(topic)
+        else:
+            self.logerr("Failed to unwatch {}".format(topic))
         return ok
 
 
@@ -520,14 +596,14 @@ class AutomatedLogger(object):
         rospy.on_shutdown(self.shutdown_cb)
 
         default_manager_name = rospy.get_name() + "_manager"
-        self.managers['default'] = LoggerManager(default_manager_name)
+        self.managers['default'] = LoggerManager.get_manager(default_manager_name)
 
         monitor_node = rospy.get_param("~monitor_node")
         if not monitor_node.startswith('/'):
             raise ValueError('~monitor_node param must start with /')
         self.graph = Graph(monitor_node)
 
-        update_rate = rospy.get_param('~update_rate', 5.0)
+        update_rate = rospy.get_param('~update_rate', 1.0)
         self.update_timer = rospy.Timer(
             rospy.Duration(update_rate), self.update_cb)
 
@@ -554,43 +630,41 @@ class AutomatedLogger(object):
             current = current | m.topics
 
         canceled = current - topics
+        if canceled:
+            rospy.loginfo("Removing topics: {}".format(canceled))
         for topic in canceled:
             manager = self.get_manager(topic)
             if not manager:
-                rospy.logerr('no manager found for topic {}'.format(topic))
+                rospy.logerr('No manager found for topic {}'.format(topic))
                 continue
+            rospy.logdebug('before cancel: {}'.format(manager.loaded_nodelets))
             ok = manager.unwatch(topic)
+            rospy.logdebug('after cancel: {}'.format(manager.loaded_nodelets))
             if not ok:
                 rospy.logerr('failed to unwatch topic {} from manager {}'.format(
                     topic, manager.name))
 
         added = topics - current
         managers = set(self.list_managers())
+        if added:
+            rospy.loginfo("Adding topics: {}".format(added))
         for topic in added:
             pubs = [e.start for e in node_topics.find_edge_by_node(
                 entopic(topic), upward=True, downward=False)]
             pub_set = set(pubs)
             pub_manager = managers & pub_set
-            print(topic, pubs, pub_manager)
             if pub_manager:
                 manager = list(pub_manager)[0]
             else:
                 manager = 'default'
             if manager not in self.managers:
-                self.managers[manager] = LoggerManager(manager)
+                self.managers[manager] = LoggerManager.get_manager(manager)
+            rospy.logdebug('before add: {}'.format(self.managers[manager].loaded_nodelets))
             self.managers[manager].watch(topic)
+            rospy.logdebug('after add: {}'.format(self.managers[manager].loaded_nodelets))
 
 
 if __name__ == '__main__':
-    # g = Graph("/hogehoge")
-    # g.update(upward=True, downward=False)
-    # print(g.nodes)
-    # suffix = '/load_nodelet'
-    # managers = [e.start for e in g.node_srv_conn if e.end.endswith(suffix)]
-    # print(managers)
-    # # print(g.srvs)
-    # g.update_conns()
-    # g.to_graph("graph")
     rospy.init_node("automated_logger")
     n = AutomatedLogger()
     rospy.spin()
