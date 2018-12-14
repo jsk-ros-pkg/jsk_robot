@@ -14,7 +14,11 @@
 
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
-  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+    <rosparam>
+      lang: japanese
+    </rosparam>
+  </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
   <!-- japanese speech node -->
@@ -29,6 +33,22 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
     <arg name="map_frame" value="$(arg map_frame)" />
   </include>
+
+  <!-- diagnostic aggregator -->
+  <node pkg="diagnostic_aggregator" type="aggregator_node"
+        name="diag_agg" args="CPP" output="screen" >
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/fetch_analyzers.yaml" />
+  </node>
+
+  <!-- publish CPU status to diagnostics -->
+  <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
+        args="--diag-hostname=my_machine" >
+    <param name="check_ipmi_tool" value="false" type="bool" />
+    <param name="enforce_clock_speed" value="false" type="bool" />
+    <param name="num_cores" value="-1" type="int" />
+    <param name="load1_threshold" value="7.0"/>
+    <param name="load5_threshold" value="5.0"/>
+  </node>
 
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
@@ -45,6 +65,14 @@
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" />
+
+  <!-- speech recognition -->
+  <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"/>
+  <node name="static_transformer" pkg="tf" type="static_transform_publisher"
+        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <include file="$(find julius_ros)/launch/julius.launch">
+    <arg name="launch_audio_capture" value="false"/>
+  </include>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->

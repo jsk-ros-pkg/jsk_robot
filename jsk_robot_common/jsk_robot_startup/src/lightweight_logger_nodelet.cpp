@@ -95,7 +95,6 @@ namespace jsk_robot_startup
     {
       NODELET_INFO_STREAM("Connecting to database " << db_name_ << "/" << col_name_ << "...");
       msg_store_ = MessageStoreSingleton::getInstance(col_name_, db_name_);
-      //.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name_, db_name_));
       NODELET_INFO_STREAM("Successfully connected to database!");
 
       initialized_ = true;
@@ -156,8 +155,13 @@ namespace jsk_robot_startup
       stat.add("Insert Failure", insert_error_count_);
       vital_checker_->registerStatInfo(stat, "Last Insert");
     }
+<<<<<<< HEAD
   }
 }
+=======
+  } // lifelog
+} // jsk_robot_startup
+>>>>>>> automate-logger
 
 #include <pluginlib/class_list_macros.h>
 typedef jsk_robot_startup::lifelog::LightweightLogger LightweightLogger;
