@@ -60,19 +60,22 @@ namespace jsk_robot_startup
 
       input_topic_name_ = pnh_->resolveName("input", true);
 
-      diagnostic_updater_.reset(
-        new jsk_topic_tools::TimeredDiagnosticUpdater(*pnh_, ros::Duration(1.0)));
-      diagnostic_updater_->setHardwareID("LightweightLogger");
-      diagnostic_updater_->add(
-        "LightweightLogger::" + input_topic_name_,
-        boost::bind(&LightweightLogger::updateDiagnostic, this, _1));
-
       double vital_rate;
       pnh_->param("vital_rate", vital_rate, 1.0);
       vital_checker_.reset(
         new jsk_topic_tools::VitalChecker(1.0 / vital_rate));
 
-      diagnostic_updater_->start();
+      bool enable_diagnostics;
+      pnh_->param<bool>("enable_diagnostics", enable_diagnostics, true);
+      if (enable_diagnostics) {
+        diagnostic_updater_.reset(
+          new jsk_topic_tools::TimeredDiagnosticUpdater(*pnh_, ros::Duration(1.0)));
+        diagnostic_updater_->setHardwareID("LightweightLogger");
+        diagnostic_updater_->add(
+          "LightweightLogger::" + input_topic_name_,
+          boost::bind(&LightweightLogger::updateDiagnostic, this, _1));
+        diagnostic_updater_->start();
+      }
 
       inserted_count_ = 0;
       insert_error_count_ = 0;
