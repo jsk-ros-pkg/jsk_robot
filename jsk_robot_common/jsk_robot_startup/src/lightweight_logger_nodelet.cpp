@@ -84,29 +84,42 @@ namespace jsk_robot_startup
     }
 
     LightweightLogger::~LightweightLogger() {
-      if (!initialized_) {
+      if (msg_store_) {
+        msg_store_.reset();
+      }
+      if (deferred_load_thread_.joinable()) {
         NODELET_DEBUG_STREAM("Shutting down deferred load thread");
-        deferred_load_thread_.join();
-        NODELET_DEBUG_STREAM("deferred load thread stopped");
+        bool ok = deferred_load_thread_.try_join_for(boost::chrono::seconds(5));
+        if (!ok) {
+          NODELET_WARN_STREAM("Timed out to join deferred load thread.");
+          deferred_load_thread_.interrupt();
+          ok = deferred_load_thread_.try_join_for(boost::chrono::seconds(3));
+          if (!ok) {
+            NODELET_ERROR_STREAM("Failed to shutdown deferred load thread.");
+          }
+        }
+        if (ok) {
+          NODELET_DEBUG_STREAM("deferred load thread stopped");
+        }
       }
     }
 
     void LightweightLogger::loadThread()
     {
-      NODELET_INFO_STREAM("Connecting to database " << db_name_ << "/" << col_name_ << "...");
-      msg_store_ = MessageStoreSingleton::getInstance(col_name_, db_name_);
-      NODELET_INFO_STREAM("Successfully connected to database!");
-
+      msg_store_.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name_, db_name_));
       initialized_ = true;
     }
 
-    void LightweightLogger::inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event)
+    void LightweightLogger::inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter const>& event)
     {
       const std::string& publisher_name = event.getPublisherName();
       const boost::shared_ptr<topic_tools::ShapeShifter const>& msg = event.getConstMessage();
       jsk_topic_tools::StealthRelay::inputCallback(msg);
 
-      if (!initialized_) return;
+      if (!initialized_) {
+        NODELET_WARN_THROTTLE(1.0, "nodelet is not yet initialized");
+        return;
+      }
       vital_checker_->poke();
 
       try
