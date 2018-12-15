@@ -698,7 +698,8 @@ class AutomatedLogger(object):
             else:
                 rospy.logerr('failed to unwatch topic {} from manager {}'.format(
                     topic, manager.name))
-        self.record_log(stamp, 'unwatch', topics=canceled)
+        if canceled:
+            self.record_log(stamp, 'unwatch', topics=canceled)
 
         adds = topics - current
         added = []
@@ -724,8 +725,8 @@ class AutomatedLogger(object):
             else:
                 rospy.logerr('failed to watch topic {} from manager {}'.format(
                     topic, self.managers[manager].name))
-
-        self.record_log(stamp, 'watch', topics=added)
+        if added:
+            self.record_log(stamp, 'watch', topics=added)
 
 
 if __name__ == '__main__':
