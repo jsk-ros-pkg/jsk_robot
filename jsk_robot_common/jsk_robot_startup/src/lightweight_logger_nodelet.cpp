@@ -155,13 +155,9 @@ namespace jsk_robot_startup
       stat.add("Insert Failure", insert_error_count_);
       vital_checker_->registerStatInfo(stat, "Last Insert");
     }
-<<<<<<< HEAD
-  }
-}
-=======
   } // lifelog
 } // jsk_robot_startup
->>>>>>> automate-logger
+
 
 #include <pluginlib/class_list_macros.h>
 typedef jsk_robot_startup::lifelog::LightweightLogger LightweightLogger;
