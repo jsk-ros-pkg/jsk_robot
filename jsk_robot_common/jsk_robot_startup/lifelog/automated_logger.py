@@ -391,6 +391,7 @@ class NodeletManager(object):
         self._last_list_nodelet_stamp = rospy.Time(0)
         self._nodelets = set()
         self._loaded_nodelets = set()
+        self._srv_wait_timeout = 0.3
 
         self._list_srv = rospy.ServiceProxy(
             self.name + "/list", NodeletList)
@@ -400,7 +401,7 @@ class NodeletManager(object):
             self.name + "/unload_nodelet", NodeletUnload)
 
         try:
-            self._list_srv.wait_for_service(timeout=0.1)
+            self._list_srv.wait_for_service(timeout=self._srv_wait_timeout)
             self.loginfo("Found existing manager")
         except rospy.exceptions.ROSException:
             self.start_manager()
@@ -476,7 +477,7 @@ class NodeletManager(object):
         now = rospy.Time.now()
         if rospy.Time.now() - self._last_list_nodelet_stamp > self._list_nodelet_timeout:
             try:
-                self._list_srv.wait_for_service(timeout=1)
+                self._list_srv.wait_for_service(timeout=self._srv_wait_timeout)
                 self._nodelets = set(self._list_srv().nodelets)
             except Exception as e:
                 self.logerr("Failed to list nodelet")
@@ -505,7 +506,7 @@ class NodeletManager(object):
             for s, t in zip(source, target):
                 self.loginfo('Remap {} -> {}'.format(s, t))
         try:
-            self._load_srv.wait_for_service(timeout=1)
+            self._load_srv.wait_for_service(timeout=self._srv_wait_timeout)
             res = self._load_srv(
                 name=name,
                 type=type,
@@ -531,7 +532,7 @@ class NodeletManager(object):
             self.logwarn('nodelet {} is not loaded.'.format(name))
             return True
         try:
-            self._unload_srv.wait_for_service(timeout=1)
+            self._unload_srv.wait_for_service(timeout=self._srv_wait_timeout)
             res = self._unload_srv(name=name)
             if res.success:
                 self.loginfo("Unloaded {}".format(name))
