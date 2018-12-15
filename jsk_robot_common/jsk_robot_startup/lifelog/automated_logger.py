@@ -340,7 +340,7 @@ class Graph(object):
                         updated = self.node_node_conn.add_edges(
                             node, dest_id, direction, topic) or updated
 
-        for n, err in self.bad_nodes:
+        for n, err in self.bad_nodes.items():
             rospy.logerr('bad node {}: {}'.format(n, err))
 
         return updated
