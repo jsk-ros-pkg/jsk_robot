@@ -7,15 +7,17 @@ from collections import defaultdict
 import copy
 import click
 import itertools
-import subprocess as sp
+import pymongo
 import re
 import rosgraph.masterapi
-import rosservice
 import rospy
+import rosservice
 import socket
+import subprocess as sp
 import sys
 import time
 import traceback
+import uuid
 try:
     from xmlrpc.client import ServerProxy
 except ImportError:
@@ -614,13 +616,51 @@ class AutomatedLogger(object):
             raise ValueError('~monitor_node param must start with /')
         self.graph = Graph(monitor_node)
 
+        host = rospy.get_param('/mongodb_host', 'localhost')
+        port = rospy.get_param('/mongodb_port', 27017)
+        database = rospy.get_param('/robot/database')
+        collection = rospy.get_param('~collection', 'automated_logger')
+        client = pymongo.MongoClient(host, port)
+        try:
+            ok = (client[database].command('ping')['ok'] == 1.0)
+            if not ok:
+                raise RuntimeError()
+        except:
+            rospy.logfatal('Could not connect to database {}:{}/{}'.format(host, port, database))
+            rospy.logfatal(traceback.format_exc())
+            return
+        self.log_db = client[database][collection]
+        self.log_id = str(uuid.uuid1())
+
+        self.record_log(rospy.Time.now(), 'start')
+
         update_rate = rospy.get_param('~update_rate', 1.0)
         self.update_timer = rospy.Timer(
             rospy.Duration(update_rate), self.update_cb)
 
+    def record_log(self, stamp, event, **data):
+        data.update({
+            'stamp': {
+                'secs': stamp.secs,
+                'nsecs': stamp.nsecs,
+                'seconds': float(stamp.secs) + float(stamp.nsecs) * 1e-9
+            },
+            'event': event,
+            'monitor_node': self.graph.base_node,
+            'logger_id': self.log_id,
+        })
+        try:
+            self.log_db.insert(data)
+            return True
+        except Exception as e:
+            rospy.logerr('Failed to insert record log: {}'.format(str(e)))
+            rospy.logerr(traceback.format_exc())
+            return False
+
     def shutdown_cb(self):
         for m in self.managers.values():
             m.stop_manager()
+        self.record_log(rospy.Time.now(), 'shutdown')
 
     def get_manager(self, topic):
         for m in self.managers.values():
@@ -633,6 +673,7 @@ class AutomatedLogger(object):
         return managers
 
     def update_cb(self, event=None):
+        stamp = event.current_real
         self.graph.update(upward=True, downward=False)
         topics = copy.deepcopy(self.graph.topics)
         node_topics = self.graph.node_topic_conn
@@ -640,10 +681,11 @@ class AutomatedLogger(object):
         for m in self.managers.values():
             current = current | m.topics
 
-        canceled = current - topics
-        if canceled:
-            rospy.loginfo("Removing topics: {}".format(canceled))
-        for topic in canceled:
+        cancels = current - topics
+        canceled = []
+        if cancels:
+            rospy.loginfo("Removing topics: {}".format(cancels))
+        for topic in cancels:
             manager = self.get_manager(topic)
             if not manager:
                 rospy.logerr('No manager found for topic {}'.format(topic))
@@ -651,15 +693,19 @@ class AutomatedLogger(object):
             rospy.logdebug('before cancel: {}'.format(manager.loaded_nodelets))
             ok = manager.unwatch(topic)
             rospy.logdebug('after cancel: {}'.format(manager.loaded_nodelets))
-            if not ok:
+            if ok:
+                canceled.append(topic)
+            else:
                 rospy.logerr('failed to unwatch topic {} from manager {}'.format(
                     topic, manager.name))
+        self.record_log(stamp, 'unwatch', topics=canceled)
 
-        added = topics - current
+        adds = topics - current
+        added = []
         managers = set(self.list_managers())
-        if added:
-            rospy.loginfo("Adding topics: {}".format(added))
-        for topic in added:
+        if adds:
+            rospy.loginfo("Adding topics: {}".format(adds))
+        for topic in adds:
             pubs = [e.start for e in node_topics.find_edge_by_node(
                 entopic(topic), upward=True, downward=False)]
             pub_set = set(pubs)
@@ -670,9 +716,16 @@ class AutomatedLogger(object):
                 manager = 'default'
             if manager not in self.managers:
                 self.managers[manager] = LoggerManager.get_manager(manager)
-            rospy.logdebug('before add: {}'.format(self.managers[manager].loaded_nodelets))
-            self.managers[manager].watch(topic)
-            rospy.logdebug('after add: {}'.format(self.managers[manager].loaded_nodelets))
+            rospy.loginfo('before add: {}'.format(self.managers[manager].loaded_nodelets))
+            ok = self.managers[manager].watch(topic)
+            rospy.loginfo('after add: {}'.format(self.managers[manager].loaded_nodelets))
+            if ok:
+                added.append(topic)
+            else:
+                rospy.logerr('failed to watch topic {} from manager {}'.format(
+                    topic, self.managers[manager].name))
+
+        self.record_log(stamp, 'watch', topics=added)
 
 
 if __name__ == '__main__':
