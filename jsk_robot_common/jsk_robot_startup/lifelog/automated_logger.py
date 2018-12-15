@@ -491,7 +491,7 @@ class NodeletManager(object):
             self._loaded_nodelets = nodelets & self._loaded_nodelets
         return self._loaded_nodelets
 
-    def load(self, name, type, remappings=None):
+    def load(self, name, type, remappings=None, my_argv=None, params=None):
         if name in self.loaded_nodelets:
             self.logwarn('{} already loaded'.format(name))
             return True
@@ -505,6 +505,10 @@ class NodeletManager(object):
             target = [t.replace('~', name + '/') for t in target]
             for s, t in zip(source, target):
                 self.loginfo('Remap {} -> {}'.format(s, t))
+        if params:
+            for n, v in params.items():
+                self.loginfo('setparam {} -> {}'.format(n, v))
+            rospy.set_param(name, params)
         try:
             self._load_srv.wait_for_service(timeout=self._srv_wait_timeout)
             res = self._load_srv(
@@ -512,7 +516,7 @@ class NodeletManager(object):
                 type=type,
                 remap_source_args=source,
                 remap_target_args=target,
-                my_argv=list(),
+                my_argv=my_argv or list(),
                 bond_id=str()
             )
             if res.success:
@@ -575,7 +579,8 @@ class LoggerManager(NodeletManager):
         ok = self.load(
             name=self.escape_topic(topic),
             type="jsk_robot_lifelog/LightweightLogger",
-            remappings={'~input': topic})
+            remappings={'~input': topic},
+            params={'enable_monitor': False})
         if ok:
             self.loginfo('Started watching {}'.format(topic))
             self.topics.add(topic)
