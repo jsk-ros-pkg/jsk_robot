@@ -33,7 +33,7 @@
   </node>
 
   <node name="process34_manager"
-        pkg="nodelet" type="nodelet" args="manager"/>
+        pkg="nodelet" type="nodelet" args="manager" output="screen"/>
 
   <node name="process3"
         pkg="nodelet" type="nodelet"
