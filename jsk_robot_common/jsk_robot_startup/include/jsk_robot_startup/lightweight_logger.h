@@ -41,6 +41,8 @@
 #ifndef LIGHTWEIGHT_LOGGER_H__
 #define LIGHTWEIGHT_LOGGER_H__
 
+#include <boost/circular_buffer.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <diagnostic_updater/diagnostic_updater.h>
 #include <diagnostic_updater/publisher.h>
 #include <topic_tools/shape_shifter.h>
@@ -54,6 +56,64 @@ namespace jsk_robot_startup
 {
   namespace lifelog
   {
+
+    template <typename T>
+    class blocking_circular_buffer {
+      /* Thread safe blocking circular buffer */
+    public:
+      blocking_circular_buffer() {}
+
+      void put(const T& value) {
+        boost::mutex::scoped_lock lock(mutex_);
+        const bool prev_empty = empty();
+        buffer_.push_back(value);
+        if (prev_empty) empty_wait_.notify_all();
+      }
+
+      bool get(T& value, double timeout=0.0) {
+        boost::posix_time::ptime start = boost::posix_time::microsec_clock::local_time();
+        boost::posix_time::time_duration elapsed;
+        while (ros::ok()) {
+          elapsed = boost::posix_time::microsec_clock::local_time() - start;
+          if (timeout > 0 &&
+              (double)(elapsed.total_milliseconds() / 1000.0) > timeout)
+            break;
+          boost::mutex::scoped_lock lock(mutex_);
+          if (empty()) empty_wait_.wait(lock);
+          if (!empty()) {
+            value = buffer_.front();
+            buffer_.pop_front();
+            return true;
+          }
+        }
+        return false;
+      }
+
+      void clear() {
+        buffer_.clear();
+      }
+
+      const bool empty() const {
+        return buffer_.empty();
+      }
+
+      const bool full() const {
+        return buffer_.full();
+      }
+
+      const int size() const {
+        return buffer_.size();
+      }
+
+      void set_capacity(int cap) {
+        buffer_.set_capacity(cap);
+      }
+    protected:
+      boost::circular_buffer<T> buffer_;
+      boost::condition_variable empty_wait_;
+      boost::mutex mutex_;
+    };
+    
     class LightweightLogger : public jsk_topic_tools::StealthRelay
     {
     protected:
@@ -69,6 +129,7 @@ namespace jsk_robot_startup
       bool initialized_;
       std::string input_topic_name_;
       std::string db_name_, col_name_;
+      blocking_circular_buffer<ros::MessageEvent<topic_tools::ShapeShifter const> > buffer_;
 
       // diagnostics
       ros::Time init_time_;
