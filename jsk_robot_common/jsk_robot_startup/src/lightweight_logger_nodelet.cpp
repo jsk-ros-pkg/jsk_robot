@@ -159,6 +159,10 @@ namespace jsk_robot_startup
             }
             catch (...) {
               NODELET_ERROR_STREAM("Failed to lazy insert");
+              if (being_interrupted) {
+                NODELET_WARN_STREAM("Force exiting");
+                break;
+              }
             }
           } else {
             NODELET_DEBUG_STREAM("waiting for buffer...");
