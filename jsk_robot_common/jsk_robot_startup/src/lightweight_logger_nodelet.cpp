@@ -48,6 +48,7 @@ namespace jsk_robot_startup
       initialized_ = false;
       jsk_topic_tools::StealthRelay::onInit();
 
+      // settings for database
       nh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
       nh_->param<std::string>("/robot/name", col_name_, std::string());
       if (col_name_.empty())
@@ -66,6 +67,7 @@ namespace jsk_robot_startup
 
       input_topic_name_ = pnh_->resolveName("input", true);
 
+      // settings for diagnostics
       double vital_rate;
       pnh_->param("vital_rate", vital_rate, 1.0);
       vital_checker_.reset(
@@ -176,25 +178,38 @@ namespace jsk_robot_startup
       const boost::shared_ptr<topic_tools::ShapeShifter const>& msg = event.getConstMessage();
       jsk_topic_tools::StealthRelay::inputCallback(msg);
 
-      if (!initialized_) {
-        NODELET_WARN_THROTTLE(1.0, "nodelet is not yet initialized");
-        return;
-      }
       vital_checker_->poke();
 
-      try
-      {
-        mongo::BSONObjBuilder meta;
-        meta.append("input_topic", input_topic_name_);
-        meta.append("published_by", publisher_name);
-        std::string doc_id = msg_store_->insert(*msg, meta.obj(), wait_for_insert_);
-        if (doc_id.empty())
-          NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << ")");
-        else
-          NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << "): " << doc_id);
+      bool on_the_fly = initialized_ && buffer_.empty();
+      if (!wait_for_insert_ && msg_store_->getNumInsertSubscribers() == 0) {
+        // subscriber for message_store/insert does not exists
+        on_the_fly = false;
       }
-      catch (...) {
-        NODELET_ERROR_STREAM("Failed to insert to db");
+
+      if (on_the_fly) {
+        try
+        {
+          mongo::BSONObjBuilder meta;
+          meta.append("input_topic", input_topic_name_);
+          meta.append("published_by", publisher_name);
+          std::string doc_id = msg_store_->insert(*msg, meta.obj(), wait_for_insert_);
+          if (doc_id.empty())
+            NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << ")");
+          else
+            NODELET_DEBUG_STREAM("Inserted (" << input_topic_name_ << "): " << doc_id);
+        }
+        catch (...) {
+          NODELET_ERROR_STREAM("Failed to insert to db");
+        }
+      } else {
+        if (!initialized_) {
+          NODELET_WARN_THROTTLE(1.0, "nodelet is not yet initialized");
+        }
+        if (buffer_.full()) {
+          NODELET_WARN_THROTTLE(1.0, "buffer is full. discarded old elements");
+        }
+        buffer_.put(event);
+        NODELET_DEBUG_STREAM("Put into buffer for lazy insertion");
       }
     }
 
