@@ -56,6 +56,12 @@ namespace jsk_robot_startup
         return;
       }
 
+      // settings for buffering logged messages
+      int buffer_capacity;
+      pnh_->param("buffer_capacity", buffer_capacity, 100);
+      buffer_.set_capacity(buffer_capacity);
+
+      // settings for blocking/non-blocking message insertion
       pnh_->param("wait_for_insert", wait_for_insert_, false);
 
       input_topic_name_ = pnh_->resolveName("input", true);
@@ -82,35 +88,86 @@ namespace jsk_robot_startup
       prev_insert_error_count_ = 0;
       init_time_ = ros::Time::now();
 
-      deferred_load_thread_ = boost::thread(
-          boost::bind(&LightweightLogger::loadThread, this));
+      // start logger thread
+      logger_thread_ = boost::thread(
+          boost::bind(&LightweightLogger::loggerThread, this));
     }
 
     LightweightLogger::~LightweightLogger() {
+      NODELET_DEBUG_STREAM("destructor called");
+
+      // stop logger thread
+      if (logger_thread_.joinable()) {
+        NODELET_DEBUG_STREAM("Shutting down logger thread");
+        logger_thread_.interrupt();
+        bool ok = logger_thread_.try_join_for(boost::chrono::seconds(5));
+        if (ok) {
+          NODELET_INFO_STREAM("successsfully stopped logger thread");
+        } else {
+          NODELET_WARN_STREAM("Timed out to join logger thread");
+        }
+      }
+
+      // deinit message store object
       if (msg_store_) {
         msg_store_.reset();
       }
-      if (deferred_load_thread_.joinable()) {
-        NODELET_DEBUG_STREAM("Shutting down deferred load thread");
-        bool ok = deferred_load_thread_.try_join_for(boost::chrono::seconds(5));
-        if (!ok) {
-          NODELET_WARN_STREAM("Timed out to join deferred load thread.");
-          deferred_load_thread_.interrupt();
-          ok = deferred_load_thread_.try_join_for(boost::chrono::seconds(3));
-          if (!ok) {
-            NODELET_ERROR_STREAM("Failed to shutdown deferred load thread.");
-          }
-        }
-        if (ok) {
-          NODELET_DEBUG_STREAM("deferred load thread stopped");
-        }
-      }
     }
 
-    void LightweightLogger::loadThread()
+    void LightweightLogger::loggerThread()
     {
+      NODELET_DEBUG_STREAM("logger thread started");
+
+      // The message store object is initialized here, since the object waits for connection
+      // until the connection to the server is established.
       msg_store_.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name_, db_name_));
       initialized_ = true;
+
+      // After message store object is initialized, this thread is re-used for
+      // lazy document insertion.
+      bool being_interrupted = false;
+      while (ros::ok()) {
+        try {
+          // check interruption
+          if (being_interrupted) {
+            if (!buffer_.empty()) {
+              NODELET_WARN_STREAM(
+                "The thread is interrupted through buffer is still not empty. "
+                "Continue to insert");
+            } else {
+              NODELET_DEBUG_STREAM("buffer is empty. interrupted.");
+              break;
+            }
+          }
+
+          // lazy document insertion
+          ros::MessageEvent<topic_tools::ShapeShifter const> event;
+          const double timeout = 0.5;
+          if (buffer_.get(event, timeout)) {
+            const std::string& publisher_name = event.getPublisherName();
+            const boost::shared_ptr<topic_tools::ShapeShifter const>& msg = event.getConstMessage();
+            jsk_topic_tools::StealthRelay::inputCallback(msg);
+            try
+            {
+              mongo::BSONObjBuilder meta;
+              meta.append("input_topic", input_topic_name_);
+              meta.append("published_by", publisher_name);
+              std::string doc_id = msg_store_->insert(*msg, meta.obj(), true);
+              NODELET_DEBUG_STREAM("Lazy inserted (" << input_topic_name_ << "): " << doc_id);
+            }
+            catch (...) {
+              NODELET_ERROR_STREAM("Failed to lazy insert");
+            }
+          } else {
+            NODELET_DEBUG_STREAM("waiting for buffer...");
+          }
+        } catch (boost::thread_interrupted e) {
+          NODELET_DEBUG_STREAM("logger thread being interrupted");
+          being_interrupted = true;
+        }
+      }
+
+      NODELET_DEBUG_STREAM("logger thread ended");
     }
 
     void LightweightLogger::inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter const>& event)

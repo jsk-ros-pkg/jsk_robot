@@ -119,12 +119,12 @@ namespace jsk_robot_startup
     protected:
       virtual void onInit();
       virtual ~LightweightLogger();
-      virtual void loadThread();
+      virtual void loggerThread();
       virtual void inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter const>& event);
       virtual void updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat);
 
       boost::shared_ptr<mongodb_store::MessageStoreProxy> msg_store_;
-      boost::thread deferred_load_thread_;
+      boost::thread logger_thread_;
       bool wait_for_insert_;
       bool initialized_;
       std::string input_topic_name_;
