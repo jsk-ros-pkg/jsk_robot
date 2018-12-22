@@ -17,7 +17,7 @@
 
   <arg name="image_topics" default="/kinect_head/rgb/image_rect_color /wide_stereo/left/image_rect_color"/>
   <arg name="machine" default="localhost"/>
-  <arg name="output" default="screen"/>
+  <arg name="output" default="log"/>
 
   <arg name="account_info" default="/var/lib/robot/twitter_account_pr2jsk.yaml"/>
   <param name="account_info" value="$(arg account_info)" />
@@ -34,9 +34,10 @@
     <param name="lazy" value="true" />
   </node>
   <node name="tweet_image_saver" pkg="image_view" type="image_saver"
-        machine="$(arg machine)">
+        machine="$(arg machine)" output="screen">
     <remap from="image" to="/tweet_image" />
     <param name="save_all_image" value="false" />
+    <param name="wait_for_save" value="true" />
     <param name="filename_format" value="/tmp/tweet_image.jpg" />
     <param name="image_transport" value="raw" />
   </node>
@@ -55,6 +56,7 @@
     <remap from="joint_states" to="$(arg remap_joint_states)"/>
     <remap from="diagnostics" to="$(arg remap_diagnostics)"/>
   </node>
+
   <node if="$(arg worktime_enable)" name="tweet_client_worktime" pkg="roseus"
         type="roseus" args="$(find jsk_robot_startup)/lifelog/tweet_client_worktime.l"
         machine="$(arg machine)"
@@ -75,4 +77,5 @@
         machine="$(arg machine)"
         output="$(arg output)" respawn="true" >
   </node>
+
 </launch>
