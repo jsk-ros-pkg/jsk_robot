@@ -4,19 +4,24 @@
 
 (require :tweet_client "package://jsk_robot_startup/lifelog/tweet_client.l")
 
-(defvar *robot-name* (ros::get-param "/active_user/robot_name" "robot"))
-(defvar *user-name* (ros::get-param "/active_user/launch_user_name" "user"))
+(defvar *robot-name* (ros::get-param "/robot/name" "robot"))
+(defvar *user-name* (ros::get-param "/active_user/launch_user_name" nil))
 (defvar *worktime-tweet-interval* (ros::get-param "~worktime_tweet_interval" 300.0))
-
+(defvar *prev-elapsed-time* 0.0)
 
 (defun tweet-worktime (&optional event)
   (unless (ros::has-param "/active_user/elapsed_time")
     (return-from tweet-worktime nil))
+  (unless *user-name*
+    (setq *user-name* (ros::get-param "/active_user/launch_user_name" nil)))
   (let ((elapsed-time (ros::get-param "/active_user/elapsed_time"))
         mainstr presubstr postsubstr)
     (ros::ros-info "tweet ~A ~A" *user-name* elapsed-time)
+    (if (eq elapsed-time *prev-elapsed-time*)
+        (return-from tweet-worktime t)
+        (setq *prev-elapsed-time* elapsed-time))
     (setq mainstr (format nil "~A has used ~A for ~d minutes"
-                          *user-name* *robot-name* (round (/ elapsed-time 60))))
+                          (or *user-name* "An user") *robot-name* (round (/ elapsed-time 60))))
     (cond
       ((< elapsed-time 600) ;; 5 min
        (setq presubstr "Congratulations! "
