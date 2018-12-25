@@ -33,50 +33,37 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 /*
- * lightweight_logger.h
- * Author: Furushchev <furushchev@jsk.imi.i.u-tokyo.ac.jp>
+ * message_store_singleton.cpp
+ * Author:  <furushchev@jsk.imi.i.u-tokyo.ac.jp>
  */
 
-
-#ifndef LIGHTWEIGHT_LOGGER_H__
-#define LIGHTWEIGHT_LOGGER_H__
-
-#include <diagnostic_updater/diagnostic_updater.h>
-#include <diagnostic_updater/publisher.h>
-#include <topic_tools/shape_shifter.h>
-#include <jsk_topic_tools/diagnostic_utils.h>
-#include <jsk_topic_tools/stealth_relay.h>
-#include <jsk_topic_tools/timered_diagnostic_updater.h>
-#include <jsk_topic_tools/vital_checker.h>
 #include <jsk_robot_startup/message_store_singleton.h>
 
 namespace jsk_robot_startup
 {
-  namespace lifelog
-  {
-    class LightweightLogger : public jsk_topic_tools::StealthRelay
-    {
-    protected:
-      virtual void onInit();
-      virtual ~LightweightLogger();
-      virtual void loadThread();
-      virtual void inputCallback(const ros::MessageEvent<topic_tools::ShapeShifter>& event);
-      virtual void updateDiagnostic(diagnostic_updater::DiagnosticStatusWrapper &stat);
-
-      mongodb_store::MessageStoreProxy* msg_store_;
-      boost::thread deferred_load_thread_;
-      bool wait_for_insert_;
-      bool initialized_;
-      std::string input_topic_name_;
-      std::string db_name_, col_name_;
-
-      // diagnostics
-      ros::Time init_time_;
-      uint64_t inserted_count_, insert_error_count_, prev_insert_error_count_;
-      jsk_topic_tools::VitalChecker::Ptr vital_checker_;
-      jsk_topic_tools::TimeredDiagnosticUpdater::Ptr diagnostic_updater_;
-    };
+namespace lifelog
+{
+  mongodb_store::MessageStoreProxy* MessageStoreSingleton::getInstance(
+      const std::string& collection,
+      const std::string& database,
+      const std::string& prefix) {
+    boost::mutex::scoped_lock lock(mutex_);
+    std::string key = prefix + database + "/" + collection;
+    if (instances_.count(key) == 0) {
+      instances_[key] = new mongodb_store::MessageStoreProxy(nh_, collection, database, prefix);
+    }
+    return instances_[key];
   }
-}
 
-#endif // LIGHTWEIGHT_LOGGER_H__
+  void MessageStoreSingleton::destroy() {
+    for (M_Proxy::iterator it = instances_.begin(); it != instances_.end(); ++it)
+    {
+      if (it->second) delete it->second;
+    }
+  }
+
+MessageStoreSingleton::M_Proxy MessageStoreSingleton::instances_;
+boost::mutex MessageStoreSingleton::mutex_;
+ros::NodeHandle MessageStoreSingleton::nh_;
+} // lifelog
+} // jsk_robot_startup
