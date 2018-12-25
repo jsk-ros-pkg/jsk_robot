@@ -75,7 +75,7 @@
               (setq ret (send w :tweet))
               (when ret
                 (if *tweet*
-                    (tweet-string ret :warning-time nil :with-image with-image :speek nil :image-wait 10))
+                    (tweet-string ret :wait-for-camera 0 :with-image with-image :with-speech nil))
                 (warn "tweeted: ~A...~%" (subseq ret 0 100))
                 (setq with-image nil)
                 ))))

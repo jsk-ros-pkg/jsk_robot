@@ -37,7 +37,8 @@
           (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
         (setq name (read-line f)))
       (when (or (null name) (null-string-p name))
-        (setq name *user*)))
+        (setq name *user*))
+      (ros::set-param "/active_user/launch_user_name" name))
     (set-alist :user-name name *init-status*))
   ;; robot name
   (let ((name (ros::get-param "/robot/type" nil)))

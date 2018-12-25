@@ -1,6 +1,6 @@
 <!-- original : pr2_navigation_global/move_base.xml (electric) -->
 <launch>
-  <arg name="use_teb_local_planner" default="true" />
+  <arg name="use_teb_local_planner" default="false" />
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- Bring up the tilt_laser aware version of move_base -->
