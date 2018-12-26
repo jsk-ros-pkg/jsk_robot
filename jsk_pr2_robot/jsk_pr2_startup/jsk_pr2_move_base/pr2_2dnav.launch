@@ -17,13 +17,15 @@
     <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/lasers_and_filters.xml">
       <arg name="gazebo" value="$(arg gazebo)"/>
     </include>
-    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/ground_plane.xml" />
     <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base.xml" />
 
     <!-- To ignore tilt-laser -->
     <node name="tilt_laser_mux" pkg="topic_tools" type="mux"
-          args="ground_object_cloud_mux ground_object_cloud empty_cloud">
+          args="tilt_scan_filtered/navigation tilt_scan_filtered empty_cloud">
       <remap from="mux" to="tilt_laser_mux"/>
+      <rosparam>
+        lazy: true
+      </rosparam>
     </node>
     <node name="empty_cloud_publisher" pkg="jsk_pr2_startup"
           type="publish_empty_cloud.py">
