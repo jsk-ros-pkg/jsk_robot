@@ -54,7 +54,7 @@ local_costmap:
   tilt_scan_filtered:
     sensor_frame: laser_tilt_link
     topic: /tilt_scan_filtered
-    data_type: LaserScan
+    data_type: PointCloud2
     expected_update_rate: 0.25
     observation_persistence: 2.5
     marking: true
