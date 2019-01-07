@@ -8,7 +8,7 @@
         respawn="true" machine="c2" />
 
   <node pkg="move_base" type="move_base" name="move_base_node"
-        machine="c2" clear_params="true" output="screen">
+        machine="c2" clear_params="true" output="screen" respawn="true">
     <!-- launch-prefix="nice -n +10"> -->
     <remap from="odom" to="base_odometry/odom" />
     <remap from="cmd_vel" to="navigation/cmd_vel/raw" />
