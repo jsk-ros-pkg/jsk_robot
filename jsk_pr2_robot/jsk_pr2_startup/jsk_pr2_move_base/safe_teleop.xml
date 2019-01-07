@@ -31,8 +31,8 @@
     <param name="default_select" value="/input_vel"/>
   </node>
 
-  <node pkg="safe_teleop_base" type="safe_teleop_base" respawn="false"
-        name="safe_teleop_base" machine="c2">
+  <node pkg="safe_teleop_base" type="safe_teleop_base" respawn="true"
+        name="safe_teleop_base" machine="c2" clear_params="true">
     <remap from="/odom" to="/base_odometry/odom"/>
     <remap from="base_velocity" to="/navigation/unsafe_vel"/>
     <remap from="~safe_vel" to="/navigation/safe_vel"/>
