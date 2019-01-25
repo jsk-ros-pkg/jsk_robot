@@ -87,6 +87,12 @@
 (deftest test-get-background-movement-enabled
   (assert  (instance std_srvs::TriggerRequest :init) "test-get-background-movement-enabled"))
 
+(deftest test-set-basic-awareness-enabled
+  (assert  (instance std_srvs::SetBoolRequest :init) "test-set-basic-awareness-enabled"))
+
+(deftest test-get-basic-awareness-enabled
+  (assert  (instance std_srvs::TriggerRequest :init) "test-get-basic-awareness-enabled"))
+
 (run-all-tests)
 (exit)
 
