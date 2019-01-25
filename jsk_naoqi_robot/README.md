@@ -125,7 +125,13 @@ git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 ```
 
-In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+
+```
+cd .. # catkin_ws/src
+wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
+wstool update nao_interaction
+```
 
 NAO & Pepper
 ------------
