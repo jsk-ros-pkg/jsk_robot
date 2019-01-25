@@ -417,6 +417,23 @@
      (send res :success)
      )
    )
+  (:set-basic-awareness-enabled
+   (status)
+   (let ((ret (instance std_srvs::SetBoolRequest :init))
+	 res)
+     (ros::wait-for-service "/basic_awareness/set_enabled")
+     (send ret :data status)
+     (setq res (ros::service-call "/basic_awareness/set_enabled" ret))
+     (send res :success)
+     ))
+  (:get-basic-awareness-enabled
+   ()
+   (let ((ret (instance std_srvs::TriggerRequest :init))
+	 res)
+     (ros::wait-for-service "/basic_awareness/is_enabled")
+     (setq res (ros::service-call "/basic_awareness/is_enabled" ret))
+     (send res :success)
+     ))
   (:fade-leds
    (led_name r g b sec)
    (let* ((fade_rgb_msg (instance naoqi_bridge_msgs::FadeRGB :init))
