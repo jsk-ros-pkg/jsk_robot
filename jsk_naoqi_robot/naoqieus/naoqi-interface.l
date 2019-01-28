@@ -264,31 +264,62 @@
    )
   ;;
   (:go-pos
-   (x y &optional (d 0)) ;; [m] [m] [degree]
+   (x y &optional (d 0) &key (vel_x 0.35) (vel_y 0.35) (vel_theta 57.2958)) ;; [m] [m] [degree]
    "move robot toward x, y, degree and wait to reach that goal. return t if reached or nil if fail
     the robot moves relative to current position.
     using [m] and [degree] is historical reason from original hrpsys code"
    ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/master/pr2eus/robot-interface.l#L867
-   (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
-     (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
-			  :rpy (float-vector (deg2rad d) 0 0)))
-     (send pose_msg :header :frame_id "base_footprint")
-     (send pose_msg :pose (ros::coords->tf-pose c))
-     (ros::publish "/move_base_simple/goal" pose_msg)
-     ))
-
+   (if (ros::get-param "use_sim_time" nil)
+       ;; only for simulation
+       (progn
+	 (if (boundp '*pepper*) 
+	     (progn
+	       (if (> x 0)
+		   (setq vel_x 0.35)
+		 (setq vel_x -0.35))
+	       (if (> y 0)
+		   (setq vel_y 0.35)
+		 (setq vel_y -0.35))
+	       (if (> d 0)
+		   (setq vel_theta 57.2958)
+		 (setq vel_theta -57.2958))))
+	 (let* ((time_for_x (/ (float (abs x)) (abs vel_x)))
+		(time_for_y (/ (float (abs y)) (abs vel_y)))
+		(time_for_theta (/ (float (abs d)) (abs vel_theta)))
+		(max_time) (tm))
+	   (setq max_time (float (max time_for_x time_for_y time_for_theta)))
+	   (setq tm (ros::time-now))
+	   (while (< (send (ros::time- (ros::time-now) tm) :to-sec) max_time)
+	     (send self :go-velocity (/ x max_time) (/ y max_time) (/ (deg2rad d) max_time) 0 :stop nil))
+	   (send self :go-stop)
+	   ))
+     (progn
+       (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
+	 (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
+			      :rpy (float-vector (deg2rad d) 0 0)))
+	 (send pose_msg :header :frame_id "base_footprint")
+	 (send pose_msg :pose (ros::coords->tf-pose c))
+	 (ros::publish "/move_base_simple/goal" pose_msg)
+	 ))))
+  
   (:go-velocity
    (x y d &optional (msec 1000) &key (stop t)) ;; [m/sec] [m/sec] [rad/sec]
    (let ((vel_msg (instance geometry_msgs::Twist :init)))
-     (when (> (abs x) 1)
-       (ros::ros-error "x must be in range [-1 <-> 1]")
-       (return-from :go-velocity nil))
-     (when (> (abs y) 1)
-       (ros::ros-error "y must be in range [-1 <-> 1]")
-       (return-from :go-velocity nil))
-     (when (> (abs d) 1)
-       (ros::ros-error "theta must be in range [-1 <-> 1]")
-       (return-from :go-velocity nil))
+     (if (boundp '*pepper*) 
+	 (progn
+	   ;; if the velocity exceeds the speed limit, it is set to the limit
+	   (when (> (abs x) 0.35)
+	     (if (> x 0)
+		 (setq x 0.35)
+	       (setq x -0.35)))
+	   (when (> (abs y) 0.35)
+	     (if (> y 0)
+		 (setq y 0.35)
+	       (setq y -0.35)))
+	   (when (> (abs d) 1)
+	     (if (> d 0)
+		 (setq d 1.0)
+	       (setq d -1.0)))))
      (send vel_msg :linear :x x)
      (send vel_msg :linear :y y)
      (send vel_msg :angular :z d)
