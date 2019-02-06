@@ -256,6 +256,28 @@
      (send speech_msg :data str)
      (ros::publish "/speech" speech_msg))
    )
+  (:check-speak-status
+   (&optional (wait 60))
+   (let (speech_status tm)
+     (ros::subscribe "speech_status" std_msgs::String
+		     #'(lambda (msg)
+			 (setq speech_status (send msg :data))
+			 ))
+     (setq tm (ros::time-now))
+     (ros::rate 2)
+     (while (and (< (send (ros::time- (ros::time-now) tm) :to-sec) wait)
+		 (or (null speech_status) (not (string= speech_status "done")))
+		 )
+       (ros::spin-once)
+       (ros::ros-info "subscribing speech_status")
+       (ros::sleep))
+   (ros::unsubscribe "speech_status")
+   t))
+  (:speak-action
+   (str &optional (wait 60))
+   (send self :speak str)
+   (send self :check-speak-status wait)
+   )
   (:animated-speak
    (str)
    (let ((animated_speech_msg (instance std_msgs::String :init)))
