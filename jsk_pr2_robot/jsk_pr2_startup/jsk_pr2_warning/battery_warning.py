@@ -32,19 +32,18 @@ class BatteryWarning(object):
         self.warn_repeat_rate = rospy.get_param("~warn_repeat_rate", 120)
         self.log_rate = rospy.get_param("~log_rate", 10)
         self.log_path = rospy.get_param("~log_path", None)
-        if self.log_path is None:
-            self.log_path = osp.expanduser("~/.ros/pr2_battery_status.pkl")
 
         self.prev_plugged_in = None
         self.latest_status = None
         self.speech_history = defaultdict(lambda: rospy.Time(0))
 
         self.diag_sub = rospy.Subscriber(
-            "/diagnostics_agg", DiagnosticArray, self.diag_cb)
+            "/diagnostics_agg", DiagnosticArray, self.diag_cb, queue_size=1)
         self.stat_timer = rospy.Timer(
             rospy.Duration(self.monitor_rate), self.stat_cb)
-        self.log_timer = rospy.Timer(
-            rospy.Duration(self.log_rate), self.log_cb)
+        if self.log_path is not None:
+            self.log_timer = rospy.Timer(
+                rospy.Duration(self.log_rate), self.log_cb)
 
     def speak(self, sentence):
         if self.speech_history[sentence] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
