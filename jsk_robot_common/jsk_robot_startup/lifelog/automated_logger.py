@@ -170,12 +170,14 @@ class Graph(object):
         self.topics = set()
         self.srvs = set()
 
-        self.blacklist_nodes = set(['^/rosout', '.*lifelog.*'])
+        self.blacklist_nodes = set(['^/rosout', '.*lifelog.*', '/realtime_loop', '/move_base_node'])
         self.blacklist_topics = set([
             '.*/bond$',  # nodelets
             '^/tf', '^/tf_static',  # tfs
-            '.*/depth/.*', '.*compressed.*', '.*image_color$',  # images
+            '.*/depth/.*', '.*compressed.*', '.*theora.*', '.*image_color$',  # images
             '/lifelog.*$',  # lifelog topics
+            '.*/parameter_updates', '.*/parameter_descriptions',  # dynamic reconfigure
+            '.*/result', '.*/goal', '.*/status$', '.*/cancel$', '.*/feedback$',  # actionlib
         ])
         self.bad_nodes = {}
         self.node_node_conn = EdgeList()
@@ -530,6 +532,10 @@ class NodeletManager(object):
             self.logerr("Failed to load {}".format(name))
             self.logerr(traceback.format_exc())
             return False
+        except rospy.ServiceException:
+            self.logerr("Failed to load {}".format(name))
+            self.logerr(traceback.format_exc())
+            return False
 
         return res.success
 
@@ -547,6 +553,10 @@ class NodeletManager(object):
                 self.logerr("Failed to unload {}".format(name))
         except rospy.exceptions.ROSException:
             self.logerr("Failed to unload {}".format(name))
+            self.logerr(traceback.format_exc())
+            return False
+        except rospy.ServiceException:
+            self.logerr("Failed to load {}".format(name))
             self.logerr(traceback.format_exc())
             return False
         return res.success
@@ -603,7 +613,7 @@ class LoggerManager(NodeletManager):
 
 
 class AutomatedLogger(object):
-    def __init__(self):
+    def __init__(self, monitor_node, **kwargs):
         super(AutomatedLogger, self).__init__()
         self.managers = {}
         rospy.on_shutdown(self.shutdown_cb)
@@ -611,15 +621,14 @@ class AutomatedLogger(object):
         default_manager_name = rospy.get_name() + "_manager"
         self.managers['default'] = LoggerManager.get_manager(default_manager_name)
 
-        monitor_node = rospy.get_param("~monitor_node")
         if not monitor_node.startswith('/'):
             raise ValueError('~monitor_node param must start with /')
         self.graph = Graph(monitor_node)
 
-        host = rospy.get_param('/mongodb_host', 'localhost')
-        port = rospy.get_param('/mongodb_port', 27017)
-        database = rospy.get_param('/robot/database')
-        collection = rospy.get_param('~collection', 'automated_logger')
+        host = kwargs.get('mongo_host', 'localhost')
+        port = kwargs.get('mongo_port', 27017)
+        database = kwargs.get('mongo_database')
+        collection = kwargs.get('mongo_collection')
         client = pymongo.MongoClient(host, port)
         try:
             ok = (client[database].command('ping')['ok'] == 1.0)
@@ -632,9 +641,13 @@ class AutomatedLogger(object):
         self.log_db = client[database][collection]
         self.log_id = str(uuid.uuid1())
 
+        self.standalone = kwargs.get('standalone', False)
+        if self.standalone:
+            rospy.loginfo('Standalone mode')
+
         self.record_log(rospy.Time.now(), 'start')
 
-        update_rate = rospy.get_param('~update_rate', 1.0)
+        update_rate = kwargs.get('update_rate', 1.0)
         self.update_timer = rospy.Timer(
             rospy.Duration(update_rate), self.update_cb)
 
@@ -660,7 +673,10 @@ class AutomatedLogger(object):
     def shutdown_cb(self):
         for m in self.managers.values():
             m.stop_manager()
-        self.record_log(rospy.Time.now(), 'shutdown')
+        try:
+            self.record_log(rospy.Time.now(), 'shutdown')
+        except Exception as e:
+            rospy.logerr(e)
 
     def get_manager(self, topic):
         for m in self.managers.values():
@@ -690,9 +706,7 @@ class AutomatedLogger(object):
             if not manager:
                 rospy.logerr('No manager found for topic {}'.format(topic))
                 continue
-            rospy.logdebug('before cancel: {}'.format(manager.loaded_nodelets))
             ok = manager.unwatch(topic)
-            rospy.logdebug('after cancel: {}'.format(manager.loaded_nodelets))
             if ok:
                 canceled.append(topic)
             else:
@@ -711,15 +725,13 @@ class AutomatedLogger(object):
                 entopic(topic), upward=True, downward=False)]
             pub_set = set(pubs)
             pub_manager = managers & pub_set
-            if pub_manager:
+            if pub_manager and not self.standalone:
                 manager = list(pub_manager)[0]
             else:
                 manager = 'default'
             if manager not in self.managers:
                 self.managers[manager] = LoggerManager.get_manager(manager)
-            rospy.loginfo('before add: {}'.format(self.managers[manager].loaded_nodelets))
             ok = self.managers[manager].watch(topic)
-            rospy.loginfo('after add: {}'.format(self.managers[manager].loaded_nodelets))
             if ok:
                 added.append(topic)
             else:
@@ -729,7 +741,37 @@ class AutomatedLogger(object):
             self.record_log(stamp, 'watch', topics=added)
 
 
+def parse_args():
+    if len(rospy.myargv()) == len(sys.argv):
+        # launch from command line
+        import argparse
+        p = argparse.ArgumentParser()
+        p.add_argument('monitor_node', help='Name of monitoring node')
+        p.add_argument('--standalone', action='store_true')
+        p.add_argument('--update-rate', '-r', help='Update rate')
+        p.add_argument('--mongo-host', '--host', help='Mongodb hostname')
+        p.add_argument('--mongo-port', '--port', help='Mongodb port')
+        p.add_argument('--mongo-database', '--db', help='Mongodb database name')
+        p.add_argument('--mongo-collection', '--col', help='Mongodb collection name to write log')
+        args = p.parse_args()
+        kwargs = {k: v for k, v in args._get_kwargs() if v is not None}
+    else:
+        # launch from roslaunch
+        kwargs = {
+            'monitor_node': rospy.get_param('~monitor_node'),
+            'update_rate': rospy.get_param('~update_rate', None),
+            'mongo_host': rospy.get_param('/mongodb_host', None),
+            'mongo_port': rospy.get_param('/mongodb_port', None),
+            'mongo_database': rospy.get_param('/robot/database'),
+            'mongo_collection': rospy.get_param('~collection', None),
+            'standalone': rospy.get_param('~standalone', None),
+        }
+        kwargs = {k: v for k, v in kwargs if v is not None}
+    return kwargs
+
 if __name__ == '__main__':
     rospy.init_node("automated_logger")
-    n = AutomatedLogger()
+    kwargs = parse_args()
+    rospy.loginfo('Arguments: %s' % kwargs)
+    n = AutomatedLogger(**kwargs)
     rospy.spin()
