@@ -79,7 +79,7 @@
              start-time (cadr args)
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
-   (if (member :start-time args) (setq use-torso (cadr (member :start-time args))))
+   (if (member :start-time args) (setq start-time (cadr (member :start-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
