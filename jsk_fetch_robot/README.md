@@ -41,6 +41,7 @@ First, you need to install ros. For ros indigo, please refer to install guide li
 ```bash
 mkdir -p catkin_ws/src
 cd  catkin_ws
+git clone https://github.com/jsk-ros-pkg/jsk_robot.git src
 wstool init src
 if [ $ROS_DISTRO = "indigo" ]; then
   wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
