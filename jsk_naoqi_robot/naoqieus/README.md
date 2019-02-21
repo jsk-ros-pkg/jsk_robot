@@ -61,6 +61,8 @@ Methods
 
 - [:speak `str` (naoqi_driver [`master`])](doc/speak.md)  
 
+- [:speak-action `str` `&optional (wait 60)` (naoqi_driver [`master`] and naoqi_apps [`kochigami-develop`])](doc/speak_action.md)  
+
 - [:start-grasp `&optional (angle-ratio 0.0) (arm :arms)` (naoqi_bridge [`master`])](doc/start_grasp.md)  
 
 - [:stop-grasp `&optional (angle-ratio 1.0) (arm :arms)` (naoqi_bridge [`master`])](doc/stop_grasp.md)  
