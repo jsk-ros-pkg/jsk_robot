@@ -77,12 +77,14 @@ Joints of Pepper
 ----------------
 
 Here is a list of joints when accessing Pepper.
-ex:
+
+ex:  
 ```
 (send *pepper* :reset-pose)
 => #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)
        0    1    2   3    4     5     6     7    8     9    10   11   12   13  14
 ```
+
 ```
 0: :knee-p
 1: :hip-r
@@ -99,6 +101,26 @@ ex:
 12: :rarm :wrist-y
 13: :head :neck-y
 14: :head :neck-p
+```
+
+How to send angle vector
+
+```
+(send *pepper* :head :neck-y :joint-angle -10)
+(send *ri* :angle-vector (send *pepper* :angle-vector)
+```
+
+How to send sequences of angle vector
+
+```
+(setq *reset-pose* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0))
+(setq *hello-pose1* #f(2.0 -2.0 -5.0 85.0 10.0 30.0 -0.5 30.0 -20.0 -10.0 70.0 20.0 40.0 30.0 0.0))
+(setq *hello-pose2* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 0.0 -10.0 70.0 20.0 40.0 0.0 0.0))
+
+(setq *hello-pose-list* (list *reset-pose* *hello-pose1* *hello-pose2* *reset-pose*))
+(setq *hello-time-list* (list 2000 3000 4000 5000))
+
+(send *ri* :angle-vector-sequence *hello-pose-list* *hello-time-list*)
 ```
 
 Default poses
