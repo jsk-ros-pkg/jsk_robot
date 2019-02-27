@@ -1,11 +1,54 @@
-jsk_naoqi_robot
-===============
+# jsk_naoqi_robot
 
 JSK original ROS package for NAO and Pepper.
 The package name comes from Naoqi OS they use.
 
-Setup Environment
------------------
+## How to start up ROS nodes for a naoqi robot? 
+
+TODO: add figure
+
+Your PC becomes ROS master.  
+
+Your PC connects to a naoqi robot and starts up ROS nodes.  
+
+### How to turn on/off a naoqi robot?
+
+- On
+
+Please refer to [NAO's page](http://doc.aldebaran.com/2-1/nao/nao-turn-on.html) and [Pepper's page](http://doc.aldebaran.com/2-4/family/pepper_user_guide/turn_on_pep.html).
+
+- Off
+
+Please refer to [NAO's page](http://doc.aldebaran.com/2-1/nao/nao-turn-off.html) and [Pepper's page](http://doc.aldebaran.com/2-4/family/pepper_user_guide/turn_off_pep.html). 
+
+- Disable AutonomousLife
+
+Naoqi robot has [AutonomousLife](http://doc.aldebaran.com/2-4/family/pepper_user_guide/life_pep.html) in addition to a normal concept of servo on and off.  
+
+When you're a developer, you'll want to disable AutonomousLife (it includes servo off) and servo on a robot to try codes you write.
+
+If you want to know how to disable it, please refer to [using a chest button](http://doc.aldebaran.com/2-4/family/pepper_user_guide/freeze_pep.html) or using ROS service (TODO: add doc). (Link is for Pepper, but same as NAO.)  
+
+### How to connect your PC and a robot to a same network?
+
+- Network with DHCP
+
+To connect NAO and Pepper to wifi for the first time, please refer to [here](doc/connect_to_wifi.md).
+
+- Network without DHCP (link-local addressing)
+
+Please refer to [here](http://doc.aldebaran.com/2-1/nao/connectivity.html#local-link-an-alternative-to-dhcp).  
+
+### List of nodes, topics and services
+
+If you launch `jsk_nao/pepper_startup.launch` + `nao/pepper eus`, these will appear.    
+
+For more information about these programs, please refer to [here for NAO](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#nao) and [here for Pepper](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#pepper).
+
+TODO: add figure
+
+## Setup Environment
+
 % First, you need to install ros. For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation)
 
 1. Install ``Python NAOqi SDK``
@@ -93,8 +136,7 @@ wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msg
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
-Interface when controlling NAO and Pepper via roseus
-----------------------------------------------------
+## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
 For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
@@ -133,18 +175,14 @@ wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
 wstool update nao_interaction
 ```
 
-NAO & Pepper
-------------
+## NAO & Pepper
 
 [**_naoqieus_**](naoqieus/README.md)
   - common interface package for controlling NAO and Pepper via roseus
 
-To connect NAO and Pepper to wifi, please refer to [here](doc/connect_to_wifi.md).
-
 To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](doc/simulator.md).
 
-NAO
----
+## NAO
 
 **_jsk_nao_startup_**
   - contains ROS launch files for NAO
@@ -152,8 +190,7 @@ NAO
 [**_naoeus_**](naoeus/README.md)
   - package for controlling NAO via roseus
 
-Pepper
-------
+## Pepper
 
 [**_jsk_pepper_startup_**](jsk_pepper_startup/README.md)
   - contains ROS launch files for Pepper
