@@ -27,7 +27,9 @@ Naoqi robot has [AutonomousLife](http://doc.aldebaran.com/2-4/family/pepper_user
 
 When you're a developer, you'll want to disable AutonomousLife (it includes servo off) and servo on a robot to try codes you write.
 
-If you want to know how to disable it, please refer to [using a chest button](http://doc.aldebaran.com/2-4/family/pepper_user_guide/freeze_pep.html) or using ROS service (TODO: add doc). (Link is for Pepper, but same as NAO.)  
+If you want to know how to disable it, please refer to [using a chest button](http://doc.aldebaran.com/2-4/family/pepper_user_guide/freeze_pep.html). Link is for Pepper, but same as NAO.  
+
+Or please refer to [using ROS service](doc/disable_autonomous_life_from_ros_service.md). 
 
 ### How to connect your PC and a robot to a same network?
 
