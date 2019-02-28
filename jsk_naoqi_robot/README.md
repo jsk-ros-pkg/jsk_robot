@@ -111,6 +111,7 @@ git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
 git fetch kochigami
 git checkout -b modify-for-kinetic kochigami/modify-for-kinetic
 ```
+Or, please apply [this change](https://github.com/kochigami/naoqi_dashboard/tree/add-volume-button). This includes the contents of `modify-for-kinetic` and a feature of volume setting from combo box.  
 
 Finally, please compile them.  
 
