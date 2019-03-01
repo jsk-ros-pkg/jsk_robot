@@ -41,6 +41,16 @@ To connect NAO and Pepper to wifi for the first time, please refer to [here](doc
 
 Please refer to [here](http://doc.aldebaran.com/2-1/nao/connectivity.html#local-link-an-alternative-to-dhcp).  
 
+[2019.03.01: Trouble shooting]
+
+When you connect Pepper and your PC via network without DHCP, power on Pepper and launch Setting from Pepper's tablet, setting wizard sometimes becomes zombie process. You may not exit Setting as described [here](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/doc/connect_to_wifi.md#pepper-only-how-to-access-to-a-robot-web-page-via-peppers-tablet), which causes a failure of AutonomousLife setting.
+
+```
+[ERROR] [1550641271.575637]: Exception while disabling life state: ALAutonomousLife::setState AutonomousLife::setState Calls to the setState method are not currently allowed. Did you finish the getting started wizard?
+```
+
+If this happens, please connect Pepper to network with DHCP and exit Setting.
+
 ### List of nodes, topics and services
 
 If you launch `jsk_nao/pepper_startup.launch` + `nao/pepper eus`, these will appear.    
