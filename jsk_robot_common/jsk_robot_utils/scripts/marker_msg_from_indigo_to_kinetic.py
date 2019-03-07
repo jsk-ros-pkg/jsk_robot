@@ -15,6 +15,7 @@ import os
 import rospy
 import visualization_msgs.msg
 
+
 class VisualizationMarkerBridgeForKinetic(object):
     def __init__(self):
         if os.getenv("ROS_DISTRO", "kinetic") != "kinetic":
@@ -48,7 +49,7 @@ class VisualizationMarkerBridgeForKinetic(object):
         topic_names = []
         topic_types = []
         for topic in all_topics:
-            if topic[0].endswith('_' + self.suffix):
+            if topic[0].split('/')[-2] == self.suffix:
                 continue
             for msg_type in msg_types:
                 if topic[1] == 'visualization_msgs/{}'.format(msg_type):
@@ -58,7 +59,9 @@ class VisualizationMarkerBridgeForKinetic(object):
 
         for topic_name, topic_type in zip(topic_names, topic_types):
             if topic_name not in self.publishers:
-                new_topic_name = '{0}_{1}'.format(topic_name, self.suffix)
+                new_topic_name = '/'.join(
+                    topic_name.split('/')[:-1] +
+                    [self.suffix, topic_name.split('/')[-1]])
                 self.publishers[topic_name] = rospy.Publisher(
                     new_topic_name, topic_type, queue_size=1)
                 rospy.logdebug(
