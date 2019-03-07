@@ -18,21 +18,21 @@ import visualization_msgs.msg
 
 class VisualizationMarkerBridgeForKinetic(object):
     def __init__(self):
-        if os.getenv("ROS_DISTRO", "kinetic") != "kinetic":
-            rospy.logwarn("This node works only on kinetic")
+        if os.getenv('ROS_DISTRO', 'kinetic') != 'kinetic':
+            rospy.logwarn('This node only works on kinetic.')
 
-        rate = rospy.get_param("~rate", 1.0)
-        self.suffix = rospy.get_param("~suffix", "kinetic")
+        rate = rospy.get_param('~rate', 1.0)
+        self.suffix = rospy.get_param('~suffix', 'kinetic')
 
         self.publishers = dict()
         self.subscribers = dict()
 
         self.timer = rospy.Timer(rospy.Duration(rate), self.timer_cb)
 
-    def msg_cb(self, msg, name):
+    def msg_cb(self, msg, topic_name):
         try:
-            self.publishers[name].publish(msg)
-            rospy.logdebug("Relayed %s" % name)
+            self.publishers[topic_name].publish(msg)
+            rospy.logdebug('Relayed :{}'.format(topic_name))
         except Exception as e:
             rospy.logerr(e)
 
@@ -95,6 +95,6 @@ class VisualizationMarkerBridgeForKinetic(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node("marker_msg_from_indigo_to_kinetic")
+    rospy.init_node('marker_msg_from_indigo_to_kinetic')
     m = VisualizationMarkerBridgeForKinetic()
     rospy.spin()
