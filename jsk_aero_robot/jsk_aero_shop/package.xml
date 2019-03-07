@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_aero_shop</name>
+  <version>1.1.0</version>
+  <description>The jsk_aero_shop package</description>
+  <maintainer email="youhei@jsk.imi.i.u-tokyo.ac.jp">Yohei Kakiuchi</maintainer>
+  <maintainer email="higashide@jsk.imi.i.u-tokyo.ac.jp">Taichi Higashide</maintainer>
+  <maintainer email="sasabuchi@jsk.imi.i.u-tokyo.ac.jp">Kazuhiro Sasabuchi</maintainer>
+
+  <license>BSD</license>
+
+  <author email="sasabuchi@jsk.imi.i.u-tokyo.ac.jp">Kazuhiro Sasabuchi</author>
+  <author email="higashide@jsk.imi.i.u-tokyo.ac.jp">Taichi Higashide</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

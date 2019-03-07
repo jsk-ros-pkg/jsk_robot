@@ -1,0 +1,51 @@
+rarm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - r_shoulder_p_joint
+    - r_shoulder_r_joint
+    - r_shoulder_y_joint
+    - r_elbow_joint
+    - r_wrist_y_joint
+    - r_wrist_p_joint
+    - r_wrist_r_joint
+    - r_hand_y_joint
+larm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - l_shoulder_p_joint
+    - l_shoulder_r_joint
+    - l_shoulder_y_joint
+    - l_elbow_joint
+    - l_wrist_y_joint
+    - l_wrist_p_joint
+    - l_wrist_r_joint
+    - l_hand_y_joint
+head_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - neck_y_joint
+    - neck_p_joint
+    - neck_r_joint
+waist_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - waist_y_joint
+    - waist_p_joint
+    - waist_r_joint
+lifter_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - knee_joint
+    - ankle_joint
+lhand_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - l_thumb_joint
+    - l_indexbase_joint
+rhand_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - r_thumb_joint
+    - r_indexbase_joint
+
+robot_interface_controllers: ['rarm', 'larm', 'waist', 'lifter', 'head']
