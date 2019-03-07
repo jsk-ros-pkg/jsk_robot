@@ -13,9 +13,7 @@
 
 import os
 import rospy
-from visualization_msgs.msg import Marker
-from visualization_msgs.msg import MarkerArray
-
+import visualization_msgs.msg
 
 class VisualizationMarkerBridgeForKinetic(object):
     def __init__(self):
@@ -39,17 +37,24 @@ class VisualizationMarkerBridgeForKinetic(object):
 
     def timer_cb(self, event=None):
         all_topics = rospy.get_published_topics()
+        msg_types = [
+            'InteractiveMarker',
+            'InteractiveMarkerControl',
+            'InteractiveMarkerInit',
+            'InteractiveMarkerUpdate',
+            'Marker',
+            'MarkerArray',
+        ]
         topic_names = []
         topic_types = []
         for topic in all_topics:
             if topic[0].endswith('_' + self.suffix):
                 continue
-            if topic[1] == 'visualization_msgs/Marker':
-                topic_names.append(topic[0])
-                topic_types.append(Marker)
-            elif topic[1] == 'visualization_msgs/MarkerArray':
-                topic_names.append(topic[0])
-                topic_types.append(MarkerArray)
+            for msg_type in msg_types:
+                if topic[1] == 'visualization_msgs/{}'.format(msg_type):
+                    topic_names.append(topic[0])
+                    topic_types.append(
+                        getattr(visualization_msgs.msg, msg_type))
 
         for topic_name, topic_type in zip(topic_names, topic_types):
             if topic_name not in self.publishers:
