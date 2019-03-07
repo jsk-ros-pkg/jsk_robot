@@ -1,0 +1,12 @@
+subscribers:
+  - name:        "Joy Teleop"
+    topic:       "/teleop/cmd_vel"
+    timeout:     0.1
+    priority:    1
+    short_desc:  "The teleop cmd_vel"
+  - name:        "Navigation stack"
+    topic:       "/move_base/cmd_vel"
+    timeout:     0.1
+    priority:    0
+    short_desc:  "Navigation stack controller"
+publisher:       "/cmd_vel"

@@ -1,8 +1,17 @@
 <launch>
-  <machine name="aero_c" address="aero_c"
-           user="grxuser"
-           env-loader="/home/grxuser/ros/indigo/devel/env.sh"/>
-  <machine name="aero_v" address="aero_v" default="true"/>
-  <machine name="aero_app" address="aero_app" timeout="30.0"
-           env-loader="/home/leus/ros/indigo/devel/env.sh"/>
+  <arg name="AERO"
+       default="$(optenv AERO aero_c)"/>
+  <arg name="AERO_MASTER"
+       default="$(optenv AERO_MASTER aero_c)"/>
+  <arg name="REMOTE_USER_NAME"
+       default="$(optenv REMOTE_USER_NAME user)"/>
+  <arg name="ROS_DISTRO"
+       default="$(optenv ROS_DISTRO indigo)"/>
+  <arg name="CONFIG_PATH"
+       default="$(optenv CONFIG_PATH /opt/ros/indigo/env.sh)"/>
+
+  <machine name="$(arg AERO)" address="$(arg AERO)"
+           user="$(arg REMOTE_USER_NAME)"
+           env-loader="$(arg CONFIG_PATH)"/>
+  <machine name="$(arg AERO_MASTER)" address="$(arg AERO_MASTER)" default="true"/>
 </launch>

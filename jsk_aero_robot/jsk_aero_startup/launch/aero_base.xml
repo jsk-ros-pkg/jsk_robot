@@ -1,10 +1,50 @@
 <launch>
-  <arg name="machine" default="aero_c"/>
-  <arg name="map_file" default="$(find jsk_aero_startup)/raw_maps/room83a3.yaml"/>
+  <arg name="map_file" default="$(find jsk_aero_startup)/rooms/610/raw_maps/map_keepout.yaml"/>
+  <arg name="costmap_file" default="$(find jsk_aero_startup)/rooms/610/raw_maps/map.yaml"/>
+  <arg name="use_cmd_vel_mux" default="true"/>
+  <arg name="nodelet_manager_name" default="nodelet_manager"/>
+  <arg name="config_file" default="$(find jsk_aero_startup)/config/cmd_vel_conf.yaml"/>
+  <arg name="use_base_trajectory" default="false"/>
+  <arg name="use_laser_map_matching" default="true"/>
 
-  <include file="$(find jsk_aero_startup)/launch/wheel_with_static_map.xml">
-    <arg name="machine" value="$(arg machine)"/>
-    <arg name="map_file" value="$(arg map_file)"/>
+  <!--- Bringup wheel -->
+  <include file="$(find aero_startup)/aero_move_base/launch/wheel_bringup.launch" />
+
+  <!--- Run Map Server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  <node name="costmap_server" pkg="map_server" type="map_server" args="$(arg costmap_file)">
+    <remap from="map" to="map_localization"/>
+  </node>
+
+  <!--- Run AMCL -->
+  <include file="$(find aero_startup)/aero_move_base/launch/amcl.launch" />
+
+  <!--- Run Move Base -->
+  <include file="$(find aero_startup)/aero_move_base/launch/move_base.launch">
+    <arg name="machine" value="aero_v"/>
+    <arg name="map_file" value="$(arg map_file)" />
   </include>
-</launch>
 
+
+  <!-- Run Base Trajectory Action to use go-velocity on eus-interface -->
+  <group ns="base_controller" if="$(arg use_base_trajectory)">
+    <node pkg="pr2_base_trajectory_action" type="pr2_base_trajectory_action"
+          name="joint_trajectory_action" respawn="true" output="screen">
+      <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
+      <remap from="command" to="/base_controller/cmd_vel" />
+      <remap from="odom" to="/odom" />
+    </node>
+  </group>
+  
+  <!-- Velocity Mulitplexer -->
+  <group if="$(arg use_cmd_vel_mux)">
+    <node name="$(arg nodelet_manager_name)"
+          pkg="nodelet" type="nodelet"
+          args="manager"/>
+    <include file="$(find yocs_cmd_vel_mux)/launch/cmd_vel_mux.launch">
+      <arg name="nodelet_manager_name"  value="$(arg nodelet_manager_name)"/>
+      <arg name="config_file"           value="$(arg config_file)"/>
+    </include>
+  </group>
+
+</launch>
