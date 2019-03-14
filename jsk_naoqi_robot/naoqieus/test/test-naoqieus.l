@@ -13,6 +13,9 @@
   (assert (send *ri* :speak "hello") "test-speak error")
   (assert (send *ri* :speak "こんにちは") "test-speak error"))
 
+(deftest test-speak-action
+  (assert (send *ri* :speak-action "hello" 1) "test-speak-action error"))
+
 (deftest test-animated-speak
   (assert (send *ri* :animated-speak "hello") "test-animated-speak error")
   (assert (send *ri* :animated-speak "こんにちは") "test-animated-speak error"))
@@ -86,6 +89,12 @@
 
 (deftest test-get-background-movement-enabled
   (assert  (instance std_srvs::TriggerRequest :init) "test-get-background-movement-enabled"))
+
+(deftest test-set-basic-awareness-enabled
+  (assert  (instance std_srvs::SetBoolRequest :init) "test-set-basic-awareness-enabled"))
+
+(deftest test-get-basic-awareness-enabled
+  (assert  (instance std_srvs::TriggerRequest :init) "test-get-basic-awareness-enabled"))
 
 (run-all-tests)
 (exit)

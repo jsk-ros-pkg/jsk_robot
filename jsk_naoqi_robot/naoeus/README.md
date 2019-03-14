@@ -47,28 +47,28 @@ Here is a list of joints when accessing NAO. ex:
 ```
 
 ```
-0:  :head :neck-y
-1:  :head :neck-p
-2:  :larm :shoulder-p
-3:  :larm :shoulder-r
-4:  :larm :elbow-y
-5:  :larm :elbow-p
-6:  :larm :wrist-y
-7:  :rarm :shoulder-p
-8:  :rarm :shoulder-r
-9:  :rarm :elbow-y
-10: :rarm :elbow-p
-11: :rarm :wrist-y
-12: :lleg :crotch-y
-13: :lleg :crotch-r
-14: :lleg :crotch-p
-15: :lleg :knee-p
-16: :lleg :ankle-p
-17: :lleg :ankle-r
-18: :rleg :crotch-y
-19: :rleg :crotch-r
-20: :rleg :crotch-p
-21: :rleg :knee-p
-22: :rleg :ankle-p
-23: :rleg :ankle-r
+0:  :larm :shoulder-p
+1:  :larm :shoulder-r
+2:  :larm :elbow-y
+3:  :larm :elbow-p
+4:  :larm :wrist-y
+5:  :rarm :shoulder-p
+6:  :rarm :shoulder-r
+7:  :rarm :elbow-y
+8:  :rarm :elbow-p
+9:  :rarm :wrist-y
+10: :lleg :crotch-y
+11: :lleg :crotch-r
+12: :lleg :crotch-p
+13: :lleg :knee-p
+14: :lleg :ankle-p
+15: :lleg :ankle-r
+16: :rleg :crotch-y
+17: :rleg :crotch-r
+18: :rleg :crotch-p
+19: :rleg :knee-p
+20: :rleg :ankle-p
+21: :rleg :ankle-r
+22: :head :neck-y
+23: :head :neck-p
 ```

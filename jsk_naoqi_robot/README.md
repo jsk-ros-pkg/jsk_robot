@@ -85,11 +85,11 @@ Please add following source codes which you need for debugging.
 
 ```
 cd  catkin_ws/src
-wstool set nao_robot --git http://github.com/ros-naoqi/nao_robot
-wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
-wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
-wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
-wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
+wstool set nao_robot --git https://github.com/ros-naoqi/nao_robot
+wstool set pepper_robot --git https://github.com/ros-naoqi/pepper_robot
+wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
+wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
+wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
@@ -101,23 +101,37 @@ For some methods, they require specific branch (kochigami-develop) because they 
 
 ```
 cd catkin_ws/src
-wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
+wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
+wstool update naoqi_driver
+cd naoqi_driver
 git remote add kochigami https://github.com/kochigami/naoqi_driver.git
 git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 
-wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
+cd .. # catkin_ws/src
+wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
+wstool update naoqi_bridge
+cd naoqi_bridge
 git remote add kochigami https://github.com/kochigami/naoqi_bridge.git
 git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 
-wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
+cd .. # catkin_ws/src
+wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
+wstool update naoqi_bridge_msgs
+cd naoqi_bridge_msgs
 git remote add kochigami https://github.com/kochigami/naoqi_bridge_msgs.git
 git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 ```
 
-In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+
+```
+cd .. # catkin_ws/src
+wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
+wstool update nao_interaction
+```
 
 NAO & Pepper
 ------------
