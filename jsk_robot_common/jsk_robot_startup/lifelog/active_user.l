@@ -5,192 +5,167 @@
 (ros::load-ros-manifest "sensor_msgs")
 (ros::load-ros-manifest "diagnostic_msgs")
 
-(setq *start-distance* nil)
-(setq *start-angle* nil)
-(setq *servo-on* nil)
+(defparameter *init-status* '(nil))
+(defparameter *prev-status* '(nil))
+(defparameter *current-status* '(nil))
+(defparameter *diagnostic-seq* 0)
+(defparameter *position-diff-threshold* 0.05)
 
-(ros::roseus "active_user_statistics")
+(defun set-alist (k v alist &key (key 'car) (test 'eq))
+  (let ((cur-cons (assoc k alist :key key :test test)))
+    (if cur-cons
+        (progn (setf (cdr cur-cons) v) alist)
+        (nconc alist (list (cons k v))))))
 
-(defun motor-cb (msg)
-  (ros::ros-debug "motor_state -> ~A" (send msg :data))
-  (setq *servo-on* (not (send msg :data))))
+(defun status-cb (key msg)
+  (unless (assoc key *init-status*)
+    (set-alist key msg *init-status*))
+  (when (assoc key *current-status*)
+    (set-alist key (cdr (assoc key *current-status*)) *prev-status*))
+  (set-alist key msg *current-status*))
 
-(defun odom-cb (msg)
-  (ros::ros-debug "odom_state -> distance ~A, angle ~A" (send msg :distance) (send msg :angle))
-  (if (or (equal *start-distance* nil) (equal *start-angle* nil))
-      (setq *start-distance*  (send msg :distance)
-	    *start-angle*     (send msg :angle))
-    (setq *distance* (- (send msg :distance) *start-distance*)
-          *angle*    (- (send msg :angle)    *start-angle*))))
-
-(defun joint-cb (msg)
-  ;;
-  (cond ((and (ros::has-param "/robot/type") ;; for pr2
-              (string= (ros::has-param "/robot/type") "pr2"))
-         (setq *position* (concatenate float-vector (subseq (send msg :position) 12 16) (subseq (send msg :position) 17))))
-        ((ros::has-param "/rethink/software_version") ;; baxter
-         (if (< (length (send msg :position)) 12)
-             (return-from joint-cb nil))
-         (setq *position* (send msg :position)))
-        (t
-         (setq *position* (send msg :position))))
-  (update-activeness)
+(defun init-status ()
+  (setq *position-diff-threshold* (ros::get-param "/active_user/position_diff_threshold" 0.05))
+  (setq *init-status* '(nil))
+  ;; user name
+  (let ((name (ros::get-param "/active_user/launch_user_name" nil)))
+    (when (or (null name) (null-string-p name) (string= name "false"))
+      (unix::system
+       (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt"
+               (unix::getpid)))
+      (with-open-file
+          (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
+        (setq name (read-line f)))
+      (when (or (null name) (null-string-p name))
+        (setq name *user*))
+      (ros::set-param "/active_user/launch_user_name" name))
+    (set-alist :user-name name *init-status*))
+  ;; robot name
+  (let ((name (ros::get-param "/robot/type" nil)))
+    (when (or (null name) (string= name "false"))
+      (if (ros::has-param "/rethink/software_version")
+          (setq name "baxter")))
+    (set-alist :robot-name name *init-status*))
+  ;; elapsed time
+  (set-alist :elapsed-time
+             (ros::time (ros::get-param "/active_user/elapsed_time" 0))
+             *init-status*)
+  ;; start time
+  (let ((cur-time (send (ros::time-now) :to-sec)))
+    (set-alist :start-time
+               (ros::time (ros::get-param "/active_user/start_time" cur-time))
+               *init-status*)
+    (ros::set-param "/active_user/start_time" cur-time))
   )
 
-(when (ros::has-param "/active_user/motor_subscribe")
-  (if (ros::get-param "/active_user/motor_subscribe")
-      (ros::subscribe "motor_state" std_msgs::Bool #'motor-cb 1)
-    (setq *servo-on* t)
-    )
-  )
+(defun joint-position (robot msg)
+  (setq robot (string-downcase robot))
+  (when msg
+    (cond
+      ((string= robot "pr2")
+       (concatenate float-vector
+                    (subseq (send msg :position) 12 16)
+                    (subseq (send msg :position) 17)))
+      ((string= robot "baxter")
+       (if (< (length (send msg :position)) 12)
+           nil (send msg :position)))
+      (t (send msg :position)))))
 
-(when (ros::has-param "/active_user/odom_subscribe")
-  (if (ros::get-param "/active_user/odom_subscribe")
-      (ros::subscribe "odom_state" pr2_mechanism_controllers::Odometer #'odom-cb 1)
-    )
-  )
+(defun publish-diagnostics (username elapsed)
+  (when (derivedp elapsed ros::time)
+    (setq elapsed (format nil "~A" (send elapsed :to-sec))))
+  (let (kvs)
+    (when username
+      (push (instance diagnostic_msgs::KeyValue :init
+                      :key "User Name"
+                      :value username) kvs))
+    (when elapsed
+      (push (instance diagnostic_msgs::KeyValue :init
+                      :key "Usage Time"
+                      :value elapsed) kvs))
+    (ros::publish "diagnostics"
+                  (instance diagnostic_msgs::DiagnosticArray :init
+                            :header (instance std_msgs::Header :init :seq (incf *diagnostic-seq*) :stamp (ros::time-now))
+                            :status (list
+                                     (instance diagnostic_msgs::DiagnosticStatus :init
+                                               :level 0
+                                               :name"Active User"
+                                               :message (format nil "~A ~A sec" username elapsed)
+                                               :values kvs))))))
 
-(when (ros::has-param "/active_user/joint_state_subscribe")
-  (if (ros::get-param "/active_user/joint_state_subscribe")
-      (ros::subscribe "joint_states" sensor_msgs::JointState  #'joint-cb 1)
-    )
-  )
-
-(when (ros::has-param "/active_user/position_diff_threshold")
-  (setq *position-diff-threshold* (ros::get-param "/active_user/position_diff_threshold")))
-
-
-
-(ros::advertise "diagnostics" diagnostic_msgs::DiagnosticArray 1)
-
-(setq *prev-distance* nil *prev-angle* nil *prev-position* nil)
-(setq *distance* nil *angle* nil *position* nil)
-
-(setq *status* 'stop)
-(setq *movingp* nil)
-(setq *start-time* (ros::time 0))
-(setq *elapsed-sec* 0)
-(setq *seq* 0)
-
-(when (ros::has-param "/active_user/launch_user_name")
-  (let ((tname (ros::get-param "/active_user/launch_user_name")))
-    (warn "~%;; launch_user_name = ~A~%" tname)
-    (unless (string= tname "false")
-      (setq *user-name* tname))))
-(unless (and (boundp '*user-name*) *user-name*)
-  (unix::system
-   (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt"
-           (unix::getpid)))
-  (warn "Get PID ~A" (unix::getpid))
-  (with-open-file
-   (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
-   (setq *user-name* (read-line f)))
-  (ros::set-param "/active_user/launch_user_name" *user-name*)
-  )
-(warn "~%;; start user_name = ~A~%" *user-name*)
-
-(if (and (ros::has-param "/active_user/elapsed_time")
-	 (ros::has-param "/active_user/launch_user_name")
-	 (string= (ros::get-param "/active_user/launch_user_name") *user-name*))
-    (setq *elapsed* (ros::time (ros::get-param "/active_user/elapsed_time")))
-  (setq *elapsed* (ros::time 0)))
-(warn "~%;; start elapsed_time with ~A sec~%~%" *elapsed*);;
-
-(let ((tm-now (ros::time-now)))
-  (cond
-   ((and (ros::has-param "/active_user/start_time")
-         (not (ros::time= *elapsed* (ros::time 0))))
-    (setq *start-time* (ros::time (ros::get-param "/active_user/start_time"))))
-   (t
-    (setq *start-time* tm-now)
-    (ros::set-param "/active_user/start_time" (send *start-time* :to-sec)))
-   ))
-
-(defun update-activeness()
-  (ros::ros-debug "user  -> ~A" *user-name*)
-  (ros::ros-debug "status-> ~A" *status*)
-  (ros::ros-debug "moving-> ~A" *movingp*)
-  (setq *odom-disable* (not (ros::get-param "/active_user/odom_subscribe")))
-  ;; check if the robot is moving
-  (when (and *user-name* (or (and *prev-distance* *prev-angle* *prev-position*) *odom-disable*))
-    (let ((diff-distance (if *odom-disable* nil (- *distance* *prev-distance*)))
-          (diff-angle (if *odom-disable* nil (- *angle* *prev-angle*)))
-          (diff-position (if (not *prev-position*) nil (norm (v- *position* *prev-position*)))))
-      ;; check servo on
-      (ros::ros-debug " servo on -> ~A" *servo-on*)
-      ;; check move_base
-      (if (not *odom-disable*)
-          (ros::ros-debug " move base -> ~A ~A" diff-distance diff-angle))
-      ;; check arms
-      (ros::ros-debug " joint-angle  -> ~A" diff-position)
-      ;;for odom-enable machine
-      (if (and *servo-on*
-               (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position *position-diff-threshold*))
-               (not *odom-disable*))
-           (setq *movingp* t)
-        ;;for odom-disable machine
-        (if (and (and (numberp diff-position) (> diff-position *position-diff-threshold*) )
-                 *odom-disable*)
-            (setq *movingp* t)
-          (setq *movingp* nil))
-        )
-
-      ;;
+(defun update ()
+  (let ((movingp nil) (servo-on nil))
+    (ros::ros-debug "current: ~A" *current-status*)
+    ;; motor
+    (cond
+      ((assoc :motor *current-status*)
+       (setq servo-on (send (cdr (assoc :motor *current-status*)) :data)))
+      (t (setq servo-on t)))
+    ;;
+    (when servo-on
+      ;; odom
+      (let ((odom (cdr (assoc :odom *current-status*)))
+            (prev-odom (cdr (assoc :odom *prev-status*)))
+            (diff-distance 0.0)
+            (diff-angle 0.0))
+        (when (and odom prev-odom)
+          (setq diff-distance (apply #'- (send-all (list odom prev-odom) :distance)))
+          (setq diff-angle (apply #'- (send-all (list odom prev-odom) :angle)))
+          (when (or (> diff-distance 0.001) (> diff-angle 0.001))
+            (setq movingp t))))
+      ;; joint
+      (unless movingp
+        (let* ((robot-name (cdr (assoc :robot-name *init-status*)))
+               (pos (joint-position robot-name (cdr (assoc :joint *current-status*))))
+               (prev-pos (joint-position robot-name (cdr (assoc :joint *prev-status*))))
+               (diff-position 0.0))
+          (when (and pos prev-pos)
+            (setq diff-position (norm (v- pos prev-pos)))
+            (when (> diff-position *position-diff-threshold*)
+              (setq movingp t))))))
+    ;;
+    (let ((prev-movingp (cdr (assoc :movingp *prev-status*)))
+          (start-time (or (cdr (assoc :start-time *current-status*))
+                          (cdr (assoc :start-time *init-status*))))
+          (elapsed (or (cdr (assoc :elapsed-time *current-status*))
+                       (cdr (assoc :elapsed-time *init-status*)))))
       (cond
-       ((and (eq *status* 'stop) *movingp*) ;; stop->move
-        (ros::ros-debug "[active_user] start moving")
-        (setq *status* 'move)
-        (setq *start-time* (ros::time-now))
-        (setq *tmp-elapsed* *elapsed*)
-        )
-       ((and (eq *status* 'stop) (not *movingp*) (not *odom-disable*)) ;; stop->stop
-        (setq *tmp-elapsed* (ros::time 0))
-        (ros::ros-debug "~A :tmp-elapsed" *tmp-elapsed*)
-        )
-       ((and (eq *status* 'move) *movingp*) ;; move-> move
-        ;; temp elapsed
-        (setq *tmp-elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
-        )
-       ((and (eq *status* 'move) (not *movingp*)) ;; move-stop
-        (ros::ros-debug "[active user] stop moving")
-        (setq *status* 'stop)
-        (setq *elapsed* (ros::time+ *elapsed* (ros::time- (ros::time-now) *start-time*)))
-        )
-       )
-      (setq *elapsed-sec* (send (if *movingp* *tmp-elapsed* *elapsed*) :to-sec))
-      (ros::ros-debug " status  -> ~A (currently moving? ~A), elapsed ~A" *status* *movingp* *elapsed-sec*)
-      (ros::publish "diagnostics"
-                    (instance diagnostic_msgs::DiagnosticArray :init
-                              :header (instance std_msgs::Header :init :seq *seq* :stamp (ros::time-now))
-                              :status (list
-                                       (instance diagnostic_msgs::DiagnosticStatus :init
-                                                 :level 0
-                                                 :name"Active User"
-                                                 :message (format nil "~A ~A sec" *user-name* *elapsed-sec*)
-                                                 :values (list 
-                                                          (instance diagnostic_msgs::KeyValue :init
-                                                                    :key "User Name"
-                                                                    :value *user-name*)
-                                                          (instance diagnostic_msgs::KeyValue :init
-                                                                    :key "Usage Time"
-                                                                    :value *elapsed-sec*))))))
-      (incf *seq*)
-      ))
+        ((and (not prev-movingp) movingp)
+         ;; stop -> move
+         (setq start-time (ros::time-now)))
+        ((and prev-movingp (not movingp))
+         ;; move -> stop
+         (setq elapsed (ros::time+ elapsed (ros::time- (ros::time-now) start-time)))))
+      ;;
+      (set-alist :start-time start-time *current-status*)
+      (set-alist :elapsed-time elapsed *current-status*)
+      ;;
+      (publish-diagnostics (cdr (assoc :user-name *init-status*)) elapsed)
+      (ros::set-param "/active_user/elapsed_time" (send elapsed :to-sec)))
 
-  (if (not *odom-disable*)
-      (setq *prev-distance* *distance*
-            *prev-angle* *angle*
-            *prev-position* *position*)
-    (setq *prev-position* *position*)
-    )
-  (when (and (> (length *user-name*) 0) *elapsed-sec*)
-    (ros::set-param "/active_user/user_name" *user-name*)
-    (ros::set-param "/active_user/elapsed_time" *elapsed-sec*))
-  )
+    (set-alist :movingp (cdr (assoc :movingp *current-status*)) *prev-status*)
+    (set-alist :movingp movingp *current-status*)
+    ))
 
-(ros::rate 1)
-(while (ros::ok)
-  (ros::spin-once)
-  (ros::sleep))
+(defun main ()
+  (ros::roseus "active_user_statistics")
+  ;;
+  (init-status)
+  ;;
+  (ros::advertise "diagnostics" diagnostic_msgs::DiagnosticArray 1)
+  ;;
+  (when (ros::get-param "/active_user/motor_subscribe" t)
+    (ros::subscribe "motor_state" std_msgs::Bool #'status-cb :motor 1))
+  (when (ros::get-param "/active_user/odom_subscribe" t)
+    (ros::subscribe "odom_state" pr2_mechanism_controllers::Odometer #'status-cb :odom 1))
+  (when (ros::get-param "/active_user/joint_state_subscribe" t)
+    (ros::subscribe "joint_states" sensor_msgs::JointState  #'status-cb :joint 1))
 
+  (ros::rate 0.1)
+  (while (ros::ok)
+    (ros::spin-once)
+    (update)
+    (ros::sleep)))
+
+(main)
 (exit)
