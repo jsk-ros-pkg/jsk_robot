@@ -61,7 +61,10 @@ endmacro()
 
 add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
 
-add_library(jsk_robot_lifelog SHARED ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS})
+add_library(jsk_robot_lifelog SHARED
+  ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS}
+  src/message_store_singleton.cpp)
+
 target_link_libraries(jsk_robot_lifelog
   ${Boost_LIBRARIES}
   ${OpenCV_LIBRARIES}

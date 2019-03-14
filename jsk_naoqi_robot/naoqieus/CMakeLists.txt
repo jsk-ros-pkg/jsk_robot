@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(naoqieus)
 
-find_package(catkin REQUIRED rostest diagnostic_aggregator nao_interaction_msgs naoqi_driver roseus)
+find_package(catkin REQUIRED roseus rostest)
 
 catkin_package(CFG_EXTRAS compile_naoqi_model.cmake)
 

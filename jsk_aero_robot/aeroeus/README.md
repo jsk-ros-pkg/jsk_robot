@@ -11,7 +11,7 @@ source ~/.bashrc
 
 ## Create eusmodel
 ```
-rosrun euscollada collada2eus_urdfmodel $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
+rosrun euscollada collada2eus $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
 ```
 
 ## Run euslisp
@@ -36,7 +36,7 @@ To initialize eus interface,
 Then, you can control AERO from euslisp, like
 
 ```
-(send *aero* :reset-manip-pose)
+(send *aero* :reset-pose)
 (send *ri* :angle-vector (send *aero* :angle-vector) 5000)
 ```
 
