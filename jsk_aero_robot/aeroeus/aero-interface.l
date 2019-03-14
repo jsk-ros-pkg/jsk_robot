@@ -4,7 +4,7 @@
 (require :robot-interface "package://pr2eus/robot-interface.l")
 
 (defclass aero-interface
-  :super robot-interface
+  :super robot-move-base-interface
   :slots (hand-interface)
   )
 (defmethod aero-interface
@@ -33,8 +33,13 @@
           )
          ))
      ;;
-     (send-super* :init :robot r
-                  :groupname "aero_interface" args)
+     (send-super*
+      :init
+      :robot r
+      :move-base-action-name "move_base"
+      :base-frame-id "/base_link"
+      :odom-topic "/odom"
+      :groupname "aero_interface" args)
      )
    ;;
    (dolist (ct (list :rarm-controller

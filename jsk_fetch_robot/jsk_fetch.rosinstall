@@ -1,3 +1,5 @@
+# This file is for work space in fetch PC.
+
 # For proximity sensor on fetch hand.
 - git:
     local-name: FA-I-sensor
@@ -13,3 +15,11 @@
     local-name: strands-project/mongodb_store
     uri: https://github.com/strands-project/mongodb_store.git
     version: indigo-0.1.30
+- git:
+    local-name: ros-perception/image_pipeline
+    uri: https://github.com/ros-perception/image_pipeline.git
+    version: 1.12.20
+- git:
+    local-name: ros/nodelet_core
+    uri: https://github.com/ros/nodelet_core.git
+    version: 1.9.6
