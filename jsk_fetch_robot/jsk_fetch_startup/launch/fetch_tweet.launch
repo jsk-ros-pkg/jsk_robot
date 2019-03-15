@@ -1,0 +1,14 @@
+<launch>
+
+  <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
+
+  <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
+    <arg name="robot_name" value="fetch15"/>
+
+    <arg name="machine" value="localhost"/>
+    <arg name="output" value="screen"/>
+
+    <arg name="account_info" value="/var/lib/robot/twitter_account_fetch15jsk.yaml" />
+  </include>
+
+</launch>
