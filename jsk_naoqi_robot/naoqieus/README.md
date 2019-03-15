@@ -25,7 +25,9 @@ Methods
 
 - [:fade-leds `led_name` `r` `g` `b` `sec` (naoqi_driver [`kochigami-develop`])](doc/fade_leds.md)  
 
-- [:get-background-movement-enabled (naoqi_bridge [`kochigami-develop`])](doc/get_background_movement_enabled.md)  
+- [:get-background-movement-enabled (naoqi_bridge [`kochigami-develop`])](doc/get_background_movement_enabled.md)
+
+- [:get-basic-awareness-enabled (naoqi_bridge [`kochigami-develop`])](doc/get_basic_awareness_enabled.md)  
 
 - [:get-external-collision-protection-status `type` (naoqi_bridge [`kochigami-develop`])](doc/get_external_collision_protection_status.md)  
 
@@ -49,7 +51,9 @@ Methods
 
 - [:servo-off (naoqi_bridge [`master`])](doc/servo_off.md)  
 
-- [:set-background-movement-enabled `status` (naoqi_bridge [`kochigami-develop`])](doc/set_background_movement_enabled.md)  
+- [:set-background-movement-enabled `status` (naoqi_bridge [`kochigami-develop`])](doc/set_background_movement_enabled.md)
+
+- [:set-basic-awareness-enabled `status` (naoqi_bridge [`kochigami-develop`])](doc/set_basic_awareness_enabled.md)  
 
 - [:set-external-collision-protection-status `type` `status` (naoqi_bridge [`kochigami-develop`])](doc/set_external_collision_protection_status.md)  
 
@@ -60,6 +64,8 @@ Methods
 - [:set-move-arms-enabled `status` `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/set_move_arms_enabled.md)  
 
 - [:speak `str` (naoqi_driver [`master`])](doc/speak.md)  
+
+- [:speak-action `str` `&optional (wait 60)` (naoqi_driver [`master`] and naoqi_apps [`kochigami-develop`])](doc/speak_action.md)  
 
 - [:start-grasp `&optional (angle-ratio 0.0) (arm :arms)` (naoqi_bridge [`master`])](doc/start_grasp.md)  
 
