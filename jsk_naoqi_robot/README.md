@@ -62,6 +62,7 @@ If you have ROS kinetic, please apply [this change](https://github.com/ros-naoqi
 ```
 cd  catkin_ws/src
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
+wstool update naoqi_dashboard
 cd naoqi_dashboard
 git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
 git fetch kochigami
@@ -84,20 +85,65 @@ Please add following source codes which you need for debugging.
 
 ```
 cd  catkin_ws/src
-wstool set nao_robot --git http://github.com/ros-naoqi/nao_robot
-wstool set pepper_robot --git http://github.com/ros-naoqi/pepper_robot
-wstool set naoqi_driver --git http://github.com/ros-naoqi/naoqi_driver
-wstool set naoqi_bridge --git http://github.com/ros-naoqi/naoqi_bridge
-wstool set naoqi_bridge_msgs --git http://github.com/ros-naoqi/naoqi_bridge_msgs
+wstool set nao_robot --git https://github.com/ros-naoqi/nao_robot
+wstool set pepper_robot --git https://github.com/ros-naoqi/pepper_robot
+wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
+wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
+wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
+```
+
+Interface when controlling NAO and Pepper via roseus
+----------------------------------------------------
+
+Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
+
+```
+cd catkin_ws/src
+wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
+wstool update naoqi_driver
+cd naoqi_driver
+git remote add kochigami https://github.com/kochigami/naoqi_driver.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+
+cd .. # catkin_ws/src
+wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
+wstool update naoqi_bridge
+cd naoqi_bridge
+git remote add kochigami https://github.com/kochigami/naoqi_bridge.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+
+cd .. # catkin_ws/src
+wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
+wstool update naoqi_bridge_msgs
+cd naoqi_bridge_msgs
+git remote add kochigami https://github.com/kochigami/naoqi_bridge_msgs.git
+git fetch kochigami
+git checkout -b kochigami-develop kochigami/kochigami-develop
+```
+
+In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+
+```
+cd .. # catkin_ws/src
+wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
+wstool update nao_interaction
 ```
 
 NAO & Pepper
 ------------
 
+[**_naoqieus_**](naoqieus/README.md)
+  - common interface package for controlling NAO and Pepper via roseus
+
+To connect NAO and Pepper to wifi, please refer to [here](doc/connect_to_wifi.md).
+
 To control multiple robots in one PC, please refer to [here](control_multiple_robots_in_one_pc.md).  
 
-Controlling NAO and Pepper via gazebo simulator and roseus, please refer to [here](simulator.md).
+To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](doc/simulator.md).
 
 NAO
 ---
