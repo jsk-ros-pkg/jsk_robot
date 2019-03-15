@@ -141,6 +141,8 @@ NAO & Pepper
 
 To connect NAO and Pepper to wifi, please refer to [here](doc/connect_to_wifi.md).
 
+To control multiple robots in one PC, please refer to [here](control_multiple_robots_in_one_pc.md).  
+
 To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](doc/simulator.md).
 
 NAO
