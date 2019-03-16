@@ -10,9 +10,16 @@ source ~/.bashrc
 ```
 
 ## Create eusmodel
+### Basic Robot Model
 ```
 rosrun euscollada collada2eus $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
 ```
+
+### JSK Robot Model
+```
+rosrun euscollada collada2eus $(rospack find jsk_aero_shop)/typeJSK/robots/aero.urdf $(rospack find jsk_aero_shop)/typeJSK/robots/aero.yaml $(rospack find aeroeus)/aero.l
+```
+
 
 ## Run euslisp
 
