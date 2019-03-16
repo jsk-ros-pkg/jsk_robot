@@ -13,20 +13,20 @@
 
   <node name="joy_msg_switcher"
         pkg="jsk_aero_startup" type="joy_msg_switcher.py"
-        output="screen">
+        output="log">
     <remap from="~angle_mode" to="/joy_msg_switcher/angle_pub" />
     <remap from="~ik_mode" to="/joy_msg_switcher/ik_pub" />
   </node>
 
   <node name="aero_teleop_ik"
         pkg="jsk_aero_startup"  type="aero-teleop.l"
-        output="screen">
+        output="log">
     <remap from="/joy" to="/joy_msg_switcher/ik_pub" />
   </node>
 
   <node name="teleop_joy"
         pkg="aero_teleop"  type="xbox_one_teleop_node"
-        output="screen">
+        output="log">
     <rosparam command="load" file="$(arg config_filepath)" />
     <remap from="/joy" to="/joy_msg_switcher/angle_pub" />
   </node>
