@@ -1,14 +1,14 @@
 <launch>
   <include file="$(find openni2_launch)/launch/openni2.launch">
     <arg name="camera" value="openni_camera"/>
+    <arg name="rgb_camera_info_url" value="file://$(find jsk_aero_startup)/config/xtion_calib.yaml"/>
   </include>
 
   <arg name="base_frame" default="/head_link" />
   <arg name="camera_frame" default="/openni_camera_link" />
   <node name="xtion_link_publisher"
         pkg="tf" type="static_transform_publisher"
-        args="0.00 0.06 0.19
-              0 0.0 0 1.0
+        args="0.083 0.059 0.127
+              0.027 0.085 0.046 0.995
               $(arg base_frame) $(arg camera_frame) 1000" />
-
 </launch>
