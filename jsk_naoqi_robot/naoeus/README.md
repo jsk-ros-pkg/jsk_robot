@@ -12,6 +12,12 @@ sudo apt-get install ros-<ros version>-nao-meshes
 catkin build
 ```
 
+How to start jsk_nao_startup
+-----------------------------
+```
+roslaunch jsk_nao_startup jsk_nao_startup.launch network_interface:=enp0s25
+```
+
 Control NAO via roseus
 -------------------------
 
