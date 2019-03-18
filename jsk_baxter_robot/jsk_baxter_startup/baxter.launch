@@ -25,6 +25,13 @@
   <param if="$(arg load_robot_description)" name="/robot_description"
          command="$(find xacro)/xacro --inorder $(find baxter_description)/urdf/baxter.urdf.xacro gazebo:=false
          left_electric_gripper:=$(arg left_electric_gripper) right_electric_gripper:=$(arg right_electric_gripper)"/>
+  <!-- 
+    NOTE: When baxter is booted up, baxter launches robot_state_publisher inside robot.
+    However, that node is killed by roslaunch jsk_arc2017_baxter baxter.launch
+    because we launch new robot_state_publihser based on customized hand model.
+    So in JSK environment, possibility to launch new robot_state_publihser easily is desireble.
+    Waiting for This PR: https://github.com/ros/robot_state_publisher/pull/31
+  -->
   <node name="robot_state_publisher"
         pkg="robot_state_publisher" type="robot_state_publisher" if="$(arg launch_robot_state_publisher)">
     <remap from="joint_states" to="/robot/joint_states"/>
