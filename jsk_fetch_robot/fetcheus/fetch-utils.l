@@ -24,6 +24,8 @@
    ()
    (+ (/ (send self :l_gripper_finger_joint :joint-angle) 1000.0) ;; mm -> m
       (/ (send self :r_gripper_finger_joint :joint-angle) 1000.0)))
+  ;; this function is mainly copied from https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/master/pr2eus/pr2-utils.l#L280
+  ;; in the future, we should integrate these two codes into upstream code.
   (:start-grasp
    (&optional arg1 arg2)
    (let ((angle 0) target)
@@ -55,6 +57,8 @@
          (send self :grasping-obj target)
          (send (send self :r_gripper_finger_joint) :parent-link :assoc target)
          )))))
+  ;; this function is mainly copied from https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/master/pr2eus/pr2-utils.l#L332
+  ;; in the future, we should integrate these two codes into upstream code.
   (:stop-grasp
    (&optional arg1 arg2)
    (let (angle target finger-joint)
