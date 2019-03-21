@@ -1,5 +1,9 @@
 # Control multiple robots in one PC
 
+## When is this feature useful?
+
+When creating one *ri* instance in one file, and communicate with each other using topics. Currently, we can't create multiple *ri* instances in one file. 
+
 ## Requirements
 
 Please use following packages from source:
