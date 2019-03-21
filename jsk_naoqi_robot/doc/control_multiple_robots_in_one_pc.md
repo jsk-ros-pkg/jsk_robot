@@ -4,7 +4,7 @@
 
 Please use following packages from source:
 - jsk_pepper_startup (master branch)
-- naoqi_driver (kochigami-develop branch)[https://github.com/kochigami/naoqi_driver/tree/kochigami-develop]
+- naoqi_driver [(kochigami-develop branch)](https://github.com/kochigami/naoqi_driver/tree/kochigami-develop)
 
 [Especially, related change is stored in this branch](https://github.com/kochigami/naoqi_driver/tree/add-group-name-to-subscribe-topic-name)  
 
@@ -104,9 +104,9 @@ For example, `/joint_states`, `/tf`, `/tf_static`, `/dummy_state`, `/robot_inter
 Robot1: Pepper, Robot2: NAO  
 Confirmed with Ubuntu 16.04, ROS kinetic, NAO 2.4.3, Pepper 2.5.5.5
 
-- Put `boot_config.json` with new name under `naoqi_driver/share` as much as the number of robots you want to control. Change `group_name` of `subscribers` group. See examples of [json file1](jsk_pepper_startup/sample/control_multiple_robots/boot_config1.json) and [json file2](jsk_pepper_startup/sample/control_multiple_robots/boot_config2.json).
+- Put `boot_config.json` with new name under `naoqi_driver/share` as much as the number of robots you want to control. Change `group_name` of `subscribers` group. See examples of [json file1](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/sample/control_multiple_robots/boot_config1.json) and [json file2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/sample/control_multiple_robots/boot_config2.json).
 
-- Set value of `boot_config_file_name` and `nao_ip` (ex. NAO_IP -> NAO_IP1) like [launch file1](jsk_pepper_startup/sample/control_multiple_robots/sample1.launch) and [launch file2](jsk_pepper_startup/sample/control_multiple_robots/sample2.launch). 
+- Set value of `boot_config_file_name` and `nao_ip` (ex. NAO_IP -> NAO_IP1) like [launch file1](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/sample/control_multiple_robots/sample1.launch) and [launch file2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/sample/control_multiple_robots/sample2.launch). 
 
 ```
 roslaunch sample1.launch network_interface:=<network>
