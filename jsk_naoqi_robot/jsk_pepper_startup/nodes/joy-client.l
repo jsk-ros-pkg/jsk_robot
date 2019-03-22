@@ -2,7 +2,7 @@
 
 
 (ros::roseus "joy_client")
-(ros::load-ros-manifest "peppereus")
+(ros::load-ros-package "peppereus")
 
 
 (if (not (find-package "NAOQI_BRIDGE_MSGS"))
