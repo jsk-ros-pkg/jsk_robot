@@ -7,9 +7,9 @@ The package name comes from Naoqi OS they use.
 
 ![](doc/img/relationship_of_robot_and_PC.png)
 
-Your PC becomes ROS master.  
-
-Your PC connects to a naoqi robot and starts up ROS nodes.  
+Your PC becomes ROS master. Your PC connects to a naoqi robot and starts up ROS nodes (`jsk_nao_startup.launch` and `jsk_pepper_startup.launch`).  
+You can control NAO and Pepper via roseus (`naoeus` and `peppereus`).
+For more information about these programs, please refer to [here for NAO](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#nao) and [here for Pepper](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#pepper).
 
 ### How to turn on/off a naoqi robot?
 
@@ -50,14 +50,6 @@ When you connect Pepper and your PC via network without DHCP, power on Pepper an
 ```
 
 If this happens, please connect Pepper to network with DHCP and exit Setting.
-
-### List of nodes, topics and services
-
-If you launch `jsk_nao/pepper_startup.launch` + `nao/pepper eus`, these will appear.    
-
-For more information about these programs, please refer to [here for NAO](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#nao) and [here for Pepper](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#pepper).
-
-TODO: add figure
 
 ## Setup Environment
 
