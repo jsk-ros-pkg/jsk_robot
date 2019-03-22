@@ -5,7 +5,7 @@ The package name comes from Naoqi OS they use.
 
 ## How to start up ROS nodes for a naoqi robot? 
 
-TODO: add figure
+![](doc/img/relationship_of_robot_and_PC.png)
 
 Your PC becomes ROS master.  
 
