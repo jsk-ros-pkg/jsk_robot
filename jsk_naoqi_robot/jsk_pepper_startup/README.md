@@ -28,7 +28,7 @@ Please refer to [README here](https://github.com/jsk-ros-pkg/jsk_robot/tree/mast
 
 These are a list of nodes and some useful topics and services from `jsk_pepper_startup.launch`.
 
-TODO: add picture of nodes and some useful functions
+![](../doc/img/pepper-node-topic-service.png)
 
 ### Pepper robot
 
@@ -99,7 +99,7 @@ Related nodes: `/joy_client`, `joy_node`, `/teleop_twist_joy`
 
 ### Dashboard
 
-TODO: add picture of dashboard
+![](../doc/img/naoqi-dashboard.png)
 
 Related nodes: `/naoqi_dashboard`, `/naoqi_dashboard_aggregator`, `/tf_monitor`
 

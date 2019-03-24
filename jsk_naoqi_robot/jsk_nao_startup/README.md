@@ -17,7 +17,11 @@ roslaunch jsk_nao_startup jsk_nao_startup.launch network_interface:=<your networ
 
 These are a list of nodes and some useful topics and services from `jsk_nao_startup.launch`.
 
-TODO: add picture of nodes and some useful functions
+[nao_robot `kochigami-develop` branch](https://github.com/kochigami/nao_robot/tree/kochigami-develop) is used to draw this figure.
+
+Main modification is [set namespace to `nao_full.launch` like `pepper_full.launch`](https://github.com/kochigami/nao_robot/commit/d9770dc76f812a8caf0b9d2b7d33ec55e6be6221).
+
+![](../doc/img/nao-node-topic-service.png)
 
 ### NAO robot
 
@@ -84,6 +88,6 @@ Related nodes: `/joy_client`, `joy_node`, `/teleop_twist_joy`
 
 ### Dashboard
 
-TODO: add picture of dashboard
+![](../doc/img/naoqi-dashboard.png)
 
 Related nodes: `/naoqi_dashboard`, `/naoqi_dashboard_aggregator`, `/tf_monitor`
