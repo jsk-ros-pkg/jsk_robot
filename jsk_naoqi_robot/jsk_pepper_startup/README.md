@@ -93,7 +93,16 @@ Services:
 
 ### Joystick
 
-TODO: add picture of button map
+![](../doc/img/joystick.png)
+
+|Button|Function            |
+|:-----|:-------------------|
+|1     |Servo on/off        |
+|2     |Interactive Life    |
+|3     |Disable Life        |
+|4+5   |Move head-p, head-y |
+|6+7   |Teleop Twist        |
+|6+7+8 |Teleop Twist Turbo  |
 
 Related nodes: `/joy_client`, `joy_node`, `/teleop_twist_joy` 
 
