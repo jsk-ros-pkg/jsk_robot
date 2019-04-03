@@ -193,7 +193,7 @@ To control NAO and Pepper via gazebo simulator and roseus, please refer to [here
 
 ## NAO
 
-**_jsk_nao_startup_**
+[**_jsk_nao_startup_**](jsk_nao_startup/README.md)
   - contains ROS launch files for NAO
 
 [**_naoeus_**](naoeus/README.md)
