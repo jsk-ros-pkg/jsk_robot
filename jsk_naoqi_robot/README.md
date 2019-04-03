@@ -185,6 +185,10 @@ wstool update nao_interaction
 [**_naoqieus_**](naoqieus/README.md)
   - common interface package for controlling NAO and Pepper via roseus
 
+To connect NAO and Pepper to wifi, please refer to [here](doc/connect_to_wifi.md).
+
+To control multiple robots in one PC, please refer to [here](doc/control_multiple_robots_in_one_pc.md).
+
 To control NAO and Pepper via gazebo simulator and roseus, please refer to [here](doc/simulator.md).
 
 ## NAO

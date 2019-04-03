@@ -136,9 +136,17 @@ They are defined in `pepper.yaml`.
 
 ![](doc/img/greeting-pose.png)
 
+`:look-foot`
+
+![](doc/img/look-foot.png)
+
 `:nodding-pose`
 
 ![](doc/img/nodding-pose.png)
+
+`:ok-pose`
+
+![](doc/img/ok-pose.png)
 
 `:pointing-left-pose`
 
@@ -168,6 +176,18 @@ They are defined in `pepper.yaml`.
 
 ![](doc/img/reset-pose.png)
 
+`:show-bottom-camera`
+
+![](doc/img/show-bottom-camera.png)
+
+`:show-head`
+
+![](doc/img/show-head.png)
+
+`:show-top-camera`
+
+![](doc/img/show-top-camera.png)
+
 `:spread-hands-smally`
 
 ![](doc/img/spread-hands-smally.png)
@@ -175,6 +195,14 @@ They are defined in `pepper.yaml`.
 `:spread-hands-widely`
 
 ![](doc/img/spread-hands-widely.png)
+
+`:touch-speakers`
+
+![](doc/img/touch-speakers.png)
+
+`:watching-pose`
+
+![](doc/img/watching-pose.png)
 
 `:wondering-pose`
 
