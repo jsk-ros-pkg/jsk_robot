@@ -1,10 +1,8 @@
-peppereus
-=========
+# peppereus
 
 This is a NAO-specific package for roseus interface.
 
-How to make pepper model on euslisp
------------------------------------
+## How to make pepper model on euslisp
 
 Install pepper mesh files with manual approval of license
 ```
@@ -12,8 +10,7 @@ sudo apt-get install ros-<ros version>-pepper-meshes
 catkin build
 ```
 
-Control Pepper via roseus
--------------------------
+## Control Pepper via roseus
 
 ```
 (load "package://peppereus/pepper-interface.l") ;; load modules
@@ -28,15 +25,13 @@ or
 (pepper-init)
 ```
 
-How to try methods
-------------------
+## How to try methods
 
 1. [roslaunch jsk_pepper_startup.launch](../jsk_pepper_statup/README.md)  
 2. Please refer to [Control Pepper via roseus](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/peppereus/README.md#control-pepper-via-roseus).  
 3. Please try methods, you can refer to the explanations below how to try them. If there is a sign of `kochigami-develop`, please follow [Interface when controlling NAO and Pepper via roseus](../README.md#interface-when-controlling-nao-and-pepper-via-roseus). 
 
-Methods
--------
+## Methods
 
 ***Tablet***  
 
@@ -73,8 +68,7 @@ scp <file path of your local PC> nao@<Your robot IP>:/home/nao/.local/share/Pack
 		module destroyed
 ```
 
-Joints of Pepper
-----------------
+## Joints of Pepper
 
 Here is a list of joints when accessing Pepper.
 
@@ -103,14 +97,14 @@ ex:
 14: :head :neck-p
 ```
 
-How to send angle vector
+### How to send angle vector
 
 ```
 (send *pepper* :head :neck-y :joint-angle -10)
 (send *ri* :angle-vector (send *pepper* :angle-vector)
 ```
 
-How to send sequences of angle vector
+### How to send sequences of angle vector
 
 ```
 (setq *reset-pose* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0))
@@ -123,8 +117,7 @@ How to send sequences of angle vector
 (send *ri* :angle-vector-sequence *hello-pose-list* *hello-time-list*)
 ```
 
-Default poses
--------------
+## Default poses
 
 They are defined in `pepper.yaml`.
 
