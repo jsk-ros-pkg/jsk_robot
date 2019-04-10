@@ -249,7 +249,7 @@
   (:check-speak-status
    (&optional (wait 60))
    (let (speech_status tm)
-     (ros::subscribe "speech_status" std_msgs::String
+     (ros::subscribe (format nil "~A/speech_status" group-namespace) std_msgs::String
 		     #'(lambda (msg)
 			 (setq speech_status (send msg :data))
 			 ))
@@ -261,7 +261,7 @@
        (ros::spin-once)
        (ros::ros-info "subscribing speech_status")
        (ros::sleep))
-   (ros::unsubscribe "speech_status")
+    (ros::unsubscribe (format nil "~A/speech_status" group-namespace))
    t))
   (:speak-action
    (str &optional (wait 60))

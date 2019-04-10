@@ -78,7 +78,7 @@ target_link_libraries(joint_states_throttle
   ${catkin_LIBRARIES})
 add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
-install(DIRECTORY lifelog util launch image config cfg
+install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 

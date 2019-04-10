@@ -20,6 +20,7 @@ class MongoRecord(LoggerBase):
             self.queue_size = rospy.get_param("~queue_size", 1)
             self.update_rate = rospy.get_param("~update_rate", 1.0)
             subst_param = rospy.get_param("~subst_param", False)
+            collection = rospy.get_param("~collection", None)
         else:
             args = self.parse_args(argv)
             self.topics = args.topics
@@ -27,6 +28,7 @@ class MongoRecord(LoggerBase):
             self.queue_size = args.queue_size
             self.update_rate = args.update_rate
             subst_param = args.subst_param
+            collection = args.collection
         self.subscribers = {}
 
         if subst_param:
@@ -40,7 +42,7 @@ class MongoRecord(LoggerBase):
                 topics.append(str().join(splitted))
             self.topics = topics
 
-        LoggerBase.__init__(self)
+        LoggerBase.__init__(self, col_name=collection)
 
     def parse_args(self, argv):
         p = argparse.ArgumentParser()
@@ -53,8 +55,10 @@ class MongoRecord(LoggerBase):
                        default=1)
         p.add_argument("-s", "--subst-param", action="store_true",
                        help="Enable substring param (e,g, '$(param robot/name)/list')")
-        p.add_argument("-r", "--update-rate", type=float,
+        p.add_argument("-r", "--update-rate", type=float, default=1.0,
                        help="Update rate for checking topics")
+        p.add_argument("-c", "--collection", type=str, default=None,
+                       help="Collection name to record data")
         return p.parse_args(argv)
 
     def check_topic(self):
