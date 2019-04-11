@@ -36,6 +36,8 @@ Basic methods for NAO and Pepper are stored.
 
 - [:get-move-arms-enabled `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/get_move_arms_enabled.md)    
 
+- [:get-take-picture-folder-path](naoqi_bridge [`kochigami-develop`])](doc/get_take_picture_folder_path.md)
+
 - [:go-pos `x` `y` `theta` (naoqi_driver [`master`])](doc/go_pos.md)  
 
 - [:go-velocity `x` `y` `d` `&optional (msec 1000)` `&key (stop t)` (naoqi_driver [`master`])](doc/go_velocity.md)  
@@ -60,10 +62,14 @@ Basic methods for NAO and Pepper are stored.
 
 - [:set-move-arms-enabled `status` `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/set_move_arms_enabled.md)  
 
+- [:set-take-picture-folder-path `name`(naoqi_bridge [`kochigami-develop`])](doc/set_take_picture_folder_path.md) 
+
 - [:speak `str` (naoqi_driver [`master`])](doc/speak.md)  
 
 - [:speak-action `str` `&optional (wait 60)` (naoqi_driver [`master`] and naoqi_apps [`kochigami-develop`])](doc/speak_action.md)  
 
 - [:start-grasp `&optional (angle-ratio 0.0) (arm :arms)` (naoqi_bridge [`master`])](doc/start_grasp.md)  
 
-- [:stop-grasp `&optional (angle-ratio 1.0) (arm :arms)` (naoqi_bridge [`master`])](doc/stop_grasp.md)  
+- [:stop-grasp `&optional (angle-ratio 1.0) (arm :arms)` (naoqi_bridge [`master`])](doc/stop_grasp.md)
+
+- [:take-picture `file-name` (naoqi_bridge [`kochigami-develop`])](doc/take_picture.md)

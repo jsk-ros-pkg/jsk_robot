@@ -96,6 +96,15 @@
 (deftest test-get-basic-awareness-enabled
   (assert  (instance std_srvs::TriggerRequest :init) "test-get-basic-awareness-enabled"))
 
+(deftest test-take-picture
+  (assert  (instance naoqi_bridge_msgs::SetStringRequest :init) "test-take-picture"))
+
+(deftest test-set-take-picture-folder-path
+  (assert  (instance naoqi_bridge_msgs::SetStringRequest :init) "test-set-take-picture-folder-path"))
+
+(deftest test-get-take-picture-folder-path
+  (assert  (instance naoqi_bridge_msgs::GetStringRequest :init) "test-get-take-picture-folder-path"))
+
 (run-all-tests)
 (exit)
 
