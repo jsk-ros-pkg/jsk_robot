@@ -1,19 +1,16 @@
-naoqieus
-=========
+# naoqieus
 
 This is a common package for naoeus and peppereus.
 This is used when controlling NAO and Pepper via roseus. 
 Basic methods for NAO and Pepper are stored.
 
-How to try methods
-------------------
+## How to try methods
 
-1. [roslaunch jsk_pepper_startup.launch](../jsk_pepper_statup/README.md) or [roslaunch jsk_nao_startup.launch](../jsk_nao_statup/README.md)  
-2. [launch peppereus](../peppereus/README.md) or [launch naoeus](../naoeus/README.md). Please refer to `Control NAO/ Pepper via roseus`.  
-3. Please try methods, you can refer to the explanations below how to try them. If there is a sign of `kochigami-develop`, please follow [Interface when controlling NAO and Pepper via roseus](../README.md).  
+1. [roslaunch jsk_pepper_startup.launch](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot/jsk_pepper_startup#running-startup-program) or [roslaunch jsk_nao_startup.launch](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot/jsk_nao_startup#running-startup-program)  
+2. [launch peppereus](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot/peppereus#control-pepper-via-roseus) or [launch naoeus](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/naoeus/README.md#control-nao-via-roseus).   
+3. Please try methods, you can refer to the explanations below how to try them. If there is a sign of `kochigami-develop`, please follow [Interface when controlling NAO and Pepper via roseus](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#interface-when-controlling-nao-and-pepper-via-roseus).  
 
-Methods
--------
+## Methods
 
 - [:animated-speak `str` (naoqi_bridge [`kochigami-develop`])](doc/animated_speak.md)  
 
