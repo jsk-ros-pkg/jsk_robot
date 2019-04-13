@@ -4,7 +4,7 @@ from sensor_msgs.msg import Joy
 
 class JoyMsgSwitcher():
     def __init__(self):
-        self.counter = 0
+        self.counter = 1
         self.pre = 0
         self.angle_pub = rospy.Publisher('~angle_mode', Joy, queue_size=1)
         self.ik_pub = rospy.Publisher('~ik_mode', Joy, queue_size=1)
