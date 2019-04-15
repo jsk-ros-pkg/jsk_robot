@@ -4,6 +4,12 @@
 (ros::roseus "joy_client")
 (ros::load-ros-package "naoeus")
 
+;; This tries to treat naoqi_msgs as naoqi_bridge_msgs,
+;; but it doesn't work as intended.
+;; We leave this as it is because it doesn't cause any error now.
+;; Please see https://github.com/jsk-ros-pkg/jsk_robot/issues/1046
+(if (not (find-package "NAOQI_BRIDGE_MSGS"))
+    (make-package "NAOQI_BRIDGE_MSGS" :nicknames "NAOQI_MSGS"))
 (ros::load-ros-package "naoqi_bridge_msgs")
 
 (ros::advertise "/speech" std_msgs::String 1)
