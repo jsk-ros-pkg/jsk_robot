@@ -1,6 +1,8 @@
 jsk_pr2_robot
 =============
 
+![teleop_command](images/pr2_teleop_command.png)
+
 
 ## Setup for Development Users
 ```
