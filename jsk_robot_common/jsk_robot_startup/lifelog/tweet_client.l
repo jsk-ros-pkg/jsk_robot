@@ -32,7 +32,7 @@
             (ros::service-call "/tweet_image_mux/add"
                                (instance topic_tools::MuxAddRequest :init :topic with-image)))
           (unless (string= with-image selected-topic)
-            (setq prev-iamge-topic
+            (setq prev-image-topic
                   (send (ros::service-call "/tweet_image_mux/select"
                                            (instance topic_tools::MuxSelectRequest :init :topic with-image))
                         :prev_topic)))))
