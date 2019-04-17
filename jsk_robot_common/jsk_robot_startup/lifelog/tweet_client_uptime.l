@@ -55,7 +55,7 @@
                 (incf pos (length s))
                 (if (< pos (- ln 2)) (setf (elt dt pos) 10))
                 (incf pos))
-              (tweet-string dt)
+              (tweet-string dt :warning-time 1 :with-image t)
               ))
           ))))
   (ros::sleep)
