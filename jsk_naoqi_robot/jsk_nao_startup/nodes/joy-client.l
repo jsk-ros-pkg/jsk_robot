@@ -2,7 +2,7 @@
 
 
 (ros::roseus "joy_client")
-(ros::load-ros-package "peppereus")
+(ros::load-ros-package "naoeus")
 
 ;; This tries to treat naoqi_msgs as naoqi_bridge_msgs,
 ;; but it doesn't work as intended.
@@ -20,13 +20,13 @@
     (ros::publish "/speech" msg))
   )
 
-(ros::advertise "/pepper_tweet" std_msgs::String 1)
+(ros::advertise "/nao_tweet" std_msgs::String 1)
 (defun tweet (str &rest args)
-  (ros::publish "/pepper_tweet" (instance std_msgs::String :init :data (apply #'format nil str args))))
+  (ros::publish "/nao_tweet" (instance std_msgs::String :init :data (apply #'format nil str args))))
 
 
-(ros::advertise "/pepper_robot/pose/joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
-(setq *power-button-mode* "/pepper_robot/pose/wakeup")
+(ros::advertise "/nao_robot/pose/joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
+(setq *power-button-mode* "/nao_robot/pose/wakeup")
 (setq *power-button-state* 0)
 (ros::subscribe "/joy" sensor_msgs::Joy
 		#'(lambda (msg)
@@ -39,17 +39,17 @@
 		      (print (list buttons power-button-state))
 		      (cond ((and (= *power-button-state* 1)
 				  (=  power-button-state  0))
-			     (if (string= *power-button-mode* "/pepper_robot/pose/wakeup")
+			     (if (string= *power-button-mode* "/nao_robot/pose/wakeup")
 				 (progn
 				   (speak-jp "もう朝かな")
 				   (call-empty-service *power-button-mode*)
 				   (tweet "おはよう")
-				   (setq *power-button-mode* "/pepper_robot/pose/rest"))
+				   (setq *power-button-mode* "/nao_robot/pose/rest"))
 			       (progn
 				 (speak-jp "もうそろそろ寝ます")
 				 (call-empty-service *power-button-mode*)
 				 (tweet "おやすみ")
-				 (setq *power-button-mode* "/pepper_robot/pose/wakeup")))
+				 (setq *power-button-mode* "/nao_robot/pose/wakeup")))
 			     (unix:sleep 5)
 			     );; when
 			    ((= rb-button-state 1)
@@ -62,16 +62,16 @@
 			       (send ja_msg :relative 1)
 			       (send ja_msg :joint_names (list "HeadYaw" "HeadPitch"))
 			       (send ja_msg :joint_angles (scale 0.1 (float-vector left-right up-down)))
-			       (ros::publish "/pepper_robot/pose/joint_angles" ja_msg)
+			       (ros::publish "/nao_robot/pose/joint_angles" ja_msg)
 			       ))
 			    ((= b-button-state 1)
 			     (speak-jp "disabled")
-			     (call-empty-service "/pepper_robot/pose/life/disable")
+			     (call-empty-service "/nao_robot/pose/life/disable")
 			     (unix:sleep 1)
-			     (call-empty-service "/pepper_robot/pose/wakeup"))
+			     (call-empty-service "/nao_robot/pose/wakeup"))
 			    ((= x-button-state 1)
 			     (speak-jp "interactive")
-			     (call-empty-service "/pepper_robot/pose/life/enable"))
+			     (call-empty-service "/nao_robot/pose/life/enable"))
 			    (t
 			     ))
 		      (setq *power-button-state* power-button-state)
