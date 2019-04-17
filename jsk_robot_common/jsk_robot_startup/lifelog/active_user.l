@@ -26,12 +26,17 @@
 (defun joint-cb (msg)
   ;;
   (cond ((and (ros::has-param "/robot/type") ;; for pr2
-              (string= (ros::has-param "/robot/type") "pr2"))
+              (string= (ros::get-param "/robot/type") "pr2"))
          (setq *position* (concatenate float-vector (subseq (send msg :position) 12 16) (subseq (send msg :position) 17))))
         ((ros::has-param "/rethink/software_version") ;; baxter
          (if (< (length (send msg :position)) 12)
              (return-from joint-cb nil))
          (setq *position* (send msg :position)))
+        ((and (ros::has-param "/robot/type") ;; for fetch
+              (string= (ros::get-param "/robot/type") "fetch"))
+         (if (< (length (send msg :position)) 13)
+             (return-from joint-cb nil))
+         (setq *position* (subseq (send msg :position) 2)))
         (t
          (setq *position* (send msg :position))))
   (update-activeness)
@@ -124,16 +129,13 @@
       ;; check arms
       (ros::ros-debug " joint-angle  -> ~A" diff-position)
       ;;for odom-enable machine
-      (if (and *servo-on*
-               (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position *position-diff-threshold*))
-               (not *odom-disable*))
-           (setq *movingp* t)
-        ;;for odom-disable machine
-        (if (and (and (numberp diff-position) (> diff-position *position-diff-threshold*) )
-                 *odom-disable*)
-            (setq *movingp* t)
-          (setq *movingp* nil))
-        )
+      (if (and *servo-on* (not *odom-disable*)
+               (or (> diff-distance 0.001) (> diff-angle 0.001) (> diff-position *position-diff-threshold*)))
+           (setq *movingp* t))
+      ;;for odom-disable machine
+      (if (and *odom-disable* (and (numberp diff-position) (> diff-position *position-diff-threshold*)))
+          (setq *movingp* t)
+        (setq *movingp* nil))
 
       ;;
       (cond
