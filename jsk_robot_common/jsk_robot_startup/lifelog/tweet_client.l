@@ -76,7 +76,7 @@
       (setq prev-image-topic
             (send (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic with-image)) :prev_topic))))
   (unless prev-image-topic
-    (send (one-shot-subscribe "/tweet_image_mux/selected" std_msgs::String) :data))
+    (setq prev-image-topic (send (one-shot-subscribe "/tweet_image_mux/selected" std_msgs::String) :data)))
 
   ;; retrieve image
   (call-empty-service "/tweet_image_saver/save" :wait t)
