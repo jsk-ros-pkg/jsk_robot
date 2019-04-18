@@ -110,6 +110,13 @@ Logging script is initialized at:
 - 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf
 - 2018/08/26 add `0 10 * * 1-5 /home/fetch/ros/indigo_robot/devel/env.sh rosservice call /fetch15/start_app "name: 'jsk_fetch_startup/go_to_kitchen'"` to crontab
   - `fetch` goes to 73B2 kitchen at 10:00 AM from Monday to Friday.
+- 2019/04/19: add `fetch` user in `pulse-access` group.
+- 2019/04/19: set `start on runlevel [2345]` in `/etc/init/pulseaudio.conf`.
+  - this modification is needed for starting `pulseaudio` in boot.
+  - `pulseaudio` is required to register USB speaker on head in boot.
+- 2019/04/19: set `env DISALLOW_MODULE_LOADING=0` in `/etc/init/pulseaudio.conf`.
+  - this modification is needed for overriding default speaker setting in `/etc/init/jsk-fetch-startup.conf`
+  - overriding default speaker setting to use USB speaker on head is done with `pactl set-default-sink $AUDIO_DEVICE` in `/etc/init/jsk-fetch-startup.conf`
 
 ## Apps
 
