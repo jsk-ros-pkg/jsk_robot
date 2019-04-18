@@ -25,8 +25,6 @@
 
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py" />
 
-  <node name="tuck_arm" pkg="fetch_teleop" type="tuck_arm.py" args="--joystick" respawn="true" />
-
   <!-- safe teleop -->
   <node name="unsafe_vel_mux" pkg="topic_tools" type="mux" respawn="true"
 	args="/teleop/cmd_vel /teleop/cmd_vel/safe /teleop/cmd_vel/unsafe">
