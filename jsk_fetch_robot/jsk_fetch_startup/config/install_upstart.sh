@@ -7,7 +7,8 @@ current_prefix_path="${prefix_paths[0]}"
 
 sudo bash -c "cat <<EOF > /etc/init/jsk-fetch-startup.conf
 description \"spawn jsk bringup nodes for fetch\"
-env ROS_LOG_DIR=/var/log/ros
+# use default log dir: yamaguchi & s-kitagawa (2019/04/18)
+# env ROS_LOG_DIR=/var/log/ros
 
 start on roscore_is_up
 stop on roscore_is_down
