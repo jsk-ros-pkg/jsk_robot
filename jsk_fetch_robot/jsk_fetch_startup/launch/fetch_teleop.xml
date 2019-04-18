@@ -4,12 +4,12 @@
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="disable_arm_teleop" default="true"/>
 
-  <node name="joy" pkg="joy" type="joy_node">
+  <node name="joy" pkg="joy" type="joy_node" respawn="true">
     <param name="autorepeat_rate" value="1"/>
     <param name="dev" value="$(arg joy_device)"/>
   </node>
 
-  <node name="teleop" pkg="fetch_teleop" type="joystick_teleop">
+  <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
     <!-- set these two motions as non-existent button 17 -->
     <!-- from fetch_teleop version 0.7.11 (https://github.com/fetchrobotics/fetch_ros/pull/61), arm teleop is added and it is necessary to update jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml -->
