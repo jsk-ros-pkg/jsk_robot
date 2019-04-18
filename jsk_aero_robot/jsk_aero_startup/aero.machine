@@ -8,7 +8,7 @@
   <arg name="ROS_DISTRO"
        default="$(optenv ROS_DISTRO indigo)"/>
   <arg name="CONFIG_PATH"
-       default="$(optenv CONFIG_PATH /opt/ros/indigo/env.sh)"/>
+       default="$(optenv CONFIG_PATH /opt/ros/kinetic/env.sh)"/>
 
   <machine name="$(arg AERO)" address="$(arg AERO)"
            user="$(arg REMOTE_USER_NAME)"
