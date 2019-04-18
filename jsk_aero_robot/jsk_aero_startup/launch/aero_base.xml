@@ -21,7 +21,6 @@
 
   <!--- Run Move Base -->
   <include file="$(find aero_startup)/aero_move_base/launch/move_base.launch">
-    <arg name="machine" value="aero_c"/>
     <arg name="map_file" value="$(arg map_file)" />
   </include>
 
