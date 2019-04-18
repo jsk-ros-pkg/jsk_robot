@@ -1,0 +1,28 @@
+<launch>
+  <arg name="publish_tf" default="true"/>
+  <arg name="launch_soundplay" default="true"/>
+  <arg name="audio" default="audio"/>
+  <arg name="speech_to_text" default="speech_to_text"/>
+  <arg name="language" default="en-US"/>
+
+  <node if="$(arg publish_tf)"
+        name="static_transformer" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 1 map respeaker_base 100"/>
+
+  <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"
+        respawn="true"/>
+
+  <node if="$(arg launch_soundplay)"
+        name="sound_play" pkg="sound_play" type="soundplay_node.py"/>
+
+  <node name="speech_to_text" pkg="respeaker_ros" type="speech_to_text.py"
+        output="screen">
+    <remap from="audio" to="$(arg audio)"/>
+    <remap from="speech_to_text" to="$(arg speech_to_text)"/>
+    <rosparam subst_value="true">
+      language: $(arg language)
+      self_cancellation: true
+      tts_tolerance: 0.5
+    </rosparam>
+  </node>
+</launch>
