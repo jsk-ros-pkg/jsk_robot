@@ -70,6 +70,13 @@ class Warning:
         #
         self.diagnostics_speak_thread = {}
         self.auto_undocking = False
+        self.diagnostics_list = []
+        if rospy.get_param("~speak_warn", True):
+            self.diagnostics_list.append(DiagnosticStatus.WARN)
+        if rospy.get_param("~speak_error", True):
+            self.diagnostics_list.append(DiagnosticStatus.ERROR)
+        if rospy.get_param("~speak_stale", True):
+            self.diagnostics_list.append(DiagnosticStatus.STALE)
         #
         self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
         #
@@ -127,7 +134,7 @@ class Warning:
         callerid = msg._connection_header['callerid']
         if not self.diagnostics_speak_thread.has_key(callerid):
             self.diagnostics_speak_thread[callerid] = None
-        error_status = filter(lambda n: n.level in [DiagnosticStatus.WARN, DiagnosticStatus.ERROR, DiagnosticStatus.STALE], msg.status)
+        error_status = filter(lambda n: n.level in self.diagnostics_list, msg.status)
         # when RunStopped, ignore message from *_mcb and *_breaker
         if self.robot_state_msgs.runstopped:
             error_status = filter(lambda n: not (re.match("\w*_(mcb|breaker)",n.name) or (n.name == "Mainboard" and n.message == "Runstop pressed")), error_status)
@@ -148,7 +155,3 @@ if __name__ == "__main__":
     sound = SoundClient()
     w = Warning()
     rospy.spin()
-
-
-
-

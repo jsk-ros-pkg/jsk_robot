@@ -13,7 +13,9 @@
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <!-- add jsk startups -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" >
+    <param name="speak_warn" value="false"/>
+  </node>
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
