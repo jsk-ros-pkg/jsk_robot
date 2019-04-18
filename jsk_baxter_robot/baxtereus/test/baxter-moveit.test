@@ -1,5 +1,4 @@
 <launch>
-  <env name="DISPLAY" value="" />
   <arg name="gui" default="false" />
   <arg name="headless" default="true" />
   <include file="$(find baxter_gazebo)/launch/baxter_world.launch">
