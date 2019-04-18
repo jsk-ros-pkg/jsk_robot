@@ -34,6 +34,7 @@
   <!-- logging -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
     <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="vital_check" value="false" />
   </include>
 
   <!-- diagnostic aggregator -->

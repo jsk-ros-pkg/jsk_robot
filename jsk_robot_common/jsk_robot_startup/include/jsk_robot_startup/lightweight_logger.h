@@ -66,6 +66,7 @@ namespace jsk_robot_startup
       mongodb_store::MessageStoreProxy* msg_store_;
       boost::thread deferred_load_thread_;
       bool wait_for_insert_;
+      bool vital_check_;
       bool initialized_;
       std::string input_topic_name_;
       std::string db_name_, col_name_;
