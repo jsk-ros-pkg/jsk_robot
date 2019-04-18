@@ -37,7 +37,8 @@
     (ros::ros-info "moveit ready")
 
     (setq *ri* (instance baxter-interface :init))
-    (setq *baxter* (instance baxter-robot :init))))
+    (setq *baxter* (instance baxter-robot :init))
+    (assert (not (send *ri* :simulation-modep)) "baxter-interface is in simulation mode")))
 
 (deftest test-baxter-moveit-angle-vector()
   (let (av)
