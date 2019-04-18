@@ -18,11 +18,15 @@ env AUDIO_DEVICE=alsa_output.usb-1130_USB_AUDIO-00-AUDIO.analog-stereo
 
 # enable usb speaker if available
 pre-start script
-    exec su ros -c 'pactl set-default-sink $AUDIO_DEVICE || true'
+    # launch by fetch user: yamaguchi & s-kitagawa (2019/04/18)
+    # exec su ros -c 'pactl set-default-sink $AUDIO_DEVICE || true'
+    exec su fetch -c 'pactl set-default-sink $AUDIO_DEVICE || true'
 end script
 
 script
-    exec su ros -c \". ${current_prefix_path}/setup.bash && roslaunch ${jsk_fetch_startup}/launch/fetch_bringup.launch boot_sound:=true\"
+    # launch by fetch user: yamaguchi & s-kitagawa (2019/04/18)
+    # exec su ros -c \". ${current_prefix_path}/setup.bash && roslaunch ${jsk_fetch_startup}/launch/fetch_bringup.launch boot_sound:=true\"
+    exec su fetch -c \". ${current_prefix_path}/setup.bash && roslaunch ${jsk_fetch_startup}/launch/fetch_bringup.launch boot_sound:=true\"
 end script
 
 EOF"
