@@ -1,4 +1,6 @@
 <launch>
+  <arg name="use_restore_wrist" default="false"/>
+
   <!-- Bringup minimal aero components -->
   <include file="$(find aero_startup)/aero_bringup.launch"/>
 
