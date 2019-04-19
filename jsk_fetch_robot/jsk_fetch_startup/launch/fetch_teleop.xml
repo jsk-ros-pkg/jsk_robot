@@ -10,18 +10,24 @@
 
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
-    <param name="arm/button_arm_linear" value="5"/>
-    <param name="arm/button_arm_angular" value="7"/>
+    <param name="arm/button_arm_linear" value="4"/>
+    <param name="arm/button_arm_angular" value="6"/>
     <param name="head/button_deadman" value="11"/>
     <param name="base/use_mux" value="false" />
   </node>
 
-  <node name="cmd_vel_mux" pkg="topic_tools" type="mux" respawn="true"
+  <node name="cmd_vel_mux" pkg="topic_tools" type="mux" respawn="true" output="screen"
 	args="base_controller/command /cmd_vel /teleop/cmd_vel">
     <remap from="mux" to="cmd_vel_mux" />
   </node>
 
-  <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py" />
+  <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">
+    <param name="reset_button" value="7" />
+  </node>
+
+  <node name="tuck_arm" pkg="fetch_teleop" type="tuck_arm.py" args="--joystick" respawn="true" >
+    <param name="tuck_button" value="5"/>
+  </node>
 
   <!-- safe teleop -->
   <node name="unsafe_vel_mux" pkg="topic_tools" type="mux" respawn="true"
