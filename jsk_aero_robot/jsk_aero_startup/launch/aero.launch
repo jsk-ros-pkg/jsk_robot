@@ -35,4 +35,7 @@
     <arg name="file" value="$(arg spot_file)" />
   </include>
 
+  <include file="$(find jsk_aero_startup)/launch/text_to_speech.launch" >
+  </include>
+
 </launch>
