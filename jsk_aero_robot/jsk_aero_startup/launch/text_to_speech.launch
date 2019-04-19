@@ -10,6 +10,7 @@
     <remap from="sound_play" to="robotsound_jp"/>
     <env name="PATH" value="$(find jsk_aero_startup)/scripts:$(env PATH)" />
     <env name="PYTHONIOENCODING" value="utf-8" />
+    <env name="GOOGLE_APPLICATION_CREDENTIALS" value="/etc/opt/jsk/robot/google-speech-recognition.json" />
   </node>
 
 </launch>
