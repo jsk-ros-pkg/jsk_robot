@@ -12,10 +12,10 @@
 |1     |Control robot turning           |
 |2     |Control forward/backward driving|
 |3     |Close gripper                   |
-|4     |Disable motor position holding  |
-|5     |Move arm linear                 |
-|6     |Arm tuck                        |
-|7     |Move arm angular                |
+|4     |Move arm linear                 |
+|5     |Arm tuck                        |
+|6     |Move arm angular                |
+|7     |Disable motor position holding  |
 |8     |Not used                        |
 |9     |Unsafe teleop                   |
 |10    |Primary deadman                 |
