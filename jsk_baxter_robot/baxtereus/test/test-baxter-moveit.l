@@ -7,6 +7,7 @@
 
 (ros::load-ros-manifest "baxtereus")
 (ros::roseus "baxter-moveit")
+(format *error-output* "test-baxter-moveit: start time: ~A~%" (unix:asctime (unix::localtime)))
 
 ;; add ros::duration-sleep
 ;; https://github.com/jsk-ros-pkg/jsk_roseus/pull/459
@@ -159,6 +160,7 @@
     (setq avs (send *ri* :angle-vector-sequence (list (send *baxter* :reset-pose) (send *baxter* :untuck-pose)) :fast nil 0 :move-arm :arms))
     (send *ri* :wait-interpolation)
     (assert avs "failed: (send *ri* :angle-vector-sequence (list (send *baxter* :reset-pose) (send *baxter* :untuck-pose)) :fast nil 0 :move-arm :arms)")
+    (format *error-output* "test-baxter-moveit: end time: ~A~%" (unix:asctime (unix::localtime)))
     ))
 
 (run-all-tests)
