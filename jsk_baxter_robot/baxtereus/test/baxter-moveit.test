@@ -16,5 +16,5 @@
 
   <!-- start test -->
   <test test-name="baxter_moveit_test" pkg="baxtereus" type="test-baxter-moveit.l"
-	retry="1" time-limit="600"/>
+	retry="1" time-limit="300"/>
 </launch>
