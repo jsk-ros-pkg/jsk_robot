@@ -8,7 +8,9 @@
   <arg name="use_laser_map_matching" default="true"/>
 
   <!--- Bringup wheel -->
-  <include file="$(find aero_startup)/aero_move_base/launch/wheel_bringup.launch" />
+  <include file="$(find aero_startup)/aero_move_base/launch/wheel_bringup.launch">
+    <arg name="~ip_address" value="133.11.216.220"/>
+  </include>
 
   <!--- Run Map Server -->
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
