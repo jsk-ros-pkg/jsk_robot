@@ -50,6 +50,8 @@
      (send self :add-controller ct :create-actions nil))
    (setq hand-interface
          (instance aero-hand-interface :init))
+   (setq set-hand-srv
+         (instance seedhand_std::SetHandRequest :init))
    )
   ;;
   (:default-controller nil
@@ -119,6 +121,31 @@
    (&optional (arm :arms) &key (wait nil))
    (send hand-interface :ungrasp arm)
    )
+  (:angle-index-finger
+   (&optional (arm :rarm) (angle 0.0) (time 5.0))
+   (send set-hand-srv :arm "rarm")
+   (send set-hand-srv :finger "index")
+   (send set-hand-srv :index_angle angle)
+   (send set-hand-srv :time time)
+   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
+   )
+  (:angle-thumb-finger
+   (&optional (arm :rarm) (angle 0.0) (time 5.0))
+   (send set-hand-srv :arm "rarm")
+   (send set-hand-srv :finger "thumb")
+   (send set-hand-srv :thumb_angle angle)
+   (send set-hand-srv :time time)
+   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
+   )
+  (:angle-both-finger
+   (&optional (arm :rarm) (thumb-angle 0.0) (index-angle 0.0) (time 5.0))
+   (send set-hand-srv :arm "rarm")
+   (send set-hand-srv :finger "both")
+   (send set-hand-srv :thumb_angle thumb-angle)
+   (send set-hand-srv :index_angle index-angle)
+   (send set-hand-srv :time time)
+   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
+   )
   )
 
 (defun aero-init (&rest args)
@@ -127,6 +154,16 @@
   (if (not (boundp '*robot*))
       (setq *robot* (aero-robot)))
   )
+
+(defun move-to-spot (spot)
+  (let (target)
+    (when (null (send *tfl* :wait-for-transform "/map" spot (ros::time 0) 1))
+      (return-from move-to-spot nil))
+
+    (setq target (send *tfl* :lookup-transform "/map" spot (ros::time 0)))
+    (when (null target)
+      (return-from move-to-spot nil))
+    (send *ri* :move-to target :frame-id "/map" :no-wait nil)))
 
 #|
 (aero-init)
