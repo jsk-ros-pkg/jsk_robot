@@ -3,14 +3,15 @@
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
 
-  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- need to launch joy_node because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch, see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
   <node name="joy" pkg="joy" type="joy_node" respawn="true">
     <param name="autorepeat_rate" value="1"/>
     <param name="dev" value="$(arg joy_device)"/>
   </node>
 
-  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- need to launch joystick_teleop because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch, see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
   <!-- copied to support unsafe teleop. -->
+  <!-- joystick_teleop need to publish /teleop/cmd_vel/unsafe , see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
@@ -20,19 +21,19 @@
     <param name="base/use_mux" value="false" />
   </node>
 
-  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- need to launch cmd_vel_mux because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch, see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
   <node name="cmd_vel_mux" pkg="topic_tools" type="mux" respawn="true" output="screen"
 	args="base_controller/command /cmd_vel /teleop/cmd_vel">
     <remap from="mux" to="cmd_vel_mux" />
   </node>
 
-  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- need to launch controller_reset because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch, see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">
     <param name="reset_button" value="7" />
   </node>
 
-  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- need to launch tuck_arm because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch, see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="tuck_arm" pkg="fetch_teleop" type="tuck_arm.py" args="--joystick" respawn="true" >
     <param name="tuck_button" value="5"/>
