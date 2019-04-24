@@ -25,10 +25,12 @@
     </node>
   </group>
 
-  <!-- need to launch joystick_teleop because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch, see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
-  <!-- copied to support unsafe teleop. -->
-  <!-- joystick_teleop need to publish /teleop/cmd_vel/unsafe , see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
-  <!-- copied for button mapping is changed to standardize with PR2 joy. -->
+  <!-- copied for button mapping is changed to standardize with PR2 joy.
+       need to launch joystick_teleop because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
+       see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
+  <!-- copied to support unsafe teleop.
+       joystick_teleop need to publish /teleop/cmd_vel/unsafe ,
+       see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
     <param name="arm/button_arm_linear" value="4"/>
