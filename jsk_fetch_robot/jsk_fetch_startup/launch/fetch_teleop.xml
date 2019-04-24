@@ -3,11 +3,15 @@
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
 
+  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
   <node name="joy" pkg="joy" type="joy_node" respawn="true">
     <param name="autorepeat_rate" value="1"/>
     <param name="dev" value="$(arg joy_device)"/>
   </node>
 
+  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- copied to support unsafe teleop. -->
+  <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
     <param name="arm/button_arm_linear" value="4"/>
@@ -16,15 +20,20 @@
     <param name="base/use_mux" value="false" />
   </node>
 
+  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
   <node name="cmd_vel_mux" pkg="topic_tools" type="mux" respawn="true" output="screen"
 	args="base_controller/command /cmd_vel /teleop/cmd_vel">
     <remap from="mux" to="cmd_vel_mux" />
   </node>
 
+  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">
     <param name="reset_button" value="7" />
   </node>
 
+  <!-- copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="tuck_arm" pkg="fetch_teleop" type="tuck_arm.py" args="--joystick" respawn="true" >
     <param name="tuck_button" value="5"/>
   </node>
@@ -37,6 +46,7 @@
 
   <!-- m.button[10]: L1 -->
   <!-- m.button[9] : R2 -->
+  <!-- safe teleop with L1 -->
   <node name="cmd_vel_mux_selector" pkg="jsk_robot_startup" type="mux_selector.py"
 	respawn="true"
 	args="/joy 'm.buttons[10]==1' /teleop/cmd_vel /cmd_vel 'True' /cmd_vel">
@@ -44,6 +54,7 @@
     <param name="default_select" value="/cmd_vel" />
   </node>
 
+  <!-- unsafe teleop with L1 and R2 -->
   <node name="unsafe_vel_mux_selector" pkg="jsk_robot_startup" type="mux_selector.py"
 	respawn="true"
 	args="/joy 'm.buttons[10]==1 and m.buttons[9]==1' /teleop/cmd_vel/unsafe /joy 'm.buttons[10]==1 and m.buttons[9]==0' /teleop/cmd_vel/safe">
