@@ -18,6 +18,8 @@ bool callback(seedhand_std::SetHand::Request &req, seedhand_std::SetHand::Respon
     robot_->sendIndex(aero::arm::rarm, req.index_angle, req.time);
   } else if(req.finger == "both"){
     robot_->sendSeedHand(aero::arm::rarm, req.thumb_angle, req.index_angle, req.time);
+  } else if(req.finger == "trx"){
+    robot_->sendTrxHand(aero::arm::larm, req.thumb_angle, req.time);
   } else {
     ROS_WARN("set correct finger name: {thumb, index, both}");
     res.status = false;

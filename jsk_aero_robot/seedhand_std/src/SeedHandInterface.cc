@@ -43,3 +43,11 @@ void aero::interface::seedhandAeroMoveitInterface::sendSeedHand
     ri->sendAngles({{"r_thumb_joint", _thumb_rad}}, _t*0.5, ros::Time::now());
   }
 }
+
+void aero::interface::seedhandAeroMoveitInterface::sendTrxHand
+(const aero::arm _arm, const double _thumb_rad, const double _t) {
+  cancelGrasp(_arm);
+  if (_arm == aero::arm::larm) {
+    ri->sendAngles({{"l_thumb_joint", _thumb_rad}}, _t*0.5, ros::Time::now());
+  }
+}
