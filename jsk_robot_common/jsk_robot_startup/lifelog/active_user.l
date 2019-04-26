@@ -4,6 +4,8 @@
 (ros::load-ros-manifest "pr2_mechanism_controllers")
 (ros::load-ros-manifest "sensor_msgs")
 (ros::load-ros-manifest "diagnostic_msgs")
+(ros::load-ros-manifest "nav_msgs")
+(ros::load-ros-manifest "fetch_driver_msgs")
 
 (setq *start-distance* nil)
 (setq *start-angle* nil)
@@ -11,17 +13,42 @@
 
 (ros::roseus "active_user_statistics")
 
-(defun motor-cb (msg)
+(defun motor-pr2-cb (msg)
   (ros::ros-debug "motor_state -> ~A" (send msg :data))
   (setq *servo-on* (not (send msg :data))))
 
-(defun odom-cb (msg)
+(defun motor-fetch-cb (msg)
+  (ros::ros-debug "motor_state -> ~A" (send msg :ready))
+  (setq *servo-on* (not (send msg :ready))))
+
+(defun odom-pr2-cb (msg)
   (ros::ros-debug "odom_state -> distance ~A, angle ~A" (send msg :distance) (send msg :angle))
   (if (or (equal *start-distance* nil) (equal *start-angle* nil))
       (setq *start-distance*  (send msg :distance)
 	    *start-angle*     (send msg :angle))
     (setq *distance* (- (send msg :distance) *start-distance*)
           *angle*    (- (send msg :angle)    *start-angle*))))
+
+(defun odom-cb (msg)
+  (let ((x-pos (send msg :pose :pose :position :x))
+        (y-pos (send msg :pose :pose :position :y))
+        (qz (send msg :pose :pose :orientation :z))
+        (qw (send msg :pose :pose :orientation :w))
+        (distance 0) (angle 0))
+    (setq distance (sqrt (+ (* x-pos x-pos) (* y-pos y-pos))))
+    (setq angle
+       (+ (cond
+            ((and (> qz 0) (< qw 0)) pi)
+            ((and (< qz 0) (< qw 0)) -pi)
+            (t 0))
+          (* 2.0 (atan (/ qz qw)))))
+    (ros::ros-debug "odom_state -> distance ~A, angle ~A" distance angle)
+    (if (null *start-distance*)
+      (setq *start-distance* distance)
+      (setq *distance* (- distance *start-distance*)))
+    (if (null *start-angle*)
+      (setq *start-angle* angle)
+      (setq *angle* (- angle *start-angle*)))))
 
 (defun joint-cb (msg)
   ;;
@@ -44,14 +71,24 @@
 
 (when (ros::has-param "/active_user/motor_subscribe")
   (if (ros::get-param "/active_user/motor_subscribe")
-      (ros::subscribe "motor_state" std_msgs::Bool #'motor-cb 1)
+     (cond
+       ((string= (ros::get-param "/robot/type") "pr2")
+        (ros::subscribe "motor_state" std_msgs::Bool #'motor-pr2-cb 1))
+       ((string= (ros::get-param "/robot/type") "fetch")
+        (ros::subscribe "motor_state" fetch_driver_msgs::RobotState #'motor-fetch-cb 1))
+       (t (setq *servo-on* t)))
     (setq *servo-on* t)
     )
   )
 
 (when (ros::has-param "/active_user/odom_subscribe")
   (if (ros::get-param "/active_user/odom_subscribe")
-      (ros::subscribe "odom_state" pr2_mechanism_controllers::Odometer #'odom-cb 1)
+     (cond
+       ((string= (ros::get-param "/robot/type") "pr2")
+        (ros::subscribe "odom_state" pr2_mechanism_controllers::Odometer #'odom-pr2-cb 1))
+       ((string= (ros::get-param "/robot/type") "fetch")
+        (ros::subscribe "odom_state" nav_msgs::Odometry #'odom-cb 1))
+       (t nil))
     )
   )
 
