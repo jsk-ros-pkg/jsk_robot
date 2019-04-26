@@ -32,7 +32,8 @@
     (when status
       (setq id (random (length status)))
       (when (= (mod (round (send tm :sec)) 1000) 0)
-	(tweet-string (format nil "Warning!! ~A is ~A at ~0,3f" (car (elt status id)) (cdr (elt status id)) (send tm :to-sec)))
+        (tweet-string (format nil "Warning!! ~A is ~A at ~0,3f" (car (elt status id)) (cdr (elt status id)) (send tm :to-sec))
+                      :warning-time 1 :with-image t)
 	)) ;; when
     )) ;; let
 
