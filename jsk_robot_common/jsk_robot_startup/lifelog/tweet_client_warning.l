@@ -9,7 +9,7 @@
   (let ((diagnostics (make-hash-table :test #'equal))
 	(tm (ros::time-now))
 	status id)
-    (format t "~0,3f diagnostics_msgs~%" (send tm :to-sec))
+    (ros::ros-debug (format nil "~0,3f diagnostics_msgs~%" (send tm :to-sec)))
     (dolist (status (send msg :status))
       ;; diagnostic_msgs::DiagnosticStatus::*WARN*
       (when (>= (send status :level) diagnostic_msgs::DiagnosticStatus::*WARN*) ;; diagnostic_msgs::DiagnosticStatus::*ERROR*)
