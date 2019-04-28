@@ -21,6 +21,7 @@
 		    (string= "Updates Stale" (send status :message))) t)
 	      ((and (string= "/Computers/Network" (send status :name))
 		    (string= "Error" (send status :message))) t)
+              ((substringp "/Peripherals/PS3 Controller" (send status :name)) t) ;; fetch joystick warning
 	      ((position #\/ (send status :name) :count 2) ;; check depth of name
 	       (setq key (subseq (send status :name) 0 (position #\/ (send status :name) :count 2)))
 	       (when (> (length (send status :name)) (length (gethash key diagnostics)))
