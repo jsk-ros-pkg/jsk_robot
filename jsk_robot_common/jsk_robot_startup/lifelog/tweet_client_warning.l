@@ -29,7 +29,7 @@
 		 ) ;; when
 	       ))
 	)) ;; when / dolist
-    (maphash #'(lambda (k v) (format t "Warnings ~A ~A~%" (length status) v) (push v status)) diagnostics)
+    (maphash #'(lambda (k v) (ros::ros-debug (format nil "Warnings ~A ~A~%" (length status) v)) (push v status)) diagnostics)
     (when status
       (setq id (random (length status)))
       (when (= (mod (round (send tm :sec)) 1000) 0)
