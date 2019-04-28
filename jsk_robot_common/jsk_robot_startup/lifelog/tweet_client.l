@@ -32,25 +32,26 @@
  (t
   (setq *waking-target-second* *waking-tweet-second*)))
 
-(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speek t))
+(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t))
   (let (prev-image-topic (save-wait 0))
   (when warning-time
     (unless (numberp warning-time)
       (setq warning-time 3))
-    (speak-jp (format nil "~Aびょうまえ"
-                      (case warning-time
-                        (0 "ぜろ")
-                        (1 "いち")
-                        (2 "に")
-                        (3 "さん")
-                        (4 "よん")
-                        (5 "ご")
-                        (6 "ろく")
-                        (7 "なな")
-                        (8 "はち")
-                        (9 "きゅう")
-                        (10 "じゅう")
-                        (t "じゅういじょう"))))
+    (when speak
+      (speak-jp (format nil "~Aびょうまえ"
+                        (case warning-time
+                          (0 "ぜろ")
+                          (1 "いち")
+                          (2 "に")
+                          (3 "さん")
+                          (4 "よん")
+                          (5 "ご")
+                          (6 "ろく")
+                          (7 "なな")
+                          (8 "はち")
+                          (9 "きゅう")
+                          (10 "じゅう")
+                          (t "じゅういじょう")))))
     (unix::sleep warning-time))
 
   (cond
@@ -92,5 +93,5 @@
                                             twit-str (format nil "/tmp/tweet_image.jpg")))))
     (t
       (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))))
-  (when speek (speak-jp "ついーとしました"))))
+  (when speak (speak-jp "ついーとしました"))))
 
