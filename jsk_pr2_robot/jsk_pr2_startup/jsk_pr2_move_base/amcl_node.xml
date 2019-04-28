@@ -2,7 +2,7 @@
 <launch>
 <node pkg="amcl" type="amcl" name="amcl" machine="c2"
       respawn="true" output="log">
-  <remap from="scan" to="base_scan" />
+  <remap from="scan" to="base_scan_filtered/scan" />
   <!-- Publish scans from best pose at a max of 10 Hz -->
   <param name="base_frame_id" value="/base_footprint"/>
   <param name="use_map_topic" value="true" />

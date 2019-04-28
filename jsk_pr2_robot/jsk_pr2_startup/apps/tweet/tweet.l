@@ -17,6 +17,6 @@
 (speak-jp "カシャ！")
 
 (tweet-string "Hello!!"
-              :warning-time nil
+              :wait-for-camera 0
               :with-image "/kinect_head/rgb/image_rect_color")
 (exit)

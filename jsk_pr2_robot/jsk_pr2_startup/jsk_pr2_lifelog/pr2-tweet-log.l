@@ -9,7 +9,7 @@
 (require :tweet-client "package://jsk_robot_startup/lifelog/tweet_client.l")
 (defparameter *mongo-database* "jsk_robot_lifelog")
 (defparameter *mongo-collection* "pr1012")
-(defparameter *json-parse-key-function* #'string->keyword)
+(defparameter *json-parse-key-function* #'json::string->keyword)
 (setq json::*tzoffset* -8)
 (defvar *tweet* t)
 (defparameter *query-limit* 100)
@@ -75,7 +75,7 @@
               (setq ret (send w :tweet))
               (when ret
                 (if *tweet*
-                    (tweet-string ret :warning-time nil :with-image with-image :speek nil :image-wait 10))
+                    (tweet-string ret :wait-for-camera 0 :with-image with-image :with-speech nil))
                 (warn "tweeted: ~A...~%" (subseq ret 0 100))
                 (setq with-image nil)
                 ))))
