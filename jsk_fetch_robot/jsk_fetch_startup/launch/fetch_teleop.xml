@@ -4,11 +4,6 @@
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="launch_fetch_bringup_teleop" default="false" />
 
-  <node name="joy" pkg="joy" type="joy_node" respawn="true">
-    <param name="autorepeat_rate" value="1"/>
-    <param name="dev" value="$(arg joy_device)"/>
-  </node>
-
   <group unless="$(arg launch_fetch_bringup_teleop)" >
     <!-- need to launch joy_node because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
          see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
