@@ -12,7 +12,7 @@
     <arg name="odom_subscribe" value="true"/>
     <arg name="remap_motor_state" value="/robot_state"/>
     <arg name="remap_odom_state" default="/odom_combined"/>
-    <arg name="account_info" value="/var/lib/robot/twitter_account_fetch15jsk.yaml" />
+    <arg name="account_info" value="/var/lib/robot/twitter_account_fetch_jsk.yaml" />
   </include>
 
 </launch>
