@@ -117,6 +117,12 @@ Logging script is initialized at:
 - 2019/04/19: set `env DISALLOW_MODULE_LOADING=0` in `/etc/init/pulseaudio.conf`.
   - this modification is needed for overriding default speaker setting in `/etc/init/jsk-fetch-startup.conf`
   - overriding default speaker setting to use USB speaker on head is done with `pactl set-default-sink $AUDIO_DEVICE` in `/etc/init/jsk-fetch-startup.conf`
+- 2019/04/19: launch `jsk_fetch_startup/fetch_bringup.launch` by `fetch` user in `/etc/init/jsk-fetch-startup.conf`
+  - some nodes save files by `fetch` user
+- 2019/04/19: add arg `launch_teleop` in `/etc/ros/indigo/robot.launch`.
+  - We sent PR to upstream [fetchrobotics/fetch_robots PR#40](https://github.com/fetchrobotics/fetch_robots/pull/40).
+- 2019/04/19: run `/etc/ros/indigo/robot.launch` with `arg` `launch_teleop:=false`.
+  - `teleop` in `/etc/ros/indigo/robot.launch` nodes were conflicted with `teleop` nodes in [jsk_fetch_startup/launch/fetch_teleop.xml](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml)
 
 ## Apps
 
