@@ -13,6 +13,8 @@ roslaunch jsk_pepper_startup jsk_pepper_startup.launch network_interface:=<your 
 
 % For network_interface variable, please check `ifconfig` for the interface name your PC uses.  
 
+% You can play audio stream from Pepper's audio ROS topic. Please see [here](https://github.com/jsk-ros-pkg/jsk_robot/pull/1073) for more details.
+
 % In order to confirm if ROS-Pepper is booting, please check with rviz.
 
 ```
