@@ -59,7 +59,7 @@ enable_turbo_button: 0  # A button
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" if="$(arg launch_joy)" />
 
   <group if="$(arg launch_play_audio_stream)">
-    <include file="$(find jsk_pepper_startup)/launch/play_audio_stream.launch" />
+    <node pkg="jsk_pepper_startup" name="play_audio_stream" type="play_audio_stream.py" />
   </group>
   
   <node name="speaking_program_is_started_or_terminated"
