@@ -59,9 +59,7 @@ enable_turbo_button: 0  # A button
 
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" if="$(arg launch_joy)" />
 
-  <group if="$(arg launch_play_audio_stream)">
-    <node pkg="jsk_pepper_startup" name="play_audio_stream" type="play_audio_stream.py" />
-  </group>
+  <node pkg="jsk_pepper_startup" name="play_audio_stream" type="play_audio_stream.py" if="$(arg launch_play_audio_stream)" />
 
   <node pkg="jsk_pepper_startup" name="list_up_ros_node" type="list_up_ros_node.py" />
   
