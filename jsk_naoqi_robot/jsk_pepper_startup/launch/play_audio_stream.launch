@@ -1,0 +1,14 @@
+<launch>
+  <!--
+      This pushes the local PYTHONPATH into the launch file, so that the NaoQI API is found.
+      You need to add the Nao's API dir to your PYTHONPATH so that the modules are found.
+  -->
+  <env name="PYTHONPATH" value="$(env PYTHONPATH)" />
+
+  <arg name="nao_ip" default="$(optenv NAO_IP 127.0.0.1)" />
+  <arg name="nao_port" default="$(optenv NAO_PORT 9559)" />
+  
+  <node pkg="jsk_pepper_startup" type="play_audio_stream_node.py" name="play_audio_stream_node" required="true" args="--pip=$(arg nao_ip) --pport=$(arg nao_port)">
+    <remap from="~audio" to="/pepper_robot/audio" /> 
+  </node>
+</launch>
