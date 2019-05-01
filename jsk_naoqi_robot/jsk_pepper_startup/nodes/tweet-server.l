@@ -63,11 +63,11 @@
 	(progn
 	  (speak "\\vct=120\\写真を撮るよぉー")
 	  (speak "\\vct=120\\さんっ")
-	  (unix:sleep 1)
+	  (unix:sleep 2)
 	  (speak "\\vct=120\\にっ")
-	  (unix:sleep 1)
+	  (unix:sleep 2)
 	  (speak "\\vct=120\\いちっ")
-	  (unix:sleep 1)
+	  (unix:sleep 2)
 	  (speak"\\vct=120\\カしゃっ！")
 	  )
       (progn
