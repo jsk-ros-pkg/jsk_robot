@@ -1,7 +1,6 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "pepper_tweet")
-(ros::load-ros-package "peppereus")
+(ros::roseus "pepper_twitter_client")
 
 (ros::advertise "/pepper_tweet" std_msgs::String 1)
 

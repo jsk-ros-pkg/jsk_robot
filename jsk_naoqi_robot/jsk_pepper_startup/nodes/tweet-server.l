@@ -2,7 +2,7 @@
 
 (ros::load-ros-package "roseus")
 (ros::load-ros-package "naoqi_bridge_msgs")
-(ros::roseus "pepper_twitter")
+(ros::roseus "pepper_twitter_server")
 
 (ros::advertise "/tweet" std_msgs::String 1)
 (ros::advertise "/speech" std_msgs::String 1)
