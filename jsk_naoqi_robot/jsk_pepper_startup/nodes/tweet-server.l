@@ -22,19 +22,17 @@
     (ros::publish "/speech" speech_msg))
   )
 
-(defun take-picture-pose ()
+(defun take-pose (position_list)
   (let ((joint-trajectory-action (instance ros::simple-action-client :init
 					   "/pepper_robot/pose/joint_trajectory" naoqi_bridge_msgs::JointTrajectoryAction
 					   ))
 	goal
-	trajectory
-	position_list)
+	trajectory)
     (if (send joint-trajectory-action :wait-for-server 3)
 	(progn
 	  (setq goal (send joint-trajectory-action :make-goal-instance))
 	  (setq trajectory (send goal :goal :trajectory))
 	  (send trajectory :joint_names (list "KneePitch" "HipRoll" "HipPitch" "LShoulderPitch" "LShoulderRoll" "LElbowYaw" "LElbowRoll" "LWristYaw" "RShoulderPitch" "RShoulderRoll" "RElbowYaw" "RElbowRoll" "RWristYaw" "HeadYaw" "HeadPitch"))
-	  (setq position_list (list (deg2rad 2.0) (deg2rad -2.0) (deg2rad -5.0) (deg2rad 100.0) (deg2rad 50.0) (deg2rad -20.0) (deg2rad -80.0) (deg2rad -40.0) (deg2rad -60.0) (deg2rad -20.0) (deg2rad -10.0) (deg2rad 60.0) (deg2rad 40.0) 0.0 0.0))
 	  (send trajectory :points
 		(list (instance trajectory_msgs::JointTrajectoryPoint
 				:init
@@ -56,35 +54,11 @@
     (send move_hand_msg :joint_angles (list value))
     (ros::publish "/pepper_robot/pose/joint_angles" move_hand_msg)))
 
-(defun take-reset-pose ()
-  (let ((joint-trajectory-action (instance ros::simple-action-client :init
-					   "/pepper_robot/pose/joint_trajectory" naoqi_bridge_msgs::JointTrajectoryAction
-					   ))
-	goal
-	trajectory
-	position_list)
-    (if (send joint-trajectory-action :wait-for-server 3)
-	(progn
-	    (setq goal (send joint-trajectory-action :make-goal-instance))
-	    (setq trajectory (send goal :goal :trajectory))
-	    (send trajectory :joint_names (list "KneePitch" "HipRoll" "HipPitch" "LShoulderPitch" "LShoulderRoll" "LElbowYaw" "LElbowRoll" "LWristYaw" "RShoulderPitch" "RShoulderRoll" "RElbowYaw" "RElbowRoll" "RWristYaw" "HeadYaw" "HeadPitch"))
-	    (setq position_list (list (deg2rad 2.0) (deg2rad -2.0) (deg2rad -5.0) (deg2rad 85.0) (deg2rad 10.0) (deg2rad -70.0) (deg2rad -20.0) (deg2rad -40.0) (deg2rad 85.0) (deg2rad -10.0) (deg2rad 70.0) (deg2rad 20.0) (deg2rad 40.0) 0.0 0.0))
-	    (send trajectory :points
-		  (list (instance trajectory_msgs::JointTrajectoryPoint
-				  :init
-				  :positions position_list
-				  :time_from_start (ros::time 1.5))))
-	    (send joint-trajectory-action :send-goal goal)
-	    (send joint-trajectory-action :wait-for-result)
-	    (send joint-trajectory-action :get-result))
-      (ros::ros-warn "No joint trajectory action found")
-      )))
-
 (defun tweet (str)
   (let (speech-language (timestamp0 0) (timestamp1 0) (filename "/tmp/pepper_camera.png") tm)
     (setq speech-language (get-language))
     ;; taking picture pose
-    (take-picture-pose)
+    (take-pose (list (deg2rad 2.0) (deg2rad -2.0) (deg2rad -5.0) (deg2rad 100.0) (deg2rad 50.0) (deg2rad -20.0) (deg2rad -80.0) (deg2rad -40.0) (deg2rad -60.0) (deg2rad -20.0) (deg2rad -10.0) (deg2rad 60.0) (deg2rad 40.0) 0.0 0.0))
     (if (string= speech-language "Japanese")
 	(progn
 	  (speak "\\vct=120\\写真を撮るよぉー")
@@ -107,10 +81,13 @@
 	(unix:sleep 2)
 	(speak "\\rspd=90\\\\vct=120\\ka sha")
 	))
-    (move-rhand 0.0) ; close hand
+    ;; close hand
+    (move-rhand 0.0)
     (unix:sleep 1)
-    (take-reset-pose)
-    (move-rhand 1.0) ; open hand
+    ;; take reset pose
+    (take-pose (list (deg2rad 2.0) (deg2rad -2.0) (deg2rad -5.0) (deg2rad 85.0) (deg2rad 10.0) (deg2rad -70.0) (deg2rad -20.0) (deg2rad -40.0) (deg2rad 85.0) (deg2rad -10.0) (deg2rad 70.0) (deg2rad 20.0) (deg2rad 40.0) 0.0 0.0))
+    ;; open hand
+    (move-rhand 1.0)
     (if (probe-file filename)
 	(setq timestamp0 (file-write-date filename)))
     (setq timestamp1 timestamp0)
