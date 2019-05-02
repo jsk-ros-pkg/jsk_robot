@@ -58,7 +58,7 @@
   (let (speech-language (timestamp0 0) (timestamp1 0) (filename "/tmp/pepper_camera.png") tm)
     (setq speech-language (get-language))
     ;; taking picture pose
-    (take-pose (list (deg2rad 2.0) (deg2rad -2.0) (deg2rad -5.0) (deg2rad 100.0) (deg2rad 50.0) (deg2rad -20.0) (deg2rad -80.0) (deg2rad -40.0) (deg2rad -60.0) (deg2rad -20.0) (deg2rad -10.0) (deg2rad 60.0) (deg2rad 40.0) 0.0 0.0))
+    (take-pose (mapcar #'deg2rad (list 2.0 -2.0 -5.0 100.0 50.0 -20.0 -80.0 -40.0 -60.0 -20.0 -10.0 60.0 40.0 0.0 0.0)))
     (if (string= speech-language "Japanese")
 	(progn
 	  (speak "\\vct=120\\写真を撮るよぉー")
@@ -85,7 +85,7 @@
     (move-rhand 0.0)
     (unix:sleep 1)
     ;; take reset pose
-    (take-pose (list (deg2rad 2.0) (deg2rad -2.0) (deg2rad -5.0) (deg2rad 85.0) (deg2rad 10.0) (deg2rad -70.0) (deg2rad -20.0) (deg2rad -40.0) (deg2rad 85.0) (deg2rad -10.0) (deg2rad 70.0) (deg2rad 20.0) (deg2rad 40.0) 0.0 0.0))
+    (take-pose (mapcar #'deg2rad (list 2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)))
     ;; open hand
     (move-rhand 1.0)
     (if (probe-file filename)
