@@ -13,6 +13,8 @@
     <arg name="network_interface" value="$(arg network_interface)"/>
   </include>
 
+  <node pkg="jsk_pepper_startup" name="take_wakeup_pose" type="take_wakeup_pose.py"/>
+
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="joy_node" if="$(arg launch_joy)">
     <param name="dev" value="/dev/input/js0" />
@@ -60,7 +62,7 @@ enable_turbo_button: 0  # A button
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" if="$(arg launch_joy)" />
 
   <node pkg="jsk_pepper_startup" name="play_audio_stream" type="play_audio_stream.py" if="$(arg launch_play_audio_stream)" />
-
+  
   <node pkg="jsk_pepper_startup" name="list_up_ros_node" type="list_up_ros_node.py" />
   
   <node name="speaking_program_is_started_or_terminated"
