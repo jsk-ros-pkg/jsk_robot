@@ -4,6 +4,9 @@
 
 contains JSK's launch file for startup Pepper with ROS
 
+You'll need [naoqi_bridge (`kochigami-develop`)](https://github.com/kochigami/naoqi_bridge/tree/kochigami-develop) and [naoqi_bridge_msgs (`kochigami-develop`)](https://github.com/kochigami/naoqi_bridge_msgs/tree/kochigami-develop).  
+For more information, please see [here](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#interface-when-controlling-nao-and-pepper-via-roseus).
+
 ## Running startup program
 
 ```
