@@ -203,16 +203,6 @@
       (setq *robot* (aero-robot)))
   )
 
-(defun move-to-spot (spot)
-  (let (target)
-    (when (null (send *tfl* :wait-for-transform "/map" spot (ros::time 0) 1))
-      (return-from move-to-spot nil))
-
-    (setq target (send *tfl* :lookup-transform "/map" spot (ros::time 0)))
-    (when (null target)
-      (return-from move-to-spot nil))
-    (send *ri* :move-to target :frame-id "/map" :no-wait nil)))
-
 #|
 (aero-init)
 (send *ri* :state)
