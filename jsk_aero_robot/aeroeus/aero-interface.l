@@ -46,7 +46,9 @@
                      :larm-controller
                      :head-controller
                      :waist-controller
-                     :lifter-controller))
+                     :lifter-controller
+                     :lhand-controller
+                     :rhand-controller))
      (send self :add-controller ct :create-actions nil))
    (setq hand-interface
          (instance aero-hand-interface :init))
@@ -59,7 +61,9 @@
            (send self :larm-controller)
            (send self :head-controller)
            (send self :waist-controller)
-           (send self :lifter-controller)))
+           (send self :lifter-controller)
+           (send self :lhand-controller)
+           (send self :rhand-controller)))
   #|
   (:rarm-controller nil
    (list
@@ -86,6 +90,24 @@
      ))
    )
   |#
+  (:lhand-controller nil
+   (list
+    (list
+     (cons :controller-action "lhand_controller/follow_joint_trajectory")
+     (cons :controller-state  "lhand_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "l_thumb_joint" "l_indexbase_joint"))
+     ))
+   )
+  (:rhand-controller nil
+   (list
+    (list
+     (cons :controller-action "rhand_controller/follow_joint_trajectory")
+     (cons :controller-state  "rhand_controller/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (list "r_thumb_joint" "r_indexbase_joint"))
+     ))
+   )
   (:head-controller nil
    (list
     (list
@@ -95,6 +117,7 @@
      (cons :joint-names (list "neck_y_joint" "neck_p_joint" "neck_r_joint"))
      ))
    )
+
   (:waist-controller nil
    (list
     (list
@@ -146,8 +169,33 @@
    (send set-hand-srv :time time)
    (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
    )
+  (:hand-angle-vector
+   (av &optional (tm 3000) (arm :rarm) (start-time 0))
+   (let* ((ctype
+           (case arm
+                 (:larm :lhand-controller)
+                 (:rarm :rhand-controller)))
+          (cacts (gethash ctype controller-table))
+          )
+     (send robot :hand-angle-vector av arm)
+     (setq av (send robot :angle-vector))
+     (mapcar
+      #'(lambda (action param)
+          (send self :send-ros-controller
+                action (cdr (assoc :joint-names param)) ;; action server and joint-names
+                start-time  ;; start time
+                (list
+                 (list av                                     ;; positions
+                       (instantiate float-vector (length av)) ;; velocities
+                       (/ tm 1000.0)))))                      ;; duration
+      cacts (send self ctype)))
+   )
   )
-
+;;
+;; (send *robot* :hand-angle-vector av :arm :rarm)
+;; (send *ri* :hand-angle-vector (send *robot* :hand-angle-vector :arm :rarm) :arm :rarm)
+;; (send *ri* :hand-angle-vector (float-vector 0 0) :arm :rarm)
+;;
 (defun aero-init (&rest args)
   (if (not (boundp '*ri*))
       (setq *ri* (instance* aero-interface :init args)))
