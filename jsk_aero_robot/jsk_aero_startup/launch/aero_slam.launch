@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find aero_startup)/aero_bringup.launch" />
+  <include file="$(find aero_startup)/aero_move_base/launch/wheel_with_making_map.launch" />
+  <include file="$(find aero_teleop)/launch/aero_teleop2.launch" />
+</launch>
