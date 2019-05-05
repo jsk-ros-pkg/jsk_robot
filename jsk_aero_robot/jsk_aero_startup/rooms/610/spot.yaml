@@ -1,102 +1,58 @@
 - spot:
-    name: conveni_shelf_1
+    name: conveni_shelf
     position:
-      x: 0.35
-      y: 0.475
+      x: -3.993
+      y: -5.295
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.0
-      w: 1.0
-- spot:
-    name: conveni_shelf_2
-    position:
-      x: 0.3
-      y: -0.625
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-      w: 1.0
-- spot:
-    name: conveni_shelf_3
-    position:
-      x: 0.06
-      y: 0.478
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-      w: 1.0
-- spot:
-    name: apc_shelf
-    position:
-      x: 0.0
-      y: -0.9
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.707
-      w: 0.707
+      z: 0.917
+      w: -0.398
 - spot:
     name: worktable
     position:
-      x: 0.11 # 0.102
-      y: 0.56 # 0.258
+      x: -3.022
+      y: -3.921
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 1.0
-      w: 0.0
-- spot:
-    name: table_1
-    position:
-      x: -0.35
-      y: 0.475
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 1.0
-      w: 0.0
-- spot:
-    name: table_west
-    position:
-      x: 0.0
-      y: 0.475
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 1.0
-      w: 0.0
-- spot:
-    name: table_south
-    position:
-      x: -0.75
-      y: 1.85
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.707
-      w: 0.707
+      z: -0.369
+      w: 0.929
 - spot:
     name: table_north
     position:
-      x: -0.7
-      y: -0.75
+      x: -1.221
+      y: -0.679
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.707
-      w: 0.707
+      z: 0.908
+      w: -0.419
+- spot:
+    name: table_south
+    position:
+      x: -2.588
+      y: -2.243
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.411
+      w: 0.912
+- spot:
+    name: table_west
+    position:
+      x: -2.917
+      y: -0.498
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.338
+      w: 0.941
 - spot:
     name: entrance
     position:
@@ -120,35 +76,24 @@
       z: 0.0
       w: 1.0
 - spot:
-    name: homeway
+    name: kitchen
     position:
-      x: 0.02
-      y: -0.96
+      x: -1.901
+      y: 0.328
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.0
-      w: 1.0
+      z: 0.401
+      w: 0.916
 - spot:
     name: garbage
     position:
-      x: -0.11374
-      y: -0.4636
+      x: -2.297
+      y: 0.552
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.0
-      w: 1.0
-- spot:
-    name: garbage_home
-    position:
-      x: -0.19311
-      y: -0.98518
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 1.0
-      w: 0.0
+      z: 0.927
+      w: 0.375
