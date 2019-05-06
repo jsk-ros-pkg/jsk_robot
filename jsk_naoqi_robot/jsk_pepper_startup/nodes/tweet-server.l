@@ -113,3 +113,4 @@
 (ros::subscribe "/pepper_tweet" std_msgs::String #'(lambda (msg) (tweet (send msg :data))))
 (ros::ros-info "subscribing /pepper_tweet")
 (ros::spin)
+(exit)
