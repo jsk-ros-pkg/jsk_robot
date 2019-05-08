@@ -21,7 +21,13 @@ class ListUpROSNode():
         # nodelist: '/pepper_1556630474468299832\n/rosout\n'
         nodelist=nodelist.split("\n")
         # nodelist: ['/pepper_1556630474468299832', '/rosout', '']
-    
+
+        # If '/pepper_robot' node is killed, need to kill jsk_pepper_startup.launch by killing another required node (see https://github.com/jsk-ros-pkg/jsk_robot/issues/1077)
+        if '/pepper_robot' in nodelist:
+            pass
+        else:
+            call(['rosnode', 'kill', '/pepper_robot/pose/pose_controller'])
+
         tmp=[]
         add_camera_node = False
         for i in nodelist:
