@@ -7,7 +7,8 @@
   <arg name="launch_twitter" default="false" />
   <arg name="launch_joy" default="true" />
   <arg name="launch_play_audio_stream" default="true" />
-  <arg name="launch_basic_awareness" default="false" />
+  <arg name="autonomous_enabled" default="false" />
+  <arg name="launch_dashboard_gui" default="false" />
   <arg name="tweet_client_node_start_delay" default="15.0" />
   <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
@@ -15,7 +16,7 @@
     <arg name="network_interface" value="$(arg network_interface)"/>
   </include>
 
-  <node pkg="jsk_pepper_startup" name="take_wakeup_pose" type="take_wakeup_pose.py"/>
+  <node pkg="jsk_pepper_startup" name="take_wakeup_pose" type="take_wakeup_pose.py" if="$(arg autonomous_enabled)" />
 
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="joy_node" respawn="true" if="$(arg launch_joy)">
@@ -61,12 +62,18 @@ enable_turbo_button: 0  # A button
     <node pkg="jsk_pepper_startup" name="twitter_client" type="tweet-client.l" launch-prefix="bash -c 'sleep $(arg tweet_client_node_start_delay); $0 $@'" />
   </group>
 
-  <group if="$(arg launch_basic_awareness)">
+  <group if="$(arg autonomous_enabled)">
+    <!-- basic_awareness.launch is located in naoqi_apps (kochigami-develop) -->
     <include file="$(find naoqi_apps)/launch/basic_awareness.launch" />
     <node pkg="jsk_pepper_startup" type="start_basic_awareness.py" name="start_basic_awareness" />
+    <include file="$(find naoqi_apps)/launch/background_movement.launch" />
+    <node pkg="jsk_pepper_startup" type="start_background_movement.py" name="start_background_movement" />
   </group>
 
-  <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch"/>  
+  <!-- Please use naoqi_dashboard (kochigami-develop) -->
+  <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch">
+    <arg name="launch_gui" value="$(arg launch_dashboard_gui)" />
+  </include>
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" respawn="true" if="$(arg launch_joy)" />
 
   <node pkg="jsk_pepper_startup" name="play_audio_stream" type="play_audio_stream.py" respawn="true" if="$(arg launch_play_audio_stream)" />
