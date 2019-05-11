@@ -1,12 +1,20 @@
 <launch>
-  <arg name="applist"
+  <!-- for app_manager -->
+  <arg name="use_app_master" default="true" doc="launch master if enabled"/>
+  <arg name="app_master_address" default="localhost" doc="address for app_manager master"/>
+  <arg name="app_master_port" default="11312" doc="port for app_manager master"/>
+  <arg name="applist" default=""
        doc="dirpath where *.installed file is located"/>
+  <arg name="use_applist" default="false"
+       doc="specify directory for apps, otherwise searched by using export tag"/>
 
+  <!-- for rosbridge_websocket -->
   <arg name="launch_websocket" default="true"
        doc="launch rosbridge_websocket if true"/>
   <arg name="websocket_port" default="9090"
        doc="port number for rosbridge_websocket server"/>
 
+  <!-- for roswww -->
   <arg name="launch_roswww" default="true"
        doc="launch roswww server if true"/>
   <arg name="roswww_port" default="8000"
@@ -14,6 +22,7 @@
 
   <arg name="remote" default="false"
        doc="set true with valid 'machine' argument"/>
+  <arg name="respawn" default="true"/>
   <arg name="machine" default="localhost"/>
 
   <!--
@@ -48,13 +57,13 @@
   <!--
   NOTE: Ensure the param '/robot/type' and '/robot/name' are defined when the nodes below are started.
   -->
-  <node pkg="app_manager" type="appmaster" name="appmaster"
-        args="-p 11312"
-        machine="$(arg machine)"/>
-  <node pkg="app_manager" type="app_manager" name="app_manager"
-        args="--applist $(arg applist)"
-        output="screen" machine="$(arg machine)">
-    <param name="interface_master" value="http://localhost:11312"/>
-  </node>
+  <include file="$(find app_manager)/launch/app_manager.launch">
+    <arg name="master" value="$(arg use_app_master)"/>
+    <arg name="master_address" value="$(arg app_master_address)"/>
+    <arg name="master_port" value="$(arg app_master_port)"/>
+    <arg name="use_applist" value="$(arg use_applist)"/>
+    <arg name="applist" value="$(arg applist)"/>
+    <arg name="respawn" value="$(arg respawn)"/>
+  </include>
 
 </launch>

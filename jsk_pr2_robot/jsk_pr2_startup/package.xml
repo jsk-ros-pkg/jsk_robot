@@ -74,6 +74,7 @@
   <run_depend>voice_text</run_depend>
 
   <export>
+    <app_manager app_dir="${prefix}/apps"/>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
   </export>
 </package>
