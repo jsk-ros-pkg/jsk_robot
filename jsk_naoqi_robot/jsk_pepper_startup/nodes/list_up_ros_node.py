@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import rospy
+import os
 from subprocess import *
 from jsk_rviz_plugins.msg import OverlayText
 
@@ -11,6 +12,10 @@ class ListUpROSNode():
         # execute timer_callback every 10 sec
         self.timer = rospy.Timer(rospy.Duration(10), self.timer_callback)
         self.pub = rospy.Publisher("~output", OverlayText, queue_size=1)
+        self.naoqi_driver_node_name = os.environ.get('ROS_NAMESPACE', '/pepper_robot')
+        if self.naoqi_driver_node_name is not '/pepper_robot':
+            self.naoqi_driver_node_name = self.naoqi_driver_node_name + self.naoqi_driver_node_name
+        self.pose_controller_node_name = self.naoqi_driver_node_name + '/pose/pose_controller'
 
     def timer_callback(self, event):
         p=Popen(['rosnode','list'], stdout=PIPE)
@@ -21,7 +26,13 @@ class ListUpROSNode():
         # nodelist: '/pepper_1556630474468299832\n/rosout\n'
         nodelist=nodelist.split("\n")
         # nodelist: ['/pepper_1556630474468299832', '/rosout', '']
-    
+
+        # If '/pepper_robot' node is killed, need to kill jsk_pepper_startup.launch by killing another required node (see https://github.com/jsk-ros-pkg/jsk_robot/issues/1077)
+        if self.naoqi_driver_node_name in nodelist:
+            pass
+        else:
+            call(['rosnode', 'kill', self.pose_controller_node_name])
+
         tmp=[]
         add_camera_node = False
         for i in nodelist:
