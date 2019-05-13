@@ -104,7 +104,8 @@ sudo apt-get install ros-kinetic-pepper-meshes
 sudo apt-get install ros-kinetic-nao-meshes
 ```
 
-If you have ROS kinetic, please apply [this change](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for the time being.
+If you have ROS kinetic, please use [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).  
+This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for ROS kinetic.
 
 ```
 cd  catkin_ws/src
@@ -113,9 +114,8 @@ wstool update naoqi_dashboard
 cd naoqi_dashboard
 git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
 git fetch kochigami
-git checkout -b modify-for-kinetic kochigami/modify-for-kinetic
+git checkout -b modify-for-kinetic kochigami/kochigami-develop
 ```
-Or, please apply [this change](https://github.com/kochigami/naoqi_dashboard/tree/add-volume-button). This includes the contents of `modify-for-kinetic` and a feature of volume setting from combo box.  
 
 Finally, please compile them.  
 
