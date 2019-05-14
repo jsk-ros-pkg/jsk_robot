@@ -21,4 +21,5 @@ def start_background_movement(req):
 
 if __name__ == "__main__":
     rospy.init_node("start_background_movement")
-    start_background_movement(True)
+    enabled = rospy.get_param("~enabled", True)
+    start_background_movement(enabled)

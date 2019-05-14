@@ -21,4 +21,5 @@ def start_basic_awareness(req):
 
 if __name__ == "__main__":
     rospy.init_node("start_basic_awareness")
-    start_basic_awareness(True)
+    enabled = rospy.get_param("~enabled", True)
+    start_basic_awareness(enabled)
