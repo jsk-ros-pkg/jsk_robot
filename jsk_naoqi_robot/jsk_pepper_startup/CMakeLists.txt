@@ -13,5 +13,5 @@ if(CATKIN_ENABLE_TESTING AND NOT $ENV{ROS_DISTRO} STREQUAL "hydro")
   find_package(catkin REQUIRED COMPONENTS rostest roslaunch)
   # https://github.com/ros/ros_comm/pull/730
   set(roslaunch_check_script ${PROJECT_SOURCE_DIR}/script/roslaunch-check)
-  roslaunch_add_file_check(test/jsk_pepper_startup.launch "ROS_IP=10.68.0.2 NAO_IP=10.68.0.3")
+  roslaunch_add_file_check(test/jsk_pepper_startup_test.launch "ROS_IP=10.68.0.2 NAO_IP=10.68.0.3")
 endif()
