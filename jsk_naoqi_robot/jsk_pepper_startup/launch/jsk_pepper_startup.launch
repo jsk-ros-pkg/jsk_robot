@@ -10,11 +10,14 @@
   <arg name="launch_dashboard" default="true" />
   <arg name="tweet_client_node_start_delay" default="15.0" />
   <arg name="robot_name" default="Pepper" />
+  <arg name="autonomous_wakeup" default="false" />
   <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
     <arg name="roscore_ip" value="$(arg roscore_ip)"/>
     <arg name="network_interface" value="$(arg network_interface)"/>
   </include>
+
+  <node pkg="jsk_pepper_startup" name="take_wakeup_pose" type="take_wakeup_pose.py" if="$(arg autonomous_wakeup)" />
 
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="joy_node" respawn="true" if="$(arg launch_joy)">
@@ -57,7 +60,7 @@ enable_turbo_button: 0  # A button
       <param name="filename_format" value="/tmp/pepper_camera.png" />
     </node>
     <!-- reference: https://answers.ros.org/question/233353/set-delay-between-starting-nodes-within-launch-file/ -->
-    <node pkg="jsk_pepper_startup" name="twitter_client" type="tweet-client.py" launch-prefix="bash -c 'sleep $(arg tweet_client_node_start_delay); $0 $@'" output="screen"  >
+    <node pkg="jsk_pepper_startup" name="twitter_client" type="tweet_client.py" launch-prefix="bash -c 'sleep $(arg tweet_client_node_start_delay); $0 $@'" output="screen"  >
       <rosparam subst_value="true">
         robot_name: $(arg robot_name)
       </rosparam>
