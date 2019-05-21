@@ -8,6 +8,8 @@
   <arg name="launch_joy" default="true" />
   <arg name="launch_play_audio_stream" default="true" />
   <arg name="launch_dashboard" default="true" />
+  <arg name="tweet_client_node_start_delay" default="15.0" />
+  <arg name="robot_name" default="Pepper" />
   <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
     <arg name="roscore_ip" value="$(arg roscore_ip)"/>
@@ -47,12 +49,18 @@ enable_turbo_button: 0  # A button
     </rosparam>
   </node>
   <group if="$(arg launch_twitter)">
-    <node pkg="jsk_pepper_startup" name="pepper_twitter" type="tweet.l" />
-    <node pkg="rostwitter" name="tweet" type="tweet.py" respawn="true" />
+    <node pkg="jsk_pepper_startup" name="twitter_server" type="tweet-server.l" respawn="true" />
+    <node pkg="rostwitter" name="tweet_node" type="tweet.py" respawn="true"/>
     <node pkg="image_view" name="image_saver" type="image_saver" respawn="true" >
       <remap from="image" to="/pepper_robot/camera/front/image_raw" />
       <param name="save_all_image" value="false" />
       <param name="filename_format" value="/tmp/pepper_camera.png" />
+    </node>
+    <!-- reference: https://answers.ros.org/question/233353/set-delay-between-starting-nodes-within-launch-file/ -->
+    <node pkg="jsk_pepper_startup" name="twitter_client" type="tweet-client.py" launch-prefix="bash -c 'sleep $(arg tweet_client_node_start_delay); $0 $@'" output="screen"  >
+      <rosparam subst_value="true">
+        robot_name: $(arg robot_name)
+      </rosparam>
     </node>
   </group>
   <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch" if="$(arg launch_dashboard)" />
