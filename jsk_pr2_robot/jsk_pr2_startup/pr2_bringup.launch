@@ -1,7 +1,7 @@
 <launch>
   <arg name="launch_stereo_camera" default="true" />
   <arg name="launch_runtime_logger" default="false" />
-  <arg name="launch_hd_monitor" default="false" />
+  <arg name="launch_hd_monitor" default="true" />
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="false" />
   <arg name="launch_app_manager" default="true" />
