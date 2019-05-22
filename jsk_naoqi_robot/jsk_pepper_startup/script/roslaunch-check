@@ -44,6 +44,26 @@ import rosunit
 #
 import roslib
 
+# https://github.com/ros/ros_comm/pull/1455
+import roslaunch
+def parse_launch(launch_file, file_deps, verbose):
+    if verbose:
+        print("processing launch %s"%launch_file)
+
+    try:
+        dom = roslaunch.depends.parse(launch_file).getElementsByTagName('launch')
+    except:
+        raise roslaunch.depends.RoslaunchDepsException("invalid XML in %s"%(launch_file))
+    if not len(dom):
+        raise roslaunch.depends.RoslaunchDepsException("invalid XML in %s"%(launch_file))
+
+    file_deps[launch_file] = roslaunch.depends.RoslaunchDeps()
+    launch_tag = dom[0]
+    context = { 'arg': roslaunch.loader.load_mappings(sys.argv) }
+    roslaunch.depends._parse_launch(launch_tag.childNodes, launch_file, file_deps, verbose, context)
+
+roslaunch.depends.parse_launch = parse_launch
+
 def check_roslaunch(f):
     """
     Check roslaunch file for errors, returning error message if check fails. This routine
