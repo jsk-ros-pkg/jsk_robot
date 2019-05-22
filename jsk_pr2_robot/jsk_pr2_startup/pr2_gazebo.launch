@@ -145,7 +145,7 @@
     <arg name="launch_db" value="true" />
     <arg name="launch_c3_startup" value="false" />
     <arg name="launch_gripper_sensor" value="false" />
-    <arg name="launch_hark" value="false" />
+    <arg name="launch_microphone" value="false" />
     <arg name="launch_move_base" value="false" />
     <arg name="launch_people_detection" value="false" />
     <arg name="launch_safety_warning" value="false" />
