@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 
+from __future__ import division
+
 import actionlib
 from collections import defaultdict
 import os.path as osp
@@ -29,6 +31,8 @@ class BatteryWarning(object):
         self.monitor_rate = rospy.get_param("~monitor_rate", 4)
         self.warning_temp = rospy.get_param("~warning_temperature", 41.0)
         self.min_capacity = rospy.get_param("~min_capacity", 800)
+        self.warning_voltage = rospy.get_param("~warning_voltage", 14.0)
+        self.critical_voltage = rospy.get_param("~critical_voltage", 13.7)
         self.warn_repeat_rate = rospy.get_param("~warn_repeat_rate", 120)
         self.log_rate = rospy.get_param("~log_rate", 10)
         self.log_path = rospy.get_param("~log_path", None)
@@ -117,6 +121,20 @@ class BatteryWarning(object):
             if 15 < min_perc < 30:
                 self.speak("充電してください。")
             elif 0 <= min_perc < 15:
+                self.speak("もう限界です！")
+        except KeyError:
+            pass
+        except ValueError:
+            pass
+
+        try:
+            voltage = df["Voltage (mV)"].astype(int).min() / 1000
+            if (prev_plugged_in and plugged_in) or \
+               voltage < self.warning_voltage:
+                self.speak("電池電圧%.1fボルトです。" % voltage)
+            if self.critical_voltage < voltage < self.warning_voltage:
+                self.speak("充電してください。")
+            elif voltage <= self.critical_voltage:
                 self.speak("もう限界です！")
         except KeyError:
             pass
