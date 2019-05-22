@@ -145,7 +145,9 @@
   </group>
   
   <!-- Diagnostics aggregation -->
-  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg" />
+  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg">
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/jsk_pr2_analyzers.yaml"/>
+  </node>
 
   <!-- Dashboard aggregation -->
   <node pkg="pr2_dashboard_aggregator" type="dashboard_aggregator.py" name="pr2_dashboard_aggregator"/>
