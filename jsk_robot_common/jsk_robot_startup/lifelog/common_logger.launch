@@ -31,12 +31,12 @@
   <!-- machine -->
   <arg name="localhost" default="true" />
   <arg unless="$(arg localhost)" name="machine"/>
-  <arg     if="$(arg localhost)" name="machine" value="localhost" />
+  <arg     if="$(arg localhost)" name="machine" default="localhost" />
   <machine if="$(arg localhost)" name="localhost" address="localhost" />
 
   <!-- nodelet -->
   <arg name="launch_manager" default="true" />
-  <arg     if="$(arg launch_manager)" name="manager" value="mongodb_record_nodelet_manager" />
+  <arg     if="$(arg launch_manager)" name="manager" default="mongodb_record_nodelet_manager" />
   <arg unless="$(arg launch_manager)" name="manager" />
 
   <!-- others -->
