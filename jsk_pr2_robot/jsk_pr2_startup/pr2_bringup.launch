@@ -133,7 +133,7 @@
   <!-- NTP monitoring script reports clock sync on diagnostics -->
   <group if="$(arg launch_ntp_monitor)">
     <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="133.11.216.42 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
-    <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --diag-hostname=c2" machine="c2"/>
+    <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --offset-tolerance 50000 --diag-hostname=c2" machine="c2"/>
   </group>
 
   <!-- Disk usage monitoring script monitors HD temperature, usage on diagnostics -->
