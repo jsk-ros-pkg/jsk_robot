@@ -1,11 +1,13 @@
 #!/usr/bin/env roseus
 
 (ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "pr2_mechanism_controllers")
 (ros::load-ros-manifest "sensor_msgs")
 (ros::load-ros-manifest "diagnostic_msgs")
 (ros::load-ros-manifest "nav_msgs")
-(ros::load-ros-manifest "fetch_driver_msgs")
+(when (ros::rospack-find "pr2_mechanism_controllers")
+  (ros::load-ros-manifest "pr2_mechanism_controllers"))
+(when (ros::rospack-find "fetch_driver_msgs")
+  (ros::load-ros-manifest "fetch_driver_msgs"))
 
 (setq *start-distance* nil)
 (setq *start-angle* nil)
