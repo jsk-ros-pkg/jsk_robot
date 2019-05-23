@@ -66,6 +66,7 @@ enable_turbo_button: 0  # A button
       </rosparam>
     </node>
   </group>
+  <!-- If use ROS >= kinetic, please clone https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop (This includes https://github.com/ros-naoqi/naoqi_dashboard/pull/3) -->
   <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch" if="$(arg launch_dashboard)" />
 
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" respawn="true" if="$(arg launch_joy)" />
