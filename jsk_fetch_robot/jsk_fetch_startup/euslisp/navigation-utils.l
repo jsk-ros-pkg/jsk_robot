@@ -63,11 +63,15 @@
       (return))
     (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock"))))
   ;; go to spot
-  (let ((goal-pose nil))
-    (dolist (x (send *spots* :markers)) (if (equal (send x :text) name) (setq goal-pose (send x :pose))))
+  (let ((goal-pose nil) (frame-id nil))
+    (dolist (x (send *spots* :markers))
+      (if (equal (send x :text) name)
+        (progn
+          (setq goal-pose (send x :pose))
+          (setq frame-id (send (send x :header) :frame_id)))))
+    (send (send goal-pose :position) :z 0)
     (setq goal-pose (send (ros::tf-pose->coords goal-pose) :transform relative-coords :world))
-    (send goal-pose :transform (make-coords :pos #f(0 0 29650)) :world) ;; set height of goal-pose from 2nd floor to 7th floor
-    (send *ri* :move-to goal-pose)))
+    (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 (defun auto-dock ()
   (go-to-spot "/eng2/7f/room73B2-fetch-dock-front" (make-coords :pos #f(0 -1500 0)))
