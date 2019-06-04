@@ -199,7 +199,9 @@ def parse_launch(launch_file, file_deps, verbose):
 
     file_deps[launch_file] = RoslaunchDeps()
     launch_tag = dom[0]
-    context = { 'arg': {}}
+    # https://github.com/ros/ros_comm/pull/1455
+    from roslaunch.loader import load_mappings
+    context = { 'arg': load_mappings(sys.argv) }
     _parse_launch(launch_tag.childNodes, launch_file, file_deps, verbose, context)
 
 def rl_file_deps(file_deps, launch_file, verbose=False):
