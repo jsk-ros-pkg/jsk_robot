@@ -1,7 +1,7 @@
 <launch>
   <!-- Commenting the bellow in will kill /baxter_sim_io and cause error in joint trajectory servers -->
   <!-- <env name="DISPLAY" value="" /> -->
-  <arg name="gui" default="false" />
+  <arg name="gui" default="true" />
   <arg name="headless" default="true" />
   <include file="$(find baxter_gazebo)/launch/baxter_world.launch">
     <arg name="gui" value="$(arg gui)" />
