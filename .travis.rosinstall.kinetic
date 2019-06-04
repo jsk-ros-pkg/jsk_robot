@@ -21,3 +21,7 @@
 - git:
    uri: https://github.com/ros-naoqi/nao_interaction.git
    local-name: ros-naoqi/nao_interaction
+- git:
+   uri: https://github.com/tork-a/jsk_demos-release.git
+   local-name: jsk_maps
+   version: release/kinetic/jsk_maps
