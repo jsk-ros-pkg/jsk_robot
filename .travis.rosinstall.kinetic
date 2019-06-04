@@ -25,3 +25,7 @@
    uri: https://github.com/tork-a/jsk_demos-release.git
    local-name: jsk_maps
    version: release/kinetic/jsk_maps
+- git:
+   uri: https://github.com/tork-a/jsk_3rdparty-release.git
+   local-name: rostwitter
+   version: release/kinetic/rostwitter
