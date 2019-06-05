@@ -10,7 +10,6 @@
   <arg name="save_object_detection" default="false" />
   <arg name="save_action" default="false" />
   <arg name="save_app" default="true" />
-  <arg name="vital_check" default="true" />
 
   <!-- namespace -->
   <arg name="camera_ns" default="kinect_head" />
@@ -44,6 +43,7 @@
   <arg name="enable_monitor" default="false" />
   <arg name="log_rate" default="1.0" />
   <arg name="respawn" default="false" />
+  <arg name="vital_check" default="true" />
   <arg name="vital_rate" default="0.1" />
 
   <!-- nodelet manager -->
@@ -132,6 +132,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
       <node name="rgb_camera_info_logger"
@@ -143,6 +144,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
     </group>
@@ -156,6 +158,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
       <node name="depth_camera_info_logger"
@@ -167,6 +170,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
     </group>

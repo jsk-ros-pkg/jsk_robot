@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find baxtereus)/test/baxter-moveit.test">
+    <arg name="gui" default="false" />
+  </include>
+</launch>
