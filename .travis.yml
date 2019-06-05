@@ -28,6 +28,7 @@ env:
     - ROS_DISTRO=indigo  USE_DEB=true
     - ROS_DISTRO=indigo  USE_DEB=false EXTRA_DEB="ros-indigo-convex-decomposition ros-indigo-ivcon"
     - ROS_DISTRO=kinetic USE_DEB=true
+    - ROS_DISTRO=kinetic USE_DEB=true  TEST_PKGS="jsk_robot_startup"
     - ROS_DISTRO=kinetic USE_DEB=false EXTRA_DEB="ros-kinetic-convex-decomposition ros-kinetic-ivcon"
     - ROS_DISTRO=melodic USE_DEB=true
     - ROS_DISTRO=melodic USE_DEB=true  TEST_PKGS="jsk_robot_startup"
