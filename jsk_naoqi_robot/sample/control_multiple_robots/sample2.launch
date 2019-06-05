@@ -1,0 +1,28 @@
+<launch>
+  <arg name="nao_ip"              default="$(optenv NAO_IP2 127.0.0.1)" />
+  <arg name="nao_port"            default="$(optenv NAO_PORT 9559)" />
+
+  <arg name="roscore_ip"          default="127.0.0.1" />
+  <arg name="network_interface"   default="eth0" />
+
+  <arg name="namespace"           default="$(optenv ROS_NAMESPACE pepper_robot)" />
+  <arg name="boot_config_file_name" default="boot_config2.json" />
+
+  <group ns="robot2">
+    <!-- naoqi driver -->
+    <include file="$(find naoqi_driver)/launch/naoqi_driver.launch">
+      <arg name="nao_ip"                value="$(arg nao_ip)" />
+      <arg name="nao_port"              value="$(arg nao_port)" />
+      <arg name="roscore_ip"            value="$(arg roscore_ip)" />
+      <arg name="network_interface"     value="$(arg network_interface)" />
+      <arg name="namespace"             value="$(arg namespace)" />
+      <arg name="boot_config_file_name" value="$(arg boot_config_file_name)" />
+    </include>
+
+    <!-- launch pose manager -->
+    <include file="$(find naoqi_pose)/launch/pose_manager.launch" ns="$(arg namespace)/pose" >
+      <arg name="nao_ip"            value="$(arg nao_ip)" />
+      <arg name="nao_port"          value="$(arg nao_port)" />
+    </include>
+  </group>
+</launch>

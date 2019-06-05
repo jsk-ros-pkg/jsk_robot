@@ -110,10 +110,28 @@ Logging script is initialized at:
 - 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf
 - 2018/08/26 add `0 10 * * 1-5 /home/fetch/ros/indigo_robot/devel/env.sh rosservice call /fetch15/start_app "name: 'jsk_fetch_startup/go_to_kitchen'"` to crontab
   - `fetch` goes to 73B2 kitchen at 10:00 AM from Monday to Friday.
+- 2019/04/19: add `fetch` user in `pulse-access` group.
+- 2019/04/19: set `start on runlevel [2345]` in `/etc/init/pulseaudio.conf`.
+  - this modification is needed for starting `pulseaudio` in boot.
+  - `pulseaudio` is required to register USB speaker on head in boot.
+- 2019/04/19: set `env DISALLOW_MODULE_LOADING=0` in `/etc/init/pulseaudio.conf`.
+  - this modification is needed for overriding default speaker setting in `/etc/init/jsk-fetch-startup.conf`
+  - overriding default speaker setting to use USB speaker on head is done with `pactl set-default-sink $AUDIO_DEVICE` in `/etc/init/jsk-fetch-startup.conf`
+- 2019/04/19: launch `jsk_fetch_startup/fetch_bringup.launch` by `fetch` user in `/etc/init/jsk-fetch-startup.conf`
+  - some nodes save files by `fetch` user
+- 2019/04/19: add arg `launch_teleop` in `/etc/ros/indigo/robot.launch`.
+  - We sent PR to upstream [fetchrobotics/fetch_robots PR#40](https://github.com/fetchrobotics/fetch_robots/pull/40).
+- 2019/04/19: run `/etc/ros/indigo/robot.launch` with `arg` `launch_teleop:=false`.
+  - `teleop` in `/etc/ros/indigo/robot.launch` nodes were conflicted with `teleop` nodes in [jsk_fetch_startup/launch/fetch_teleop.xml](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml)
 
 ## Apps
+
+### Note
+
+You can not run this on Firefox. Please use Google Chrome.
+
 ### Add fetch to rwt_app_chooser
-1. Access [http://furushchev.ru/rwt_app_chooser](http://furushchev.ru/rwt_app_chooser "website").
+1. Access [http://tork-a.github.io/visualization_rwt/rwt_app_chooser](http://tork-a.github.io/visualization_rwt/rwt_app_chooser "website").
 1. Click `ADD A ROBOT` button
 1. Select `Fetch` at `Robot type`
 1. Type `fetch15` at `Robot name`

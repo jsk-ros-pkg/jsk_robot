@@ -9,8 +9,8 @@
   )
 
 (defmethod pepper-interface
-  (:init (&rest args)
-   (send-super* :init :robot pepper-robot :naoqi-namespace "pepper_robot" :dcm-namespace "pepper_dcm" args)
+  (:init (&rest args &key ((:group-namespace gns) ""))
+   (send-super* :init :robot pepper-robot :group-namespace gns :naoqi-namespace "pepper_robot" :dcm-namespace "pepper_dcm" args)
    (when (ros::get-param "use_sim_time" nil)
      ;; add controllers for gazebo
      (dolist (l (list
@@ -51,71 +51,77 @@
      (progn
        (list
 	(list
-	 (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
+	 (cons :controller-action (format nil "~A/~A/pose/joint_trajectory" group-namespace naoqi-namespace))
 	 ;;(cons :controller-state "joint_trajectory")
 	 (cons :controller-state "dummy_state") ;; this is dummy
 	 (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
 	 (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name)))))
        )))
-  (:show-image 
+  (:servo-on
+   ()
+   (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace)))
+  (:servo-off
+   ()
+   (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace)))
+  (:show-image
    (file)
    (let (ret)
-     (ros::wait-for-service "show_image")
+     (ros::wait-for-service (format nil "~A/show_image" group-namespace))
      (setq ret (instance naoqi_bridge_msgs::SetStringRequest :init))
      (send ret :data file)
-     (setq res (ros::service-call "show_image" ret))
+     (setq res (ros::service-call (format nil "~A/show_image" group-namespace) ret))
      (send res :success)
      ))
-  (:set-show-image-folder-path 
+  (:set-show-image-folder-path
    (name)
    (let (ret)
-     (ros::wait-for-service "set_show_image_folder_path")
+     (ros::wait-for-service (format nil "~A/set_show_image_folder_path" group-namespace))
      (setq ret (instance naoqi_bridge_msgs::SetStringRequest :init))
      (send ret :data name)
-     (setq res (ros::service-call "set_show_image_folder_path" ret))
+     (setq res (ros::service-call (format nil "~A/set_show_image_folder_path" group-namespace) ret))
      (send res :success)
      ))
-  (:get-show-image-folder-path 
+  (:get-show-image-folder-path
    ()
    (let (ret)
-     (ros::wait-for-service "get_show_image_folder_path")
+     (ros::wait-for-service (format nil "~A/get_show_image_folder_path" group-namespace))
      (setq ret (instance naoqi_bridge_msgs::GetStringRequest :init))
-     (setq res (ros::service-call "get_show_image_folder_path" ret))
+     (setq res (ros::service-call (format nil "~A/get_show_image_folder_path" group-namespace) ret))
      (send res :data)
-     ))			       
-  (:show-app 
+     ))
+  (:show-app
    (app)
    (let (ret)
-     (ros::wait-for-service "show_app")
+     (ros::wait-for-service (format nil "~A/show_app" group-namespace))
      (setq ret (instance naoqi_bridge_msgs::SetStringRequest :init))
      (send ret :data app)
-     (setq res (ros::service-call "show_app" ret))
+     (setq res (ros::service-call (format nil "~A/show_app" group-namespace) ret))
      (send res :success)
      ))
-  (:show-webview 
-   (url) 
+  (:show-webview
+   (url)
    (let (ret)
-     (ros::wait-for-service "show_webview")
+     (ros::wait-for-service (format nil "~A/show_webview" group-namespace))
      (setq ret (instance naoqi_bridge_msgs::SetStringRequest :init))
      (send ret :data url)
-     (setq res (ros::service-call "show_webview" ret))
+     (setq res (ros::service-call (format nil "~A/show_webview" group-namespace) ret))
      (send res :success)
      ))
-  (:hide-image () (call-empty-service "hide_image"))
+  (:hide-image () (call-empty-service (format nil "~A/hide_image" group-namespace)))
   )
 
 (defmethod pepper-robot
   (:reset-pose () (send self :angle-vector #f(2 -2 -5 85 10 -70 -20 -40 85 -10  70  20  40 0 -0)))
   )
 
-(defun pepper-init (&optional (create-viewer))
+(defun pepper-init (&optional (create-viewer) (group-namespace ""))
   (unless (boundp '*pepper*) (pepper))
   (unless (ros::ok) (ros::roseus "pepper_eus_interface"))
-  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init)))
-  
+  (unless (boundp '*ri*) (setq *ri* (instance pepper-interface :init :group-namespace group-namespace)))
+
   (ros::spin-once)
   (send *ri* :spin-once)
-  
+
   (send *pepper* :angle-vector (send *ri* :state :potentio-vector))
   (when create-viewer (objects (list *pepper*)))
   )

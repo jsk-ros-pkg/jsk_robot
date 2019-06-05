@@ -13,7 +13,9 @@
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <!-- add jsk startups -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" >
+    <param name="speak_warn" value="false"/>
+  </node>
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
@@ -32,6 +34,7 @@
   <!-- logging -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
     <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="vital_check" value="false" />
   </include>
 
   <!-- diagnostic aggregator -->
@@ -50,13 +53,18 @@
     <param name="load5_threshold" value="5.0"/>
   </node>
 
+  <!-- twitter -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
     <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
   </include>
 
   <!-- downsample / throttle sensor data -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" >
+    <arg name="launch_manager" value="false"/>
+  </include>
 
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
