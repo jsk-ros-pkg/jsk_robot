@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(naoeus)
 
-find_package(catkin REQUIRED nao_description naoqieus roseus rostest)
+find_package(catkin REQUIRED naoqieus roseus rostest)
+find_package(nao_description) # Just in case when description is not released. Avoid compile failing
 
 catkin_package()
 
