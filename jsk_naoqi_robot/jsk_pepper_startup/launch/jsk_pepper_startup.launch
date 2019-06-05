@@ -7,6 +7,7 @@
   <arg name="launch_twitter" default="false" />
   <arg name="launch_joy" default="true" />
   <arg name="launch_play_audio_stream" default="true" />
+  <arg name="launch_dashboard" default="true" />
   <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
     <arg name="roscore_ip" value="$(arg roscore_ip)"/>
@@ -54,7 +55,7 @@ enable_turbo_button: 0  # A button
       <param name="filename_format" value="/tmp/pepper_camera.png" />
     </node>
   </group>
-  <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch"/>
+  <include file="$(find naoqi_dashboard)/launch/naoqi_dashboard.launch" if="$(arg launch_dashboard)" />
 
   <node pkg="jsk_pepper_startup" name="joy_client" type="joy-client.l" if="$(arg launch_joy)" />
 
