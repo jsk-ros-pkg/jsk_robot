@@ -18,7 +18,10 @@
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
-     (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
+     ;; check if fetch_driver_msgs exists, fetch_ros in released on kinetic/melodic, but fetch_msgs is not released yet.
+     (if (boundp 'fetch_driver_msgs::GripperState)
+	 (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
+       (ros::ros-warn "Could not find fetch_driver_msgs package, please install from source https://github.com/fetchrobotics/fetch_msgs"))
      (setq gripper-action
            (instance ros::simple-action-client :init
                      "/gripper_controller/gripper_action"
