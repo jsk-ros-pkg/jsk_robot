@@ -1,0 +1,19 @@
+<launch>
+  <arg name="GPU" default="0" />
+  <arg name="INPUT_IMAGE" default="/kinect_head/rgb/image_rect_color" />
+  <arg name="INPUT_DEPTH_IMAGE" default="/kinect_head/depth_registered/image_rect" />
+  <arg name="INPUT_CAMERA_INFO" default="/kinect_head/rgb/camera_info" />
+  <arg name="INPUT_POINTS" default="/kinect_head/depth_registered/points" />
+
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_perception/openpose.launch">
+    <arg name="GPU" value="$(arg GPU)" />
+    <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
+    <arg name="INPUT_DEPTH_IMAGE" value="$(arg INPUT_DEPTH_IMAGE)" />
+    <arg name="INPUT_CAMERA_INFO" value="$(arg INPUT_CAMERA_INFO)" />
+  </include>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_perception/mask_rcnn.launch">
+    <arg name="GPU" value="$(arg GPU)" />
+    <arg name="INPUT_IMAGE" value="$(arg INPUT_IMAGE)" />
+    <arg name="INPUT_POINTS" value="$(arg INPUT_POINTS)" />
+  </include>
+</launch>
