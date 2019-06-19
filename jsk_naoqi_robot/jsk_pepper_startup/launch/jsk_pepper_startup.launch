@@ -8,8 +8,6 @@
   <arg name="launch_joy" default="true" />
   <arg name="launch_play_audio_stream" default="true" />
   <arg name="launch_dashboard" default="true" />
-  <arg name="tweet_client_node_start_delay" default="15.0" />
-  <arg name="robot_name" default="Pepper" />
   <arg name="autonomous_wakeup" default="false" />
   <include file="$(find pepper_bringup)/launch/pepper_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
@@ -58,12 +56,6 @@ enable_turbo_button: 0  # A button
       <remap from="image" to="/pepper_robot/camera/front/image_raw" />
       <param name="save_all_image" value="false" />
       <param name="filename_format" value="/tmp/pepper_camera.png" />
-    </node>
-    <!-- reference: https://answers.ros.org/question/233353/set-delay-between-starting-nodes-within-launch-file/ -->
-    <node pkg="jsk_pepper_startup" name="twitter_client" type="tweet_client.py" launch-prefix="bash -c 'sleep $(arg tweet_client_node_start_delay); $0 $@'" output="screen"  >
-      <rosparam subst_value="true">
-        robot_name: $(arg robot_name)
-      </rosparam>
     </node>
   </group>
   <!-- If use ROS >= kinetic, please clone https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop (This includes https://github.com/ros-naoqi/naoqi_dashboard/pull/3) -->
