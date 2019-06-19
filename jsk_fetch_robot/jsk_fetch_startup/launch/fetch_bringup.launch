@@ -92,6 +92,14 @@
     <arg name="speech_to_text" value="speech_to_text_google"/>
     <arg name="language" value="ja-JP"/>
   </include>
+  <!-- set fetch speak action server names -->
+  <group ns="speech_to_text">
+    <rosparam>
+       tts_action_names:
+         - sound_play
+         - robotsound_jp
+    </rosparam>
+  </group>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
