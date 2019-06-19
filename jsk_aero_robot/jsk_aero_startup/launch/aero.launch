@@ -38,4 +38,7 @@
   <include file="$(find jsk_aero_startup)/launch/text_to_speech.launch" >
   </include>
 
+  <include file="$(find jsk_aero_startup)/launch/speech_recognition.launch" >
+  </include>
+
 </launch>
