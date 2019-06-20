@@ -127,16 +127,38 @@ class InteractiveChatNode(object):
         except Exception as e:
             speak_jp('天気の上方取得に失敗しました。')
             return
+        place = 'アンノーン'
+        if 'title' in weather_info:
+            place = weather_info['title'].split()[1].encode('utf-8')
         if day == 0:
-            speak_jp('はい、今日の{}の天気は{}です。最低気温は{}度で、最高気温は{}度です。'.format(
-                weather_info['title'].split()[1].encode('utf-8'),
-                weather_info['forecasts'][0]['telop'].encode('utf-8'),
-                weather_info['forecasts'][0]['temperature']['min']['celsius'].encode('utf-8'),
-                weather_info['forecasts'][0]['temperature']['max']['celsius'].encode('utf-8')),
-                     wait=True)
+            min_temp = None
+            if weather_info['forecasts'][0]['temperature']['min'] is not None:
+                min_temp = weather_info['forecasts'][0]['temperature']['min']['celsius'].encode('utf-8')
+            max_temp = None
+            if weather_info['forecasts'][0]['temperature']['max'] is not None:
+                max_temp = weather_info['forecasts'][0]['temperature']['max']['celsius'].encode('utf-8')
+            if max_temp is not None and min_temp is not None:
+                speak_jp('はい、今日の{}の天気は{}です。最低気温は{}度で、最高気温は{}度です。'.format(
+                    place,
+                    weather_info['forecasts'][0]['telop'].encode('utf-8'),
+                    min_temp,
+                    max_temp),
+                    wait=True)
+            elif max_temp is not None:
+                speak_jp('はい、今日の{}の天気は{}です。最高気温は{}度です。'.format(
+                    place,
+                    weather_info['forecasts'][0]['telop'].encode('utf-8'),
+                    max_temp),
+                    wait=True)
+            elif min_temp is not None:
+                speak_jp('はい、今日の{}の天気は{}です。最低気温は{}度です。'.format(
+                    place,
+                    weather_info['forecasts'][0]['telop'].encode('utf-8'),
+                    min_temp),
+                         wait=True)
         elif day == 1:
             speak_jp('はい、明日の{}の天気は{}です。'.format(
-                weather_info['title'].split()[1].encode('utf-8'),
+                place,
                 weather_info['forecasts'][day]['telop'].encode('utf-8')),
                      wait=True)
 
