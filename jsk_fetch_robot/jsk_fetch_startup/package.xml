@@ -30,14 +30,23 @@
   <run_depend>move_base</run_depend>
 
   <!-- for fetch teleop -->
+  <run_depend>app_manager</run_depend>
   <run_depend>fetch_bringup</run_depend>
   <run_depend>safe_teleop_base</run_depend>
   <run_depend>joy</run_depend>
   <run_depend>topic_tools</run_depend>
   <run_depend>fetch_teleop</run_depend>
 
+  <!-- for diagnostic aggregator -->
+  <run_depend>diagnostic_aggregator</run_depend>
+
+  <!-- for fetch speech recognition -->
+  <run_depend>julius_ros</run_depend>
+  <run_depend>respeaker_ros</run_depend>
+
   <test_depend>rostest</test_depend>
 
   <export>
+    <app_manager app_dir="${prefix}/apps"/>
   </export>
 </package>

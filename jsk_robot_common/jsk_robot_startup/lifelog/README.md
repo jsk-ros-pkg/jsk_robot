@@ -32,8 +32,8 @@ Save action goal, result and feedback to database
   White list of logging action. Topics are specified with `name` or `type`
   
   e.g.:
-  
-  ```yaml
+
+```yaml
 name:
 - /r_arm_controller/follow_joint_trajectory/result
 type:

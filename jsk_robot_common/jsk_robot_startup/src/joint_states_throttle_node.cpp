@@ -55,6 +55,11 @@ namespace jsk_robot_startup {
     public:
       typedef jsk_robot_startup::JointStatesThrottleConfig Config;
 
+#if URDFDOM_1_0_0_API
+      typedef urdf::JointSharedPtr JointSharedPtr;
+#else
+      typedef boost::shared_ptr<urdf::Joint> JointSharedPtr;
+#endif
       JointStatesThrottle() : nh_(), pnh_("~") {
 
         if (!robot_model_.initParam("robot_description")) {
@@ -127,7 +132,7 @@ namespace jsk_robot_startup {
           }
           size_t j = std::distance(last_msg_.name.begin(), lit);
 
-          std::map<std::string, boost::shared_ptr<urdf::Joint> >::iterator jit =
+          std::map<std::string, JointSharedPtr >::iterator jit =
             robot_model_.joints_.find(msg->name[i]);
           if (jit == robot_model_.joints_.end()) {
             ROS_ERROR_STREAM_ONCE(msg->name[i] << " not found in 'robot_description'");

@@ -13,8 +13,14 @@
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <!-- add jsk startups -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
-  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" >
+    <param name="speak_warn" value="false"/>
+  </node>
+  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+    <rosparam>
+      lang: japanese
+    </rosparam>
+  </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
   <!-- japanese speech node -->
@@ -28,15 +34,39 @@
   <!-- logging -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
     <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="vital_check" value="false" />
   </include>
+
+  <!-- diagnostic aggregator -->
+  <node pkg="diagnostic_aggregator" type="aggregator_node"
+        name="diag_agg" args="CPP" output="screen" >
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/fetch_analyzers.yaml" />
+  </node>
+
+  <!-- publish CPU status to diagnostics -->
+  <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
+        args="--diag-hostname=my_machine" >
+    <param name="check_ipmi_tool" value="false" type="bool" />
+    <param name="enforce_clock_speed" value="false" type="bool" />
+    <param name="num_cores" value="-1" type="int" />
+    <param name="load1_threshold" value="7.0"/>
+    <param name="load5_threshold" value="5.0"/>
+  </node>
+
+  <!-- twitter -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
 
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="use_applist" value="true" />
     <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
+    <arg name="respawn" value="false" />
   </include>
 
   <!-- downsample / throttle sensor data -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" >
+    <arg name="launch_manager" value="false"/>
+  </include>
 
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
@@ -45,6 +75,14 @@
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" />
+
+  <!-- speech recognition -->
+  <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"/>
+  <node name="static_transformer" pkg="tf" type="static_transform_publisher"
+        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <include file="$(find julius_ros)/launch/julius.launch">
+    <arg name="launch_audio_capture" value="false"/>
+  </include>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
@@ -61,6 +99,11 @@
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="true" />
     </include>
+    <rosparam ns="amcl">
+      update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
+      update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
+    </rosparam>
+
     <rosparam ns="move_base/global_costmap">
 inflater:
   inflation_radius: 0.30 # 0.7

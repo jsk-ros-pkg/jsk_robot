@@ -1,0 +1,15 @@
+<launch>
+  <arg name="publish_tf" default="false"/>
+  <arg name="launch_soundplay" default="false"/>
+  <arg name="audio" default="speech_audio"/>
+  <arg name="speech_to_text" default="speech_to_text"/>
+  <arg name="language" default="en-US"/>
+
+  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
+    <arg name="publish_tf" value="$(arg publish_tf)" />
+    <arg name="launch_soundplay" default="$(arg launch_soundplay)"/>
+    <arg name="audio" default="$(arg audio)"/>
+    <arg name="speech_to_text" default="$(arg speech_to_text)"/>
+    <arg name="language" default="$(arg language)"/>
+  </include>
+</launch>

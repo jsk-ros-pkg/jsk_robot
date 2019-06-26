@@ -9,7 +9,7 @@
   (let ((diagnostics (make-hash-table :test #'equal))
 	(tm (ros::time-now))
 	status id)
-    (format t "~0,3f diagnostics_msgs~%" (send tm :to-sec))
+    (ros::ros-debug (format nil "~0,3f diagnostics_msgs~%" (send tm :to-sec)))
     (dolist (status (send msg :status))
       ;; diagnostic_msgs::DiagnosticStatus::*WARN*
       (when (>= (send status :level) diagnostic_msgs::DiagnosticStatus::*WARN*) ;; diagnostic_msgs::DiagnosticStatus::*ERROR*)
@@ -21,6 +21,7 @@
 		    (string= "Updates Stale" (send status :message))) t)
 	      ((and (string= "/Computers/Network" (send status :name))
 		    (string= "Error" (send status :message))) t)
+              ((substringp "/Peripherals/PS3 Controller" (send status :name)) t) ;; fetch joystick warning
 	      ((position #\/ (send status :name) :count 2) ;; check depth of name
 	       (setq key (subseq (send status :name) 0 (position #\/ (send status :name) :count 2)))
 	       (when (> (length (send status :name)) (length (gethash key diagnostics)))
@@ -28,11 +29,12 @@
 		 ) ;; when
 	       ))
 	)) ;; when / dolist
-    (maphash #'(lambda (k v) (format t "Warnings ~A ~A~%" (length status) v) (push v status)) diagnostics)
+    (maphash #'(lambda (k v) (ros::ros-debug (format nil "Warnings ~A ~A~%" (length status) v)) (push v status)) diagnostics)
     (when status
       (setq id (random (length status)))
       (when (= (mod (round (send tm :sec)) 1000) 0)
-	(tweet-string (format nil "Warning!! ~A is ~A at ~0,3f" (car (elt status id)) (cdr (elt status id)) (send tm :to-sec)))
+        (tweet-string (format nil "Warning!! ~A is ~A at ~0,3f" (car (elt status id)) (cdr (elt status id)) (send tm :to-sec))
+                      :warning-time 1 :with-image t)
 	)) ;; when
     )) ;; let
 

@@ -1,6 +1,7 @@
 <launch>
   <arg name="use_system_mongod" default="true" />
   <arg name="map_frame" default="map" />
+  <arg name="vital_check" default="false" />
 
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
@@ -18,6 +19,7 @@
   </include>
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+    <arg name="approximate_sync" value="true"/>
     <arg name="save_rgb" value="true" />
     <arg name="save_depth" value="true" />
     <arg name="save_tf" value="true" />
@@ -33,6 +35,7 @@
     <arg name="launch_manager" value="true" />
     <arg name="map_frame_id" value="$(arg map_frame)" />
     <arg name="base_frame_id" value="base_link" />
+    <arg name="vital_check" value="$(arg vital_check)" />
   </include>
 
   <rosparam ns="lifelog/joint_states_throttle">

@@ -42,21 +42,20 @@ macro(configure_icon_files icol iname)
   # Desktop Icons
   configure_and_register(${PROJECT_SOURCE_DIR}/PR2Dashboard.desktop.in
     ${SETUP_DIRECTORY}/PR2Dashboard${PR2_NAME}.desktop)
-  configure_and_register(${PROJECT_SOURCE_DIR}/PR2JSKStartup.desktop.in
-    ${SETUP_DIRECTORY}/PR2JSKStartup${PR2_NAME}.desktop)
-#  configure_file(${PROJECT_SOURCE_DIR}/PR2MarkerControl.desktop.in
-#    ${SETUP_DIRECTORY}/PR2MarkerControl${PR2_NAME}.desktop)
-  configure_and_register(${PROJECT_SOURCE_DIR}/StartPR2.desktop.in
-    ${SETUP_DIRECTORY}/StartPR2${PR2_NAME}.desktop)
-  configure_and_register(${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
-    ${SETUP_DIRECTORY}/StopPR2${PR2_NAME}.desktop)
+  # configure_and_register(${PROJECT_SOURCE_DIR}/PR2JSKStartup.desktop.in
+  #   ${SETUP_DIRECTORY}/PR2JSKStartup${PR2_NAME}.desktop)
+  # configure_and_register(${PROJECT_SOURCE_DIR}/PR2MarkerControl.desktop.in
+  #     ${SETUP_DIRECTORY}/PR2MarkerControl${PR2_NAME}.desktop)
+  # configure_and_register(${PROJECT_SOURCE_DIR}/StartPR2.desktop.in
+  #   ${SETUP_DIRECTORY}/StartPR2${PR2_NAME}.desktop)
+  # configure_and_register(${PROJECT_SOURCE_DIR}/StopPR2.desktop.in
+  #   ${SETUP_DIRECTORY}/StopPR2${PR2_NAME}.desktop)
   configure_and_register(${PROJECT_SOURCE_DIR}/RViz.desktop.in
     ${SETUP_DIRECTORY}/RViz${PR2_NAME}.desktop)
-  configure_and_register(${PROJECT_SOURCE_DIR}/PR2TeleopRobot.desktop.in
-    ${SETUP_DIRECTORY}/PR2TeleopRobot${PR2_NAME}.desktop)
-  configure_and_register(${PROJECT_SOURCE_DIR}/PR2TeleopRemote.desktop.in
-    ${SETUP_DIRECTORY}/PR2TeleopRemote${PR2_NAME}.desktop)
-
+  # configure_and_register(${PROJECT_SOURCE_DIR}/PR2TeleopRobot.desktop.in
+  #   ${SETUP_DIRECTORY}/PR2TeleopRobot${PR2_NAME}.desktop)
+  # configure_and_register(${PROJECT_SOURCE_DIR}/PR2TeleopRemote.desktop.in
+  #   ${SETUP_DIRECTORY}/PR2TeleopRemote${PR2_NAME}.desktop)
 endmacro(configure_icon_files)
 
 configure_icon_files(blue pr1012)

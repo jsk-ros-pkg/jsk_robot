@@ -22,7 +22,6 @@ else()
 endif()
 
 find_package(catkin REQUIRED COMPONENTS
-  cv_bridge
   dynamic_reconfigure
   jsk_topic_tools
   mongodb_store
@@ -61,12 +60,21 @@ endmacro()
 
 add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
 
-add_library(jsk_robot_lifelog SHARED ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS})
+add_library(jsk_robot_lifelog SHARED
+  ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS}
+  src/message_store_singleton.cpp)
+
 target_link_libraries(jsk_robot_lifelog
   ${Boost_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES})
 add_dependencies(jsk_robot_lifelog ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+
+find_package(PkgConfig)
+pkg_check_modules(URDFDOM REQUIRED urdfdom)
+if ("${URDFDOM_VERSION}" VERSION_EQUAL "1.0.0" OR "${URDFDOM_VERSION}" VERSION_GREATER "1.0.0")
+  add_definitions(-DURDFDOM_1_0_0_API)
+endif()
 
 add_executable(joint_states_throttle
   src/joint_states_throttle_node.cpp)
@@ -75,7 +83,7 @@ target_link_libraries(joint_states_throttle
   ${catkin_LIBRARIES})
 add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
-install(DIRECTORY lifelog util launch image config cfg
+install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
