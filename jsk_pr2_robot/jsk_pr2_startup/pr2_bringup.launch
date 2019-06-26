@@ -87,14 +87,28 @@
   <!-- Camera isn't robust to dropped links, so it should respawn -->
   <arg name="no-prosilica" default="false" />
   <group unless="$(arg no-prosilica)" >
-    <node name="prosilica_driver" pkg="prosilica_camera"
-          type="prosilica_node" respawn="true" output="screen">
-      <remap from="camera" to="prosilica" />
+    <group ns="prosilica" >
+      <node name="prosilica_nodelet_manager"
+            pkg="nodelet" type="nodelet"
+            args="manager" />
 
-      <param name="ip_address"   type="str" value="10.68.0.20"/>
-      <param name="trigger_mode" type="str" value="polled"/>
-      <param name="frame_id"     type="str" value="high_def_optical_frame" />
-    </node>
+      <node name="prosilica_driver"
+            pkg="nodelet" type="nodelet"
+            args="load prosilica_camera/driver prosilica_nodelet_manager"
+            respawn="true" output="screen" >
+        <remap from="camera" to="prosilica" />
+
+        <param name="ip_address"   type="str" value="10.68.0.20"/>
+        <param name="trigger_mode" type="str" value="streaming"/>
+        <param name="frame_id"     type="str" value="high_def_optical_frame" />
+      </node>
+
+      <node name="rectify_image"
+            pkg="nodelet" type="nodelet"
+            args="load image_proc/rectify prosilica_nodelet_manager">
+        <remap from="image_mono" to="image_raw" />
+      </node>
+    </group>
   </group>
 
   <!-- Stereo Camera and synchronization -->
