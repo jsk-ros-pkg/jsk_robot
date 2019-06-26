@@ -91,4 +91,26 @@
      (setf (get self 'rarm-grasping-obj) nil))
     (t
      )))
+  (:collision-check-pairs
+   (&key ((:links ls) (cons (car links) (all-child-links (car links)))))
+   (let (pairs l neighbors
+               (exclude-pairs
+                (list (cons base_link_lk bellows_link2_lk)
+                      (cons base_link_lk bellows_link_lk)
+                      (cons torso_fixed_link_lk torso_lift_link_lk)
+                      (cons torso_fixed_link_lk bellows_link2_lk)
+                      (cons torso_fixed_link_lk bellows_link_lk)
+                      (cons bellows_link2_lk bellows_link_lk)
+                      (cons r_gripper_finger_link_lk l_gripper_finger_link_lk))))
+     (while (setq l (pop ls))
+       (setq neighbors (remove nil
+                               (append
+                                (send l :descendants)
+                                (send l :child-links)
+                                (list (send l :parent-link) (send l :parent)))))
+       (dolist (l2 ls)
+         (if (and (not (memq l2 neighbors))
+                  (not (member (cons l l2) exclude-pairs :test #'equal)))
+           (push (cons l l2) pairs))))
+     pairs))
   )
