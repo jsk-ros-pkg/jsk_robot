@@ -1,7 +1,7 @@
 <launch>
   <arg name="launch_stereo_camera" default="true" />
   <arg name="launch_runtime_logger" default="false" />
-  <arg name="launch_hd_monitor" default="false" />
+  <arg name="launch_hd_monitor" default="true" />
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="false" />
   <arg name="launch_app_manager" default="true" />
@@ -127,11 +127,12 @@
 
   <!-- Monitor CPU temp, usage -->
   <node pkg="pr2_computer_monitor" name="realtime_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c1" machine="c1" >
-    <param name="check_core_temps" type="bool" value="False" />
+    <param name="check_core_temps" type="bool" value="false" />
+    <param name="enforce_clock_speed" type="bool" value="false" />
   </node>
   <node pkg="pr2_computer_monitor" name="two_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c2" machine="c2" >
-    <param name="check_core_temps" type="bool" value="False" />
-    <param name="enforce_clock_speed" type="bool" value="False" />
+    <param name="check_core_temps" type="bool" value="false" />
+    <param name="enforce_clock_speed" type="bool" value="false" />
   </node>
 
   <!-- Monitor Wifi/ddwrt -->
