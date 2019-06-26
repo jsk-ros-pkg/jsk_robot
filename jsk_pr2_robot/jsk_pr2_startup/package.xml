@@ -75,5 +75,6 @@
 
   <export>
     <rqt_gui plugin="${prefix}/plugin.xml"/>
+    <app_manager app_dir="${prefix}/apps"/>
   </export>
 </package>
