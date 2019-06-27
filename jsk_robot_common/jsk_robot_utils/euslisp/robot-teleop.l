@@ -179,16 +179,16 @@
   )
 
 (defun teleop-setup ()
+  ;; options
   (setq *grasp-loop-enable* nil
         *reset-loop-enable* nil
         *look-at-loop-enable* nil
-        *move-head-enable* nil
-        ;;
-        *head-neck-p-max-angle* 44.0
-        *head-neck-p-min-angle* -29.0
-        *head-neck-y-max-angle* 44.0
-        *head-neck-y-min-angle* -44.0)
-
+        *move-head-enable* nil)
+  ;; head min/max angle
+  (setq *head-neck-p-max-angle* (- (send *robot* :head-neck-p :max-angle) 1.0)
+        *head-neck-p-min-angle* (+ (send *robot* :head-neck-p :min-angle) 1.0)
+        *head-neck-y-max-angle* (- (send *robot* :head-neck-y :max-angle) 1.0)
+        *head-neck-y-min-angle* (+ (send *robot* :head-neck-y :min-angle) 1.0))
   ;; spin rate
   (ros::rate 50)
   ;; subscribe joy node
