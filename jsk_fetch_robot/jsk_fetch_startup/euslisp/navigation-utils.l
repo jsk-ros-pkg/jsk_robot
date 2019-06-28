@@ -4,8 +4,6 @@
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "power_msgs")
 
-(require :fetch-interface "package://fetcheus/fetch-interface.l")
-
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
 (defparameter *spots* nil)
@@ -31,6 +29,7 @@
 (defun dock ()
   ;; look down
   (unless (boundp '*ri*)
+    (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
   (send *fetch* :head :look-at (float-vector 1500 0 500))
@@ -57,6 +56,7 @@
 (defun go-to-spot (name &optional (relative-coords (make-coords)))
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
+    (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
   (dotimes (i 3)
     (setq *is-charging* (send (one-shot-subscribe "/battery_state" power_msgs::batterystate) :is_charging))
