@@ -1,4 +1,4 @@
-(load "robot-teleop.l")
+(load "robot-teleop-joy.l")
 
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2jsknts-interface.l")
 (defmethod hrp2jsknts-interface
@@ -12,22 +12,21 @@
     (if wait (send self :hand-wait-interpolation)))
   )
 
-(defun hrp2jsknts-teleop-setup ()
+(defun hrp2jsknts-teleop-joy-setup ()
   ;; set *robot* and *ri*
   (hrp2jsknts-init)
   (setq *robot* *hrp2jsknts*)
-  (setq *debug-teleop* t)
-  (when *debug-teleop*
+  (when *debug-teleop-joy*
     (unless (boundp '*irtviewer*)
       (make-irtviewer)
       (objects (list *robot*))))
-  ;; setup teleop
-  (teleop-setup)
+  ;; setup teleop-joy
+  (teleop-joy-setup)
   ;; options
   (setq *grasp-loop-enable* t
         *reset-loop-enable* t
         *look-at-loop-enable* t
         *move-head-enable* t)
   )
-(warn ";; (hrp2jsknts-teleop-setup)~%")
-(warn ";; (run-teleop)~%")
+(warn ";; (hrp2jsknts-teleop-joy-setup)~%")
+(warn ";; (run-teleop-joy)~%")
