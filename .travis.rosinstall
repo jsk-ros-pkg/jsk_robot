@@ -1,1 +1,5 @@
 # see .travis.rosinstall.ROS_DISTRO
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel
