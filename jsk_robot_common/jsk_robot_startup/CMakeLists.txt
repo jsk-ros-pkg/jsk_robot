@@ -3,11 +3,11 @@ project(jsk_robot_startup)
 
 # for ROS indigo compile without c++11 support
 if(DEFINED ENV{ROS_DISTRO})
-  if(NOT $ENV{ROS_DISTRO} STREQUAL "indigo")
+  if($ENV{ROS_DISTRO} STRGREATER "indigo")
     add_compile_options(-std=c++11)
     message(STATUS "Building with C++11 support")
   else() 
-    message(STATUS "ROS Indigo: building without C++11 support")
+    message(STATUS "ROS Indigo and before: building without C++11 support")
   endif()
 else()
   message(STATUS "Environmental variable ROS_DISTRO not defined, checking OS version")
