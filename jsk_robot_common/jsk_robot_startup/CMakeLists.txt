@@ -58,7 +58,10 @@ macro(add_lifelog_nodelet _cpp _cls _bin)
     ${PROJECT_NAME}_LIFELOG_NODELET_EXECUTABLES)
 endmacro()
 
-add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
+# jsk_topic_tools >= 2.2.27 only available from indigo
+if($ENV{ROS_DISTRO} STRGREATER "hydro")
+   add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
+endif()
 
 add_library(jsk_robot_lifelog SHARED
   ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS}
