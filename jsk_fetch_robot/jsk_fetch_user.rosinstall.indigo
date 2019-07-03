@@ -5,8 +5,8 @@
     local-name: FA-I-sensor
     uri: https://github.com/RoboticMaterials/FA-I-sensor.git
     version: master
-# TODO(furushchev): describe why this is needed.
+# To use same audio_common version as fetch
 - git:
     local-name: ros-drivers/audio_common
-    uri: https://github.com/furushchev/audio_common.git
-    version: device
+    uri: https://github.com/ros-drivers/audio_common.git
+    version: 0.3.3
