@@ -40,16 +40,18 @@ First, you need to install ros. For ros indigo, please refer to install guide li
 
 ```bash
 mkdir -p catkin_ws/src
-cd  catkin_ws
-wstool init src
+cd  catkin_ws/src
+wstool init .
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
 if [ $ROS_DISTRO = "indigo" ]; then
-  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
+  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
 elif [ $ROS_DISTRO = "kinetic" ]; then
-  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
+  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
 fi
-wstool update -t src
+wstool update -t .
 source /opt/ros/$ROS_DISTRO/setup.bash
-rosdep install -y -r --from-paths src --ignore-src
+rosdep install -y -r --from-paths . --ignore-src
+cd ../
 catkin build fetcheus jsk_fetch_startup
 source devel/setup.bash
 ```

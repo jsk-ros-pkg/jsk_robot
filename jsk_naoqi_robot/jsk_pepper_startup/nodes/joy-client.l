@@ -20,11 +20,6 @@
     (ros::publish "/speech" msg))
   )
 
-(ros::advertise "/pepper_tweet" std_msgs::String 1)
-(defun tweet (str &rest args)
-  (ros::publish "/pepper_tweet" (instance std_msgs::String :init :data (apply #'format nil str args))))
-
-
 (ros::advertise "/pepper_robot/pose/joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
 (setq *power-button-mode* "/pepper_robot/pose/wakeup")
 (setq *power-button-state* 0)
@@ -41,14 +36,12 @@
 				  (=  power-button-state  0))
 			     (if (string= *power-button-mode* "/pepper_robot/pose/wakeup")
 				 (progn
-				   (speak-jp "もう朝かな")
+				   (speak-jp "\\vct=120\\good morning")
 				   (call-empty-service *power-button-mode*)
-				   (tweet "おはよう")
 				   (setq *power-button-mode* "/pepper_robot/pose/rest"))
 			       (progn
-				 (speak-jp "もうそろそろ寝ます")
+				 (speak-jp "\\vct=120\\good night")
 				 (call-empty-service *power-button-mode*)
-				 (tweet "おやすみ")
 				 (setq *power-button-mode* "/pepper_robot/pose/wakeup")))
 			     (unix:sleep 5)
 			     );; when
@@ -81,7 +74,6 @@
 (ros::ros-info "start joy-client.l")
 (unix:sleep 1) ;; need to wait 1 sec to speek
 (speak-jp "joy client")
-(tweet "おはよう")
 (ros::spin)
 
 

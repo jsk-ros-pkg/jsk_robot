@@ -1,6 +1,8 @@
 jsk_pr2_robot
 =============
 
+![teleop_command](images/pr2_teleop_command.png)
+
 
 ## Setup for Development Users
 ```
@@ -24,5 +26,6 @@ wstool init src
 git clone https://github.com/jsk-ros-pkg/jsk_robot.git src/jsk-ros-pkg/jsk_robot
 wget -O src/.rosinstall https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2.rosinstall
 wstool update -t src
+rosdep install --from-paths src --ignore-src -r -y
 catkin b
 ```

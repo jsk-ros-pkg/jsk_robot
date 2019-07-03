@@ -1,7 +1,7 @@
 <launch>
   <arg name="launch_stereo_camera" default="true" />
   <arg name="launch_runtime_logger" default="false" />
-  <arg name="launch_hd_monitor" default="false" />
+  <arg name="launch_hd_monitor" default="true" />
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="false" />
   <arg name="launch_app_manager" default="true" />
@@ -87,14 +87,28 @@
   <!-- Camera isn't robust to dropped links, so it should respawn -->
   <arg name="no-prosilica" default="false" />
   <group unless="$(arg no-prosilica)" >
-    <node name="prosilica_driver" pkg="prosilica_camera"
-          type="prosilica_node" respawn="true" output="screen">
-      <remap from="camera" to="prosilica" />
+    <group ns="prosilica" >
+      <node name="prosilica_nodelet_manager"
+            pkg="nodelet" type="nodelet"
+            args="manager" />
 
-      <param name="ip_address"   type="str" value="10.68.0.20"/>
-      <param name="trigger_mode" type="str" value="polled"/>
-      <param name="frame_id"     type="str" value="high_def_optical_frame" />
-    </node>
+      <node name="prosilica_driver"
+            pkg="nodelet" type="nodelet"
+            args="load prosilica_camera/driver prosilica_nodelet_manager"
+            respawn="true" output="screen" >
+        <remap from="camera" to="prosilica" />
+
+        <param name="ip_address"   type="str" value="10.68.0.20"/>
+        <param name="trigger_mode" type="str" value="streaming"/>
+        <param name="frame_id"     type="str" value="high_def_optical_frame" />
+      </node>
+
+      <node name="rectify_image"
+            pkg="nodelet" type="nodelet"
+            args="load image_proc/rectify prosilica_nodelet_manager">
+        <remap from="image_mono" to="image_raw" />
+      </node>
+    </group>
   </group>
 
   <!-- Stereo Camera and synchronization -->
@@ -127,11 +141,12 @@
 
   <!-- Monitor CPU temp, usage -->
   <node pkg="pr2_computer_monitor" name="realtime_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c1" machine="c1" >
-    <param name="check_core_temps" type="bool" value="False" />
+    <param name="check_core_temps" type="bool" value="false" />
+    <param name="enforce_clock_speed" type="bool" value="false" />
   </node>
   <node pkg="pr2_computer_monitor" name="two_cpu_monitor" type="cpu_monitor.py" args="--diag-hostname=c2" machine="c2" >
-    <param name="check_core_temps" type="bool" value="False" />
-    <param name="enforce_clock_speed" type="bool" value="False" />
+    <param name="check_core_temps" type="bool" value="false" />
+    <param name="enforce_clock_speed" type="bool" value="false" />
   </node>
 
   <!-- Monitor Wifi/ddwrt -->
@@ -145,7 +160,9 @@
   </group>
   
   <!-- Diagnostics aggregation -->
-  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg" />
+  <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg">
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/jsk_pr2_analyzers.yaml"/>
+  </node>
 
   <!-- Dashboard aggregation -->
   <node pkg="pr2_dashboard_aggregator" type="dashboard_aggregator.py" name="pr2_dashboard_aggregator"/>
@@ -189,6 +206,8 @@
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
            if="$(arg launch_app_manager)">
+    <arg name="use_applist" value="false"/> <!-- use plugin -->
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
+    <arg name="respawn" value="false"/>
   </include>
 </launch>

@@ -15,7 +15,7 @@
   <arg name="launch_tablet" default="false" />
   <arg name="launch_jsk_pcl" default="false" />
   <arg name="launch_db" default="true" />
-  <arg name="launch_hark" default="true" />
+  <arg name="launch_microphone" default="true" />
   <arg name="launch_teleoperation" default="false" />
   <arg name="launch_people_detection" default="false" />
   <arg name="launch_look_forward" default="true" />
@@ -102,8 +102,7 @@
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
-    <node name="battery_warning" pkg="roseus" type="roseus"
-          args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+    <node name="battery_warning" pkg="jsk_pr2_startup" type="battery_warning.py"/>
     <node name="battery_visualization"
           pkg="jsk_pr2_startup" type="battery_visualization.py" />
     <node name="battery_logger"
@@ -146,9 +145,9 @@
   <include if="$(arg launch_tablet)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
-  <!-- for HARK -->
-  <include if="$(arg launch_hark)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
+  <!-- for microphone -->
+  <include if="$(arg launch_microphone)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_microphone.launch"/>
 
   <!-- joy mux -->
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"

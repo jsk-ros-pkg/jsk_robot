@@ -58,7 +58,9 @@
 
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="use_applist" value="true" />
     <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
+    <arg name="respawn" value="false" />
   </include>
 
   <!-- downsample / throttle sensor data -->
