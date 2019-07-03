@@ -130,6 +130,7 @@ class TakeWakeUpPose():
                 self.disable_life()
             # servo on
             self.servo_on()
+            rospy.sleep(1)
             # speak
             self.set_language("Japanese")
             msg = String()
