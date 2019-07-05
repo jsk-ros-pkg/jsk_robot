@@ -10,13 +10,13 @@
   (hour)
   (cond
    ((equal hour 0)
-    (speak-en "The time is 12 PM")
+    (speak-en "It's 12 PM")
     )
    ((<= hour 12)
-    (speak-en (format nil "The time is ~A AM" hour))
+    (speak-en (format nil "It's ~A AM" hour))
    )
    (t
-    (speak-en (format nil "The time is ~A PM" (- hour 12)))
+    (speak-en (format nil "It's is ~A PM" (- hour 12)))
 )))
 
 (defun publish-time-signal
