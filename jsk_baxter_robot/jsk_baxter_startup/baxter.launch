@@ -17,8 +17,10 @@
   <arg name="launch_robot_state_publisher" default="false"/>
   <arg name="left_electric_gripper" default="false"/>
   <arg name="right_electric_gripper" default="false"/>
-  <arg name="arm_interpolation" default="minjerk" />
-  <arg name="arm_control_mode" default="position_w_id" />
+  <arg name="arm_interpolation" default="minjerk"
+       doc="Baxter arm trajectory interpolation method: minjerk or bezier (default: minjerk)"/>
+  <arg name="arm_control_mode" default="position_w_id"
+       doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
   <arg name="USER_NAME" default="false"/>
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
   <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
