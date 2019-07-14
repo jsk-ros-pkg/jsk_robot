@@ -116,6 +116,8 @@ class InteractiveChatNode(object):
                         self.speak_weather_info(day=0)
                     elif '明日の天気' in voice_data:
                         self.speak_weather_info(day=1)
+                    elif '君の名は' in voice_data:
+                        speak_jp('エアロです。')
                     self.current_msg = None
             r.sleep()
 
@@ -155,6 +157,11 @@ class InteractiveChatNode(object):
                     place,
                     weather_info['forecasts'][0]['telop'].encode('utf-8'),
                     min_temp),
+                         wait=True)
+            else:
+                speak_jp('はい、今日の{}の天気は{}です。'.format(
+                    place,
+                    weather_info['forecasts'][day]['telop'].encode('utf-8')),
                          wait=True)
         elif day == 1:
             speak_jp('はい、明日の{}の天気は{}です。'.format(
