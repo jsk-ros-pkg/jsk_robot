@@ -17,6 +17,10 @@
   <arg name="launch_robot_state_publisher" default="false"/>
   <arg name="left_electric_gripper" default="false"/>
   <arg name="right_electric_gripper" default="false"/>
+  <arg name="arm_interpolation" default="minjerk"
+       doc="Baxter arm trajectory interpolation method: minjerk or bezier (default: minjerk)"/>
+  <arg name="arm_control_mode" default="position_w_id"
+       doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
   <arg name="USER_NAME" default="false"/>
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
   <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
@@ -44,7 +48,7 @@
   <group if="$(arg launch_joint_trajectory)">
     <node name="baxter_joint_trajectory"
           pkg="baxter_interface" type="joint_trajectory_action_server.py"
-          args="--interpolation minjerk" output="screen"/>
+          args="--interpolation $(arg arm_interpolation) --mode $(arg arm_control_mode)" output="screen"/>
     <node name="head_joint_trajectory"
           pkg="baxter_interface" type="head_action_server.py"
           args="" output="screen"/>
