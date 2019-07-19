@@ -15,7 +15,7 @@ namespace aero {
       void sendThumb(const aero::arm _arm, const double _rad, const double _t);
       void sendIndex(const aero::arm _arm, const double _rad, const double _t);
       void sendSeedHand(const aero::arm _arm, const double _thumb_rad, const double _index_rad, const double _t);
-      void sendTrxHand(const aero::arm _arm, const double _thumb_rad, const double _t)
+      void sendTrxHand(const aero::arm _arm, const double _thumb_rad, const double _t);
       robot_interface::TrajectoryClient::Ptr lhand;
       robot_interface::TrajectoryClient::Ptr rhand;
     };
