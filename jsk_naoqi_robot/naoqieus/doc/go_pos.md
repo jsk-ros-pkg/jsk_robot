@@ -21,6 +21,6 @@ Move to a specified distance.
 ### Sample
 
 ```
-; move to x=1.0 y=2.0 and rotate 30 degree 
-send *ri* :go-pos 1.0 2.0 30
+; move to x=0.1 y=0.1 and rotate 30 degree 
+send *ri* :go-pos 0.1 0.1 30
 ```
