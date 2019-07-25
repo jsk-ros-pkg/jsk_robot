@@ -22,9 +22,12 @@ else()
 endif()
 
 find_package(catkin REQUIRED COMPONENTS
+  amcl
   dynamic_reconfigure
+  geometry_msgs
   jsk_topic_tools
   mongodb_store
+  roscpp
   sensor_msgs
   urdf
 )
@@ -85,6 +88,14 @@ target_link_libraries(joint_states_throttle
   ${Boost_LIBRARIES}
   ${catkin_LIBRARIES})
 add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+
+add_executable(max_velocity_map_node
+  src/max_velocity_map_node.cpp
+)
+target_link_libraries(max_velocity_map_node
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES})
+add_dependencies(max_velocity_map_node ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
 install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}

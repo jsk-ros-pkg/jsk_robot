@@ -1,0 +1,8 @@
+image: eng2-7f-0.05_max_velocity_map.pgm
+resolution: 0.050
+origin: [-13.0, -48.5, 0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.192
+map_id: /eng2/7f
+mode: raw

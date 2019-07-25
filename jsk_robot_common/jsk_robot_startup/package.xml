@@ -14,6 +14,7 @@
   <build_depend>roseus</build_depend>
   <build_depend>diagnostic_msgs</build_depend>
   <build_depend>pr2_mechanism_controllers</build_depend>
+  <build_depend>geometry_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>urdf</build_depend>

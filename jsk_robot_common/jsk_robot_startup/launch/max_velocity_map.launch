@@ -1,0 +1,24 @@
+<launch>
+  <arg name="map_file" default="$(find jsk_robot_startup)/max_velocity_map/sample/eng2-7f-0.05.yaml"/>
+  <arg name="local_planner" default="/move_base/TrajectoryPlannerROS"/>
+  <arg name="cmd_vel_topic" default="/cmd_vel"/>
+  <arg name="use_rviz" default="false"/>
+
+  <!-- serve up a max_velocity_map -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" >
+    <remap from="map" to="max_velocity_map"/>
+  </node>
+
+  <!-- limit max velocity -->
+  <node pkg="max_velocity_map" type="max_velocity_map_node" name="max_velocity_node" output="screen">
+    <remap from="max_velocity_map" to="max_velocity_map"/>
+    <param name="local_planner" value="$(arg local_planner)"/>
+  </node>
+
+  <!-- republish cmd_vel to cmd_vel_x for visualization-->
+  <node pkg="topic_tools" type="transform" name="transform_velocity" output="screen"
+        args="$(arg cmd_vel_topic) $(arg cmd_vel_topic)_x std_msgs/Float32 'm.linear.x' --wait-for-start" >
+  </node>
+
+  <node if="$(arg use_rviz)" name="rviz_for_max_velocity_map" pkg="rviz" type="rviz" args="-d $(find jsk_robot_startup)/config/max_velocity_map.rviz" />
+</launch>
