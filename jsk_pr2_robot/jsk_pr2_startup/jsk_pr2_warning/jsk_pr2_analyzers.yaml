@@ -1,0 +1,223 @@
+analyzers:
+  devices:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Devices
+    analyzers:
+      joystick:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Joystick
+        expected: 'joy: Joystick Driver Status'
+        num_items: 1
+        remove_prefix: 'joy'
+      sound:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Sound
+        num_items: 1
+        contains: 'sound_play'
+      imu:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: IMU
+        find_and_remove_prefix: 'imu_node'
+        num_items: 4
+  lasers:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Lasers
+    analyzers:
+      base_hk:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Base Hokuyo
+        find_and_remove_prefix: base_hokuyo_node
+        num_items: 2
+      tilt_hk:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Tilt Hokuyo
+        find_and_remove_prefix: tilt_hokuyo_node
+        num_items: 2
+
+  cameras:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Cameras
+    analyzers:
+      camera_synchronizer:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Camera Synchronizer
+        find_and_remove_prefix: camera_synchronizer_node
+        num_items: 1
+      narrow_left:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Narrow (Left)
+        find_and_remove_prefix: narrow_stereo_left
+        num_items: 2
+      narrow_right:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Narrow (Right)
+        find_and_remove_prefix: narrow_stereo_right
+        num_items: 2
+      wide_left:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Wide (Left)
+        find_and_remove_prefix: wide_stereo_left
+        num_items: 2
+      wide_right:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Wide (Right)
+        find_and_remove_prefix: wide_stereo_right
+        num_items: 2
+      prosilica:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Prosilica
+        find_and_remove_prefix: prosilica_driver
+        num_items: 4
+      forearm_r:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Forearm (Right)
+        find_and_remove_prefix: r_forearm_cam
+        num_items: 2
+      forearm_l:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Forearm (Left)
+        find_and_remove_prefix: l_forearm_cam
+        num_items: 2
+      kinect_head:
+        type: diagnostic_aggregator/DiscardAnalyzer
+        path: Kinect (Head)
+        find_and_remove_prefix: kinect_head
+  computers:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Computers
+    analyzers:
+      cpu:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: CPU
+        expected: ['c1 CPU Temperature',
+                   'c1 CPU Usage',
+                   'c1 HD Temperature',
+                   'c1 HD Usage',
+                   'c2 CPU Temperature',
+                   'c2 CPU Usage',
+                   'c2 HD Temperature']
+  motors:
+    type: diagnostic_aggregator/GenericAnalyzer
+    path: Motors
+    startswith: [
+      'EtherCAT Device']
+    expected: [
+      'EtherCAT Master',
+      'EtherCAT Device (bl_caster_l_wheel_motor)',
+      'EtherCAT Device (bl_caster_r_wheel_motor)',
+      'EtherCAT Device (bl_caster_rotation_motor)',
+      'EtherCAT Device (br_caster_l_wheel_motor)',
+      'EtherCAT Device (br_caster_r_wheel_motor)',
+      'EtherCAT Device (br_caster_rotation_motor)',
+      'EtherCAT Device (fl_caster_l_wheel_motor)',
+      'EtherCAT Device (fl_caster_r_wheel_motor)',
+      'EtherCAT Device (fl_caster_rotation_motor)',
+      'EtherCAT Device (fr_caster_l_wheel_motor)',
+      'EtherCAT Device (fr_caster_r_wheel_motor)',
+      'EtherCAT Device (fr_caster_rotation_motor)',
+      'EtherCAT Device (laser_tilt_mount_motor)',
+      'EtherCAT Device (head_pan_motor)',
+      'EtherCAT Device (head_tilt_motor)',
+      'EtherCAT Device (led_projector)',
+      'EtherCAT Device (torso_lift_motor)',
+      'EtherCAT Device (r_gripper_motor)',
+      'EtherCAT Device (r_wrist_l_motor)',
+      'EtherCAT Device (r_wrist_r_motor)',
+      'EtherCAT Device (r_forearm_roll_motor)',
+      'EtherCAT Device (r_elbow_flex_motor)',
+      'EtherCAT Device (r_upper_arm_roll_motor)',
+      'EtherCAT Device (r_shoulder_lift_motor)',
+      'EtherCAT Device (r_shoulder_pan_motor)',
+      'EtherCAT Device (l_gripper_motor)',
+      'EtherCAT Device (l_wrist_l_motor)',
+      'EtherCAT Device (l_wrist_r_motor)',
+      'EtherCAT Device (l_forearm_roll_motor)',
+      'EtherCAT Device (l_elbow_flex_motor)',
+      'EtherCAT Device (l_upper_arm_roll_motor)',
+      'EtherCAT Device (l_shoulder_lift_motor)',
+      'EtherCAT Device (l_shoulder_pan_motor)']
+  joints:
+    type: diagnostic_aggregator/GenericAnalyzer
+    path: Joints
+    startswith: [
+      'Joint']
+    expected: [
+      'Joint (bl_caster_l_wheel_joint)',
+      'Joint (bl_caster_r_wheel_joint)',
+      'Joint (bl_caster_rotation_joint)',
+      'Joint (br_caster_l_wheel_joint)',
+      'Joint (br_caster_r_wheel_joint)',
+      'Joint (br_caster_rotation_joint)',
+      'Joint (fl_caster_l_wheel_joint)',
+      'Joint (fl_caster_r_wheel_joint)',
+      'Joint (fl_caster_rotation_joint)',
+      'Joint (fr_caster_l_wheel_joint)',
+      'Joint (fr_caster_r_wheel_joint)',
+      'Joint (fr_caster_rotation_joint)',
+      'Joint (laser_tilt_mount_joint)',
+      'Joint (head_pan_joint)',
+      'Joint (head_tilt_joint)',
+      'Joint (torso_lift_joint)',
+      'Joint (r_gripper_joint)',
+      'Joint (r_wrist_flex_joint)',
+      'Joint (r_wrist_roll_joint)',
+      'Joint (r_forearm_roll_joint)',
+      'Joint (r_elbow_flex_joint)',
+      'Joint (r_upper_arm_roll_joint)',
+      'Joint (r_shoulder_lift_joint)',
+      'Joint (r_shoulder_pan_joint)',
+      'Joint (l_gripper_joint)',
+      'Joint (l_wrist_flex_joint)',
+      'Joint (l_wrist_roll_joint)',
+      'Joint (l_forearm_roll_joint)',
+      'Joint (l_elbow_flex_joint)',
+      'Joint (l_upper_arm_roll_joint)',
+      'Joint (l_shoulder_lift_joint)',
+      'Joint (l_shoulder_pan_joint)']
+  power:
+    type: diagnostic_aggregator/GenericAnalyzer
+    path: 'Power System'
+    timeout: 10
+    num_items: 21
+    discard_stale: true
+    expected: [
+      'IBPS 0',
+      'IBPS 1',
+      'IBPS 2',
+      'IBPS 3',
+      'Smart Battery 0.0',
+      'Smart Battery 0.1',
+      'Smart Battery 0.2',
+      'Smart Battery 0.3',
+      'Smart Battery 1.0',
+      'Smart Battery 1.1',
+      'Smart Battery 1.2',
+      'Smart Battery 1.3',
+      'Smart Battery 2.0',
+      'Smart Battery 2.1',
+      'Smart Battery 2.2',
+      'Smart Battery 2.3',
+      'Smart Battery 3.0',
+      'Smart Battery 3.1',
+      'Smart Battery 3.2',
+      'Smart Battery 3.3']
+    startswith: [
+      'Power board',
+      'IBPS',
+      'Smart Battery']
+
+  controllers:
+    type: diagnostic_aggregator/GenericAnalyzer
+    path: 'Realtime Controllers'
+    expected: [ 
+      'Realtime Control Loop',
+      'Controller (head_camera_trigger)',
+      'Controller (projector_controller)',
+      'Controller (projector_trigger)',
+      'Controller (prosilica_inhibit_projector_controller)',
+      'Controller (r_forearm_cam_trigger)',
+      'Controller (l_forearm_cam_trigger)' ]
+    startswith: [
+      'Controller',
+      'Calibration']
+    discard_stale: true

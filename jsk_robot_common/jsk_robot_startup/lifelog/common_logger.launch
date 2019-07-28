@@ -30,12 +30,12 @@
   <!-- machine -->
   <arg name="localhost" default="true" />
   <arg unless="$(arg localhost)" name="machine"/>
-  <arg     if="$(arg localhost)" name="machine" value="localhost" />
+  <arg     if="$(arg localhost)" name="machine" default="localhost" />
   <machine if="$(arg localhost)" name="localhost" address="localhost" />
 
   <!-- nodelet -->
   <arg name="launch_manager" default="true" />
-  <arg     if="$(arg launch_manager)" name="manager" value="mongodb_record_nodelet_manager" />
+  <arg     if="$(arg launch_manager)" name="manager" default="mongodb_record_nodelet_manager" />
   <arg unless="$(arg launch_manager)" name="manager" />
 
   <!-- others -->
@@ -43,6 +43,7 @@
   <arg name="enable_monitor" default="false" />
   <arg name="log_rate" default="1.0" />
   <arg name="respawn" default="false" />
+  <arg name="vital_check" default="true" />
   <arg name="vital_rate" default="0.1" />
 
   <!-- nodelet manager -->
@@ -131,6 +132,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
       <node name="rgb_camera_info_logger"
@@ -142,6 +144,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
     </group>
@@ -155,6 +158,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
       <node name="depth_camera_info_logger"
@@ -166,6 +170,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
     </group>
@@ -200,6 +205,7 @@
         <rosparam subst_value="true">
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg joint_states_topic)
+          vital_check: $(arg vital_check)
         </rosparam>
       </node>
     </group>
