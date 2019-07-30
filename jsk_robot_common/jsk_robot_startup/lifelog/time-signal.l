@@ -16,7 +16,7 @@
     (speak-en (format nil "It's ~A AM" hour))
    )
    (t
-    (speak-en (format nil "It's is ~A PM" (- hour 12)))
+    (speak-en (format nil "It's ~A PM" (- hour 12)))
 )))
 
 (defun publish-time-signal
