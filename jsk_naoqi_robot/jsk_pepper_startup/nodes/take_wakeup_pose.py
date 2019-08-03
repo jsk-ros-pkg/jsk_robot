@@ -25,6 +25,11 @@ from naoqi_bridge_msgs.srv import (
     SetStringResponse,
     SetString,
 )
+from nao_interaction_msgs.srv import (
+    SetAudioMasterVolume,
+    SetAudioMasterVolumeRequest,
+    SetAudioMasterVolumeResponse
+)
 import math
 from trajectory_msgs.msg import JointTrajectoryPoint
 
@@ -63,6 +68,14 @@ class TakeWakeUpPose():
             rospy.wait_for_service('/naoqi_driver/set_language')
             set_language_proxy = rospy.ServiceProxy('/naoqi_driver/set_language', SetString)
             set_language_proxy(language)
+
+    def set_volume(self, volume):
+        rospy.wait_for_service('/naoqi_driver/set_volume')
+        set_volume_proxy = rospy.ServiceProxy('/naoqi_driver/set_volume', SetAudioMasterVolume)
+        vol = SetAudioMasterVolumeRequest()
+        vol.master_volume.data = volume
+        set_volume_proxy(vol)
+        return SetAudioMasterVolumeResponse()
 
     def movement (self, goal):
         # reference: https://github.com/ros-naoqi/nao_robot/blob/master/nao_apps/scripts/test_joint_angles.py
@@ -132,6 +145,7 @@ class TakeWakeUpPose():
             self.servo_on()
             rospy.sleep(1)
             # speak
+            self.set_volume(40)
             self.set_language("Japanese")
             msg = String()
             msg.data = "\\rspd=40\\\\vct=140\\ムニャムニャ\\vct=120\\\\rspd=100\\"
