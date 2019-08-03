@@ -37,7 +37,7 @@ def callback (m, expr, topic, index):
         else:
             selects[index] = (None, rospy.Time.now())
     except Exception as e:
-        rospy.logerr('Rrror: '+str(e))
+        rospy.logerr('Error: '+str(e))
         rospy.logerr(traceback.format_exc())
     lockobj.release()
 
