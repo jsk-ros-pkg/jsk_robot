@@ -1,7 +1,0 @@
-<launch>
-  <group if="false" >
-  <include if="false" file="$(find jsk_fetch_startup)/launch/fetch_bringup.launch">
-    <arg name="launch_teleop" value="false" />
-  </include>
-  </group>
-</launch>
