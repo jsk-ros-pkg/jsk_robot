@@ -33,6 +33,11 @@
       - control_msgs/FollowJointTrajectoryActionFeedback
       - control_msgs/FollowJointTrajectoryActionGoal
       - control_msgs/FollowJointTrajectoryActionResult
+      - control_msgs/GripperCommandActionFeedback
+      - control_msgs/GripperCommandActionGoal
+      - control_msgs/GripperCommandActionResult
+      - control_msgs/SingleJointPositionActionResult
+      - control_msgs/SingleJointPositionActionGoal
       - sound_play/SoundRequestActionResult
       - sound_play/SoundRequestActionGoal
   </rosparam>
