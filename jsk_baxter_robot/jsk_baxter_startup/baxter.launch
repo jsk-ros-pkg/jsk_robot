@@ -94,10 +94,16 @@
   </include>
 
   <!-- logging node for Baxter -->
-  <include if="$(arg launch_db)"
-           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/db_client.launch" >
-    <arg name="twitter" value="$(arg launch_twitter)"/>
-  </include>
+  <group if="$(arg launch_db)">
+    <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+      <arg name="use_daemon" value="true"/>
+      <arg name="port" value="27017" />
+      <arg name="repl_set_mode" value="false" />
+    </include>
+    <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/db_client.launch" >
+      <arg name="twitter" value="$(arg launch_twitter)"/>
+    </include>
+  </group>
 
   <!-- Wrench -->
   <include if="$(arg launch_wrench)"
