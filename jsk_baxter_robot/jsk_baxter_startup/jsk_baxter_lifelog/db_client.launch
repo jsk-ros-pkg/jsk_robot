@@ -3,7 +3,6 @@
   <param name="robot/type" value="baxter"/>
   <param name="robot/name" value="baxter"/>
 
-  <arg name="visualize_log" default="false" />
   <arg name="twitter" default="true" />
   <arg name="output" default="screen" />
 
