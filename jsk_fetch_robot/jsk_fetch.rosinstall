@@ -26,6 +26,6 @@
 # indigo is already EOL and 2.1.13 is never released.
 # set the same version as https://github.com/jsk-ros-pkg/jsk_robot/blob/master/.travis.rosinstall.indigo#L7-L11
 - git:
-    local-name: jsk-ros-pkg
+    local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: 2.1.13
