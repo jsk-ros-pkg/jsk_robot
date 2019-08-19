@@ -28,7 +28,6 @@
     <arg name="save_object_detection" value="false" />
     <arg name="save_action" value="true" />
     <arg name="camera_ns" value="head_camera" />
-    <arg name="sensor_frame_id" value="head_camera_rgb_optical_frame" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="localhost" value="true" />
