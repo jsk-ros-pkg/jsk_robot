@@ -6,7 +6,7 @@
     version: kinetic-devel
 # indigo is already EOL and 2.1.13 is never released. (2019/08/16)
 - git:
-    local-name: jsk-ros-pkg
+    local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: 2.1.13
 # jsk_robot_startup LightweightLogger requires mongodb_store 0.4.5.
