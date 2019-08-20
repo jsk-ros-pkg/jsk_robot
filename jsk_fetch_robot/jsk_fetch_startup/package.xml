@@ -42,7 +42,7 @@
 
   <!-- for fetch speech recognition -->
   <run_depend>julius_ros</run_depend>
-  <run_depend>respeaker_ros</run_depend>
+  <run_depend version_gte="2.1.13">respeaker_ros</run_depend>
 
   <test_depend>rostest</test_depend>
 

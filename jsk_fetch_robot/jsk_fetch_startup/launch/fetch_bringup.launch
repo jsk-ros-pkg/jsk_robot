@@ -92,6 +92,16 @@
     <arg name="speech_to_text" value="speech_to_text_google"/>
     <arg name="language" value="ja-JP"/>
   </include>
+  <!-- set fetch speak action server names -->
+  <!-- this parameter is for speech_to_text node in respeaker_ros -->
+  <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/168 -->
+  <group ns="speech_to_text">
+    <rosparam>
+       tts_action_names:
+         - sound_play
+         - robotsound_jp
+    </rosparam>
+  </group>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
