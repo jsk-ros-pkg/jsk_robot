@@ -17,11 +17,11 @@
     uri: https://github.com/strands-project/mongodb_store.git
     version: 0.4.4
 # to install jsk_robot_startup/lifelog/common_logger.launch
-# remove after 708yamaguchi/jsk_robot (fetch-ws branch) is merged and released
+# remove after current master is released
 - git:
     local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/708yamaguchi/jsk_robot.git
-    version: fetch-ws
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
 # to pass build of jsk_robot
 # remove after 2.2.10 is released
 - git:
