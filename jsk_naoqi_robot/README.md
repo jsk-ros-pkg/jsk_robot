@@ -105,24 +105,12 @@ sudo apt-get install ros-${ROS_DISTRO}-pepper-meshes
 sudo apt-get install ros-${ROS_DISTRO}-nao-meshes
 ```
 
-If you have ROS >= kinetic, please use [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).  
-This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for ROS >= kinetic.
-
-```
-cd  catkin_ws/src
-wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
-wstool update naoqi_dashboard
-cd naoqi_dashboard
-git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
-git fetch kochigami
-git checkout -b modify-for-kinetic kochigami/kochigami-develop
-```
+Note that `pepper.rosinstall` includes necessary patches for ROS kinetic, such as [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).
 
 Finally, please compile them.  
 
 ```
-cd ../.. # catkin_ws
-catkin build --continue-on-failure
+catkin build peppereus
 source devel/setup.bash
 ```
 
@@ -131,89 +119,10 @@ source devel/setup.bash
 
 4. (optional) For NAO and Pepper developers
 
-Please add following source codes which you need for debugging.
-
-```
-cd  catkin_ws/src
-wstool set nao_robot --git https://github.com/ros-naoqi/nao_robot
-(if you use ROS >= melodic) wstool update nao_robot
-wstool set pepper_robot --git https://github.com/ros-naoqi/pepper_robot
-wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
-wstool update naoqi_driver
-wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
-wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-```
-
-5. (optional) If you want to use [`ros_speech_recognition`](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/ros_speech_recognition) with NAO microphone
-
-Please check the version of ros-$ROS_DISTRO-ros-speech-recognition
-
-```
-sudo apt update
-apt search ros-$ROS_DISTRO-ros-speech-recognition
-```
-
-If version of ros_speech_recognition < 2.1.18
-
-```
-cd catkin_ws/src
-mkdir ros_speech_recognition
-cd ros_speech_recognition
-git init
-git config core.sparsecheckout true
-git remote add origin https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-echo ros_speech_recognition > .git/info/sparse-checkout
-git pull origin master
-cd ../..
-catkin build ros_speech_recognition
-source devel/setup.bash
-```
-
-If version of ros_speech_recognition >=2.1.18
-```
-sudo apt-get install ros-$ROS_DISTRO-ros-speech-recognition
-```
-
-
 ## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
-For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
-
-```
-cd catkin_ws/src
-wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
-wstool update naoqi_bridge
-cd naoqi_bridge
-git remote add kochigami https://github.com/kochigami/naoqi_bridge.git
-git fetch kochigami
-git checkout -b kochigami-develop kochigami/kochigami-develop
-
-cd .. # catkin_ws/src
-wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-wstool update naoqi_bridge_msgs
-cd naoqi_bridge_msgs
-git remote add kochigami https://github.com/kochigami/naoqi_bridge_msgs.git
-git fetch kochigami
-git checkout -b kochigami-develop kochigami/kochigami-develop
-```
-
-In addition, if you have ROS >= kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
-
-```
-cd .. # catkin_ws/src
-wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
-wstool update nao_interaction
-```
-
-Finally, please compile them.  
-
-```
-cd .. # catkin_ws
-catkin clean
-catkin build --continue-on-failure
-source devel/setup.bash
-```
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. [pepper.rosinstall](https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall) file includes this branch for `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` repositories.
 
 ## NAO & Pepper
 
