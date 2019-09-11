@@ -39,7 +39,7 @@ class CheckDriverBoardsNode:
 
     def callback( self, event ):
 
-        rospy.loginfo( 'read data from motor driver boards and publish them to ' + topicname + ' topic.' )
+        rospy.logdebug( 'read data from motor driver boards and publish them to ' + topicname + ' topic.' )
 
         for board_id in list_board_id:
             msg = BoardInfo()
