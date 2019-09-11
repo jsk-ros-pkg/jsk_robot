@@ -31,18 +31,10 @@ list_board_id = [ 0,   # mainboard
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument( '--topicname',
-                         help='topicname of result of read_board commands',
-                         default='/check_board_info' )
-    args = parser.parse_args()
-
-    topicname = args.topicname
-
     binary_str = '/opt/ros/' + os.environment['ROS_DISTRO'] + '/lib/fetch_drivers/read_board'
 
     rospy.init_node( 'check_board_info' )
-    publisher = rospy.Publisher( topicname, BoardInfo, queue_size=10 )
+    publisher = rospy.Publisher('~output', BoardInfo, queue_size=1)
     rate = rospy.Rate( 1 )
 
     while not rospy.is_shutdown():
