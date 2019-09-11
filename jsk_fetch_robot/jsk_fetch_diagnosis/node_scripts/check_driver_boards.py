@@ -29,25 +29,25 @@ list_board_id = [ 0,   # mainboard
                   63,  # charger 
                   128] # gripper
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument( "--topicname",
-                         help="topicname of result of read_board commands",
-                         default="/check_board_info" )
+    parser.add_argument( '--topicname',
+                         help='topicname of result of read_board commands',
+                         default='/check_board_info' )
     args = parser.parse_args()
 
     topicname = args.topicname
 
-    binary_str = "/opt/ros/" + os.environment["ROS_DISTRO"] + "/lib/fetch_drivers/read_board"
+    binary_str = '/opt/ros/' + os.environment['ROS_DISTRO'] + '/lib/fetch_drivers/read_board'
 
-    rospy.init_node( "check_board_info" )
+    rospy.init_node( 'check_board_info' )
     publisher = rospy.Publisher( topicname, BoardInfo, queue_size=10 )
     rate = rospy.Rate( 1 )
 
     while not rospy.is_shutdown():
 
-        rospy.loginfo( "read data from motor driver boards and publish them to " + topicname + " topic." )
+        rospy.loginfo( 'read data from motor driver boards and publish them to ' + topicname + ' topic.' )
 
         for board_id in list_board_id:
             msg = BoardInfo()
