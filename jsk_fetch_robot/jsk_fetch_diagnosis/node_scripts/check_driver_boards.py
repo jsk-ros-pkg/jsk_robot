@@ -10,6 +10,7 @@ import rospy
 
 from jsk_fetch_diagnosis.msg import BoardInfo
 
+binary_str = '/opt/ros/' + os.environment['ROS_DISTRO'] + '/lib/fetch_drivers/read_board'
 list_board_id = [ 0,   # mainboard
                   17,  # l_wheel
                   18,  # r_wheel
@@ -29,15 +30,14 @@ list_board_id = [ 0,   # mainboard
                   63,  # charger 
                   128] # gripper
 
-if __name__ == '__main__':
+class CheckDriverBoardsNode:
 
-    binary_str = '/opt/ros/' + os.environment['ROS_DISTRO'] + '/lib/fetch_drivers/read_board'
+    def __init__( self ):
+        
+        self.publisher  = rospy.Publisher('~output', BoardInfo, queue_size=1)
+        rospy.Timer( rospy.Duration( 1.0 ), self.callback )
 
-    rospy.init_node( 'check_board_info' )
-    publisher = rospy.Publisher('~output', BoardInfo, queue_size=1)
-    rate = rospy.Rate( 1 )
-
-    while not rospy.is_shutdown():
+    def callback( self, event ):
 
         rospy.loginfo( 'read data from motor driver boards and publish them to ' + topicname + ' topic.' )
 
@@ -46,6 +46,11 @@ if __name__ == '__main__':
             msg.header.stamp = rospy.Time.now()
             msg.board_id = board_id
             msg.board_info = subprocess.check_output( [ binary_str, str( board_id ) ] )
-            publisher.publish( msg )
+            self.publisher.publish( msg )
 
-        rate.sleep()
+
+if __name__ == '__main__':
+
+    rospy.init_node( 'check_board_info' )
+    cdbn = CheckDriverBoardsNode()
+    rospy.spin()
