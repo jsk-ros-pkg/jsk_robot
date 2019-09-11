@@ -3,10 +3,11 @@
 
 import argparse
 import os
+import subprocess
 import sys
 
-import subprocess
 import rospy
+
 from jsk_fetch_diagnosis.msg import BoardInfo
 
 list_board_id = [ 0,   # mainboard
