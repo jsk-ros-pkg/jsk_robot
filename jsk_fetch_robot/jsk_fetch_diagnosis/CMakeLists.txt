@@ -14,11 +14,6 @@ add_message_files(
   BoardInfo.msg
 )
 
-add_service_files(
-  DIRECTORY srv
-  FILES
-)
-
 generate_messages(
   DEPENDENCIES
   std_msgs  # Or other packages containing msgs
