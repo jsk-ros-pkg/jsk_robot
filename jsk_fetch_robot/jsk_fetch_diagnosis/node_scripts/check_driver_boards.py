@@ -10,9 +10,7 @@ import rospy
 
 from jsk_fetch_diagnosis.msg import BoardInfo
 
-binary_str = ('/opt/ros/'
-              os.environment['ROS_DISTRO']
-              '/lib/fetch_drivers/read_board')
+binary_str = '/opt/ros/' + os.environ['ROS_DISTRO'] + '/lib/fetch_drivers/read_board'
 list_board_id = [0,    # mainboard
                  17,   # l_wheel
                  18,   # r_wheel
@@ -42,9 +40,7 @@ class CheckDriverBoardsNode:
 
     def callback(self, event):
 
-        rospy.logdebug(('read data from motor driver boards and publish them to '
-                        topicname
-                        ' topic.'))
+        rospy.logdebug('read data from motor driver boards and publish')
 
         for board_id in list_board_id:
             msg = BoardInfo()
