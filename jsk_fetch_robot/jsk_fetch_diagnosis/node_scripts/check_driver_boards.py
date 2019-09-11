@@ -48,9 +48,10 @@ class CheckDriverBoardsNode:
             msg.board_id = board_id
             try:
                 msg.board_info = subprocess.check_output([binary_str, str(board_id)])
+                rospy.logdebug("read_board command with id {} succeeded".format(board_id))
             except subprocess.CalledProcessError:
                 msg.board_info = "ERROR: command returned non-zero exit status"
-                rospy.logerr("ERROR: command returned non-zero exit status while read board with id {}".format(board_id))
+                rospy.logerr("command returned non-zero exit status while read board with id {}".format(board_id))
 
             self.publisher.publish(msg)
 
