@@ -28,6 +28,7 @@
         pkg="aero_teleop"  type="xbox_one_teleop_node"
         output="log">
     <rosparam command="load" file="$(arg config_filepath)" />
+    <remap from="/cmd_vel" to="/teleop/cmd_vel" />
     <remap from="/joy" to="/joy_msg_switcher/angle_pub" />
   </node>
 

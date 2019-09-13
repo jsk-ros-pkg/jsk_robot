@@ -1,74 +1,30 @@
 - spot:
-    name: conveni_shelf
+    name: conveniShelf1
     position:
-      x: -3.993
-      y: -5.295
+      x: 1.775
+      y: -16.023
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.917
-      w: -0.398
+      z: 1.0
+      w: 0.016
 - spot:
-    name: worktable
+    name: conveniShelf2
     position:
-      x: -3.022
-      y: -3.921
+      x: 2.0
+      y: -15.597
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: -0.369
-      w: 0.929
+      z: -0.013
+      w: 1.0
 - spot:
-    name: table_north
+    name: conveniShelf2Edge
     position:
-      x: -1.221
-      y: -0.679
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.908
-      w: -0.419
-- spot:
-    name: table_south
-    position:
-      x: -2.588
-      y: -2.243
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.411
-      w: 0.912
-- spot:
-    name: table_west
-    position:
-      x: -2.917
-      y: -0.498
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: -0.338
-      w: 0.941
-- spot:
-    name: entrance
-    position:
-      x: -1.25
-      y: 3.225
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.707
-      w: 0.707
-- spot:
-    name: home
-    position:
-      x: -0.73382
-      y: -1.0077
+      x: 2.250
+      y: -15.185
       z: 0.0
     orientation:
       x: 0.0
@@ -76,24 +32,90 @@
       z: 0.0
       w: 1.0
 - spot:
-    name: kitchen
+    name: conveniShelf2EdgePre
     position:
-      x: -1.901
-      y: 0.328
+      x: 1.970
+      y: -15.185
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.401
-      w: 0.916
+      z: 0.0
+      w: 1.0
+- spot:
+    name: closet
+    position:
+      x: 7.770
+      y: -15.321
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.013
+      w: 1.0
+- spot:
+    name: workTable
+    position:
+      x: 3.727
+      y: -14.714
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.712
+      w: 0.702
+- spot:
+    name: kitchen
+    position:
+      x: 7.565
+      y: -13.924
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.022
+      w: 1.0
 - spot:
     name: garbage
     position:
-      x: -2.297
-      y: 0.552
+      x: 7.775
+      y: -13.137
       z: 0.0
     orientation:
       x: 0.0
       y: 0.0
-      z: 0.927
-      w: 0.375
+      z: 0.708
+      w: 0.706
+- spot:
+    name: washingMachine
+    position:
+      x: 7.210
+      y: -12.819
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.712
+      w: 0.702
+- spot:
+    name: room610Exit
+    position:
+      x: 1.720
+      y: -14.510
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 1.0
+      w: 0.002
+- spot:
+    name: room610Entrance
+    position:
+      x: -0.362
+      y: -14.440
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.011
+      w: 1.0
