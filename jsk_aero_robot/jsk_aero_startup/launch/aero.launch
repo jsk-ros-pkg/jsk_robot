@@ -7,9 +7,9 @@
 
   <arg name="use_teleop" default="true"/>
   <arg name="use_ik_teleop" default="true"/>
-
   <arg name="use_base" default="true"/>
   <arg name="use_sensors" default="true"/>
+  <arg name="use_speech_interaction" default="true"/>
 
   <!-- Bringup Minimal Aero -->
   <include file="$(find jsk_aero_startup)/launch/aero_bringup.launch"/>
@@ -22,7 +22,7 @@
              unless="$(arg use_ik_teleop)"/>
   </group>
 
-  <!-- Bringup Base -->
+  <!-- Bringup Aero Base -->
   <include file="$(find jsk_aero_startup)/launch/aero_base.xml"
            if="$(arg use_base)"/>
 
@@ -35,15 +35,9 @@
     <arg name="file" value="$(arg spot_file)" />
   </include>
 
-  <include file="$(find jsk_aero_startup)/launch/text_to_speech.launch" >
+  <!-- Bingup Speech Interaction Node -->
+  <include file="$(find jsk_aero_startup)/launch/speech_interaction.launch"
+           if="$(arg use_speech_interaction)">
   </include>
-
-  <include file="$(find jsk_aero_startup)/launch/speech_recognition.launch" >
-  </include>
-
-  <node name="interactive_chat_node"
-        pkg="jsk_aero_startup" type="interactive_chat_node.py"
-        output="screen" >
-  </node>
 
 </launch>
