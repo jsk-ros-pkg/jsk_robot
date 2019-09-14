@@ -3,6 +3,7 @@
   <arg name="launch_gui" default="true" />
   <arg name="launch_moveit" default="true" />
   <arg name="launch_move_base" default="true" />
+  <arg name="launch_sound_play" default="true" />
   <arg name="paused" default="false" />
   <arg name="world" default="worlds/empty.world" />
   <arg name="map_frame" default="eng2" />
@@ -33,6 +34,7 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_bringup.launch">
     <arg name="launch_moveit" value="$(arg launch_moveit)" />
     <arg name="launch_move_base" value="$(arg launch_move_base)" />
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="boot_sound" value="false" />
     <arg name="launch_teleop" value="false" /> <!-- duplicates cmd_vel_mux nodes -->

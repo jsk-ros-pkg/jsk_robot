@@ -21,6 +21,8 @@
               (ros::ros-debug "[:ik-prepared-poses] returns ~A" poses)
               (return-from :ik-prepared-poses poses))
             )))
+  (:inverse-kinematics-raw (&rest args)
+    (send-super* :inverse-kinematics args))
   (:inverse-kinematics
    (target-coords &rest args &key (avoid-collision-distance 5) (warnp) (dump-command) &allow-other-keys)
    "Compute Inverse Kinematics with some strategies.

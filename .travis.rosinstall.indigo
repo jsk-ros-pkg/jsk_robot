@@ -4,3 +4,8 @@
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
     version: kinetic-devel
+# indigo is already EOL and 2.1.13 is never released. (2019/08/16)
+- git:
+    local-name: jsk-ros-pkg
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: 2.1.13
