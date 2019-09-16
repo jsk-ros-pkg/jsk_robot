@@ -1,6 +1,7 @@
 <launch>
   <arg name="use_base" default="true"/>
   <arg name="use_sensors" default="true"/>
+  <arg name="use_lifelog" default="true"/>
   <arg name="spot_file" default="$(find jsk_aero_startup)/rooms/610/spot.yaml"/>
 
   <arg name="machine" default="$(optenv AERO aeroc)"/>
@@ -18,6 +19,10 @@
     <arg name="use_ps4eye" value="$(arg use_ps4eye)"/>
     <arg name="use_kinect" value="$(arg use_kinect)"/>
   </include>
+
+  <!-- Bringup Lifelog Nodes -->
+  <include file="$(find jsk_aero_startup)/launch/aero_lifelog.xml"
+           if="$(arg use_lifelog)" />
 
   <!-- Bringup Spot Manager -->
   <include file="$(find aero_std)/launch/spot_manager.launch">
