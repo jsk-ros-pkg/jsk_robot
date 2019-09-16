@@ -6,9 +6,9 @@
   <include file="$(find jsk_aero_startup)/launch/speech_recognition.launch" >
   </include>
 
-  <!-- <node name="interactive_chat_node" -->
-  <!--       pkg="jsk_aero_startup" type="interactive_chat_node.py" -->
-  <!--       output="screen" > -->
-  <!-- </node> -->
+  <node name="interactive_chat_node"
+        pkg="jsk_aero_startup" type="interactive_chat_node.py"
+        output="screen" >
+  </node>
 
 </launch>
