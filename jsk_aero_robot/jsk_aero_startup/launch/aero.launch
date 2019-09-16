@@ -1,24 +1,26 @@
 <launch>
   <arg name="use_base" default="true"/>
-  <arg name="use_ps4eye" default="true"/>
-  <arg name="use_kinect" default="true"/>
   <arg name="use_lifelog" default="true"/>
+  <arg name="use_sensors" default="true"/>
 
-  <arg name="ROBOT" default="$(optenv ROBOT aero)"/>
+  <arg name="machine" default="$(optenv AERO aeroc)"/>
+  <machine name="$(arg machine)" address="$(arg machine)"/>
 
-  <include file="$(find jsk_aero_startup)/$(arg ROBOT).machine"/>
+  <!-- Bringup Minimal Aero -->
+  <include file="$(find jsk_aero_startup)/launch/aero_bringup.launch"/>
 
+  <!-- Bringup Aero Base -->
   <include file="$(find jsk_aero_startup)/launch/aero_base.xml"
            if="$(arg use_base)"/>
 
-  <include file="$(find jsk_aero_startup)/launch/aero_sensors.xml">
-    <arg name="use_ps4eye" value="$(arg use_ps4eye)"/>
-    <arg name="use_kinect" value="$(arg use_kinect)"/>
+  <!-- Bringup Camera Nodes -->
+  <include file="$(find jsk_aero_startup)/launch/aero_sensors.xml"
+           if="$(arg use_sensors)">
+    <arg name="machine" value="$(arg machine)"/>
   </include>
 
+  <!-- Bringup Lifelog Nodes -->
   <include file="$(find jsk_aero_startup)/launch/aero_lifelog.xml"
            if="$(arg use_lifelog)" />
-
-  <node name="tf2_buffer_server" pkg="tf2_ros" type="buffer_server"/>
 
 </launch>
