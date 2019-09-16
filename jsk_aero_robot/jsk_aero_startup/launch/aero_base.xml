@@ -5,7 +5,6 @@
   <arg name="config_file" default="$(find aero_teleop)/config/cmd_vel_conf.yaml"/>
   <arg name="use_cmd_vel_mux" default="true"/>
   <arg name="use_base_trajectory" default="true"/>
-  <arg name="use_laser_map_matching" default="true"/>
 
   <arg name="use_jsk_maps" default="true" />
   <arg name="map_topic" value="map" if="$(arg use_jsk_maps)"/>
