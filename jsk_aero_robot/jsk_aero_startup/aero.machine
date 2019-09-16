@@ -3,15 +3,19 @@
   <arg name="AERO"
        default="$(optenv AERO aeroc)"/>
   <arg name="AERO_MASTER"
-       default="$(optenv AERO_MASTER aeroc)"/>
+       default="$(optenv AERO_MASTER aerov)"/>
   <arg name="REMOTE_USER_NAME"
        default="$(optenv REMOTE_USER_NAME grxuser)"/>
   <arg name="CONFIG_PATH"
-       default="$(optenv CONFIG_PATH /home/grxuser/ros/kinetic/devel/env/sh)"/>
+       default="$(optenv CONFIG_PATH /home/grxuser/ros/kinetic/devel/env.sh)"/>
+  <arg name="use_multi_machine" default="false" />
 
   <machine name="$(arg AERO)" address="$(arg AERO)"
            user="$(arg REMOTE_USER_NAME)"
            env-loader="$(arg CONFIG_PATH)"/>
-  <machine name="$(arg AERO_MASTER)" address="$(arg AERO_MASTER)" default="true"/>
+
+  <group if="$(arg use_multi_machine)">
+    <machine name="$(arg AERO_MASTER)" address="$(arg AERO_MASTER)" default="true"/>
+  </group>
 
 </launch>
