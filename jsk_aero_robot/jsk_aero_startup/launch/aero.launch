@@ -1,15 +1,12 @@
 <launch>
-  <arg name="ROBOT" default="$(optenv ROBOT aero)"/>
-  <arg name="USER" default="$(optenv USER user)"/>
-  <arg name="spot_file" default="$(find jsk_aero_startup)/rooms/610/spot.yaml"/>
-
-  <machine name="localhost" address="localhost" />
-
   <arg name="use_teleop" default="true"/>
   <arg name="use_ik_teleop" default="true"/>
   <arg name="use_base" default="true"/>
   <arg name="use_sensors" default="true"/>
   <arg name="use_speech_interaction" default="true"/>
+  <arg name="spot_file" default="$(find jsk_aero_startup)/rooms/610/spot.yaml"/>
+
+  <include file="$(find jsk_aero_startup)/aero.machine"/>
 
   <!-- Bringup Minimal Aero -->
   <include file="$(find jsk_aero_startup)/launch/aero_bringup.launch"/>
