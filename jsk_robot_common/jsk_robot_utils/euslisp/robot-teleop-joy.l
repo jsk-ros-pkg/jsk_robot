@@ -5,39 +5,52 @@
 (defvar *send-time* 1000)
 (defvar *head-controller-gain* 0.30)
 (defvar *debug-teleop-joy* nil)
+(defvar *joy-type* :ps3)
 
 (defun teleop-joy-cb (msg)
   ;; mode callback
-  (let* ((axes (send msg :axes))
-         (Lstick (coerce (subseq axes 0 2) float-vector))
-         (Rstick (coerce (subseq axes 2 4) float-vector))
-         (buttons (send msg :buttons))
-
-         (select (elt buttons 0))
-         (start (elt buttons 3))
-         (L2 (elt buttons 8))
-         (R2 (elt buttons 9))
-         (R1 (elt buttons 11))
-         (right/left       (elt Rstick 0))
-         (forward/backward (elt Rstick 1))
-         (up/down          (elt Lstick 1))
-
-         (right    (elt buttons  5)) ;; roll+
-         (left     (elt buttons  7)) ;; roll-
-         (triangle (elt buttons 12)) ;; pitch+
-         (cross    (elt buttons 14)) ;; pitch-
-         (square   (elt buttons 15)) ;; yaw+
-         (circle   (elt buttons 13)) ;; yaw-
-
-         (roll  (* *max-rot* (- right left)))
-         (pitch (* *max-rot* (- triangle cross)))
-         (yaw   (* *max-rot* (- square circle)))
-
-         (up       (elt buttons  4)) ;; grasp
-         (down     (elt buttons  6)) ;; release
-
+  (let* (Lstick Rstick
+         select start
+         L2 R2 R1
+         right/left
+         forward/backward
+         up/down
+         right left
+         triangle cross
+         square circle
+         roll pitch yaw
+         up down
+         joy-cmd-map
          arm pos
          target-coords)
+
+    (setq joy-cmd-map (joy-cmd-map-setup msg))
+    (when (not joy-cmd-map)
+      (return-from teleop-joy-cb nil))
+
+    (setq Lstick   (gethash :Lstick joy-cmd-map))
+    (setq Rstick   (gethash :Rstick joy-cmd-map))
+    (setq select   (gethash :select   joy-cmd-map))
+    (setq start    (gethash :start    joy-cmd-map))
+    (setq L2       (gethash :L2       joy-cmd-map))
+    (setq R2       (gethash :R2       joy-cmd-map))
+    (setq R1       (gethash :R1       joy-cmd-map))
+    (setq right    (gethash :right    joy-cmd-map))
+    (setq left     (gethash :left     joy-cmd-map))
+    (setq triangle (gethash :triangle joy-cmd-map))
+    (setq cross    (gethash :cross    joy-cmd-map))
+    (setq square   (gethash :square   joy-cmd-map))
+    (setq circle   (gethash :circle   joy-cmd-map))
+    (setq up       (gethash :up       joy-cmd-map))
+    (setq down     (gethash :down     joy-cmd-map))
+
+    (setq right/left       (elt Rstick 0))
+    (setq forward/backward (elt Rstick 1))
+    (setq up/down          (elt Lstick 1))
+
+    (setq roll  (* *max-rot* (- right left)))
+    (setq pitch (* *max-rot* (- triangle cross)))
+    (setq yaw   (* *max-rot* (- square circle)))
 
     ;; reset pose
     (when (and *reset-loop-enable* (eq L2 1) (eq R2 1) (eq left 1))
@@ -177,6 +190,53 @@
     (if *look-at-loop-enable* (look-at-loop))
     (ros::sleep))
   )
+
+(defun joy-cmd-map-setup (msg)
+  (let (joy-cmd-map axes buttons)
+    (setq joy-cmd-map (make-hash-table))
+    (setq axes (send msg :axes))
+
+    (setq buttons (send msg :buttons))
+
+    (cond
+     ((eq *joy-type* :ps3)
+      (setf (gethash :Lstick   joy-cmd-map) (coerce (subseq axes 0 2) float-vector))
+      (setf (gethash :Rstick   joy-cmd-map) (coerce (subseq axes 2 4) float-vector))
+      (setf (gethash :select   joy-cmd-map) (elt buttons  0))
+      (setf (gethash :start    joy-cmd-map) (elt buttons  3))
+      (setf (gethash :L2       joy-cmd-map) (elt buttons  8))
+      (setf (gethash :R2       joy-cmd-map) (elt buttons  9))
+      (setf (gethash :R1       joy-cmd-map) (elt buttons 11))
+      (setf (gethash :right    joy-cmd-map) (elt buttons  5)) ;; roll+
+      (setf (gethash :left     joy-cmd-map) (elt buttons  7)) ;; roll-
+      (setf (gethash :triangle joy-cmd-map) (elt buttons 12)) ;; pitch+
+      (setf (gethash :cross    joy-cmd-map) (elt buttons 14)) ;; pitch-
+      (setf (gethash :square   joy-cmd-map) (elt buttons 15)) ;; yaw+
+      (setf (gethash :circle   joy-cmd-map) (elt buttons 13)) ;; yaw-
+      (setf (gethash :up       joy-cmd-map) (elt buttons  4)) ;; grasp
+      (setf (gethash :down     joy-cmd-map) (elt buttons  6)) ;; release
+      )
+     ((eq *joy-type* :ps4)
+      (setf (gethash :Lstick   joy-cmd-map) (float-vector (elt axes 0) (elt axes 1)))
+      (setf (gethash :Rstick   joy-cmd-map) (float-vector (elt axes 2) (elt axes 5)))
+      (setf (gethash :select   joy-cmd-map) (elt buttons   8))
+      (setf (gethash :start    joy-cmd-map) (elt buttons   9))
+      (setf (gethash :L2       joy-cmd-map) (elt buttons   6))
+      (setf (gethash :R2       joy-cmd-map) (elt buttons   7))
+      (setf (gethash :R1       joy-cmd-map) (elt buttons   5))
+      (setf (gethash :right    joy-cmd-map) (- (elt axes  9))) ;; roll+
+      (setf (gethash :left     joy-cmd-map) (elt axes      9)) ;; roll-
+      (setf (gethash :triangle joy-cmd-map) (elt buttons   3)) ;; pitch+
+      (setf (gethash :cross    joy-cmd-map) (elt buttons   1)) ;; pitch-
+      (setf (gethash :square   joy-cmd-map) (elt buttons   0)) ;; yaw+
+      (setf (gethash :circle   joy-cmd-map) (elt buttons   2)) ;; yaw-
+      (setf (gethash :up       joy-cmd-map) (elt axes     10)) ;; grasp
+      (setf (gethash :down     joy-cmd-map) (- (elt axes 10))) ;; release
+      )
+     (t
+      (ros::ros-warn "~A joy-type is not supported" (string *joy-type*))
+      (setq joy-cmd-map nil)))
+    joy-cmd-map))
 
 (defun teleop-joy-setup ()
   ;; options
