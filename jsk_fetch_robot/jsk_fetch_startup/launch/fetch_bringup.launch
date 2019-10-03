@@ -24,6 +24,10 @@
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
+  <!-- english speach node -->
+  <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
+        respawn="true" if="$(arg launch_sound_play)" />
+
   <!-- japanese speech node -->
   <include file="$(find voice_text)/launch/voice_text.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
@@ -85,7 +89,7 @@
         args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
   <include file="$(find julius_ros)/launch/julius.launch">
     <arg name="launch_audio_capture" value="false"/>
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)"/>
+    <arg name="launch_sound_play" value="false"/>
     <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
   </include>
   <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
