@@ -66,7 +66,8 @@
       (return))
     (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock"))))
   ;; go to spot
-  (unless *spots* (setq (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
+  (unless *spots*
+    (setq *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
   (let ((goal-pose nil) (frame-id nil))
     (dolist (x (send *spots* :markers))
       (if (equal (send x :text) name)
