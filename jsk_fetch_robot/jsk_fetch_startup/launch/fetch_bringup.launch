@@ -25,7 +25,10 @@
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
   <!-- japanese speech node -->
-  <include file="$(find voice_text)/launch/voice_text.launch" />
+  <include file="$(find voice_text)/launch/voice_text.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
 
   <!-- Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
