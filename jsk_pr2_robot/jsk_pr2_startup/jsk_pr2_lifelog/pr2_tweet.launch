@@ -11,9 +11,8 @@
   </include>
 
   <!-- tweet logging data -->
-  <!--
   <node name="pr2_tweet_log" pkg="roseus" type="roseus"
         args="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2-tweet-log.l"
-        machine="c2" output="screen" />
-  -->
+        machine="c2" />
+
 </launch>
