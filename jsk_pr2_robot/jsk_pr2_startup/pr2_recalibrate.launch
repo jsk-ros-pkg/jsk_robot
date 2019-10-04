@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- PR2 Calibration -->
+  <node name="calibrate_pr2"
+        pkg="jsk_pr2_startup" type="calibrate_pr2.py"
+        output="screen"
+        args="--recalibrate $(find pr2_controller_configuration)/pr2_calibration_controllers.yaml $(find pr2_controller_configuration)/pr2_joint_position_controllers.yaml"/>
+
+</launch>
