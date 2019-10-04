@@ -21,7 +21,9 @@
   <param name="pr2_etherCAT/realtime_socket_timeout" value="5000" />
 
   <!-- PR2 Calibration -->
-  <node name="calibrate_pr2" pkg="pr2_bringup" type="calibrate_pr2.py" output="screen" 
+  <node name="calibrate_pr2"
+        pkg="jsk_pr2_startup" type="calibrate_pr2.py"
+        output="screen"
         args="$(find pr2_controller_configuration)/pr2_calibration_controllers.yaml $(find pr2_controller_configuration)/pr2_joint_position_controllers.yaml"/>
 
   <!-- Controller Manager -->
