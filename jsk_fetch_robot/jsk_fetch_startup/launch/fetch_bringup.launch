@@ -17,6 +17,16 @@
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" >
     <param name="speak_warn" value="false"/>
   </node>
+
+  <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
+        respawn="true" output="screen">
+    <rosparam>
+      duration: 180
+      charge_level_threshold: 40.0
+      charge_level_step: 10.0
+    </rosparam>
+  </node>
+
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
