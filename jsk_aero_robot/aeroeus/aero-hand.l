@@ -1,7 +1,6 @@
 #!/usr/bin/env roseus
 
 (ros::load-ros-manifest "aero_startup")
-(ros::load-ros-manifest "seedhand_std")
 
 (defclass aero-hand-interface
   :super propertied-object

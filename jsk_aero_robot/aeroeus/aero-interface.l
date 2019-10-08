@@ -46,14 +46,10 @@
                      :larm-controller
                      :head-controller
                      :waist-controller
-                     :lifter-controller
-                     :lhand-controller
-                     :rhand-controller))
+                     :lifter-controller))
      (send self :add-controller ct :create-actions nil))
    (setq hand-interface
          (instance aero-hand-interface :init))
-   (setq set-hand-srv
-         (instance seedhand_std::SetHandRequest :init))
    )
   ;;
   (:default-controller nil
@@ -61,9 +57,7 @@
            (send self :larm-controller)
            (send self :head-controller)
            (send self :waist-controller)
-           (send self :lifter-controller)
-           (send self :lhand-controller)
-           (send self :rhand-controller)))
+           (send self :lifter-controller)))
   #|
   (:rarm-controller nil
    (list
@@ -90,24 +84,6 @@
      ))
    )
   |#
-  (:lhand-controller nil
-   (list
-    (list
-     (cons :controller-action "lhand_controller/follow_joint_trajectory")
-     (cons :controller-state  "lhand_controller/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "l_thumb_joint" "l_indexbase_joint"))
-     ))
-   )
-  (:rhand-controller nil
-   (list
-    (list
-     (cons :controller-action "rhand_controller/follow_joint_trajectory")
-     (cons :controller-state  "rhand_controller/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "r_thumb_joint" "r_indexbase_joint"))
-     ))
-   )
   (:head-controller nil
    (list
     (list
@@ -117,7 +93,6 @@
      (cons :joint-names (list "neck_y_joint" "neck_p_joint" "neck_r_joint"))
      ))
    )
-
   (:waist-controller nil
    (list
     (list
@@ -144,58 +119,8 @@
    (&optional (arm :arms) &key (wait nil))
    (send hand-interface :ungrasp arm)
    )
-  (:angle-index-finger
-   (&optional (arm :rarm) (angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "index")
-   (send set-hand-srv :index_angle angle)
-   (send set-hand-srv :time time)
-   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
-   )
-  (:angle-thumb-finger
-   (&optional (arm :rarm) (angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "thumb")
-   (send set-hand-srv :thumb_angle angle)
-   (send set-hand-srv :time time)
-   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
-   )
-  (:angle-both-finger
-   (&optional (arm :rarm) (thumb-angle 0.0) (index-angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "both")
-   (send set-hand-srv :thumb_angle thumb-angle)
-   (send set-hand-srv :index_angle index-angle)
-   (send set-hand-srv :time time)
-   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
-   )
-  (:hand-angle-vector
-   (av &optional (tm 3000) (arm :rarm) (start-time 0))
-   (let* ((ctype
-           (case arm
-                 (:larm :lhand-controller)
-                 (:rarm :rhand-controller)))
-          (cacts (gethash ctype controller-table))
-          )
-     (send robot :hand-angle-vector av arm)
-     (setq av (send robot :angle-vector))
-     (mapcar
-      #'(lambda (action param)
-          (send self :send-ros-controller
-                action (cdr (assoc :joint-names param)) ;; action server and joint-names
-                start-time  ;; start time
-                (list
-                 (list av                                     ;; positions
-                       (instantiate float-vector (length av)) ;; velocities
-                       (/ tm 1000.0)))))                      ;; duration
-      cacts (send self ctype)))
-   )
   )
-;;
-;; (send *robot* :hand-angle-vector av :arm :rarm)
-;; (send *ri* :hand-angle-vector (send *robot* :hand-angle-vector :arm :rarm) :arm :rarm)
-;; (send *ri* :hand-angle-vector (float-vector 0 0) :arm :rarm)
-;;
+
 (defun aero-init (&rest args)
   (if (not (boundp '*ri*))
       (setq *ri* (instance* aero-interface :init args)))
