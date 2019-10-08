@@ -24,8 +24,6 @@
    (&rest args)
    (prog1
        (send-super* :init args)
-     (setq joint-list
-           (append joint-list (list l_thumb_joint_jt l_indexbase_joint_jt r_thumb_joint_jt r_indexbase_joint_jt)))
      ;; generate grasp coords
      (let ((l-p (send self :larm :end-coords :parent))
            (r-p (send self :rarm :end-coords :parent))
@@ -212,31 +210,6 @@
        (send-super* :angle-vector args)
      (send self :update-mimic-joints))
    )
-  (:finger-joint-list
-   (&optional (arm :rarm))
-   (case arm
-         (:rarm (list r_thumb_joint_jt r_indexbase_joint_jt))
-         (:larm (list l_thumb_joint_jt l_indexbase_joint_jt)))
-   )
-  (:hand-angle-vector
-   (&optional av (arm :rarm))
-   (unless (or (null av) (float-vector-p av))
-     (setq arm av av nil))
-   (cond
-    (av
-     (map float-vector
-          #'(lambda (j a)
-              (send j :joint-angle a))
-          (send self :finger-joint-list arm)
-          (coerce av cons)
-          )
-     )
-    (t
-     (map float-vector
-          #'(lambda (j)
-              (send j :joint-angle))
-          (send self :finger-joint-list arm))
-     )))
   )
 
 (defun aero-robot () (setq *aero* (instance aero-lifter-ik :init)))

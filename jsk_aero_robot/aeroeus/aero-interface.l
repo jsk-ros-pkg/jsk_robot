@@ -52,8 +52,6 @@
      (send self :add-controller ct :create-actions nil))
    (setq hand-interface
          (instance aero-hand-interface :init))
-   (setq set-hand-srv
-         (instance seedhand_std::SetHandRequest :init))
    )
   ;;
   (:default-controller nil
@@ -144,58 +142,8 @@
    (&optional (arm :arms) &key (wait nil))
    (send hand-interface :ungrasp arm)
    )
-  (:angle-index-finger
-   (&optional (arm :rarm) (angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "index")
-   (send set-hand-srv :index_angle angle)
-   (send set-hand-srv :time time)
-   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
-   )
-  (:angle-thumb-finger
-   (&optional (arm :rarm) (angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "thumb")
-   (send set-hand-srv :thumb_angle angle)
-   (send set-hand-srv :time time)
-   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
-   )
-  (:angle-both-finger
-   (&optional (arm :rarm) (thumb-angle 0.0) (index-angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "both")
-   (send set-hand-srv :thumb_angle thumb-angle)
-   (send set-hand-srv :index_angle index-angle)
-   (send set-hand-srv :time time)
-   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
-   )
-  (:hand-angle-vector
-   (av &optional (tm 3000) (arm :rarm) (start-time 0))
-   (let* ((ctype
-           (case arm
-                 (:larm :lhand-controller)
-                 (:rarm :rhand-controller)))
-          (cacts (gethash ctype controller-table))
-          )
-     (send robot :hand-angle-vector av arm)
-     (setq av (send robot :angle-vector))
-     (mapcar
-      #'(lambda (action param)
-          (send self :send-ros-controller
-                action (cdr (assoc :joint-names param)) ;; action server and joint-names
-                start-time  ;; start time
-                (list
-                 (list av                                     ;; positions
-                       (instantiate float-vector (length av)) ;; velocities
-                       (/ tm 1000.0)))))                      ;; duration
-      cacts (send self ctype)))
-   )
   )
-;;
-;; (send *robot* :hand-angle-vector av :arm :rarm)
-;; (send *ri* :hand-angle-vector (send *robot* :hand-angle-vector :arm :rarm) :arm :rarm)
-;; (send *ri* :hand-angle-vector (float-vector 0 0) :arm :rarm)
-;;
+
 (defun aero-init (&rest args)
   (if (not (boundp '*ri*))
       (setq *ri* (instance* aero-interface :init args)))
