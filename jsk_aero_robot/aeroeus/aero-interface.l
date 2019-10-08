@@ -46,9 +46,7 @@
                      :larm-controller
                      :head-controller
                      :waist-controller
-                     :lifter-controller
-                     :lhand-controller
-                     :rhand-controller))
+                     :lifter-controller))
      (send self :add-controller ct :create-actions nil))
    (setq hand-interface
          (instance aero-hand-interface :init))
@@ -59,9 +57,7 @@
            (send self :larm-controller)
            (send self :head-controller)
            (send self :waist-controller)
-           (send self :lifter-controller)
-           (send self :lhand-controller)
-           (send self :rhand-controller)))
+           (send self :lifter-controller)))
   #|
   (:rarm-controller nil
    (list
@@ -88,24 +84,6 @@
      ))
    )
   |#
-  (:lhand-controller nil
-   (list
-    (list
-     (cons :controller-action "lhand_controller/follow_joint_trajectory")
-     (cons :controller-state  "lhand_controller/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "l_thumb_joint" "l_indexbase_joint"))
-     ))
-   )
-  (:rhand-controller nil
-   (list
-    (list
-     (cons :controller-action "rhand_controller/follow_joint_trajectory")
-     (cons :controller-state  "rhand_controller/state")
-     (cons :action-type control_msgs::FollowJointTrajectoryAction)
-     (cons :joint-names (list "r_thumb_joint" "r_indexbase_joint"))
-     ))
-   )
   (:head-controller nil
    (list
     (list
@@ -115,7 +93,6 @@
      (cons :joint-names (list "neck_y_joint" "neck_p_joint" "neck_r_joint"))
      ))
    )
-
   (:waist-controller nil
    (list
     (list
