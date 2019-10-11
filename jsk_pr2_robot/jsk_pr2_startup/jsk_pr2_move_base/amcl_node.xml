@@ -8,8 +8,8 @@
   <param name="max_particles" value="5000"/>
   <param name="kld_err" value="0.05"/>
   <param name="kld_z" value="0.99"/>
-  <param name="update_min_d" value="0.2"/>
-  <param name="update_min_a" value="0.5"/>
+  <param name="update_min_d" value="0.1"/>
+  <param name="update_min_a" value="0.175"/>  <!-- 0.175 rad = 10 degree -->
   <param name="resample_interval" value="1"/>
   <param name="transform_tolerance" value="0.1"/>
   <param name="recovery_alpha_slow" value="0.0"/>
