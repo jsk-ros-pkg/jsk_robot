@@ -25,6 +25,8 @@
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
   <!-- english speach node -->
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
         respawn="true" if="$(arg launch_sound_play)" />
 
@@ -87,6 +89,8 @@
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
         args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <include file="$(find julius_ros)/launch/julius.launch">
     <arg name="launch_audio_capture" value="false"/>
     <arg name="launch_sound_play" value="false"/>
