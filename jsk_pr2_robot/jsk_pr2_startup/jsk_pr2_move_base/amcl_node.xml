@@ -31,12 +31,12 @@
   <param name="laser_model_type" value="likelihood_field"/>
 
   <!-- Odometry model parameters -->
-  <param name="odom_model_type" value="omni"/>
-  <param name="odom_alpha1" value="0.2"/>
-  <param name="odom_alpha2" value="0.2"/>
-  <param name="odom_alpha3" value="0.8"/>
-  <param name="odom_alpha4" value="0.2"/>
-  <param name="odom_alpha5" value="0.1"/>
+  <param name="odom_model_type" value="omni-corrected"/>
+  <param name="odom_alpha1" value="0.005"/>
+  <param name="odom_alpha2" value="0.005"/>
+  <param name="odom_alpha3" value="0.01"/>
+  <param name="odom_alpha4" value="0.005"/>
+  <param name="odom_alpha5" value="0.003"/>
   <param name="odom_frame_id" value="/odom_combined"/>
   <param name="base_frame_id" value="/base_footprint"/>
 </node>
