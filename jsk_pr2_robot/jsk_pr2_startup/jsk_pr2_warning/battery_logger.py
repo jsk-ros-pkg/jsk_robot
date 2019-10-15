@@ -49,7 +49,8 @@ class FileLogger(BatteryLogger):
         filename = os.path.join(self.out_dir,
                                 datetime.now().strftime("battery_%Y-%m-%d.log"))
         lines = []
-        index = ["HardwareID", "CycleCount", "FullCapacity", "RemainingCapacity"]
+        index = ["HardwareID", "CycleCount", "FullCapacity", "RemainingCapacity",
+                 "Voltage", "Current", "Temperature"]
         if not os.path.exists(filename):
             # write index
             lines.append(["Date", "Name"] + index)
@@ -134,6 +135,12 @@ class BatteryInfoAggregator(object):
                         results[s.name]["CycleCount"] = int(kv.value)
                     elif kv.key.startswith("Manufacture Date"):
                         results[s.name]["ManufactureDate"] = kv.value
+                    elif kv.key.startswith("Voltage (mV)"):
+                        results[s.name]["Voltage"] = int(kv.value)
+                    elif kv.key.startswith("Current (mA)"):
+                        results[s.name]["Current"] = int(kv.value)
+                    elif kv.key.startswith("Temperature (C)"):
+                        results[s.name]["Temperature"] = float(kv.value)
 
         # log
         for logger in self.loggers:

@@ -17,6 +17,16 @@
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" >
     <param name="speak_warn" value="false"/>
   </node>
+
+  <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
+        respawn="true" output="screen">
+    <rosparam>
+      duration: 180
+      charge_level_threshold: 40.0
+      charge_level_step: 10.0
+    </rosparam>
+  </node>
+
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
@@ -24,8 +34,17 @@
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
+  <!-- english speach node -->
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
+  <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
+        respawn="true" if="$(arg launch_sound_play)" />
+
   <!-- japanese speech node -->
-  <include file="$(find voice_text)/launch/voice_text.launch" />
+  <include file="$(find voice_text)/launch/voice_text.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
 
   <!-- Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
@@ -80,9 +99,11 @@
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
         args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <include file="$(find julius_ros)/launch/julius.launch">
     <arg name="launch_audio_capture" value="false"/>
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)"/>
+    <arg name="launch_sound_play" value="false"/>
     <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
   </include>
   <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
