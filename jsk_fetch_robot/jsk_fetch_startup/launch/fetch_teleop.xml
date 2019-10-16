@@ -76,6 +76,12 @@
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam>
+      local_costmap:
+        global_frame: odom_combined
+        # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+        update_frequency: 10.0
+    </rosparam>
   </node>
 
   <node name="safe_tilt_head" pkg="jsk_fetch_startup" type="safe_tilt_head.py" />
