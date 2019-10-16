@@ -143,33 +143,39 @@
     </rosparam>
 
     <rosparam ns="move_base/global_costmap">
-inflater:
-  inflation_radius: 0.30 # 0.7
-  cost_scaling_factor: 10.0 # 10.0
+      inflater:
+        inflation_radius: 0.30 # 0.7
+        cost_scaling_factor: 10.0 # 10.0
     </rosparam>
     <rosparam ns="move_base/local_costmap">
-inflater:
-  inflation_radius: 0.30 # 0.7
-  cost_scaling_factor: 100.0 # 25.0 default 10, increasing factor decrease the cost value
-update_frequency: 10.0 # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      inflater:
+        inflation_radius: 0.30 # 0.7
+        cost_scaling_factor: 100.0 # 25.0 default 10, increasing factor decrease the cost value
+      update_frequency: 10.0 # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
     </rosparam>
     <rosparam ns="move_base">
-base_local_planner: base_local_planner/TrajectoryPlannerROS
-TrajectoryPlannerROS:
-  escape_vel: -0.1 # -0.1
-recovery_behavior_enabled: true
-recovery_behaviors:
-  - name: "conservative_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-  - name: "rotate_recovery"
-    type: "rotate_recovery/RotateRecovery"
-    frequency: 20.0
-    sim_granularity: 0.017
-  - name: "aggressive_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-conservative_reset: {reset_distance: 1.0} # 3.0
-aggressive_reset: {reset_distance: 0.2} # 0.5
-move_slow_and_clear: {clearing_distance: 0.5, limited_distance: 0.3, limited_rot_speed: 0.45, limited_trans_speed: 0.25}
+      base_local_planner: base_local_planner/TrajectoryPlannerROS
+      TrajectoryPlannerROS:
+        escape_vel: -0.1 # -0.1
+      recovery_behavior_enabled: true
+      recovery_behaviors:
+        - name: "conservative_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+        - name: "rotate_recovery"
+          type: "rotate_recovery/RotateRecovery"
+          frequency: 20.0
+          sim_granularity: 0.017
+        - name: "aggressive_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+      conservative_reset:
+        - reset_distance: 1.0 # 3.0
+      aggressive_reset:
+        - reset_distance: 0.2 # 0.5
+      move_slow_and_clear:
+        - clearing_distance: 0.5
+        - limited_distance: 0.3
+        - limited_rot_speed: 0.45
+        - limited_trans_speed: 0.25
     </rosparam>
   </group>
 
