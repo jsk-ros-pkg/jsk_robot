@@ -78,7 +78,6 @@
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
     <rosparam>
       local_costmap:
-        global_frame: odom_combined
         # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
         update_frequency: 10.0
     </rosparam>
