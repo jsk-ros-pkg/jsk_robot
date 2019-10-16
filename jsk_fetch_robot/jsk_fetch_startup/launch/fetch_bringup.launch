@@ -172,4 +172,11 @@ aggressive_reset: {reset_distance: 0.2} # 0.5
 move_slow_and_clear: {clearing_distance: 0.5, limited_distance: 0.3, limited_rot_speed: 0.45, limited_trans_speed: 0.25}
     </rosparam>
   </group>
+
+  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
+  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
+  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
+    <remap from="~input" to="/imu" />
+    <remap from="~output" to="/imu_corrected" />
+  </node>
 </launch>
