@@ -185,4 +185,10 @@
     <remap from="~input" to="/imu" />
     <remap from="~output" to="/imu_corrected" />
   </node>
+
+  <!-- /odom has no covariance value. -->
+  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
+    <remap from="~input" to="/odom" />
+    <remap from="~output" to="/odom_corrected" />
+  </node>
 </launch>
