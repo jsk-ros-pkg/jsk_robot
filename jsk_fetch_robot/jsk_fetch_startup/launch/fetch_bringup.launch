@@ -159,11 +159,11 @@
         odom0_nodelay: true
         odom0_differential: true
         imu0: /imu_corrected
-        imu0_config: [true, true, false,
-                      false, false,  true,
-                      true, true, false,
-                      false, false,  true,
-                      false, false, false]
+        imu0_config: [false, false, false,
+                      false, false, false,
+                      false, false, false,
+                      false, false, true,
+                      true, true, false]
         imu0_nodelay: true
         imu0_differential: true
       </rosparam>
