@@ -32,7 +32,7 @@
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
-  (send *fetch* :head :look-at (float-vector 1500 0 500))
+  (send *fetch* :head :look-at (float-vector 800 0 500))
   (send *ri* :angle-vector (send *fetch* :angle-vector) 1000)
   (send *ri* :wait-interpolation)
   (simple-dock))
@@ -85,5 +85,5 @@
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 (defun auto-dock ()
-  (go-to-spot "/eng2/7f/room73B2-fetch-dock-front" (make-coords :pos #f(0 -1500 0)))
+  (go-to-spot "/eng2/7f/room73B2-fetch-dock-front" (make-coords :pos #f(0 -800 0)))
   (dock))
