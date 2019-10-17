@@ -3,6 +3,9 @@
 
 (defun go-to-kitchen ()
   ;; go to kitchen
+  (unless (boundp '*ri*)
+    (require :fetch-interface "package://fetcheus/fetch-interface.l")
+    (fetch-init))
   (send *ri* :speak "go to kitchen.")
   (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -1000 0)))
     (progn ;; succeeded to go to kitchen
