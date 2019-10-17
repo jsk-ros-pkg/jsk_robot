@@ -1,5 +1,4 @@
-;; go-dock.l
-;; Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
+(load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "power_msgs")
@@ -113,3 +112,22 @@
       (setq success (dock))
       (when success (return-from auto-dock success)))
     success))
+
+(defun go-to-kitchen (&key (tweet t))
+  ;; go to kitchen
+  (unless (boundp '*ri*)
+    (require :fetch-interface "package://fetcheus/fetch-interface.l")
+    (fetch-init))
+  (send *ri* :speak-jp "キッチンに向かいます。")
+  (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -1000 0)))
+    (progn ;; succeeded to go to kitchen
+      (unix:sleep 1)
+      (send *ri* :speak-jp "キッチンにつきました。" :wait t)
+      (unix:sleep 1)
+      (when tweet
+        (tweet-string "I took a photo at 73B2 Kitchen." :warning-time 3 :with-image t :speak t))
+      (send *ri* :speak-jp "ドックに戻ります。" :wait t)
+      (auto-dock))
+    (progn ;; failed to go to kitchen
+      (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
+      (auto-dock))))
