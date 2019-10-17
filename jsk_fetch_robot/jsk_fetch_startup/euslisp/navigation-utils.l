@@ -94,8 +94,7 @@
         (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
         (return))
       (setq *is-charging* (send msg :is_charging))
-      (if *is-charging*
-        (progn (undock)))
+      (when *is-charging* (undock))
       (unless *is-charging* (return))
       (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock")))))
   ;; go to spot
