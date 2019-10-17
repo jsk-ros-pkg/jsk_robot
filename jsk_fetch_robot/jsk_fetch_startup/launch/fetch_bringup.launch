@@ -166,6 +166,7 @@
                       true, true, false]
         imu0_nodelay: true
         imu0_differential: true
+        imu0_remove_gravitational_acceleration: true
       </rosparam>
     </node>
 
