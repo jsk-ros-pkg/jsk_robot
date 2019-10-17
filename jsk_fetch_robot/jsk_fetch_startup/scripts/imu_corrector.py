@@ -17,7 +17,7 @@ class ImuCorrector(object):
         msg.header.frame_id = 'base_link'
         msg.angular_velocity_covariance = [0, 0, 0,
                                            0, 0, 0,
-                                           0, 0, 0.000004]
+                                           0, 0, 4e-6]
         self.pub.publish(msg)
 
 
