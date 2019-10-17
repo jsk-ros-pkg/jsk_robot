@@ -113,7 +113,7 @@
       (when success (return-from auto-dock success)))
     success))
 
-(defun go-to-kitchen (&key (tweet t))
+(defun go-to-kitchen (&key (tweet t) (n-dock-trial 1))
   ;; go to kitchen
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
@@ -127,7 +127,7 @@
       (when tweet
         (tweet-string "I took a photo at 73B2 Kitchen." :warning-time 3 :with-image t :speak t))
       (send *ri* :speak-jp "ドックに戻ります。" :wait t)
-      (auto-dock))
+      (auto-dock :n-trial n-dock-trial))
     (progn ;; failed to go to kitchen
       (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
-      (auto-dock))))
+      (auto-dock :n-trial n-dock-trial))))
