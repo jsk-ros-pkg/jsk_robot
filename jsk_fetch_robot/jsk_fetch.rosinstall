@@ -71,3 +71,9 @@
     local-name: ros-drivers/joystick_drivers
     uri: https://github.com/ros-drivers/joystick_drivers.git
     version: 1.14.0
+# indigo is already EOL and fetch_ros is never released.
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 4680118106ba8ffa99a803122bf1a9e383edf3df
+
