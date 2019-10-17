@@ -66,3 +66,8 @@
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: 82e897dcbdcd6aa0cbd126fa122d4dbdc9df67c9
+# indigo is already EOL and fetch_ros is never released.
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 4680118106ba8ffa99a803122bf1a9e383edf3df
