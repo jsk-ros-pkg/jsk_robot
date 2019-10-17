@@ -37,7 +37,12 @@ class CorrectPosition(ConnectionBasedTransport):
             self.pos.header.stamp = rospy.Time.now()
             self.pos.header.frame_id = 'map'
             self.pos.pose.pose = self.dock_pose
-            self.pos.pose.covariance = [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06853891945200942]
+            self.pos.pose.covariance = [1e-3, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 1e-3, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 1e-3]
             self.pub.publish(self.pos)
         self.is_docking = msg.is_charging
 
