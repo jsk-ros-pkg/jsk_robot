@@ -14,12 +14,13 @@ class OdomCorrector(object):
             '~output', Odometry, queue_size=1)
         self.covariance = [1e-3, 0, 0, 0, 0, 0,
                            0, 1e-3, 0, 0, 0, 0,
-                           0, 0, 1e-6, 0, 0, 0,
-                           0, 0, 0, 1e-6, 0, 0,
-                           0, 0, 0, 0, 1e-6, 0,
+                           0, 0, 0, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0,
+                           0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 1e-3]
 
     def _cb(self, msg):
+        msg.pose.covariance = self.covariance
         msg.twist.covariance = self.covariance
         self.pub.publish(msg)
 
