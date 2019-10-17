@@ -23,7 +23,7 @@
         (instance fetch_auto_dock_msgs::DockActionGoal :init))
   (unless (send *dock-action* :wait-for-result :timeout 60)
     (ros::ros-error "No result returned from /dock action server")
-    (return-from dock nil))
+    (return-from simple-dock nil))
   (send (send *dock-action* :get-result) :docked))
 
 (defun dock ()
