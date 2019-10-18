@@ -2,9 +2,11 @@
 <launch>
   <arg name="camera" default="kinect_head" />
   <arg name="deprecated_relay" default="false" />
+  <arg name="manager" default="kinect_head_c2_nodelet_manager" />
+  <arg name="debug" default="false" /> <!-- Run manager in GDB? -->
 
   <arg name="rgb_frame_id"   default="$(arg camera)_rgb_optical_frame" />
-  <arg name="depth_frame_id" default="$(arg camera)_depth_optical_frame" />
+  <arg name="depth_frame_id" default="$(arg camera)_ir_optical_frame" />
 
   <!-- device_id can have the following formats:
          "B00367707227042B": Use device with given serial number
@@ -57,8 +59,6 @@
   <group ns="$(arg camera)">
   
     <!-- Start nodelet manager in top-level namespace -->
-    <arg name="manager" default="$(arg camera)_nodelet_manager" />
-    <arg name="debug" default="false" /> <!-- Run manager in GDB? -->
     <include file="$(find rgbd_launch)/launch/includes/manager.launch.xml">
       <arg name="name"                value="$(arg manager)" />
       <arg name="debug"               value="$(arg debug)" />
