@@ -1,11 +1,10 @@
 <launch>
-
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="fetch15"/>
 
-    <arg name="image_topics" default="/head_camera/rgb/image_rect_color"/>
+    <arg name="image_topics" default="/head_camera/rgb/image_rect_color /edgetpu_object_detector/output/image /edgetpu_human_pose_estimator/output/image"/>
     <arg name="machine" value="localhost"/>
     <arg name="output" value="screen"/>
     <arg name="motor_subscribe" value="true"/>
