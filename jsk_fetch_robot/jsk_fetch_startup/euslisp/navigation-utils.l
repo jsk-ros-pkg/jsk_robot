@@ -79,7 +79,7 @@
     (return-from undock nil))
   (send (send *undock-action* :get-result) :undocked))
 
-(defun go-to-spot (name &optional (relative-coords (make-coords)))
+(defun go-to-spot (name &optional (relative-coords (make-coords)) &key (undock-rotate nil))
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
@@ -93,7 +93,10 @@
         (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
         (return))
       (setq *is-charging* (send msg :is_charging))
-      (when *is-charging* (undock))
+      (when *is-charging*
+        (undock)
+        ;; rotate after undock
+        (when undock-rotate (send *ri* :go-pos-unsafe 0 0 3.14)))
       (unless *is-charging* (return))
       (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock")))))
   ;; go to spot
@@ -119,7 +122,8 @@
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
   (send *ri* :speak-jp "キッチンに向かいます。")
-  (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -1000 0)))
+  (if (go-to-spot "/eng2/7f/room73B2-sink-front1"
+                  (make-coords :pos #f(100 -1000 0)) :undock-rotate t)
     (progn ;; succeeded to go to kitchen
       (unix:sleep 1)
       (send *ri* :speak-jp "キッチンにつきました。" :wait t)
