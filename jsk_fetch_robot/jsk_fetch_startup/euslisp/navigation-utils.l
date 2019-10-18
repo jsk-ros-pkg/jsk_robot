@@ -129,7 +129,8 @@
       (send *ri* :speak-jp "キッチンにつきました。" :wait t)
       (unix:sleep 1)
       (when tweet
-        (tweet-string "I took a photo at 73B2 Kitchen." :warning-time 3 :with-image t :speak t))
+        (tweet-string "I took a photo at 73B2 Kitchen." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t))
       (send *ri* :speak-jp "ドックに戻ります。" :wait t)
       (auto-dock :n-trial n-dock-trial))
     (progn ;; failed to go to kitchen
