@@ -51,7 +51,8 @@
         args="camera:=$(arg camera)
               load_driver:=false
               publish_tf:=false
-              depth_registration:=true
+              hw_registered_processing:=true
+              sw_registered_processing:=false
               respawn:=$(arg respawn)
               manager:=$(arg manager)
               deprecated_relay:=$(arg deprecated_relay)
