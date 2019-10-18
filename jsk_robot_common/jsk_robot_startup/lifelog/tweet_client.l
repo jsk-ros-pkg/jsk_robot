@@ -1,7 +1,9 @@
 #!/usr/bin/env roseus
 
-(ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "topic_tools")
+(ros::roseus-add-srvs "topic_tools")
+(ros::roseus-add-msgs "std_msgs")
+(ros::roseus-add-msgs "sensor_msgs")
+
 (load "package://pr2eus/speak.l")
 
 (ros::roseus "tweet_client")
