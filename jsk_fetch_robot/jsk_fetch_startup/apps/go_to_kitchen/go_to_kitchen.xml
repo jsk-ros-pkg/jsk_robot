@@ -1,4 +1,13 @@
 <launch>
-  <node name="go_to_kitchen" pkg="roseus" type="roseus"
+  <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true"
         args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l"/>
+
+  <node name="go_to_kitchen_video_recorder" pkg="image_view" type="video_recorder">
+    <remap from="image" to="/head_camera/rgb/image_rect_color" />
+    <rosparam>
+      filename: /tmp/go_to_kitchen.avi
+      stamped_filename: false
+      fps: 15
+    </rosparam>
+  </node>
 </launch>
