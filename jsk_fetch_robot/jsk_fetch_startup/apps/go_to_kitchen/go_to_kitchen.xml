@@ -6,6 +6,7 @@
     <remap from="image" to="/head_camera/rgb/image_rect_color" />
     <rosparam>
       filename: /tmp/go_to_kitchen.avi
+      codec: XVID
       stamped_filename: false
       fps: 15
     </rosparam>
