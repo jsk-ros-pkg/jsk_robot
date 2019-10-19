@@ -181,8 +181,9 @@
 
     <rosparam ns="move_base/global_costmap">
       inflater:
-        inflation_radius: 0.30 # 0.7
-        cost_scaling_factor: 10.0 # 10.0
+        inflation_radius: 3.0 # 0.7
+        cost_scaling_factor: 3.0 # 10.0
+      footprint_padding: 0.05
     </rosparam>
     <rosparam ns="move_base/local_costmap">
       inflater:
@@ -190,6 +191,7 @@
         cost_scaling_factor: 3.0 # 25.0 default 10, increasing factor decrease the cost value
       # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
       update_frequency: 10.0
+      footprint_padding: 0.05
     </rosparam>
     <rosparam ns="move_base">
       base_local_planner: base_local_planner/TrajectoryPlannerROS
