@@ -216,6 +216,8 @@
         - limited_distance: 0.3
         - limited_rot_speed: 0.45
         - limited_trans_speed: 0.25
+      TrajectoryPlannerROS:
+        dwa: true
     </rosparam>
   </group>
 
