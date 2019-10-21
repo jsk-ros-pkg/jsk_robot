@@ -8,7 +8,16 @@
       filename: /tmp/go_to_kitchen.avi
       codec: XVID
       stamped_filename: false
-      fps: 15
+      fps: 5
+    </rosparam>
+  </node>
+  <node name="go_to_kitchen_object_detection_video_recorder" pkg="image_view" type="video_recorder">
+    <remap from="image" to="/edgetpu_object_detector/output/image" />
+    <rosparam>
+      filename: /tmp/go_to_kitchen_object_detection.avi
+      codec: XVID
+      stamped_filename: false
+      fps: 5
     </rosparam>
   </node>
 </launch>
