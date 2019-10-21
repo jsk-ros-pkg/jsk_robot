@@ -212,16 +212,14 @@
         - name: "aggressive_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
       conservative_reset:
-        - reset_distance: 1.0 # 3.0
+        reset_distance: 1.0 # 3.0
       aggressive_reset:
-        - reset_distance: 0.2 # 0.5
+        reset_distance: 0.2 # 0.5
       move_slow_and_clear:
-        - clearing_distance: 0.5
-        - limited_distance: 0.3
-        - limited_rot_speed: 0.45
-        - limited_trans_speed: 0.25
-      TrajectoryPlannerROS:
-        dwa: true
+        clearing_distance: 0.5
+        limited_distance: 0.3
+        limited_rot_speed: 0.45
+        limited_trans_speed: 0.25
     </rosparam>
   </group>
 
