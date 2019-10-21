@@ -200,7 +200,13 @@
     <rosparam ns="move_base">
       base_local_planner: base_local_planner/TrajectoryPlannerROS
       TrajectoryPlannerROS:
+        min_in_place_vel_theta: 0.8
         escape_vel: -0.1 # -0.1
+        meter_scoring: true
+        pdist_scale: 5.0
+        gdist_scale: 3.2
+        occdist_scale: 0.1
+        dwa: true
       recovery_behavior_enabled: true
       recovery_behaviors:
         - name: "conservative_reset"
