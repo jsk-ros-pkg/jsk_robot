@@ -1,5 +1,5 @@
 <launch>
-  <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true"
+  <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true" output="screen"
         args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l"/>
 
   <node name="go_to_kitchen_video_recorder" pkg="image_view" type="video_recorder">
