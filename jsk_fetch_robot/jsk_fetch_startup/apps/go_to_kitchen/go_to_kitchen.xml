@@ -8,7 +8,7 @@
       filename: /tmp/go_to_kitchen.avi
       codec: XVID
       stamped_filename: false
-      fps: 5
+      fps: 30
     </rosparam>
   </node>
   <node name="go_to_kitchen_object_detection_video_recorder" pkg="image_view" type="video_recorder">
@@ -17,7 +17,7 @@
       filename: /tmp/go_to_kitchen_object_detection.avi
       codec: XVID
       stamped_filename: false
-      fps: 5
+      fps: 7.5
     </rosparam>
   </node>
 </launch>
