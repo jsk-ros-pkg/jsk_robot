@@ -111,9 +111,10 @@
 (defun auto-dock (&key (n-trial 1))
   (let ((success nil))
     (dotimes (i n-trial)
-      (go-to-spot *dock-spot* (make-coords :pos #f(0 -800 0)))
-      (setq success (dock))
-      (when success (return-from auto-dock success)))
+      (when (go-to-spot *dock-spot* (make-coords :pos #f(0 -800 0)))
+        (ros::ros-info "arrived at the dock.")
+        (setq success (dock))
+        (when success (return-from auto-dock success))))
     success))
 
 (defun go-to-kitchen (&key (tweet t) (n-dock-trial 1))
@@ -121,18 +122,23 @@
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
+  (ros::ros-info "start going to the kitchen.")
   (send *ri* :speak-jp "キッチンに向かいます。")
   (if (go-to-spot "/eng2/7f/room73B2-sink-front1"
                   (make-coords :pos #f(100 -1000 0)) :undock-rotate t)
     (progn ;; succeeded to go to kitchen
       (unix:sleep 1)
+      (ros::ros-info "arrived at the kitchen.")
       (send *ri* :speak-jp "キッチンにつきました。" :wait t)
       (unix:sleep 1)
       (when tweet
         (tweet-string "I took a photo at 73B2 Kitchen." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t))
+      (ros::ros-info "start going back to the dock.")
       (send *ri* :speak-jp "ドックに戻ります。" :wait t)
       (auto-dock :n-trial n-dock-trial))
     (progn ;; failed to go to kitchen
+      (ros::ros-error "failed going to the kitchen.")
       (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
+      (ros::ros-info "start going back to the dock.")
       (auto-dock :n-trial n-dock-trial))))
