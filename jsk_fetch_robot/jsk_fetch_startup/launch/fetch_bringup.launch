@@ -179,6 +179,10 @@
       odom_alpha4: 0.05  # translation noise per rotation
     </rosparam>
 
+    <rosparam ns="move_base">
+      controller_frequency: 10.0
+    </rosparam>
+
     <rosparam ns="move_base/global_costmap">
       inflater:
         inflation_radius: 1.0 # 0.7
