@@ -1,8 +1,10 @@
-;; go-dock.l
-;; Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
+#!/usr/bin/env roseus
 
-(ros::roseus "fetch_go_dock")
+(require :fetch-interface "package://fetcheus/fetch-interface.l")
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
 
+(ros::roseus "fetch_go_dock")
+(fetch-init)
+(send *ri* :clear-costmap)
 (auto-dock)
 (exit)
