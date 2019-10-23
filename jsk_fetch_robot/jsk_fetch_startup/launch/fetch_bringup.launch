@@ -206,6 +206,7 @@
       TrajectoryPlannerROS:
         min_in_place_vel_theta: 0.8
         escape_vel: -0.1 # -0.1
+        vx_samples: 10
         meter_scoring: true
         pdist_scale: 5.0
         gdist_scale: 3.2
