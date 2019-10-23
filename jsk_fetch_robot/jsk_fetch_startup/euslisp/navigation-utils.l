@@ -132,23 +132,13 @@
       (ros::ros-info "arrived at the kitchen stove.")
       (send *ri* :speak-jp "キッチンのコンロの前につきました。" :wait t)
       (unix:sleep 1)
+      ;; stove
       (when tweet
         (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
-                      :with-image "/edgetpu_object_detector/output/image" :speak t)))
-    (progn ;; failed to go to kitchen
-      (ros::ros-error "failed going to the kitchen.")
-      (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
-      (ros::ros-info "start going back to the dock.")
-      (auto-dock :n-trial n-dock-trial)
-      (return-from go-to-kitchen nil)))
-  ;; sink
-  (send *ri* :speak-jp "シンクに向かいます。")
-  (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -200 0)))
-    (progn ;; succeeded to go to kitchen
-      (unix:sleep 1)
-      (ros::ros-info "arrived at the kitchen.")
-      (send *ri* :speak-jp "キッチンのシンクの前につきました。" :wait t)
-      (unix:sleep 1)
+                      :with-image "/edgetpu_object_detector/output/image" :speak t))
+      (send *ri* :go-pos-unsafe-no-wait 0 0 (/ -pi 4))
+      (send *ri* :go-pos-unsafe-wait :rotation-gain 2.0)
+      ;; sink
       (when tweet
         (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)))
@@ -158,6 +148,23 @@
       (ros::ros-info "start going back to the dock.")
       (auto-dock :n-trial n-dock-trial)
       (return-from go-to-kitchen nil)))
+  ;; sink
+  ;; (send *ri* :speak-jp "シンクに向かいます。")
+  ;; (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -200 0)))
+  ;;   (progn ;; succeeded to go to kitchen
+  ;;     (unix:sleep 1)
+  ;;     (ros::ros-info "arrived at the kitchen.")
+  ;;     (send *ri* :speak-jp "キッチンのシンクの前につきました。" :wait t)
+  ;;     (unix:sleep 1)
+  ;;     (when tweet
+  ;;       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
+  ;;                     :with-image "/edgetpu_object_detector/output/image" :speak t)))
+  ;;   (progn ;; failed to go to kitchen
+  ;;     (ros::ros-error "failed going to the kitchen.")
+  ;;     (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
+  ;;     (ros::ros-info "start going back to the dock.")
+  ;;     (auto-dock :n-trial n-dock-trial)
+  ;;     (return-from go-to-kitchen nil)))
   (ros::ros-info "start going back to the dock.")
   (send *ri* :speak-jp "ドックに戻ります。" :wait t)
   (auto-dock :n-trial n-dock-trial))
