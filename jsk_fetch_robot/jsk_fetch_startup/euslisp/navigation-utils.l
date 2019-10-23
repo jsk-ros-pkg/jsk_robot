@@ -69,7 +69,7 @@
       (when *is-charging*
         (undock)
         ;; rotate after undock
-        (when undock-rotate (send *ri* :go-pos-unsafe 0 0 3.14)))
+        (when undock-rotate (send *ri* :go-pos-unsafe 0 0 pi)))
       (unless *is-charging* (return))
       (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock")))))
   ;; go to spot
@@ -82,7 +82,9 @@
           (setq goal-pose (send x :pose))
           (setq frame-id (send (send x :header) :frame_id)))))
     (send (send goal-pose :position) :z 0)
-    (setq goal-pose (send (ros::tf-pose->coords goal-pose) :transform relative-coords :world))
+    (setq goal-pose (ros::tf-pose->coords goal-pose))
+    (when relative-coords
+      (setq goal-pose (send goal-pose :transform relative-coords :world)))
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 (defun auto-dock (&key (n-trial 1))
