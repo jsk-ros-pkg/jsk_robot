@@ -96,7 +96,7 @@
       (when *is-charging*
         (undock)
         ;; rotate after undock
-        (when undock-rotate (send *ri* :go-pos-unsafe 0 0 3.14)))
+        (when undock-rotate (send *ri* :go-pos-unsafe 0 0 pi)))
       (unless *is-charging* (return))
       (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock")))))
   ;; go to spot
