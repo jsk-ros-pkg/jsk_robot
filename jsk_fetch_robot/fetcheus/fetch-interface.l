@@ -209,7 +209,7 @@ Example: (send self :gripper :position) => 0.00"
     (x y d ;; [m/sec] [m/sec] [rad/sec]
        &optional (msec 1000) ;; msec is total animation time [msec]
        &key (stop t) (wait t))
-    (unless (not (zerop y))
+    (unless (zerop y)
       (ros::ros-error
         "Setting velocity in y-axis is not valid for non-holonomic robot")
       (return-from :go-velocity nil))
