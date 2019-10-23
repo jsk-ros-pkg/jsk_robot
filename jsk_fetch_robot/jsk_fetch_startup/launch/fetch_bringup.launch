@@ -183,6 +183,10 @@
       controller_frequency: 10.0
     </rosparam>
 
+    <rosparam ns="move_base">
+      controller_frequency: 10.0
+    </rosparam>
+
     <rosparam ns="move_base/global_costmap">
       inflater:
         inflation_radius: 0.7 # 0.7
