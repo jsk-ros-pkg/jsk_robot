@@ -3,12 +3,12 @@
         args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l"/>
 
   <node name="go_to_kitchen_video_recorder" pkg="image_view" type="video_recorder">
-    <remap from="image" to="/head_camera/rgb/image_rect_color" />
+    <remap from="image" to="/head_camera/rgb/throttled/image_rect_color" />
     <rosparam>
       filename: /tmp/go_to_kitchen.avi
       codec: XVID
       stamped_filename: false
-      fps: 30
+      fps: 5.0
     </rosparam>
   </node>
   <node name="go_to_kitchen_object_detection_video_recorder" pkg="image_view" type="video_recorder">
