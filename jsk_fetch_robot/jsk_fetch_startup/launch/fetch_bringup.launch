@@ -173,10 +173,10 @@
     <rosparam ns="amcl">
       update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
       update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
-      odom_alpha1: 0.05  # rotation noise per rotation
-      odom_alpha2: 0.05  # rotation noise per translation
-      odom_alpha3: 0.05  # translation noise per translation
-      odom_alpha4: 0.05  # translation noise per rotation
+      odom_alpha1: 0.2  # rotation noise per rotation
+      odom_alpha2: 0.2  # rotation noise per translation
+      odom_alpha3: 0.2  # translation noise per translation
+      odom_alpha4: 0.2  # translation noise per rotation
     </rosparam>
 
     <rosparam ns="move_base">
