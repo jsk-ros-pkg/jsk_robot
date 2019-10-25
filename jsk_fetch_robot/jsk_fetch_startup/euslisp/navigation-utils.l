@@ -136,8 +136,7 @@
       (when tweet
         (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t))
-      (send *ri* :go-pos-unsafe-no-wait 0 0 (/ -pi 4))
-      (send *ri* :go-pos-unsafe-wait :rotation-gain 2.0)
+      (send *ri* :go-pos-unsafe 0 0 (/ -pi 4))
       ;; sink
       (when tweet
         (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
