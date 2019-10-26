@@ -6,5 +6,5 @@
 (ros::roseus "go_to_kitchen")
 (fetch-init)
 (send *ri* :clear-costmap)
-(go-to-kitchen :tweet t :n-dock-trial 5)
+(go-to-kitchen :tweet t :n-dock-trial 5 :n-kitchen-trial 3)
 (exit)
