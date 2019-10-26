@@ -116,6 +116,16 @@
     (assert (v< (send robot :head :angle-vector) #f(30 30)))
     ))
 
+(deftest fetch-go-velocity
+  (let (go-vel-arg)
+    (setq go-vel-arg (list 0.1 0 0.5))
+    (assert (send* *ri* :go-velocity go-vel-arg)
+            (format nil ":go-velocity doesn't return t with argument ~A" go-vel-arg))
+    (setq go-vel-arg (list 0.1 0.1 0.5))
+    (assert (not (send* *ri* :go-velocity go-vel-arg))
+            (format nil ":go-velocity returns t with argument ~A" go-vel-arg))
+    ))
+
 
 (run-all-tests)
 (exit)
