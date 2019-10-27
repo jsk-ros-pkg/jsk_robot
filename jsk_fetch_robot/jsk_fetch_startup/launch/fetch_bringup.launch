@@ -137,39 +137,113 @@
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="true" />
     </include>
+
+    <!-- robot localization ukf -->
+    <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+      <remap from="odometry/filtered" to="/odom_combined" />
+      <rosparam>
+        frequency: 50
+        sensor_timeout: 1.0
+        two_d_mode: true
+        publish_tf: true
+        publish_acceleration: false
+        map_frame: map
+        odom_frame: odom
+        base_link_frame: base_link
+        odom0: /odom_corrected
+        odom0_config: [true, true, false,
+                       false, false, true,
+                       true, true, false,
+                       false, false, true,
+                       false, false, false]
+        odom0_nodelay: true
+        odom0_differential: true
+        imu0: /imu_corrected
+        imu0_config: [false, false, false,
+                      false, false, false,
+                      false, false, false,
+                      false, false, true,
+                      true, true, false]
+        imu0_nodelay: true
+        imu0_differential: true
+        imu0_remove_gravitational_acceleration: true
+      </rosparam>
+    </node>
+
     <rosparam ns="amcl">
       update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
       update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
+      odom_alpha1: 0.2  # rotation noise per rotation
+      odom_alpha2: 0.2  # rotation noise per translation
+      odom_alpha3: 0.2  # translation noise per translation
+      odom_alpha4: 0.2  # translation noise per rotation
+    </rosparam>
+
+    <rosparam ns="move_base">
+      controller_frequency: 10.0
     </rosparam>
 
     <rosparam ns="move_base/global_costmap">
-inflater:
-  inflation_radius: 0.30 # 0.7
-  cost_scaling_factor: 10.0 # 10.0
+      inflater:
+        inflation_radius: 0.7 # 0.7
+        cost_scaling_factor: 5.0 # 10.0
+      obstacles:
+        min_obstacle_height: 0.05
+      footprint_padding: 0.05
     </rosparam>
     <rosparam ns="move_base/local_costmap">
-inflater:
-  inflation_radius: 0.30 # 0.7
-  cost_scaling_factor: 100.0 # 25.0 default 10, increasing factor decrease the cost value
-update_frequency: 10.0 # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      inflater:
+        inflation_radius: 0.7 # 0.7
+        cost_scaling_factor: 5.0 # 25.0 default 10, increasing factor decrease the cost value
+      obstacles:
+        min_obstacle_height: 0.05
+      # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      update_frequency: 10.0
+      footprint_padding: 0.05
     </rosparam>
     <rosparam ns="move_base">
-base_local_planner: base_local_planner/TrajectoryPlannerROS
-TrajectoryPlannerROS:
-  escape_vel: -0.1 # -0.1
-recovery_behavior_enabled: true
-recovery_behaviors:
-  - name: "conservative_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-  - name: "rotate_recovery"
-    type: "rotate_recovery/RotateRecovery"
-    frequency: 20.0
-    sim_granularity: 0.017
-  - name: "aggressive_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-conservative_reset: {reset_distance: 1.0} # 3.0
-aggressive_reset: {reset_distance: 0.2} # 0.5
-move_slow_and_clear: {clearing_distance: 0.5, limited_distance: 0.3, limited_rot_speed: 0.45, limited_trans_speed: 0.25}
+      base_local_planner: base_local_planner/TrajectoryPlannerROS
+      TrajectoryPlannerROS:
+        min_in_place_vel_theta: 1.0
+        escape_vel: -0.1 # -0.1
+        vx_samples: 10
+        meter_scoring: true
+        pdist_scale: 5.0
+        gdist_scale: 3.2
+        occdist_scale: 0.1
+        dwa: true
+      recovery_behavior_enabled: true
+      recovery_behaviors:
+        - name: "conservative_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+        - name: "rotate_recovery"
+          type: "rotate_recovery/RotateRecovery"
+          frequency: 20.0
+          sim_granularity: 0.017
+        - name: "aggressive_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+      conservative_reset:
+        reset_distance: 1.0 # 3.0
+      aggressive_reset:
+        reset_distance: 0.2 # 0.5
+      move_slow_and_clear:
+        clearing_distance: 0.5
+        limited_distance: 0.3
+        limited_rot_speed: 0.45
+        limited_trans_speed: 0.25
     </rosparam>
   </group>
+
+  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
+  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
+  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
+    <remap from="~input" to="/imu" />
+    <remap from="~output" to="/imu_corrected" />
+  </node>
+
+  <!-- /odom has no covariance value. -->
+  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
+    <remap from="~input" to="/odom" />
+    <remap from="~output" to="/odom_corrected" />
+  </node>
 </launch>
