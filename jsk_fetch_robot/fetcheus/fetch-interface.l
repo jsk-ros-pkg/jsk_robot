@@ -209,7 +209,7 @@ Example: (send self :gripper :position) => 0.00"
     (x y d ;; [m/sec] [m/sec] [rad/sec]
        &optional (msec 1000) ;; msec is total animation time [msec]
        &key (stop t) (wait t))
-    (unless (not (zerop y))
+    (unless (zerop y)
       (ros::ros-error
         "Setting velocity in y-axis is not valid for non-holonomic robot")
       (return-from :go-velocity nil))
@@ -240,7 +240,8 @@ Example: (send self :gripper :position) => 0.00"
     t)
   (:go-pos-unsafe-wait
     (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
-          (translation-gain 1.0) (rotation-gain 1.0))
+          (translation-gain 1.0) (rotation-gain 1.0)
+          (min-translation-abs-vel 0.3) (min-rotation-abs-vel 0.8))
     (unless (send self :get :go-pos-unsafe-no-wait-goal)
       (ros::ros-error ":go-pos-unsafe-wait is called without goal")
       (return-from :go-pos-unsafe-wait nil))
@@ -279,7 +280,10 @@ Example: (send self :gripper :position) => 0.00"
           (when (send self :simulation-modep)
             (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (let ((d-vel (* rotation-gain err)))
+            (send self :send-cmd-vel-raw 0
+              (if (> (abs d-vel) min-rotation-abs-vel)
+                d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
 
         ;; x
@@ -299,8 +303,10 @@ Example: (send self :gripper :position) => 0.00"
                         :translate (float-vector
                                     (if forward-p 0.1 -0.1) 0 0)))
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw
-                (* translation-gain (if forward-p err (- err))) 0)
+          (let ((x-vel (* translation-gain (if forward-p err (- err)))))
+            (send self :send-cmd-vel-raw
+              (if (> (abs x-vel) min-translation-abs-vel)
+                x-vel (* (if (>= x-vel 0) 1.0 -1.0) min-translation-abs-vel)) 0))
           (ros::sleep))
 
         ;; yaw
@@ -317,7 +323,10 @@ Example: (send self :gripper :position) => 0.00"
           (when (send self :simulation-modep)
             (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (let ((d-vel (* rotation-gain err)))
+            (send self :send-cmd-vel-raw 0
+              (if (> (abs d-vel) min-rotation-abs-vel)
+                d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
         t)))
 ) ;; fetch-interface (simple base actions)

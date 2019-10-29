@@ -28,6 +28,7 @@
   <run_depend>amcl</run_depend>
   <run_depend>map_server</run_depend>
   <run_depend>move_base</run_depend>
+  <run_depend>robot_localization</run_depend>
 
   <!-- for fetch teleop -->
   <run_depend>app_manager</run_depend>
@@ -42,7 +43,7 @@
 
   <!-- for fetch speech recognition -->
   <run_depend>julius_ros</run_depend>
-  <run_depend>respeaker_ros</run_depend>
+  <run_depend version_gte="2.1.13">respeaker_ros</run_depend>
 
   <test_depend>rostest</test_depend>
 

@@ -35,6 +35,9 @@
         language: $(arg language)
         self_cancellation: true
         tts_tolerance: 0.5
+        tts_action_names:
+            - robotsound
+            - robotsound_jp
       </rosparam>
     </node>
   </group>
