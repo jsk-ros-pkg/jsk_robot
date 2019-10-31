@@ -5,7 +5,7 @@
 (defvar *send-time* 1000)
 (defvar *head-controller-gain* 0.30)
 (defvar *debug-teleop-joy* nil)
-(defvar *joy-type* :ps3)
+(defvar *joy-type* "ps3")
 
 (defun teleop-joy-cb (msg)
   ;; mode callback
@@ -199,7 +199,7 @@
     (setq buttons (send msg :buttons))
 
     (cond
-     ((eq *joy-type* :ps3)
+     ((string= *joy-type* "ps3")
       (setf (gethash :Lstick   joy-cmd-map) (coerce (subseq axes 0 2) float-vector))
       (setf (gethash :Rstick   joy-cmd-map) (coerce (subseq axes 2 4) float-vector))
       (setf (gethash :select   joy-cmd-map) (elt buttons  0))
@@ -216,7 +216,7 @@
       (setf (gethash :up       joy-cmd-map) (elt buttons  4)) ;; grasp
       (setf (gethash :down     joy-cmd-map) (elt buttons  6)) ;; release
       )
-     ((eq *joy-type* :ps4)
+     ((string= *joy-type* "ps4")
       (setf (gethash :Lstick   joy-cmd-map) (float-vector (elt axes 0) (elt axes 1)))
       (setf (gethash :Rstick   joy-cmd-map) (float-vector (elt axes 2) (elt axes 5)))
       (setf (gethash :select   joy-cmd-map) (elt buttons   8))
@@ -234,7 +234,7 @@
       (setf (gethash :down     joy-cmd-map) (- (elt axes 10))) ;; release
       )
      (t
-      (ros::ros-warn "~A joy-type is not supported" (string *joy-type*))
+      (ros::ros-warn "~A joy-type is not supported" *joy-type*)
       (setq joy-cmd-map nil)))
     joy-cmd-map))
 
@@ -251,6 +251,7 @@
         *head-neck-y-min-angle* (+ (send *robot* :head-neck-y :min-angle) 1.0))
   ;; spin rate
   (ros::rate 50)
+
   ;; subscribe joy topic
   (ros::subscribe "/joy" sensor_msgs::Joy #'teleop-joy-cb)
   )
