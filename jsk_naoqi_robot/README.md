@@ -92,7 +92,7 @@ export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 mkdir -p catkin_ws/src
 cd  catkin_ws
 wstool init src
-wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
+wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/naoqi.rosinstall
 wstool update -t src
 source /opt/ros/${ROS_DISTRO}/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
@@ -105,12 +105,15 @@ sudo apt-get install ros-${ROS_DISTRO}-pepper-meshes
 sudo apt-get install ros-${ROS_DISTRO}-nao-meshes
 ```
 
-Note that `pepper.rosinstall` includes necessary patches for ROS kinetic, such as [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).
+Note that `naoqi.rosinstall` includes necessary patches for ROS kinetic, such as [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).
 
 Finally, please compile them.  
 
 ```
 catkin build peppereus
+catkin build jsk_pepper_startup
+catkin build naoeus
+catkin build jsk_nao_startup
 source devel/setup.bash
 ```
 
@@ -122,7 +125,7 @@ source devel/setup.bash
 ## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
-For some methods, they require specific branch (kochigami-develop) because they are not merged into master. [pepper.rosinstall](https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall) file includes this branch for `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` repositories.
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. [naoqi.rosinstall](https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/naoqi.rosinstall) file includes this branch for `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` repositories.
 
 ## NAO & Pepper
 
