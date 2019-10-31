@@ -1,3 +1,4 @@
+#!/usr/bin/env roseus
 (ros::load-ros-manifest "sensor_msgs")
 
 (defvar *max-pos* 3.0)
@@ -256,3 +257,72 @@
   ;; subscribe joy topic
   (ros::subscribe "/joy" sensor_msgs::Joy #'teleop-joy-cb)
   )
+
+
+(defun robot-teleop-joy-setup(&key
+                              (robot "pr2") (joy-type "ps3") (grasp-loop-enable nil)
+                              (reset-loop-enable nil) (look-at-loop-enable nil) (move-head-enable nil))
+  (let ((reset-pose :reset-manip-pose))
+    (cond
+     ((string= robot "hrp2")
+      (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2jsknts-interface.l")
+      (defmethod hrp2jsknts-interface
+        (:start-grasp (arm &key (robot *robot*) (time 3000) (wait nil) &allow-other-keys)
+                      (send robot :hand arm :index-avoid-grasp-pose)
+                      (send self :hand-angle-vector (send robot :hand-angle-vector) time)
+                      (if wait (send self :hand-wait-interpolation)))
+        (:stop-grasp (arm &key (robot *robot*) (time 3000) (wait nil) &allow-other-keys)
+                     (send robot :hand arm :hook-pose)
+                     (send self :hand-angle-vector (send robot :hand-angle-vector) time)
+                     (if wait (send self :hand-wait-interpolation))))
+      (hrp2jsknts-init)
+      (setq *robot* *hrp2jsknts*))
+     ((string= robot "pr2")
+      (load "package://pr2eus/pr2-interface.l")
+      (pr2-init)
+      (setq *robot* *pr2*))
+     ((string= robot "aero")
+      (load "package://aeroeus/aero-interface.l")
+      (aero-init)
+      (setq *robot* *aero*)
+      (setq reset-pose :reset-pose)))
+
+    (when *debug-teleop-joy*
+      (unless (boundp '*irtviewer*)
+        (make-irtviewer)
+        (objects (list *robot*))))
+
+    ;; setup teleop-joy
+    (teleop-joy-setup)
+    (setq *joy-type* joy-type)
+    ;; options
+    (setq *grasp-loop-enable* grasp-loop-enable
+          *reset-loop-enable* reset-loop-enable
+          *look-at-loop-enable* look-at-loop-enable
+          *move-head-enable* move-head-enable)
+
+    reset-pose))
+
+(defun setup ()
+  (let ((node-ns (ros::get-name))
+        (reset-pose :reset-manip-pose))
+    (setq *max-pos* (ros::get-param (concatenate string node-ns "/max_pos") 3.0))
+    (setq *max-rot* (ros::get-param (concatenate string node-ns "/max_rot") 0.015))
+    (setq *send-time* (ros::get-param (concatenate string node-ns "/send_time") 1000))
+    (setq *head-controller-gain* (ros::get-param (concatenate string node-ns "/head_gain") 0.30))
+    (setq *debug-teleop-joy* (ros::get-param (concatenate string node-ns "/debug") nil))
+
+    (setq reset-pose (robot-teleop-joy-setup
+                      :robot (ros::get-param (concatenate string node-ns "/teleop_robot") "pr2")
+                      :joy-type (ros::get-param (concatenate string node-ns "/joy_type") "ps3")
+                      :grasp-loop-enable (ros::get-param (concatenate string node-ns "/use_grasp") nil)
+                      :reset-loop-enable (ros::get-param (concatenate string node-ns "/use_reset_pose") nil)
+                      :look-at-loop-enable (ros::get-param (concatenate string node-ns "/use_look_at") nil)
+                      :move-head-enable (ros::get-param (concatenate string node-ns "/use_move_head") nil)))
+    (run-teleop-joy :reset-pose reset-pose)))
+
+(ros::roseus "robot_teleop_joy")
+(setup)
+
+;; (robot-teleop-joy-setup :robot "pr2" :joy-type "ps3")
+;; (run-teleop-joy :reset-pose :reset-pose)
