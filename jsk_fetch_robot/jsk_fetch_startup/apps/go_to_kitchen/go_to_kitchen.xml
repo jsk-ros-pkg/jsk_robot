@@ -1,11 +1,26 @@
 <launch>
-  <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true" output="screen"
-        args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l"/>
+  <arg name="video_path" default="/tmp" />
+  <arg name="head_camera_video_title" default="go_to_kitchen_head_camera.avi" />
+  <arg name="object_detection_video_title" default="go_to_kitchen_object_detection.avi" />
 
-  <node name="go_to_kitchen_video_recorder" pkg="image_view" type="video_recorder">
+  <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true" output="screen"
+        args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l">
+    <rosparam subst_value="true">
+      mail_notification: true
+      file_paths:
+        - $(arg video_path)/$(arg head_camera_video_title)
+        - $(arg video_path)/$(arg object_detection_video_title)
+      file_titles:
+        - $(arg head_camera_video_title)
+        - $(arg object_detection_video_title)
+    </rosparam>
+    <rosparam command="load" file="/etc/ros/jsk_data/jsk_fetch_startup/go_to_kitchen/address.yaml" />
+  </node>
+
+  <node name="go_to_kitchen_head_camera_video_recorder" pkg="image_view" type="video_recorder">
     <remap from="image" to="/head_camera/rgb/throttled/image_rect_color" />
-    <rosparam>
-      filename: /tmp/go_to_kitchen.avi
+    <rosparam subst_value="true">
+      filename: $(arg video_path)/$(arg head_camera_video_title)
       codec: XVID
       stamped_filename: false
       fps: 5.0
@@ -13,8 +28,8 @@
   </node>
   <node name="go_to_kitchen_object_detection_video_recorder" pkg="image_view" type="video_recorder">
     <remap from="image" to="/edgetpu_object_detector/output/image" />
-    <rosparam>
-      filename: /tmp/go_to_kitchen_object_detection.avi
+    <rosparam subst_value="true">
+      filename: $(arg video_path)/$(arg object_detection_video_title)
       codec: XVID
       stamped_filename: false
       fps: 7.5
