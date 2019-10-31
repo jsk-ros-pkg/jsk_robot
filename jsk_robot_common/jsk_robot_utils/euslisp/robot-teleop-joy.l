@@ -168,10 +168,11 @@
     )
   )
 
-(defun run-teleop-joy (&key (reset? t) (reset-pose :reset-manip-pose))
+(defun run-teleop-joy (&key (reset? nil) (reset-pose :reset-manip-pose))
   (when reset?
     (send *ri* :angle-vector (send *robot* reset-pose) 5000)
     (send *ri* :wait-interpolation))
+  (send *robot* :angle-vector (send *ri* :state :potentio-vector))
   (setq *prev-r-grasp* nil
         *prev-l-grasp* nil
         *r-grasp*      nil
