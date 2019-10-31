@@ -48,8 +48,8 @@
   <group ns="base_controller" if="$(arg use_base_trajectory)">
     <node pkg="pr2_base_trajectory_action" type="pr2_base_trajectory_action"
           name="joint_trajectory_action" respawn="true" output="screen">
-      <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
-      <remap from="command" to="/cmd_vel" />
+      <rosparam command="load" file="$(find jsk_aero_startup)/config/aero_base_link.yaml"/>
+      <remap from="command" to="/move_base/cmd_vel" />
       <remap from="odom" to="/odom" />
     </node>
   </group>
