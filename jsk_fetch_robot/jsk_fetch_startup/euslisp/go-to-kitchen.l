@@ -16,8 +16,7 @@
     (ros::service-call "/gdrive_server/upload_multi" req)))
 
 (defun send-mail (text)
-  (let ((cmd (format nil "/bin/echo -e \"~A\" | /usr/bin/mail -s \"Fetch15 go_to_kitchen\" -r ~A ~A" text *from-address* *to-address*)))
-    (print cmd)
+  (let ((cmd (format nil "LC_CTYPE=ja_JP.UTF-8 /bin/echo -e \"~A\" | /usr/bin/mail -s \"Fetch キッチン見回りデモ\" -r ~A ~A" text *from-address* *to-address*)))
     (eq (unix::system cmd) 0)))
 
 (defun main ()
@@ -34,12 +33,13 @@
         (send-mail
           (concatenate string
                        (if success
-                         "Hi all,\\nI succeeded go_to_kitchen app.\\n"
-                         "Hi all,\\nI failed go_to_kitchen app.\\n")
+                         "こんにちは、私はFetchです。\\nキッチンの見回りをしてきたよ。\\n"
+                         "こんにちは、私はFetchです。\\nキッチンの見回りに失敗しました。\\n")
                        (if file-urls
                          (apply #'concatenate string
-                               (mapcar #'(lambda (x) (format nil "Video URL: ~A\\n" x)) file-urls))
-                         "I also failed to upload videos.\\n")))))))
+                               (append (list "見回りの動画をアップロードしました。\\n")
+                                       (mapcar #'(lambda (x) (format nil "URL: ~A\\n" x)) file-urls)))
+                         "見回りの動画のアップロードにも失敗しました。\\n")))))))
 
 
 (ros::roseus "go_to_kitchen")
