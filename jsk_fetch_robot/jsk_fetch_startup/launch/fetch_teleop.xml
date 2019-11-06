@@ -77,6 +77,16 @@
     <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
   </node>
+  <rosparam ns="safe_teleop_base/local_costmap">
+    inflater:
+      inflation_radius: 1.0 # 0.7
+      cost_scaling_factor: 3.0 # 25.0 default 10, increasing factor decrease the cost value
+    obstacles:
+      min_obstacle_height: 0.05
+    # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+    update_frequency: 10.0
+    footprint_padding: 0.05
+  </rosparam>
 
   <node name="safe_tilt_head" pkg="jsk_fetch_startup" type="safe_tilt_head.py" />
 
