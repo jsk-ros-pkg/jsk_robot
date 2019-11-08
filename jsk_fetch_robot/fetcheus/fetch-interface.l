@@ -333,6 +333,10 @@ Example: (send self :gripper :position) => 0.00"
                 d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
         t)))
+  (:move-to-wait (&rest args)
+    (send-super* :move-to-wait
+                 (if (member :correction args) args
+                     (append args (list :correction nil)))))
 ) ;; fetch-interface (simple base actions)
 
 (defun fetch-init (&optional (create-viewer))
