@@ -23,11 +23,11 @@
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: master
 # to pass build of jsk_robot
-# remove after 2.2.10 is released
+# remove after 2.2.11 is released
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: 2.2.10
+    version: 799fd309c1519801fcb3a37c9094814004d78594
 # to avoid volume 0 problem
 # remove after 0.3.14 (https://github.com/jsk-ros-pkg/jsk_pr2eus/commit/41183fe3401d742bbec0edd13b67cb909a6968bd) is released
 - git:
@@ -40,7 +40,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: 810acc7
+    version: 7c429715d0adf12c5dd34459ceb4b0a5b11dec6c
 # jsk_topic_tools requires nodelet gte 1.9.11
 # remove after 1.9.11 is released by apt
 - git:
@@ -65,9 +65,19 @@
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-    version: 82e897dcbdcd6aa0cbd126fa122d4dbdc9df67c9
+    version: f2b2bd8ac30a8539a6e099dfe7f1e2830ca12430
 # indigo is already EOL and fetch_ros is never released.
 - git:
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
     version: 4680118106ba8ffa99a803122bf1a9e383edf3df
+# indigo is already EOL and visualization_msgs is never released
+- tar:
+    local-name: ros/common_msgs/visualization_msgs
+    uri: https://github.com/ros-gbp/common_msgs-release/archive/release/kinetic/visualization_msgs/1.12.7-0.tar.gz
+    version: common_msgs-release-release-kinetic-visualization_msgs-1.12.7-0
+# catkin_virtualenv is required in jsk_3rdparty
+- git:
+    local-name: locusrobotics/catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 0.5.0
