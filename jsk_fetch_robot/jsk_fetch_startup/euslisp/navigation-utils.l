@@ -129,7 +129,7 @@
     (dotimes (i n-kitchen-trial)
       (setq success-go-to-kitchen
             (go-to-spot "/eng2/7f/room73B2-sink-front0"
-                        (make-coords :pos #f(200 -500 0)) :undock-rotate t))
+                        (make-coords :pos #f(100 -500 0)) :undock-rotate t))
       (when success-go-to-kitchen (return)))
     (if success-go-to-kitchen
       (progn ;; succeeded to go to kitchen
