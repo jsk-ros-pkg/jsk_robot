@@ -105,13 +105,10 @@
          (frame-id (cdr ret)))
     (when relative-coords
       (setq goal-pose (send goal-pose :transform relative-coords :world)))
+    (send *ri* :clear-costmap)
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 (defun auto-dock (&key (n-trial 1))
-  (unless (boundp '*ri*)
-    (require :fetch-interface "package://fetcheus/fetch-interface.l")
-    (fetch-init))
-  (send *ri* :clear-costmap)
   (let ((success nil))
     (dotimes (i n-trial)
       (when (go-to-spot *dock-spot* (make-coords :pos #f(0 -800 0)))
