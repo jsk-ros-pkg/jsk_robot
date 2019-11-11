@@ -1,9 +1,3 @@
-# this file is a copy of pr2_navigation_config/move_base/move_base_params.yaml 
-
-
-clearing_radius: 0.30
-footprint_padding: 0.015
-
 # Oscillation
 oscillation_timeout: 10.0
 oscillation_distance: 0.5

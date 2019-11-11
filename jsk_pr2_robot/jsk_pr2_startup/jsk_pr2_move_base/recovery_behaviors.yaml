@@ -1,4 +1,4 @@
-recovery_behavior_enabled: true
+recovery_behavior_enabled: false
 recovery_behaviors:
   - name: 'conservative_reset'
     type: 'clear_costmap_recovery/ClearCostmapRecovery'
@@ -24,3 +24,6 @@ move_slow_and_clear:
   limited_trans_speed: 0.25
   limited_rot_speed: 0.45
   limited_distance: 0.3
+
+max_planning_retries: -1  # To enable recovery behavior, set to positive value.
+clearing_radius: 0.30
