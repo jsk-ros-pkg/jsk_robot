@@ -7,8 +7,8 @@ acc_lim_y: 2.5
 max_vel_x: 0.55
 min_vel_x: 0.0
 
-max_vel_y: 0.55
-min_vel_y: -0.55
+max_vel_y: 0.3
+min_vel_y: -0.3
 
 max_trans_vel: 0.55
 min_trans_vel: 0.0
