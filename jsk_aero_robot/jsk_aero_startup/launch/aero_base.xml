@@ -3,6 +3,8 @@
   <arg name="costmap_file" default="$(find jsk_aero_startup)/rooms/610/raw_maps/map.yaml"/>
   <arg name="nodelet_manager_name" default="nodelet_manager"/>
   <arg name="config_file" default="$(find aero_teleop)/config/cmd_vel_conf.yaml"/>
+  <arg name="scan_topic" default="scan" />
+
   <arg name="use_cmd_vel_mux" default="true"/>
   <arg name="use_base_trajectory" default="true"/>
   <arg name="use_laser_map_matching" default="true"/>
@@ -33,14 +35,23 @@
     </include>
   </group>
 
+  <!--- Run Scan Filter -->
+  <include file="$(find jsk_aero_startup)/launch/scan_filter.launch" />
+
+  <!--- Run MUX -->
+  <node name="scan_mux" pkg="topic_tools" type="mux"
+        args="/sel_scan /scan /scan_filtered" />
+
   <!--- Run AMCL -->
   <include file="$(find aero_startup)/aero_move_base/launch/amcl.launch" >
     <arg name="map_topic" value="$(arg map_topic)" />
+    <arg name="scan_topic" value="/sel_scan" />
   </include>
 
   <!--- Run Move Base -->
   <include file="$(find aero_startup)/aero_move_base/launch/move_base.launch">
     <arg name="map_file" value="$(arg map_file)" />
+    <arg name="scan_topic" value="/sel_scan" />
   </include>
 
 
