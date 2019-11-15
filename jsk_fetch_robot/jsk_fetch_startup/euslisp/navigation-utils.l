@@ -60,6 +60,8 @@
     (fetch-init))
   (dotimes (i 3)
     (let ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout 1500)))
+      ;; You may fail to subscribe /battery_state
+      ;; because of message md5 difference between melodic and indigo.
       (unless msg
         (ros::ros-warn "Failed to subscribe /battery_state")
         (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
