@@ -9,7 +9,7 @@
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action moveit-robot)
+  :slots (gripper-action moveit-robot collision-object-list)
   )
 
 (defmethod fetch-interface
@@ -29,6 +29,7 @@
                      :groupname groupname))
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
+     (setq collision-object-list (make-hash-table))
      ))
   (:state (&rest args)
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
@@ -194,7 +195,28 @@ Example: (send self :gripper :position) => 0.00"
     (send-super* :speak-en text :topic-name topic-name args))
   (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
     (send-super* :speak-jp text :topic-name topic-name args))
-  )
+  (:add-keepout-collision-object ()
+    (let ((cube (make-cube 200 350 50))
+          (keepout (make-cylinder 300 50)))
+      (send cube :translate #f(-120 0 0))
+      (send keepout :translate #f(0 0 -25))
+      (setq keepout (body- keepout cube))
+      (send keepout :translate #f(0 0 375))
+      (send *co* :add-object keepout :frame-id base-frame-id :object-id "keepout")
+      (sethash :keepout collision-object-list keepout)))
+  (:remove-keepout-collision-object ()
+    (send *co* :delete-object (gethash :keepout collision-object-list)))
+  (:add-ground-collision-object ()
+    (let ((cube (make-cube 200 350 50))
+          (ground (make-cylinder 1000 50)))
+      (send cube :translate #f(-120 0 0))
+      (send ground :translate #f(0 0 -25))
+      (setq ground (body- ground cube))
+      (send ground :translate #f(0 0 -25))
+      (send *co* :add-object ground :frame-id base-frame-id :object-id "ground")
+      (sethash :ground collision-object-list ground)))
+  (:remove-ground-collision-object ()
+    (send *co* :delete-object (gethash :ground collision-object-list))))
 
 ;; interface for simple base actions
 (defmethod fetch-interface
