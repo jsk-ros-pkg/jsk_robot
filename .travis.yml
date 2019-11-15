@@ -4,6 +4,7 @@ cache:
   pip: true
   directories:
     - $HOME/.ccache
+    - $HOME/apt-cacher-ng
 sudo: required
 services:
   - docker
