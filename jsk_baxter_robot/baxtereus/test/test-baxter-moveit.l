@@ -45,29 +45,31 @@
     (send *ri* :angle-vector-raw (send *baxter* :init-pose))
     (send *ri* :wait-interpolation)
 
+    ;; init-pose <-> reset-pose takes 1.904 sec at least
     (setq av (send *ri* :angle-vector (send *baxter* :reset-pose) 2000))
     (send *ri* :wait-interpolation)
     (assert av "failed: (send *ri* :angle-vector (send *baxter* :reset-pose) 2000)")
 
-    (setq av (send *ri* :angle-vector (send *baxter* :untuck-pose) 2000 :rarm-controller 0))
+    ;; reset-pose <-> untuck-pose takes 1.621 sec at least
+    (setq av (send *ri* :angle-vector (send *baxter* :untuck-pose) 1800 :rarm-controller 0))
     (send *ri* :wait-interpolation)
-    (assert av "failed: (send *ri* :angle-vector (send *baxter* :untuck-pose) 2000 :rarm-controller 0)")
+    (assert av "failed: (send *ri* :angle-vector (send *baxter* :untuck-pose) 1800 :rarm-controller 0)")
 
-    (setq av (send *ri* :angle-vector (send *baxter* :untuck-pose) 2000 :larm-controller 0))
+    (setq av (send *ri* :angle-vector (send *baxter* :untuck-pose) 1800 :larm-controller 0))
     (send *ri* :wait-interpolation)
-    (assert av "failed: (send *ri* :angle-vector (send *baxter* :untuck-pose) 2000 :larm-controller 0)")
+    (assert av "failed: (send *ri* :angle-vector (send *baxter* :untuck-pose) 1800 :larm-controller 0)")
 
-    (setq av (send *ri* :angle-vector (send *baxter* :reset-pose) 2000 :rarm-controller 0 :move-arm :rarm))
+    (setq av (send *ri* :angle-vector (send *baxter* :reset-pose) 1800 :rarm-controller 0 :move-arm :rarm))
     (send *ri* :wait-interpolation)
-    (assert av "failed: (send *ri* :angle-vector (send *baxter* :reset-pose) 2000 :rarm-controller 0 :move-arm :rarm)")
+    (assert av "failed: (send *ri* :angle-vector (send *baxter* :reset-pose) 1800 :rarm-controller 0 :move-arm :rarm)")
 
-    (setq av (send *ri* :angle-vector (send *baxter* :reset-pose) 2000 :larm-controller 0 :move-arm :larm))
+    (setq av (send *ri* :angle-vector (send *baxter* :reset-pose) 1800 :larm-controller 0 :move-arm :larm))
     (send *ri* :wait-interpolation)
-    (assert av "failed: (send *ri* :angle-vector (send *baxter* :reset-pose) 2000 :larm-controller 0 :move-arm :larm)")
+    (assert av "failed: (send *ri* :angle-vector (send *baxter* :reset-pose) 1800 :larm-controller 0 :move-arm :larm)")
 
-    (setq av (send *ri* :angle-vector (send *baxter* :untuck-pose) 2000 nil 0 :move-arm :arms))
+    (setq av (send *ri* :angle-vector (send *baxter* :untuck-pose) 1800 nil 0 :move-arm :arms))
     (send *ri* :wait-interpolation)
-    (assert av "failed: (send *ri* :angle-vector (send *baxter* :untuck-pose) 3000 nil 0 :move-arm :arms)")
+    (assert av "failed: (send *ri* :angle-vector (send *baxter* :untuck-pose) 1800 nil 0 :move-arm :arms)")
     ))
 
 (deftest test-baxter-moveit-angle-vector-fast()
