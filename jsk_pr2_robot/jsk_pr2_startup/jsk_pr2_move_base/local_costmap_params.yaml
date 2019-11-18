@@ -10,3 +10,6 @@ rolling_window: true
 width: 5.0 # 3.0
 height: 5.0 # 3.0
 resolution: 0.025 # 0.06
+
+footprint: [[-0.34, -0.35], [-0.34, 0.35], [0.34, 0.35], [0.34, -0.35]]
+footprint_padding: 0.1
