@@ -3,7 +3,6 @@
 
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="PR2"/>
-    <arg name="image_topics" default="/edgetpu_human_pose_estimator/output/image" />
 
     <arg name="machine" value="c2"/>
     <arg name="output" value="screen"/>
