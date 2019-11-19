@@ -59,12 +59,18 @@
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
   (dotimes (i 3)
-    (setq *is-charging* (send (one-shot-subscribe "/battery_state" power_msgs::batterystate) :is_charging))
-    (if *is-charging*
-      (progn (undock)))
-    (unless *is-charging*
-      (return))
-    (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock"))))
+    (let ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout 1500)))
+      ;; You may fail to subscribe /battery_state
+      ;; because of message md5 difference between melodic and indigo.
+      (unless msg
+        (ros::ros-warn "Failed to subscribe /battery_state")
+        (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
+        (return))
+      (setq *is-charging* (send msg :is_charging))
+      (if *is-charging*
+        (progn (undock)))
+      (unless *is-charging* (return))
+      (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock")))))
   ;; go to spot
   (unless *spots*
     (setq *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
