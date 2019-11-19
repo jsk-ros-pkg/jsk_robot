@@ -48,18 +48,20 @@
 (setq *pod-bin-ik-limit*
       (list 1300 1200 1300 0 0 1200 0 0 1200 0 1300 1100))
 
+(setq *debug-view-p* (null (unix::getenv "TRAVIS_BRANCH")))
+
 (deftest test-robot-ik-bin
   (let (robot)
     (setq robot (instance baxter-robot :init))
     (send robot :locate #f(0 0 950) :world)
-    (unless (unix::getenv "TRAVIS_BRANCH")
+    (when *debug-view-p*
       (objects (list robot)))
     (dolist (pos *pod-bin*)
       (dolist (arm '(:larm :rarm))
         (assert (send robot arm :inverse-kinematics
                       (make-cascoords :pos (v+ pos #f(-90 0 0)))
                       :rotation-axis t
-                      :debug-view (if (unix::getenv "TRAVIS_BRANCH") nil :no-message))
+                      :debug-view (if *debug-view-p* :no-message nil))
                 "fail to solve ik")
         )) ;; do list
     )) ;; let
@@ -68,7 +70,7 @@
   (let (robot)
     (setq robot (instance baxter-robot-safe :init))
     (send robot :locate #f(0 0 950) :world)
-    (unless (unix::getenv "TRAVIS_BRANCH")
+    (when *debug-view-p*
       (objects (list robot)))
     (dolist (pos *pod-bin*)
       (dolist (arm '(:larm :rarm))
@@ -76,7 +78,7 @@
         (assert (send robot arm :inverse-kinematics
                       (make-cascoords :pos (v+ pos #f(-90 0 0)))
                       :rotation-axis t
-                      :debug-view (if (unix::getenv "TRAVIS_BRANCH") nil :no-message))
+                      :debug-view (if *debug-view-p* :no-message nil))
                 "fail to solve ik")
         )) ;; do list
     )) ;; let
@@ -105,7 +107,7 @@
           :newcoords (make-coords :pos #f(50 0 310)
                                   :rpy (float-vector 0 -pi/2 0)))
     (send robot :locate #f(0 0 950) :world)
-    (unless (unix::getenv "TRAVIS_BRANCH")
+    (when *debug-view-p*
       (objects (append (list robot) *pod-bin-cube*)))
     (setq step-dist 200)
     (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
@@ -129,11 +131,11 @@
                 (send robot :rarm :inverse-kinematics
                   (make-cascoords :pos pos)
                   :rotation-axis t
-                  :debug-view (if (unix::getenv "TRAVIS_BRANCH") nil :no-message))
+                  :debug-view (if *debug-view-p* :no-message nil))
                 (send robot :larm :inverse-kinematics
                   (make-cascoords :pos pos)
                   :rotation-axis t
-                  :debug-view (if (unix::getenv "TRAVIS_BRANCH") nil :no-message))
+                  :debug-view (if *debug-view-p* :no-message nil))
                 (> tmp-x limit))
               "fail to solve ik")
             )
@@ -153,7 +155,7 @@
           :newcoords (make-coords :pos #f(50 0 310)
                                   :rpy (float-vector 0 -pi/2 0)))
     (send robot :locate #f(0 0 950) :world)
-    (unless (unix::getenv "TRAVIS_BRANCH")
+    (when *debug-view-p*
       (objects (append (list robot) *pod-bin-cube*)))
     (setq step-dist 200)
     (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
@@ -179,14 +181,14 @@
                   (send robot :rarm :inverse-kinematics
                     (make-cascoords :pos pos)
                     :rotation-axis t
-                    :debug-view (if (unix::getenv "TRAVIS_BRANCH") nil :no-message))
+                    :debug-view (if *debug-view-p* :no-message nil))
                   )
                 (and
                   (send robot :reset-pose)
                   (send robot :larm :inverse-kinematics
                     (make-cascoords :pos pos)
                     :rotation-axis t
-                    :debug-view (if (unix::getenv "TRAVIS_BRANCH") nil :no-message))
+                    :debug-view (if *debug-view-p* :no-message nil))
                   )
                 (> tmp-x limit)
                 )
