@@ -29,7 +29,11 @@ find_package(catkin REQUIRED COMPONENTS
   urdf
 )
 
-find_package(Boost REQUIRED COMPONENTS program_options chrono thread system)
+find_package(Boost REQUIRED COMPONENTS program_options thread system)
+if ("${Boost_VERSION}" VERSION_EQUAL "1.47.0" OR "${Boost_VERSION}" VERSION_GREATER "1.47.0")
+  find_package(Boost REQUIRED COMPONENTS chrono)
+endif()
+
 find_package(OpenCV REQUIRED)
 
 catkin_python_setup()
