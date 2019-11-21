@@ -30,7 +30,8 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Boost REQUIRED COMPONENTS program_options thread system)
-if ("${Boost_VERSION}" VERSION_EQUAL "1.47.0" OR "${Boost_VERSION}" VERSION_GREATER "1.47.0")
+if ("${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}" VERSION_EQUAL "1.47.0" OR
+    "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}" VERSION_GREATER "1.47.0")
   find_package(Boost REQUIRED COMPONENTS chrono)
 endif()
 
