@@ -65,7 +65,12 @@ endmacro()
 
 # jsk_topic_tools >= 2.2.27 only available from indigo
 if($ENV{ROS_DISTRO} STRGREATER "hydro")
-   add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
+  if ("${mongodb_store_VERSION}" VERSION_EQUAL "0.4.4" OR
+      "${mongodb_store_VERSION}" VERSION_EQUAL "0.4.5" OR
+      "${mongodb_store_VERSION}" VERSION_EQUAL "0.5.2" OR
+      "${mongodb_store_VERSION}" VERSION_GREATER "0.5.2")
+    add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
+  endif()
 endif()
 
 add_library(jsk_robot_lifelog SHARED
