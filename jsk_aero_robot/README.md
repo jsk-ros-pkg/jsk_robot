@@ -50,6 +50,30 @@ roseus aero-interface.l
 (objects (list *robot*))
 ```
 
+## Control SeedHand by angle
+Before start angle control, you may need to send GraspAngle once.
+```
+rosservice call /aero_hand_controller "{hand: $(python -c 'import aero_startup.srv; print aero_startup.srv.HandControlRequest.HAND_RIGHT'), command: $(python -c 'import aero_startup.srv; print aero_startup.srv.HandControlRequest.COMMAND_GRASP'), power: 0, time_sec: 1.0}"
+```
+or
+```
+(send *ri* :start-grasp :rarm)
+```
+
+Set index finger
+```
+rosservice call /seedhand_server/set_hand "{finger: 'index', arm: 'rarm', thumb_angle: 0.0, index_angle: 0.0, time: 3.0}"
+```
+Set thumb finger
+```
+rosservice call /seedhand_server/set_hand "{finger: 'index', arm: 'rarm', thumb_angle: 0.0, index_angle: 0.0, time: 3.0}"
+```
+
+Set both finger
+```
+rosservice call /seedhand_server/set_hand "{finger: 'both', arm: 'rarm', thumb_angle: 0.05, index_angle: 0.3, time: 3.0}"
+```
+
 ## Control from Joy
 Control mode is divided into `ik-mode` and `basic-mode`.
 Furthermore, `basic-mode` is divided into `joint-mode` and `base-mode`
