@@ -68,9 +68,13 @@
   <!-- Velocity Mulitplexer -->
   <group if="$(arg use_cmd_vel_mux)">
     <include file="$(find aero_teleop)/launch/cmd_vel_mux.launch">
-      <arg name="nodelet_manager_name"  value="$(arg nodelet_manager_name)"/>
-      <arg name="config_file"           value="$(arg config_file)"/>
+      <arg name="nodelet_manager_name"  value="$(arg nodelet_manager_name)" />
+      <arg name="config_file"           value="$(arg config_file)" />
     </include>
   </group>
+
+  <!--- Run Service Server to select scan and change footprint -->
+  <node name="transport_demo_service_server" pkg="jsk_aero_startup"
+        type="select_scan_and_change_footprint_server.py" output="screen" />
 
 </launch>

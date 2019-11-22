@@ -3,7 +3,7 @@
   <arg name="use_ik_teleop" default="true"/>
   <arg name="use_base" default="true"/>
   <arg name="use_sensors" default="true"/>
-  <arg name="use_speech_interaction" default="false"/>
+  <arg name="use_speech_interaction" default="true"/>
   <arg name="spot_file" default="$(find jsk_aero_startup)/rooms/610/spot.yaml"/>
   <arg name="machine" default="$(optenv AERO_REMOTE aerov)"/>
 
@@ -17,7 +17,7 @@
     <include file="$(find jsk_aero_startup)/launch/aero_teleop_with_ik.launch"
              if="$(arg use_ik_teleop)">
       <arg name="machine" value="$(arg machine)"/>
-      <arg name="joy_dev" value="/dev/input/js1" />
+      <arg name="joy_dev" value="/dev/input/js0" />
     </include>
 
     <include file="$(find aero_teleop)/launch/aero_teleop.launch"
@@ -27,7 +27,8 @@
 
   <!-- Bringup Aero Base -->
   <include file="$(find jsk_aero_startup)/launch/aero_base.xml"
-           if="$(arg use_base)"/>
+           if="$(arg use_base)">
+  </include>
 
   <!-- Bringup Perception Sensors -->
   <include file="$(find jsk_aero_startup)/launch/aero_sensors.xml"
@@ -44,5 +45,10 @@
   <include file="$(find jsk_aero_startup)/launch/speech_interaction.launch"
            if="$(arg use_speech_interaction)">
   </include>
+
+  <!-- seed hand server -->
+  <node name="seedhand_server"
+        pkg="seedhand_std" type="seedhand_server"
+        output="screen"/>
 
 </launch>
