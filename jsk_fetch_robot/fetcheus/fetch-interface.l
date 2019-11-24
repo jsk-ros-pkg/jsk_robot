@@ -239,8 +239,9 @@ Example: (send self :gripper :position) => 0.00"
     (let ()
       ;; fetch must be :reset-pose when we run this method
       (setq *fetch-headbox* (make-cube 100 201 120))
-      (send *fetch-headbox* :translate #f(0 0 1150))
-      (send *fetch* :head_pan_link_lk :assoc *fetch-headbox*)
+      (send *fetch-headbox* :move-coords (send robot :head_pan_link_lk :worldcoords)
+                                         (send robot :base_link_lk :worldcoords))
+      (send *fetch-headbox* :translate #f(33.75 0 150) (send robot :head_pan_link_lk :worldcoords))
       (send *co* :add-attached-object *fetch-headbox* "head_pan_link"
                  :frame_id "head_pan_link"
                  :object_id "fetchheadbox")))
