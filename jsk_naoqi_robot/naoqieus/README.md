@@ -38,7 +38,7 @@ Basic methods for NAO and Pepper are stored.
 
 - [:get-move-arms-enabled `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/get_move_arms_enabled.md)    
 
-- [:get-take-picture-folder-path](naoqi_bridge [`kochigami-develop`])](doc/get_take_picture_folder_path.md)
+- [:get-take-picture-folder-path (naoqi_bridge [`kochigami-develop`])](doc/get_take_picture_folder_path.md)
 
 - [:go-pos `x` `y` `theta` (naoqi_driver [`master`])](doc/go_pos.md)  
 
