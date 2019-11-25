@@ -63,11 +63,11 @@ macro(add_lifelog_nodelet _cpp _cls _bin)
 endmacro()
 
 # jsk_topic_tools >= 2.2.27 only available from indigo
+# mongodb_store >= 0.4.4 required in kinetic
+# mongodb_store >= 0.5.2 required in melodic
 if($ENV{ROS_DISTRO} STRGREATER "hydro")
-  if ("${mongodb_store_VERSION}" VERSION_EQUAL "0.4.4" OR
-      "${mongodb_store_VERSION}" VERSION_EQUAL "0.4.5" OR
-      "${mongodb_store_VERSION}" VERSION_EQUAL "0.5.2" OR
-      "${mongodb_store_VERSION}" VERSION_GREATER "0.5.2")
+  if (("${mongodb_store_VERSION}" VERSION_GREATER "0.4.3" AND "${mongodb_store_VERSION}" VERSION_LESS "0.5.0")
+      OR ("${mongodb_store_VERSION}" VERSION_GREATER "0.5.1")
     add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
   endif()
 endif()
