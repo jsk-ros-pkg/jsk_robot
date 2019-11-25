@@ -200,15 +200,17 @@
 |#
 
 ;; grasp by finger angle
-(defun start-pinch ()
-  (send *ri* :angle-index-finger :angle 0.3 :time 3)
-  (unix:usleep (* 1000 3000))
-  (send *ri* :angle-thumb-finger :angle -0.05 :time 3)
+(defun start-pinch (&optional (time 3000))
+  (send *ri* :angle-index-finger :angle 0.3 :time (* time 0.001))
+  (unix:usleep (* 1000 time))
+  (send *ri* :angle-thumb-finger :angle -0.05 :time (* time 0.001))
+  (unix:usleep (* 1000 time))
   )
 ;;
 ;; open by finger angle
-(defun stop-pinch ()
-  (send *ri* :angle-index-finger :angle -0.3 :time 3)
-  (unix:usleep (* 1000 3000))
-  (send *ri* :angle-thumb-finger :angle 0.0 :time 3)
+(defun stop-pinch (&optional (time 3000))
+  (send *ri* :angle-index-finger :angle -0.9 :time (* time 0.001))
+  (unix:usleep (* 1000 time))
+  (send *ri* :angle-thumb-finger :angle 0.25 :time (* time 0.001))
+  (unix:usleep (* 1000 time))
   )
