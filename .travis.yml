@@ -37,6 +37,7 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
+    - env: ROS_DISTRO=hydro   USE_DEB=true
     - env: ROS_DISTRO=hydro   USE_DEB=false EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon" BUILD_PKGS="jsk_pr2_calibration jsk_robot_startup pr2_base_trajectory_action jsk_pr2_startup jsk_pr2_desktop"
     - env: ROS_DISTRO=kinetic USE_DEB=true
     - env: ROS_DISTRO=melodic USE_DEB=true
