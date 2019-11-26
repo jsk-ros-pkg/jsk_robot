@@ -67,7 +67,7 @@ endmacro()
 # mongodb_store >= 0.5.2 required in melodic
 if($ENV{ROS_DISTRO} STRGREATER "hydro")
   if (("${mongodb_store_VERSION}" VERSION_GREATER "0.4.3" AND "${mongodb_store_VERSION}" VERSION_LESS "0.5.0")
-      OR ("${mongodb_store_VERSION}" VERSION_GREATER "0.5.1")
+      OR "${mongodb_store_VERSION}" VERSION_GREATER "0.5.1")
     add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
   endif()
 endif()
