@@ -261,6 +261,7 @@ Example: (send self :gripper :position) => 0.00"
         (send self :remprop :go-pos-unsafe-no-wait-goal)
 
         ;; yaw-x-yaw approach
+        (ros::ros-info "go-pos-unsafe: (x y d) = (~A ~A ~A)" x y d)
         (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)"
                        d0 (* (if forward-p 1.0 -1.0) d1) d2)
 
