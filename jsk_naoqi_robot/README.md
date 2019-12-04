@@ -64,11 +64,8 @@ Then put the file under your ``pynaoqi`` folder.
 2. Export environment variables in your ``.bashrc``
 
 ```
-# Python NAOqi SDK version >= 2.5.5
+# Please use Python NAOqi SDK version >= 2.5.5 (https://github.com/jsk-ros-pkg/jsk_robot/issues/1099)
 export PYTHONPATH=$HOME/pynaoqi/pynaoqi-python2.7-2.5.5.5-linux64/lib/python2.7/site-packages:$PYTHONPATH
-
-# Python NAOqi SDK version < 2.5.5
-export PYTHONPATH=$HOME/pynaoqi/<your Python SDK package name>:$PYTHONPATH
 
 export NAO_IP="olive.jsk.imi.i.u-tokyo.ac.jp" % OR IP address like "133.11.216.xxx"
 export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP

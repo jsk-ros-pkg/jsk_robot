@@ -118,7 +118,8 @@ class BatteryWarning(object):
 
         try:
             rc = df["Remaining Capacity (mAh)"].astype(float).sub(self.min_capacity)
-            fc = df["Full Charge Capacity (mAh)"].astype(int).sub(self.min_capacity)
+            fc = df["Full Charge Capacity (mAh)"].dropna(
+                how='all').astype(int).sub(self.min_capacity)
             min_perc = int(rc.where(rc > 0).div(fc).min() * 100.0)
 
             if (prev_plugged_in and plugged_in) or min_perc < 50:
