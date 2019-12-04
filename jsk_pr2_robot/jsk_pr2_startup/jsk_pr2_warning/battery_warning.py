@@ -3,6 +3,7 @@
 # Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 
 from __future__ import division
+from __future__ import unicode_literals
 
 import actionlib
 from collections import defaultdict
@@ -50,6 +51,8 @@ class BatteryWarning(object):
                 rospy.Duration(self.log_rate), self.log_cb)
 
     def speak(self, sentence):
+        # Pick first 4 characters as a keyword instead of using whole sentence
+        # because sentence can have variables like 100%, 90%, etc.
         key = sentence[:4]
         if self.speech_history[key] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
             return
