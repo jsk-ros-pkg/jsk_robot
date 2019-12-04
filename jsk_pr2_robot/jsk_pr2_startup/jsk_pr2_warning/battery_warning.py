@@ -59,6 +59,7 @@ class BatteryWarning(object):
         req.sound = SoundRequest.SAY
         req.arg = sentence
         req.arg2 = "ja"
+        req.volume = 1.0
         self.speak_client.send_goal(SoundRequestGoal(sound_request=req))
         self.speak_client.wait_for_result(timeout=rospy.Duration(10))
 
