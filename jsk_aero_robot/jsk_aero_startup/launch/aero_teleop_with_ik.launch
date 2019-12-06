@@ -3,9 +3,11 @@
   <arg name="joy_config" default="ps4" />
   <arg name="joy_dev" default="/dev/input/js0" />
   <arg name="config_filepath" default="$(find aero_teleop)/config/$(arg joy_config).config.yaml" />
+  <arg name="machine" default="aeroc" />
 
   <node name="joy_node"
-        pkg="joy" type="joy_node" >
+        pkg="joy" type="joy_node"
+        machine="$(arg machine)">
     <param name="dev" value="$(arg joy_dev)" />
     <param name="deadzone" value="0.3" />
     <param name="autorepeat_rate" value="20" />
@@ -13,20 +15,23 @@
 
   <node name="joy_msg_switcher"
         pkg="jsk_aero_startup" type="joy_msg_switcher.py"
-        output="log">
+        output="log"
+        machine="$(arg machine)">
     <remap from="~angle_mode" to="/joy_msg_switcher/angle_pub" />
     <remap from="~ik_mode" to="/joy_msg_switcher/ik_pub" />
   </node>
 
   <node name="aero_teleop_ik"
         pkg="jsk_aero_startup"  type="aero-teleop.l"
-        output="log">
+        output="log"
+        machine="$(arg machine)">
     <remap from="/joy" to="/joy_msg_switcher/ik_pub" />
   </node>
 
   <node name="teleop_joy"
         pkg="aero_teleop"  type="xbox_one_teleop_node"
-        output="log">
+        output="log"
+        machine="$(arg machine)">
     <rosparam command="load" file="$(arg config_filepath)" />
     <remap from="/cmd_vel" to="/teleop/cmd_vel" />
     <remap from="/joy" to="/joy_msg_switcher/angle_pub" />

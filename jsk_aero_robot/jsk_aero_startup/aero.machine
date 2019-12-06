@@ -1,17 +1,21 @@
 <launch>
-  <arg name="AERO"
-       default="$(optenv AERO aero_c)"/>
+  <arg name="AERO_REMOTE"
+       default="$(optenv AERO aerov)"/>
   <arg name="AERO_MASTER"
-       default="$(optenv AERO_MASTER aero_c)"/>
+       default="$(optenv AERO_MASTER aeroc)"/>
   <arg name="REMOTE_USER_NAME"
-       default="$(optenv REMOTE_USER_NAME user)"/>
-  <arg name="ROS_DISTRO"
-       default="$(optenv ROS_DISTRO indigo)"/>
+       default="$(optenv REMOTE_USER_NAME leus)"/>
   <arg name="CONFIG_PATH"
-       default="$(optenv CONFIG_PATH /opt/ros/kinetic/env.sh)"/>
+       default="$(optenv CONFIG_PATH /home/leus/ros/kinetic/devel/env.sh)"/>
 
-  <machine name="$(arg AERO)" address="$(arg AERO)"
-           user="$(arg REMOTE_USER_NAME)"
-           env-loader="$(arg CONFIG_PATH)"/>
+  <arg name="use_multi_machine" default="true" />
+
   <machine name="$(arg AERO_MASTER)" address="$(arg AERO_MASTER)" default="true"/>
+
+  <group if="$(arg use_multi_machine)">
+    <machine name="$(arg AERO_REMOTE)" address="$(arg AERO_REMOTE)"
+             user="$(arg REMOTE_USER_NAME)"
+             env-loader="$(arg CONFIG_PATH)"/>
+  </group>
+
 </launch>

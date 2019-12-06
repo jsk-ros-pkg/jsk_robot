@@ -1,6 +1,10 @@
 <launch>
   <arg name="use_xtion" default="true"/>
+  <arg name="use_zed" default="false"/>
+  <arg name="use_torso_sensor" default="false"/>
+  <arg name="machine" default="aeroc"/>
 
   <include file="$(find jsk_aero_startup)/launch/xtion_bringup.launch"
-           if="$(arg use_xtion)"/>
+           if="$(arg use_xtion)"
+           machine="$(arg machine)"/>
 </launch>

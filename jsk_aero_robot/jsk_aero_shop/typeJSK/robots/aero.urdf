@@ -1230,7 +1230,7 @@
     <child link="r_indexbase_link"/>
     <origin rpy="1.0472 -0 0" xyz="0 -0.02 -0.08"/>
     <axis xyz="1 0 0"/>
-    <limit effort="25" lower="-3.14159" upper="3.14159" velocity="0.5"/>
+    <limit effort="25" lower="-0.872665" upper="0.872665" velocity="0.5"/>
     <dynamics damping="0.2" friction="0"/>
   </joint>
   <transmission name="r_indexbase_joint_trans">
@@ -1314,7 +1314,7 @@
     <child link="r_thumb_link"/>
     <origin rpy="0.698 -0 0 " xyz="0 0.02 -0.030"/>
     <axis xyz="1 0 0"/>
-    <limit effort="25" lower="-3.14159" upper="3.14159" velocity="0.5"/>
+    <limit effort="25" lower="-0.872665" upper="0.872665" velocity="0.5"/>
     <dynamics damping="0.2" friction="0"/>
   </joint>
   <transmission name="r_thumb_joint_trans">
@@ -1502,7 +1502,7 @@
     <child link="l_indexbase_link"/>
     <origin rpy="0 -0 0 " xyz="0 0.013 -0.115"/>
     <axis xyz="1 0 0"/>
-    <limit effort="100" lower="-3.14159" upper="3.14159" velocity="0.5"/>
+    <limit effort="100" lower="-0.872665" upper="0.872665" velocity="0.5"/>
     <dynamics damping="0.2" friction="0"/>
   </joint>
   <transmission name="l_indexbase_joint_trans">
@@ -1583,7 +1583,7 @@
     <child link="l_thumb_link"/>
     <origin rpy="0 -0 0 " xyz="0 -0.022355 -0.079645"/>
     <axis xyz="1 0 0"/>
-    <limit effort="100" lower="-3.14159" upper="3.14159" velocity="0.5"/>
+    <limit effort="100" lower="-0.872665" upper="0.872665" velocity="0.5"/>
     <dynamics damping="0.2" friction="0"/>
   </joint>
   <transmission name="l_thumb_joint_trans">

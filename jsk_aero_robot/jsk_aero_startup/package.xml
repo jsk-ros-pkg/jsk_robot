@@ -15,6 +15,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>aeroeus</run_depend>
+  <run_depend>seedhand_std</run_depend>
   <run_depend>jsk_maps</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>linux_kinect</run_depend>
@@ -25,4 +26,5 @@
   <run_depend>tf</run_depend>
   <run_depend>yocs_cmd_vel_mux</run_depend>
   <run_depend>openni2_launch</run_depend>
+
 </package>
