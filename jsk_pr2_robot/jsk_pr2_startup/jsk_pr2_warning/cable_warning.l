@@ -40,7 +40,9 @@
   (let ((p (send msg :relative_capacity))
 	(a (send msg :ac_present))
 	(tm (ros::time-now)))
-    (ros::ros-info "power-state pc:~A cap:~A" p a)
+    (ros::ros-debug "power-state pc:~A cap:~A" p a)
+    (when (and *ac* (<= a 0))
+      (speak-jp (format nil "PR2、移動可能です。") :wait nil))
     (setq *ac* (> a 0))
     (if (or *ac*
 	    (> 180.0 (send (ros::time- tm *ac-tm*) :to-sec)))

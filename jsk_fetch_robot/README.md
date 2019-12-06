@@ -12,14 +12,14 @@
 |1     |Control robot turning           |
 |2     |Control forward/backward driving|
 |3     |Close gripper                   |
-|4     |Disable motor position holding  |
-|5     |Not used                        |
-|6     |Arm tuck                        |
-|7     |Not used                        |
-|8     |Head control deadman            |
+|4     |Move arm linear                 |
+|5     |Arm tuck                        |
+|6     |Move arm angular                |
+|7     |Disable motor position holding  |
+|8     |Not used                        |
 |9     |Unsafe teleop                   |
 |10    |Primary deadman                 |
-|11    |Not used                        |
+|11    |Head control deadman            |
 |12    |Torso up                        |
 |13    |Dock                            |
 |14    |Torso down                      |
@@ -40,16 +40,18 @@ First, you need to install ros. For ros indigo, please refer to install guide li
 
 ```bash
 mkdir -p catkin_ws/src
-cd  catkin_ws
-wstool init src
+cd  catkin_ws/src
+wstool init .
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
 if [ $ROS_DISTRO = "indigo" ]; then
-  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
+  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
 elif [ $ROS_DISTRO = "kinetic" ]; then
-  wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
+  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
 fi
-wstool update -t src
+wstool update -t .
 source /opt/ros/$ROS_DISTRO/setup.bash
-rosdep install -y -r --from-paths src --ignore-src
+rosdep install -y -r --from-paths . --ignore-src
+cd ../
 catkin build fetcheus jsk_fetch_startup
 source devel/setup.bash
 ```
@@ -256,4 +258,79 @@ ssh fetch15
 sudo bash
 rosrun ps3joy sixpair
 rosrun ps3joy ps3joy.py  # with pushing the center button of the joystick
+```
+
+  You might be forget to `source setup.bash` before you run `roseus`
+
+Administration
+--------------
+
+- set global environment variables https://github.com/jsk-ros-pkg/jsk_robot/issues/859#issuecomment-341269420
+```
+$ cat /etc/profile.d/jsk.sh 
+# added by furushchev (2017.11.2)
+export ROSLAUNCH_SSH_UNKNOWN=1                 # enable to run roslaunch with " Server' not found in known_hosts" 
+export JSK_DATA_CACHE_DIR=/etc/ros/jsk_data    # store recognition data within common directories to reduce hdd usage
+```
+
+**NOTE**  
+Scripts located in `/etc/profile.d` will be enabled on next login to the shell, so it is necessary to first log out and re-login to apply this change to current users.
+
+- Create directory for cache data for JSK repository
+
+```bash
+$ sudo mkdir /etc/ros/jsk_data && sudo chmod 0777 /etc/ros/jsk_data
+```
+
+- change permissoin of log direcotry https://github.com/jsk-ros-pkg/jsk_robot/issues/859#issuecomment-341269420
+
+`logrotate` does not work correctly due to directory permission
+```
+$ sudo /usr/sbin/logrotate /etc/logrotate.d/ros
+error: skipping "/var/log/ros/fd645e8c-9a09-11e5-8547-d8cb8a40210c/head_camera-depth_registered_rectify_depth-12-stdout.log" because parent directory has insecure permissions (It's world writable or writable by group which is not "root") Set "su" directive in config file to tell logrotate which user/group should be used for rotation.
+```
+Changed `/var/log/ros` manually
+```
+sudo chmod g-w /var/log/ros
+(cd /var/log/ros && find -type d | xargs sudo chmod g-w)
+```
+c.f.
+```
+furushchev@fetch15:/var/log/ros$ ls -lFahd
+drwxrwsr-x 381 ros ros 36K Nov  2 01:45 ./
+furushchev@pr2:/var/log/ros$ ls -lFahd
+drwxr-xr-x 6 ros ros 36K 11月  1 15:25 ./
+```
+
+- change script for auto `undocking` to disable auto rotatation after unplugged
+
+```diff
+# /opt/ros/indigo/lib/fetch_auto_dock/undock_on_button.py
+44c44,47
+<         goal.rotate_in_place = True
+---
+>         # fixed by furushchev (2017/11/1)
+>         # Disabled rotate in place feature
+>         # goal.rotate_in_place = True
+>         goal.rotate_in_place = False
+```
+
+- Set branch of `jsk_demos` as `master` in order to update jsk_maps
+
+- Add `pr2eus` package to `/home/fetch/ros/indigo/src/jsk-ros-pkg` to use [the newest `:speak` function](https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/332). This function will be released in `0.3.14` of `jsk_pr2eus` in the future.
+
+- Set `amcl/odom_alpha*` paramters manually in `/opt/ros/indigo/share/fetch_navigation/launch/include/amcl.launch`, to prevent jumps of self-position of fetch. Please see [this Pull Request](https://github.com/fetchrobotics/fetch_ros/pull/76). This is released in `0.7.14` of `fetch_ros`.
+
+- Fix wifi access point to catch access point with strong radio wave intensity
+
+- To add `cartesian_wrench_controller` to `default controller`,
+
+```
+source /home/fetch/fetch_controller_ws/devel/setup.bash # in /home/fetch/ros/indigo_robot/devel/setup.bash
+```
+
+- To use `respeaker` and `julius_ros` (`2.1.10` of `jsk_3rdparty`)
+
+```
+source /home/fetch/audio_ws/devel/setup.bash # in /home/fetch/ros/indigo/devel/setup.bash
 ```

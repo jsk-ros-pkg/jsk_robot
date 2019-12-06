@@ -15,7 +15,7 @@
   <arg name="launch_tablet" default="false" />
   <arg name="launch_jsk_pcl" default="false" />
   <arg name="launch_db" default="true" />
-  <arg name="launch_hark" default="true" />
+  <arg name="launch_microphone" default="true" />
   <arg name="launch_teleoperation" default="false" />
   <arg name="launch_people_detection" default="false" />
   <arg name="launch_look_forward" default="true" />
@@ -39,12 +39,11 @@
   </include>
 
   <!-- special start: use when launuch_move_base is false-->
-  <group unless="$(arg launch_move_base)" >
-    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
-      <arg name="launch_teleop_joystick" value="true" />
-      <arg name="launch_navigation" value="false" />
-    </include>
-  </group>
+  <include unless="$(arg launch_move_base)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
+    <arg name="launch_teleop_joystick" value="true" />
+    <arg name="launch_navigation" value="false" />
+  </include>
 
   <!-- We do not launch dynamic_tf_publisher for default anymore.
        <node name="dynamic_tf_publisher" pkg="dynamic_tf_publisher"
@@ -64,32 +63,9 @@
     <arg name="sound_play_respawn" value="true" />
   </include>
 
-  <!-- start sift on narrow left-->
-  <!-- <group if="$(arg launch_imagesift)" -->
-  <!--        ns="/narrow_stereo/left" > -->
-  <!--   <node machine="c1" name="throttle" pkg="topic_tools" -->
-  <!--         type="throttle" args="messages image_rect 2.0"/> -->
-  <!--   <node machine="c2" name="sift" pkg="imagesift" type="imagesift" -->
-  <!--         args="image:=image_rect_throttle" -->
-  <!--         launch-prefix="nice -n +10"/> -->
-  <!-- </group> -->
-
   <!-- kinect node -->
   <include if="$(arg launch_kinect)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
-
-  <!-- face detection node -->
-  <!-- <node if="$(arg launch_facedetection)" -->
-  <!--       pkg="face_detector" type="face_detector" name="face_detector" -->
-  <!--       args="stereo:=narrow_stereo image:=image_rect" machine="c2" > -->
-  <!--        <param name="classifier_name" type="string" value="frontalface" /> -->
-  <!--        <param name="classifier_filename" type="string" value="$(find opencv2)/opencv/share/opencv/haarcascades/haarcascade_frontalface_alt.xml"/> -->
-  <!--        <param name="classifier_reliability" type="double" value="0.9"/> -->
-  <!--        <param name="do_continuous" type="bool" value="true" /> -->
-  <!--        <param name="do_publish_faces_of_unknown_size" type="bool" value="false" /> -->
-  <!--        <param name="do_display" type="string" value="none" /> -->
-  <!--        <param name="output" type="string" value="none" /> -->
-  <!-- </node> -->
 
   <!-- logging node for PR2  -->
   <include if="$(arg launch_db)"
@@ -102,8 +78,7 @@
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
-    <node name="battery_warning" pkg="roseus" type="roseus"
-          args="$(find jsk_pr2_startup)/jsk_pr2_warning/battery_warning.l"/>
+    <node name="battery_warning" pkg="jsk_pr2_startup" type="battery_warning.py"/>
     <node name="battery_visualization"
           pkg="jsk_pr2_startup" type="battery_visualization.py" />
     <node name="battery_logger"
@@ -146,9 +121,9 @@
   <include if="$(arg launch_tablet)"
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tablet_startup.launch" />
 
-  <!-- for HARK -->
-  <include if="$(arg launch_hark)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_hark.launch" />
+  <!-- for microphone -->
+  <include if="$(arg launch_microphone)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_microphone.launch"/>
 
   <!-- joy mux -->
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"

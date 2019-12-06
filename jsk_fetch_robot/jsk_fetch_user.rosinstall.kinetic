@@ -5,11 +5,6 @@
     local-name: FA-I-sensor
     uri: https://github.com/RoboticMaterials/FA-I-sensor.git
     version: master
-# TODO(furushchev): describe why this is needed.
-- git:
-    local-name: ros-drivers/audio_common
-    uri: https://github.com/furushchev/audio_common.git
-    version: device
 # for fetcheus
 - git:
     local-name: fetchrobotics/fetch_msgs

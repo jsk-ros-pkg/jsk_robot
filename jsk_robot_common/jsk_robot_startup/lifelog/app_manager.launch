@@ -1,6 +1,6 @@
 <launch>
-  <arg name="applist"
-       doc="dirpath where *.installed file is located"/>
+  <arg name="use_applist" default="false" doc="load apps from applist argument"/>
+  <arg name="applist" default="" doc="app dirs (space separated)"/>
 
   <arg name="launch_websocket" default="true"
        doc="launch rosbridge_websocket if true"/>
@@ -15,6 +15,7 @@
   <arg name="remote" default="false"
        doc="set true with valid 'machine' argument"/>
   <arg name="machine" default="localhost"/>
+  <arg name="respawn" default="true"/>
 
   <!--
   Even if you don't want to use machine tag, machine name still need to be set.
@@ -24,7 +25,7 @@
 
   <group if="$(arg launch_websocket)">
     <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket"
-          output="screen" machine="$(arg machine)">
+          output="screen" machine="$(arg machine)" respawn="$(arg respawn)">
       <rosparam subst_value="true">
         address: ""
         port: $(arg websocket_port)
@@ -41,20 +42,16 @@
 
   <node if="$(arg launch_roswww)"
         name="roswww" pkg="roswww" type="webserver.py"
-        output="screen" machine="$(arg machine)"
+        output="screen" machine="$(arg machine)" respawn="$(arg respawn)"
         args="--name roswww --webpath www --cached true
               --port $(arg roswww_port) --start_port $(arg roswww_port) --end_port $(arg roswww_port)"/>
 
   <!--
   NOTE: Ensure the param '/robot/type' and '/robot/name' are defined when the nodes below are started.
   -->
-  <node pkg="app_manager" type="appmaster" name="appmaster"
-        args="-p 11312"
-        machine="$(arg machine)"/>
-  <node pkg="app_manager" type="app_manager" name="app_manager"
-        args="--applist $(arg applist)"
-        output="screen" machine="$(arg machine)">
-    <param name="interface_master" value="http://localhost:11312"/>
-  </node>
-
+  <include file="$(find app_manager)/launch/app_manager.launch">
+    <arg name="use_applist" value="$(arg use_applist)"/>
+    <arg name="applist" value="$(arg applist)"/>
+    <arg name="respawn" value="$(arg respawn)"/>
+  </include>
 </launch>

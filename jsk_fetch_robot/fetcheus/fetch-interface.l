@@ -18,7 +18,10 @@
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
-     (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
+     ;; check if fetch_driver_msgs exists, fetch_ros in released on kinetic/melodic, but fetch_msgs is not released yet.
+     (if (boundp 'fetch_driver_msgs::GripperState)
+	 (ros::subscribe "gripper_state" fetch_driver_msgs::GripperState #'send self :fetch-gripper-state-callback :groupname groupname)
+       (ros::ros-warn "Could not find fetch_driver_msgs package, please install from source https://github.com/fetchrobotics/fetch_msgs"))
      (setq gripper-action
            (instance ros::simple-action-client :init
                      "/gripper_controller/gripper_action"
@@ -69,7 +72,7 @@
 - tm : time to goal in [msec]
 - use-torso : set t to use torso
 "
-   (let ((ctype controller-type) (start-time 0) (use-torso t) (clear-velocities t))
+   (let ((ctype controller-type) (start-time 0) (start-offset-time nil) (use-torso t) (clear-velocities t))
    ;; as of 0.3.x, :angle-vector (robot-interface) :acceps tm ctype start-time as optional arguments, but in here we prefer old API
    (if (= (length args) 1) ;; args must be ctype
        (setq ctype (car args)
@@ -80,6 +83,7 @@
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
    (if (member :start-time args) (setq start-time (cadr (member :start-time args))))
+   (if (member :start-offset-time args) (setq start-offset-time (cadr (member :start-offset-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
@@ -88,8 +92,8 @@
    (when (not (numberp tm))
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
-               :start-offset-time start-time :clear-velocities clear-velocities
-               :use-torso use-torso args)))
+               :start-offset-time (if start-offset-time start-offset-time start-time)
+               :clear-velocities clear-velocities :use-torso use-torso args)))
   (:angle-vector-sequence
    (avs &optional tms &rest args) ;; (ctype controller-type) (start-time 0) &rest args
                                   ;; &key (use-torso t) (clear-velocities t) &allow-other-keys)
@@ -98,7 +102,7 @@
 - tms : list of time to goal from previous angle-vector point in [msec]
 - use-torso : set t to use torso
 "
-   (let ((ctype controller-type) (start-time 0) (use-torso t) (clear-velocities t))
+   (let ((ctype controller-type) (start-time 0) (start-offset-time nil) (use-torso t) (clear-velocities t))
    ;; as of 0.3.x, :angle-vector (robot-interface) :acceps tm ctype start-time as optional arguments, but in here we prefer old API
    (if (= (length args) 1) ;; args must be ctype
        (setq ctype (car args)
@@ -109,6 +113,7 @@
              args (cddr args)))
    (if (member :use-torso args) (setq use-torso (cadr (member :use-torso args))))
    (if (member :start-time args) (setq use-torso (cadr (member :start-time args))))
+   (if (member :start-offset-time args) (setq start-offset-time (cadr (member :start-offset-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
@@ -120,8 +125,8 @@
      (setq tms (apply #'+ tms))
      (setq tms 3000))
    (send* self :angle-vector-motion-plan avs :ctype ctype :move-arm :rarm :total-time tms
-               :start-offset-time start-time :clear-velocities clear-velocities
-               :use-torso use-torso args)))
+               :start-offset-time (if start-offset-time start-offset-time start-time)
+               :clear-velocities clear-velocities :use-torso use-torso args)))
   (:default-controller ()
    (append
     (send self :arm-controller)
@@ -204,7 +209,7 @@ Example: (send self :gripper :position) => 0.00"
     (x y d ;; [m/sec] [m/sec] [rad/sec]
        &optional (msec 1000) ;; msec is total animation time [msec]
        &key (stop t) (wait t))
-    (unless (not (zerop y))
+    (unless (zerop y)
       (ros::ros-error
         "Setting velocity in y-axis is not valid for non-holonomic robot")
       (return-from :go-velocity nil))
@@ -235,7 +240,8 @@ Example: (send self :gripper :position) => 0.00"
     t)
   (:go-pos-unsafe-wait
     (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
-          (translation-gain 1.0) (rotation-gain 1.0))
+          (translation-gain 1.0) (rotation-gain 1.0)
+          (min-translation-abs-vel 0.3) (min-rotation-abs-vel 0.8))
     (unless (send self :get :go-pos-unsafe-no-wait-goal)
       (ros::ros-error ":go-pos-unsafe-wait is called without goal")
       (return-from :go-pos-unsafe-wait nil))
@@ -274,7 +280,10 @@ Example: (send self :gripper :position) => 0.00"
           (when (send self :simulation-modep)
             (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (let ((d-vel (* rotation-gain err)))
+            (send self :send-cmd-vel-raw 0
+              (if (> (abs d-vel) min-rotation-abs-vel)
+                d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
 
         ;; x
@@ -294,8 +303,10 @@ Example: (send self :gripper :position) => 0.00"
                         :translate (float-vector
                                     (if forward-p 0.1 -0.1) 0 0)))
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw
-                (* translation-gain (if forward-p err (- err))) 0)
+          (let ((x-vel (* translation-gain (if forward-p err (- err)))))
+            (send self :send-cmd-vel-raw
+              (if (> (abs x-vel) min-translation-abs-vel)
+                x-vel (* (if (>= x-vel 0) 1.0 -1.0) min-translation-abs-vel)) 0))
           (ros::sleep))
 
         ;; yaw
@@ -312,7 +323,10 @@ Example: (send self :gripper :position) => 0.00"
           (when (send self :simulation-modep)
             (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (let ((d-vel (* rotation-gain err)))
+            (send self :send-cmd-vel-raw 0
+              (if (> (abs d-vel) min-rotation-abs-vel)
+                d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
         t)))
 ) ;; fetch-interface (simple base actions)

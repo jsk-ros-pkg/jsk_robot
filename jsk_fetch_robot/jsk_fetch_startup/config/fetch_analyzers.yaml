@@ -101,7 +101,7 @@ analyzers:
         type: diagnostic_aggregator/GenericAnalyzer
         path: Head Camera
         timeout: 5.0
-        startswith: 'throttle_nodelet_manager'
+        startswith: 'head_camera'
         num_items: 2
       imu:
         type: diagnostic_aggregator/GenericAnalyzer

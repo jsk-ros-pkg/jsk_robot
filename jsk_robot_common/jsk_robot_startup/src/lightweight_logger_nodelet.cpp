@@ -58,6 +58,8 @@ namespace jsk_robot_startup
 
       pnh_->param("wait_for_insert", wait_for_insert_, false);
 
+      pnh_->param("vital_check", vital_check_, true);
+
       input_topic_name_ = pnh_->resolveName("input", true);
 
       diagnostic_updater_.reset(
@@ -138,7 +140,7 @@ namespace jsk_robot_startup
       } else if (!initialized_) {
         stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
                      getName() + " is taking too long to be initialized");
-      } else if (!vital_checker_->isAlive()) {
+      } else if (vital_check_ && !vital_checker_->isAlive()) {
         jsk_topic_tools::addDiagnosticErrorSummary(getName(), vital_checker_, stat);
       } else if (insert_error_count_ != prev_insert_error_count_) {
         stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,

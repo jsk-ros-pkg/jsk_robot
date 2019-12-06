@@ -1,10 +1,8 @@
-peppereus
-=========
+# peppereus
 
 This is a NAO-specific package for roseus interface.
 
-How to make pepper model on euslisp
------------------------------------
+## How to make pepper model on euslisp
 
 Install pepper mesh files with manual approval of license
 ```
@@ -12,8 +10,7 @@ sudo apt-get install ros-<ros version>-pepper-meshes
 catkin build
 ```
 
-Control Pepper via roseus
--------------------------
+## Control Pepper via roseus
 
 ```
 (load "package://peppereus/pepper-interface.l") ;; load modules
@@ -28,15 +25,13 @@ or
 (pepper-init)
 ```
 
-How to try methods
-------------------
+## How to try methods
 
 1. [roslaunch jsk_pepper_startup.launch](../jsk_pepper_statup/README.md)  
 2. Please refer to [Control Pepper via roseus](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/peppereus/README.md#control-pepper-via-roseus).  
 3. Please try methods, you can refer to the explanations below how to try them. If there is a sign of `kochigami-develop`, please follow [Interface when controlling NAO and Pepper via roseus](../README.md#interface-when-controlling-nao-and-pepper-via-roseus). 
 
-Methods
--------
+## Methods
 
 ***Tablet***  
 
@@ -73,16 +68,17 @@ scp <file path of your local PC> nao@<Your robot IP>:/home/nao/.local/share/Pack
 		module destroyed
 ```
 
-Joints of Pepper
-----------------
+## Joints of Pepper
 
 Here is a list of joints when accessing Pepper.
-ex:
+
+ex:  
 ```
 (send *pepper* :reset-pose)
 => #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)
        0    1    2   3    4     5     6     7    8     9    10   11   12   13  14
 ```
+
 ```
 0: :knee-p
 1: :hip-r
@@ -101,8 +97,27 @@ ex:
 14: :head :neck-p
 ```
 
-Default poses
--------------
+### How to send angle vector
+
+```
+(send *pepper* :head :neck-y :joint-angle -10)
+(send *ri* :angle-vector (send *pepper* :angle-vector)
+```
+
+### How to send sequences of angle vector
+
+```
+(setq *reset-pose* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0))
+(setq *hello-pose1* #f(2.0 -2.0 -5.0 85.0 10.0 30.0 -0.5 30.0 -20.0 -10.0 70.0 20.0 40.0 30.0 0.0))
+(setq *hello-pose2* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 0.0 -10.0 70.0 20.0 40.0 0.0 0.0))
+
+(setq *hello-pose-list* (list *reset-pose* *hello-pose1* *hello-pose2* *reset-pose*))
+(setq *hello-time-list* (list 2000 3000 4000 5000))
+
+(send *ri* :angle-vector-sequence *hello-pose-list* *hello-time-list*)
+```
+
+## Default poses
 
 They are defined in `pepper.yaml`.
 
@@ -114,9 +129,17 @@ They are defined in `pepper.yaml`.
 
 ![](doc/img/greeting-pose.png)
 
+`:look-foot`
+
+![](doc/img/look-foot.png)
+
 `:nodding-pose`
 
 ![](doc/img/nodding-pose.png)
+
+`:ok-pose`
+
+![](doc/img/ok-pose.png)
 
 `:pointing-left-pose`
 
@@ -146,6 +169,18 @@ They are defined in `pepper.yaml`.
 
 ![](doc/img/reset-pose.png)
 
+`:show-bottom-camera`
+
+![](doc/img/show-bottom-camera.png)
+
+`:show-head`
+
+![](doc/img/show-head.png)
+
+`:show-top-camera`
+
+![](doc/img/show-top-camera.png)
+
 `:spread-hands-smally`
 
 ![](doc/img/spread-hands-smally.png)
@@ -154,6 +189,22 @@ They are defined in `pepper.yaml`.
 
 ![](doc/img/spread-hands-widely.png)
 
+`:touch-speakers`
+
+![](doc/img/touch-speakers.png)
+
+`:watching-pose`
+
+![](doc/img/watching-pose.png)
+
 `:wondering-pose`
 
 ![](doc/img/wondering-pose.png)
+
+`:c-pose`
+
+![](doc/img/c-pose.png)
+
+`:hiragana-tsu-pose`
+
+![](doc/img/hiragana-tsu-pose.png)

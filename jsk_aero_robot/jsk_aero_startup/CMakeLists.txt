@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(jsk_aero_startup)
+if($ENV{ROS_DISTRO} STREQUAL "hydro")
+  message(STATUS "aero is not supported on hydro")
+  find_package(catkin)
+  catkin_package()
+  return()
+endif()
 
 find_package(catkin REQUIRED)
 catkin_package()

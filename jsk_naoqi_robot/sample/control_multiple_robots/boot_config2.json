@@ -1,0 +1,110 @@
+{
+    "_comment": "QQVGA = 0, QVGA = 1, VGA = 2",
+    "converters":
+    {
+	"front_camera":
+	{
+	    "enabled"       : true,
+	    "resolution"    : 1,
+	    "fps"           : 10,
+	    "recorder_fps"  : 5
+	},
+	"bottom_camera":
+	{
+	    "enabled"       : true,
+	    "resolution"    : 1,
+	    "fps"           : 10,
+	    "recorder_fps"  : 5
+	},
+	"depth_camera":
+	{
+	    "enabled"       : true,
+	    "resolution"    : 1,
+	    "fps"           : 10,
+	    "recorder_fps"  : 5
+	},
+	"ir_camera":
+	{
+	    "enabled"       : true,
+	    "resolution"    : 1,
+	    "fps"           : 10,
+	    "recorder_fps"  : 5
+	},
+	"info":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 1
+	},
+	"logs":
+	{
+	    "enabled"       : false,
+	    "frequency"     : 1
+	},
+	"diag":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 1
+	},
+	"imu_torso":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 10
+	},
+	"imu_base":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 10
+	},
+	"joint_states":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 50
+	},
+	"laser":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 10
+	},
+	"sonar":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 10
+	},
+	"audio":
+	{
+	    "enabled"       : true
+	},
+	"bumper":
+	{
+	    "enabled"       : true
+	},
+	"touch_hand":
+	{
+	    "enabled"       : true
+	},
+	"touch_head":
+	{
+	    "enabled"       : true
+	},
+	"odom":
+	{
+	    "enabled"       : true,
+	    "frequency"     : 15
+	}
+    },
+    "subscribers":
+    {
+	"speech":
+	{
+	    "group_name"    : "robot2"
+	},
+	"moveto":
+	{
+	    "group_name"    : "robot2"
+	},
+	"teleop":
+	{
+	    "group_name"    : "robot2"
+	}
+    }
+}

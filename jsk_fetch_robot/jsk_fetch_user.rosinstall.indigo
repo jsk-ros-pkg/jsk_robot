@@ -5,8 +5,21 @@
     local-name: FA-I-sensor
     uri: https://github.com/RoboticMaterials/FA-I-sensor.git
     version: master
-# TODO(furushchev): describe why this is needed.
+# To use same audio_common version as fetch
 - git:
     local-name: ros-drivers/audio_common
-    uri: https://github.com/furushchev/audio_common.git
-    version: device
+    uri: https://github.com/ros-drivers/audio_common.git
+    version: 0.3.3
+# indigo is already EOL and 2.1.13 is never released.
+# set the same version as https://github.com/jsk-ros-pkg/jsk_robot/blob/master/.travis.rosinstall.indigo#L7-L11
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: 2.1.13
+# indigo is already EOL and fetch_ros is never released.
+# We cannot use version 0.8.x (for melodic) because some packages of fetch_ros cannot be built in indigo PC. This is because indigo PC uses OpenCV 2.4.8 while fetch_ros of 0.8.x requires OpenCV 3.2.
+# See https://github.com/jsk-ros-pkg/jsk_robot/pull/1148
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 4680118106ba8ffa99a803122bf1a9e383edf3df

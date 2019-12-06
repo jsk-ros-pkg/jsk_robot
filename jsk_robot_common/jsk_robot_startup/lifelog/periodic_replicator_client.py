@@ -168,7 +168,7 @@ class PeriodicReplicatorClient(object):
             rospy.loginfo("Replication suceeded")
             self.insert_replicate_date()
         else:
-            rospy.logwarn("Replication finished with status %s" % status)
+            rospy.logwarn("Replication finished with status %s" % actionlib.get_name_of_constant(GoalStatus, status))
 
     def active_cb(self):
         if not self.network_ok():

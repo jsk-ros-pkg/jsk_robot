@@ -1,0 +1,3 @@
+- git:
+    local-name: mongodb_store
+    uri: http://github.com/strands-project/mongodb_store

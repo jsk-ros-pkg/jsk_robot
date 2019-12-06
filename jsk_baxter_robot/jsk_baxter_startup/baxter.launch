@@ -1,21 +1,45 @@
 <launch>
   <arg name="launch_servo" default="true"/>
   <arg name="launch_joint_trajectory" default="true"/>
-  <arg name="launch_gripper_action" default="true"/>
+  <arg name="launch_gripper_action" default="false"/>
   <arg name="launch_openni" default="false"/>
-  <arg name="launch_kinect2" default="true"/>
+  <arg name="launch_kinect2" default="false"/>
   <arg name="launch_voice_echo" default="true"/>
   <arg name="launch_moveit" default="true"/>
   <arg name="launch_teleop" default="false"/>
-  <arg name="launch_tweet" default="true"/>
-  <arg name="launch_mongodb" default="true"/>
+  <arg name="launch_tweet" default="false"/>
+  <arg name="launch_mongodb" default="false"/>
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="sanity_check_joint_trajectory" default="true" />
-  <arg name="start_openni" default="true"/>
+  <arg name="start_openni" default="false"/>
+  <arg name="load_robot_description" default="false"/>
+  <arg name="launch_robot_state_publisher" default="false"/>
+  <arg name="left_electric_gripper" default="false"/>
+  <arg name="right_electric_gripper" default="false"/>
+  <arg name="arm_interpolation" default="minjerk"
+       doc="Baxter arm trajectory interpolation method: minjerk or bezier (default: minjerk)"/>
+  <arg name="arm_control_mode" default="position_w_id"
+       doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
   <arg name="USER_NAME" default="false"/>
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
   <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
+
+  <!-- custom baxter params -->
+  <param if="$(arg load_robot_description)" name="/robot_description"
+         command="$(find xacro)/xacro --inorder $(find baxter_description)/urdf/baxter.urdf.xacro gazebo:=false
+         left_electric_gripper:=$(arg left_electric_gripper) right_electric_gripper:=$(arg right_electric_gripper)"/>
+  <!-- 
+    NOTE: When baxter is booted up, baxter launches robot_state_publisher inside robot.
+    However, that node is killed by roslaunch jsk_arc2017_baxter baxter.launch
+    because we launch new robot_state_publihser based on customized hand model.
+    So in JSK environment, possibility to launch new robot_state_publihser easily is desireble.
+    Waiting for This PR: https://github.com/ros/robot_state_publisher/pull/31
+  -->
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher" if="$(arg launch_robot_state_publisher)">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
 
   <!-- Start Servo (Maybe This should not be here)-->
   <node if="$(arg launch_servo)" pkg="baxter_tools" name="baxter_servo_node" type="enable_robot.py" args="-e" output="screen" clear_params="true"/>
@@ -24,7 +48,7 @@
   <group if="$(arg launch_joint_trajectory)">
     <node name="baxter_joint_trajectory"
           pkg="baxter_interface" type="joint_trajectory_action_server.py"
-          args="--interpolation minjerk" output="screen"/>
+          args="--interpolation $(arg arm_interpolation) --mode $(arg arm_control_mode)" output="screen"/>
     <node name="head_joint_trajectory"
           pkg="baxter_interface" type="head_action_server.py"
           args="" output="screen"/>
@@ -61,8 +85,8 @@
 
   <include if="$(arg launch_moveit)"
            file="$(find jsk_baxter_startup)/jsk_baxter_moveit/moveit.launch" >
-      <arg name="left_electric_gripper" value="$(arg launch_gripper_action)" />
-      <arg name="right_electric_gripper" value="$(arg launch_gripper_action)" />
+      <arg name="left_electric_gripper" value="$(arg left_electric_gripper)" />
+      <arg name="right_electric_gripper" value="$(arg right_electric_gripper)" />
   </include>
 
   <!-- Do teleop with baxter_examples' joint_position_joystick.py-->

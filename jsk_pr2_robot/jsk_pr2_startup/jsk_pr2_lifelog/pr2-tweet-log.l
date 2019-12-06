@@ -8,8 +8,8 @@
 (require :mongo-client "package://roseus_mongo/euslisp/mongo-client.l")
 (require :tweet-client "package://jsk_robot_startup/lifelog/tweet_client.l")
 (defparameter *mongo-database* "jsk_robot_lifelog")
-(defparameter *mongo-collection* "pr1012")
-(defparameter *json-parse-key-function* #'string->keyword)
+(defparameter *mongo-collection* (ros::get-param "/robot/name"))
+(defparameter *json-parse-key-function* #'json::string->keyword)
 (setq json::*tzoffset* -8)
 (defvar *tweet* t)
 (defparameter *query-limit* 100)
@@ -28,19 +28,19 @@
   (:last-check (&optional d)
    (if d (setq last-check-date d) last-check-date))
   (:check (&key (timeout 300))
-   (ros::ros-info "[~A] checking..." name)
+   (ros::ros-debug "[~A] checking..." name)
    (setq last-check-date (now))
    (setq check-result (funcall check-cb self))
-   (ros::ros-info "[~A] checked" name)
+   (ros::ros-debug "[~A] checked" name)
    check-result)
   (:tweet ()
-   (ros::ros-info "[~A] tweeting..." name)
+   (ros::ros-debug "[~A] tweeting..." name)
    (let ((str (funcall tweet-cb self check-result)))
      (setq check-result nil)
      (unless (stringp str)
        (ros::ros-warn "[~A] expected ~A is not string. skipping" name str)
        (return-from :tweet nil))
-     (ros::ros-info "[~A] tweeted" name)
+     (ros::ros-debug "[~A] tweeted" name)
      str))
   ) ;; end of defmethod
 
@@ -68,14 +68,14 @@
   (:start ()
     (do-until-key
      (let ((with-image t))
-        (ros::ros-info "check: ~A" (now))
+        (ros::ros-debug "check: ~A" (now))
         (dolist (k (send workers :list-keys))
           (let ((w (gethash k workers)) ret)
             (when (send w :check)
               (setq ret (send w :tweet))
               (when ret
                 (if *tweet*
-                    (tweet-string ret :warning-time nil :with-image with-image :speek nil :image-wait 10))
+                    (tweet-string ret :warning-time nil :with-image with-image :speak nil))
                 (warn "tweeted: ~A...~%" (subseq ret 0 100))
                 (setq with-image nil)
                 ))))
@@ -83,7 +83,7 @@
       )))
   (:latest-enough-p (m)
    (when m
-     (ros::ros-info "now: ~A insert: ~A" (now) (cdr (assoc :inserted_at m)))
+     (ros::ros-debug "now: ~A insert: ~A" (now) (cdr (assoc :inserted_at m)))
      (< (date- (now)
                (cdr (assoc :inserted_at m)))
         *latest-enough-sec*)))
@@ -130,7 +130,6 @@
                                                        (string= "start"
                                                                 (cdr (assoc :status (cdr x)))))
                                                    same-funcs)))
-                                (ros::ros-info "hoge")
                                 (setq fmt (format nil "Now I'm executing ~A."
                                                   (send (car q) :name)))
                                 (if same-funcs
@@ -230,7 +229,7 @@
                 ))
 
 
-(ros::rate 0.05) ;; [Hz]
+(ros::rate (/ *latest-enough-sec*)) ;; [Hz]
 (send *manager* :start)
 
 

@@ -32,66 +32,60 @@
  (t
   (setq *waking-target-second* *waking-tweet-second*)))
 
-(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speek t))
-  (let (prev-image-topic)
+(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t))
+  (let (prev-image-topic (save-wait 0))
   (when warning-time
     (unless (numberp warning-time)
       (setq warning-time 3))
-    (speak-jp (format nil "~Aびょうまえ"
-                      (case warning-time
-                        (0 "ぜろ")
-                        (1 "いち")
-                        (2 "に")
-                        (3 "さん")
-                        (4 "よん")
-                        (5 "ご")
-                        (6 "ろく")
-                        (7 "なな")
-                        (8 "はち")
-                        (9 "きゅう")
-                        (10 "じゅう")
-                        (t "じゅういじょう"))))
+    (when speak
+      (speak-jp (format nil "~Aびょうまえ"
+                        (case warning-time
+                          (0 "ぜろ")
+                          (1 "いち")
+                          (2 "に")
+                          (3 "さん")
+                          (4 "よん")
+                          (5 "ご")
+                          (6 "ろく")
+                          (7 "なな")
+                          (8 "はち")
+                          (9 "きゅう")
+                          (10 "じゅう")
+                          (t "じゅういじょう")))))
     (unix::sleep warning-time))
 
-  (when with-image
-    (unix::system (format nil "rm -f /tmp/tweet_image.jpg")))
-
-  ;; camera shot sound
-  (unless (ros::get-topic-publisher "robotsound_jp")
-    (ros::advertise "robotsound_jp" sound_play::SoundRequest 5)
-    (unix:sleep 1))
-  (ros::publish "robotsound_jp" 
-                (instance sound_play::SoundRequest :init
-                          :sound sound_play::SoundRequest::*play_file*
-                          :command sound_play::SoundRequest::*play_once*
-                          :arg (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav")))
-
-  ;; specify camera
-  (when (stringp with-image)
-    (ros::wait-for-service "/tweet_image_mux/list")
-    (let ((current-image-list
-           (send (ros::service-call "/tweet_image_mux/list" (instance topic_tools::muxlistrequest :init)) :topics)))
-      (unless (find with-image current-image-list :test #'string=)
-        (ros::service-call "/tweet_image_mux/add" (instance topic_tools::muxaddrequest :init :topic with-image)))
-      (setq prev-image-topic
-            (send (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic with-image)) :prev_topic))))
-  (unless prev-image-topic
-    (send (one-shot-subscribe "/tweet_image_mux/selected" std_msgs::String) :data))
-
-  ;; retrieve image
-  (call-empty-service "/tweet_image_saver/save" :wait t)
-  (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic))
-
-  (ros::ros-info "tweeting ~A" twit-str)
   (cond
     (with-image
-        (ros::publish "/tweet"
-                      (instance std_msgs::String :init
-                                :data (format nil "~A ~A"
-                                              twit-str (format nil "/tmp/tweet_image.jpg")))))
+      (unix::system (format nil "rm -f /tmp/tweet_image.jpg"))
+      ;; camera shot sound
+      (play-sound (pathname (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav"))
+                  :topic-name "robotsound_jp" :wait t)
+      ;; specify camera
+      (when (stringp with-image)
+        (ros::wait-for-service "/tweet_image_mux/list")
+        (let ((current-image-list
+               (send (ros::service-call "/tweet_image_mux/list" (instance topic_tools::muxlistrequest :init)) :topics)))
+          (unless (find with-image current-image-list :test #'string=)
+            (ros::service-call "/tweet_image_mux/add" (instance topic_tools::muxaddrequest :init :topic with-image)))
+          (setq prev-image-topic
+                (send (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic with-image)) :prev_topic))))
+      (unless prev-image-topic
+        (setq prev-image-topic (send (one-shot-subscribe "/tweet_image_mux/selected" std_msgs::String) :data)))
+
+      ;; retrieve image
+      (call-empty-service "/tweet_image_saver/save" :wait t)
+      (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic))
+
+      (ros::ros-info "tweeting ~A" twit-str)
+      ;; waiting for 10 seconds for image saver
+      (while (and (not (probe-file "/tmp/tweet_image.jpg")) (< save-wait 10))
+        (incf save-wait 1)
+        (unix:sleep 1))
+      (ros::publish "/tweet"
+                    (instance std_msgs::String :init
+                              :data (format nil "~A ~A"
+                                            twit-str (format nil "/tmp/tweet_image.jpg")))))
     (t
-     (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))
-     ))
-  (when speek (speak-jp "ついーとしました"))
-  )
+      (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))))
+  (when speak (speak-jp "ついーとしました" :wait t))))
 

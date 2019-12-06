@@ -14,10 +14,10 @@
   )
 
 (defmethod nao-interface
-  (:init (&rest args)
-   (send-super* :init :robot nao-robot :naoqi-namespace "nao_robot" :dcm-namespace "nao_dcm" args)
+  (:init (&rest args &key ((:group-namespace gns) ""))
+   (send-super* :init :robot nao-robot :group-namespace gns :naoqi-namespace "nao_robot" :dcm-namespace "nao_dcm" args)
    (when (ros::get-param "use_sim_time" nil)
-     ;; add controllers for gazebo 
+     ;; add controllers for gazebo
      (dolist (l (list
 		 (cons :dcm-head-controller "/nao_dcm/Head_controller/follow_joint_trajectory")
 		 (cons :dcm-larm-controller "/nao_dcm/LeftArm_controller/follow_joint_trajectory")
@@ -55,13 +55,19 @@
      (progn
        (list
 	(list
-	 (cons :controller-action (format nil "~A/pose/joint_trajectory" naoqi-namespace))
+	 (cons :controller-action (format nil "~A/~A/pose/joint_trajectory" group-namespace naoqi-namespace))
 	 ;;(cons :controller-state "joint_trajectory")
 	 (cons :controller-state "dummy_state") ;; this is dummy
 	 (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
 	 (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
 	)))
    )
+  (:servo-on
+   ()
+   (call-empty-service (format nil "~A/~A/pose/wakeup" group-namespace naoqi-namespace)))
+  (:servo-off
+   ()
+   (call-empty-service (format nil "~A/~A/pose/rest" group-namespace naoqi-namespace)))
   )
 ;; current nao version H25V50
 (defclass nao-robot
@@ -72,14 +78,14 @@
   (:reset-pose () (send self :angle-vector #f(110.0 10.0 -90.0 -40.0 0.0   110.0 -10.0 90.0 40.0 0.0  0.0 0.0 -30.0 60.0 -30.0 0.0   0.0 0.0 -30.0 60.0 -30.0 0.0  0.0 0.0)))
   )
 
-(defun nao-init (&optional (create-viewer))
+(defun nao-init (&optional (create-viewer) (group-namespace ""))
   (unless (boundp '*nao*) (nao))
   (unless (ros::ok) (ros::roseus "nao_eus_interface"))
-  (unless (boundp '*ri*) (setq *ri* (instance nao-interface :init)))
-  
+  (unless (boundp '*ri*) (setq *ri* (instance nao-interface :init :group-namespace group-namespace)))
+
   (ros::spin-once)
   (send *ri* :spin-once)
-  
+
   (send *nao* :angle-vector (send *ri* :state :potentio-vector))
   (when create-viewer (objects (list *nao*)))
   )

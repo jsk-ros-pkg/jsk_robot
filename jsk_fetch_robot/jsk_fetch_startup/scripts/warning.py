@@ -45,6 +45,14 @@ class DiagnosticsSpeakThread(threading.Thread):
     def run(self):
         global sound
         for status in  self.error_status:
+            # ignore error status if the error already occured in the latest 10 minites
+            if error_status_in_10_min.has_key(status.message):
+                if rospy.Time.now().secs - error_status_in_10_min[status.message] < 600:
+                    continue
+                else:
+                    error_status_in_10_min[status.message] = rospy.Time.now().secs
+            else:
+                error_status_in_10_min[status.message] = rospy.Time.now().secs
             # we can ignore "Joystick not open."
             if status.message == "Joystick not open." :
                 continue
@@ -70,6 +78,13 @@ class Warning:
         #
         self.diagnostics_speak_thread = {}
         self.auto_undocking = False
+        self.diagnostics_list = []
+        if rospy.get_param("~speak_warn", True):
+            self.diagnostics_list.append(DiagnosticStatus.WARN)
+        if rospy.get_param("~speak_error", True):
+            self.diagnostics_list.append(DiagnosticStatus.ERROR)
+        if rospy.get_param("~speak_stale", True):
+            self.diagnostics_list.append(DiagnosticStatus.STALE)
         #
         self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
         #
@@ -127,7 +142,7 @@ class Warning:
         callerid = msg._connection_header['callerid']
         if not self.diagnostics_speak_thread.has_key(callerid):
             self.diagnostics_speak_thread[callerid] = None
-        error_status = filter(lambda n: n.level in [DiagnosticStatus.WARN, DiagnosticStatus.ERROR, DiagnosticStatus.STALE], msg.status)
+        error_status = filter(lambda n: n.level in self.diagnostics_list, msg.status)
         # when RunStopped, ignore message from *_mcb and *_breaker
         if self.robot_state_msgs.runstopped:
             error_status = filter(lambda n: not (re.match("\w*_(mcb|breaker)",n.name) or (n.name == "Mainboard" and n.message == "Runstop pressed")), error_status)
@@ -144,11 +159,10 @@ class Warning:
 
 if __name__ == "__main__":
     global sound
+    # store error status and time of the error in the latest 10 minites
+    global error_status_in_10_min
+    error_status_in_10_min = {}
     rospy.init_node("cable_warning")
     sound = SoundClient()
     w = Warning()
     rospy.spin()
-
-
-
-

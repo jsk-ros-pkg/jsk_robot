@@ -20,7 +20,7 @@
   (let ((st (ros::get-param "/active_user/start_time")))
     (when st
       (let ((waking-time (- (send (ros::time-now) :to-sec) st)))
-        (ros::ros-info "~A waking ~A sec (~A)" *robot-name* waking-time *waking-target-second*)
+        (ros::ros-debug "~A waking ~A sec (~A)" *robot-name* waking-time *waking-target-second*)
         (when (> waking-time *waking-target-second*)
           (incf *waking-target-second* *waking-tweet-second*)
           ;; tweet source of robot-interface
@@ -55,7 +55,7 @@
                 (incf pos (length s))
                 (if (< pos (- ln 2)) (setf (elt dt pos) 10))
                 (incf pos))
-              (tweet-string dt)
+              (tweet-string dt :warning-time 1 :with-image t)
               ))
           ))))
   (ros::sleep)

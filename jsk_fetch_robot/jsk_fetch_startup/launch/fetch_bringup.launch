@@ -2,6 +2,7 @@
   <arg name="launch_moveit" default="true" />
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
+  <arg name="launch_sound_play" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
@@ -14,6 +15,16 @@
 
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
+
+  <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
+        respawn="true" output="screen">
+    <rosparam>
+      duration: 180
+      charge_level_threshold: 40.0
+      charge_level_step: 10.0
+    </rosparam>
+  </node>
+
   <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
@@ -21,8 +32,17 @@
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
+  <!-- english speach node -->
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
+  <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
+        respawn="true" if="$(arg launch_sound_play)" />
+
   <!-- japanese speech node -->
-  <include file="$(find voice_text)/launch/voice_text.launch" />
+  <include file="$(find voice_text)/launch/voice_text.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
 
   <!-- Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
@@ -32,6 +52,7 @@
   <!-- logging -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
     <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="vital_check" value="false" />
   </include>
 
   <!-- diagnostic aggregator -->
@@ -50,13 +71,20 @@
     <param name="load5_threshold" value="5.0"/>
   </node>
 
+  <!-- twitter -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="use_applist" value="true" />
     <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
+    <arg name="respawn" value="false" />
   </include>
 
   <!-- downsample / throttle sensor data -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" >
+    <arg name="launch_manager" value="false"/>
+  </include>
 
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
@@ -67,12 +95,32 @@
            if="$(arg launch_teleop)" />
 
   <!-- speech recognition -->
-  <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"/>
-  <node name="static_transformer" pkg="tf" type="static_transform_publisher"
+  <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
         args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <include file="$(find julius_ros)/launch/julius.launch">
     <arg name="launch_audio_capture" value="false"/>
+    <arg name="launch_sound_play" value="false"/>
+    <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
   </include>
+  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
+    <arg name="publish_tf" default="false"/>
+    <arg name="launch_soundplay" default="false"/>
+    <arg name="audio" value="speech_audio"/>
+    <arg name="speech_to_text" value="speech_to_text_google"/>
+    <arg name="language" value="ja-JP"/>
+  </include>
+  <!-- set fetch speak action server names -->
+  <!-- this parameter is for speech_to_text node in respeaker_ros -->
+  <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/168 -->
+  <group ns="speech_to_text">
+    <rosparam>
+       tts_action_names:
+         - sound_play
+         - robotsound_jp
+    </rosparam>
+  </group>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
@@ -89,39 +137,113 @@
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="true" />
     </include>
+
+    <!-- robot localization ukf -->
+    <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+      <remap from="odometry/filtered" to="/odom_combined" />
+      <rosparam>
+        frequency: 50
+        sensor_timeout: 1.0
+        two_d_mode: true
+        publish_tf: true
+        publish_acceleration: false
+        map_frame: map
+        odom_frame: odom
+        base_link_frame: base_link
+        odom0: /odom_corrected
+        odom0_config: [true, true, false,
+                       false, false, true,
+                       true, true, false,
+                       false, false, true,
+                       false, false, false]
+        odom0_nodelay: true
+        odom0_differential: true
+        imu0: /imu_corrected
+        imu0_config: [false, false, false,
+                      false, false, false,
+                      false, false, false,
+                      false, false, true,
+                      true, true, false]
+        imu0_nodelay: true
+        imu0_differential: true
+        imu0_remove_gravitational_acceleration: true
+      </rosparam>
+    </node>
+
     <rosparam ns="amcl">
       update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
       update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
+      odom_alpha1: 0.2  # rotation noise per rotation
+      odom_alpha2: 0.2  # rotation noise per translation
+      odom_alpha3: 0.2  # translation noise per translation
+      odom_alpha4: 0.2  # translation noise per rotation
+    </rosparam>
+
+    <rosparam ns="move_base">
+      controller_frequency: 10.0
     </rosparam>
 
     <rosparam ns="move_base/global_costmap">
-inflater:
-  inflation_radius: 0.30 # 0.7
-  cost_scaling_factor: 10.0 # 10.0
+      inflater:
+        inflation_radius: 0.7 # 0.7
+        cost_scaling_factor: 5.0 # 10.0
+      obstacles:
+        min_obstacle_height: 0.05
+      footprint_padding: 0.05
     </rosparam>
     <rosparam ns="move_base/local_costmap">
-inflater:
-  inflation_radius: 0.30 # 0.7
-  cost_scaling_factor: 100.0 # 25.0 default 10, increasing factor decrease the cost value
-update_frequency: 10.0 # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      inflater:
+        inflation_radius: 0.7 # 0.7
+        cost_scaling_factor: 5.0 # 25.0 default 10, increasing factor decrease the cost value
+      obstacles:
+        min_obstacle_height: 0.05
+      # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      update_frequency: 10.0
+      footprint_padding: 0.05
     </rosparam>
     <rosparam ns="move_base">
-base_local_planner: base_local_planner/TrajectoryPlannerROS
-TrajectoryPlannerROS:
-  escape_vel: -0.1 # -0.1
-recovery_behavior_enabled: true
-recovery_behaviors:
-  - name: "conservative_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-  - name: "rotate_recovery"
-    type: "rotate_recovery/RotateRecovery"
-    frequency: 20.0
-    sim_granularity: 0.017
-  - name: "aggressive_reset"
-    type: "clear_costmap_recovery/ClearCostmapRecovery"
-conservative_reset: {reset_distance: 1.0} # 3.0
-aggressive_reset: {reset_distance: 0.2} # 0.5
-move_slow_and_clear: {clearing_distance: 0.5, limited_distance: 0.3, limited_rot_speed: 0.45, limited_trans_speed: 0.25}
+      base_local_planner: base_local_planner/TrajectoryPlannerROS
+      TrajectoryPlannerROS:
+        min_in_place_vel_theta: 1.0
+        escape_vel: -0.1 # -0.1
+        vx_samples: 10
+        meter_scoring: true
+        pdist_scale: 5.0
+        gdist_scale: 3.2
+        occdist_scale: 0.1
+        dwa: true
+      recovery_behavior_enabled: true
+      recovery_behaviors:
+        - name: "conservative_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+        - name: "rotate_recovery"
+          type: "rotate_recovery/RotateRecovery"
+          frequency: 20.0
+          sim_granularity: 0.017
+        - name: "aggressive_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+      conservative_reset:
+        reset_distance: 1.0 # 3.0
+      aggressive_reset:
+        reset_distance: 0.2 # 0.5
+      move_slow_and_clear:
+        clearing_distance: 0.5
+        limited_distance: 0.3
+        limited_rot_speed: 0.45
+        limited_trans_speed: 0.25
     </rosparam>
   </group>
+
+  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
+  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
+  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
+    <remap from="~input" to="/imu" />
+    <remap from="~output" to="/imu_corrected" />
+  </node>
+
+  <!-- /odom has no covariance value. -->
+  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
+    <remap from="~input" to="/odom" />
+    <remap from="~output" to="/odom_corrected" />
+  </node>
 </launch>

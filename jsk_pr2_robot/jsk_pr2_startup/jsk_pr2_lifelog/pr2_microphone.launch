@@ -1,0 +1,44 @@
+<launch>
+  <arg name="use_microcone" default="false"/>
+  <arg name="use_respeaker" default="true"/>
+
+  <arg name="language" default="ja-JP"/>
+
+  <arg name="machine" default="c1" if="$(optenv USE_MIC_C1 false)"/>
+  <arg name="machine" default="c2" if="$(optenv USE_MIC_C2 false)"/>
+
+  <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
+  <include file="$(find pr2_machine)/$(arg ROBOT).machine"/>
+
+  <!-- microcone -->
+  <group if="$(arg use_microcone)">
+    <node name="pr2_hark" pkg="jsk_pr2_startup"
+          type="microcone_localization_MFCC.sh" output="log"
+          machine="$(arg machine)"/>
+  </group>
+
+  <!-- respeaker -->
+  <group if="$(arg use_respeaker)">
+    <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"
+          machine="$(arg machine)" output="screen">
+      <rosparam>
+        sensor_frame_id: head_mount_link
+      </rosparam>
+    </node>
+
+    <node name="speech_to_text"
+          pkg="respeaker_ros" type="speech_to_text.py"
+          machine="$(arg machine)">
+      <remap from="audio" to="speech_audio"/>
+      <remap from="sound_play" to="robotsound_jp"/>
+      <rosparam subst_value="true">
+        language: $(arg language)
+        self_cancellation: true
+        tts_tolerance: 0.5
+        tts_action_names:
+            - robotsound
+            - robotsound_jp
+      </rosparam>
+    </node>
+  </group>
+</launch>

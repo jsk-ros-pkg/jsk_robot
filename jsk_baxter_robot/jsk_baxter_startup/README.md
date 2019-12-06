@@ -2,6 +2,12 @@
 
 The `jsk_baxter_startup` package.
 
+## ROS launch
+
+```bash
+roslaunch jsk_baxter_startup baxter.launch load_robot_description:=true launch_robot_state_publisher:=true
+```
+
 
 ## ROS nodes
 

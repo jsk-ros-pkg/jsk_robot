@@ -1,27 +1,28 @@
-# this file is originally pr2_navigation_config/dwa_local_planner.yaml
-
-acc_lim_th: 3.2
+acc_lim_theta: 5.0
 acc_lim_x: 2.5
 acc_lim_y: 2.5
 
 max_vel_x: 0.55
 min_vel_x: 0.0
 
-max_vel_y: 0.55
-min_vel_y: -0.55
+max_vel_y: 0.3
+min_vel_y: -0.3
 
 max_trans_vel: 0.55
-min_trans_vel: 0.0
+min_trans_vel: 0.1  # For moving in '-x' direction, do not set to 0
 
-max_rot_vel: 1.0
-min_rot_vel: 0.0
+# Limit of max_rot_vel:
+#   max_trans_vel_hardware_spec / distance_from_footprint_origin_to_wheel
+#   = 1.0[m/s] / (0.334 * sqrt(2))[m] = 2.1[rad/s]
+max_rot_vel: 1.7
+min_rot_vel: 0.4  # For moving in '-x' direction, do not set to 0
 
-sim_time: 1.7
+sim_time: 1.5
 sim_granularity: 0.025
 angular_sim_granularity: 0.025
 
-goal_distance_bias: 32.0
-path_distance_bias: 24.0
+goal_distance_bias: 20.0
+path_distance_bias: 32.0
 occdist_scale: 0.01
 
 stop_time_buffer: 0.2
@@ -32,12 +33,14 @@ forward_point_distance: 0.325
 scaling_speed: 0.25
 max_scaling_factor: 0.2
 
-vx_samples: 3
-vy_samples: 10
-vtheta_samples: 10
+vx_samples: 7
+vy_samples: 7
+vth_samples: 10
 
 xy_goal_tolerance: 0.2
 yaw_goal_tolerance: 0.17
 
 rot_stopped_vel: 0.01
 trans_stopped_vel: 0.01
+
+prune_plan: true

@@ -1,15 +1,37 @@
 - git:
    uri: http://github.com/RethinkRobotics/baxter_common.git
    local-name: RethinkRobotics/baxter_common
+   version: kinetic-devel
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_simulator.git
+   local-name: RethinkRobotics/baxter_simulator
+   version: kinetic-devel
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_interface.git
+   local-name: baxter_interface
+   version: development
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_tools.git
+   local-name: baxter_tools
+   version: development
+- git:
+   uri: https://github.com/ros-planning/moveit_robots.git
+   local-name: ros-planning/moveit_robots
+   version: kinetic-devel
 - git:
    uri: https://github.com/ros-naoqi/nao_interaction.git
    local-name: ros-naoqi/nao_interaction
-# https://github.com/fetchrobotics/fetch_ros.git is not released on kinetic.
-- tar:
-    local-name: fetchrobotics/fetch_ros/fetch_moveit_config
-    uri: https://github.com/fetchrobotics-gbp/fetch_ros-release/archive/release/indigo/fetch_moveit_config/0.7.13-0.tar.gz
-    version: fetch_ros-release-release-indigo-fetch_moveit_config-0.7.13-0
-- tar:
-    local-name: fetchrobotics/fetch_ros/fetch_description
-    uri: https://github.com/fetchrobotics-gbp/fetch_ros-release/archive/release/indigo/fetch_description/0.7.13-0.tar.gz
-    version: fetch_ros-release-release-indigo-fetch_description-0.7.13-0
+- git:
+   uri: https://github.com/tork-a/jsk_demos-release.git
+   local-name: jsk_maps
+   version: release/kinetic/jsk_maps
+- git:
+   uri: https://github.com/tork-a/jsk_3rdparty-release.git
+   local-name: rostwitter
+   version: release/kinetic/rostwitter
+# Need to wait for app_manager 1.1.1 for kinetic and later. For indigo, we could not expect newer releases.....
+# https://github.com/PR2/app_manager/issues/12 (Relerase request 1.1.1)
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel

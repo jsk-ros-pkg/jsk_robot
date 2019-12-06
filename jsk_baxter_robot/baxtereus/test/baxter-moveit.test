@@ -1,6 +1,7 @@
 <launch>
-  <env name="DISPLAY" value="" />
-  <arg name="gui" default="false" />
+  <!-- Commenting the bellow in will kill /baxter_sim_io and cause error in joint trajectory servers -->
+  <!-- <env name="DISPLAY" value="" /> -->
+  <arg name="gui" default="true" />
   <arg name="headless" default="true" />
   <include file="$(find baxter_gazebo)/launch/baxter_world.launch">
     <arg name="gui" value="$(arg gui)" />
@@ -17,5 +18,5 @@
 
   <!-- start test -->
   <test test-name="baxter_moveit_test" pkg="baxtereus" type="test-baxter-moveit.l"
-	retry="3" time-limit="300"/>
+	retry="2" time-limit="360"/>
 </launch>

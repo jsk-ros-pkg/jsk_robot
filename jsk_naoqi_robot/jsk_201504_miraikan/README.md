@@ -1,14 +1,11 @@
-jsk_201504_miraikan
-===================
+# jsk_201504_miraikan
 
-What is this?
--------------
+## What is this?
 
 Pepper@JSK introduces him/ herself.  
 Pepper can speak three languages (Japanese, Chinese and English).  
 
-Requirements
-------------
+## Requirements
 
 - jsk_naoqi_robot environment: Please follow instructions [here](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_naoqi_robot/README.md)
 - naoqi_driver (kochigami-develop)
@@ -33,8 +30,7 @@ git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 ```
 
-How to run demo?
-----------------
+## How to run demo?
 
 This demo was tested with Pepper (NAOqi version: 2.5.5.5) and ROS kinetic.
 
