@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<robot name="baxter" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- VIRTUAL JOINT: virtual joint from map to base_link -->
+    <!-- this is necessary to add collision objects based on map frame -->
+    <virtual_joint name="world_joint" type="planar" parent_frame="map" child_link="base_link" />
+    <xacro:include filename="$(find fetch_moveit_config)/config/fetch.srdf" />
+</robot>
