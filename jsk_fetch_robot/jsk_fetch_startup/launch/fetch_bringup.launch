@@ -91,7 +91,7 @@
            if="$(arg launch_moveit)" />
   <!-- overwrite fetch.srdf -->
   <!-- The semantic description that corresponds to the URDF -->
-  <param name="$(arg robot_description)_semantic"
+  <param name="robot_description_semantic"
          command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
 
   <!-- teleop -->
