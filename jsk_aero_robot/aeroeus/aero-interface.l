@@ -125,7 +125,9 @@
    )
   (:angle-index-finger
    (&key (arm :rarm) (angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
+   (if (eq arm :rarm)
+       (send set-hand-srv :arm "rarm")
+     (send set-hand-srv :arm "larm"))
    (send set-hand-srv :finger "index")
    (send set-hand-srv :index_angle angle)
    (send set-hand-srv :time time)
@@ -133,8 +135,17 @@
    )
   (:angle-thumb-finger
    (&key (arm :rarm) (angle 0.0) (time 5.0))
-   (send set-hand-srv :arm "rarm")
-   (send set-hand-srv :finger "thumb")
+   (cond
+    ((eq arm :rarm)
+     (send set-hand-srv :arm "rarm")
+     (send set-hand-srv :finger "thumb")
+     )
+    ((eq arm :larm)
+     (send set-hand-srv :arm "larm")
+     (send set-hand-srv :finger "trx")
+     )
+    (t
+     ))
    (send set-hand-srv :thumb_angle angle)
    (send set-hand-srv :time time)
    (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
@@ -200,17 +211,39 @@
 |#
 
 ;; grasp by finger angle
-(defun start-pinch (&optional (time 3000))
-  (send *ri* :angle-index-finger :angle 0.3 :time (* time 0.001))
-  (unix:usleep (* 1000 time))
-  (send *ri* :angle-thumb-finger :angle -0.05 :time (* time 0.001))
-  (unix:usleep (* 1000 time))
+(defun start-pinch (arm &optional (time 3000) (trx-angle 0.0))
+  (cond
+   ((eq arm :rarm)
+    (send *ri* :angle-index-finger :angle 0.3 :time (* time 0.001) :arm :rarm)
+    (unix:usleep (* 1000 time))
+    (send *ri* :angle-thumb-finger :angle -0.05 :time (* time 0.001) :arm :rarm)
+    (unix:usleep (* 1000 time))
+    )
+   ((eq arm :larm)
+    (send *ri* :angle-thumb-finger :angle trx-angle :time (* time 0.001) :arm :larm)
+    (unix:usleep (* 1000 time))
+    )
+   (t
+    (ros::ros-warn "set arm argument {:rarm or :larm}")
+    nil
+    ))
   )
 ;;
 ;; open by finger angle
-(defun stop-pinch (&optional (time 3000))
-  (send *ri* :angle-index-finger :angle -0.9 :time (* time 0.001))
-  (unix:usleep (* 1000 time))
-  (send *ri* :angle-thumb-finger :angle 0.25 :time (* time 0.001))
-  (unix:usleep (* 1000 time))
+(defun stop-pinch (arm &optional (time 3000))
+  (cond
+   ((eq arm :rarm)
+    (send *ri* :angle-index-finger :angle -0.9 :time (* time 0.001) :arm arm)
+    (unix:usleep (* 1000 time))
+    (send *ri* :angle-thumb-finger :angle 0.25 :time (* time 0.001) :arm arm)
+    (unix:usleep (* 1000 time))
+    )
+   ((eq arm :larm)
+    (send *ri* :angle-thumb-finger :angle -0.3 :time (* time 0.001) :arm arm)
+    (unix:usleep (* 1000 time))
+    )
+   (t
+    (ros::ros-warn "set arm argument {:rarm or :larm}")
+    nil
+    ))
   )
