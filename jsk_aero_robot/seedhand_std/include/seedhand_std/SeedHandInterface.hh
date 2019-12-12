@@ -10,7 +10,7 @@ namespace aero {
     class seedhandAeroMoveitInterface : public aero::interface::AeroMoveitInterface {
     public:
       typedef std::shared_ptr<seedhandAeroMoveitInterface> Ptr;
-      seedhandAeroMoveitInterface(ros::NodeHandle _nh, const bool _use_rarm=true, const bool _use_larm=false);
+      seedhandAeroMoveitInterface(ros::NodeHandle _nh, const bool _use_rarm=true, const bool _use_larm=true);
       void cancelGrasp(const aero::arm _arm);
       void sendThumb(const aero::arm _arm, const double _rad, const double _t);
       void sendIndex(const aero::arm _arm, const double _rad, const double _t);

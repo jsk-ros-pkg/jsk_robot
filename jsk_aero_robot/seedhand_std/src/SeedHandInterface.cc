@@ -8,7 +8,13 @@ aero::interface::seedhandAeroMoveitInterface::seedhandAeroMoveitInterface
                  "rhand_controller/state", {"r_thumb_joint", "r_indexbase_joint"}));
     ri->add_controller("rhand", rhand);
   }
-  // TODO: implement larm
+
+  if (_use_larm) {
+    lhand.reset(new robot_interface::TrajectoryClient
+                (_nh, "lhand_controller/follow_joint_trajectory",
+                 "lhand_controller/state", {"l_thumb_joint", "l_indexbase_joint"}));
+    ri->add_controller("lhand", lhand);
+  }
 };
 
 void aero::interface::seedhandAeroMoveitInterface::cancelGrasp(const aero::arm _arm) {
