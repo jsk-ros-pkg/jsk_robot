@@ -42,7 +42,7 @@ class DeviceMonitorMethod(object):
             pass
 
         is_exist = rospy.Time.now() < self.latest_exist_time + rospy.Duration(self.monitor_rate / 10)
-        print("is_exist of {} : {}".format(self.monitor_method[0], is_exist))
+        print("{} : {}".format(self.monitor_method[0], is_exist))
         
         if not is_exist:
             return "{}が見えません。"
@@ -90,7 +90,10 @@ class DeviceMonitor(object):
         self.monitor_rate = 180
 
         # devices
-        self.device_info_list = [DeviceInfo("base_laser", "ベースレーザ", [["/dev/ttyACM1", "file"], ["/base_scan", "topic"]], self.monitor_rate)]
+        self.device_info_list = [DeviceInfo("base_laser", "ベースレーザ", [["/etc/ros/sensors/base_hokuyo", "file"], ["/base_scan", "topic"]], self.monitor_rate),
+                                 DeviceInfo("tilt_laser", "チルトレーザ", [["/etc/ros/sensors/tilt_hokuyo", "file"], ["/tilt_scan", "topic"]], self.monitor_rate),
+                                 DeviceInfo("kinect_rgb", "キネクトアールジービー", [["/kinect_head/rgb/image_rect_color", "topic"]], self.monitor_rate),
+                                 DeviceInfo("kinect_depth", "キネクトデプス", [["/kinect_head/depth_registered/points", "topic"]], self.monitor_rate)]
 
         # self.device_info_list = [DeviceInfo("base_laser", "ベースレーザ", [["/base_scan", "topic"], ["/base_hokuyo_node", "node"], ["/etc/ros/sensors/base_hokuyo", "file"], ["/dev/sensors/hokuyo_H1002732", "file"], ["/dev/ttyACM1", "file"]]),
         #                          DeviceInfo("tilt_laser", "チルトレーザ", [["/tilt_scan", "topic"], ["/tilt_hokuyo_node", "node"], ["/etc/ros/sensors/tilt_hokuyo", "file"], ["/dev/sensors/hokuyo_H0902645", "file"], ["/dev/ttyACM0", "file"]]),
