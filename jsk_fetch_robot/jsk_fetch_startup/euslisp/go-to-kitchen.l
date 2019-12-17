@@ -22,7 +22,7 @@
 (defun main ()
   (fetch-init)
   (send *ri* :clear-costmap)
-  (let ((success (go-to-kitchen :tweet t :n-dock-trial 5 :n-kitchen-trial 3)))
+  (let ((success (go-to-kitchen :tweet t :n-dock-trial 3 :n-kitchen-trial 3)))
     (unix::system "rosnode kill /go_to_kitchen_head_camera_video_recorder")
     (unix::system "rosnode kill /go_to_kitchen_object_detection_video_recorder")
     (when *mail-notification*
