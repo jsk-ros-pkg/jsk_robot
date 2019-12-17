@@ -76,8 +76,8 @@
   </include>
 
   <!-- pr2 warning -->
-  <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
+    <!-- battery warning -->
     <node name="battery_warning" pkg="jsk_pr2_startup" type="battery_warning.py"/>
     <node name="battery_visualization"
           pkg="jsk_pr2_startup" type="battery_visualization.py" />
@@ -91,6 +91,9 @@
             prefix: pr2-battery
       </rosparam>
     </node>
+
+    <!-- device monitor-->
+    <node name="device_monitor" pkg="jsk_pr2_startup" type="device_monitor.py"/>
   </group>
 
   <!-- mjpeg_server for web -->
