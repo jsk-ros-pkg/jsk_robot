@@ -33,8 +33,8 @@
         (send-mail
           (concatenate string
                        (if success
-                         "こんにちは、私はFetchです。\\nキッチンの見回りをしてきたよ。\\n"
-                         "こんにちは、私はFetchです。\\nキッチンの見回りに失敗しました。\\n")
+                         "こんにちは、Fetchです。\\nキッチンの見回りをしてきました。\\n"
+                         "こんにちは、Fetchです。\\nキッチンの見回りに失敗しました。\\n")
                        (if file-urls
                          (apply #'concatenate string
                                (append (list "見回りの動画をアップロードしました。\\n")
