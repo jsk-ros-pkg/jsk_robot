@@ -44,6 +44,7 @@
       (ros::ros-error "not transform")
       (return-from look-at-front nil))
     (ros::ros-info "msg received ~A~%" *msg* (norm (send tra :worldpos)))
+    (ros::ros-info "look-forward enabled: ~A" *look-enable*)
 
     (when *look-enable*
       (if (< 500 (norm (send tra :worldpos)))
