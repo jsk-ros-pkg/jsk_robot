@@ -18,6 +18,8 @@
 
 (defun result-cb (msg)
   (let ((av (send *ri* :state :potentio-vector)))
+    (unless *look-enable*
+      (return-from result-cb nil))
     (send *pr2* :angle-vector av)
     (send *pr2* :head :angle-vector #f(0 0))
     (send *ri* :angle-vector (send *pr2* :angle-vector) 1000 :head-controller)
