@@ -39,14 +39,14 @@ rotate_recovery2:
 move_slow_and_clear:
   clearing_distance: 3.0
   limited_trans_speed: 0.2
-  limited_rot_speed: 0.17  # 10 deg/s
+  limited_rot_speed: 0.52  # 30 deg/s
   limited_distance: 0.3
 
 # For rotate_recovery with local planner other than TrajectoryPlannerROS
 TrajectoryPlannerROS:
   yaw_goal_tolerance: 0.17  # 10 deg
   acc_lim_theta: 2.0
-  max_rotational_vel: 0.52  # 30 deg/s
+  max_rotational_vel: 1.05  # 60 deg/s
   min_in_place_rotational_vel: 0.17  # 10 deg. This name will be deprecated in the future.
 
 max_planning_retries: 2  # To enable recovery behavior, set to positive value.
