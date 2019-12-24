@@ -190,8 +190,8 @@
         <remap from="~input" to="points" />
         <remap from="~output" to="quater/points" />
         <rosparam>
-          step_x: 2
-          step_y: 2
+          step_x: 4
+          step_y: 4
         </rosparam>
       </node>
       <node name="throttle_cloud_quater"
