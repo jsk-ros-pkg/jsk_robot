@@ -26,6 +26,8 @@ Basic methods for NAO and Pepper are stored.
 
 - [:get-basic-awareness-enabled (naoqi_bridge [`kochigami-develop`])](doc/get_basic_awareness_enabled.md)  
 
+- [:get-defined-pose-list (naoqi_pose [`master`])](doc/get_defined_pose_list.md)  
+
 - [:get-external-collision-protection-status `type` (naoqi_bridge [`kochigami-develop`])](doc/get_external_collision_protection_status.md)  
 
 - [:get-language (naoqi_driver [`master`])](doc/get_language.md)  
@@ -36,7 +38,7 @@ Basic methods for NAO and Pepper are stored.
 
 - [:get-move-arms-enabled `&optional (arm :arms)` (naoqi_bridge [`kochigami-develop`])](doc/get_move_arms_enabled.md)    
 
-- [:get-take-picture-folder-path](naoqi_bridge [`kochigami-develop`])](doc/get_take_picture_folder_path.md)
+- [:get-take-picture-folder-path (naoqi_bridge [`kochigami-develop`])](doc/get_take_picture_folder_path.md)
 
 - [:go-pos `x` `y` `theta` (naoqi_driver [`master`])](doc/go_pos.md)  
 
@@ -53,6 +55,8 @@ Basic methods for NAO and Pepper are stored.
 - [:set-background-movement-enabled `status` (naoqi_bridge [`kochigami-develop`])](doc/set_background_movement_enabled.md)
 
 - [:set-basic-awareness-enabled `status` (naoqi_bridge [`kochigami-develop`])](doc/set_basic_awareness_enabled.md)  
+
+- [:set-body-pose-with-speed `posture-name` `&optional (speed 0.7)` (naoqi_pose [`master`])](doc/set_body_pose_with_speed.md)  
 
 - [:set-external-collision-protection-status `type` `status` (naoqi_bridge [`kochigami-develop`])](doc/set_external_collision_protection_status.md)  
 
