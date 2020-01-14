@@ -1,7 +1,7 @@
 <launch>
   <include file="$(find aero_startup)/aero_bringup.launch"/>
   <include file="$(find aero_startup)/aero_move_base/launch/wheel_with_making_map.launch" >
-    <arg name="ip_address" value="192.168.11.58"/>
+    <arg name="ip_address" value="133.11.216.220"/>
   </include>
   <include file="$(find aero_teleop)/launch/aero_teleop2.launch" />
   <include file="$(find aero_teleop)/launch/cmd_vel_mux.launch" />

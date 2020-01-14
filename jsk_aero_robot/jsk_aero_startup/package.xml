@@ -26,5 +26,6 @@
   <run_depend>tf</run_depend>
   <run_depend>yocs_cmd_vel_mux</run_depend>
   <run_depend>openni2_launch</run_depend>
+  <run_depend>pr2_base_trajectory_action</run_depend>
 
 </package>
