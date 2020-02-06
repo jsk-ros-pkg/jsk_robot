@@ -1,29 +1,28 @@
 <!-- original : pr2_navigation_global/move_base.xml (electric) -->
 <launch>
+  <arg name="use_teb_local_planner" default="false" />
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- Bring up the tilt_laser aware version of move_base -->
   <node pkg="pr2_move_base" name="pr2_move_base_node" type="pr2_move_base.py"
         respawn="true" machine="c2" />
 
-  <!-- Throttle the voxel grid that is being published for rviz -->
-  <node ns="move_base_node/local_costmap"
-        name="voxel_grid_throttle" pkg="topic_tools" type="throttle"
-        machine="c2" args="messages voxel_grid 3.0 voxel_grid_throttled" />
-
   <node pkg="move_base" type="move_base" name="move_base_node"
-        machine="c2" clear_params="true" output="screen">
+        machine="c2" clear_params="true" output="screen" respawn="true">
     <!-- launch-prefix="nice -n +10"> -->
     <remap from="odom" to="base_odometry/odom" />
     <remap from="cmd_vel" to="navigation/cmd_vel/raw" />
     <remap from="~clear_costmaps" to="/move_base/clear_costmaps" />
 
     <param name="base_global_planner" value="navfn/NavfnROS" />
-    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" unless="$(arg use_teb_local_planner)" />
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" if="$(arg use_teb_local_planner)" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/navfn_ros_planner.yaml" command="load"
               ns="NavfnROS" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/dwa_local_planner.yaml" command="load"
-              ns="DWAPlannerROS" />
+              ns="DWAPlannerROS" unless="$(arg use_teb_local_planner)" />
+    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/teb_local_planner_params.yaml" command="load"
+              if="$(arg use_teb_local_planner)" />
 
     <!-- Load common configuration files -->
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base_params.yaml" command="load" />

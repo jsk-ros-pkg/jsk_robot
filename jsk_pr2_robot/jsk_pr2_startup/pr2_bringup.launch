@@ -50,8 +50,14 @@
     <param name="port3" type="string" value="/etc/ros/sensors/battery3" />
     <param name="debug_level" type="int" value="0" />
   </node>
-  <node pkg="power_monitor" type="power_monitor"  name="power_monitor" respawn="true"/>
-  
+  <node name="power_monitor"
+        pkg="power_monitor" type="power_monitor"
+        respawn="true" >
+    <rosparam>
+      frequency: 1.0
+    </rosparam>
+  </node>
+
   <!-- Base Laser -->
   <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
     <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
