@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>jsk_owl_exporter</name>
+  <version>0.0.0</version>
+  <description>The jsk_owl_exporter package</description>
+
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
+  <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>message_generation</build_depend>
+
+  <run_depend>python-lxml</run_depend>
+  <run_depend>python-mongo</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>message_runtime</run_depend>
+
+  <export>
+  </export>
+</package>
