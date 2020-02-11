@@ -4,6 +4,7 @@
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="launch_fetch_bringup_teleop" default="false" />
+  <arg name="odom_topic" default="odom" />
 
   <group unless="$(arg launch_fetch_bringup_teleop)" >
     <!-- need to launch joy_node because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
@@ -30,6 +31,7 @@
        see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/joy_vel" />
+    <remap from="/odom" to="$(arg odom_topic)" />
     <param name="arm/button_arm_linear" value="4"/>
     <param name="arm/button_arm_angular" value="6"/>
     <param name="head/button_deadman" value="11"/>
@@ -47,7 +49,7 @@
   <!-- Relay topic names according to system diagram -->
   <node name="relay_odom"
         pkg="topic_tools" type="relay"
-        args="/odom_combined /odom_teleop" />
+        args="$(arg odom_topic) /odom_teleop" />
   <node name="relay_navigation_cmd_vel"
         pkg="topic_tools" type="relay"
         args="/cmd_vel /navigation/cmd_vel" />
