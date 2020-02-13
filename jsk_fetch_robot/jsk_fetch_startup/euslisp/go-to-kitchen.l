@@ -25,6 +25,7 @@
   (let ((success (go-to-kitchen :tweet t :n-dock-trial 3 :n-kitchen-trial 3)))
     (unix::system "rosnode kill /go_to_kitchen_head_camera_video_recorder")
     (unix::system "rosnode kill /go_to_kitchen_object_detection_video_recorder")
+    (unix::system "rosnode kill /go_to_kitchen_rosbag_recorder")
     (when *mail-notification*
       (let* ((upload-res (gdrive-upload-video))
              (file-urls

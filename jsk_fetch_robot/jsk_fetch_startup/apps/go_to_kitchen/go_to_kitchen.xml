@@ -2,6 +2,7 @@
   <arg name="video_path" default="/tmp" />
   <arg name="head_camera_video_title" default="go_to_kitchen_head_camera.avi" />
   <arg name="object_detection_video_title" default="go_to_kitchen_object_detection.avi" />
+  <arg name="rosbag_title" default="go_to_kitchen_rosbag.bag" />
 
   <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true" output="screen"
         args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l">
@@ -10,9 +11,11 @@
       file_paths:
         - $(arg video_path)/$(arg head_camera_video_title)
         - $(arg video_path)/$(arg object_detection_video_title)
+        - $(arg video_path)/$(arg rosbag_title)
       file_titles:
         - $(arg head_camera_video_title)
         - $(arg object_detection_video_title)
+        - $(arg rosbag_title)
     </rosparam>
     <rosparam command="load" file="/etc/ros/jsk_data/jsk_fetch_startup/go_to_kitchen/address.yaml" />
   </node>
@@ -35,4 +38,8 @@
       fps: 7.5
     </rosparam>
   </node>
+
+  <node name="go_to_kitchen_rosbag_recorder" pkg="rosbag" type="record"
+        args="-q -O $(arg video_path)/$(arg rosbag_title)
+              /tf /joint_states /odom /odom_combined /cmd_vel" />
 </launch>
