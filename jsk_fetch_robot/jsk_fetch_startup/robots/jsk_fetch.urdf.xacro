@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<robot name="fetch" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="/etc/ros/indigo/calibrated_latest.urdf" />
+  <link name="t265_base_link">
+  </link>
+  <joint name="t265_to_base_virtual_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <parent link="t265_base_link" />
+    <child link="base_link" />
+    <axis xyz="0 0 1" />
+  </joint>
+  <link name="base_camera_mount">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <mass value="70.1294" />
+      <inertia ixx="1.225" ixy="0.0099" ixz="0.0062" iyy="1.2853" iyz="-0.0034" izz="0.987" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry>
+        <mesh filename="package://jsk_fetch_accessories/base_camera_mount_mk1/fetch_base_camera_mount_mk1_main.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="">
+        <color rgba="0.356 0.361 0.376 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry>
+        <mesh filename="package://jsk_fetch_accessories/base_camera_mount_mk1/fetch_base_camera_mount_mk1_collision.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_camera_mount_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <parent link="base_link" />
+    <child link="base_camera_mount" />
+    <axis xyz="0 0 1" />
+  </joint>
+</robot>
