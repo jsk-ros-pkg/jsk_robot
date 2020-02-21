@@ -6,11 +6,12 @@
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
     version: 1.1.0
-# For fetch to use twitter
+# serious bug in 1.12.21
+# need to build from source because of nodelet version
 - git:
-    local-name: furushchev/image_pipeline
-    uri: https://github.com/furushchev/image_pipeline.git
-    version: develop
+    local-name: ros-perception/image_pipeline
+    uri: https://github.com/ros-perception/image_pipeline.git
+    version: 1.12.23
 # To send lifelog data to musca
 - git:
     local-name: strands-project/mongodb_store
@@ -41,6 +42,11 @@
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
     version: 7c429715d0adf12c5dd34459ceb4b0a5b11dec6c
+# need to build from source because of nodelet version
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: acb7e7dc5b549f8663dec403abdb80cbac36edf1
 # jsk_topic_tools requires nodelet gte 1.9.11
 # remove after 1.9.11 is released by apt
 - git:
@@ -59,13 +65,13 @@
     local-name: ros-perception/slam_gmapping
     uri: https://github.com/ros-perception/slam_gmapping.git
     version: 1.3.10
-# indigo is already EOL and 2.1.13 is never released.
+# indigo is already EOL and 2.1.15 is never released.
 # set the same version as https://github.com/jsk-ros-pkg/jsk_robot/blob/master/.travis.rosinstall.indigo#L7-L11
-# change to 2.1.14 when it is released.
+# change to 2.1.15 when it is released.
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-    version: f2b2bd8ac30a8539a6e099dfe7f1e2830ca12430
+    version: ffbd7b0592d7dd2f830f185636a1dd1695d8cb44
 # indigo is already EOL and fetch_ros is never released.
 - git:
     local-name: fetchrobotics/fetch_ros
