@@ -1,19 +1,19 @@
 <?xml version="1.0" ?>
 <robot name="fetch" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:include filename="/etc/ros/indigo/calibrated_latest.urdf" />
-  <link name="t265_base_link">
+  <link name="t265_pose_frame">
   </link>
   <joint name="t265_to_base_virtual_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0" />
-    <parent link="t265_base_link" />
+    <origin rpy="0 0 0" xyz="0.270 0.0081 0.4152" />
+    <parent link="t265_pose_frame" />
     <child link="base_link" />
     <axis xyz="0 0 1" />
   </joint>
   <link name="base_camera_mount">
     <inertial>
-      <origin rpy="0 0 0" xyz="0 0 0" />
-      <mass value="70.1294" />
-      <inertia ixx="1.225" ixy="0.0099" ixz="0.0062" iyy="1.2853" iyz="-0.0034" izz="0.987" />
+      <origin rpy="0 0.523598775 0" xyz="0 0 0" />
+      <mass value="0.17" />
+      <inertia ixx="0.024" ixy="0.01" ixz="0.034" iyy="0.034" iyz="0.024" izz="0.01" />
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0" />
