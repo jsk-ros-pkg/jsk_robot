@@ -1,0 +1,72 @@
+<launch>
+  <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
+  <arg name="launch_teleop" default="true" />
+
+  <!-- GDB Debug Option -->
+  <arg name="debug" default="false"/>
+  <arg unless="$(arg debug)" name="launch_prefix" value=""/>
+  <arg if="$(arg debug)" name="launch_prefix" value="gdb -x $(find fetch_bringup)/launch/gdb_settings.gdb --ex run --args"/>
+
+  <!-- calibration: s-kitagawa (2019/12/11) -->
+  <!-- Calibration -->
+  <param name="calibration_date" value="2019-12-11 03:27:27"/>
+  <param name="base_controller/track_width" value="0.37476"/>
+  <param name="head_camera/driver/z_offset_mm" value="4"/>
+  <param name="head_camera/driver/z_scaling" value="1.0202112"/>
+  <arg name="rgb_camera_info_url" default="file:///etc/ros/indigo/depth_2019_12_11_03_27_26.yaml"/>
+  <arg name="depth_camera_info_url" default="file:///etc/ros/indigo/depth_2019_12_11_03_27_26.yaml"/>
+
+  <!-- Odometry -->
+  <param name="base_controller/publish_tf" value="false"/>
+  <!-- stop using graft: s-kitagawa (2019/10/17) -->
+  <!-- <include file="$(find fetch_bringup)/launch/include/graft.launch.xml"/> -->
+
+  <!-- calibration: s-kitagawa (2019/12/11) -->
+  <!-- testing urdf with head box by shinjo (2020/02/13) -->
+  <!-- URDF -->
+  <param name="robot_description" textfile="/etc/ros/indigo/calibrated_2019_12_11_03_27_26.urdf"/>
+  <!-- <param name="robot_description" command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro" /> -->
+
+  <!-- Drivers for Base -->
+  <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
+    <param name="firmware_tar_gz" value="$(find fetch_drivers)/firmware.tar.gz"/>
+    <param name="has_base" value="true"/>
+    <param name="has_torso" value="true"/>
+    <param name="has_head" value="true"/>
+    <param name="has_arm" value="true"/>
+  </node>
+
+  <!-- Drivers for Gripper -->
+  <node name="gripper_driver" pkg="fetch_drivers" type="gripper_driver" output="screen">
+    <param name="firmware_tar_gz" value="$(find fetch_drivers)/firmware.tar.gz"/>
+  </node>
+
+  <!-- Controllers -->
+  <rosparam file="$(find fetch_bringup)/config/default_controllers.yaml" command="load"/>
+
+  <!-- Joint State -> TF -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+  <!-- Head Camera -->
+  <include file="$(find fetch_bringup)/launch/include/head_camera.launch.xml">
+    <arg name="rgb_camera_info_url" value="$(arg rgb_camera_info_url)"/>
+    <arg name="depth_camera_info_url" value="$(arg depth_camera_info_url)"/>
+  </include>
+
+  <!-- Laser -->
+  <include file="$(find fetch_bringup)/launch/include/laser.launch.xml"/>
+
+  <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
+  <!-- Teleop -->
+  <include file="$(find fetch_bringup)/launch/include/teleop.launch.xml" if="$(arg launch_teleop)"/>
+
+  <!-- enable software runstop from joy: s-kitagawa (2019/11/09) -->
+  <!-- Software Runstop -->
+  <include file="$(find fetch_bringup)/launch/include/runstop.launch.xml">
+    <arg name="flags" value="-a -b -g -t"/>
+  </include>
+
+  <!-- Diagnostics Aggregator -->
+  <include file="$(find fetch_bringup)/launch/include/aggregator.launch.xml"/>
+
+</launch>
