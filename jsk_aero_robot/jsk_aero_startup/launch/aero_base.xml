@@ -1,17 +1,17 @@
 <launch>
-  <arg name="map_file" default="$(find jsk_aero_startup)/rooms/aist/raw_maps/map_keepout.yaml"/>
-  <arg name="costmap_file" default="$(find jsk_aero_startup)/rooms/aist/raw_maps/map.yaml"/>
+  <arg name="map_file" default="$(find jsk_aero_startup)/rooms/610/raw_maps/map_keepout.yaml"/>
+  <arg name="costmap_file" default="$(find jsk_aero_startup)/rooms/610/raw_maps/map.yaml"/>
   <arg name="nodelet_manager_name" default="nodelet_manager"/>
- <arg name="config_file" default="$(find aero_teleop)/config/cmd_vel_conf.yaml"/>
+  <arg name="config_file" default="$(find aero_teleop)/config/cmd_vel_conf.yaml"/>
   <arg name="scan_topic" default="scan" />
 
   <arg name="use_cmd_vel_mux" default="true"/>
   <arg name="use_base_trajectory" default="true"/>
   <arg name="use_laser_map_matching" default="true"/>
 
-  <arg name="use_jsk_maps" default="false" />
+  <arg name="use_jsk_maps" default="true" />
   <arg name="map_topic" value="map" if="$(arg use_jsk_maps)"/>
-  <arg name="map_topic" value="map" unless="$(arg use_jsk_maps)"/>
+  <arg name="map_topic" value="map_localization" unless="$(arg use_jsk_maps)"/>
 
   <!--- Bringup wheel -->
   <include file="$(find aero_startup)/aero_move_base/launch/wheel_bringup.launch">
