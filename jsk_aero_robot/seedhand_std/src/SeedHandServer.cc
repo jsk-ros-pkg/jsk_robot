@@ -6,9 +6,10 @@ aero::interface::seedhandAeroMoveitInterface::Ptr robot_;
 
 bool callback(seedhand_std::SetHand::Request &req, seedhand_std::SetHand::Response &res){
   if(req.arm == "larm"){
-    ROS_WARN("typeJSK aero has seedhand only rarm");
-    res.status = false;
-    return false;
+    ROS_WARN("larm");
+    robot_->sendTrxHand(aero::arm::larm, req.thumb_angle, req.time);
+    res.status = true;
+    return true;
   }
 
   res.status = true;
