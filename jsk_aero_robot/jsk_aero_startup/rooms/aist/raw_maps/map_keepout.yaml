@@ -1,4 +1,4 @@
-image: map.pgm
+image: map_keepout.pgm
 resolution: 0.025000
 origin: [-20.400000, -20.400000, 0.000000]
 negate: 0
