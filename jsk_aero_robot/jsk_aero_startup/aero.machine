@@ -1,8 +1,10 @@
 <launch>
   <arg name="AERO_REMOTE"
        default="$(optenv AERO aerov)"/>
+<!-->
   <arg name="AERO_MASTER"
-       default="$(optenv AERO_MASTER aeroc)"/>
+       default="$(optenv AERO_MASTER aerov)"/>
+<-->
   <arg name="REMOTE_USER_NAME"
        default="$(optenv REMOTE_USER_NAME leus)"/>
   <arg name="CONFIG_PATH"
@@ -10,7 +12,7 @@
 
   <arg name="use_multi_machine" default="true" />
 
-  <machine name="$(arg AERO_MASTER)" address="$(arg AERO_MASTER)" default="true"/>
+  <!--machine name="$(arg AERO_REMOTE)" address="$(arg AERO_REMOTE)" default="true"/-->
 
   <group if="$(arg use_multi_machine)">
     <machine name="$(arg AERO_REMOTE)" address="$(arg AERO_REMOTE)"
