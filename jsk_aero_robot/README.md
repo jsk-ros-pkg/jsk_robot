@@ -25,16 +25,11 @@ source ~/.bashrc
 ## Bringup Aero
 Connect PC to JSK_AERO network
 ```
-ssh aero_c
+ssh aerov
 ```
 Launch files
 ```
 roslaunch jsk_aero_private aero.launch
-```
-
-## View Robot Model
-```
-roslaunch jsk_aero_startup aero_rviz.launch
 ```
 
 ## Control from eus interface
@@ -51,28 +46,19 @@ roseus aero-interface.l
 ```
 
 ## Control SeedHand by angle
-Before start angle control, you may need to send GraspAngle once.
 ```
-rosservice call /aero_hand_controller "{hand: $(python -c 'import aero_startup.srv; print aero_startup.srv.HandControlRequest.HAND_RIGHT'), command: $(python -c 'import aero_startup.srv; print aero_startup.srv.HandControlRequest.COMMAND_GRASP'), power: 0, time_sec: 1.0}"
-```
-or
-```
-(send *ri* :start-grasp :rarm)
+(start-pinch :rarm)
+(stop-pinch :rarm)
 ```
 
-Set index finger
-```
-rosservice call /seedhand_server/set_hand "{finger: 'index', arm: 'rarm', thumb_angle: 0.0, index_angle: 0.0, time: 3.0}"
-```
-Set thumb finger
-```
-rosservice call /seedhand_server/set_hand "{finger: 'index', arm: 'rarm', thumb_angle: 0.0, index_angle: 0.0, time: 3.0}"
-```
+## Setting spot
+Spot is managed by seed-solutions spot_manager.\
+Please see seed-solutions link for more information.\
+https://github.com/seed-solutions/aero-ros-pkg/blob/master/aero_std/README.md
 
-Set both finger
-```
-rosservice call /seedhand_server/set_hand "{finger: 'both', arm: 'rarm', thumb_angle: 0.05, index_angle: 0.3, time: 3.0}"
-```
+Demo spot is already registered on spot.yaml file.\
+https://github.com/taichiH/jsk_robot/blob/master/jsk_aero_robot/jsk_aero_startup/rooms/610/spot.yaml
+
 
 ## Control from Joy
 Control mode is divided into `ik-mode` and `basic-mode`.
