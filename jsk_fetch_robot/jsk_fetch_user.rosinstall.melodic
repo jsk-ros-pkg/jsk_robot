@@ -1,0 +1,7 @@
+# This file is for work space in indigo user PC.
+
+# For proximity sensor on fetch hand.
+- git:
+    local-name: FA-I-sensor
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+    version: master

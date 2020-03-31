@@ -47,6 +47,8 @@ if [ $ROS_DISTRO = "indigo" ]; then
   wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.indigo
 elif [ $ROS_DISTRO = "kinetic" ]; then
   wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic
+elif [ $ROS_DISTRO = "melodic" ]; then
+  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.melodic
 fi
 wstool update -t .
 source /opt/ros/$ROS_DISTRO/setup.bash
