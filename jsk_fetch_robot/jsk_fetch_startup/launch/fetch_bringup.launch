@@ -7,6 +7,7 @@
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
+  <arg name="use_build_map" default="false" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -132,11 +133,17 @@
     <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
 
     <!-- include fetch_navigation -->
-    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
+    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
       <arg name="map_file" value="$(arg map_file)" />
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="true" />
     </include>
+
+    <!-- slam for build a map -->
+    <node pkg="slam_karto" type="slam_karto" name="slam_karto"
+          output="screen" if="$(arg use_build_map)" >
+      <remap from="scam" to="base_scan"/>
+    </node>
 
     <!-- robot localization ukf -->
     <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
