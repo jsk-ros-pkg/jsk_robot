@@ -66,6 +66,7 @@ if(CATKIN_ENABLE_TESTING)
   find_package(fetch_gazebo QUIET)
   if(fetch_gazebo_FOUND)
     add_rostest(test/fetch-moveit.test)
+    add_rostest(test/fetch-navigation.test)
   endif()
 endif()
 
