@@ -24,6 +24,7 @@
   <test_depend>rostest</test_depend>
   <test_depend>fetch_gazebo</test_depend>
   <test_depend>fetch_moveit_config</test_depend>
+  <test_depend>fetch_navigation</test_depend>
   <test_depend>topic_tools</test_depend>
 
   <export>
