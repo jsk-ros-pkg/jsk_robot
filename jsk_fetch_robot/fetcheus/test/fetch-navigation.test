@@ -5,7 +5,7 @@
   </include>
   <node name="odom_relay" pkg="topic_tools" type="relay" args="/odom /odom_combined" />
   <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
-    <arg name="map_file" value="$(find pr2eus)/test/blank_map.yaml" />
+    <arg name="map_file" value="$(find fetcheus)/test/blank_map.yaml" />
   </include>
   <node name="$(anon rviz)" pkg="rviz" type="rviz" if="$(arg gui)"
         args="-d $(find fetch_navigation)/config/navigation.rviz" />
