@@ -1,0 +1,38 @@
+<launch>
+
+  <arg name="rviz" default="true" />
+  <include file="$(find fetch_gazebo)/launch/playground.launch" />
+
+  <!-- Below, mainly copied from $(find fetch_gazebo_demo)/launch.demo.launch -->
+  <!-- Start navigation -->
+  <include file="$(find fetch_gazebo_demo)/launch/fetch_nav.launch" />
+
+  <!-- Start MoveIt -->
+  <include file="$(find fetch_moveit_config)/launch/move_group.launch" >
+    <arg name="info" value="true"/><!-- publish grasp markers -->
+  </include>
+
+  <!-- Start Perception -->
+  <node name="basic_grasping_perception" pkg="simple_grasping" type="basic_grasping_perception" >
+    <rosparam command="load" file="$(find fetch_gazebo_demo)/config/simple_grasping.yaml" />
+  </node>
+
+  <!-- Drive to the table, pick stuff up -->
+  <!-- <node name="demo" pkg="fetch_gazebo_demo" type="demo.py" output="screen" /> -->
+  <node name="gazebo_demo" pkg="jsk_fetch_gazebo_demo" type="demo.l" output="screen"
+        args="&quot;(main)&quot;" />
+
+  <!-- set rosparams to increase demo success rate -->
+  <rosparam>
+    <!-- Set inflation radius smaller inflation than default for fetch to come through narrow door -->
+    /move_base/local_costmap/inflater/inflation_radius: 0.3
+    /move_base/global_costmap/inflater/inflation_radius: 0.3
+    <!-- Set fetch's amcl pose at the origin of the map at the start of this demo, even if rosmaster was not killed and previous pose is saved -->
+    /amcl/initial_pose_x: 0.0
+    /amcl/initial_pose_y: 0.0
+    /amcl/initial_pose_a: 0.0
+  </rosparam>
+
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="gazebo_demo_rviz" args="-d $(find jsk_fetch_gazebo_demo)/config/demo.rviz" />
+
+</launch>
