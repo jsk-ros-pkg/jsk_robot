@@ -6,6 +6,40 @@
 (require "package://fetcheus/fetch-interface.l")
 (ros::load-ros-manifest "grasping_msgs")
 
+;; Remove these functions after https://github.com/jsk-ros-pkg/jsk_roseus/pull/640 is merged
+(defun shape-msg->shape (msg)
+  "Convert shape_msgs::SolidPrimitive to euslisp object"
+  (let ((type (send msg :type)))
+    (cond
+     ((eq type shape_msgs::SolidPrimitive::*BOX*)
+      (shape-msg->cube msg))
+     ((eq type shape_msgs::SolidPrimitive::*SPHERE*)
+      (shape-msg->sphere msg))
+     ((eq type shape_msgs::SolidPrimitive::*CYLINDER*)
+      (shape-msg->cylinder msg))
+     (t
+      (error "unknown type ~A" type)))))
+(defun shape-msg->cube (msg)
+  "Convert shape_msgs::SolidPrimitive to euslisp cube object"
+  (let* ((scale (send msg :dimensions))
+         (cb (make-cube (* (elt scale 0) 1000)
+                        (* (elt scale 1) 1000)
+                        (* (elt scale 2) 1000))))
+    cb))
+(defun shape-msg->sphere (msg)
+  "Convert shape_msgs::SolidPrimitive to euslisp sphere object"
+  (let* ((scale (send msg :dimensions))
+         (cp (make-sphere (* (elt scale 0) 1000))))
+    cp))
+(defun shape-msg->cylinder (msg)
+  "Convert shape_msgs::SolidPrimitive to euslisp cylinder object"
+  (let* ((scale (send msg :dimensions))
+         (height (* (elt scale 0) 1000))
+         (radius (* (elt scale 1) 1000))
+         (cyl (make-cylinder radius height)))
+    cyl))
+;; Remove these functions after https://github.com/jsk-ros-pkg/jsk_roseus/pull/640 is merged
+
 (defclass grasping-client
   :super propertied-object
   :slots (find-client objects support-surfaces)
