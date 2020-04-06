@@ -1,3 +1,24 @@
 - git:
-    local-name: mongodb_store
-    uri: http://github.com/strands-project/mongodb_store
+   uri: http://github.com/RethinkRobotics/baxter_common.git
+   local-name: RethinkRobotics/baxter_common
+   version: kinetic-devel
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_simulator.git
+   local-name: RethinkRobotics/baxter_simulator
+   version: kinetic-devel
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_interface.git
+   local-name: baxter_interface
+   version: development
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_tools.git
+   local-name: baxter_tools
+   version: development
+- git:
+   uri: https://github.com/ros-planning/moveit_robots.git
+   local-name: ros-planning/moveit_robots
+   version: kinetic-devel
+- git:
+   uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+   local-name: jsk-ros-pkg/jsk_demos
+   version: master
