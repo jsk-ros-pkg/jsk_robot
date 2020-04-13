@@ -26,3 +26,6 @@
 - git: # wait until releasing (https://github.com/PR2/app_manager/issues/12)
    uri: https://github.com/pr2/app_manager.git
    local-name: app_manager
+- git: # wait for melodic release https://github.com/ros-naoqi/pepper_robot/issues/50
+   uri: https://github.com/ros-naoqi/pepper_robot.git
+   local-name: pepper_robot
