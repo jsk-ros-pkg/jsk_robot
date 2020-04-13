@@ -3,9 +3,10 @@
    local-name: RethinkRobotics/baxter_common
    version: kinetic-devel
 - git:
-   uri: https://github.com/RethinkRobotics/baxter_simulator.git
+   # https://github.com/RethinkRobotics/baxter_simulator/pull/130
+   uri: https://github.com/EmaroLab/baxter_simulator.git
    local-name: RethinkRobotics/baxter_simulator
-   version: kinetic-devel
+   version: master
 - git:
    uri: https://github.com/RethinkRobotics/baxter_interface.git
    local-name: baxter_interface
@@ -19,6 +20,6 @@
    local-name: ros-planning/moveit_robots
    version: kinetic-devel
 - git:
-   uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-   local-name: jsk-ros-pkg/jsk_demos
-   version: master
+   uri: https://github.com/tork-a/jsk_demos-release.git
+   local-name: jsk_maps
+   version: release/kinetic/jsk_maps
