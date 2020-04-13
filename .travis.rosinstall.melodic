@@ -29,3 +29,14 @@
 - git: # wait for melodic release https://github.com/ros-naoqi/pepper_robot/issues/50
    uri: https://github.com/ros-naoqi/pepper_robot.git
    local-name: pepper_robot
+- git: # https://github.com/ros-naoqi/nao_robot/issues/40
+   uri: https://github.com/ros-naoqi/nao_robot.git
+   local-name: nao_robot
+- git: # use latest pr2_computer_monitor
+   uri: https://github.com/pr2-gbp/pr2_robot-release.git
+   local-name: pr2_computer_monitor
+   version: release/kinetic/pr2_computer_monitor
+- git: # use naoqi_pose
+   uri: https://github.com/ros-naoqi/naoqi_bridge-release.git
+   local-name: naoqi_pose
+   version: release/kinetic/naoqi_pose
