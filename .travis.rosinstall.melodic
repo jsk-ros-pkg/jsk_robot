@@ -29,3 +29,6 @@
 - git: # wait for melodic release https://github.com/ros-naoqi/pepper_robot/issues/50
    uri: https://github.com/ros-naoqi/pepper_robot.git
    local-name: pepper_robot
+- git: # wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
+   uri: https://github.com/ros-naoqi/naoqi_bridge.git
+   local-name: naoqi_bridge
