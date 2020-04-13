@@ -32,3 +32,6 @@
 - git: # wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
    uri: https://github.com/ros-naoqi/naoqi_bridge.git
    local-name: naoqi_bridge
+- git: # wait for melodic release https://github.com/PR2/pr2_robot/issues/261
+   uri: https://github.com/PR2/pr2_robot.git
+   local-name: pr2_robot
