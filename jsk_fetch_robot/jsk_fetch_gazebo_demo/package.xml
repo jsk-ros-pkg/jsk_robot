@@ -10,10 +10,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>fetch_gazebo</exec_depend>
   <exec_depend>fetch_gazebo_demo</exec_depend>
-  <exec_depend>fetch_moveit_config</exec_depend>
-  <exec_depend>fetch_navigation</exec_depend>
-  <exec_depend>simple_grasping</exec_depend>
 
 </package>
