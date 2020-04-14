@@ -1,15 +1,26 @@
 jsk_fetch_gazebo_demo
 =====================
 
-This demo is roseus version of [fetch\_gazebo\_demo](https://github.com/fetchrobotics/fetch_gazebo/tree/gazebo9/fetch_gazebo_demo).
-
-You can learn how to use roseus and how ROS components are executed. (e.g. pointcloud, navigation, motion planning, ...)
+- This demo is roseus version of [fetch\_gazebo\_demo](https://github.com/fetchrobotics/fetch_gazebo/tree/gazebo9/fetch_gazebo_demo).
+- You can learn how to use roseus and how ROS components are executed. (e.g. pointcloud, navigation, motion planning, ... etc)
 
 ## Usage
-1. Install fetcheus by following [jsk\_fetch\_startup README](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_fetch_robot#setup-environment).
-1. Clone and build jsk\_fetch\_gazebo\_demo.
-1. Launch demo.
+- Build this package like [jsk\_fetch\_startup README](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_fetch_robot#setup-environment)
 ```bash
+mkdir -p catkin_ws/src
+cd catkin_ws/src
+git clone https://github.com/708yamaguchi/jsk_robot.git
+cd jsk_robot
+git checkout -t origin/fetch-gazebo-demo
+cd ..
+rosdep install --from-paths . --ignore-src -y -r
+cd ..
+catkin build fetcheus jsk_fetch_startup jsk_fetch_gazebo_demo
+```
+
+- Launch demo
+```bash
+source devel/setup.bash
 roslaunch jsk_fetch_gazebo_demo demo.launch
 ```
 
