@@ -65,7 +65,7 @@
       ;; Find objects
       (send goal :plan_grasps t)
       (send find-client :send-goal goal)
-      (send find-client :wait-for-result :timeout 0.5)
+      (send find-client :wait-for-result :timeout 5.0)
       (setq find-result (send find-client :get-result))
       ;; Remove previous objects
       (send *co* :wipe-all)
