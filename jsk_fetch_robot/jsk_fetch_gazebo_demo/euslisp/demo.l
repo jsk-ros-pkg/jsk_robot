@@ -10,7 +10,7 @@
 ;;
 (ros::load-ros-manifest "grasping_msgs")
 
-;; Remove these functions after https://github.com/jsk-ros-pkg/jsk_roseus/pull/640 is merged
+;; Remove (shape-msg->xxx) functions after https://github.com/jsk-ros-pkg/jsk_roseus/pull/640 is released
 (defun shape-msg->shape (msg)
   "Convert shape_msgs::SolidPrimitive to euslisp object"
   (let ((type (send msg :type)))
@@ -42,17 +42,16 @@
          (radius (* (elt scale 1) 1000))
          (cyl (make-cylinder radius height)))
     cyl))
-;; Remove these functions after https://github.com/jsk-ros-pkg/jsk_roseus/pull/640 is merged
-
-(defclass grasping-client
-  :super propertied-object
-  :slots (find-client objects support-surfaces)
-  )
 
 (unless (boundp '*tfl*)
   (setq *tfl* (instance ros::transform-listener :init)))
 (unless (boundp '*co*)
   (setq *co* (instance collision-object-publisher :init)))
+
+(defclass grasping-client
+  :super propertied-object
+  :slots (find-client objects support-surfaces)
+  )
 
 (defmethod grasping-client
   (:init (&key (find-topic "basic_grasping_perception/find_objects"))
@@ -160,8 +159,7 @@
     (if cube
       (progn
         ;; Pick the block
-        ;; TODO: use pick function like demo.py
-        ;; TODO: Now, we do not use result of :get-graspable-cube
+        ;; NOTE We do not use pick function like demo.py in fetch_gazebo_demo
         (setq primitive-pose
               (ros::tf-pose->coords (car (send cube :primitive_poses))))
         (setq scene-object
@@ -178,7 +176,7 @@
         (send *ri* :wait-interpolation)
         (send *ri* :start-grasp :wait t)
         (return))
-      ;; TODO: end
+      ;; TODO end
       (ros::ros-warn "Perception failed.")))
 
   ;; Intermediate pose for MoveIt planning and avoid collision between table and cube
@@ -194,6 +192,7 @@
   ;; Lower torso
   (send *ri* :angle-vector (send *fetch* :angle-vector) 2000 :torso-controller)
   (send *ri* :wait-interpolation)
+  (send *co* :wipe-all)
 
   ;; Move to second table
   (ros::ros-info "Moving to second table...")
@@ -207,24 +206,25 @@
   (send *ri* :wait-interpolation)
 
   ;; Place the block
-  ;; TODO: use place function like demo.py
+  ;; NOTE We do not use place function like demo.py in fetch_gazebo_demo
+  (setq frame-to-map (send *tfl* :lookup-transform "base_link" "map" (ros::time 0)))
   (send *fetch* :look-at-target
-        (send (make-coords :pos #f(3700 3180 0)) :transform frame-to-map :world))
+        (send (make-coords :pos #f(-3000 5000 0)) :transform frame-to-map :world))
   (send *ri* :angle-vector (send *fetch* :angle-vector))
   (send *ri* :wait-interpolation)
-  (send grasping-client :update-scene)
   (while t
     (ros::ros-info "Placing object...")
+    (send grasping-client :update-scene)
     (send *fetch* :inverse-kinematics (send scene-object :copy-worldcoords) :use-torso nil)
-    (send *fetch* :rarm :move-end-pos #f(0 -500 150) :world :use-torso nil)
+    (send *fetch* :rarm :move-end-pos #f(0 0 150) :world :use-torso nil)
     (send *ri* :angle-vector (send *fetch* :angle-vector) 10000) ;; move arm slowly not to drop cube
     (send *ri* :wait-interpolation)
-    (send *fetch* :rarm :move-end-pos #f(0 500 -120) :world :use-torso nil)
+    (send *fetch* :rarm :move-end-pos #f(0 0 -120) :world :use-torso nil)
     (send *ri* :angle-vector (send *fetch* :angle-vector) 2000)
     (send *ri* :wait-interpolation)
     (send *ri* :stop-grasp :wait t)
     (return))
-  ;; TODO: end
+  ;; NOTE end
 
   ;; Intermediate pose for MoveIt planning and avoid collision between table and cube
   (send *fetch* :rarm :move-end-pos #f(0 500 100) :world :use-torso nil)
@@ -235,6 +235,7 @@
   (send *fetch* :reset-pose)
   (send *ri* :angle-vector (send *fetch* :angle-vector) 5000 :arm-controller)
   (send *ri* :wait-interpolation)
+  (send *co* :wipe-all)
 
   (exit)
   )
