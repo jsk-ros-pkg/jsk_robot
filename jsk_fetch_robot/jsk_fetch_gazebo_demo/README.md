@@ -9,20 +9,10 @@ jsk_fetch_gazebo_demo
 ```bash
 mkdir -p catkin_ws/src
 cd catkin_ws/src
-git clone https://github.com/708yamaguchi/jsk_robot.git
-cd jsk_robot
-git checkout -t origin/fetch-gazebo-demo
-cd ..
-# To avoid roseus bugs. Please see https://github.com/jsk-ros-pkg/jsk_roseus/pull/609
-# Remove after this Pull Request is released
-git clone https://github.com/Affonso-Gui/jsk_roseus.git
-cd jsk_roseus
-git checkout -t origin/ros-msg-no-pkg
-cd ..
-# To avoid roseus bugs.
+git clone https://github.com/jsk-ros-pkg/jsk_robot.git
 rosdep install --from-paths . --ignore-src -y -r
 cd ..
-catkin build fetcheus jsk_fetch_startup jsk_fetch_gazebo_demo roseus # Remove roseus after this Pull Request is released
+catkin build jsk_fetch_gazebo_demo
 source devel/setup.bash
 roslaunch jsk_fetch_gazebo_demo demo.launch
 ```
