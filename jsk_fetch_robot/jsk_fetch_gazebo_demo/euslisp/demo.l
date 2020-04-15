@@ -51,8 +51,8 @@
   (setq *co* (instance collision-object-publisher :init)))
 
 (defmethod grasping-client
-  (:init ()
-    (let ((find-topic "basic_grasping_perception/find_objects"))
+  (:init (&key (find-topic "basic_grasping_perception/find_objects"))
+    (let ()
       (ros::ros-info (format nil "Waiting for ~A ..." find-topic))
       (setq find-client (instance ros::simple-action-client :init
                                   find-topic
