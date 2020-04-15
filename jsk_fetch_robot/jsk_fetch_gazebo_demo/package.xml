@@ -11,6 +11,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>fetch_gazebo_demo</exec_depend>
+  <exec_depend>fetcheus</exec_depend>
 
   <!-- to avoid roslaunch-check, this should be include in fetch_gazebo -->
   <exec_depend>robot_state_pubclisher</exec_depend>
