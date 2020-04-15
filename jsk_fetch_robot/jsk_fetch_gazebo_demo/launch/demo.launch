@@ -1,4 +1,5 @@
 <launch>
+  <arg name="run_demo_script" default="true" doc="run euslisp demo script" />
 
   <arg name="rviz" default="true" />
   <include file="$(find fetch_gazebo)/launch/playground.launch" />
@@ -20,7 +21,7 @@
   <!-- Drive to the table, pick stuff up -->
   <!-- <node name="demo" pkg="fetch_gazebo_demo" type="demo.py" output="screen" /> -->
   <node name="gazebo_demo" pkg="jsk_fetch_gazebo_demo" type="demo.l" output="screen"
-        args="&quot;(main)&quot;" />
+        args="&quot;(main)&quot;" if="$(arg run_demo_script)" />
 
   <!-- set rosparams to increase demo success rate -->
   <rosparam>

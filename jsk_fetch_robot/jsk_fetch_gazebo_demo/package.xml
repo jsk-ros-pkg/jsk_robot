@@ -12,4 +12,15 @@
 
   <exec_depend>fetch_gazebo_demo</exec_depend>
 
+  <!-- to avoid roslaunch-check, this should be include in fetch_gazebo -->
+  <exec_depend>robot_state_pubclisher</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+  <exec_depend>simple_grasping</exec_depend>
+  <exec_depend>fetch_gazebo</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>fetch_moveit_config</exec_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>roslaunch</test_depend>
+
 </package>
