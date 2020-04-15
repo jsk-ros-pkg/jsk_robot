@@ -4,6 +4,10 @@
 ;; https://github.com/fetchrobotics/fetch_gazebo/blob/gazebo9/fetch_gazebo_demo/scripts/demo.py
 
 (require "package://fetcheus/fetch-interface.l")
+;; hotfix for https://github.com/jsk-ros-pkg/jsk_robot/pull/1213#issuecomment-612976152, see https://github.com/jsk-ros-pkg/jsk_roseus/issues/574
+(make-package "GRASPING_MSGS")
+(load "package://roseus/ros/grasping_msgs/msg/Object.l")
+;;
 (ros::load-ros-manifest "grasping_msgs")
 
 ;; Remove these functions after https://github.com/jsk-ros-pkg/jsk_roseus/pull/640 is merged
@@ -51,8 +55,8 @@
   (setq *co* (instance collision-object-publisher :init)))
 
 (defmethod grasping-client
-  (:init ()
-    (let ((find-topic "basic_grasping_perception/find_objects"))
+  (:init (&key (find-topic "basic_grasping_perception/find_objects"))
+    (let ()
       (ros::ros-info (format nil "Waiting for ~A ..." find-topic))
       (setq find-client (instance ros::simple-action-client :init
                                   find-topic
