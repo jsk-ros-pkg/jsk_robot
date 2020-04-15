@@ -1,0 +1,20 @@
+<launch>
+  <include file="$(find jsk_fetch_gazebo_demo)/launch/demo.launch" >
+    <arg name="run_demo_script" value="false" />
+    <arg name="rviz" value="false" />
+  </include>
+
+  <group ns="grasp_objects_test" >
+    <node pkg="rosbag" type="play" name="play_grasping_objects_msg"
+          args="-l $(find jsk_fetch_gazebo_demo)/test/grasping_objects.bag" />
+  </group>
+
+  <param name="joint_states_hz_test/topic" value="joint_states" />
+  <param name="joint_states_hz_test/hz" value="100.0" />
+  <param name="joint_states_hz_test/hzerror" value="25.0" />
+  <param name="joint_states_hz_test/test_duration" value="5.0" />
+  <atest test-name="joint_states_test" pkg="rostest" type="hztest" name="joint_states_hz_test" />
+
+  <test test-name="demo_test" pkg="roseus" type="roseus" name="demo_test" args="$(find jsk_fetch_gazebo_demo)/test/test-demo.l" />
+</launch>
+
