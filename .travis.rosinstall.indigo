@@ -18,3 +18,10 @@
     local-name: strands-project/mongodb_store
     uri: https://github.com/strands-project/mongodb_store.git
     version: 0.4.5
+# jsk_fetch_startup requires latest fetch_ros
+# indigo is already EOL and 0.7.16 is never released. (2020/04/16)
+# more detailed information, see https://github.com/fetchrobotics/fetch_ros/pull/137
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: indigo-devel

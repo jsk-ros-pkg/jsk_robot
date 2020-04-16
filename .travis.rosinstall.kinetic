@@ -31,3 +31,10 @@
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
     version: kinetic-devel
+# jsk_fetch_startup requires latest fetch_ros
+# waiting for new release 0.7.16 for kinetic: https://github.com/fetchrobotics/fetch_ros/issues/139
+# more detailed information, see https://github.com/fetchrobotics/fetch_ros/pull/137
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: indigo-devel
