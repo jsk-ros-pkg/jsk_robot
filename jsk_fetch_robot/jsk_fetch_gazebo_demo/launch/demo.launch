@@ -18,6 +18,9 @@
     <rosparam command="load" file="$(find fetch_gazebo_demo)/config/simple_grasping.yaml" />
   </node>
 
+  <!-- publish odom_combined to use :go-pos and :go-pos-unsafe functions -->
+  <node name="odom_relay" pkg="topic_tools" type="relay" args="/odom /odom_combined" />
+
   <!-- Drive to the table, pick stuff up -->
   <!-- <node name="demo" pkg="fetch_gazebo_demo" type="demo.py" output="screen" /> -->
   <node name="gazebo_demo" pkg="jsk_fetch_gazebo_demo" type="demo.l" output="screen"
