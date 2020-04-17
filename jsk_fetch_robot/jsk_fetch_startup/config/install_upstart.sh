@@ -15,7 +15,9 @@ stop on roscore_is_down
 
 respawn
 
+# add ROSCONSOLE_FORMAT: s-kitagawa (2019/10/03)
 env AUDIO_DEVICE=alsa_output.usb-1130_USB_AUDIO-00-AUDIO.analog-stereo
+env ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}:${logger}]: ${message}'
 
 # enable usb speaker if available
 pre-start script

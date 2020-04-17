@@ -21,6 +21,7 @@ class BatteryWarning(object):
         self.timer = rospy.Timer(rospy.Duration(self.duration), self._timer_cb)
         self.charge_level = None
         self.prev_charge_level = None
+        self.is_charging = False
 
     def _speak(self, sentence):
         req = SoundRequest()
@@ -33,7 +34,7 @@ class BatteryWarning(object):
         self.speak_client.wait_for_result(timeout=rospy.Duration(10))
 
     def _warn(self):
-        if self.charge_level < self.threshold:
+        if self.charge_level < self.threshold and not self.is_charging:
             rospy.logerr("Low battery: only {}% remaining".format(self.charge_level))
             sentence = "バッテリー残り{}パーセントです。".format(self.charge_level)
             sentence += "もう限界ですので、僕をお家にかえしてください。"
@@ -48,6 +49,7 @@ class BatteryWarning(object):
     def _cb(self, msg):
         is_first_time = self.charge_level is None
         self.charge_level = int(msg.charge_level * 100)
+        self.is_charging = msg.is_charging
         if is_first_time:
             self.prev_charge_level = self.charge_level + self.step
             self._warn()
