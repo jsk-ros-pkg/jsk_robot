@@ -40,7 +40,6 @@ matrix:
     - env: ROS_DISTRO=hydro   USE_DEB=false EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon" BUILD_PKGS="jsk_pr2_calibration jsk_robot_startup pr2_base_trajectory_action jsk_pr2_startup jsk_pr2_desktop"
     - env: ROS_DISTRO=kinetic USE_DEB=true
     - env: ROS_DISTRO=melodic USE_DEB=true
-    - env: ROS_DISTRO=melodic USE_DEB=false
 before_script:
   # to install pepper_meshes, nao_meshes, the licenses have to be accepted
   - if [ "$ROS_DISTRO" == "indigo" ]; then export BEFORE_SCRIPT="echo \"ros-indigo-pepper-meshes ros-pepper-meshes/accepted-ros-pepper-meshes boolean true\" | sudo debconf-set-selections; sudo apt-get install -y -qq ros-$ROS_DISTRO-pepper-meshes"; fi
