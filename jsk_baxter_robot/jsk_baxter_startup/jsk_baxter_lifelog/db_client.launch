@@ -1,0 +1,49 @@
+<launch>
+  <param name="robot/database" value="jsk_robot_lifelog"/>
+  <param name="robot/type" value="baxter"/>
+  <param name="robot/name" value="baxter"/>
+
+  <arg name="twitter" default="true" />
+  <arg name="output" default="screen" />
+
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+    <arg name="save_rgb" value="false" />
+    <arg name="save_depth" value="false" />
+    <arg name="save_tf" value="true" />
+    <arg name="save_joint_states" value="true" />
+    <arg name="save_base_trajectory" value="false" />
+    <arg name="save_object_detection" value="false" />
+    <arg name="save_action" value="true" />
+    <arg name="save_app" value="false" />
+    <arg name="joint_states_topic" value="robot/joint_states" />
+    <arg name="enable_monitor" value="false" />
+    <arg name="log_rate" value="1.0" />
+    <arg name="launch_manager" value="true" />
+    <arg name="approximate_sync" value="true"/>
+  </include>
+
+  <rosparam ns="lifelog/joint_states_throttle">
+    periodic: false
+    threshold: 0.01
+  </rosparam>
+
+  <rosparam ns="lifelog/action_logger">
+    white_list:
+      type:
+      - control_msgs/FollowJointTrajectoryActionFeedback
+      - control_msgs/FollowJointTrajectoryActionGoal
+      - control_msgs/FollowJointTrajectoryActionResult
+      - control_msgs/GripperCommandActionFeedback
+      - control_msgs/GripperCommandActionGoal
+      - control_msgs/GripperCommandActionResult
+      - control_msgs/SingleJointPositionActionResult
+      - control_msgs/SingleJointPositionActionGoal
+      - sound_play/SoundRequestActionResult
+      - sound_play/SoundRequestActionGoal
+  </rosparam>
+
+  <!-- tweeting robot warning data and etc. -->
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch"
+           if="$(arg twitter)"/>
+
+</launch>
