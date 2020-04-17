@@ -39,7 +39,7 @@
     </rosparam>
   </node>
 
-  <node name="go_to_kitchen_rosbag_recorder" pkg="rosbag" type="record"
-        args="-q -O $(arg video_path)/$(arg rosbag_title)
-              /tf /joint_states /odom /odom_combined /cmd_vel" />
+  <include file="$(find jsk_fetch_startup)/rosbag_record.launch">
+      <arg name="rosbag_filepath" value="$(arg video_path)/$(arg rosbag_title)" />
+  </include>
 </launch>
