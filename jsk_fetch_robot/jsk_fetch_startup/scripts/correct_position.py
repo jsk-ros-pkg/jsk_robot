@@ -22,24 +22,31 @@ class CorrectPosition(ConnectionBasedTransport):
                 self.dock_pose = spot.pose
 
         self.is_docking = False
+        self.timer = rospy.Timer(rospy.Duration(1.0), self._cb_correct_position)
 
     def subscribe(self):
-        self.sub_dock = rospy.Subscriber('/battery_state',
-                                         BatteryState,
-                                         self._cb_correct_position)
+        self.sub_dock = rospy.Subscriber(
+            '/battery_state', BatteryState, self._cb)
 
     def unsubscribe(self):
         self.sub_dock.unregister()
 
-    def _cb_correct_position(self, msg):
-        if msg.is_charging and (not self.is_docking):
+    def _cb(self, msg):
+        self.is_docking = msg.is_charging
+
+    def _cb_correct_position(self, event):
+        if self.is_docking:
             self.pos = PoseWithCovarianceStamped()
             self.pos.header.stamp = rospy.Time.now()
             self.pos.header.frame_id = 'map'
             self.pos.pose.pose = self.dock_pose
-            self.pos.pose.covariance = [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.06853891945200942]
+            self.pos.pose.covariance = [1e-3, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 1e-3, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                        0.0, 0.0, 0.0, 0.0, 0.0, 1e-3]
             self.pub.publish(self.pos)
-        self.is_docking = msg.is_charging
 
 
 if __name__ == '__main__':
