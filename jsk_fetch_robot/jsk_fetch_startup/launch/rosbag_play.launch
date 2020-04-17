@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="rosbag_filepath" />
+    <arg name="nodelet_manager_name"   default="rosbag_nodelet_manager" />
+    <arg name="launch_nodelet_manager" default="true" />
+    <arg name="is_loop"                default="true" />
+
+    <param 
+        name="use_sim_time"
+        value="true"
+        />
+
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="$(arg nodelet_manager_name)"
+        args="manager"
+        if="$(arg launch_nodelet_manager)"
+        output="screen" />
+
+    <!-- depth_image_proc -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name=""
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg nodelet_manager_name)"
+        output="screen" >
+        <remap from="rgb/camera_info"             to="/head_camera/rgb/camera_info" />
+        <remap from="rgb/image_rect_color"        to="/head_camera/rgb/image_rect_color" />
+        <remap from="depth_registered/image_rect" to="/head_camera/depth_registered/image_rect" />
+        <remap from="depth_registered/points"     to="/head_camera/depth_registered/quater/throttled/points" />
+    </node>
+
+    <!-- latched topic republisher -->
+    <node 
+        pkg="jsk_fetch_startup"
+        type="latched_topic_republisher.py"
+        name="latched_topic_republisher_tf_static"
+        output="screen" >
+        <param name="~file" value="$(arg rosbag_filepath)" />
+        <param name="~topicname" value="tf_static" />
+    </node>
+    <node 
+        pkg="jsk_fetch_startup"
+        type="latched_topic_republisher.py"
+        name="latched_topic_republisher_map"
+        output="screen" >
+        <param name="~file" value="$(arg rosbag_filepath)" />
+        <param name="~topicname" value="map" />
+    </node>
+
+    <!-- rosbag player -->
+    <node 
+        pkg="rosbag"
+        type="play"
+        name="rosbag"
+        args="-l $(arg rosbag_filepath) --clock"
+        output="screen"
+        if="$(arg is_loop)" />
+    <node 
+        pkg="rosbag"
+        type="play"
+        name="rosbag"
+        args="$(arg rosbag_filepath) --clock"
+        output="screen"
+        unless="$(arg is_loop)" />
+</launch>
