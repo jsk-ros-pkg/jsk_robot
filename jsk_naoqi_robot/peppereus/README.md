@@ -200,3 +200,11 @@ They are defined in `pepper.yaml`.
 `:wondering-pose`
 
 ![](doc/img/wondering-pose.png)
+
+`:c-pose`
+
+![](doc/img/c-pose.png)
+
+`:hiragana-tsu-pose`
+
+![](doc/img/hiragana-tsu-pose.png)
