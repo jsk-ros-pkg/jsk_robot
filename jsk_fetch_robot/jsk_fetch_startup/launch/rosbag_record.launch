@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="rosbag" />
+  <arg name="compress" default="false" />
+
+  <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
+  <arg unless="$(arg compress)" name="compress_flag" value="" />
+
+  <node name="rosbag_record" pkg="rosbag" type="record"
+      args="-q $(arg compress_flag) -O $(arg rosbag) -b 0 
+          /rosout
+          /tf
+          /tf_static
+          /joint_states
+          /map
+          /odom
+          /odom_combined
+          /cmd_vel
+          /move_base/NavFnROS/plan
+          /move_base/TrajectoryPlannerROS/global_plan
+          /move_base/TrajectoryPlannerROS/local_plan
+          /move_base/global_costmap/footprint
+          /spots_marker_array
+          /spots_pictogram
+          /safe_teleop_base/local_costmap/costmap
+          /move_base/local_costmap/costmap
+          /move_base/global_costmap/costmap
+          /particlecloud
+          /base_scan/throttled
+          /head_camera/rgb/throttled/camera_info
+          /head_camera/depth_registered/throttled/camera_info
+          /head_camera/rgb/throttled/image_rect_color/compressed
+          /head_camera/depth_registered/throttled/image_rect/compressdDepth"
+      output="screen" />
+
+</launch>
