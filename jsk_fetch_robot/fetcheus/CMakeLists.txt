@@ -66,7 +66,11 @@ if(CATKIN_ENABLE_TESTING)
   find_package(fetch_gazebo QUIET)
   if(fetch_gazebo_FOUND)
     add_rostest(test/fetch-moveit.test)
-    add_rostest(test/fetch-navigation.test)
+    # kinetic test fails because of gazebo7 error.
+    # if you want more information, please see https://github.com/uzh-rpg/rpg_quadrotor_control/issues/58.
+    if($ENV{ROS_DISTRO} STRGREATER "kinetic")
+      add_rostest(test/fetch-navigation.test)
+    endif()
   endif()
 endif()
 
