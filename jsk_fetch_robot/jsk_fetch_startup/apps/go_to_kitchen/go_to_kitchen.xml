@@ -35,7 +35,7 @@
       filename: $(arg video_path)/$(arg object_detection_video_title)
       codec: XVID
       stamped_filename: false
-      fps: 7.5
+      fps: 15.0 
     </rosparam>
   </node>
 
