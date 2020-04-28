@@ -146,7 +146,8 @@
         ;; sink
         (when tweet
           (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
-                        :with-image "/edgetpu_object_detector/output/image" :speak t)))
+                        :with-image "/edgetpu_object_detector/output/image" :speak t))
+        (send *ri* :go-pos-unsafe 0 0 -135))
       (progn ;; failed to go to kitchen
         (ros::ros-error "failed going to the kitchen.")
         (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
