@@ -42,11 +42,10 @@ plugins:
         - /move_base/local_costmap/costmap
         - /move_base/global_costmap/costmap
         - /particlecloud
-        - /base_scan/throttled
-        - /head_camera/rgb/camera_info
-        - /head_camera/rgb/image_rect_color
-        - /head_camera/depth_registered/image_rect
-        - /head_camera/rgb/quater/image_rect_color
+        # - /base_scan/throttled
+        # - /head_camera/rgb/camera_info
+        # - /head_camera/rgb/image_rect_color/compressed
+        # - /head_camera/depth_registered/image_rect/compressedDepth
   - name: gdrive_uploader_plugin
     type: app_uploader/gdrive_uploader_plugin
     plugin_args:
