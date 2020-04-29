@@ -23,7 +23,30 @@ plugins:
     launch_args:
       rosbag_path: /tmp
       rosbag_title: go_to_kitchen_rosbag.bag
-      rosbag_topic_names: /tf /joint_states /odom /odom_combined /cmd_vel
+      rosbag_topic_names:
+        - /rosout
+        - /tf
+        - /tf_static
+        - /joint_states
+        - /map
+        - /odom
+        - /odom_combined
+        - /cmd_vel
+        - /move_base/NavFnROS/plan
+        - /move_base/TrajectoryPlannerROS/global_plan
+        - /move_base/TrajectoryPlannerROS/local_plan
+        - /move_base/global_costmap/footprint
+        - /spots_marker_array
+        - /spots_pictogram
+        - /safe_teleop_base/local_costmap/costmap
+        - /move_base/local_costmap/costmap
+        - /move_base/global_costmap/costmap
+        - /particlecloud
+        - /base_scan/throttled
+        - /head_camera/rgb/camera_info
+        - /head_camera/rgb/image_rect_color
+        - /head_camera/depth_registered/image_rect
+        - /head_camera/rgb/quater/image_rect_color
   - name: gdrive_uploader_plugin
     type: app_uploader/gdrive_uploader_plugin
     plugin_args:
