@@ -61,6 +61,10 @@ plugins:
         - go_to_kitchen_rosbag.bag
       upload_parents_path: fetch_morning_go_to_kitchen
       upload_server_name: /gdrive_server
+  - name: speech_notifier_plugin
+    type: app_notifier/speech_notifier_plugin
+    plugin_args:
+      client_name: /sound_play
   - name: mail_notifier_plugin
     type: app_notifier/mail_notifier_plugin
     plugin_args:
