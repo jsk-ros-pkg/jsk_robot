@@ -23,6 +23,7 @@ plugins:
     launch_args:
       rosbag_path: /tmp
       rosbag_title: go_to_kitchen_rosbag.bag
+      compress: true
       rosbag_topic_names:
         - /rosout
         - /tf
@@ -42,10 +43,11 @@ plugins:
         - /move_base/local_costmap/costmap
         - /move_base/global_costmap/costmap
         - /particlecloud
-        # - /base_scan/throttled
-        # - /head_camera/rgb/camera_info
-        # - /head_camera/rgb/image_rect_color/compressed
-        # - /head_camera/depth_registered/image_rect/compressedDepth
+        - /base_scan/throttled
+        - /head_camera/rgb/throttled/camera_info
+        - /head_camera/depth_registered/throttled/camera_info
+        - /head_camera/rgb/throttled/image_rect_color/compressed
+        - /head_camera/depth_registered/throttled/image_rect/compressedDepth
   - name: gdrive_uploader_plugin
     type: app_uploader/gdrive_uploader_plugin
     plugin_args:
