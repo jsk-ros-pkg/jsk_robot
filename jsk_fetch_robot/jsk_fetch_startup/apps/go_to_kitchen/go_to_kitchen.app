@@ -69,5 +69,6 @@ plugins:
     type: app_notifier/mail_notifier_plugin
     plugin_args:
       mail_title: Fetch kitchen patrol demo
+      use_timestamp_title: true
       sender_address: fetch15@jsk.imi.i.u-tokyo.ac.jp
       receiver_address: fetch@jsk.imi.i.u-tokyo.ac.jp
