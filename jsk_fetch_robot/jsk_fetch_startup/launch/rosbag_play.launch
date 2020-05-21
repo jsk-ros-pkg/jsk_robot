@@ -78,18 +78,18 @@
   <node pkg="jsk_fetch_startup" type="latched_topic_republisher.py" name="latched_topic_republisher_tf_static"
         output="screen" >
     <param name="~file" value="$(arg rosbag)" />
-    <param name="~topicname" value="tf_static" />
+    <param name="~topicname" value="/tf_static" />
   </node>
   <node pkg="jsk_fetch_startup" type="latched_topic_republisher.py" name="latched_topic_republisher_map"
         output="screen" >
       <param name="~file" value="$(arg rosbag)" />
-      <param name="~topicname" value="map" />
+      <param name="~topicname" value="/map" />
   </node>
 
   <!-- rosbag player -->
   <node pkg="rosbag" type="play" name="rosbag_play"
         args="$(arg rosbag) $(arg loop_flag) --clock" output="screen" />
 
-  <node pkg="rviz" type="rviz" name="$(anon rviz)"
+  <node pkg="rviz" type="rviz" name="$(anon rviz)" if="$(arg gui)"
         args="-d $(find jsk_fetch_startup)/config/jsk_startup.rviz" />
 </launch>
