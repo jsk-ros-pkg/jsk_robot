@@ -29,19 +29,19 @@
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     version: 799fd309c1519801fcb3a37c9094814004d78594
-# to avoid volume 0 problem
+# use latest version to avoid several problems
 # remove after 0.3.14 (https://github.com/jsk-ros-pkg/jsk_pr2eus/commit/41183fe3401d742bbec0edd13b67cb909a6968bd) is released
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    version: 0.3.14
+    version: 4102b8d3a542b9e93b4115065b2bea2494092abc
 # to use fetch's dock position for several demos
 # remove after https://github.com/jsk-ros-pkg/jsk_demos/commit/810acc7cc24a4792d455a7e9e8c8c50e5e07e21b (0.0.5) is released
 # Now, we set CATKIN_IGNORE to all packages except jsk_maps because we need only jsk_maps in fetch PC
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: 7c429715d0adf12c5dd34459ceb4b0a5b11dec6c
+    version: 1f81e61c890e0642251ce0ec12952eb0828aadca
 # need to build from source because of nodelet version
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
@@ -76,7 +76,7 @@
 - git:
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
-    version: 4680118106ba8ffa99a803122bf1a9e383edf3df
+    version: c152f9349b26c60d3dde1b4973073bfa187920fe
 # indigo is already EOL and visualization_msgs is never released
 - tar:
     local-name: ros/common_msgs/visualization_msgs
@@ -87,3 +87,8 @@
     local-name: locusrobotics/catkin_virtualenv
     uri: https://github.com/locusrobotics/catkin_virtualenv.git
     version: 0.5.0
+# use latest robot_calibration
+- git:
+    local-name: mikeferguson/robot_calibration
+    uri: https://github.com/mikeferguson/robot_calibration.git
+    version: 0.5.5
