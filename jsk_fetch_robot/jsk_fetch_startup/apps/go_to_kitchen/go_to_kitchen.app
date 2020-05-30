@@ -70,5 +70,19 @@ plugins:
     plugin_args:
       mail_title: Fetch kitchen patrol demo
       use_timestamp_title: true
-      sender_address: fetch15@jsk.imi.i.u-tokyo.ac.jp
-      receiver_address: fetch@jsk.imi.i.u-tokyo.ac.jp
+    plugin_arg_yaml: /var/lib/robot/fetch_mail_notifier_plugin.yaml
+plugin_order:
+  start_plugin_order:
+    - head_camera_video_recorder_plugin
+    - object_detection_video_recorder_plugin
+    - rosbag_recorder_plugin
+    - gdrive_uploader_plugin
+    - speech_notifier_plugin
+    - mail_notifier_plugin
+  stop_plugin_order:
+    - head_camera_video_recorder_plugin
+    - object_detection_video_recorder_plugin
+    - rosbag_recorder_plugin
+    - gdrive_uploader_plugin
+    - speech_notifier_plugin
+    - mail_notifier_plugin
