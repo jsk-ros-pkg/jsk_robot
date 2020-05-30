@@ -25,13 +25,14 @@
   <!-- openni driver on C1 -->
   <param name="/kinect_head/driver/depth_ir_offset_x" value="4.5" />
   <param name="/kinect_head/driver/depth_ir_offset_y" value="2.5" />
+
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg load_driver)">
     <arg name="camera" value="$(arg camera)"/>
     <arg name="num_worker_threads" value="$(arg num_worker_threads)" />
-    <arg name="rgb_frame_id" value="/head_mount_kinect_rgb_optical_frame" />
-    <arg name="depth_frame_id" value="/head_mount_kinect_ir_optical_frame" />
-    <arg name="respawn" value="false" />
+    <arg name="rgb_frame_id" value="head_mount_kinect_rgb_optical_frame" />
+    <arg name="depth_frame_id" value="head_mount_kinect_ir_optical_frame" />
+    <arg name="respawn" value="$(arg respawn)" />
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
     <arg name="rgb_processing"                  value="$(arg registration_c1)"/>
@@ -50,7 +51,8 @@
         args="camera:=$(arg camera)
               load_driver:=false
               publish_tf:=false
-              depth_registration:=true
+              hw_registered_processing:=true
+              sw_registered_processing:=false
               respawn:=$(arg respawn)
               manager:=$(arg manager)
               deprecated_relay:=$(arg deprecated_relay)
