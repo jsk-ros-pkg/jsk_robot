@@ -1,3 +1,42 @@
 - git:
-    local-name: mongodb_store
-    uri: http://github.com/strands-project/mongodb_store
+   uri: http://github.com/RethinkRobotics/baxter_common.git
+   local-name: RethinkRobotics/baxter_common
+   version: kinetic-devel
+- git:
+   # https://github.com/RethinkRobotics/baxter_simulator/pull/130
+   uri: https://github.com/EmaroLab/baxter_simulator.git
+   local-name: RethinkRobotics/baxter_simulator
+   version: master
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_interface.git
+   local-name: baxter_interface
+   version: development
+- git:
+   uri: https://github.com/RethinkRobotics/baxter_tools.git
+   local-name: baxter_tools
+   version: development
+- git:
+   uri: https://github.com/ros-planning/moveit_robots.git
+   local-name: ros-planning/moveit_robots
+   version: kinetic-devel
+- git: # wait until releasing
+   uri: https://github.com/tork-a/jsk_demos-release.git
+   local-name: jsk_maps
+   version: release/kinetic/jsk_maps
+- git: # wait until releasing (https://github.com/PR2/app_manager/issues/12)
+   uri: https://github.com/pr2/app_manager.git
+   local-name: app_manager
+- git: # wait for melodic release https://github.com/ros-naoqi/pepper_robot/issues/50
+   uri: https://github.com/ros-naoqi/pepper_robot.git
+   local-name: pepper_robot
+- git: # https://github.com/ros-naoqi/nao_robot/issues/40
+   uri: https://github.com/ros-naoqi/nao_robot.git
+   local-name: nao_robot
+- git: # use latest pr2_computer_monitor, wait for melodic release https://github.com/PR2/pr2_robot/issues/261
+   uri: https://github.com/pr2-gbp/pr2_robot-release.git
+   local-name: pr2_computer_monitor
+   version: release/kinetic/pr2_computer_monitor
+- git: # use naoqi_pose, wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
+   uri: https://github.com/ros-naoqi/naoqi_bridge-release.git
+   local-name: naoqi_pose
+   version: release/kinetic/naoqi_pose
