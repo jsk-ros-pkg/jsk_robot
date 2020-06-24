@@ -30,7 +30,7 @@
           /head_camera/rgb/throttled/camera_info
           /head_camera/depth_registered/throttled/camera_info
           /head_camera/rgb/throttled/image_rect_color/compressed
-          /head_camera/depth_registered/throttled/image_rect/compressdDepth"
+          /head_camera/depth_registered/throttled/image_rect/compressedDepth"
       output="screen" />
 
 </launch>
