@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="rosbag" />
-  <arg name="compress" default="false" />
+  <arg name="rosbag" doc="rosbag file path" />
+  <arg name="compress" default="false" doc="whether compress rosbag or not." />
 
   <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
   <arg unless="$(arg compress)" name="compress_flag" value="" />
