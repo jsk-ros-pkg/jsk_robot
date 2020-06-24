@@ -13,6 +13,8 @@
       (send msg :sound sound_play::SoundRequest::*play_file*)
       (send msg :arg sound)))
     (send msg :command sound_play::SoundRequest::*play_once*)
+    (when (find-method msg :volume)
+      (send msg :volume 1.0))
     (ros::publish "/robotsound" msg)))
 
 (defun joy-cb (msg)
