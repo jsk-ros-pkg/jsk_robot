@@ -9,7 +9,7 @@
        doc="port number for roswww server"/>
 
   <include file="$(find roswww)/launch/roswww.launch" if="$(arg launch_roswww)">
-    <arg name="port" value="$(arg rosww_port)" />
+    <arg name="port" value="$(arg roswww_port)" />
   </include>
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"
            if="$(arg launch_websocket)">
