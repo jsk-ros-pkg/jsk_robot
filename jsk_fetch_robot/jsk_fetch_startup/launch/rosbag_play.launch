@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <launch>
   <arg name="rosbag" />
   <arg name="manager" default="rosbag_play_nodelet_manager" />
