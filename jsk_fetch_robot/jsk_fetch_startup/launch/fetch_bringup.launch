@@ -7,6 +7,7 @@
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
+  <arg name="use_keepout" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -126,6 +127,7 @@
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
       <arg name="launch_map_server" value="true" />
+      <arg name="keepout" value="$(arg use_keepout)" />
     </include>
 
     <!-- dock localization -->
