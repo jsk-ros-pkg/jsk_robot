@@ -137,7 +137,7 @@
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
       <arg name="map_file" value="$(arg map_file)" />
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
-      <arg name="use_keepout" value="false" />
+      <arg name="use_keepout" value="$(arg use_keepout)" />
       <arg name="use_map_topic" value="true" />
       <arg name="launch_map_server" value="false" />
     </include>
