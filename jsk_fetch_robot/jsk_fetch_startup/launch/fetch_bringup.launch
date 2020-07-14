@@ -79,6 +79,8 @@
     <arg name="use_applist" value="true" />
     <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
     <arg name="respawn" value="false" />
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
 
   <!-- downsample / throttle sensor data -->
