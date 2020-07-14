@@ -220,6 +220,8 @@
     <arg name="use_applist" value="false"/> <!-- use plugin -->
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
     <arg name="respawn" value="false"/>
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
 
   <!-- mannequin mode -->
