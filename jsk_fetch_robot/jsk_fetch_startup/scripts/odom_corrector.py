@@ -17,7 +17,7 @@ class OdomCorrector(object):
                            0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0, 0,
-                           0, 0, 0, 0, 0, 0.1]
+                           0, 0, 0, 0, 0, 1e-2]
 
     def _cb(self, msg):
         msg.pose.covariance = self.covariance
