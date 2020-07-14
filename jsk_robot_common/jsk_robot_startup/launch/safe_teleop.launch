@@ -1,0 +1,48 @@
+<launch>
+  <arg name="machine" default="localhost" />
+
+  <!-- /teleop/cmd_vel/unsafe -> /teleop/cmd_vel/safe -->
+  <node name="safe_teleop_base" pkg="safe_teleop_base" type="safe_teleop_base"
+        machine="$(arg machine)" >
+    <remap from="/odom" to="/odom_teleop"/>
+    <remap from="base_velocity" to="/teleop/cmd_vel/unsafe" />
+    <remap from="~safe_vel"     to="/teleop/cmd_vel/safe" />
+  </node>
+
+  <!-- unsafe mux: (/teleop/cmd_vel/unsafe & /teleop/cmd_vel/safe) -> /teleop/cmd_vel -->
+  <node name="unsafe_vel_mux" pkg="topic_tools" type="mux"
+        respawn="true" machine="$(arg machine)"
+	args="/teleop/cmd_vel /teleop/cmd_vel/safe /teleop/cmd_vel/unsafe">
+    <remap from="mux" to="unsafe_vel_mux" />
+  </node>
+  <!-- unsafe mux selector with PS3 R2 button -->
+  <node name="unsafe_vel_selector" pkg="jsk_robot_startup" type="mux_selector.py"
+	respawn="true" machine="$(arg machine)"
+	args="/joy 'm.buttons[9]==1' /teleop/cmd_vel/unsafe /joy 'm.buttons[9]==0' /teleop/cmd_vel/safe">
+    <remap from="mux" to="unsafe_vel_mux" />
+    <param name="default_select" value="/teleop/cmd_vel/safe" />
+  </node>
+
+  <!-- /input_vel/unsafe -> /input_vel/safe -->
+  <node name="safe_input_vel" pkg="safe_teleop_base" type="safe_teleop_base"
+        machine="$(arg machine)" >
+    <remap from="/odom" to="/odom_teleop"/>
+    <remap from="base_velocity" to="/input_vel/unsafe" />
+    <remap from="~safe_vel"     to="/input_vel/safe" />
+  </node>
+
+  <!-- vel type mux: (/teleop/cmd_vel & /navigation/cmd_vel & /input_vel/safe) -> /base_controller/command_unchecked -->
+  <node pkg="jsk_robot_startup" type="mux_selector.py" name="vel_type_selector"
+        respawn="true" output="screen" machine="$(arg machine)"
+	    args="/joy 'm.buttons[10]==1' /teleop/cmd_vel /navigation/cmd_vel 'True' /navigation/cmd_vel">
+    <remap from="mux" to="vel_type_mux" />
+    <param name="default_select" value="/input_vel/safe"/>
+  </node>
+  <!-- vel type mux with PS3 L1 button -->
+  <node pkg="topic_tools" type="mux" name="vel_type_mux"
+        respawn="true" machine="$(arg machine)"
+	    args="/base_controller/command_unchecked /input_vel/safe /navigation/cmd_vel /teleop/cmd_vel">
+    <remap from="mux" to="vel_type_mux" />
+  </node>
+
+</launch>
