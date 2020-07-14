@@ -11,6 +11,12 @@
        doc="launch roswww server if true"/>
   <arg name="roswww_port" default="8000"
        doc="port number for roswww server"/>
+  <arg name="basic" default="false"
+       doc="enable basic authentication" />
+  <arg name="basic_yaml" default="/var/lib/robot/roswww_basic_keys.yaml"
+       doc="basic yaml file path" />
+  <arg name="basic_flag" value="--basic $(arg basic) --basic-yaml $(arg basic_yaml)" if="$(arg basic)" />
+  <arg name="basic_flag" value="" unless="$(arg basic)" />
 
   <arg name="remote" default="false"
        doc="set true with valid 'machine' argument"/>
@@ -43,7 +49,7 @@
   <node if="$(arg launch_roswww)"
         name="roswww" pkg="roswww" type="webserver.py"
         output="screen" machine="$(arg machine)" respawn="$(arg respawn)"
-        args="--name roswww --webpath www --cached true
+        args="--name roswww --webpath www --cached true $(arg basic_flag)
               --port $(arg roswww_port) --start_port $(arg roswww_port) --end_port $(arg roswww_port)"/>
 
   <!--
