@@ -31,13 +31,15 @@
 
   <!-- Mux cmd_vel topics -->
   <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" >
-    <arg name="odom_topic" value="/odom_combined"/>
-    <arg name="navigation_topic" value="/cmd_vel"/>
+    <arg name="odom_topic" value="/odom_teleop" />
+    <arg name="teleop_topic" value="/teleop/cmd_vel/unsafe" />
+    <arg name="navigation_topic" value="/navigation/cmd_vel" />
+    <arg name="input_topic" value="/input_vel/unsafe" />
   </include>
   <!-- Relay topic names according to system diagram -->
   <node name="relay_odom"
         pkg="topic_tools" type="relay"
-        args="/odom /odom_teleop" />
+        args="/odom_combined /odom_teleop" />
   <node name="relay_navigation_cmd_vel"
         pkg="topic_tools" type="relay"
         args="/cmd_vel /navigation/cmd_vel" />
