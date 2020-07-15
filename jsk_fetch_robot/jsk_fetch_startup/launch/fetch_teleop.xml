@@ -1,5 +1,4 @@
 <launch>
-  <machine name="localhost" address="localhost" />
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
@@ -31,7 +30,17 @@
   </node>
 
   <!-- Mux cmd_vel topics -->
-  <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" />
+  <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" >
+    <arg name="odom_topic" value="/odom_combined"/>
+    <arg name="navigation_topic" value="/cmd_vel"/>
+  </include>
+  <!-- Relay topic names according to system diagram -->
+  <node name="relay_odom"
+        pkg="topic_tools" type="relay"
+        args="/odom /odom_teleop" />
+  <node name="relay_navigation_cmd_vel"
+        pkg="topic_tools" type="relay"
+        args="/cmd_vel /navigation/cmd_vel" />
   <group ns="safe_teleop_base">
     <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
@@ -64,13 +73,6 @@
       footprint_padding: 0.05
     </rosparam>
   </group>
-  <!-- Relay topic names for safe_teleop.launch -->
-  <node name="relay_odom"
-        pkg="topic_tools" type="relay"
-        args="/odom /odom_teleop" />
-  <node name="relay_navigation_cmd_vel"
-        pkg="topic_tools" type="relay"
-        args="/cmd_vel /navigation/cmd_vel" />
 
   <!-- Do not publish /base_controller/command if fetch is docking -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
