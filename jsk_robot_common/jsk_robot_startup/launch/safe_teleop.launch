@@ -27,6 +27,7 @@
 	args="/joy 'm.buttons[9]==1' $(arg teleop_topic) /joy 'm.buttons[9]==0' /teleop/cmd_vel/safe">
     <remap from="mux" to="unsafe_vel_mux" />
     <param name="default_select" value="/teleop/cmd_vel/safe" />
+    <param name="wait" value="true" />
   </node>
 
   <!-- $(arg input_topic) -> /input_vel/safe -->
@@ -43,6 +44,7 @@
 	    args="/joy 'm.buttons[10]==1' /teleop/cmd_vel $(arg navigation_topic) 'True' $(arg navigation_topic)">
     <remap from="mux" to="vel_type_mux" />
     <param name="default_select" value="/input_vel/safe"/>
+    <param name="wait" value="true" />
   </node>
   <!-- vel type mux with PS3 L1 button -->
   <node pkg="topic_tools" type="mux" name="vel_type_mux"
