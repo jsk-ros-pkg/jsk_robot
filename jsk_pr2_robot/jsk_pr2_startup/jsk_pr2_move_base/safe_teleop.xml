@@ -22,8 +22,10 @@
   <!-- Mux cmd_vel topics -->
   <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch">
     <arg name="machine" value="c2" />
-    <arg name="odom_topic" value="/base_odometry/odom" />
-    <arg name="teleop_topic" value="/teleop/joy_vel" />
+    <arg name="odom_topic" value="/odom_teleop" />
+    <arg name="teleop_topic" value="/teleop/cmd_vel/unsafe" />
+    <arg name="navigation_topic" value="/navigation/cmd_vel" />
+    <arg name="input_topic" value="/input_vel/unsafe" />
   </include>
   <!-- Relay topic names according to system diagram -->
   <node name="relay_odom"
