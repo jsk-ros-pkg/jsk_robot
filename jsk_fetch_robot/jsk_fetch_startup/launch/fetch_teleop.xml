@@ -33,7 +33,6 @@
     <arg name="joy_topic" value="/joy_vel"/>
     <arg name="navigation_topic" value="/navigation/cmd_vel"/>
     <arg name="input_topic" value="/input_vel"/>
-    <arg name="base_trajectory_action" value="false"/>
   </include>
   <!-- Relay topic names according to system diagram -->
   <node name="relay_odom"
@@ -58,6 +57,13 @@
       footprint_padding: 0.05
     </rosparam>
   </group>
+  <rosparam ns="vel_type_selector">
+    topics:
+      - name: /base_controller/cmd_vel
+        type: geometry_msgs/Twist
+      - name: /navigation/cmd_vel
+        type: geometry_msgs/Twist
+  </rosparam>
 
   <!-- Do not publish /base_controller/command if fetch is docking -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
