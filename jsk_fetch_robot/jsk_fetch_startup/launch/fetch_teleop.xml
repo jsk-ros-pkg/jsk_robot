@@ -57,13 +57,6 @@
       footprint_padding: 0.05
     </rosparam>
   </group>
-  <rosparam ns="vel_type_selector">
-    topics:
-      - name: /base_controller/cmd_vel
-        type: geometry_msgs/Twist
-      - name: /navigation/cmd_vel
-        type: geometry_msgs/Twist
-  </rosparam>
 
   <!-- Do not publish /base_controller/command if fetch is docking -->
   <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
