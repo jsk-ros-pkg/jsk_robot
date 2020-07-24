@@ -22,10 +22,11 @@
   <!-- Mux cmd_vel topics -->
   <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch">
     <arg name="machine" value="c2" />
-    <arg name="odom_topic" value="/odom_teleop"/>
-    <arg name="teleop_topic" value="/teleop/cmd_vel/unsafe"/>
-    <arg name="navigation_topic" value="/navigation/cmd_vel"/>
-    <arg name="input_topic" value="/input_vel/unsafe"/>
+    <arg name="odom_topic" value="/odom_teleop" />
+    <arg name="teleop_topic" value="/joy_vel" />
+    <arg name="navigation_topic" value="/navigation/cmd_vel" />
+    <arg name="input_topic" value="/input_vel" />
+    <arg name="base_controller_topic" value="/base_controller/cmd_vel" />
   </include>
   <!-- Relay topic names according to system diagram -->
   <node name="relay_odom"
@@ -33,13 +34,8 @@
         args="/base_odometry/odom /odom_teleop" />
   <node name="relay_teleop_cmd_vel"
         pkg="topic_tools" type="relay"
-        args="/teleop/joy_vel /teleop/cmd_vel/unsafe" />
+        args="/teleop/joy_vel /joy_vel" />
   <group ns="safe_teleop_base">
-    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop_pr2_params.yaml" command="load" ns="local_costmap"/>
-  </group>
-  <group ns="safe_input_vel">
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop_pr2_params.yaml" command="load" ns="local_costmap"/>
