@@ -12,11 +12,15 @@ The first one is the topic to be monitored.
 When a message from this topic is received, it is assigned as a variable `m`.
 If a condition specified as the second argument,
 this node calls a service to select the topic specified as the third argument.
+
+If the type of the monitored topic is unknown, you can set the type with `~topics` rosparam.
+`~topics` should be the list like (topic1_name, topic1_type, topic2_name, topic2_type, ...)
 """
 
 import rospy
 import thread
 import sys
+import roslib.message
 import rostopic
 from topic_tools.srv import MuxSelect
 import traceback
@@ -47,8 +51,13 @@ def gen_callback(expr, select, index):
 
 
 def add_trigger(topic, expr, select, index):
-    topic_type, _, _ = rostopic.get_topic_type(topic)
-    topic_class, _, _ = rostopic.get_topic_class(topic)
+    global topics
+    if topic in topics:
+        topic_type = topics[topic]
+        topic_class = roslib.message.get_message_class(topic_type)
+    else:
+        topic_type, _, _ = rostopic.get_topic_type(topic)
+        topic_class, _, _ = rostopic.get_topic_class(topic)
 
     if(topic_type is None):
         rospy.loginfo('%s is not published yet', topic)
@@ -80,11 +89,12 @@ def update_trigger(conditions):
 
 
 if __name__ == "__main__":
-    global selects, subs
+    global selects, subs, topics
     global lockobj
     lockobj = thread.allocate_lock()
     selects = []
     subs = []
+    topics = {}
 
     # parse arguments
     conditions = [x for x in sys.argv[1:] if not ':=' in x]
@@ -109,6 +119,14 @@ if __name__ == "__main__":
     size = len(conditions)
     selects = [(None, rospy.Time(0))] * size
     subs = [None] * size
+
+    topic_list = rospy.get_param('~topics', [])
+    if len(topic_list) % 2 != 0:
+        rospy.logerr("'~topics' param must be (topic_name topic_type)...")
+        exit(0)
+    for i, topic in enumerate(topic_list):
+        if i % 2 == 0:
+            topics[topic_list[i]] = topic_list[i+1]
 
     # loop
     try:
