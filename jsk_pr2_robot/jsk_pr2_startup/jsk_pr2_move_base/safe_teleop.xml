@@ -15,7 +15,7 @@
     <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
     <param name="goal_threshold" value="10.0" /> <!-- ignore goal error -->
     <param name="stopped_velocity_tolerance" value="0.35" /> <!-- ignore goal stopped velocity tolerance -->
-    <remap from="command" to="/navigation/cmd_vel"/>
+    <remap from="command" to="/base_controller/cmd_vel"/>
     <remap from="odom" to="/base_odometry/odom"/>
   </node>
 
