@@ -6,6 +6,7 @@
   <arg name="joy_topic" default="/joy_vel" />
   <arg name="navigation_topic" default="/navigation/cmd_vel" />
   <arg name="input_topic" default="/input_vel" />
+  <arg name="base_controller_topic" default="/base_controller/cmd_vel" />
 
   <!-- input mux: ($(arg joy_topic) & $(arg input_topic)) -> /teleop/cmd_vel/unsafe -->
   <node name="input_vel_mux" pkg="topic_tools" type="mux"
@@ -45,16 +46,16 @@
     <param name="wait" value="true" />
   </node>
 
-  <!-- vel type mux: (/teleop/cmd_vel & $(arg navigation_topic) & /base_controller/cmd_vel) -> /base_controller/command_unchecked -->
+  <!-- vel type mux: (/teleop/cmd_vel & $(arg navigation_topic) & $(arg base_controller_topic)) -> /base_controller/command_unchecked -->
   <node pkg="topic_tools" type="mux" name="vel_type_mux"
         respawn="true" machine="$(arg machine)"
-        args="/base_controller/command_unchecked /teleop/cmd_vel $(arg navigation_topic) /base_controller/cmd_vel">
+        args="/base_controller/command_unchecked /teleop/cmd_vel $(arg navigation_topic) $(arg base_controller_topic)">
     <remap from="mux" to="vel_type_mux" />
   </node>
   <!-- vel type mux with PS3 L1 button -->
   <node pkg="jsk_robot_startup" type="mux_selector.py" name="vel_type_selector"
         respawn="true" output="screen" machine="$(arg machine)"
-        args="/teleop/cmd_vel 'True' /teleop/cmd_vel $(arg navigation_topic) 'True' $(arg navigation_topic) /base_controller/cmd_vel 'True' /base_controller/cmd_vel">
+        args="/teleop/cmd_vel 'True' /teleop/cmd_vel $(arg navigation_topic) 'True' $(arg navigation_topic) $(arg base_controller_topic) 'True' $(arg base_controller_topic)">
     <remap from="mux" to="vel_type_mux" />
     <param name="default_select" value="/teleop/cmd_vel"/>
     <param name="wait" value="true" />
