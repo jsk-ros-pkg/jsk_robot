@@ -21,7 +21,7 @@
        joystick_teleop need to publish /teleop/cmd_vel/unsafe ,
        see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
-    <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
+    <remap from="teleop/cmd_vel" to="/joy_vel" />
     <remap from="/odom" to="$(arg odom_topic)" />
     <param name="arm/button_arm_linear" value="4"/>
     <param name="arm/button_arm_angular" value="6"/>
@@ -31,10 +31,11 @@
 
   <!-- Mux cmd_vel topics -->
   <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" >
-    <arg name="odom_topic" value="/odom_teleop" />
-    <arg name="teleop_topic" value="/teleop/cmd_vel/unsafe" />
-    <arg name="navigation_topic" value="/navigation/cmd_vel" />
-    <arg name="input_topic" value="/input_vel/unsafe" />
+    <arg name="odom_topic" value="/odom_teleop"/>
+    <arg name="joy_topic" value="/joy_vel"/>
+    <arg name="navigation_topic" value="/navigation/cmd_vel"/>
+    <arg name="input_topic" value="/input_vel"/>
+    <arg name="base_trajectory_action" value="false"/>
   </include>
   <!-- Relay topic names according to system diagram -->
   <node name="relay_odom"
@@ -44,22 +45,6 @@
         pkg="topic_tools" type="relay"
         args="/cmd_vel /navigation/cmd_vel" />
   <group ns="safe_teleop_base">
-    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
-    <rosparam ns="local_costmap">
-      inflater:
-        inflation_radius: 1.0 # 0.7
-        cost_scaling_factor: 3.0 # 25.0 default 10, increasing factor decrease the cost value
-      obstacles:
-        min_obstacle_height: 0.05
-      # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
-      update_frequency: 10.0
-      footprint_padding: 0.05
-    </rosparam>
-  </group>
-  <group ns="safe_input_vel">
     <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
