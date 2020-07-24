@@ -59,9 +59,13 @@
     <remap from="mux" to="vel_type_mux" />
     <param name="default_select" value="/teleop/cmd_vel"/>
     <param name="wait" value="true" />
-    <rosparam>
+    <rosparam subst_value="true">
       topics:
         - name: /teleop/cmd_vel
+          type: geometry_msgs/Twist
+        - name: $(arg navigation_topic)
+          type: geometry_msgs/Twist
+        - name: $(arg base_controller_topic)
           type: geometry_msgs/Twist
     </rosparam>
   </node>
