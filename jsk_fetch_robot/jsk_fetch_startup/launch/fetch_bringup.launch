@@ -181,25 +181,23 @@
                        false, false, false]
         odom0_nodelay: true
         odom0_differential: true
-        imu0: /imu_corrected
-        imu0_config: [false, false, false,
-                      false, false, true,
-                      false, false, false,
-                      false, false, true,
-                      true, false, false]
-        imu0_nodelay: true
-        imu0_differential: true
-        imu0_remove_gravitational_acceleration: false
       </rosparam>
     </node>
 
     <rosparam ns="amcl">
-      update_min_a: 0.05 <!-- update filter every 0.05 [m] translation -->
-      update_min_d: 0.1  <!-- update filter every 0.1 [rad] rotation -->
-      odom_alpha1: 0.2  # rotation noise per rotation
-      odom_alpha2: 0.2  # rotation noise per translation
-      odom_alpha3: 0.2  # translation noise per translation
-      odom_alpha4: 0.2  # translation noise per rotation
+      kld_err: 0.1
+      kld_z: 0.5
+      update_min_a: 0.05 # update filter every 0.05 [m] translation
+      update_min_d: 0.1  # update filter every 0.1 [rad] rotation
+      resample_interval: 1
+      laser_z_hit: 0.9
+      laser_z_rand: 0.5
+      laser_sigma_hit: 0.1
+      laser_likelihood_max_dist: 4.0
+      odom_alpha1: 0.1   # rotation noise per rotation
+      odom_alpha2: 0.05  # rotation noise per translation
+      odom_alpha3: 0.05  # translation noise per translation
+      odom_alpha4: 0.1   # translation noise per rotation
     </rosparam>
 
     <rosparam ns="move_base">
@@ -213,16 +211,17 @@
       obstacles:
         min_obstacle_height: 0.05
       footprint_padding: 0.05
+      update_frequency: 2.0
     </rosparam>
     <rosparam ns="move_base/local_costmap">
       inflater:
-        inflation_radius: 0.5 # 0.7
+        inflation_radius: 0.7 # 0.7
         cost_scaling_factor: 5.0 # 25.0 default 10, increasing factor decrease the cost value
       obstacles:
         min_obstacle_height: 0.05
       # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
-      update_frequency: 10.0
       footprint_padding: 0.05
+      update_frequency: 5.0
     </rosparam>
     <rosparam ns="move_base">
       base_local_planner: base_local_planner/TrajectoryPlannerROS
@@ -241,7 +240,7 @@
         meter_scoring: true
         pdist_scale: 32.0
         gdist_scale: 20.0
-        occdist_scale: 0.02
+        occdist_scale: 0.05
         dwa: true
       recovery_behavior_enabled: true
       recovery_behaviors:
