@@ -60,7 +60,7 @@ plugins:
         - go_to_kitchen_head_camera.avi
         # - go_to_kitchen_object_detection.avi
         - go_to_kitchen_rosbag.bag
-      upload_parents_path: fetch_morning_go_to_kitchen
+      upload_parents_path: fetch_go_to_kitchen
       upload_server_name: /gdrive_server
   - name: speech_notifier_plugin
     type: app_notifier/speech_notifier_plugin
