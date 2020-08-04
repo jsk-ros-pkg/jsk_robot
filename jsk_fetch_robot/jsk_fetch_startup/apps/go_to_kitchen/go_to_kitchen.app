@@ -11,13 +11,13 @@ plugins:
       video_title: go_to_kitchen_head_camera.avi
       video_topic_name: /head_camera/rgb/throttled/image_rect_color
       video_fps: 5.0
-  - name: object_detection_video_recorder_plugin
-    type: app_recorder/video_recorder_plugin
-    launch_args:
-      video_path: /tmp
-      video_title: go_to_kitchen_object_detection.avi
-      video_topic_name: /edgetpu_object_detector/output/image
-      video_fps: 15.0
+  # - name: object_detection_video_recorder_plugin
+  #   type: app_recorder/video_recorder_plugin
+  #   launch_args:
+  #     video_path: /tmp
+  #     video_title: go_to_kitchen_object_detection.avi
+  #     video_topic_name: /edgetpu_object_detector/output/image
+  #     video_fps: 15.0
   - name: rosbag_recorder_plugin
     type: app_recorder/rosbag_recorder_plugin
     launch_args:
@@ -54,11 +54,11 @@ plugins:
     plugin_args:
       upload_file_paths:
         - /tmp/go_to_kitchen_head_camera.avi
-        - /tmp/go_to_kitchen_object_detection.avi
+        # - /tmp/go_to_kitchen_object_detection.avi
         - /tmp/go_to_kitchen_rosbag.bag
       upload_file_titles:
         - go_to_kitchen_head_camera.avi
-        - go_to_kitchen_object_detection.avi
+        # - go_to_kitchen_object_detection.avi
         - go_to_kitchen_rosbag.bag
       upload_parents_path: fetch_morning_go_to_kitchen
       upload_server_name: /gdrive_server
@@ -75,14 +75,14 @@ plugins:
 plugin_order:
   start_plugin_order:
     - head_camera_video_recorder_plugin
-    - object_detection_video_recorder_plugin
+    # - object_detection_video_recorder_plugin
     - rosbag_recorder_plugin
     - gdrive_uploader_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
   stop_plugin_order:
     - head_camera_video_recorder_plugin
-    - object_detection_video_recorder_plugin
+    # - object_detection_video_recorder_plugin
     - rosbag_recorder_plugin
     - gdrive_uploader_plugin
     - speech_notifier_plugin
