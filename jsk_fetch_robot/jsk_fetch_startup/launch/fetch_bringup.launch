@@ -158,7 +158,7 @@
     <!-- slam for build a map -->
     <node pkg="slam_karto" type="slam_karto" name="slam_karto"
           output="screen" if="$(arg use_build_map)" >
-      <remap from="scam" to="base_scan"/>
+      <remap from="scan" to="base_scan"/>
     </node>
 
     <!-- robot localization ukf -->
