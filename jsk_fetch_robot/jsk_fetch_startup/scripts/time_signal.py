@@ -22,9 +22,8 @@ class TimeSignal(object):
         self.day = self.now_time.strftime('%a')
         reload(sys)
         sys.setdefaultencoding('utf-8')
-        self.citycode = '130010'  # 130010 is tokyo. See http://weather.livedoor.com/forecast/rss/primary_area.xml
-        self.resp = json.loads(
-            urllib2.urlopen('http://weather.livedoor.com/forecast/webservice/json/v1?city=%s'%self.citycode).read())
+        # 130010 is tokyo. See http://weather.livedoor.com/forecast/rss/primary_area.xml  ## NOQA
+        self.citycode = '130010'
 
     def speak(self, client, speech_text, lang=None):
         client.wait_for_server(timeout=rospy.Duration(1.0))
@@ -61,10 +60,10 @@ class TimeSignal(object):
 
         # weather forecast
         if self.now_hour == 0 or self.now_hour == 19:
-            speech_text += '今日の天気は' + self.resp['forecasts'][0]['telop'] + 'です。'
-
+            url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city={}'.format(self.citycode)  # NOQA
+            resp = json.loads(urllib2.urlopen(url))
+            speech_text += '今日の天気は' + resp['forecasts'][0]['telop'] + 'です。'
         self.speak(self.client_jp, speech_text, lang='jp')
-
 
     def speak_en(self):
         speech_text = self._get_text(self.now_hour)
