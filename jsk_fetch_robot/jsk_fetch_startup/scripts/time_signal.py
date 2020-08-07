@@ -3,12 +3,13 @@
 
 import actionlib
 from datetime import datetime
-from sound_play.msg import SoundRequestAction
-from sound_play.msg import SoundRequestGoal
 import json
 import rospy
 import sys
 import urllib2
+
+from sound_play.msg import SoundRequestAction
+from sound_play.msg import SoundRequestGoal
 
 
 class TimeSignal(object):
