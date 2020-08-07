@@ -75,17 +75,17 @@ class TimeSignal(object):
         self.speak(self.client_en, speech_text)
 
     def _get_text(self, hour):
-       if hour == 0:
-          text = 'midnight'
-       elif hour == 12:
-          text = 'noon'
-       else:
-          if hour > 12:
-              text = str(hour % 12) + ' PM'
-          else:
-              text = str(hour % 12) + ' AM'
-       text = "It's " + text + "."
-       return text 
+        if hour == 0:
+            text = 'midnight'
+        elif hour == 12:
+            text = 'noon'
+        else:
+            if hour > 12:
+                text = str(hour % 12) + ' PM'
+            else:
+                text = str(hour % 12) + ' AM'
+        text = "It's " + text + ""
+        return text
 
 
 if __name__ == '__main__':
