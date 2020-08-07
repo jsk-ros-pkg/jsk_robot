@@ -23,8 +23,10 @@ class TimeSignal(object):
         self.day = self.now_time.strftime('%a')
         reload(sys)
         sys.setdefaultencoding('utf-8')
-        # 130010 is tokyo. See http://weather.livedoor.com/forecast/rss/primary_area.xml  ## NOQA
-        self.citycode = '130010'
+        api_key_file = rospy.get_param(
+            '~api_key_file', '/var/lib/robot/openweathermap_api_key.txt')
+        with open(api_key_file, 'r') as f:
+            self.appid = f.read().split('\n')[0]
 
     def speak(self, client, speech_text, lang=None):
         client.wait_for_server(timeout=rospy.Duration(1.0))
@@ -60,10 +62,13 @@ class TimeSignal(object):
             speech_text += '掃除の時間です。'
 
         # weather forecast
-        if self.now_hour == 0 or self.now_hour == 19:
-            url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city={}'.format(self.citycode)  # NOQA
-            resp = json.loads(urllib2.urlopen(url))
-            speech_text += '今日の天気は' + resp['forecasts'][0]['telop'] + 'です。'
+        if self.now_hour in [0, 7, 12, 19]:
+            try:
+                forecast_text = self._get_weather_forecast(lang='ja')
+                speech_text += forecast_text
+            except Exception as e:
+                rospy.logerr(e)
+        rospy.logdebug(speech_text)
         self.speak(self.client_jp, speech_text, lang='jp')
 
     def speak_en(self):
@@ -73,6 +78,17 @@ class TimeSignal(object):
             speech_text += " Let's go home."
         if self.now_hour == 12:
             speech_text += " Let's go to lunch."
+        if self.now_hour == 19:
+            speech_text += " Let's go to dinner."
+
+        # weather forecast
+        if self.now_hour in [0, 7, 12, 19]:
+            try:
+                forecast_text = self._get_weather_forecast(lang='en')
+                speech_text += forecast_text
+            except Exception as e:
+                rospy.logerr(e)
+        rospy.logdebug(speech_text)
         self.speak(self.client_en, speech_text)
 
     def _get_text(self, hour):
@@ -82,11 +98,31 @@ class TimeSignal(object):
             text = 'noon'
         else:
             if hour > 12:
-                text = str(hour % 12) + ' PM'
+                text = str(hour % 12) + ' P.M.'
             else:
-                text = str(hour % 12) + ' AM'
-        text = "It's " + text + ""
+                text = str(hour % 12) + ' A.M.'
+        text = "It's " + text + "."
         return text
+
+    def _get_weather_forecast(self, lang='en'):
+        url = 'http://api.openweathermap.org/data/2.5/weather?q=tokyo&lang={}&units=metric&appid={}'.format(lang, self.appid)  # NOQA
+        resp = json.loads(urllib2.urlopen(url).read())
+        weather = resp['weather'][0]['description']
+        temp = resp['main']['temp']
+        humidity = resp['main']['humidity']
+        wind_speed = resp['wind']['speed']
+        forecast_text = ""
+        if lang == 'ja':
+            forecast_text = "現在、天気は" + weather + "、"
+            forecast_text += "気温は{}度、".format(temp)
+            forecast_text += "湿度は{}%です。".format(humidity)
+            forecast_text += "風速は{}メートル秒です。".format(wind_speed)
+        else:
+            forecast_text = " The weather is " + weather + " now."
+            forecast_text += " The temperature is {} celsius,".format(temp)
+            forecast_text += " and the humidity is {}%.".format(humidity)
+            forecast_text += " The wind speed is {} meter per second.".format(wind_speed)
+        return forecast_text
 
 
 if __name__ == '__main__':
