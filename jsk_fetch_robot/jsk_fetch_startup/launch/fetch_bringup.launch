@@ -226,7 +226,7 @@
     <rosparam ns="move_base">
       base_local_planner: base_local_planner/TrajectoryPlannerROS
       TrajectoryPlannerROS:
-        yaw_goal_tolerance: 0.2
+        yaw_goal_tolerance: 0.1
         xy_goal_tolerance: 0.17
         max_vel_x: 0.5
         min_vel_x: 0.1
