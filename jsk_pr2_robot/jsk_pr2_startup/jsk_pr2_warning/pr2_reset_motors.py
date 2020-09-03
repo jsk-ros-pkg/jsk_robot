@@ -35,6 +35,8 @@ class PR2ResetMotorsNode(object):
         halted = msg.data
         rospy.logdebug("runstop: %s, halted: %s" % (self.run_stop, halted))
         if self.run_stop and halted:
+            rospy.logwarn("motor halted, but run stop is true")
+            rospy.logwarn("resetting motors")
             stamp = rospy.Time.now()
             history = filter(
                 lambda s: (stamp-s).to_sec() < self.watch_duration,
