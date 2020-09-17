@@ -220,12 +220,15 @@
     <arg name="use_applist" value="false"/> <!-- use plugin -->
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
     <arg name="respawn" value="false"/>
+    <arg name="machine" value="c2" />
+    <arg name="remote" value="true" />
   </include>
 
   <!-- rwt_image_view -->
   <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch">
     <arg name="launch_roswww" value="false" />
     <arg name="launch_websocket" value="false" />
+    <arg name="machine" value="c2" />
   </include>
 
   <!-- mannequin mode -->
