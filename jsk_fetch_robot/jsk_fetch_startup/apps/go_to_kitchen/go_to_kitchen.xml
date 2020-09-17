@@ -1,4 +1,16 @@
 <launch>
   <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true" output="screen"
         args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l" />
+
+  <node name="edgetpu_object_detector_visualization" pkg="jsk_perception"
+        type="draw_rects" output="screen" respawn="true">
+    <remap from="~input" to="/head_camera/rgb/throttled/image_rect_color" />
+    <remap from="~input/rects" to="/edgetpu_object_detector/output/rects" />
+    <remap from="~input/class" to="/edgetpu_object_detector/output/class" />
+    <rosparam>
+      approximate_sync: true
+      queue_size: 100
+      use_classification_result: true
+    </rosparam>
+  </node>
 </launch>
