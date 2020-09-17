@@ -19,6 +19,13 @@ plugins:
       video_title: go_to_kitchen_object_detection.avi
       video_topic_name: /edgetpu_object_detector_visualization/output
       video_fps: 5.0
+  - name: respeaker_audio_recorder_plugin
+    type: app_recorder/audio_recorder_plugin
+    launch_args:
+      audio_path: /tmp
+      audio_title: go_to_kitchen_audio.wav
+      audio_topic_name: /audio
+      audio_format: wave
   - name: rosbag_recorder_plugin
     type: app_recorder/rosbag_recorder_plugin
     launch_args:
@@ -56,10 +63,12 @@ plugins:
       upload_file_paths:
         - /tmp/go_to_kitchen_head_camera.avi
         - /tmp/go_to_kitchen_object_detection.avi
+        - /tmp/go_to_kitchen_audio.wav
         - /tmp/go_to_kitchen_rosbag.bag
       upload_file_titles:
         - go_to_kitchen_head_camera.avi
         - go_to_kitchen_object_detection.avi
+        - go_to_kitchen_audio.wav
         - go_to_kitchen_rosbag.bag
       upload_parents_path: fetch_go_to_kitchen
       upload_server_name: /gdrive_server
@@ -77,6 +86,7 @@ plugin_order:
   start_plugin_order:
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
+    - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - gdrive_uploader_plugin
     - speech_notifier_plugin
@@ -84,6 +94,7 @@ plugin_order:
   stop_plugin_order:
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
+    - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - gdrive_uploader_plugin
     - speech_notifier_plugin
