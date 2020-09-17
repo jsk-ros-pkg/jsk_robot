@@ -11,13 +11,14 @@ plugins:
       video_title: go_to_kitchen_head_camera.avi
       video_topic_name: /head_camera/rgb/throttled/image_rect_color
       video_fps: 5.0
-  # - name: object_detection_video_recorder_plugin
-  #   type: app_recorder/video_recorder_plugin
-  #   launch_args:
-  #     video_path: /tmp
-  #     video_title: go_to_kitchen_object_detection.avi
-  #     video_topic_name: /edgetpu_object_detector/output/image
-  #     video_fps: 15.0
+      video_codec: XVID
+#   - name: object_detection_video_recorder_plugin
+#     type: app_recorder/video_recorder_plugin
+#     launch_args:
+#       video_path: /tmp
+#       video_title: go_to_kitchen_object_detection.avi
+#       video_topic_name: /edgetpu_object_detector/output/image
+#       video_fps: 15.0
   - name: rosbag_recorder_plugin
     type: app_recorder/rosbag_recorder_plugin
     launch_args:
