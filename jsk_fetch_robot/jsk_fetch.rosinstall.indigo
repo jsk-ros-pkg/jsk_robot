@@ -4,23 +4,25 @@
 - git:
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
-    version: 1.1.0
-# serious bug in 1.12.21
-# need to build from source because of nodelet version
+    version: kinetic-devel
 - git:
-    local-name: ros-perception/image_pipeline
-    uri: https://github.com/ros-perception/image_pipeline.git
-    version: 1.12.23
-# To send lifelog data to musca
+    local-name: RobotWebTools/rosbridge_suite
+    uri: https://github.com/RobotWebTools/rosbridge_suite.git
+    version: 0.11.9
 - git:
-    local-name: strands-project/mongodb_store
-    uri: https://github.com/strands-project/mongodb_store.git
-    version: 0.4.4
-# to install jsk_robot_startup/lifelog/common_logger.launch
-# remove after current master is released
+    local-name: RoboticMaterials/FA-I-sensor
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
 - git:
-    local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: indigo-devel
+- git:
+    local-name: fetchrobotics/robot_controllers
+    uri: https://github.com/fetchrobotics/robot_controllers.git
+    version: knorth55/fetch15
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: master
 # to pass build of jsk_robot
 # remove after 2.2.11 is released
@@ -114,7 +116,6 @@
     local-name: ros/common_msgs/visualization_msgs
     uri: https://github.com/ros-gbp/common_msgs-release/archive/release/kinetic/visualization_msgs/1.12.7-0.tar.gz
     version: common_msgs-release-release-kinetic-visualization_msgs-1.12.7-0
-# catkin_virtualenv is required in jsk_3rdparty
 - git:
     local-name: locusrobotics/catkin_virtualenv
     uri: https://github.com/locusrobotics/catkin_virtualenv.git
