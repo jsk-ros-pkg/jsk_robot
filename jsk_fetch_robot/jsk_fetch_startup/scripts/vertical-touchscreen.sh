@@ -1,7 +1,8 @@
 # Set monitor orientation to vertical.
 # MONITOR is HDMI2 because fetch has only one external HDMI port
 # You can list up monitor names by 'xrandr'
-MONITOR="HDMI2"
+# MONITOR="HDMI2"
+MONITOR=$(xrandr | grep " connected" | cut -d' ' -f1)
 xrandr --output $MONITOR --rotate right # right rotation
 # xrandr --output $MONITOR --rotate normal # reset to normal
 
