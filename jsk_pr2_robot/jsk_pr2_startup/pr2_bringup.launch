@@ -134,7 +134,7 @@
   </node>
 
   <!-- Virtual force -->
-  <include file="$(find virtual_force_publisher)/launch/virtual_force_publisher.launch" />
+  <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
 
   <!-- Runtime Diagnostics and Motor Trace Logging -->
   <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
