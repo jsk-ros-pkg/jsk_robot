@@ -133,6 +133,30 @@
     <remap from="sound_play" to="robotsound" />
   </node>
 
+  <!-- Virtual force -->
+  <arg name="publish_frequency" default="50.0"/>
+  <arg name="time_constant" default="0.3"/>
+  <arg name="root" default="torso_lift_link"/>
+  <arg name="input" default="joint_states"/>
+  <group ns="right_endeffector">
+    <node pkg="virtual_force_publisher" type="virtual_force_publisher" name="virtual_force_publisher">
+      <remap from="joint_states" to="/$(arg input)"/>
+      <param name="publish_frequency" value="$(arg publish_frequency)"/>
+      <param name="time_constant" value="$(arg time_constant)"/>
+      <param name="root" value="$(arg root)"/>
+      <param name="tip" value="r_gripper_tool_frame"/>
+    </node>
+  </group>
+  <group ns="left_endeffector">
+    <node pkg="virtual_force_publisher" type="virtual_force_publisher" name="virtual_force_publisher">
+      <remap from="joint_states" to="/$(arg input)"/>
+      <param name="publish_frequency" value="$(arg publish_frequency)"/>
+      <param name="time_constant" value="$(arg time_constant)"/>
+      <param name="root" value="$(arg root)"/>
+      <param name="tip" value="l_gripper_tool_frame"/>
+    </node>
+  </group>
+
   <!-- Runtime Diagnostics and Motor Trace Logging -->
   <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
 	args="-o /hwlog/pr2_diagnostics --split --size=200 --bz2 /diagnostics -e '/motor_trace/.*'"
