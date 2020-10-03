@@ -128,6 +128,18 @@
          - robotsound_jp
     </rosparam>
   </group>
+  <!-- select mux for selecting speech_to_text service -->
+  <!-- the mux node is in jsk_3rdparty/dialogflow_task_executive -->
+  <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive -->
+  <node name="speech_to_text_selector" pkg="jsk_robot_startup" type="mux_selector.py"
+        respawn="true"
+        args="/network/connected 'm.data==False' /speech_to_text_julius">
+    <remap from="mux" to="speech_to_text_mux" />
+    <rosparam>
+      default_select: speech_to_text_google
+      patient: 6
+    </rosparam>
+  </node>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
