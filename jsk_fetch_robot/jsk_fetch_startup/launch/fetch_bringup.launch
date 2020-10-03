@@ -94,6 +94,13 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" />
 
+  <!-- network detector -->
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector">
+    <rosparam>
+      interface_name: wlan0
+    </rosparam>
+  </node>
+
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
         args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
