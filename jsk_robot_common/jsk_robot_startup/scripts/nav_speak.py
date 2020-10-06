@@ -6,6 +6,7 @@ import time
 
 import actionlib
 from actionlib_msgs.msg import GoalStatus
+from actionlib_msgs.msg import GoalStatusArray
 from move_base_msgs.msg import MoveBaseActionGoal
 from move_base_msgs.msg import MoveBaseActionResult
 from sound_play.libsoundplay import SoundClient
@@ -34,17 +35,24 @@ class NavSpeak(object):
         self.move_base_result_sub = rospy.Subscriber(
             "/move_base/result", MoveBaseActionResult,
             self.move_base_result_callback, queue_size=1)
+        self.robotsound_jp_status_sub = rospy.Subscriber(
+            "/robotsound_jp/status", GoalStatusArray,
+            self.robotsound_jp_status_callback, queue_size=1)
         self.sound = SoundClient()
         self.lang = "japanese"  # speak japanese by default
         if rospy.has_param("/nav_speak/lang"):
             self.lang = rospy.get_param("/nav_speak/lang")
         self.client = actionlib.SimpleActionClient('robotsound_jp', SoundRequestAction)
         self.client.wait_for_server()
+        self.is_speaking = False
 
     def move_base_goal_callback(self, msg):
         self.sound.play(2)
 
     def move_base_result_callback(self, msg):
+        # Wait if other node is speaking
+        while self.is_speaking is True:
+            time.sleep(1)
         text = "{}: {}".format(goal_status(msg.status.status), msg.status.text)
         rospy.loginfo(text)
         if self.lang == "japanese":  # speak japanese
@@ -82,6 +90,12 @@ class NavSpeak(object):
             self.sound.play(4)
             time.sleep(1)
             self.sound.say(text)
+
+    def robotsound_jp_status_callback(self, msg):
+        if len(msg.status_list) == 0:
+            self.is_speaking = False
+        else:
+            self.is_speaking = True
 
 if __name__ == "__main__":
     rospy.init_node("nav_speak")
