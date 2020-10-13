@@ -60,4 +60,7 @@
     <arg name="applist" value="$(arg applist)"/>
     <arg name="respawn" value="$(arg respawn)"/>
   </include>
+  <rosparam ns="app_manager">
+    enable_overwrite: false
+  </rosparam>
 </launch>
