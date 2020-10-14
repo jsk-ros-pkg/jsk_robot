@@ -61,6 +61,6 @@
     <arg name="respawn" value="$(arg respawn)"/>
   </include>
   <rosparam ns="app_manager">
-    enable_overwrite: false
+    enable_app_replacement: false
   </rosparam>
 </launch>
