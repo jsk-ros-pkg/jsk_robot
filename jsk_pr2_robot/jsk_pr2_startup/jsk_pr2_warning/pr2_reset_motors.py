@@ -61,6 +61,7 @@ class PR2ResetMotorsNode(object):
         if not self.calibrated:
             return
         self.enable_reset_motors = False
+        rospy.loginfo("halting motors")
         self.halt_srv()
         return EmptyResponse()
 
@@ -69,6 +70,7 @@ class PR2ResetMotorsNode(object):
             return
         self.enable_reset_motors = True
         if (self.run_stop and self.halted):
+            rospy.loginfo("resetting motors")
             self.reset_srv()
         return EmptyResponse()
 
