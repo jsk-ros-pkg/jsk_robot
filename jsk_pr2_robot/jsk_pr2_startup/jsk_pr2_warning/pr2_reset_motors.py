@@ -6,6 +6,7 @@ import rospy
 from pr2_msgs.msg import PowerBoardState
 from std_msgs.msg import Bool
 from std_srvs.srv import Empty
+from std_srvs.srv import EmptyResponse
 
 
 class PR2ResetMotorsNode(object):
@@ -61,6 +62,7 @@ class PR2ResetMotorsNode(object):
             return
         self.enable_reset_motors = False
         self.halt_srv()
+        return EmptyResponse()
 
     def reset_motors_cb(self, req):
         if not self.calibrated:
@@ -68,6 +70,7 @@ class PR2ResetMotorsNode(object):
         self.enable_reset_motors = True
         if (self.run_stop and self.halted):
             self.reset_srv()
+        return EmptyResponse()
 
 
 if __name__ == '__main__':
