@@ -5,5 +5,4 @@ Type=Application
 Terminal=false
 Icon=@PROJECT_SOURCE_DIR@/data/fetch_@ICON_COLOR@.jpg
 Name=RViz @FETCH_NAME@
-# We use localhost because we can see RViz from the fetch monitor if the network is down
 Exec=/bin/bash -l -i -c "DISPLAY=:0.0 rossetip && rossetmaster @FETCH_NAME@ && rosrun jsk_tools roscore_regardless.py rosrun rviz rviz -d $(rospack find jsk_fetch_startup)/config/jsk_startup.rviz"
