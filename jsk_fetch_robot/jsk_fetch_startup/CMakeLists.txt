@@ -38,7 +38,7 @@ macro(configure_icon_files icol iname)
     $ENV{HOME}/.local/share/applications/RViz${FETCH_NAME}.desktop)
   # If HOSTNAME is "fetchxxx", create $HOME/Desktop/RVizfetch.desktop
   cmake_host_system_information(RESULT _host_name QUERY HOSTNAME)
-  if(${_host_name} MATCHES "^fetch")
+  if(${_host_name} MATCHES "^${FETCH_NAME}")
     configure_file(config/RVizfetch.desktop.in
       $ENV{HOME}/Desktop/RViz${FETCH_NAME}.desktop)
   endif()
