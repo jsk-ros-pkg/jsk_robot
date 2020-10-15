@@ -45,6 +45,7 @@ macro(configure_icon_files icol iname)
 endmacro(configure_icon_files)
 
 configure_icon_files(blue fetch15)
+configure_icon_files(red fetch1075)
 
 
 #############
