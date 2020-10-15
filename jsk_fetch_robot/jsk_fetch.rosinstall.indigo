@@ -4,7 +4,7 @@
 - git:
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
-    version: kinetic-devel
+    version: knorth55/fetch15
 - git:
     local-name: RobotWebTools/rosbridge_suite
     uri: https://github.com/RobotWebTools/rosbridge_suite.git
@@ -19,7 +19,7 @@
 - git:
     local-name: fetchrobotics/robot_controllers
     uri: https://github.com/fetchrobotics/robot_controllers.git
-    version: knorth55/fetch15
+    version: indigo-devel
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
