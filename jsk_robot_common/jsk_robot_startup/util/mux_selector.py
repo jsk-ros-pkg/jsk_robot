@@ -152,7 +152,7 @@ if __name__ == "__main__":
             else:
                 next_topic = default_select
             try:
-                if before != next_topic and before is not None:
+                if not (before == next_topic or next_topic is None):
                     mux_client(next_topic)
             except rospy.ServiceException, e:
                 rospy.loginfo("Service did not process request: %s", str(e))
