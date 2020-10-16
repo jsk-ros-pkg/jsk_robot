@@ -57,7 +57,8 @@
         respawn="true" output="screen" machine="$(arg machine)"
         args="/teleop/cmd_vel 'True' /teleop/cmd_vel $(arg navigation_topic) 'True' $(arg navigation_topic) $(arg base_controller_topic) 'True' $(arg base_controller_topic)">
     <remap from="mux" to="vel_type_mux" />
-    <param name="default_select" value="/teleop/cmd_vel"/>
+    <!-- comment out to set default_select: None -->
+    <!-- <param name="default_select" value="/teleop/cmd_vel"/> -->
     <param name="wait" value="true" />
     <rosparam subst_value="true">
       topics:
