@@ -13,8 +13,8 @@
   )
 
 (defmethod fetch-interface
-  (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
+  (:init (&key (default-collision-object t) &rest args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
@@ -29,6 +29,11 @@
                      :groupname groupname))
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
+     (when (and (boundp '*co*) default-collision-object)
+       (send self :delete-keepout-collision-object)
+       (send self :delete-ground-collision-object)
+       (send self :add-keepout-collision-object)
+       (send self :add-ground-collision-object))
      ))
   (:state (&rest args)
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
@@ -194,7 +199,26 @@ Example: (send self :gripper :position) => 0.00"
     (send-super* :speak-en text :topic-name topic-name args))
   (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
     (send-super* :speak-jp text :topic-name topic-name args))
-  )
+  (:add-keepout-collision-object ()
+    (let ((cube (make-cube 200 350 50))
+          (keepout (make-cylinder 300 50)))
+      (send cube :translate #f(-120 0 0))
+      (send keepout :translate #f(0 0 -25))
+      (setq keepout (body- keepout cube))
+      (send keepout :translate #f(0 0 375))
+      (send *co* :add-object keepout :frame-id base-frame-id :object-id "keepout")))
+  (:delete-keepout-collision-object ()
+    (send *co* :delete-object-by-id "keepout"))
+  (:add-ground-collision-object ()
+    (let ((cube (make-cube 200 350 50))
+          (ground (make-cylinder 1000 50)))
+      (send cube :translate #f(-120 0 0))
+      (send ground :translate #f(0 0 -25))
+      (setq ground (body- ground cube))
+      (send ground :translate #f(0 0 -25))
+      (send *co* :add-object ground :frame-id base-frame-id :object-id "ground")))
+  (:delete-ground-collision-object ()
+    (send *co* :delete-object-by-id "ground")))
 
 ;; interface for simple base actions
 (defmethod fetch-interface
@@ -339,6 +363,7 @@ Example: (send self :gripper :position) => 0.00"
 (defun fetch-init (&optional (create-viewer))
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
+  (unless (boundp '*co*) (setq *co* (instance collision-object-publisher :init)))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
 
   (ros::spin-once)
