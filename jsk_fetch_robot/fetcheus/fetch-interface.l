@@ -256,9 +256,9 @@ Example: (send self :gripper :position) => 0.00"
     (ros::rate 10)
     t)
   (:go-pos-unsafe
-    (&rest args)
-    (send self :put :go-pos-unsafe-no-wait-goal (coerce args float-vector))
-    (send self :go-pos-unsafe-wait)
+    (x y d &rest args)
+    (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
+    (send* self :go-pos-unsafe-wait args)
     t)
   (:go-pos-unsafe-no-wait
     (x y &optional (d 0)) ;; [m] [m] [degree]
