@@ -259,7 +259,7 @@ Example: (send self :gripper :position) => 0.00"
              (forward-p (>= x 0))
              (d0 (if forward-p (atan2 y x) (atan2 (- y) (- x))))
              (d1 (distance (float-vector 0 0) (float-vector x y)))
-             (d2 (shortest-angle (- d d0) 0))
+             (d2 (shortest-angle (- (deg2rad d) d0) 0))
              org-cds cur-cds diffrot diffpos err)
         (send self :remprop :go-pos-unsafe-no-wait-goal)
 
