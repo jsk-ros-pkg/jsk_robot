@@ -24,6 +24,10 @@ catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
 ## Install ##
 #############
 install(DIRECTORY config launch scripts data
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)
+
+install(FILES jsk_fetch.machine
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 #############
