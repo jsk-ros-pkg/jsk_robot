@@ -14,6 +14,7 @@
       approximate_sync: true
       queue_size: 100
       use_classification_result: true
+      resolution_factor: 1.0
     </rosparam>
   </node>
 </launch>
