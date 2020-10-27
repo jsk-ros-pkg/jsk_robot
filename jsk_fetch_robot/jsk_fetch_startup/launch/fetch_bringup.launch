@@ -30,7 +30,9 @@
       lang: japanese
     </rosparam>
   </node>
-  <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
+  <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
+    <param name="wav_file" value="$(find jsk_fetch_startup)/data/boot_sound.wav" />
+  </node>
 
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->

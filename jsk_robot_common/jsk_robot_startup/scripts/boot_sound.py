@@ -25,7 +25,7 @@ if __name__ == "__main__":
     ac.wait_for_server()
 
 
-    interfaces = filter(lambda x: x[0:3] in ['eth', 'enp', 'wln', 'wlp'] and
+    interfaces = filter(lambda x: x[0:3] in ['eth', 'enp', 'wla', 'wlp'] and
                         ni.ifaddresses(x).has_key(2),  # 2 means IPv4? ???
                         ni.interfaces())
     if len(interfaces) > 0 :
