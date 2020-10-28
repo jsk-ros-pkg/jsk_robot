@@ -126,6 +126,9 @@
             (format nil ":go-velocity returns t with argument ~A" go-vel-arg))
     ))
 
+(deftest fetch-init-test
+  (let ()
+    (fetch-init)))
 
 (run-all-tests)
 (exit)
