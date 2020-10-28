@@ -363,7 +363,11 @@ Example: (send self :gripper :position) => 0.00"
 (defun fetch-init (&optional (create-viewer))
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
-  (unless (boundp '*co*) (setq *co* (instance collision-object-publisher :init)))
+  (unless (boundp '*co*)
+    (ros::ros-warn ";; collision-object-publisher wait for \"apply_planning_scene\" service for ~A sec~%" 5)
+    (if (ros::wait-for-service "apply_planning_scene" 5)
+	(setq *co* (instance collision-object-publisher :init))
+      (ros::ros-warn ";; could not find \"apply_planning_scene\" skip creating *co*~%")))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
 
   (ros::spin-once)
