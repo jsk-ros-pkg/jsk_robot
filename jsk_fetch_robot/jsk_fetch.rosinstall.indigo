@@ -4,7 +4,7 @@
 - git:
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
-    version: knorth55/fetch15
+    version: kinetic-devel
 - git:
     local-name: RobotWebTools/rosbridge_suite
     uri: https://github.com/RobotWebTools/rosbridge_suite.git
