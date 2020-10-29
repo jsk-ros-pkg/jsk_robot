@@ -1,6 +1,35 @@
 (require :spot "package://spoteus/spot.l")
 
+(unless (assoc :init-orig (send spot-robot :methods))
+  (rplaca (assoc :init (send spot-robot :methods)) :init-orig))
+
 (defmethod spot-robot
+  (:init
+   (&rest args) ;; fix colors
+   (dolist (b (list :_make_instance_body_geom0
+                    :_make_instance_front_left_upper_leg_geom0
+                    :_make_instance_front_left_lower_leg_geom0
+                    :_make_instance_front_right_upper_leg_geom0
+                    :_make_instance_front_right_lower_leg_geom0
+                    :_make_instance_rear_left_upper_leg_geom0
+                    :_make_instance_rear_left_lower_leg_geom0
+                    :_make_instance_rear_right_upper_leg_geom0
+                    :_make_instance_rear_right_lower_leg_geom0))
+     (rplacd (assoc b (send (class self) :methods))
+             (cdr (subst '(list :diffuse #f(1.00 0.84 0.32 0))
+                         '(list :diffuse (float-vector 1.0 1.0 1.0 0.0))
+                         (assoc b (send  (class self) :methods)))))
+     )
+   (dolist (b (list :_make_instance_front_left_hip_geom0
+                    :_make_instance_front_right_hip_geom0
+                    :_make_instance_rear_left_hip_geom0
+                    :_make_instance_rear_right_hip_geom0))
+     (rplacd (assoc b (send (class self) :methods))
+             (cdr (subst '(list :diffuse #f(0.1 0.1 0.1 0))
+                         '(list :diffuse (float-vector 1.0 1.0 1.0 0.0))
+                         (assoc b (send  (class self) :methods)))))
+     )
+   (send* self :init-orig args))
   (:legs ;; support legs for all limbs
    (&rest args)
    (case (car args)
