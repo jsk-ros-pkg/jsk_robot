@@ -8,10 +8,17 @@ find_package(catkin REQUIRED COMPONENTS
   collada_urdf
   roseus
   euscollada
-  spot_description
 )
+find_package(spot_description) # Just in case when description is not released. Avoid compile failing
 
 catkin_package()
+
+if(NOT spot_description_FOUND)
+  message(WARNING "spot_description is not found, so skip generating spot.l")
+  message(WARNING "Install spot_description from https://github.com/clearpathrobotics/spot_ros")
+  return()
+endif()
+
 
 ###########
 ## Build ##
