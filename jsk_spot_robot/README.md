@@ -30,8 +30,16 @@ After that, please run the ros driver. You can now control spot from ROS!
 
 ```
 $ source /opt/ros/$ROS_DISTRO/setup.bash
-$ source $HOME/catkin_ws/deve/setup.bash
+$ source $HOME/catkin_ws/devel/setup.bash
 $ roslaunch jsk_spot_startup driver.launch username:=<username> password:=<password>
+```
+
+You can launch ros driver without specifying username and password by sourcing catkin_ws under the spot user.
+
+```
+$ source /opt/ros/$ROS_DISTRO/setup.bash
+$ source /home/spot/catkin_ws/devel/setup.bash
+$ roslaunch jsk_spot_startup driver.launch
 ```
 
 You can run RViz already configured for spot.
@@ -39,6 +47,6 @@ You can run RViz already configured for spot.
 ```
 # in another terminal
 $ source /opt/ros/$ROS_DISTRO/setup.bash
-$ source $HOME/catkin_ws/deve/setup.bash
+$ source $HOME/catkin_ws/devel/setup.bash
 $ roslaunch jsk_spot_startup rviz.launch
 ```
