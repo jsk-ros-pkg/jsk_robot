@@ -10,7 +10,7 @@ The head joystick module is consists of parts below.
 
 * [Joystick in Arcade Parts Kit](https://www.switch-science.com/catalog/5792/)
 * [Player X USB Games Controller USB](https://www.switch-science.com/catalog/5793/)
-* [Housing Part for JSK Spot Headmounted module](./designs/housing_part.stl)
+* [Housing Part for JSK Spot Headmounted module](./designs/joy_mount_housing.stl)
 
 <a picture of head joystick module>
 
