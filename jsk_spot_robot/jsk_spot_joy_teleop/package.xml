@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>jsk_spot_joy_teleop</name>
-  <version>0.0.0</version>
+  <version>1.1.0</version>
   <description>The jsk_spot_joy_teleop package</description>
 
   <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
