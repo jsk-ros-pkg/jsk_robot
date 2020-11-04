@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Spot ROS @ROBOT_NAME@
+Comment=ROS Driver for @ROBOT_NAME@
+Exec=/bin/bash -l -i -c "DISPLAY=:0.0 rossetip && rossetmaster localhost && roslaunch jsk_spot_startup driver.launch
+Icon=@PROJECT_SOURCE_DIR@/shortcuts/data/spot_ros.jpg
+Terminal=True
+Type=Application
+Categories=Application;
