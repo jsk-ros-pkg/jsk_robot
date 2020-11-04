@@ -35,6 +35,7 @@ class PR2ResetMotorsNode(object):
         halted = msg.data
         rospy.logdebug("runstop: %s, halted: %s" % (self.run_stop, halted))
         if self.run_stop and halted:
+            rospy.logwarn("motor halted, but run stop is true")
             stamp = rospy.Time.now()
             history = filter(
                 lambda s: (stamp-s).to_sec() < self.watch_duration,
@@ -42,6 +43,7 @@ class PR2ResetMotorsNode(object):
             if len(history) > self.max_retry_num:
                 rospy.logerr("Maximum retry count reached. Give up resetting motors")
                 return
+            rospy.logwarn("resetting motors")
             self.reset_srv()
             self.history = history + [stamp]
 
