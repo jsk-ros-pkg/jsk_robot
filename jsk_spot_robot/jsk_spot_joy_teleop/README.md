@@ -3,6 +3,7 @@
 This package is for the head joystick module for Spot.
 
 <a picture of Spot with the head joystick module>
+![Top image](./images/top.jpg)
 
 # Head Joystick Module
 
@@ -12,7 +13,7 @@ The head joystick module is consists of parts below.
 * [Player X USB Games Controller USB](https://www.switch-science.com/catalog/5793/)
 * [Housing Part for JSK Spot Headmounted module](./designs/joy_mount_housing.stl)
 
-<a picture of head joystick module>
+![Head joystick module](./images/head_joy_module.jpg)
 
 Please assemble them, wire jumper cables from the joystick to Player X, and attach it to [the Headmounted module](../jsk_spot_startup/README.md).
 And please connect a USB-micro cable from PC to the module according to the picture above
@@ -28,7 +29,7 @@ $ roslaunch jsk_spot_joy_teleop head_teleop.launch
 
 Now you can control Spot with the Head Joystick Module
 
-<a gif file of controlling Spot>
+![controlling Spot](./images/spot_controlled.gif)
 
 # Attention
 
