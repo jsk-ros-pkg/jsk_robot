@@ -9,6 +9,11 @@
 (setq *fetch* (fetch))
 (send *fetch* :reset-pose)
 
+
+(deftest test-fetch-state-worldcoords ()
+  (let ((coords (send *ri* :state :worldcoords "base_link")))
+    (assert coords (format nil "failed to get :state :worldcoords" coords))))
+
 (deftest test-fetch-moveit ()
   (let (tm-0 tm-1)
     (setq tm-0 (ros::time-now))
