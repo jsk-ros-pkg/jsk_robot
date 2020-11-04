@@ -2,7 +2,6 @@
 
 This package is for the head joystick module for Spot.
 
-<a picture of Spot with the head joystick module>
 ![Top image](./images/top.jpg)
 
 # Head Joystick Module
