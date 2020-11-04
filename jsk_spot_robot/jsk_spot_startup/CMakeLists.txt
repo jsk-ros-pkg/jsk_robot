@@ -18,6 +18,35 @@ install(DIRECTORY config launch
    USE_SOURCE_PERMISSIONS
 )
 
+###################################
+## Create desktop icons for spot ##
+###################################
+##
+macro(configure_spot_ros_icon_files iname)
+    set(ROBOT_NAME ${iname})
+    configure_file(shortcuts/SpotROS.desktop.in
+        $ENV{HOME}/.local/share/applications/SpotROS${ROBOT_NAME}.desktop)
+    cmake_host_system_information(RESULT _host_name QUERY HOSTNAME)
+    if(${_host_name} MATCHES "^${ROBOT_NAME}")
+        configure_file(shortcuts/SpotROS.desktop.in
+            $ENV{HOME}/Desktop/SpotROS${ROBOT_NAME}.desktop)
+    endif()
+endmacro(configure_spot_ros_icon_files)
+##
+macro(configure_rviz_icon_files iname)
+    set(ROBOT_NAME ${iname})
+    configure_file(shortcuts/RVizSpot.desktop.in
+        $ENV{HOME}/.local/share/applications/RViz${ROBOT_NAME}.desktop)
+    cmake_host_system_information(RESULT _host_name QUERY HOSTNAME)
+    if(${_host_name} MATCHES "^${ROBOT_NAME}")
+        configure_file(shortcuts/RvizSpot.desktop.in
+            $ENV{HOME}/Desktop/RViz${ROBOT_NAME}.desktop)
+    endif()
+endmacro(configure_rviz_icon_files)
+
+configure_spot_ros_icon_files(spot-jsk)
+configure_rviz_icon_files(spot-jsk)
+
 
 #############
 ## Testing ##
