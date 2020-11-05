@@ -39,7 +39,7 @@ macro(configure_rviz_icon_files iname)
         $ENV{HOME}/.local/share/applications/RViz${ROBOT_NAME}.desktop)
     cmake_host_system_information(RESULT _host_name QUERY HOSTNAME)
     if(${_host_name} MATCHES "^${ROBOT_NAME}")
-        configure_file(shortcuts/RvizSpot.desktop.in
+        configure_file(shortcuts/RVizSpot.desktop.in
             $ENV{HOME}/Desktop/RViz${ROBOT_NAME}.desktop)
     endif()
 endmacro(configure_rviz_icon_files)
