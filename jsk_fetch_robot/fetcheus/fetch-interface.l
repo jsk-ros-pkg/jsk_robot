@@ -206,8 +206,13 @@ Example: (send self :gripper :position) => 0.00"
       (send keepout :translate #f(0 0 -25))
       (setq keepout (body- keepout cube))
       (send keepout :translate #f(0 0 375))
-      (send *co* :add-object keepout :frame-id base-frame-id :object-id "keepout")))
+      (send *co* :add-attached-object keepout
+            "base_link"
+            :frame-id base-frame-id
+            :object-id "keepout"
+            :touch-links nil)))
   (:delete-keepout-collision-object ()
+    (send *co* :delete-attached-object-by-id "keepout")
     (send *co* :delete-object-by-id "keepout"))
   (:add-ground-collision-object ()
     (let ((cube (make-cube 200 350 50))
@@ -216,8 +221,13 @@ Example: (send self :gripper :position) => 0.00"
       (send ground :translate #f(0 0 -25))
       (setq ground (body- ground cube))
       (send ground :translate #f(0 0 -25))
-      (send *co* :add-object ground :frame-id base-frame-id :object-id "ground")))
+      (send *co* :add-attached-object ground
+            "base_link"
+            :frame-id base-frame-id
+            :object-id "ground"
+            :touch-links nil)))
   (:delete-ground-collision-object ()
+    (send *co* :delete-attached-object-by-id "ground")
     (send *co* :delete-object-by-id "ground")))
 
 ;; interface for simple base actions
