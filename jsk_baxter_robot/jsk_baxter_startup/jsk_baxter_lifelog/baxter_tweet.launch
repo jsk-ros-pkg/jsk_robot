@@ -1,35 +1,22 @@
 <launch>
   <arg name="output" default="screen" />
 
-  <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
   <include file="$(find jsk_robot_startup)/lifelog/tweet.launch">
     <arg name="robot_name" value="Baxter"/>
     <arg name="worktime_enable" value="true"/>
     <arg name="uptime_enable" value="false"/>
     <arg name="tablet_enable" value="false"/>
     <arg name="warning_enable" value="false"/>
-    
     <arg name="motor_subscribe" value="true"/>
     <arg name="odom_subscribe" value="false"/>
     <arg name="joint_state_subscribe" value="true"/>
     <arg name="position_diff_threshold" default="0.01"/>
-
     <arg name="remap_motor_state" value="/robot/servo_state"/>
     <arg name="remap_joint_states" value="/robot/joint_states"/>
-
     <arg name="image_topics" value="/cameras/head_camera/image"/>
-
     <arg name="machine" value="localhost"/>
-    <arg name="output" value="screen"/>
-
-    <arg name="account_info" value="/var/lib/robot/account.yaml" />
+    <arg name="output" value="$(arg output)"/>
+    <arg name="account_info" value="/var/lib/robot/twitter_account_baxter_jsk.yaml" />
   </include>
-
-  <node name="image_saver" pkg="image_view" type="image_saver"
-        output="$(arg output)" respawn="true" >
-    <remap from="image" to="/cameras/head_camera/image" />
-    <param name="save_all_image" value="false" />
-    <param name="filename_format" value="/tmp/baxter_camera.png" />
-  </node>
 
 </launch>
