@@ -199,6 +199,19 @@ Example: (send self :gripper :position) => 0.00"
     (send-super* :speak-en text :topic-name topic-name args))
   (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
     (send-super* :speak-jp text :topic-name topic-name args))
+  (:set-workspace (x y z)
+    (let ((bound (make-cube (+ x 50) (+ y 50) (+ z 50)))
+          (inner-cube (make-cube x y z)))
+      (setq bound (body- bound inner-cube))
+      (send bound :translate (float-vector 0 0 (- (/ z 2) 10)))
+      (send *co* :add-attached-object bound
+            "base_link"
+            :frame-id base-frame-id
+            :object-id "workspace"
+            :touch-links nil)))
+  (:delete-workspace ()
+    (send *co* :delete-attached-object-by-id "workspace")
+    (send *co* :delete-object-by-id "workspace"))
   (:add-keepout-collision-object ()
     (let ((cube (make-cube 200 350 50))
           (keepout (make-cylinder 300 50)))
