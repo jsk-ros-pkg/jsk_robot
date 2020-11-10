@@ -425,3 +425,6 @@ Example: (send self :gripper :position) => 0.00"
 (send *fetch* :reset-pose)
 (send *ri* :angle-vector (send *fetch* :angle-vector) 2000)
 |#
+
+
+(provide :fetch-interface)
