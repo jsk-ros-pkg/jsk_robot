@@ -210,7 +210,7 @@ Example: (send self :gripper :position) => 0.00"
             "base_link"
             :frame-id base-frame-id
             :object-id "keepout"
-            :touch-links nil)))
+            :touch-links (list "base_link" "torso_fixed_link"))))
   (:delete-keepout-collision-object ()
     (send *co* :delete-attached-object-by-id "keepout")
     (send *co* :delete-object-by-id "keepout"))
