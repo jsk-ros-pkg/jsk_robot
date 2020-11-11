@@ -12,7 +12,7 @@
     <remap from="joy" to="$(arg joy_topic_raw)" />
   </node>
 
-  <node pkg="jsk_spot_joy_teleop" type="joy_topic_completion.py" name="joy_topic_completion">
+  <node pkg="jsk_spot_head_joy" type="joy_topic_completion.py" name="joy_topic_completion">
     <remap from="~joy_input" to="$(arg joy_topic_raw)" />
     <remap from="~joy_output" to="$(arg joy_topic_complemented)" />
 
