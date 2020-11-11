@@ -32,7 +32,7 @@
         scale_angular_turbo:
           yaw: 0.6
         enable_button: 4
-        enable_turbo_button: 8
+        enable_turbo_button: 7
     </rosparam>
   </node>
 </launch>
