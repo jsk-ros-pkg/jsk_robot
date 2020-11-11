@@ -1,4 +1,4 @@
-# jsk_spot_joy_teleop
+# jsk_spot_head_joy
 
 This package is for the head joystick module for Spot.
 
@@ -23,7 +23,7 @@ First, please launch driver.launch in jsk_spot_startup.
 And please launch head_teleop.launch
 
 ```
-$ roslaunch jsk_spot_joy_teleop head_teleop.launch
+$ roslaunch jsk_spot_head_joy head_teleop.launch
 ```
 
 Now you can control Spot with the Head Joystick Module
