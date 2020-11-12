@@ -1,7 +1,7 @@
 <launch>
   <arg name="joy_dev" default="/dev/input/js0" />
   <arg name="joy_topic" default="spot_teleop/joy" />
-  <arg name="cmd_vel_topic" default="spot_teleop/cmd_vel" />
+  <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
   
   <node pkg="joy" type="joy_node" name="joy_node">
     <param name="dev" value="$(arg joy_dev)" />
