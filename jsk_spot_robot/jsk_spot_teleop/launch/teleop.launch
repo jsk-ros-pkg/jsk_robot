@@ -35,4 +35,37 @@
         enable_turbo_button: 7
     </rosparam>
   </node>
+
+  <node pkg="jsk_spot_teleop" name="joystick_teleop" type="joystick_teleop">
+      <remap from="joy" to="$(arg joy_topic)" />
+
+      <param name="~button_estop_hard" value="-1" />
+      <param name="~button_estop_gentle" value="5" />
+      <param name="~button_power_off" value="14" />
+      <param name="~button_power_on" value="13" />
+      <param name="~button_self_right" value="3" />
+      <param name="~button_sit" value="1" />
+      <param name="~button_stand" value="0" />
+      <param name="~button_release" value="8" />
+      <param name="~button_claim" value="9" />
+  </node>
+
+  <!--
+    Key Mapping For Teleoperation
+
+    cross : stand
+    circle : sit
+    rectangle : self_right
+    triangle : (None)
+
+    start : claim
+    select : release
+
+    up : power_on
+    down : power_off
+
+    L1 : Unlock movement
+    R1 : Estop (gentle)
+    R2 : Unlock movement with fast mode
+   -->
 </launch>
