@@ -16,6 +16,7 @@
   <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>roslaunch</exec_depend>
   <exec_depend>rviz</exec_depend>
+  <exec_depend>jsk_tools</exec_depend>
   <exec_depend>spot_description</exec_depend>
   <exec_depend>spot_driver</exec_depend>
 
