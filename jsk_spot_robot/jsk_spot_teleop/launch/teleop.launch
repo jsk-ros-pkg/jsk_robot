@@ -36,7 +36,7 @@
     </rosparam>
   </node>
 
-  <node pkg="jsk_spot_teleop" name="joystick_teleop" type="joystick_teleop">
+  <node pkg="jsk_spot_teleop" name="joystick_teleop" type="joystick_teleop" output="screen">
       <remap from="joy" to="$(arg joy_topic)" />
 
       <param name="~button_estop_hard" value="-1" />
