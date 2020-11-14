@@ -6,6 +6,8 @@
   <arg name="gui" default="false" />
   <arg name="loop_flag" value="--loop" if="$(arg loop)" />
   <arg name="loop_flag" value="" unless="$(arg loop)" />
+  <arg name="audio_play" default="false" />
+  <arg name="audio_device" default="" />
 
   <arg name="RGB_CAMERA_INFO" value="/head_camera/rgb/throttled/camera_info" />
   <arg name="RGB_IMAGE" value="/head_camera/rgb/throttled/image_rect_color" />
@@ -83,6 +85,17 @@
         output="screen" >
       <param name="~file" value="$(arg rosbag)" />
       <param name="~topicname" value="/map" />
+  </node>
+
+  <!-- audio play -->
+  <node pkg="audio_play" type="audio_play" name="audio_play" if="$(arg audio_play)" output="screen">
+        <param name="device" value="$(arg audio_device)" />
+        <param name="dst" value="alsasink"/>
+        <param name="do_timestamp" value="false"/>
+        <param name="format" value="wave"/>
+        <param name="channels" value="1"/>
+        <param name="sample_rate" value="16000"/>
+        <param name="sample_format" value="S16LE"/>
   </node>
 
   <!-- rosbag player -->
