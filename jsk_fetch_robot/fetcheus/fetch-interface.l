@@ -96,7 +96,7 @@
    ;; for simulation mode
    (when (send self :simulation-modep)
      (if (member :use-torso args)
-	 (setq args (append (subseq args 0 (position :use-torso args)) (if (> (length args) (+ 2 (position :use-torso args))) (subseq args (+ (position :use-torso args) 2))))))
+       (setq args (append (subseq args 0 (position :use-torso args)) (if (> (length args) (+ 2 (position :use-torso args))) (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
    ;;
    (when (not (numberp tm))
@@ -368,7 +368,7 @@ Example: (send self :gripper :position) => 0.00"
   (unless (boundp '*co*)
     (ros::ros-warn ";; collision-object-publisher wait for \"apply_planning_scene\" service for ~A sec~%" 5)
     (if (ros::wait-for-service "apply_planning_scene" 5)
-	(setq *co* (instance collision-object-publisher :init))
+      (setq *co* (instance collision-object-publisher :init))
       (ros::ros-warn ";; could not find \"apply_planning_scene\" skip creating *co*~%")))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
 
