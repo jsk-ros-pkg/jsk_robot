@@ -31,3 +31,8 @@
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
     version: kinetic-devel
+# aero-ros-pkg is not released yet
+- git:
+    local-name: aero-ros-pkg
+    uri: https://github.com/seed-solutions/aero-ros-pkg
+    version: v2.1.0

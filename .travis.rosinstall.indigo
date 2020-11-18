@@ -18,3 +18,8 @@
     local-name: strands-project/mongodb_store
     uri: https://github.com/strands-project/mongodb_store.git
     version: 0.4.5
+# aero-ros-pkg is not released yet
+- git:
+    local-name: aero-ros-pkg
+    uri: https://github.com/seed-solutions/aero-ros-pkg
+    version: v2.1.0
