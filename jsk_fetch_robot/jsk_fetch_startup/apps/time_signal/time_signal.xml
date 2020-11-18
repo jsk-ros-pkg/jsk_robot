@@ -1,0 +1,3 @@
+<launch>
+  <node name="run_time_signal" pkg="jsk_fetch_startup" type="time_signal.py" output="screen"/>
+</launch>

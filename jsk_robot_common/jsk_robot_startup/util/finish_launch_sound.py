@@ -11,5 +11,7 @@ rospy.sleep(5)                  # sleep to wait for connection
 msg = SoundRequest()
 msg.sound = SoundRequest.SAY
 msg.command = SoundRequest.PLAY_ONCE
+if hasattr(msg, 'volume'):
+    msg.volume = 1.0
 msg.arg = "Now I am ready"
 p.publish(msg)
