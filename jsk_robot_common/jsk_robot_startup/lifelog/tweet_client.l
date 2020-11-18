@@ -87,5 +87,5 @@
                                             twit-str (format nil "/tmp/tweet_image.jpg")))))
     (t
       (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))))
-  (when speak (speak-jp "ついーとしました"))))
+  (when speak (speak-jp "ついーとしました" :wait t))))
 

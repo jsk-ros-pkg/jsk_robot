@@ -4,8 +4,17 @@
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
     version: kinetic-devel
+# fetch_bringup.launch in jsk_fetch_startup requires respeaker_ros 2.1.13 or upper
 # indigo is already EOL and 2.1.13 is never released. (2019/08/16)
+# https://github.com/jsk-ros-pkg/jsk_robot/pull/1017#issuecomment-519573806
+- tar:
+    local-name: jsk_3rdparty/respeaker_ros
+    uri: https://github.com/tork-a/jsk_3rdparty-release/archive/release/kinetic/respeaker_ros/2.1.13-1.tar.gz
+    version: jsk_3rdparty-release-release-kinetic-respeaker_ros-2.1.13-1
+# jsk_robot_startup LightweightLogger requires mongodb_store 0.4.5.
+# indigo is already EOL and 0.4.5 is never released. (2019/08/20)
+# more detailed information, see https://github.com/jsk-ros-pkg/jsk_robot/pull/1121
 - git:
-    local-name: jsk-ros-pkg
-    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-    version: 2.1.13
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: 0.4.5

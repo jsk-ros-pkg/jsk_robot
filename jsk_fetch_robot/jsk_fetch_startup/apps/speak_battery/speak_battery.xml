@@ -1,0 +1,4 @@
+<launch>
+  <node name="run_speak_battery" pkg="roseus" type="roseus"
+        args="$(find jsk_fetch_startup)/euslisp/speak-battery.l"/>
+</launch>
