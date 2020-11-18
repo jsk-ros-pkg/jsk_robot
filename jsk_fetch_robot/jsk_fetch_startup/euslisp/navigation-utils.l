@@ -126,11 +126,31 @@
   (ros::ros-info "start going to the kitchen.")
   (send *ri* :speak-jp "キッチンに向かいます。" :wait t)
   (unix::sleep 1)
-  (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-  (send *ri* :speak-jp "電気をつけて" :wait t)
-  (unix::sleep 1)
-  ;; stove
-  (let ((succcess-go-to-kitchen))
+  ;; Check if the lights are on in the room
+  (let ((initial-light-on nil)
+        (success-go-to-kitchen nil)
+        (success-auto-dock nil))
+    (let* ((ros-img (one-shot-subscribe "/head_camera/rgb/quater/image_rect_color" sensor_msgs::Image))
+           (eus-img (ros::sensor_msgs/Image->image ros-img))
+           (luminance 0) rgb-oct r g b)
+      (dotimes (w (send eus-img :width))
+        (dotimes (h (send eus-img :height))
+          (setq rgb-oct (send eus-img :pixel-hex-string w h))
+          (setq r (read-from-string (format nil "#X~A" (subseq rgb-oct 0 2))))
+          (setq g (read-from-string (format nil "#X~A" (subseq rgb-oct 2 4))))
+          (setq b (read-from-string (format nil "#X~A" (subseq rgb-oct 4 6))))
+          (setq luminance (+ luminance (+ (* 0.299 r) (* 0.587 g) (* 0.114 b))))))
+      (setq luminance (/ luminance (* (send eus-img :width) (send eus-img :height))))
+      (if (> luminance 50)
+        (setq initial-light-on t)
+        (setq initial-light-on nil))
+      (if initial-light-on
+        (send *ri* :speak-jp "すでに電気がついています。" :wait t)
+        (progn
+          (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+          (send *ri* :speak-jp "電気をつけて" :wait t))))
+    (unix::sleep 1)
+    ;; stove
     (dotimes (i n-kitchen-trial)
       (setq success-go-to-kitchen
             (go-to-spot "/eng2/7f/room73B2-sink-front0"
@@ -155,31 +175,30 @@
         (send *ri* :go-pos-unsafe 0 0 -90))
       (progn ;; failed to go to kitchen
         (ros::ros-error "failed going to the kitchen.")
-        (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
-        (ros::ros-info "start going back to the dock.")
-        (auto-dock :n-trial n-dock-trial)
-        (return-from go-to-kitchen nil))))
-  ;; sink
-  ;; (send *ri* :speak-jp "シンクに向かいます。")
-  ;; (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -200 0)))
-  ;;   (progn ;; succeeded to go to kitchen
-  ;;     (unix:sleep 1)
-  ;;     (ros::ros-info "arrived at the kitchen.")
-  ;;     (send *ri* :speak-jp "キッチンのシンクの前につきました。" :wait t)
-  ;;     (unix:sleep 1)
-  ;;     (when tweet
-  ;;       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
-  ;;                     :with-image "/edgetpu_object_detector/output/image" :speak t)))
-  ;;   (progn ;; failed to go to kitchen
-  ;;     (ros::ros-error "failed going to the kitchen.")
-  ;;     (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
-  ;;     (ros::ros-info "start going back to the dock.")
-  ;;     (auto-dock :n-trial n-dock-trial)
-  ;;     (return-from go-to-kitchen nil)))
-  (ros::ros-info "start going back to the dock.")
-  (send *ri* :speak-jp "ドックに戻ります。" :wait t)
-  (auto-dock :n-trial n-dock-trial)
-  (unix::sleep 1)
-  (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-  (send *ri* :speak-jp "電気を消して" :wait t)
-  (unix::sleep 1))
+        (send *ri* :speak-jp "失敗しました。" :wait t)))
+    ;; sink
+    ;; (send *ri* :speak-jp "シンクに向かいます。")
+    ;; (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -200 0)))
+    ;;   (progn ;; succeeded to go to kitchen
+    ;;     (unix:sleep 1)
+    ;;     (ros::ros-info "arrived at the kitchen.")
+    ;;     (send *ri* :speak-jp "キッチンのシンクの前につきました。" :wait t)
+    ;;     (unix:sleep 1)
+    ;;     (when tweet
+    ;;       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
+    ;;                     :with-image "/edgetpu_object_detector/output/image" :speak t)))
+    ;;   (progn ;; failed to go to kitchen
+    ;;     (ros::ros-error "failed going to the kitchen.")
+    ;;     (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
+    ;;     (ros::ros-info "start going back to the dock.")
+    ;;     (auto-dock :n-trial n-dock-trial)
+    ;;     (return-from go-to-kitchen nil)))
+    (ros::ros-info "start going back to the dock.")
+    (send *ri* :speak-jp "ドックに戻ります。" :wait t)
+    (setq success-auto-dock (auto-dock :n-trial n-dock-trial))
+    (when (and success-auto-dock (not initial-light-on))
+      (unix::sleep 1)
+      (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+      (send *ri* :speak-jp "電気を消して" :wait t))
+    (unix::sleep 1)
+    (and success-go-to-kitchen success-auto-dock)))
