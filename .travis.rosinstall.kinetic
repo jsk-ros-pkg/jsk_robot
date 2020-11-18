@@ -25,10 +25,6 @@
    uri: https://github.com/tork-a/jsk_demos-release.git
    local-name: jsk_maps
    version: release/kinetic/jsk_maps
-- git:
-   uri: https://github.com/tork-a/jsk_3rdparty-release.git
-   local-name: rostwitter
-   version: release/kinetic/rostwitter
 # Need to wait for app_manager 1.1.1 for kinetic and later. For indigo, we could not expect newer releases.....
 # https://github.com/PR2/app_manager/issues/12 (Relerase request 1.1.1)
 - git:

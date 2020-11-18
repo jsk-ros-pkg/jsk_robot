@@ -6,6 +6,8 @@
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="false" />
   <arg name="launch_app_manager" default="true" />
+  <arg name="setup_mannequin_mode" default="true"
+       doc="prepares mannequin_mode to be callable by EusLisp interface"/>
 
   <param name="/use_sim_time" value="false"/>
   <include file="$(find pr2_machine)/pr2.machine" />
@@ -48,8 +50,14 @@
     <param name="port3" type="string" value="/etc/ros/sensors/battery3" />
     <param name="debug_level" type="int" value="0" />
   </node>
-  <node pkg="power_monitor" type="power_monitor"  name="power_monitor" respawn="true"/>
-  
+  <node name="power_monitor"
+        pkg="power_monitor" type="power_monitor"
+        respawn="true" >
+    <rosparam>
+      frequency: 1.0
+    </rosparam>
+  </node>
+
   <!-- Base Laser -->
   <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
     <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
@@ -213,4 +221,15 @@
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
     <arg name="respawn" value="false"/>
   </include>
+
+  <!-- mannequin mode -->
+  <group if="$(arg setup_mannequin_mode)">
+    <include file="$(find pr2_mannequin_mode)/launch/trajectory_lock.launch"/>
+    <rosparam command="load" file="$(find pr2_mannequin_mode)/config/pr2_arm_controllers_loose.yaml" />
+    <rosparam command="load" file="$(find pr2_mannequin_mode)/config/head_position_controller_loose.yaml" />
+    <node pkg="pr2_controller_manager" type="pr2_controller_manager"
+          name="load_mannequin_controllers"
+          args="load head_traj_controller_loose l_arm_controller_loose r_arm_controller_loose"/>
+  </group>
+
 </launch>

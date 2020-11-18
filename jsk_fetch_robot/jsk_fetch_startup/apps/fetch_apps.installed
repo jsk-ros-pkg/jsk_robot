@@ -19,3 +19,7 @@ apps:
     display: go to kitchen
   - app: jsk_fetch_startup/patrol
     display: fetch patrol in 73B2
+  - app: jsk_fetch_startup/speak_battery
+    display: speak battery information
+  - app: jsk_fetch_startup/time_signal
+    display: speak time signal
