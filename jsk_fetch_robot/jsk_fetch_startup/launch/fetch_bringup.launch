@@ -3,6 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
+  <arg name="use_voice_text" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
@@ -50,7 +51,11 @@
         respawn="true" if="$(arg launch_sound_play)" />
 
   <!-- japanese speech node -->
-  <include file="$(find voice_text)/launch/voice_text.launch">
+  <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
+  <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
   </include>
