@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.4187380373477936
-    Tree Height: 755
+    Tree Height: 595
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -499,4 +499,4 @@ Window Geometry:
     collapsed: true
   Width: 1853
   X: 67
-  Y: 0
+  Y: 27
