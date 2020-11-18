@@ -1,0 +1,8 @@
+<launch>
+    <arg name="ROSBAG_FILENAME" />
+    <param name="robot_description" command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro --inorder" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node pkg="rosbag" type="play" name="$(anon rosbag)"
+        args="$(arg ROSBAG_FILENAME) -l"
+        />
+</launch>
