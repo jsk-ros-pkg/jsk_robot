@@ -1,18 +1,17 @@
 robot_base_frame: base_footprint
-robot_radius: 0.5
 transform_tolerance: 1.0  # 0.2
 
 # parameters for static_layer
 static_layer:
-  map_topic: map
+  map_topic: /map
   subscribe_to_updates: true
 
 # parameters for obstacle_layer
 obstacle_layer:
-  observation_sources: base_scan_marking tilt_scan_filtered
-  base_scan_marking:
+  observation_sources: base_scan_filtered tilt_scan_filtered
+  base_scan_filtered:
     data_type: PointCloud2
-    topic: base_scan_marking
+    topic: /base_scan_filtered
     sensor_frame: base_laser_link
     marking: true
     clearing: true
@@ -24,13 +23,13 @@ obstacle_layer:
     raytrace_range: 3.0
   tilt_scan_filtered:
     data_type: PointCloud2
-    topic: tilt_scan_filtered
+    topic: /tilt_scan_filtered/navigation
     sensor_frame: laser_tilt_link
     marking: true
     clearing: true
-    observation_persistence: 1.0
+    observation_persistence: 2.5
     expected_update_rate: 0.25
-    min_obstacle_height: 0.0
+    min_obstacle_height: 0.1
     max_obstacle_height: 2.0
     obstacle_range: 2.5
     raytrace_range: 3.0
@@ -46,5 +45,5 @@ obstacle_layer:
 
 # parameters for inflation_layer
 inflation_layer:
-  inflation_radius: 0.30
-  cost_scaling_factor: 100.0
+  inflation_radius: 3.0
+  cost_scaling_factor: 3.0

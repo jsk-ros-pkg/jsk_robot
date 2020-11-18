@@ -3,6 +3,7 @@
 (ros::roseus-add-msgs "nav_msgs")
 (ros::roseus-add-msgs "sound_play")
 (ros::roseus-add-msgs "move_base_msgs")
+(ros::roseus-add-srvs "std_srvs")
 (load "package://pr2eus/pr2-interface.l")
 
 (ros::roseus "look_forward")
@@ -17,6 +18,8 @@
 
 (defun result-cb (msg)
   (let ((av (send *ri* :state :potentio-vector)))
+    (unless *look-enable*
+      (return-from result-cb nil))
     (send *pr2* :angle-vector av)
     (send *pr2* :head :angle-vector #f(0 0))
     (send *ri* :angle-vector (send *pr2* :angle-vector) 1000 :head-controller)
@@ -41,6 +44,7 @@
       (ros::ros-error "not transform")
       (return-from look-at-front nil))
     (ros::ros-info "msg received ~A~%" *msg* (norm (send tra :worldpos)))
+    (ros::ros-info "look-forward enabled: ~A" *look-enable*)
 
     (when *look-enable*
       (if (< 500 (norm (send tra :worldpos)))
@@ -65,14 +69,25 @@
     (ros::ros-info "~A plan trajectory end point ~A, head angle ~A" *msg* (send tra :worldpos) (send *pr2* :head :angle-vector))
     ))
 
+(defun start-look-front (req)
+  (setq *look-enable* t)
+  (instance std_srvs::EmptyResponse :init))
+
+(defun stop-look-front (req)
+  (setq *look-enable* nil)
+  (instance std_srvs::EmptyResponse :init))
+
 ;; init
 (pr2-init)
 (defparameter *tfl* (instance ros::transform-listener :init))
 (ros::subscribe "/move_base_node/DWAPlannerROS/global_plan"
-		nav_msgs::Path #'global-path-cb 1)
+                nav_msgs::Path #'global-path-cb 1)
 ;; look straight when navigation retries
 (ros::subscribe "/move_base/result"
                 move_base_msgs::MoveBaseActionResult #'result-cb 1)
+
+(ros::advertise-service "~start" std_srvs::Empty #'start-look-front)
+(ros::advertise-service "~stop" std_srvs::Empty #'stop-look-front)
 
 (unix::sleep 1)
 
