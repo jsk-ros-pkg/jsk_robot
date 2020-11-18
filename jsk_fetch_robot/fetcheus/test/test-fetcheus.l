@@ -126,6 +126,12 @@
             (format nil ":go-velocity returns t with argument ~A" go-vel-arg))
     ))
 
+(deftest fetch-use-torso
+  (let ()
+    (setq *ri* (instance fetch-interface :init))
+    (assert (send *ri* :angle-vector (send *fetch* :angle-vector) 3000 :use-torso t))
+    ))
+
 (deftest fetch-init-test
   (let ()
     (fetch-init)))
