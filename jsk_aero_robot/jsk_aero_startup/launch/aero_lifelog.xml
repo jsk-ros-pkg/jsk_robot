@@ -26,7 +26,6 @@
     <arg name="depth_ns" value="right"/>
     <arg name="depth_suffix" value="/compressed"/>
     <arg name="depth_topic" value="image_rect_color"/>
-    <arg name="sensor_frame_id" value="ps4eye_frame" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="localhost" value="true" />

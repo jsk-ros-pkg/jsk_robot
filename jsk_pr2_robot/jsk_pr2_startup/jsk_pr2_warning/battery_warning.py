@@ -3,6 +3,7 @@
 # Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
 
 from __future__ import division
+from __future__ import unicode_literals
 
 import actionlib
 from collections import defaultdict
@@ -29,7 +30,7 @@ class BatteryWarning(object):
 
         # param
         self.monitor_rate = rospy.get_param("~monitor_rate", 4)
-        self.warning_temp = rospy.get_param("~warning_temperature", 41.0)
+        self.warning_temp = rospy.get_param("~warning_temperature", 42.0)
         self.min_capacity = rospy.get_param("~min_capacity", 800)
         self.warning_voltage = rospy.get_param("~warning_voltage", 14.0)
         self.critical_voltage = rospy.get_param("~critical_voltage", 13.7)
@@ -50,14 +51,18 @@ class BatteryWarning(object):
                 rospy.Duration(self.log_rate), self.log_cb)
 
     def speak(self, sentence):
-        if self.speech_history[sentence] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
+        # Pick first 4 characters as a keyword instead of using whole sentence
+        # because sentence can have variables like 100%, 90%, etc.
+        key = sentence[:4]
+        if self.speech_history[key] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
             return
-        self.speech_history[sentence] = rospy.Time.now()
+        self.speech_history[key] = rospy.Time.now()
         req = SoundRequest()
         req.command = SoundRequest.PLAY_ONCE
         req.sound = SoundRequest.SAY
         req.arg = sentence
         req.arg2 = "ja"
+        req.volume = 1.0
         self.speak_client.send_goal(SoundRequestGoal(sound_request=req))
         self.speak_client.wait_for_result(timeout=rospy.Duration(10))
 
@@ -113,8 +118,9 @@ class BatteryWarning(object):
 
         try:
             rc = df["Remaining Capacity (mAh)"].astype(float).sub(self.min_capacity)
-            fc = df["Full Charge Capacity (mAh)"].astype(int).sub(self.min_capacity)
-            min_perc = int(rc.div(fc).min() * 100.0)
+            fc = df["Full Charge Capacity (mAh)"].dropna(
+                how='all').astype(int).sub(self.min_capacity)
+            min_perc = int(rc.where(rc > 0).div(fc).min() * 100.0)
 
             if (prev_plugged_in and plugged_in) or min_perc < 50:
                 self.speak("電池残り%s％です。" % min_perc)
