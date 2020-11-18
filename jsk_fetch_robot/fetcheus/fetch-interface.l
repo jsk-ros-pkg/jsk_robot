@@ -127,6 +127,10 @@
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
+     (if (member :use-torso args)
+       (setq args (append (subseq args 0 (position :use-torso args))
+                          (if (> (length args) (+ 2 (position :use-torso args)))
+                            (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector-sequence
                   (send* self :angle-vector-sequence-raw avs tms ctype start-time args)))
    (unless (and (listp tms) (every #'numberp tms))
