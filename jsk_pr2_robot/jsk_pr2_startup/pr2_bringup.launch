@@ -5,6 +5,7 @@
   <arg name="launch_ntp_monitor" default="true"/>
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="false" />
+  <arg name="launch_network_status" default="true" />
   <arg name="launch_app_manager" default="true" />
   <arg name="setup_mannequin_mode" default="true"
        doc="prepares mannequin_mode to be callable by EusLisp interface"/>
@@ -169,7 +170,11 @@
       <param name="router" type="string" value="wifi-router" />
     </node>
   </group>
-  
+
+  <!-- Monitor network status -->
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status"
+        if="$(arg launch_network_status)" />
+
   <!-- Diagnostics aggregation -->
   <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg">
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/jsk_pr2_analyzers.yaml"/>
