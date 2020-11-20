@@ -5,6 +5,7 @@
 
 (ros::roseus-add-srvs "std_srvs")
 (ros::roseus-add-msgs "spot_msgs")
+(ros::roseus-add-srvs "spot_msgs")
 
 (defun call-trigger-service (srvname &key (wait nil))
   "Call std_srv/Trigger service"
@@ -24,6 +25,9 @@
    (&rest args)
    (prog1
        (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
+     ;; check if spot_ros/driver.launch started
+     (unless (ros::wait-for-service "/spot/claim" 5)
+       (ros::ros-error "could not communicate with robot, may be forget to roslaunch spot_driver driver.launh, or did not power on the robot"))
      ;; http://www.clearpathrobotics.com/assets/guides/melodic/spot-ros/ros_usage.html#view-the-robot
      ;; spot_msgs version 0.0.0
      (ros::subscribe "/spot/status/metrics" spot_msgs::Metrics #'send self :spot-status-metrics-callback :groupname groupname)
@@ -174,10 +178,18 @@
   ;;
   (:estop-gentle () (call-trigger-service "/spot/estop/gentle"))
   (:estop-hard () (call-trigger-service "/spot/estop/hard"))
-  (:claim () "Claim the robot control" (call-trigger-service "/spot/claim"))
+  (:claim ()
+   "Claim the robot control"
+   (let ((client (send self :state :leases-body-client-name)))
+     (if (or (null client) (string= client ""))
+	 (call-trigger-service "/spot/claim")
+       (ros::ros-warn "robot is already claimed by ~A" client))))
   (:release () "Relase the robot control" (call-trigger-service "/spot/release"))
   (:power-on () "Power on the robot" (call-trigger-service "/spot/power_on"))
-  (:power-off () "Power off the robot" (call-trigger-service "/spot/power_off"))
+  (:power-off
+   ()
+   "Power off the robot"
+   (call-trigger-service "/spot/power_off"))
   (:self-right () (call-trigger-service "/spot/self_right"))
   (:stand () "Stand the robot up" (call-trigger-service "/spot/stand"))
   (:sit () "Sit the robot down" (call-trigger-service "/spot/sit"))
@@ -215,6 +227,60 @@
     (ros::rate 10)
     t)
 
+  (:list-graph
+   (upload-filepath)
+   (let (r)
+     (setq r (ros::service-call "/spot/list_graph"
+				(instance spot_msgs::ListGraphRequest :init :upload_filepath upload-filepath)))
+     (ros::ros-info "Call \"/spot/list_graph\" returns ..")
+     (dolist (id (send r :waypoint_ids))
+       (ros::ros-info "  \"~A\"" id))
+     (send r :waypoint_ids)))
+
+  (:find-waypoint-position-from-id
+   (id ids)
+   (let (ret)
+     (setq ret (position id ids :test #'string=))
+     ret))
+  (:find-waypoint-id-from-position
+   (index ids)
+   "return waypint id from position, if you set -1 to index, it returns last waypoint"
+   (let (ret)
+     (if (< index 0)
+	 (setq index (+ (length ids) index)))
+     (if (< index (length ids))
+	 (setq ret (elt ids index)))
+     ret))
+  (:navigate-to
+   (upload-path navigate-to &key (initial-localization-fiducial t) (initial-localization-waypoint nil))
+   (let (ids c goal ret)
+     (setq ids (send self :list-graph upload-path))
+     (if (numberp navigate-to)
+	 (setq navigate-to (send self :find-waypoint-id-from-position navigate-to ids)))
+     (if (numberp initial-localization-waypoint)
+	 (setq initial-localization-waypoint (send self :find-waypoint-id-from-position initial-localization-waypoint ids)))
+     (setq c (instance ros::simple-action-client :init
+		       "/spot/navigate_to" spot_msgs::NavigateToAction))
+     (send c :wait-for-server)
+     (ros::ros-info "run navigation from ~A" upload-path)
+     (ros::ros-info "use fiducal localization ~A" initial-localization-fiducial)
+     (ros::ros-info "initial waypoit ~3D/~3D ~A"
+		    (if initial-localization-waypoint
+			(position initial-localization-waypoint ids :test #'string=)
+		      -1)
+		    (length ids)
+		    initial-localization-waypoint)
+     (ros::ros-info "   goal waypoit ~3D/~3D ~A"
+		    (position navigate-to ids :test #'string=) (length ids) navigate-to)
+     (setq goal (instance spot_msgs::NavigateToActionGoal :init))
+     (send goal :goal :upload_path upload-path)
+     (send goal :goal :navigate_to navigate-to)
+     (send goal :goal :initial_localization_fiducial initial-localization-fiducial)
+     (send goal :goal :initial_localization_waypoint initial-localization-waypoint)
+     (send c :send-goal goal :feedback-cb #'(lambda (msg) (let ((id (send msg :feedback :waypoint_id))) (ros::ros-info "~A/~A ~A" (position id ids :test #'string=) (length ids) id))))
+     (setq ret (send c :wait-for-result))
+     (ros::ros-info "~A ~A" ret (send (send c :get-result) :message))
+     ret))
   )
 
 (defun spot-init (&optional (create-viewer))
@@ -225,6 +291,13 @@
   (ros::spin-once)
   (send *ri* :spin-once)
   (send *ri* :claim)
+  (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
+    (unix::sleep 1)
+    (ros::ros-info "powering on...")
+    (send *ri* :power-on))
+  ;;
+  (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
+      (ros::ros-info "run (send *ri* :stand) to stand the robot"))
 
   (when create-viewer (objects (list *spot*)))
   )
