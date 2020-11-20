@@ -48,6 +48,8 @@
       <param name="~button_stand" value="0" />
       <param name="~button_release" value="8" />
       <param name="~button_claim" value="9" />
+
+      <param name="~num_buttons" value="18" />
   </node>
 
   <!--
