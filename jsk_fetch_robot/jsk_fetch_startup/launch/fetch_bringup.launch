@@ -94,6 +94,9 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" />
 
+  <!-- network status -->
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" />
+
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
         args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
