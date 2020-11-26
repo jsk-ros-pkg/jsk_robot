@@ -1,6 +1,10 @@
 <!-- original : pr2_navigation_global/move_base.xml (electric) -->
 <launch>
   <arg name="use_teb_local_planner" default="false" />
+  <arg name="use_map_keepout" default="false" />
+  <arg name="map_topic" value="map_keepout" if="$(arg use_map_keepout)" />
+  <arg name="map_topic" value="map" unless="$(arg use_map_keepout)" />
+
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
   <!-- Bring up the tilt_laser aware version of move_base -->
@@ -12,6 +16,7 @@
     <!-- launch-prefix="nice -n +10"> -->
     <remap from="odom" to="base_odometry/odom" />
     <remap from="cmd_vel" to="navigation/cmd_vel/raw" />
+    <remap from="map" to="$(arg map_topic)" />
     <remap from="~clear_costmaps" to="/move_base/clear_costmaps" />
 
     <param name="base_global_planner" value="navfn/NavfnROS" />
