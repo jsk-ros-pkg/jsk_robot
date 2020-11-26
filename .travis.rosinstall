@@ -1,1 +1,5 @@
-# see .travis.rosinstall.ROS_DISTRO
+# see also .travis.rosinstall.ROS_DISTRO
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+    version: master

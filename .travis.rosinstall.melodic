@@ -19,10 +19,6 @@
    uri: https://github.com/ros-planning/moveit_robots.git
    local-name: ros-planning/moveit_robots
    version: kinetic-devel
-- git: # wait until releasing
-   uri: https://github.com/tork-a/jsk_demos-release.git
-   local-name: jsk_maps
-   version: release/kinetic/jsk_maps
 - git: # wait until releasing (https://github.com/PR2/app_manager/issues/12)
    uri: https://github.com/pr2/app_manager.git
    local-name: app_manager
