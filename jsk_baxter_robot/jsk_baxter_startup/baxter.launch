@@ -7,8 +7,14 @@
   <arg name="launch_voice_echo" default="true"/>
   <arg name="launch_moveit" default="true"/>
   <arg name="launch_teleop" default="false"/>
-  <arg name="launch_tweet" default="false"/>
-  <arg name="launch_mongodb" default="false"/>
+  <arg name="launch_mongodb" default="false"
+       doc="Deprecated. Please use launch_db instead."/>
+  <arg name="launch_db" default="$(arg launch_mongodb)"
+       doc="launch jsk_robot_lifelog logging"/>
+  <arg name="launch_tweet" default="false"
+       doc="Deprecated. Please use launch_twitter instead." />
+  <arg name="launch_twitter" default="$(arg launch_tweet)"
+       doc="launch twitter" />
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="sanity_check_joint_trajectory" default="true" />
@@ -23,7 +29,6 @@
        doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
   <arg name="USER_NAME" default="false"/>
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
-  <machine name="localhost" address="localhost" env-loader="/opt/ros/indigo/env.sh" user="baxter"/>
 
   <!-- custom baxter params -->
   <param if="$(arg load_robot_description)" name="/robot_description"
@@ -94,14 +99,17 @@
            file="$(find jsk_baxter_startup)/jsk_baxter_joy/baxter_joy.launch" >
   </include>
 
-  <!-- Twitter -->
-  <include if="$(arg launch_tweet)"
-           file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch" >
-  </include>
-
-  <!-- MongoDB -->
-  <include if="$(arg launch_mongodb)" file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
-  </include>
+  <!-- logging node for Baxter -->
+  <group if="$(arg launch_db)">
+    <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+      <arg name="use_daemon" value="true"/>
+      <arg name="port" value="27017" />
+      <arg name="repl_set_mode" value="false" />
+    </include>
+    <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/db_client.launch" >
+      <arg name="twitter" value="$(arg launch_twitter)"/>
+    </include>
+  </group>
 
   <!-- Wrench -->
   <include if="$(arg launch_wrench)"
