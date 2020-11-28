@@ -1,0 +1,3 @@
+NavfnROS:
+    allow_unknown: true ## Specifies whether or not to allow navfn to create plans that traverse unknown space. NOTE: if you are using a layered costmap_2d costmap with a voxel or obstacle layer, you must also set the track_unknown_space param for that layer to be true, or it will convert all your unknown space to free space (which navfn will then happily go right through).
+

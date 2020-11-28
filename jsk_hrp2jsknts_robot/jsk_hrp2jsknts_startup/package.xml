@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>jsk_hrp2jsknts_startup</name>
+  <version>0.0.0</version>
+  <description>The jsk_hrp2jsknts_startup package</description>
+
+  <maintainer email="hiraoka@jsk.imi.i.u-tokyo.ac.jp">Naoki-Hiraoka</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>move_base</exec_depend>
+  <exec_depend>teb_local_planner</exec_depend>
+  <exec_depend>rtabmap_ros</exec_depend>
+  <exec_depend>octomap_server</exec_depend>
+</package>

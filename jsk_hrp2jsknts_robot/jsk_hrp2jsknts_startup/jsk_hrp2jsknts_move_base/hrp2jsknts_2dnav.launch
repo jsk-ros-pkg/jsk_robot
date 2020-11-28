@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/global_map.launch"/>
+  <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/local_map.launch"/>
+  <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/move_base.launch"/>
+  <node pkg="rviz" type="rviz" name="move_base_rviz" args="-d $(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/move_base.rviz"/>
+</launch>

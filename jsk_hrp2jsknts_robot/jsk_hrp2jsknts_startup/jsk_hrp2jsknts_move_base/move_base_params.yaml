@@ -1,0 +1,16 @@
+base_global_planner: navfn/NavfnROS
+#base_local_planner: base_local_planner/TrajectoryPlannerROS
+base_local_planner: teb_local_planner/TebLocalPlannerROS
+recovery_behaviors: [
+    #{name: conservative_clear, type: clear_costmap_recovery/ClearCostmapRecovery},
+    {name: rotate_recovery, type: rotate_recovery/RotateRecovery},
+    #{name: aggressive_clear, type: clear_costmap_recovery/ClearCostmapRecovery}
+] ## A list of recovery behavior plugins to use with move_base, see pluginlib documentation for more details on plugins. These behaviors will be run when move_base fails to find a valid plan in the order that they are specified. After each behavior completes, move_base will attempt to make a plan. If planning is successful, move_base will continue normal operation. Otherwise, the next recovery behavior in the list will be executed. These plugins must adhere to the nav_core::RecoveryBehavior interface specified in the nav_core package. (1.0 series default: [{name: conservative_reset, type: ClearCostmapRecovery}, {name: rotate_recovery, type: RotateRecovery}, {name: aggressive_reset, type: ClearCostmapRecovery}]). Note: For the default parameters, the aggressive_reset behavior will clear out to a distance of 4 * ~/local_costmap/circumscribed_radius.
+controller_frequency: 2.0 ## The rate in Hz at which to run the control loop and send velocity commands to the base. # hrpsysは一歩ごとに更新するので一歩の時間と同じくらいにしておくが、少し早くしないと遅延によって振動する
+planner_patience: 15.0 ## How long the planner will wait in seconds in an attempt to find a valid plan before space-clearing operations are performed.
+controller_patience: 15.0 ## How long the controller will wait in seconds without receiving a valid control before space-clearing operations are performed.
+conservative_reset_dist: 3.0 ## The distance away from the robot in meters beyond which obstacles will be cleared from the costmap when attempting to clear space in the map. Note, this parameter is only used when the default recovery behaviors are used for move_base.
+oscillation_timeout: 0.0 ## How long in seconds to allow for oscillation before executing recovery behaviors. A value of 0.0 corresponds to an infinite timeout.
+oscillation_distance: 0.5 ## How far in meters the robot must move to be considered not to be oscillating. Moving this far resets the timer counting up to the ~oscillation_timeout
+planner_frequency: 0.2 ## The rate in Hz at which to run the global planning loop. If the frequency is set to 0.0, the global planner will only run when a new goal is received or the local planner reports that its path is blocked. ## オンラインでglobal mapが変化するため、0.0は不可
+max_planning_retries: -1 ## How many times to allow for planning retries before executing recovery behaviors. A value of -1.0 corresponds to an infinite retries.

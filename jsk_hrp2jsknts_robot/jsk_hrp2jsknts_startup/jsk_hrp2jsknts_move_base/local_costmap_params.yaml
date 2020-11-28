@@ -1,0 +1,21 @@
+local_costmap:
+  ## costmap_2d
+  footprint: [[ 0.1,  0.2], [-0.1,  0.2], [-0.1, -0.2], [ 0.1, -0.2]] ## local plan後のfeasibility checkに用いられる. 小さいほうが安定する
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+  robot_base_frame: base_footprint ## The name of the frame for the base link of the robot.
+  global_frame: odom ## The global frame for the costmap to operate in.
+  transform_tolerance: 2.0 ## Specifies the delay in transform (tf) data that is tolerable in seconds.
+  update_frequency: 2.0 ## The frequency in Hz for the map to be updated.
+  publish_frequency: 2.0 ## The frequency in Hz for the map to be publish display information.
+  rolling_window: false ## Whether or not to use a rolling window version of the costmap. If the static_map parameter is set to true, this parameter must be set to false.
+  always_send_full_costmap: false ## If true the full costmap is published to "~<name>/costmap" every update. If false only the part of the costmap that has changed is published on the "~<name>/costmap_updates" topic.
+
+  ## staticmap
+  static_layer:
+    map_topic: /octomap/projected_map ## The topic that the costmap subscribes to for the static map. This parameter is useful when you have multiple costmap instances within a single node that you want to use different static maps.
+    track_unknown_space: false ## If true, unknown values in the map messages are translated directly to the layer. Otherwise, unknown values in the map message are translated as FREE_SPACE in the layer. ## trueが望ましいが、オンラインでマップを生成する場合はunknownが多すぎる
+    first_map_only: false ## Only subscribe to the first message on the map topic, ignoring all subsequent messages
+    subscribe_to_updates: false ## In addition to map_topic, also subscribe to map_topic + "_updates"
+    use_maximum: false ## Only matters if the static layer is not the bottom layer. If true, only the maximum value will be written to the master costmap.
+    trinary_costmap: true ## If true, translates all map message values to NO_INFORMATION/FREE_SPACE/LETHAL_OBSTACLE (three values). If false, a full spectrum of intermediate values is possible.
