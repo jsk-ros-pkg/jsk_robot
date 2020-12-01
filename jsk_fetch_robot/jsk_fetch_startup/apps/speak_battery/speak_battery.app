@@ -8,6 +8,7 @@ plugins:
     type: app_notifier/user_speech_notifier_plugin
     plugin_args:
       client_name: /sound_play
+      warning: true
 plugin_order:
   start_plugin_order:
     - user_speech_notifier_plugin
