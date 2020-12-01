@@ -1,5 +1,6 @@
 <launch>
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <arg name="use_safe_teleop" default="true" />
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="launch_fetch_bringup_teleop" default="false" />
@@ -29,6 +30,7 @@
 
   <!-- Mux cmd_vel topics -->
   <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" >
+    <arg name="use_safe_teleop" value="$(arg use_safe_teleop)" />
     <arg name="odom_topic" value="/odom_teleop"/>
     <arg name="joy_topic" value="/joy_vel"/>
     <arg name="navigation_topic" value="/navigation/cmd_vel"/>

@@ -2,6 +2,7 @@
   <machine name="localhost" address="localhost" />
 
   <arg name="machine" default="localhost" />
+  <arg name="use_safe_teleop" default="true" />
   <arg name="odom_topic" default="/odom_teleop" />
   <arg name="joy_topic" default="/joy_vel" />
   <arg name="navigation_topic" default="/navigation/cmd_vel" />
@@ -23,28 +24,33 @@
     <param name="wait" value="true" />
   </node>
 
-  <!-- /teleop/cmd_vel/unsafe -> /teleop/cmd_vel/safe -->
-  <node name="safe_teleop_base" pkg="safe_teleop_base" type="safe_teleop_base"
-        machine="$(arg machine)" >
-    <remap from="/odom" to="$(arg odom_topic)"/>
-    <remap from="base_velocity" to="/teleop/cmd_vel/unsafe" />
-    <remap from="~safe_vel"     to="/teleop/cmd_vel/safe" />
-  </node>
+  <group if="$(arg use_safe_teleop)">
+    <!-- /teleop/cmd_vel/unsafe -> /teleop/cmd_vel/safe -->
+    <node name="safe_teleop_base" pkg="safe_teleop_base" type="safe_teleop_base"
+          machine="$(arg machine)" >
+      <remap from="/odom" to="$(arg odom_topic)"/>
+      <remap from="base_velocity" to="/teleop/cmd_vel/unsafe" />
+      <remap from="~safe_vel"     to="/teleop/cmd_vel/safe" />
+    </node>
 
-  <!-- unsafe mux: (/teleop/cmd_vel/unsafe & /teleop/cmd_vel/safe) -> /teleop/cmd_vel -->
-  <node name="unsafe_vel_mux" pkg="topic_tools" type="mux"
-        respawn="true" machine="$(arg machine)"
-	args="/teleop/cmd_vel /teleop/cmd_vel/safe /teleop/cmd_vel/unsafe">
-    <remap from="mux" to="unsafe_vel_mux" />
-  </node>
-  <!-- unsafe mux selector with PS3 R2 button -->
-  <node name="unsafe_vel_selector" pkg="jsk_robot_startup" type="mux_selector.py"
-	respawn="true" machine="$(arg machine)"
-	args="/joy 'm.buttons[9]==1' /teleop/cmd_vel/unsafe /joy 'm.buttons[9]==0' /teleop/cmd_vel/safe">
-    <remap from="mux" to="unsafe_vel_mux" />
-    <param name="default_select" value="/teleop/cmd_vel/safe" />
-    <param name="wait" value="true" />
-  </node>
+    <!-- unsafe mux: (/teleop/cmd_vel/unsafe & /teleop/cmd_vel/safe) -> /teleop/cmd_vel -->
+    <node name="unsafe_vel_mux" pkg="topic_tools" type="mux"
+          respawn="true" machine="$(arg machine)"
+	        args="/teleop/cmd_vel /teleop/cmd_vel/safe /teleop/cmd_vel/unsafe">
+      <remap from="mux" to="unsafe_vel_mux" />
+    </node>
+    <!-- unsafe mux selector with PS3 R2 button -->
+    <node name="unsafe_vel_selector" pkg="jsk_robot_startup" type="mux_selector.py"
+	        respawn="true" machine="$(arg machine)"
+	        args="/joy 'm.buttons[9]==1' /teleop/cmd_vel/unsafe /joy 'm.buttons[9]==0' /teleop/cmd_vel/safe">
+      <remap from="mux" to="unsafe_vel_mux" />
+      <param name="default_select" value="/teleop/cmd_vel/safe" />
+      <param name="wait" value="true" />
+    </node>
+  </group>
+  <group unless="$(arg use_safe_teleop)">
+    <node name="unsafe_vel_relay" pkg="topic_tools" type="relay" args="/teleop/cmd_vel/unsafe /teleop/cmd_vel" />
+  </group>
 
   <!-- vel type mux: (/teleop/cmd_vel & $(arg navigation_topic) & $(arg base_controller_topic)) -> /base_controller/command_unchecked -->
   <node pkg="topic_tools" type="mux" name="vel_type_mux"
