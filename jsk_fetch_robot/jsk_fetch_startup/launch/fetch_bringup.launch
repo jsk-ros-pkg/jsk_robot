@@ -6,6 +6,7 @@
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_insta360" default="true" />
   <arg name="use_voice_text" default="true" />
+  <arg name="fetch_lifelog" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
@@ -24,6 +25,9 @@
   <arg name="network_detector" default="true" />
   <arg name="network_status" default="true" />
   <arg name="use_speech_recognition" default="true" />
+  <arg name="imu_corrector" default="true" />
+  <arg name="odom_corrector" default="true" />
+
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
 
