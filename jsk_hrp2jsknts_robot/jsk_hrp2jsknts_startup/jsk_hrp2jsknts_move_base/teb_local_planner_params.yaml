@@ -9,7 +9,7 @@ TebLocalPlannerROS:
   footprint_model:
     ## TODO aeroはlineにして、min_obstacle_distを大きくしている
     type: polygon ## Specify the robot footprint model type used for optimization. Different types are "point", "circular", "line", "two_circles" and "polygon." The type of the model significantly influences the required computation time.
-    vertices: [[ 0.1,  0.2], [-0.1,  0.2], [-0.1, -0.2], [ 0.1, -0.2]] ## This parameter is only relevant for type "polygon". It contains the list of polygon vertices (2d coordinates each). The polygon is always closed: do not repeat the first vertex at the end. ## 最適化時にはmapのfootprintは無視され、代わりにこちらが用いられる. ちょっと小さくして、代わりにmin_obstacle_distを大きくしたほうがソフト制約になって勾配が消失せず安定する
+    vertices: [[ 0.1,  0.25], [-0.1,  0.25], [-0.1, -0.25], [ 0.1, -0.25]] ## This parameter is only relevant for type "polygon". It contains the list of polygon vertices (2d coordinates each). The polygon is always closed: do not repeat the first vertex at the end. ## 最適化時にはmapのfootprintは無視され、代わりにこちらが用いられる. ちょっと小さくして、代わりにmin_obstacle_distを大きくしたほうがソフト制約になって勾配が消失せず安定する
   is_footprint_dynamic: true ## If true, updates the footprint before checking trajectory feasibility
 
   xy_goal_tolerance: 0.20 ## Allowed final euclidean distance to the goal position in meters
@@ -27,7 +27,7 @@ TebLocalPlannerROS:
   publish_feedback: false ## Publish planner feedback containing the full trajectory and a list of active obstacles (should be enabled only for evaluation or debugging). See list of publishers above.
   shrink_horizon_backup: true ## Allows the planner to shrink the horizon temporary (50%) in case of automatically detected issues (e.g. infeasibility). Also see parameter shrink_horizon_min_duration.
   allow_init_with_backwards_motion: false ## If true, underlying trajectories might be initialized with backwards motions in case the goal is behind the start within the local costmap (this is only recommended if the robot is equipped with rear sensors).
-  exact_arc_length: false ## If true, the planner uses the exact arc length in velocity, acceleration and turning rate computations (-> increased cpu time), otherwise the Euclidean approximation is used. ## hrpsysの中のgo-velocityもexectではない
+  exact_arc_length: false ## If true, the planner uses the exact arc length in velocity, acceleration and turning rate computations (-> increased cpu time), otherwise the Euclidean approximation is used. ## hrpsysの中のgo-velocityはexectではない(false).
   shrink_horizon_min_duration: 3.0 ## Specify minimum duration for the reduced horizon in case an infeasible trajectory is detected (refer to parameter shrink_horizon_backup in order to activate the reduced horizon mode).
 
   min_obstacle_dist: 0.25 ## Minimum desired separation from obstacles in meters ## mapのfootprintは使われず、footprint_modelが参照されることに注意. obstacle_association_cutoff_factor や obstacle_association_force_inclusion_factor に影響する
@@ -40,7 +40,7 @@ TebLocalPlannerROS:
   obstacle_association_cutoff_factor: 5.0 ## See obstacle_association_force_inclusion_factor, but beyond a multiple of [value]*min_obstacle_dist all obstacles are ignored during optimization. Parameter obstacle_association_force_inclusion_factor is processed first.
   costmap_converter_plugin: "" ## Define plugin name in order to convert costmap cells to points/lines/polygons. Set an empty string to disable the conversion such that all cells are treated as point-obstacles. ## 障害物を見落とす恐れがあるので使用しないほうがいい
   costmap_converter_spin_thread: True ## If set to true, the costmap converter invokes its callback queue in a different thread.
-  costmap_converter_rate: 1 ## rate that defines how often the costmap_converter plugin processes the current costmap (the value should not be much higher than the costmap update rate) [in Hz]. ## 1 hzでcontrolするので。
+  costmap_converter_rate: 2 ## rate that defines how often the costmap_converter plugin processes the current costmap (the value should not be much higher than the costmap update rate) [in Hz]. ## control frequencyと同じにしておく. 
 
 # Optimization
   no_inner_iterations: 5 ## Number of actual solver iterations called in each outerloop iteration. See param no_outer_iterations.

@@ -1,6 +1,6 @@
 local_costmap:
   ## costmap_2d
-  footprint: [[ 0.1,  0.2], [-0.1,  0.2], [-0.1, -0.2], [ 0.1, -0.2]] ## local plan後のfeasibility checkに用いられる. 小さいほうが安定する
+  footprint: [[ 0.1,  0.25], [-0.1,  0.25], [-0.1, -0.25], [ 0.1, -0.25]] ## local plan後のfeasibility checkに用いられる. 小さいほうが安定する
   plugins:
     - {name: static_layer, type: "costmap_2d::StaticLayer"}
   robot_base_frame: base_footprint ## The name of the frame for the base link of the robot.
