@@ -14,6 +14,15 @@
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
 
+  <arg name="battery_warning" default="true" />
+  <arg name="nav_speak" default="true" />
+  <arg name="fetch_lifelog" default="true" />
+  <arg name="cpu_monitor" default="true" />
+  <arg name="fetch_tweet" default="true" />
+  <arg name="use_safe_teleop" default="true" />
+  <arg name="network_detector" default="true" />
+  <arg name="network_status" default="true" />
+  <arg name="use_speech_recognition" default="true" />
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
 
@@ -21,7 +30,7 @@
 
   <!-- add jsk startups -->
   <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
-        respawn="true" output="screen">
+        respawn="true" output="screen" if="$(arg battery_warning)">
     <rosparam>
       duration: 180
       charge_level_threshold: 80.0
@@ -31,7 +40,7 @@
     </rosparam>
   </node>
 
-  <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+  <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" if="$(arg nav_speak)">
     <rosparam>
       lang: japanese
       volume: 0.5
@@ -74,7 +83,7 @@
   </node>
 
   <!-- logging -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
+  <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml" if="$(fetch_lifelog)">
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="vital_check" value="false" />
   </include>
@@ -87,7 +96,7 @@
 
   <!-- publish CPU status to diagnostics -->
   <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
-        args="--diag-hostname=my_machine" >
+        args="--diag-hostname=my_machine" if="$(arg cpu_monitor)">
     <param name="check_ipmi_tool" value="false" type="bool" />
     <param name="enforce_clock_speed" value="false" type="bool" />
     <param name="num_cores" value="-1" type="int" />
@@ -96,7 +105,7 @@
   </node>
 
   <!-- twitter -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" if="$(arg fetch_tweet)"/>
 
   <!-- switchbot -->
   <include file="$(find switchbot_ros)/launch/switchbot.launch" if="$(arg fetch_switchbot)">
@@ -104,7 +113,7 @@
   </include>
 
   <!-- app manager -->
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch" if="$(arg fetch_lifelog)">
     <arg name="use_applist" value="false" /> <!-- use plugin -->
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
@@ -112,7 +121,7 @@
   </include>
 
   <!-- rwt_image_view -->
-  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch">
+  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch" if="$(arg fetch_lifelog)">
     <arg name="launch_roswww" value="false" />
     <arg name="launch_websocket" value="false" />
   </include>
@@ -134,13 +143,14 @@
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
            if="$(arg launch_teleop)" >
-      <arg name="odom_topic" value="/odom_combined" />
+    <arg name="use_safe_teleop" value="$(arg use_safe_teleop)" />
+    <arg name="odom_topic" value="/odom_combined" />
   </include>
 
   <!-- network status -->
-  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" />
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" if="$(network_status)"/>
   <!-- network detector -->
-  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector">
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector" if="$(network_detector)">
     <rosparam>
       interface_name: wlan0
     </rosparam>
@@ -148,15 +158,15 @@
 
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
-        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100" if="$(use_speech_recognition)"/>
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
-  <include file="$(find julius_ros)/launch/julius.launch">
+  <include file="$(find julius_ros)/launch/julius.launch" if="$(use_speech_recognition)">
     <arg name="launch_audio_capture" value="false"/>
     <arg name="launch_sound_play" value="false"/>
     <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
   </include>
-  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
+  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch" if="$(use_speech_recognition)">
     <arg name="publish_tf" default="false"/>
     <arg name="launch_soundplay" default="false"/>
     <arg name="audio" value="speech_audio"/>
@@ -166,7 +176,7 @@
   <!-- set fetch speak action server names -->
   <!-- this parameter is for speech_to_text node in respeaker_ros -->
   <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/168 -->
-  <group ns="speech_to_text">
+  <group ns="speech_to_text" if="$(use_speech_recognition)">
     <rosparam>
        tts_action_names:
          - sound_play
@@ -178,7 +188,7 @@
   <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive -->
   <node name="speech_to_text_selector" pkg="jsk_robot_startup" type="mux_selector.py"
         respawn="true"
-        args="/network/connected 'm.data==False' /speech_to_text_julius">
+        args="/network/connected 'm.data==False' /speech_to_text_julius" if="$(use_speech_recognition)">
     <remap from="mux" to="speech_to_text_mux" />
     <rosparam>
       default_select: speech_to_text_google
