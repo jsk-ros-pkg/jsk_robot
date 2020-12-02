@@ -16,9 +16,10 @@
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
-  <arg name="fetch_lifelog" default="true" />
-  <arg name="cpu_monitor" default="true" />
   <arg name="fetch_tweet" default="true" />
+  <arg name="app_manager" default="true" />
+  <arg name="rwt_image_view" default="true" />
+  <arg name="fetch_sensors" default="true" />
   <arg name="use_safe_teleop" default="true" />
   <arg name="network_detector" default="true" />
   <arg name="network_status" default="true" />
@@ -96,7 +97,7 @@
 
   <!-- publish CPU status to diagnostics -->
   <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
-        args="--diag-hostname=my_machine" if="$(arg cpu_monitor)">
+        args="--diag-hostname=my_machine" >
     <param name="check_ipmi_tool" value="false" type="bool" />
     <param name="enforce_clock_speed" value="false" type="bool" />
     <param name="num_cores" value="-1" type="int" />
@@ -113,7 +114,7 @@
   </include>
 
   <!-- app manager -->
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch" if="$(arg fetch_lifelog)">
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch" if="$(arg app_manager)">
     <arg name="use_applist" value="false" /> <!-- use plugin -->
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
@@ -121,13 +122,13 @@
   </include>
 
   <!-- rwt_image_view -->
-  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch" if="$(arg fetch_lifelog)">
+  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch" if="$(arg rwt_image_view)">
     <arg name="launch_roswww" value="false" />
     <arg name="launch_websocket" value="false" />
   </include>
 
   <!-- downsample / throttle sensor data -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" >
+  <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" if="$(arg fetch_sensors)">
     <arg name="launch_manager" value="false"/>
   </include>
 
