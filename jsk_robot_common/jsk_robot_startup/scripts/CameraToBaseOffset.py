@@ -23,11 +23,11 @@ class CameraToBaseOffset(object):
             self.broadcast = tf.TransformBroadcaster()
         self.base_link_frame = rospy.get_param("~base_link_frame", "BODY")
         self.camera_frame = rospy.get_param("~camera_frame", "left_camera_optical_frame")
-        self.odom_frame = rospy.get_param("~odom_frame", "viso_odom")        
+        self.odom_frame = rospy.get_param("~odom_frame", "viso_odom")
         self.tf_duration = rospy.get_param("~tf_duration", 1)
         self.listener = tf.TransformListener(True, rospy.Duration(10))
         self.r = rospy.Rate(self.rate)
-        self.initial_matrix = None
+        self.initial_base_to_odom_transformation = None
         self.lock = threading.Lock()
         self.source_odom_sub = rospy.Subscriber("~source_odom", Odometry, self.source_odom_callback)
         self.init_signal_sub = rospy.Subscriber("~init_signal", Empty, self.init_signal_callback)
@@ -40,8 +40,8 @@ class CameraToBaseOffset(object):
     def init_signal_callback(self, msg):
         time.sleep(1) # wait to update odom_init frame
         with self.lock:
-            self.initial_matrix = None
-            
+            self.initial_base_to_odom_transformation = None
+
     def source_odom_callback(self, msg):
         with self.lock:
             # calculate camera transform
@@ -49,16 +49,18 @@ class CameraToBaseOffset(object):
             if current_camera_to_base is None:
                 return
 
-            if self.initial_matrix is None:
-                self.initial_matrix = numpy.linalg.inv(current_camera_to_base)
-
-            camera_relative_base_transformation = numpy.dot(self.initial_matrix, current_camera_to_base) # base_link transformation in camera coords
-            
-            # calculate offseted odometry
             source_odom_matrix = make_homogeneous_matrix([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z],
                                                          [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
                                                           msg.pose.pose.orientation.z, msg.pose.pose.orientation.w])
-            new_odom_matrix = camera_relative_base_transformation.dot(source_odom_matrix)
+
+            if self.initial_base_to_odom_transformation is None:
+                self.initial_base_to_odom_transformation = numpy.linalg.inv(
+                    numpy.dot(source_odom_matrix, current_camera_to_base))
+
+            # calculate offseted odometry
+            current_odom_to_base = numpy.dot(source_odom_matrix, current_camera_to_base)
+            odom_relative_base_transformation = numpy.dot(self.initial_base_to_odom_transformation, current_odom_to_base)
+            new_odom_matrix = odom_relative_base_transformation
 
             # make odometry msg. twist is copied from source_odom
             new_odom = copy.deepcopy(msg)
@@ -67,11 +69,11 @@ class CameraToBaseOffset(object):
             new_odom.pose.pose.position = Point(*list(new_odom_matrix[:3, 3]))
             new_odom.pose.pose.orientation = Quaternion(*list(tf.transformations.quaternion_from_matrix(new_odom_matrix)))
             new_pose_cov_matrix = numpy.matrix(new_odom.pose.covariance).reshape(6, 6)
-            rotation_matrix = camera_relative_base_transformation[:3, :3]
+            rotation_matrix = odom_relative_base_transformation[:3, :3]
             new_pose_cov_matrix[:3, :3] = (rotation_matrix.T).dot(new_pose_cov_matrix[:3, :3].dot(rotation_matrix))
             new_pose_cov_matrix[3:6, 3:6] = (rotation_matrix.T).dot(new_pose_cov_matrix[3:6, 3:6].dot(rotation_matrix))
             new_odom.pose.covariance = numpy.array(new_pose_cov_matrix).reshape(-1,).tolist()
-                                            
+
             # publish
             self.pub.publish(new_odom)
             if self.publish_tf:
@@ -89,10 +91,9 @@ class CameraToBaseOffset(object):
                 return None
         camera_to_base_link = make_homogeneous_matrix(trans, rot) # camera -> base_link
         return camera_to_base_link
-        
+
 if __name__ == '__main__':
     try:
         node = CameraToBaseOffset()
         node.execute()
     except rospy.ROSInterruptException: pass
-        
