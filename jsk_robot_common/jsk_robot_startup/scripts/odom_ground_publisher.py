@@ -7,6 +7,9 @@ import tf
 import time
 
 def callback(msg):
+    global position
+    global orientation
+
     rospy.loginfo("reset odom_ground")
     try:
         stamp = rospy.Time(0)
@@ -24,8 +27,10 @@ if __name__ == "__main__":
     tfl = tf.TransformListener(True, rospy.Duration(10))
     tfb = tf.TransformBroadcaster()
     odom_frame = rospy.get_param("~odom_frame", "odom")
+    rospy.loginfo("odom frame: {}".format(odom_frame))
     odom_ground_frame = rospy.get_param("~odom_ground_frame", "odom_ground")
-    rate = rospy.get_param("~rate", 1)
+    rospy.loginfo("odom ground frame: {}".format(odom_ground_frame))
+    rate = rospy.get_param("~rate", 500)
     r = rospy.Rate(rate)
 
     position = None
@@ -34,11 +39,11 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         if position is not None:
             try:
-                tfb.sendTransform(position, orientation, rospy.Time(0), odom_ground_frame, odom_frame)
+                tfb.sendTransform(position, orientation, rospy.Time.now(), odom_ground_frame, odom_frame)
             except:
                 rospy.logerr("Failed to broadcast {} to {} transform".format(odom_frame, odom_ground_frame))
         else:
-            print("make {} frame".format(odom_ground))
+            rospy.loginfo("make {} frame".format(odom_ground_frame))
             dummy_msg = EmptyMsg()
             callback(dummy_msg)
             time.sleep(1) # wait to make odom ground tf
