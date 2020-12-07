@@ -16,7 +16,7 @@ TebLocalPlannerROS:
   yaw_goal_tolerance: 0.2 ## Allowed final orientation error in radians
   free_goal_vel: true ## Remove the goal velocity constraint such that the robot can arrive at the goal with maximum speed
 
-  dt_ref: 1.0 ## Desired temporal resolution of the trajectory (the trajectory is not fixed to dt_ref since the temporal resolution is part of the optimization, but the trajectory will be resized between iterations if dt_ref +-dt_hysteresis is violated. # hrpsysは一歩おきにしか更新できないので一歩の時間と同じにしておく
+  dt_ref: 1.1 ## Desired temporal resolution of the trajectory (the trajectory is not fixed to dt_ref since the temporal resolution is part of the optimization, but the trajectory will be resized between iterations if dt_ref +-dt_hysteresis is violated. # hrpsysは一歩おきにしか更新できないので一歩の時間と同じにしておく
   dt_hysteresis: 0.1 ## Hysteresis for automatic resizing depending on the current temporal resolution, usually approx. 10% of dt_ref is recommended
   min_samples: 3 ## Minimum number of samples (should be always greater than 2)
   global_plan_overwrite_orientation: true ## Overwrite orientation of local subgoals provided by the global planner (since they often provide only a 2D path)
