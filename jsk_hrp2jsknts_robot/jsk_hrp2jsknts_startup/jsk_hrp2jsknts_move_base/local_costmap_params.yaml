@@ -5,7 +5,7 @@ local_costmap:
     - {name: static_layer, type: "costmap_2d::StaticLayer"}
   robot_base_frame: base_footprint ## The name of the frame for the base link of the robot.
   global_frame: odom ## The global frame for the costmap to operate in.
-  transform_tolerance: 2.0 ## Specifies the delay in transform (tf) data that is tolerable in seconds.
+  transform_tolerance: 3.0 ## Specifies the delay in transform (tf) data that is tolerable in seconds. # 通信遅延に対応
   update_frequency: 2.0 ## The frequency in Hz for the map to be updated.
   publish_frequency: 2.0 ## The frequency in Hz for the map to be publish display information.
   rolling_window: false ## Whether or not to use a rolling window version of the costmap. If the static_map parameter is set to true, this parameter must be set to false.

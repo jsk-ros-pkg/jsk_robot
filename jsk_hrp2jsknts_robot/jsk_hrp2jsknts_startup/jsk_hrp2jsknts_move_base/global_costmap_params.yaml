@@ -7,9 +7,9 @@ global_costmap:
     - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
   global_frame: map ## The global frame for the costmap to operate in.
   robot_base_frame: base_footprint ## The name of the frame for the base link of the robot.
-  transform_tolerance: 2.0 ## Specifies the delay in transform (tf) data that is tolerable in seconds.
-  update_frequency: 1.0 ## The frequency in Hz for the map to be updated.
-  publish_frequency: 1.0 ## The frequency in Hz for the map to be publish display information.
+  transform_tolerance: 3.0 ## Specifies the delay in transform (tf) data that is tolerable in seconds. # rtabmapの更新速度が遅いので3.0にする
+  update_frequency: 0.5 ## The frequency in Hz for the map to be updated. # rtabmapの更新速度が遅いので0.5hzにする
+  publish_frequency: 0.5 ## The frequency in Hz for the map to be publish display information. # rtabmapの更新速度が遅いので0.5hzにする
   rolling_window: false ## Whether or not to use a rolling window version of the costmap. If the static_map parameter is set to true, this parameter must be set to false.
   always_send_full_costmap: false ## If true the full costmap is published to "~<name>/costmap" every update. If false only the part of the costmap that has changed is published on the "~<name>/costmap_updates" topic.
 

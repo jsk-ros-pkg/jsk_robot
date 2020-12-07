@@ -23,8 +23,7 @@
         odom_frame_id: odom #最初のodomの原点がmapの原点になる。2次元地図を使用する場合は、mapのXY平面に対して射影が行われるが、このとき、Z成分が負の点やGrid/MaxObstacleHeightより大きい点はobstacleとしては無視される。そのため、最初のodomの原点のZ高さに注意を払う必要がある。
 
         map_always_update: true ## 立ち止まった時にもアップデート
-        # wait_for_transform: true
-        # wait_for_transform_duration: 0.5
+        wait_for_transform_duration: 0.5 ## 通信遅延に対応するため
 
         Grid/RayTracing: true ## octomap_occupied_space にray tracingが適用される
         Grid/CellSize: 0.02
