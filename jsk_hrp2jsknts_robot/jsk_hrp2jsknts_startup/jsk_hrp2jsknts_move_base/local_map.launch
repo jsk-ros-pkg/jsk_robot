@@ -1,7 +1,7 @@
 <launch>
   <group ns="octomap">
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
-      <remap from="cloud_in" to="/camera_remote/depth_registered/points" />
+      <remap from="cloud_in" to="/camera_remote/depth_registered/points_self_filtered" />
 
       <rosparam>
         frame_id: odom # Static global frame in which the map will be published

@@ -1,0 +1,98 @@
+min_sensor_dist: 0.2
+self_see_default_padding: 0.04
+self_see_default_scale: 1.0
+self_see_links:
+  - name: "BODY"
+    padding: 0.04
+  - name: "RLEG_LINK0"
+    padding: 0.04
+  - name: "RLEG_LINK1"
+    padding: 0.04
+  - name: "RLEG_LINK2"
+    padding: 0.04
+  - name: "RLEG_LINK3"
+    padding: 0.04
+  - name: "RLEG_LINK4"
+    padding: 0.04
+  - name: "RLEG_LINK5"
+    padding: 0.04
+  - name: "RLEG_LINK6"
+    padding: 0.04
+  - name: "LLEG_LINK0"
+    padding: 0.04
+  - name: "LLEG_LINK1"
+    padding: 0.04
+  - name: "LLEG_LINK2"
+    padding: 0.04
+  - name: "LLEG_LINK3"
+    padding: 0.04
+  - name: "LLEG_LINK4"
+    padding: 0.04
+  - name: "LLEG_LINK5"
+    padding: 0.04
+  - name: "LLEG_LINK6"
+    padding: 0.04
+  - name: "CHEST_LINK0"
+    padding: 0.04
+  - name: "CHEST_LINK1"
+    padding: 0.04
+  # - name: "HEAD_LINK0"
+  #   padding: 0.04
+  # - name: "HEAD_LINK1"
+  #   padding: 0.04
+  - name: "RARM_LINK0"
+    padding: 0.04
+  - name: "RARM_LINK1"
+    padding: 0.04
+  - name: "RARM_LINK2"
+    padding: 0.04
+  - name: "RARM_LINK3"
+    padding: 0.04
+  - name: "RARM_LINK4"
+    padding: 0.04
+  - name: "RARM_LINK5"
+    padding: 0.04
+  - name: "RARM_LINK6"
+    padding: 0.04
+  # - name: "RARM_LINK7"
+  #   padding: 0.04
+  - name: "LARM_LINK0"
+    padding: 0.04
+  - name: "LARM_LINK1"
+    padding: 0.04
+  - name: "LARM_LINK2"
+    padding: 0.04
+  - name: "LARM_LINK3"
+    padding: 0.04
+  - name: "LARM_LINK4"
+    padding: 0.04
+  - name: "LARM_LINK5"
+    padding: 0.04
+  - name: "LARM_LINK6"
+    padding: 0.04
+  # - name: "LARM_LINK7"
+  #   padding: 0.04
+  - name: "R_THUMBCM_Y_LINK"
+    padding: 0.04
+  - name: "R_THUMBCM_P_LINK"
+    padding: 0.04
+  - name: "R_INDEXMP_R_LINK"
+    padding: 0.04
+  - name: "R_INDEXMP_P_LINK"
+    padding: 0.04
+  - name: "R_INDEXPIP_R_LINK"
+    padding: 0.04
+  - name: "R_MIDDLEPIP_R_LINK"
+    padding: 0.04
+  - name: "L_THUMBCM_Y_LINK"
+    padding: 0.04
+  - name: "L_THUMBCM_P_LINK"
+    padding: 0.04
+  - name: "L_INDEXMP_R_LINK"
+    padding: 0.04
+  - name: "L_INDEXMP_P_LINK"
+    padding: 0.04
+  - name: "L_INDEXPIP_R_LINK"
+    padding: 0.04
+  - name: "L_MIDDLEPIP_R_LINK"
+    padding: 0.04

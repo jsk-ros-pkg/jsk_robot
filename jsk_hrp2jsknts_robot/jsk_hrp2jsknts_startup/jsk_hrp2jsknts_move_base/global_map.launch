@@ -4,15 +4,24 @@
   <arg name="delete_db_on_start" value="--delete_db_on_start" if="$(arg DELETE_DB)"/>
   <arg name="delete_db_on_start" value="" unless="$(arg DELETE_DB)"/>
   <group ns="rtabmap">
-    <node pkg="rtabmap_ros" type="rgbd_sync" name="rtabmap_head_camera">
-      <remap from="rgb/image" to="/camera_remote/rgb/image_rect_color"/>
-      <remap from="depth/image" to="/camera_remote/depth_registered/image_raw"/>
-      <remap from="rgb/camera_info" to="/camera_remote/rgb/camera_info"/>
+    <group ns="head_camera">
+      <node pkg="nodelet" type="nodelet" name="head_camera_nodelet"  args="manager"/>
 
-      <remap from="rgbd_image" to="rgbd_image"/>
-    </node>
+      <node pkg="nodelet" type="nodelet" name="depth_image_creator" args="load jsk_pcl/DepthImageCreator head_camera_nodelet">
+        <remap from="~input" to="/camera_remote/depth_registered/points_self_filtered"/>
+        <remap from="~info" to="/camera_remote/rgb/camera_info"/>
+      </node>
+      <node pkg="nodelet" type="nodelet" name="rgbd_sync" args="load rtabmap_ros/rgbd_sync head_camera_nodelet">
+        <remap from="rgb/image" to="/camera_remote/rgb/image_rect_color"/>
+        <remap from="depth/image" to="depth_image_creator/output"/>
+        <remap from="rgb/camera_info" to="/camera_remote/rgb/camera_info"/>
+
+        <remap from="rgbd_image" to="rgbd_image"/>
+      </node>
+    </group>
 
     <node name="rtabmap" pkg="rtabmap_ros" type="rtabmap" args="$(arg delete_db_on_start)">
+      <remap from="rgbd_image" to="head_camera/rgbd_image"/>
       <rosparam subst_value="true">
         subscribe_rgb: false
         subscribe_depth: false
