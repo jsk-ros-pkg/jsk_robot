@@ -1,11 +1,11 @@
 TebLocalPlannerROS:
-  acc_lim_x: 3.0 ## Maximum translational acceleration of the robot in meters/sec^2
-  acc_lim_y: 3.0 ## Maximum strafing acceleration of the robot
-  acc_lim_theta: 3.0 ## Maximum angular acceleration of the robot in radians/sec^2
+  acc_lim_x: 10.0 ## Maximum translational acceleration of the robot in meters/sec^2
+  acc_lim_y: 10.0 ## Maximum strafing acceleration of the robot
+  acc_lim_theta: 10.0 ## Maximum angular acceleration of the robot in radians/sec^2
   max_vel_x: 0.15 ## Maximum translational velocity of the robot in meters/sec
-  max_vel_y: 0.05 ## Maximum strafing velocity of the robot
+  max_vel_y: 0.035 ## Maximum strafing velocity of the robot
   max_vel_x_backwards: 0.05 ## Maximum absolute translational velocity of the robot while driving backwards in meters/sec. See optimization parameter weight_kinematics_forward_drive
-  max_vel_theta: 0.18 ## Maximum angular velocity of the robot in radians/sec
+  max_vel_theta: 0.09 ## Maximum angular velocity of the robot in radians/sec
   footprint_model:
     ## TODO aeroはlineにして、min_obstacle_distを大きくしている
     type: polygon ## Specify the robot footprint model type used for optimization. Different types are "point", "circular", "line", "two_circles" and "polygon." The type of the model significantly influences the required computation time.
@@ -16,7 +16,7 @@ TebLocalPlannerROS:
   yaw_goal_tolerance: 0.2 ## Allowed final orientation error in radians
   free_goal_vel: true ## Remove the goal velocity constraint such that the robot can arrive at the goal with maximum speed
 
-  dt_ref: 1.1 ## Desired temporal resolution of the trajectory (the trajectory is not fixed to dt_ref since the temporal resolution is part of the optimization, but the trajectory will be resized between iterations if dt_ref +-dt_hysteresis is violated. # hrpsysは一歩おきにしか更新できないので一歩の時間と同じにしておく
+  dt_ref: 2.2 ## Desired temporal resolution of the trajectory (the trajectory is not fixed to dt_ref since the temporal resolution is part of the optimization, but the trajectory will be resized between iterations if dt_ref +-dt_hysteresis is violated. # hrpsysは一歩ごとにしか更新できず、かつ少し応答が遅れるので一歩の時間の倍にしておく.
   dt_hysteresis: 0.1 ## Hysteresis for automatic resizing depending on the current temporal resolution, usually approx. 10% of dt_ref is recommended
   min_samples: 3 ## Minimum number of samples (should be always greater than 2)
   global_plan_overwrite_orientation: true ## Overwrite orientation of local subgoals provided by the global planner (since they often provide only a 2D path)
@@ -48,18 +48,18 @@ TebLocalPlannerROS:
   penalty_epsilon: 0.01 ## Add a small safety margin to penalty functions for hard-constraint approximations
   weight_max_vel_x: 2 ## Optimization weight for satisfying the maximum allowed translational velocity
   weight_max_vel_y: 2
-  weight_max_vel_theta: 1 ## Optimization weight for satisfying the maximum allowed angular velocity
+  weight_max_vel_theta: 2 ## Optimization weight for satisfying the maximum allowed angular velocity
   weight_acc_lim_x: 1 ## Optimization weight for satisfying the maximum allowed translational acceleration
   weight_acc_lim_y: 1
   weight_acc_lim_theta: 1 ## Optimization weight for satisfying the maximum allowed angular acceleration
   weight_kinematics_nh: 1 ## Optimization weight for satisfying the non-holonomic kinematics (this parameter must be high since the kinematics equation constitutes an equality constraint, even a value of 1000 does not imply a bad matrix condition due to small 'raw' cost values in comparison to other costs). ## 横方向へ動けるので小さく. が、カメラは前方にしか無いので小さすぎるのも良くない(default 1000)
-  weight_kinematics_forward_drive: 100 ## Optimization weight for forcing the robot to choose only forward directions (positive transl. velocities). A small weight (e.g. 1.0) still allows driving backwards. A value around 1000 almost prevents backward driving (but cannot be guaranteed). ## カメラは前方にしか無いので大きく (default 1)
+  weight_kinematics_forward_drive: 50 ## Optimization weight for forcing the robot to choose only forward directions (positive transl. velocities). A small weight (e.g. 1.0) still allows driving backwards. A value around 1000 almost prevents backward driving (but cannot be guaranteed). ## カメラは前方にしか無いので大きく (default 1)
   weight_kinematics_turning_radius: 0.0 ## Optimization weight for enforcing a minimum turning radius (only for carlike robots).
   weight_optimaltime: 1 ## Optimization weight for contracting the trajectory w.r.t transition/execution time
   weight_obstacle: 50 ## Optimization weight for keeping a minimum distance from obstacles (default 50)
   weight_viapoint: 1.0 ## Optimization weight for minimzing the distance to via-points (resp. reference path)
   weight_inflation: 0.1 ## Optimization weight for the inflation penalty (should be small).
-  weight_adapt_factor: 2.0 ## Some special weights (currently weight_obstacle) are repeatedly scaled by this factor in each outer TEB iteration (weight_new = weight_old*factor). Increasing weights iteratively instead of setting a huge value a-priori leads to better numerical conditions of the underlying optimization problem. (default 2.0)
+  weight_adapt_factor: 4.0 ## Some special weights (currently weight_obstacle) are repeatedly scaled by this factor in each outer TEB iteration (weight_new = weight_old*factor). Increasing weights iteratively instead of setting a huge value a-priori leads to better numerical conditions of the underlying optimization problem. (default 2.0)
 
 # Homotopy Class Planner
   enable_homotopy_class_planning: false ## Activate parallel planning in distinctive topologies (requires much more CPU resources, since multiple trajectories are optimized at once)
