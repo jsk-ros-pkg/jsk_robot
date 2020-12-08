@@ -27,10 +27,28 @@
 
         Grid/RayTracing: true ## octomap_occupied_space にray tracingが適用される
         Grid/CellSize: 0.02
-        Grid/MaxGroundAngle: 10 ## Maximum angle (degrees) between point's normal to ground's normal to label it as ground. 急な斜面は歩けないので小さくてよい
-        Grid/MaxObstacleHeight: 2.0 ## Maximum obstacles height (0=disabled).
-        Grid/MinClusterSize: 1 ## Minimum cluster size to project the points
-        GridGlobal/ProbMiss: 0.3 ## Probability of a miss (value between 0 and 0.5).
+        GridGlobal/OccupancyThr: 0.5 ## Occupancy threshold (value between 0 and 1).
+        GridGlobal/ProbMiss: 0.2 ## Probability of a miss (value between 0 and 0.5).
+        GridGlobal/ProbHit: 0.9 ## Probability of a hit (value between 0.5 and 1).
+        Grid/PreVoxelFiltering: false ## Input cloud is downsampled by voxel filter (voxel size is "Grid/CellSize") before doing segmentation of obstacles and ground.
+
+        Grid/MaxGroundHeight: 0.0 ## Maximum ground height (0=disabled).
+        Grid/MaxObstacleHeight: 0.0 ## Maximum obstacles height (0=disabled).
+        Grid/NormalsSegmentation: false ## Segment ground from obstacles using point normals, otherwise a fast passthrough is used
+        Grid/MapFrameProjection: false ## Projection in map frame. On a 3D terrain and a fixed local camera transform (the cloud is created relative to ground), you may want to disable this to do the projection in robot frame instead. ## MaxGroundHeightがmap_frame_id系(true)かframe_id系(false)かに影響。falseの方が精度が良い? falseの場合, 2d map生成時にBODY相対でZ高さに応じて障害物を射影するので、BODYが傾くと対応不可
+      </rosparam>
+    </node>
+
+    <!-- add height information to project 2d -->
+    <node pkg="jsk_robot_startup" type="height_limit_rtabmap.py" name="height_limit_rtabmap">
+      <rosparam>
+        rate: 0.1
+        body_frame: BODY
+        foot_frame: base_footprint
+        lower_limit: 0.15
+        upper_limit: 2.0
+        rtabmap_ns: /rtabmap
+        enable_start: true
       </rosparam>
     </node>
   </group>
