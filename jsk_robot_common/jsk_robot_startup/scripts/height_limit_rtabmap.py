@@ -14,7 +14,7 @@ class height_limit_rtabmap:
         self.body_frame = rospy.get_param("~body_frame", "BODY")
         self.foot_frame = rospy.get_param("~foot_frame", "base_footprint")
         self.lower_limit = rospy.get_param("~lower_limit", 0.15) # [m]
-        self.upper_limit = rospy.get_param("~upper_limit", 2.0) # [m]
+        self.upper_limit = rospy.get_param("~upper_limit", 1.6) # [m]
         # rtabmap reads parameters in private_ns on init. But rtabmap reads parameters in ns on update_parameters.
         self.rtabmap_ns = rospy.get_param("~rtabmap_ns", "/rtabmap")
 

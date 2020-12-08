@@ -12,8 +12,20 @@
           max_range: 5.0 #Maximum range in meter for inserting point cloud data when dynamically building a map.
           filter_ground: false ## Whether the ground plane should be detected and ignored from scan data when dynamically building a map, using pcl::SACMODEL_PERPENDICULAR_PLANE. This clears everything up to the ground, but will not insert the ground as obstacle in the map. If this is enabled, it can be further configured with the ~ground_filter/... parameters. ## 視界に床が入らない場合も多いためfalse
           miss: 0.3 ## Probabilities for hits and misses in the sensor model when dynamically building a map
-        occupancy_min_z: 0.2 ## odom座標系であることに注意
-        occupancy_max_z: 2.0 ## Minimum and maximum height of occupied cells to be consider in the final map. This ignores all occupied voxels outside of the interval when sending out visualizations and collision maps, but will not affect the actual octomap representation.
+        occupancy_min_z: -infinity ## odom座標系であることに注意
+        occupancy_max_z: +infinity ## Minimum and maximum height of occupied cells to be consider in the final map. This ignores all occupied voxels outside of the interval when sending out visualizations and collision maps, but will not affect the actual octomap representation.
+      </rosparam>
+    </node>
+
+    <!-- add height information to project 2d -->
+    <node pkg="jsk_robot_startup" type="height_limit_octomap.py" name="height_limit_octomap">
+      <rosparam>
+        rate: 0.1
+        odom_frame: odom
+        foot_frame: base_footprint
+        lower_limit: 0.15
+        upper_limit: 1.6
+        enable_start: true
       </rosparam>
     </node>
   </group>

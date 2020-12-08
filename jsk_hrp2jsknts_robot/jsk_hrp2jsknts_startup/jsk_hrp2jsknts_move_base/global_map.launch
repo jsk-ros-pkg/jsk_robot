@@ -28,8 +28,8 @@
         Grid/RayTracing: true ## octomap_occupied_space にray tracingが適用される
         Grid/CellSize: 0.02
         GridGlobal/OccupancyThr: 0.5 ## Occupancy threshold (value between 0 and 1).
-        GridGlobal/ProbMiss: 0.2 ## Probability of a miss (value between 0 and 0.5).
-        GridGlobal/ProbHit: 0.9 ## Probability of a hit (value between 0.5 and 1).
+        GridGlobal/ProbMiss: 0.3 ## Probability of a miss (value between 0 and 0.5). ## 小さすぎるとobstacleを消してしまう
+        GridGlobal/ProbHit: 0.9 ## Probability of a hit (value between 0.5 and 1). ## 大きくないと特に2d mapに射影するときに存在を認識できない
         Grid/PreVoxelFiltering: false ## Input cloud is downsampled by voxel filter (voxel size is "Grid/CellSize") before doing segmentation of obstacles and ground.
 
         Grid/MaxGroundHeight: 0.0 ## Maximum ground height (0=disabled).
@@ -46,7 +46,7 @@
         body_frame: BODY
         foot_frame: base_footprint
         lower_limit: 0.15
-        upper_limit: 2.0
+        upper_limit: 1.6
         rtabmap_ns: /rtabmap
         enable_start: true
       </rosparam>
