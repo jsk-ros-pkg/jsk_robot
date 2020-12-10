@@ -37,6 +37,7 @@
   <run_depend>rosgraph</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>roswww</run_depend>
+  <run_depend>rwt_image_view</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>tf2_ros</run_depend>
@@ -44,6 +45,7 @@
   <run_depend>tf2_geometry_msgs</run_depend>
   <run_depend>urdf</run_depend>
   <run_depend>jsk_tilt_laser</run_depend>
+  <run_depend>web_video_server</run_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>pr2_gazebo</test_depend>
