@@ -33,6 +33,7 @@
     <remap from="mux" to="tweet_image_mux" />
     <param name="lazy" value="true" />
   </node>
+  <!--
   <node name="tweet_image_saver" pkg="image_view" type="image_saver"
         machine="$(arg machine)">
     <remap from="image" to="/tweet_image" />
@@ -40,6 +41,7 @@
     <param name="filename_format" value="/tmp/tweet_image.jpg" />
     <param name="image_transport" value="raw" />
   </node>
+  -->
   <node name="active_user" pkg="roseus"
         type="roseus" args="$(find jsk_robot_startup)/lifelog/active_user.l"
         machine="$(arg machine)"
