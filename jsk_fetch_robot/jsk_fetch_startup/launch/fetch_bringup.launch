@@ -18,15 +18,12 @@
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
   <arg name="fetch_tweet" default="true" />
-  <arg name="app_manager" default="true" />
   <arg name="rwt_image_view" default="true" />
   <arg name="fetch_sensors" default="true" />
   <arg name="use_safe_teleop" default="true" />
   <arg name="network_detector" default="true" />
   <arg name="network_status" default="true" />
   <arg name="use_speech_recognition" default="true" />
-  <arg name="imu_corrector" default="true" />
-  <arg name="odom_corrector" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -118,7 +115,7 @@
   </include>
 
   <!-- app manager -->
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch" if="$(arg app_manager)">
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
     <arg name="use_applist" value="false" /> <!-- use plugin -->
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
@@ -162,44 +159,46 @@
   </node>
 
   <!-- speech recognition -->
-  <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
-        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100" if="$(arg use_speech_recognition)"/>
-  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
-  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
-  <include file="$(find julius_ros)/launch/julius.launch" if="$(arg use_speech_recognition)">
-    <arg name="launch_audio_capture" value="false"/>
-    <arg name="launch_sound_play" value="false"/>
-    <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
-  </include>
-  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch" if="$(arg use_speech_recognition)">
-    <arg name="publish_tf" default="false"/>
-    <arg name="launch_soundplay" default="false"/>
-    <arg name="audio" value="speech_audio"/>
-    <arg name="speech_to_text" value="speech_to_text_google"/>
-    <arg name="language" value="ja-JP"/>
-  </include>
-  <!-- set fetch speak action server names -->
-  <!-- this parameter is for speech_to_text node in respeaker_ros -->
-  <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/168 -->
-  <group ns="speech_to_text" if="$(arg use_speech_recognition)">
-    <rosparam>
-       tts_action_names:
-         - sound_play
-         - robotsound_jp
-    </rosparam>
+  <group if="$(arg use_speech_recognition)">
+    <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
+          args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+    <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+    <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
+    <include file="$(find julius_ros)/launch/julius.launch">
+      <arg name="launch_audio_capture" value="false"/>
+      <arg name="launch_sound_play" value="false"/>
+      <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
+    </include>
+    <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
+      <arg name="publish_tf" default="false"/>
+      <arg name="launch_soundplay" default="false"/>
+      <arg name="audio" value="speech_audio"/>
+      <arg name="speech_to_text" value="speech_to_text_google"/>
+      <arg name="language" value="ja-JP"/>
+    </include>
+    <!-- set fetch speak action server names -->
+    <!-- this parameter is for speech_to_text node in respeaker_ros -->
+    <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/168 -->
+    <group ns="speech_to_text">
+      <rosparam>
+        tts_action_names:
+        - sound_play
+        - robotsound_jp
+      </rosparam>
+    </group>
+    <!-- select mux for selecting speech_to_text service -->
+    <!-- the mux node is in jsk_3rdparty/dialogflow_task_executive -->
+    <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive -->
+    <node name="speech_to_text_selector" pkg="jsk_robot_startup" type="mux_selector.py"
+          respawn="true"
+          args="/network/connected 'm.data==False' /speech_to_text_julius">
+      <remap from="mux" to="speech_to_text_mux" />
+      <rosparam>
+        default_select: speech_to_text_google
+        patient: 6
+      </rosparam>
+    </node>
   </group>
-  <!-- select mux for selecting speech_to_text service -->
-  <!-- the mux node is in jsk_3rdparty/dialogflow_task_executive -->
-  <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive -->
-  <node name="speech_to_text_selector" pkg="jsk_robot_startup" type="mux_selector.py"
-        respawn="true"
-        args="/network/connected 'm.data==False' /speech_to_text_julius" if="$(arg use_speech_recognition)">
-    <remap from="mux" to="speech_to_text_mux" />
-    <rosparam>
-      default_select: speech_to_text_google
-      patient: 6
-    </rosparam>
-  </node>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
