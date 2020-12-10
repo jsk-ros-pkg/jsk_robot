@@ -1,19 +1,36 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "twitter_client_uptime")
-
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
-(setq *src-lines* nil)
-(setq *random-state* (coerce (unix::gettimeofday) integer-vector))
-
 (defvar *robot-name* "robot")
-(when (ros::has-param "/active_user/robot_name")
-  (setq *robot-name* (ros::get-param "/active_user/robot_name"))
-  )
 
+(defun uptime-init ()
+  ;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
+  (while (not (ros::has-param "/active_user/elapsed_time"))
+    (unix::sleep 3)
+    (ros::ros-info "Wait for /active_user/elapsed_time parameter ..."))
+
+  (setq *waking-tweet-second* 3600.0)
+  (cond
+   ((ros::has-param "/active_user/start_time")
+    (let ((st (ros::get-param "/active_user/start_time")))
+      (setq *waking-target-second*
+            (+ (- (send (ros::time-now) :to-sec) st)
+               *waking-tweet-second*))))
+   (t
+    (setq *waking-target-second* *waking-tweet-second*)))
+
+  (setq *src-lines* nil)
+  (setq *random-state* (coerce (unix::gettimeofday) integer-vector))
+
+  (when (ros::has-param "/active_user/robot_name")
+    (setq *robot-name* (ros::get-param "/active_user/robot_name"))))
+
+
+(uptime-init)
 (ros::rate 0.1)
-(do-until-key
+(while (ros::ok)
   (setq *user-name* (ros::get-param "/active_user/launch_user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
   ;; tweet depend on up time
@@ -58,5 +75,4 @@
               (tweet-string dt :warning-time 1 :with-image t)
               ))
           ))))
-  (ros::sleep)
-  )
+  (ros::sleep))

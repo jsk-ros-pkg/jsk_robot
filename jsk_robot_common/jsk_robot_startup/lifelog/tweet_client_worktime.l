@@ -1,16 +1,31 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "twitter_client_worktime")
-
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (defvar *robot-name* "robot")
-(when (ros::has-param "/active_user/robot_name")
-  (setq *robot-name* (ros::get-param "/active_user/robot_name"))
-  )
+
+(defun worktime-init ()
+  ;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
+  (while (not (ros::has-param "/active_user/elapsed_time"))
+    (unix::sleep 3)
+    (ros::ros-info "Wait for /active_user/elapsed_time parameter ..."))
+
+  (cond
+   ((ros::has-param "/active_user/tweet_second")
+    (setq *tweet-second* (ros::get-param "/active_user/tweet_second")))
+   (t
+    (setq *tweet-second* 300)))
+
+  (setq *target-second* (+ (ros::get-param "/active_user/elapsed_time")
+                           *tweet-second*))
+
+  (when (ros::has-param "/active_user/robot_name")
+    (setq *robot-name* (ros::get-param "/active_user/robot_name"))))
+
 
 (ros::rate 0.1)
-(do-until-key
+(while (ros::ok)
   (setq *user-name* (ros::get-param "/active_user/launch_user_name")
         *elapsed-time* (ros::get-param "/active_user/elapsed_time"))
   (ros::ros-debug "user -> ~A, time -> ~A (~A) "

@@ -1,8 +1,8 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "twitter_client_tablet")
 (ros::roseus-add-msgs "roseus")
 
+(ros::roseus "twitter_client_tablet")
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (defun twit-cb (msg)
@@ -10,6 +10,7 @@
     (tweet-string twit-str
                   :warning-time nil
                   :with-image "/tablet/marked/image_rect_color")))
-(ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
 
+(ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
+(ros::rate (/ 1.0 3.0))
 (ros::spin)

@@ -1,9 +1,9 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "twitter_client_warning")
+(ros::roseus-add-msgs "diagnostic_msgs")
 
+(ros::roseus "twitter_client_warning")
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
-(ros::load-ros-manifest "diagnostic_msgs")
 
 (defun diagnostics-cb (msg)
   (let ((diagnostics (make-hash-table :test #'equal))
@@ -40,7 +40,4 @@
 
 (ros::subscribe "/diagnostics_agg" diagnostic_msgs::DiagnosticArray #'diagnostics-cb)
 (ros::rate (/ 1.0 3.0))
-(while (ros::ok)
-  (ros::spin-once)
-  (ros::sleep)
-  )
+(ros::spin)
