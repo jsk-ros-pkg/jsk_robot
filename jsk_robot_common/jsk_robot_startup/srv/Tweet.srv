@@ -1,0 +1,8 @@
+bool image
+string image_topic_name
+bool speak
+string text
+bool warning
+uint8 warning_time
+---
+bool success

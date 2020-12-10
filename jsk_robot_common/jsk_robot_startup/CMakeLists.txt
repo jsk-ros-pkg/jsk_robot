@@ -24,6 +24,7 @@ endif()
 find_package(catkin REQUIRED COMPONENTS
   dynamic_reconfigure
   jsk_topic_tools
+  message_generation
   mongodb_store
   sensor_msgs
   urdf
@@ -45,8 +46,16 @@ generate_dynamic_reconfigure_options(
   cfg/JointStatesThrottle.cfg
 )
 
+add_service_files(
+  FILES
+  Tweet.srv
+)
+
+generate_messages()
+
 catkin_package(
   INCLUDE_DIRS include
+  CATKIN_DEPENDS message_runtime
   LIBRARIES ${PROJECT_NAME}
 )
 
