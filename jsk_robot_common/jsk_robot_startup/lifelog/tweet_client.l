@@ -10,7 +10,7 @@
 (ros::advertise "/tweet" std_msgs::String 1)
 
 (defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t))
-  (let (prev-image-topic img)
+  (let (prev-image-topic img res)
   (when warning-time
     (unless (numberp warning-time)
       (setq warning-time 3))
@@ -61,8 +61,11 @@
                                   :data (format nil "~A ~A"
                                                 twit-str (format nil "/tmp/tweet_image.jpg")))))
         (ros::ros-error "fail saving image and tweeting"))
-      (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic)))
+      (ros::service-call "/tweet_image_mux/select"
+                         (instance topic_tools::muxselectrequest :init :topic prev-image-topic))
+      (setq res (if img t nil)))
     (t
-      (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))))
-  (when speak (speak-jp "ついーとしました" :wait t))))
-
+      (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))
+      (setq res t)))
+  (when speak (speak-jp "ついーとしました" :wait t))
+  res))
