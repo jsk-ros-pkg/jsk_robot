@@ -32,8 +32,8 @@ class height_limit_octomap:
 
     def execute(self):
         while not rospy.is_shutdown():
-            if self.is_enabled:
-                with self.lock:
+            with self.lock:
+                if self.is_enabled:
                     self.set_limit()
             self.rate.sleep()
 
@@ -62,6 +62,7 @@ class height_limit_octomap:
             return
 
     def enable(self):
+        rospy.loginfo("[%s] enable called.", rospy.get_name())
         if not self.is_enabled:
             config = self.octomap_server_client.get_configuration(timeout=5.0)
             if config:
@@ -72,6 +73,7 @@ class height_limit_octomap:
         return True
 
     def disable(self):
+        rospy.loginfo("[%s] disable called.", rospy.get_name())
         if self.is_enabled:
             try:
                 self.octomap_server_client.update_configuration({"occupancy_min_z":self.default_lower_limit, "occupancy_max_z":self.default_upper_limit})

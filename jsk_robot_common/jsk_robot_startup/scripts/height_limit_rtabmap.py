@@ -30,8 +30,8 @@ class height_limit_rtabmap:
 
     def execute(self):
         while not rospy.is_shutdown():
-            if self.is_enabled:
-                with self.lock:
+            with self.lock:
+                if self.is_enabled:
                     self.set_limit()
             self.rate.sleep()
 
@@ -70,14 +70,22 @@ class height_limit_rtabmap:
             return
 
     def enable(self):
+        rospy.loginfo("[%s] enable called.", rospy.get_name())
         if not self.is_enabled:
-            self.default_lower_limit = rospy.get_param(self.rtabmap_ns + "/Grid/MaxGroundHeight", 0.0)
-            self.default_upper_limit = rospy.get_param(self.rtabmap_ns + "/Grid/MaxObstacleHeight", 0.0)
+            self.default_lower_limit = rospy.get_param(self.rtabmap_ns + "/Grid/MaxGroundHeight", -1000.0)
+            # if initial Grid/MaxGroundHeight == 0, Grid/MaxGroundHeight gets disabled. But if updated Grid/MaxGroundHeight == 0, Grid/MaxGroundHeight does not get disabled.
+            if self.default_lower_limit == '0' or self.default_lower_limit == 0:
+                self.default_lower_limit = -1000.0
+            self.default_upper_limit = rospy.get_param(self.rtabmap_ns + "/Grid/MaxObstacleHeight", 1000.0)
+            # if initial Grid/MaxObstacleHeight == 0, Grid/MaxObstacleHeight gets disabled. But if updated Grid/MaxObstacleHeight == 0, Grid/MaxObstacleHeight does not get disabled.
+            if self.default_upper_limit == '0' or self.default_upper_limit == 0:
+                self.default_upper_limit = 1000.0
             self.is_enabled = True
             self.set_limit()
         return True
 
     def disable(self):
+        rospy.loginfo("[%s] disable called.", rospy.get_name())
         if self.is_enabled:
             rospy.set_param(self.rtabmap_ns + "/Grid/MaxGroundHeight", str(self.default_lower_limit))
             rospy.set_param(self.rtabmap_ns + "/Grid/MaxObstacleHeight", str(self.default_upper_limit))

@@ -20,7 +20,7 @@
     <!-- add height information to project 2d -->
     <node pkg="jsk_robot_startup" type="height_limit_octomap.py" name="height_limit_octomap">
       <rosparam>
-        rate: 0.1
+        rate: 0.03
         odom_frame: odom
         foot_frame: base_footprint
         lower_limit: 0.15
