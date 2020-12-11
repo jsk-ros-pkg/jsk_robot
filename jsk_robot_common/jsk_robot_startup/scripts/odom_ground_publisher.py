@@ -12,8 +12,9 @@ def callback(msg):
 
     rospy.loginfo("reset odom_ground")
     try:
-        stamp = rospy.Time(0)
+        tfl.waitForTransform(odom_frame, "/lleg_end_coords", stamp, rospy.Duration(1.0))
         (l_trans,l_rot) = tfl.lookupTransform(odom_frame, "lleg_end_coords", stamp)
+        tfl.waitForTransform(odom_frame, "/rleg_end_coords", stamp, rospy.Duration(1.0))
         (r_trans,r_rot) = tfl.lookupTransform(odom_frame, "rleg_end_coords", stamp)
         position = numpy.mean([l_trans, r_trans], axis=0)
         orientation = [0, 0, 0, 1]
@@ -37,9 +38,12 @@ if __name__ == "__main__":
     orientation = None
 
     while not rospy.is_shutdown():
+        # stamp = rospy.Time(0)
+        stamp = rospy.Time.now()
         if position is not None:
             try:
-                tfb.sendTransform(position, orientation, rospy.Time.now(), odom_ground_frame, odom_frame)
+                # tfb.sendTransform(position, orientation, rospy.Time.now(), odom_ground_frame, odom_frame)
+                tfb.sendTransform(position, orientation, stamp, odom_ground_frame, odom_frame)
             except:
                 rospy.logerr("Failed to broadcast {} to {} transform".format(odom_frame, odom_ground_frame))
         else:
