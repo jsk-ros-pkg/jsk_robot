@@ -1,4 +1,5 @@
 <launch>
+  <node pkg="jsk_footstep_controller" type="simple_footcoords" name="simple_footcoords"/>
   <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/self_filter.launch"/>
   <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/global_map.launch"/>
   <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/local_map.launch"/>
