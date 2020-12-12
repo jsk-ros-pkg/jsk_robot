@@ -153,7 +153,11 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_moveit/start_pr2_moveit.launch" />
 
   <node if="$(arg launch_reset_motors)"
-        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py"/>
+        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py">
+    <rosparam>
+      watch_duration: 30
+    </rosparam>
+  </node>
 
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
