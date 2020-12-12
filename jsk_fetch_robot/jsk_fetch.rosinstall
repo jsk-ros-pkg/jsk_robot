@@ -66,3 +66,7 @@
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: 82e897dcbdcd6aa0cbd126fa122d4dbdc9df67c9
+- git:
+    local-name: ros-planning/navigation
+    uri: https://github.com/ros-planning/navigation.git
+    version: 708yamaguchi/add-max-vel-name-param-indigo
