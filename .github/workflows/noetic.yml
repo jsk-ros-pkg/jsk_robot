@@ -42,4 +42,4 @@ jobs:
           ROS_DISTRO : noetic
           USE_DEB : false
           TEST_PKGS : "jsk_robot_startup" # check only jsk_robot_startup
-          BEFORE_SCRIPT : "apt-get download ros-noetic-julius; wget -O stripdeb.sh https://gist.githubusercontent.com/jordansissel/748313/raw/8aebce360bc082e33af7bba3c90f755eb655783b/stripdeb.sh; bash stripdeb.sh ros-noetic-julius*.deb; sudo dpkg --force-all -i ros-noetic-julius*.deb; sudo apt-get -y -f install; sudo apt-mark hold ros-noetic-julius"
+          BEFORE_SCRIPT : "apt-get download ros-noetic-julius; wget -O stripdeb.sh https://gist.githubusercontent.com/jordansissel/748313/raw/8aebce360bc082e33af7bba3c90f755eb655783b/stripdeb.sh; bash stripdeb.sh ros-noetic-julius*.deb; sudo dpkg --force-all -i ros-noetic-julius*.deb; sudo apt-get -y -f install; sudo apt-mark hold ros-noetic-julius; git clone https://github.com/k-okada/denso_robot_ros.git; (cd ..; git clone https://github.com/k-okada/cobotta_descriptions.git); (cd denso_robot_ros/denso_robot_descriptions; cp -r ../../../cobotta_descriptions/cobotta_description . )"
