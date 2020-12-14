@@ -22,7 +22,6 @@
   <arg name="rgb_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
   <arg name="depth_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
 
-
   <!-- Launch realsense cameras -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
       <arg name="respawn" value="true" />
