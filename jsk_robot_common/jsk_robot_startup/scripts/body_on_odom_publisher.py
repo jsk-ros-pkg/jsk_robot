@@ -22,7 +22,8 @@ def update_position():
 
 if __name__ == "__main__":
     rospy.init_node("body_on_odom_publisher")
-    tfl = tf.TransformListener(True, rospy.Duration(10))
+    # tfl = tf.TransformListener(True, rospy.Duration(10))
+    tfl = tf.TransformListener()
     tfb = tf.TransformBroadcaster()
     robot_frame = rospy.get_param("~robot_frame", "BODY")
     rospy.loginfo("robot frame: {}".format(robot_frame))

@@ -25,7 +25,8 @@ def callback(msg):
 if __name__ == "__main__":
     rospy.init_node("odom_ground_publisher")
     sub = rospy.Subscriber("/odom_init_trigger", EmptyMsg, callback)
-    tfl = tf.TransformListener(True, rospy.Duration(10))
+    # tfl = tf.TransformListener(True, rospy.Duration(10))
+    tfl = tf.TransformListener()
     tfb = tf.TransformBroadcaster()
     odom_frame = rospy.get_param("~odom_frame", "odom")
     rospy.loginfo("odom frame: {}".format(odom_frame))
