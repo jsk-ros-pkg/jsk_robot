@@ -183,7 +183,14 @@
 Arguments:
  - key (:position :velocity :effort)
 Example: (send self :gripper :position) => 0.00"
-   (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
+   (if (send self :simulation-modep)
+       (let ((pos (* 0.001 2 (vmean (send robot :rarm :gripper :angle-vector)))))
+         (case key
+               (:position pos)
+               (:velocity 0)
+               (:effort (+ (* -110 pos) 1)))) ;; effot is -10 on open, 1.2 for close
+     ;; for real robot
+     (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*))))
   ;;
   (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
     (send-super* :speak text :topic-name topic-name args))
