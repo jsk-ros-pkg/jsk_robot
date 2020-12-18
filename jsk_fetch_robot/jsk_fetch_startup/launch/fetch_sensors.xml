@@ -97,6 +97,14 @@
         <remap from="~output" to="throttled/image_rect_color" />
         <param name="update_rate" value="$(arg throttled_rate)" />
       </node>
+      <node name="throttle_rgb_compressed"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="image_rect_color/compressed" />
+        <remap from="~output" to="throttled/image_rect_color/compressed" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
       <node name="downsample_half"
             pkg="nodelet" type="nodelet"
             args="load image_proc/resize /$(arg manager)"
