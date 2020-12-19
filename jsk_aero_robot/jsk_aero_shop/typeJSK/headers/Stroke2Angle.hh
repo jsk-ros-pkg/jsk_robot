@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdint.h>
+#include <math.h>
 #include "aero_hardware_interface/Stroke2Angle.hh"
 
 namespace aero
