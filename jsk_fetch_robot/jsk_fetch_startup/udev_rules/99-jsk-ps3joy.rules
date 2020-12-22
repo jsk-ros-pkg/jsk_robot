@@ -1,0 +1,2 @@
+# Place this file at /lib/udev/rules.d/99-jsk-ps3joy.rules in fetch
+KERNEL=="js*", SUBSYSTEM=="input", NAME="*PLAYSTATION(R)3*", SYMLINK+="ps3joy"
