@@ -8,10 +8,18 @@
   <group unless="$(arg launch_fetch_bringup_teleop)" >
     <!-- need to launch joy_node because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
          see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
-    <node name="joy" pkg="joy" type="joy_node" respawn="true">
-      <param name="autorepeat_rate" value="1"/>
+    <node name="jsk_joy_node" pkg="joy" type="joy_node" respawn="true">
+      <param name="autorepeat_rate" value="10"/>
       <param name="dev" value="$(arg joy_device)"/>
+      <remap from="joy" to="joy_ds3" />
     </node>
+
+    <node name="joy_remap" pkg="joy" type="joy_remap.py" output="screen" >
+      <remap from="joy_in" to="joy_ds3" />
+      <remap from="joy_out" to="joy" />
+      <rosparam command="load" file="$(find jsk_fetch_startup)/config/ds3joy_$(env ROS_DISTRO).yaml" />
+    </node>
+
   </group>
 
   <!-- copied for button mapping is changed to standardize with PR2 joy.
