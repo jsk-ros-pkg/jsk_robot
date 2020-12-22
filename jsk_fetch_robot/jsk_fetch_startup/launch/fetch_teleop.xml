@@ -94,6 +94,6 @@
   <node pkg="jsk_robot_startup" type="unsafe_warning.l" name="unsafe_warning" respawn="true" />
 
   <!-- auto dock -->
-  <include file="$(find fetch_auto_dock)/launch/auto_dock.launch"
+  <include file="$(find fetch_open_auto_dock)/launch/auto_dock.launch"
 	   if="$(arg enable_auto_dock)"/>
 </launch>
