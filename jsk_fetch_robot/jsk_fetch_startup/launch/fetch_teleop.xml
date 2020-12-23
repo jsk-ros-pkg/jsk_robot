@@ -15,7 +15,7 @@
       <remap from="joy" to="joy_ds3" />
     </node>
 
-    <node name="joy_remap" pkg="joy" type="joy_remap.py" output="screen" >
+    <node name="joy_remap" pkg="joy" type="joy_remap.py" output="screen" respawn="true">
       <remap from="joy_in" to="joy_ds3" />
       <remap from="joy_out" to="joy" />
       <rosparam command="load" file="$(find jsk_fetch_startup)/config/ds3joy_$(env ROS_DISTRO).yaml" />
