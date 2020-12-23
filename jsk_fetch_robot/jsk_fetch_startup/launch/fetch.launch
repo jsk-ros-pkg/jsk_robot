@@ -1,7 +1,7 @@
 <launch>
   <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
   <arg name="launch_teleop" default="true" />
-  <arg name="base_camera_mount" default="false" />
+  <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
 
   <!-- GDB Debug Option -->
