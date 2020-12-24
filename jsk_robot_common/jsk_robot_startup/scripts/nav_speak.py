@@ -4,10 +4,11 @@
 import rospy
 import time
 
+from actionlib_msgs.msg import GoalStatus
+from move_base_msgs.msg import MoveBaseActionGoal
+from move_base_msgs.msg import MoveBaseActionResult
 from sound_play.libsoundplay import SoundClient
 from sound_play.msg import SoundRequestActionGoal
-from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionResult
-from actionlib_msgs.msg import GoalStatus
 
 
 def goal_status(status):
@@ -22,15 +23,21 @@ def goal_status(status):
             GoalStatus.RECALLED: 'RECALLED',
             GoalStatus.LOST: 'LOST'}[status]
 
-class NavSpeak:
+
+class NavSpeak(object):
     def __init__(self):
-        self.move_base_goal_sub = rospy.Subscriber("/move_base/goal", MoveBaseActionGoal, self.move_base_goal_callback, queue_size = 1)
-        self.move_base_result_sub = rospy.Subscriber("/move_base/result", MoveBaseActionResult, self.move_base_result_callback, queue_size = 1)
+        self.move_base_goal_sub = rospy.Subscriber(
+            "/move_base/goal", MoveBaseActionGoal,
+            self.move_base_goal_callback, queue_size=1)
+        self.move_base_result_sub = rospy.Subscriber(
+            "/move_base/result", MoveBaseActionResult,
+            self.move_base_result_callback, queue_size=1)
         self.sound = SoundClient()
         self.lang = "japanese"  # speak japanese by default
         if rospy.has_param("/nav_speak/lang"):
             self.lang = rospy.get_param("/nav_speak/lang")
-        self.pub = rospy.Publisher('/robotsound_jp/goal', SoundRequestActionGoal, queue_size=1)
+        self.pub = rospy.Publisher(
+            '/robotsound_jp/goal', SoundRequestActionGoal, queue_size=1)
 
     def move_base_goal_callback(self, msg):
         self.sound.play(2)
@@ -45,6 +52,7 @@ class NavSpeak:
             sound_goal.goal.sound_request.command = 1
             sound_goal.goal.sound_request.volume = 1.0
             sound_goal.goal.sound_request.arg2 = "jp"
+
         if msg.status.status == GoalStatus.SUCCEEDED:
             self.sound.play(1)
             time.sleep(1)
@@ -75,12 +83,6 @@ class NavSpeak:
             self.sound.say(text)
 
 if __name__ == "__main__":
-    global sound
     rospy.init_node("nav_speak")
     n = NavSpeak()
     rospy.spin()
-
-
-
-
-
