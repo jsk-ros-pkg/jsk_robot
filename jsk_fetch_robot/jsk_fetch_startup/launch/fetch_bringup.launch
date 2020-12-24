@@ -25,7 +25,7 @@
     </rosparam>
   </node>
 
-  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+  <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
     </rosparam>
