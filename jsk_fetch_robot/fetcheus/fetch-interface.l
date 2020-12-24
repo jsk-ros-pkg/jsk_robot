@@ -94,7 +94,7 @@
    (if (member :start-offset-time args) (setq start-offset-time (cadr (member :start-offset-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
-   (when (send self :simulation-modep)
+   (when (and (not (boundp '*co*)) (send self :simulation-modep))
      (if (member :use-torso args)
        (setq args (append (subseq args 0 (position :use-torso args))
                           (if (> (length args) (+ 2 (position :use-torso args)))
