@@ -20,8 +20,10 @@ class OdomCorrector(object):
                            0, 0, 0, 0, 0, 1e-3]
 
     def _cb(self, msg):
-        msg.pose.covariance = self.covariance
-        msg.twist.covariance = self.covariance
+        if all([x == 0 for x in msg.pose.covariance]):
+            msg.pose.covariance = self.covariance
+        if all([x == 0 for x in msg.twist.covariance]):
+            msg.twist.covariance = self.covariance
         self.pub.publish(msg)
 
 
