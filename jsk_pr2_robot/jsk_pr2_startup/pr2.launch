@@ -80,6 +80,12 @@
     <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
   </include>
 
+  <!-- look at human for PR2 -->
+  <node name="look_at_human"
+        pkg="jsk_pr2_startup" type="pr2-look-at-human.l">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
+
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >

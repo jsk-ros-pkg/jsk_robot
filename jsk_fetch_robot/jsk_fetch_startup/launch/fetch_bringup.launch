@@ -32,6 +32,12 @@
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
 
+  <!-- look at human for Fetch -->
+  <node name="look_at_human"
+        pkg="jsk_fetch_startup" type="fetch-look-at-human.l" output="screen">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
+
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
