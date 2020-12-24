@@ -19,3 +19,4 @@
 
 (ros::roseus "speak_battery")
 (speak-battery)
+(sys::exit 0)
