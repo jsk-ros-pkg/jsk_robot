@@ -39,10 +39,9 @@ class NavSpeak(object):
             "/robotsound_jp/status", GoalStatusArray,
             self.robotsound_jp_status_callback, queue_size=1)
         self.sound = SoundClient(blocking=True)
-        self.lang = "japanese"  # speak japanese by default
-        if rospy.has_param("/nav_speak/lang"):
-            self.lang = rospy.get_param("/nav_speak/lang")
-        self.client = actionlib.SimpleActionClient('robotsound_jp', SoundRequestAction)
+        self.lang = rospy.get_param("~lang", "japanese")
+        self.client = actionlib.SimpleActionClient(
+            'robotsound_jp', SoundRequestAction)
         self.client.wait_for_server()
         self.is_speaking = False
 
