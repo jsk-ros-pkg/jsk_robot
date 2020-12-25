@@ -1,10 +1,17 @@
 <launch>
 
+  <arg name="topic_odom_in" default="/t265/odom/sample" />
+  <arg name="topic_odom_out" default="odom_visual" />
+  <arg name="odom_frame_id" default="odom_visual" />
+  <arg name="base_link_frame_id" default="base_link_virtual_2" />
+  <arg name="base_link_virtual_frame_id" default="base_link_virtual" />
+  <arg name="publish_tf" default="true" />
+
   <node
       pkg="tf"
       type="static_transform_publisher"
       name="t265_to_base_link_virtual_joint"
-      args="-0.441 -0.008 -0.225 0 0.524 0 t265_pose_frame base_link 10"
+      args="-0.441 -0.008 -0.225 0 0.524 0 t265_pose_frame $(arg base_link_virtual_frame_id) 10"
       output="screen"
       />
 
@@ -14,13 +21,24 @@
       name="odometry_transformer"
       output="screen"
       >
-      <remap from="~odom_in" to="$(arg topic_odom_out)" />
+      <remap from="~odom_in" to="$(arg topic_odom_in)" />
       <remap from="~odom_out" to="$(arg topic_odom_out)" />
 
-      <param name="~frame_id_base_link" value="base_link" />
+      <param name="~frame_id_base_link" value="$(arg base_link_frame_id)" />
+      <param name="~frame_id_base_link_virtual" value="$(arg base_link_virtual_frame_id)" />
       <param name="~frame_id_pose_frame" value="t265_pose_frame" />
-      <param name="~publish_tf" value="false" />
+      <param name="~frame_id_odom" value="$(arg odom_frame_id)" />
+      <param name="~publish_tf" value="$(arg publish_tf)" />
+      <param name="~2d_mode" value="true" />
   </node>
+
+  <rosparam>
+    /t265/tracking_module/enable_mapping: false
+    /t265/tracking_module/enable_relocalization: false
+    /t265/tracking_module/enable_pose_jumping: false
+    /t265/tracking_module/enable_dynamic_calibration: true
+    /t265/tracking_module/enable_map_preservation: false
+  </rosparam>
 
   <include file="$(find realsense2_camera)/launch/rs_t265.launch" >
       <arg name="camera" value="t265" />
