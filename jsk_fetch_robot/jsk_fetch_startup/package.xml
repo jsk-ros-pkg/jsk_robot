@@ -45,6 +45,9 @@
   <run_depend>julius_ros</run_depend>
   <run_depend version_gte="2.1.13">respeaker_ros</run_depend>
 
+  <!-- for rwt_nav -->
+  <run_depend>robot_pose_publisher</run_depend>
+
   <test_depend>rostest</test_depend>
 
   <export>
