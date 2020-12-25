@@ -1,0 +1,30 @@
+<launch>
+
+  <node
+      pkg="tf"
+      type="static_transform_publisher"
+      name="t265_to_base_link_virtual_joint"
+      args="-0.441 -0.008 -0.225 0 0.524 0 t265_pose_frame base_link 10"
+      output="screen"
+      />
+
+  <node
+      pkg="jsk_fetch_startup"
+      type="odometry_transformer.py"
+      name="odometry_transformer"
+      output="screen"
+      >
+      <remap from="~odom_in" to="$(arg topic_odom_out)" />
+      <remap from="~odom_out" to="$(arg topic_odom_out)" />
+
+      <param name="~frame_id_base_link" value="base_link" />
+      <param name="~frame_id_pose_frame" value="t265_pose_frame" />
+      <param name="~publish_tf" value="false" />
+  </node>
+
+  <include file="$(find realsense2_camera)/launch/rs_t265.launch" >
+      <arg name="camera" value="t265" />
+      <arg name="publish_odom_tf" value="false" />
+  </include>
+
+</launch>
