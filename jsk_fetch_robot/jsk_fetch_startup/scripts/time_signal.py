@@ -41,7 +41,7 @@ class TimeSignal(object):
 
     def speak_jp(self):
         # time signal
-        speech_text = str(self.now_hour) + '時です。'
+        speech_text = str(self.now_hour) + 'じです。'
         if self.now_hour == 0:
             speech_text += '早く帰りましょう。'
         if self.now_hour == 12:
@@ -60,11 +60,13 @@ class TimeSignal(object):
             speech_text += '掃除の時間です。'
 
         # weather forecast
-        if self.now_hour == 0 or self.now_hour == 19:
-            speech_text += '今日の天気は' + self.resp['forecasts'][0]['telop'] + 'です。'
-
-        self.speak(self.client_jp, speech_text, lang='jp')
-
+        if self.now_hour in [0, 7, 12, 19, 20]:
+            try:
+                forecast_text = self._get_weather_forecast(lang='ja')
+                speech_text += forecast_text
+            except Exception as e:
+                rospy.logerr(e)
+        rospy.logdebug(speech_text)
 
     def speak_en(self):
         speech_text = self._get_text(self.now_hour)
@@ -76,17 +78,37 @@ class TimeSignal(object):
         self.speak(self.client_en, speech_text)
 
     def _get_text(self, hour):
-       if hour == 0:
-          text = 'midnight'
-       elif hour == 12:
-          text = 'noon'
-       else:
-          if hour > 12:
-              text = str(hour % 12) + ' PM'
-          else:
-              text = str(hour % 12) + ' AM'
-       text = "It's " + text + "."
-       return text 
+        if hour == 0:
+            text = 'midnight'
+        elif hour == 12:
+            text = 'noon'
+        else:
+            if hour > 12:
+                text = str(hour % 12) + ' P.M.'
+            else:
+                text = str(hour % 12) + ' A.M.'
+        text = "It's " + text + "."
+        return text
+
+    def _get_weather_forecast(self, lang='en'):
+        url = 'http://api.openweathermap.org/data/2.5/weather?q=tokyo&lang={}&units=metric&appid={}'.format(lang, self.appid)  # NOQA
+        resp = json.loads(urllib2.urlopen(url).read())
+        weather = resp['weather'][0]['description']
+        temp = int(resp['main']['temp'])
+        humidity = int(resp['main']['humidity'])
+        wind_speed = int(resp['wind']['speed'])
+        forecast_text = ""
+        if lang == 'ja':
+            forecast_text = "現在、天気は" + weather + "、"
+            forecast_text += "気温は{}度、".format(temp)
+            forecast_text += "湿度は{}パーセントです。".format(humidity)
+            forecast_text += "風速は{}メートル秒です。".format(wind_speed)
+        else:
+            forecast_text = " The weather is " + weather + " now."
+            forecast_text += " The temperature is {} celsius,".format(temp)
+            forecast_text += " and the humidity is {}%.".format(humidity)
+            forecast_text += " The wind speed is {} meter per second.".format(wind_speed)
+        return forecast_text
 
 
 if __name__ == '__main__':
