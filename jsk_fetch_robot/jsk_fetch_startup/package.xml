@@ -33,6 +33,9 @@
   <run_depend>map_server</run_depend>
   <run_depend>move_base</run_depend>
   <run_depend>robot_localization</run_depend>
+  <run_depend>pyquaternion</run_depend>
+  <run_depend>realsense2_camera</run_depend>
+  <run_depend>realsense2_description</run_depend>
 
   <!-- for fetch teleop -->
   <run_depend>app_manager</run_depend>
