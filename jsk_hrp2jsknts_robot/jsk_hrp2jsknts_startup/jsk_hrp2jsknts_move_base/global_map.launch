@@ -51,7 +51,7 @@
     <!-- add height information to project 2d -->
     <node pkg="jsk_robot_startup" type="height_limit_rtabmap.py" name="height_limit_rtabmap">
       <rosparam>
-        rate: 0.03
+        rate: 0.01
         body_frame: BODY
         foot_frame: base_footprint
         lower_limit: 0.15
