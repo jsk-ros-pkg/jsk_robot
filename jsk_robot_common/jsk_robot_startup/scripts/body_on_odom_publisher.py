@@ -13,9 +13,11 @@ def update_position():
     try:
         # stamp = rospy.Time(0)
         tfl.waitForTransform(robot_frame, odom_ground_frame, stamp, rospy.Duration(1.0))
-        (trans, rot) = tfl.lookupTransform(robot_frame, odom_ground_frame, stamp)
-        position = [0, 0, trans[2]]
-        orientation = rot
+        (trans, rot) = tfl.lookupTransform(odom_ground_frame, robot_frame,  stamp)
+        position = [0, 0, -trans[2]]
+        rot_euler = tf.transformations.euler_from_quaternion(rot)
+        q = tf.transformations.quaternion_from_euler(rot_euler[0], rot_euler[1], 0)
+        orientation = [-q[0], -q[1], -q[2], q[3]] # conjugated
     except:
         rospy.logerr("Failed to update body_on_odom")
         return
