@@ -15,7 +15,7 @@ def update_position():
         tfl.waitForTransform(robot_frame, odom_ground_frame, stamp, rospy.Duration(1.0))
         (trans, rot) = tfl.lookupTransform(robot_frame, odom_ground_frame, stamp)
         position = [0, 0, trans[2]]
-        orientation = [0, 0, 0, 1]
+        orientation = rot
     except:
         rospy.logerr("Failed to update body_on_odom")
         return
