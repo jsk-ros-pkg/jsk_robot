@@ -51,9 +51,10 @@
 
   <!-- Use Visual Odom -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_t265.launch" if="$(arg use_visual_odom)">
-      <arg name="topic_odom_out" value="/odom_visual" />
+      <arg name="topic_odom_out" value="/odom_combined" />
       <arg name="odom_frame_id" value="odom" />
       <arg name="base_link_frame_id" value="base_link" />
+      <arg name="publish_tf" value="true" />
   </include>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
