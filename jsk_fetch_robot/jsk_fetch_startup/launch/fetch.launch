@@ -3,6 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
+  <arg name-"use_visual_odom" default="false" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -23,8 +24,10 @@
   <param name="base_controller/publish_tf" value="false"/>
   <!-- stop using graft: s-kitagawa (2019/10/17) -->
   <!-- <include file="$(find fetch_bringup)/launch/include/graft.launch.xml"/> -->
+
+  <!-- Odometry without visual odom -->
   <!-- use robot localization ukf -->
-  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true" unless="$(arg use_visual_odom)">
     <remap from="odometry/filtered" to="/odom_combined" />
     <rosparam>
       frequency: 50
@@ -45,6 +48,13 @@
       odom0_differential: true
     </rosparam>
   </node>
+
+  <!-- Use Visual Odom -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_t265.launch" if="$(arg use_visual_odom)">
+      <arg name="topic_odom_out" value="odom_combined" />
+      <arg name="odom_frame_id" value="odom" />
+      <arg name="base_link_frame_id" value="base_link" />
+  </include>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
   <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
