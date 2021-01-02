@@ -1,0 +1,10 @@
+# TODO
+# Use jsk-ros-pkg/jsk_robot master after approved
+- git:
+    local-name: jsk_robot
+    uri: https://github.com/708yamaguchi/jsk_robot.git
+    version: kinova-gen3
+- git:
+    local-name: ros_kortex
+    uri: https://github.com/Kinovarobotics/ros_kortex
+    version: kinetic-devel

@@ -1,0 +1,3 @@
+<launch>
+  <test pkg="kinovaeus" type="test-gen3-lite.l" test-name="gen3_lite_lisp" time-limit="300" />
+</launch>
