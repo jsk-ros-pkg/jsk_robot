@@ -1,0 +1,20 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+
+rarm:
+  - joint_1 : rarm-shoulder-r
+  - joint_2 : rarm-shoulder-p
+  - joint_3 : rarm-elbow-r
+  - joint_4 : rarm-elbow-p
+  - joint_5 : rarm-wrist-r
+  - joint_6 : rarm-wrist-p
+
+angle-vector:
+  init-pose : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  reset-pose: [0.0, -16.0, 75.0, 0.0, -60.0, 0.0]
+
+rarm-end-coords:
+  parent : end_effector_link
+  translate : [0, 0, 0]
+  rotate : [0, 0, 1, 0]

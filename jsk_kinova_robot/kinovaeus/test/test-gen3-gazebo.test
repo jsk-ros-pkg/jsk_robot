@@ -1,0 +1,10 @@
+<launch>
+  <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
+    <arg name="arm" value="gen3" />
+    <arg name="gripper" value="robotiq_2f_85" />
+    <arg name="gazebo_gui" value="false" />
+    <arg name="start_rviz" value="false" />
+  </include>
+
+  <test pkg="kinovaeus" type="test-gen3.l" test-name="gen3_lisp" time-limit="300" />
+</launch>
