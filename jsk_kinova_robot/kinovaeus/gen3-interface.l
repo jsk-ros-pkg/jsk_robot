@@ -30,9 +30,13 @@
      (cons :joint-names (list "joint_1" "joint_2" "joint_3" "joint_4" "joint_5" "joint_6" "joint_7")))))
   (:go-grasp (&key (pos 0.0) (wait t))
     (when (send self :simulation-modep)
-      ;; TODO
-      ;; Move gripper in robot variable like below
-      ;; (send robot :left_inner_finger_joint :joint-angle 50)
+      (let ((pos-deg (rad2deg pos)))
+        (send robot :finger_joint :joint-angle pos-deg)
+        (send robot :left_inner_finger_joint :joint-angle (* -1 pos-deg))
+        (send robot :left_inner_knuckle_joint :joint-angle pos-deg)
+        (send robot :right_inner_finger_joint :joint-angle (* -1 pos-deg))
+        (send robot :right_inner_knuckle_joint :joint-angle pos-deg)
+        (send robot :right_outer_knuckle_joint :joint-angle pos-deg))
       (return-from :go-grasp t))
     (let ((pos-max 0.8) (pos-min 0.0))
       (when (or (< pos pos-min) (> pos pos-max))
