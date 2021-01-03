@@ -16,10 +16,12 @@
   <build_depend>rostest</build_depend>
   <build_depend>roseus</build_depend>
   <build_depend>pr2eus</build_depend>
+  <build_depend>pr2eus_moveit</build_depend>
   <build_depend>kortex_description</build_depend>
 
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
+  <run_depend>pr2eus_moveit</run_depend>
 
   <test_depend>kortex_gazebo</test_depend>
   <test_depend>gen3_robotiq_2f_85_move_it_config</test_depend>
