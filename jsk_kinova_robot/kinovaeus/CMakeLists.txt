@@ -62,7 +62,7 @@ if(CATKIN_ENABLE_TESTING)
   # Test with Kinematic Simulator
   add_rostest(test/test-gen3.test)
   add_rostest(test/test-gen3-lite.test)
-  # TODO: Test with Gazebo
-  # add_rostest(test/test-gen3-gazebo.test)
-  # add_rostest(test/test-gen3-lite-gazebo.test)
+  # Test with Gazebo and MoveIt!
+  add_rostest(test/test-gen3-moveit.test)
+  add_rostest(test/test-gen3-lite-moveit.test)
 endif()
