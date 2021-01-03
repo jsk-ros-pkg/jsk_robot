@@ -4,7 +4,10 @@
     <arg name="gripper" value="robotiq_2f_85" />
     <arg name="gazebo_gui" value="false" />
     <arg name="start_rviz" value="false" />
+    <!-- TODO: Wait for https://github.com/Kinovarobotics/ros_kortex/pull/141 -->
+    <arg name="enable_test" value="false" />
   </include>
 
-  <test pkg="kinovaeus" type="test-gen3.l" test-name="gen3_lisp" time-limit="300" />
+  <test pkg="kinovaeus" type="test-gen3-moveit.l" test-name="gen3_move_moveit"
+        time-limit="300" retry="2" />
 </launch>
