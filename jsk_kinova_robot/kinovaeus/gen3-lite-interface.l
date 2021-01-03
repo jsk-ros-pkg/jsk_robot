@@ -30,11 +30,16 @@
      (cons :joint-names (list "joint_1" "joint_2" "joint_3" "joint_4" "joint_5" "joint_6")))))
   (:go-grasp (&key (pos 0.0) (wait t))
     (when (send self :simulation-modep)
-      ;; TODO
-      ;; Move gripper in robot variable like below
-      ;; (send robot :left_finger_tip_joint :joint-angle -25)
+      (send robot :right_finger_bottom_joint :joint-angle
+            (rad2deg pos))
+      (send robot :right_finger_tip_joint :joint-angle
+            (rad2deg (+ (* -0.676 pos) 0.149)))
+      (send robot :left_finger_bottom_joint :joint-angle
+            (rad2deg (* -1 pos)))
+      (send robot :left_finger_tip_joint :joint-angle
+            (rad2deg (+ (* -0.676 pos) 0.149)))
       (return-from :go-grasp t))
-    (let ((pos-max 0.95) (pos-min -0.1))
+    (let ((pos-max 0.95) (pos-min -0.05))
       (when (or (< pos pos-min) (> pos pos-max))
       (ros::ros-warn (format nil ":pos ~A is out of range." pos))
       (setq pos (max pos-min (min pos pos-max)))))
@@ -47,7 +52,7 @@
       result))
   (:start-grasp
     (&rest args &key &allow-other-keys)
-    (send* self :go-grasp :pos -0.1 args))
+    (send* self :go-grasp :pos -0.05 args))
   (:stop-grasp
     (&rest args &key &allow-other-keys)
     (send* self :go-grasp :pos 0.95 args))
