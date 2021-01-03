@@ -21,6 +21,10 @@
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
 
+  <test_depend>kortex_gazebo</test_depend>
+  <test_depend>gen3_robotiq_2f_85_move_it_config</test_depend>
+  <test_depend>gen3_lite_gen3_lite_2f_move_it_config</test_depend>
+
   <export>
   </export>
 </package>
