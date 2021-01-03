@@ -22,7 +22,8 @@ wstool update
 cd ../
 source /opt/ros/melodic/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
-catkin build jsk_kinova_robot kinovaeus
+# TODO: add catkin build jsk_kinova_startup
+catkin build kinovaeus
 source devel/setup.bash
 ```
 
