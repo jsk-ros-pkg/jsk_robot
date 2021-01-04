@@ -63,6 +63,7 @@ To control the robot form EusLisp. Please start `roseus` and type as follows.
 ;; Gen3 Lite
 (load "package://kinovaeus/kinova-lite-interface.l")
 (kinova-init :type :gen3_lite_gen3_lite_2f)
+```
 
 ## Use EusLisp model
 
@@ -121,7 +122,7 @@ To open and close the gripper. You can use `:start-grasp` and `:stop-grasp`.
 Kinova Gen3 robot with robotiq 2f 85 gripper.
 ```bash
 # Terminal 1
-roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3 gripper:=robotiq_2f_85
+roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3 gripper:=robotiq_2f_85 robot_name:=arm_gen3
 # Terminal 2
 roscd kinovaeus
 roseus kinova-interface.l
@@ -131,12 +132,12 @@ roseus kinova-interface.l
 Kinova Gen3 Lite robot with lite 2f gripper.
 ```bash
 # Terminal 1
-roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3_lite gripper:=gen3_lite_2f
+roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3_lite gripper:=gen3_lite_2f robot_name:=arm_gen3
 # Terminal 2
 roscd kinovaeus
 roseus kinova-interface.l
 (kinova-init :type :gen3_lite_gen3_lite_2f)
-````
+```
 
 ---
 If you have any question, please feel free to file open at https://github.com/jsk-ros-pkg/jsk_robot/issues

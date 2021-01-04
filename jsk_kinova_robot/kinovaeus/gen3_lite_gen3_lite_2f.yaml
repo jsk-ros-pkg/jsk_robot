@@ -10,6 +10,8 @@ rarm:
   - joint_5 : rarm-elbow-y
   - joint_6 : rarm-wrist-p
 
+# reset-pose is the home pose
+# https://github.com/Kinovarobotics/ros_kortex/blob/330c55bce8c3d463cca2492b3e0c89204f235640/kortex_move_it_config/gen3_lite_gen3_lite_2f_move_it_config/config/gen3_lite_gen3_lite_2f.srdf.xacro#L31-L38
 angle-vector:
   init-pose : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
   reset-pose: [0.0, -16.0, 75.0, 0.0, -60.0, 0.0]
