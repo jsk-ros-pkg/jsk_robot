@@ -24,7 +24,7 @@
                              ((derivedp robot gen3_robotiq_2f_85-robot)
                               "/arm_gen3/robotiq_2f_85_gripper_controller/gripper_cmd")
                              ((derivedp robot gen3_lite_gen3_lite_2f-robot)
-                              "/arm_gen3/gen3_lite_2f_gripper_gripper_controller/gripper_cmd")
+                              "/arm_gen3/gen3_lite_2f_gripper_controller/gripper_cmd")
                              (t
                               (warning-message 1 "unknown kinova robot type ~A~%" robot)
                               ))
@@ -53,39 +53,38 @@
   (:go-grasp
    (&rest args)
    (cond ((derivedp robot gen3_robotiq_2f_140-robot)
-          (send* self :go-grasp-robotiq args))
+          (send* self :go-grasp-robotiq-2f-140 args))
          ((derivedp robot gen3_robotiq_2f_85-robot)
-          (send* self :go-grasp-robotiq args))
-         ((derivedp robot gen3_robotiq_2f_140-robot)
-          (send* self :go-grasp-gen3-lite args))
+          (send* self :go-grasp-robotiq-2f-85 args))
+         ((derivedp robot gen3_lite_gen3_lite_2f-robot)
+          (send* self :go-grasp-lite args))
          (t
           (warning-message 1 "unknown kinova robot type ~A~%" robot))))
   (:start-grasp
    (&rest args)
    (cond ((derivedp robot gen3_robotiq_2f_140-robot)
-          (send* self :start-grasp-robotiq args))
+          (send* self :start-grasp-robotiq-2f-140 args))
          ((derivedp robot gen3_robotiq_2f_85-robot)
-          (send* self :start-grasp-robotiq args))
-         ((derivedp robot gen3_robotiq_2f_140-robot)
-          (send* self :start-grasp-gen3-lite args))
+          (send* self :start-grasp-robotiq-2f-85 args))
+         ((derivedp robot gen3_lite_gen3_lite_2f-robot)
+          (send* self :start-grasp-lite args))
          (t
           (warning-message 1 "unknown kinova robot type ~A~%" robot))))
   (:stop-grasp
    (&rest args)
    (cond ((derivedp robot gen3_robotiq_2f_140-robot)
-          (send* self :stop-grasp-robotiq args))
+          (send* self :stop-grasp-robotiq-2f-140 args))
          ((derivedp robot gen3_robotiq_2f_85-robot)
-          (send* self :stop-grasp-robotiq args))
-         ((derivedp robot gen3_robotiq_2f_140-robot)
-          (send* self :stop-grasp-gen3-lite args))
+          (send* self :stop-grasp-robotiq-2f-85 args))
+         ((derivedp robot gen3_lite_gen3_lite_2f-robot)
+          (send* self :stop-grasp-lite args))
          (t
           (warning-message 1 "unknown kinova robot type ~A~%" robot))))
-  ;; grasp for robotiq
-  (:go-grasp-robotiq (&key (pos 0.0) (wait t))
+  ;; grasp for robotiq 2f 85
+  (:go-grasp-robotiq-2f-85 (&key (pos 0.0) (wait t))
     (when (send self :simulation-modep)
       ;; mimic joint
       ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_85/urdf/robotiq_arg2f_85_model_macro.xacro
-      ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_140/urdf/robotiq_arg2f_140_model_macro.xacro
       (let ((pos-deg (rad2deg pos)))
         (send robot :finger_joint :joint-angle pos-deg)
         (send robot :left_inner_finger_joint :joint-angle (* -1 pos-deg))
@@ -93,7 +92,7 @@
         (send robot :right_inner_finger_joint :joint-angle (* -1 pos-deg))
         (send robot :right_inner_knuckle_joint :joint-angle pos-deg)
         (send robot :right_outer_knuckle_joint :joint-angle pos-deg))
-      (return-from :go-grasp-robotiq t))
+      (return-from :go-grasp-robotiq-2f-85 t))
     (let ((pos-max 0.8) (pos-min 0.0))
       (when (or (< pos pos-min) (> pos pos-max))
       (ros::ros-warn (format nil ":pos ~A is out of range." pos))
@@ -105,12 +104,42 @@
       (when wait (send gripper-action :wait-for-result))
       (setq result (send gripper-action :get-result))
       result))
-  (:start-grasp-robotiq
+  (:start-grasp-robotiq-2f-85
     (&rest args &key &allow-other-keys)
-    (send* self :go-grasp-robotiq :pos 0.8 args))
-  (:stop-grasp-robotiq
+    (send* self :go-grasp-robotiq-2f-85 :pos 0.8 args))
+  (:stop-grasp-robotiq-2f-85
     (&rest args &key &allow-other-keys)
-    (send* self :go-grasp-robotiq :pos 0.0 args))
+    (send* self :go-grasp-robotiq-2f-85 :pos 0.0 args))
+  ;; grasp for robotiq 2f 140
+  (:go-grasp-robotiq-2f-140 (&key (pos 0.0) (wait t))
+    (when (send self :simulation-modep)
+      ;; mimic joint
+      ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_140/urdf/robotiq_arg2f_140_model_macro.xacro
+      (let ((pos-deg (rad2deg pos)))
+        (send self :finger_joint :joint-angle pos-deg)
+        (send self :left_inner_finger_joint :joint-angle pos-deg)
+        (send self :left_inner_knuckle_joint :joint-angle (* -1 pos-deg))
+        (send self :right_inner_finger_joint :joint-angle pos-deg)
+        (send self :right_inner_knuckle_joint :joint-angle (* -1 pos-deg))
+        (send self :right_outer_knuckle_joint :joint-angle (* -1 pos-deg)))
+      (return-from :go-grasp-robotiq-2f-140 t))
+    (let ((pos-max 0.69) (pos-min 0.0))
+      (when (or (< pos pos-min) (> pos pos-max))
+      (ros::ros-warn (format nil ":pos ~A is out of range." pos))
+      (setq pos (max pos-min (min pos pos-max)))))
+    (let (goal result)
+      (setq goal (instance control_msgs::GripperCommandActionGoal :init))
+      (send goal :goal :command :position pos)
+      (send gripper-action :send-goal goal)
+      (when wait (send gripper-action :wait-for-result))
+      (setq result (send gripper-action :get-result))
+      result))
+  (:start-grasp-robotiq-2f-140
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp-robotiq-2f-140 :pos 0.69 args))
+  (:stop-grasp-robotiq-2f-140
+    (&rest args &key &allow-other-keys)
+    (send* self :go-grasp-robotiq-2f-140 :pos 0.0 args))
   ;; grasp for gen3 lite
   (:go-grasp-lite (&key (pos 0.0) (wait t))
     (when (send self :simulation-modep)

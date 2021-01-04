@@ -51,27 +51,20 @@ roslaunch jsk_kinova_startup kinova_bringup.launch
 Start rviz from different terminal
 
 ```bash
-roslaunch jsk_kinova_startup rvi.launch
+roslaunch jsk_kinova_startup rviz.launch
 ```
 
 ## Use EusLisp model
 To control the robot form EusLisp. Please start `roseus` and type as follows.
 ```
-;; Gen3
+
 (load "package://kinovaeus/kinova-interface.l")
-(kinova-init)
+;; Gen3 with robotiq 2f 85 gripper
+(kinova-init :type :gen3_robotiq_2f_85)
+;; Gen3 with robotiq 2f 140 gripper
+(kinova-init :type :gen3_robotiq_2f_140)
 ;; Gen3 Lite
-(load "package://kinovaeus/kinova-lite-interface.l")
 (kinova-init :type :gen3_lite_gen3_lite_2f)
-```
-
-## Use EusLisp model
-
-To control the robot form EusLisp. Please start `roseus` and type as follows.
-
-```
-(load "package://kinovaeus/kinova-interface.l")
-(kinova-init)
 ```
 
 Use `:angle-vector` method to specify the arm joint angle.
@@ -81,7 +74,7 @@ Use `:angle-vector` method to specify the arm joint angle.
 
 You can also use `:inverse-kinematics` method to specify the arm pose from target coordinates.
 ```
-(send *kinova* :arm :inverse-kinematics (make-coords :pos #f(300 0 200) :rpy (float-vector pi  0 pi)) :debug-view t)
+(send *ri* :angle-vector (send *kinova* :arm :inverse-kinematics (make-coords :pos #f(300 0 200) :rpy (float-vector 0 pi/2 0)) :debug-view t) 3000)
 ```
 
 To move the gripper 50 [mm] up, you can use `move-end-pos` method.
