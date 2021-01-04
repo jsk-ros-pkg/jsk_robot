@@ -94,6 +94,12 @@ You can also use move-end-rot method to turn the gripper.
 (send *kinova* :arm :move-end-rot -90 :z)
 ```
 
+To open/close gripper, you can use `start-grasp` and `stop-grasp` method.
+```
+(send *gen3* :start-grasp)
+(send *gen3* :stop-grasp)
+```
+
 To control real robot. you can use *ri* object.
 ```
 (send *ri* :angle-vector (send *kinova* :angle-vector) 2000)
@@ -111,7 +117,7 @@ To obtain current robot pose, use `:state :potentio-vector` method.
 (send *ri* :state :potentio-vector)
 ```
 
-To open and close the gripper. You can use `:start-grasp` and `:stop-grasp`.
+To open and close the gripper, You can use `:start-grasp` and `:stop-grasp`.
 
 ```
 (send *ri* :stop-grasp)
