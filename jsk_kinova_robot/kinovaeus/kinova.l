@@ -18,6 +18,8 @@
 (defmethod gen3_robotiq_2f_85-robot
   (:arm (&rest args) (send* self :rarm args))      ;; enable to call send *kinova* :arm :angle-vector
   (:go-grasp (&key (pos 0))
+    ;; mimic joint
+    ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_85/urdf/robotiq_arg2f_85_model_macro.xacro
     (let ((pos-deg (rad2deg pos)))
       (send self :finger_joint :joint-angle pos-deg)
       (send self :left_inner_finger_joint :joint-angle (* -1 pos-deg))
@@ -33,6 +35,8 @@
 (defmethod gen3_robotiq_2f_140-robot
   (:arm (&rest args) (send* self :rarm args))      ;; enable to call send *kinova* :arm :angle-vector
   (:go-grasp (&key (pos 0))
+   ;; mimic joint
+   ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_140/urdf/robotiq_arg2f_140_model_macro.xacro
     (let ((pos-deg (rad2deg pos)))
       (send self :finger_joint :joint-angle pos-deg)
       (send self :left_inner_finger_joint :joint-angle (* -1 pos-deg))
@@ -48,6 +52,8 @@
 (defmethod gen3_lite_gen3_lite_2f-robot
   (:arm (&rest args) (send* self :rarm args))      ;; enable to call send *kinova* :arm :angle-vector
   (:go-grasp (&key (pos 0))
+    ;; mimic joint
+    ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/gen3_lite_2f/urdf/gen3_lite_2f_macro.xacro
     (send self :right_finger_bottom_joint :joint-angle
           (rad2deg pos))
     (send self :right_finger_tip_joint :joint-angle
@@ -61,4 +67,3 @@
   (:stop-grasp ()
     (send self :go-grasp :pos 0.95))
   )
-

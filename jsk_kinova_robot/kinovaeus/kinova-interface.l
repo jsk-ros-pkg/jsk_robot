@@ -83,6 +83,9 @@
   ;; grasp for robotiq
   (:go-grasp-robotiq (&key (pos 0.0) (wait t))
     (when (send self :simulation-modep)
+      ;; mimic joint
+      ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_85/urdf/robotiq_arg2f_85_model_macro.xacro
+      ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/robotiq_2f_140/urdf/robotiq_arg2f_140_model_macro.xacro
       (let ((pos-deg (rad2deg pos)))
         (send robot :finger_joint :joint-angle pos-deg)
         (send robot :left_inner_finger_joint :joint-angle (* -1 pos-deg))
@@ -111,6 +114,8 @@
   ;; grasp for gen3 lite
   (:go-grasp-lite (&key (pos 0.0) (wait t))
     (when (send self :simulation-modep)
+      ;; mimic joint
+      ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/gen3_lite_2f/urdf/gen3_lite_2f_macro.xacro
       (send robot :right_finger_bottom_joint :joint-angle
             (rad2deg pos))
       (send robot :right_finger_tip_joint :joint-angle
