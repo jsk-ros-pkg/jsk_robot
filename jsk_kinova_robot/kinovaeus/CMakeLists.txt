@@ -58,11 +58,7 @@ if(CATKIN_ENABLE_TESTING)
   # Test only roseus
   add_rostest(test/test-kinova.test)
   # Test with Kinematic Simulator
-  add_rostest(test/test-gen3.test)
-  add_rostest(test/test-gen3-lite.test)
+  add_rostest(test/test-kinova-kinematic-simulator.test)
   # Test with Gazebo and MoveIt!
-  add_rostest(test/test-gen3-moveit.test)
-  add_rostest(test/test-gen3-lite-moveit.test)
+  add_rostest(test/test-kinova-moveit.test)
 endif()
-
-

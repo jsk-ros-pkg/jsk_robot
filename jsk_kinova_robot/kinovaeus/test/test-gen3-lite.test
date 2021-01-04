@@ -1,3 +1,0 @@
-<launch>
-  <test pkg="kinovaeus" type="test-gen3-lite.l" test-name="gen3_lite_move" time-limit="100" />
-</launch>

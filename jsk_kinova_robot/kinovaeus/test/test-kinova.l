@@ -9,7 +9,7 @@
   (let (robot)
     (setq robot (kinova))
     (objects (list robot))
-    ;; rotation-angle NIL is returned when rotation-matrix is a unit-matrix
+   ;; rotation-angle NIL is returned when rotation-matrix is a unit-matrix
     (warning-message 2 "~A end-corods ~A~%" (send robot :name) (rotation-angle (send robot :arm :end-coords :worldrot)))
     (assert (eps= (norm (send (make-coords) :difference-rotation (send robot :arm :end-coords))) 0))
 
@@ -21,10 +21,9 @@
     (setq robot (kinova :type :gen3_lite_gen3_lite_2f))
     (objects (list robot))
     (warning-message 2 "~A end-corods ~A~%" (send robot :name) (rotation-angle (send robot :arm :end-coords :worldrot)))
-    (assert (eps= (norm (send (make-coords) :difference-rotation (send robot :arm :end-coords))) 0))
+    (assert (eps< (norm (send (make-coords) :difference-rotation (send robot :arm :end-coords))) 2.0))
     ))
 
 
 (run-all-tests)
 (exit)
-
