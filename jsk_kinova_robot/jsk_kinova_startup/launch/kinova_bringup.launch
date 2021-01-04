@@ -1,0 +1,17 @@
+<launch>
+  <arg name="ip_address" default="133.11.216.53" />
+  <arg name="robot_name" default="arm_gen3" />
+  <arg name="start_rviz" default="false" />
+  <arg name="gripper" default="robotiq_2f_140" />
+
+  <include file="$(find kortex_driver)/launch/kortex_driver.launch">
+    <arg name="ip_address" value="$(arg ip_address)" />
+    <arg name="robot_name" value="$(arg robot_name)" />
+    <arg name="start_rviz" value="$(arg start_rviz)" />
+    <arg name="gripper" value="$(arg gripper)" />
+  </include>
+
+  <include file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch">
+    <arg name="device" value="$(arg ip_address)" />
+  </include>
+</launch>
