@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
   <name>kinovaeus</name>
-  <version>1.0.0</version>
-  <description>The kinova package</description>
+  <version>1.1.0</version>
+  <description>The kinovaeus package</description>
 
   <maintainer email="708yamaguchi@gmail.com">Naoya Yamaguchi</maintainer>
 
@@ -25,6 +25,7 @@
 
   <test_depend>kortex_gazebo</test_depend>
   <test_depend>gen3_robotiq_2f_85_move_it_config</test_depend>
+  <test_depend>gen3_robotiq_2f_140_move_it_config</test_depend>
   <test_depend>gen3_lite_gen3_lite_2f_move_it_config</test_depend>
 
   <export>
