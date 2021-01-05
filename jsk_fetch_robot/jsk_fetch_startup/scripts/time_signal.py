@@ -60,7 +60,7 @@ class TimeSignal(object):
             speech_text += '掃除の時間です。'
 
         # weather forecast
-        if self.now_hour in [0, 7, 12, 19, 20]:
+        if self.now_hour in [0, 7, 12, 19]:
             try:
                 forecast_text = self._get_weather_forecast(lang='ja')
                 speech_text += forecast_text
