@@ -286,6 +286,65 @@
                (cons :joint-list (send robot :arm :joint-list)))))
   )
 
+;; This method can be removed if below is merged
+;; https://github.com/euslisp/jskeus/pull/595
+(defmethod minjerk-interpolator
+  (:interpolation
+   ()
+   "Minjerk interpolator, a.k.a Hoff & Arbib
+
+    Example code is:
+(setq l (instance minjerk-interpolator :init))
+(send l :reset :position-list (list #f(1 2 3) #f(3 4 5) #f(1 2 3)) :time-list (list 0.1 0.18))
+(send l :start-interpolation)
+(while (send l :interpolatingp) (send l :pass-time 0.02) (print (send l :position)))
+"
+   (let* ((xi (nth segment position-list))
+          (xf (nth (1+ segment) position-list))
+          (vi (nth segment velocity-list))
+          (vf (nth (1+ segment) velocity-list))
+          (ai (nth segment acceleration-list))
+          (af (nth (1+ segment) acceleration-list))
+          ;;
+          (t1+t2 (- (nth segment time-list) (if (> segment 0) (nth (1- segment) time-list) 0))) ;; total time of segment
+          ;; A=(gx-(x+v*t+(a/2.0)*t*t))/(t*t*t)
+          ;; B=(gv-(v+a*t))/(t*t)
+          ;; C=(ga-a)/t
+          (A  (scale (/ 1.0 (* t1+t2 t1+t2 t1+t2)) (v- xf (reduce #'v+ (list xi (scale t1+t2 vi) (scale (* t1+t2 t1+t2) (scale 0.5 ai)))))))
+          (B  (scale (/ 1.0 (* t1+t2 t1+t2))      (v- vf (v+ vi (scale t1+t2 ai)))))
+          (C  (scale (/ 1.0 (* t1+t2))           (v- af ai)))
+          ;; a0=x
+          ;; a1=v
+          ;; a2=a/2.0
+          ;; a3=10*A-4*B+0.5*C
+          ;;; a4=(-15*A+7*B-C)/t
+          ;; a5=(6*A-3*B+0.5*C)/(t*t)
+          (a0 xi)
+          (a1 vi)
+          (a2 (scale 0.5 ai))
+          (a3 (v+ (v- (scale 10 A) (scale 4 B)) (scale 0.5 C)))
+          (a4 (scale (/ 1.0 t1+t2) (v- (v+ (scale -15 A) (scale 7 B)) C)))
+          (a5 (scale (/ 1.0 t1+t2 t1+t2) (v+ (v+ (scale 6 A) (scale -3 B)) (scale 0.5 C))))
+          )
+     ;; x=a0+a1*t+a2*t*t+a3*t*t*t+a4*t*t*t*t+a5*t*t*t*t*t
+     ;; v=a1+2*a2*t+3*a3*t*t+4*a4*t*t*t+5*a5*t*t*t*t
+     ;; a=2*a2+6*a3*t+12*a4*t*t+20*a5*t*t*t
+     (setq position
+           (reduce #'v+ (list a0
+                              (scale (expt segment-time 1) a1) (scale (expt segment-time 2) a2)
+                              (scale (expt segment-time 3) a3) (scale (expt segment-time 4) a4)
+                              (scale (expt segment-time 5) a5)))
+           velocity
+           (reduce #'v+ (list a1
+                              (scale (* 2 (expt segment-time 1)) a2) (scale (* 3 (expt segment-time 2)) a3)
+                              (scale (* 4 (expt segment-time 3)) a4) (scale (* 5 (expt segment-time 4)) a5)))
+           acceleration
+           (reduce #'v+ (list (scale 2 a2)
+                              (scale (* 6 (expt segment-time 1)) a3) (scale (* 12 (expt segment-time 2)) a4)
+                              (scale (* 20 (expt segment-time 3)) a5))))
+     position))
+)
+
 (defun kinova-init (&key (type nil) &rest args &alow-other-keys)
   (unless (boundp '*kinova*) (apply #'kinova (if type (list :type type) nil)) (send *kinova* :reset-pose))
   (unless (ros::ok) (ros::roseus "kinova_eus_interface"))
