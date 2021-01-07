@@ -4,7 +4,7 @@
   <arg name="launch_hd_monitor" default="true" />
   <arg name="launch_ntp_monitor" default="true"/>
   <arg name="launch_wifi_ddwrt" default="false" />
-  <arg name="launch_network_detector" default="false" />
+  <arg name="launch_network_detector" default="true" />
   <arg name="launch_app_manager" default="true" />
   <arg name="setup_mannequin_mode" default="true"
        doc="prepares mannequin_mode to be callable by EusLisp interface"/>
@@ -169,7 +169,13 @@
       <param name="router" type="string" value="wifi-router" />
     </node>
   </group>
-  
+
+  <!-- Network detector -->
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector"
+        if="$(arg launch_network_detector)">
+    <param name="interface_name" value="wan0"/>
+  </node>
+
   <!-- Diagnostics aggregation -->
   <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg">
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/jsk_pr2_analyzers.yaml"/>
@@ -196,11 +202,6 @@
   <!-- Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server" output="screen">
     <param name="buffer_size" value="120.0"/>
-  </node>
-
-  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector"
-        if="$(arg launch_network_detector)">
-    <param name="interface_name" value="wan0"/>
   </node>
 
   <!-- logging database -->

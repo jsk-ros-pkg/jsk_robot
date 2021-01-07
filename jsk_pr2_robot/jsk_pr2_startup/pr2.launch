@@ -24,6 +24,8 @@
   <arg name="launch_reset_motors" default="true" />
   <arg name="slow_camera_framerate" default="true" />
   <arg name="launch_c3_startup" default="false" />
+  <arg name="use_map_keepout" default="true"
+       doc="whether to use keepout map or not for navigation (default: true)"/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -36,6 +38,8 @@
   <include if="$(arg launch_move_base)"
            file="$(find jsk_pr2_startup)/jsk_pr2_move_base/pr2_2dnav.launch">
     <arg name="launch_look_forward" value="$(arg launch_look_forward)"/>
+    <arg name="launch_navigation" value="true" />
+    <arg name="use_map_keepout" value="$(arg use_map_keepout)" />
   </include>
 
   <!-- special start: use when launuch_move_base is false-->
@@ -52,6 +56,7 @@
   <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch"
            if="$(arg launch_map)">
     <arg name="MACHINE" value="c2" />
+    <arg name="keepout" value="$(arg use_map_keepout)" />
   </include>
 
   <!-- japanese speech node -->
@@ -74,6 +79,12 @@
     <arg name="twitter" value="$(arg launch_twitter)"/>
     <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
   </include>
+
+  <!-- look at human for PR2 -->
+  <node name="look_at_human"
+        pkg="jsk_pr2_startup" type="pr2-look-at-human.l">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
 
   <!-- pr2 warning -->
   <!-- battery warning -->
@@ -148,7 +159,11 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_moveit/start_pr2_moveit.launch" />
 
   <node if="$(arg launch_reset_motors)"
-        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py"/>
+        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py">
+    <rosparam>
+      watch_duration: 30
+    </rosparam>
+  </node>
 
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
