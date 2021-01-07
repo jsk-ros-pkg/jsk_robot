@@ -3,6 +3,7 @@
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="launch_fetch_bringup_teleop" default="false" />
+  <arg name="odom_topic" default="odom" />
 
   <group unless="$(arg launch_fetch_bringup_teleop)" >
     <!-- need to launch joy_node because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
@@ -28,6 +29,7 @@
        see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
     <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
+    <remap from="/odom" to="$(arg odom_topic)" />
     <param name="arm/button_arm_linear" value="4"/>
     <param name="arm/button_arm_angular" value="6"/>
     <param name="head/button_deadman" value="11"/>
@@ -72,6 +74,7 @@
   <node name="safe_teleop_base" pkg="safe_teleop_base" type="safe_teleop_base">
     <remap from="base_velocity" to="/teleop/cmd_vel/unsafe" />
     <remap from="~safe_vel"     to="/teleop/cmd_vel/safe" />
+    <remap from="/odom"         to="$(arg odom_topic)" />
     <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />

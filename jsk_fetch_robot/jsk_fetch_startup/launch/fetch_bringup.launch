@@ -98,7 +98,9 @@
 
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
-           if="$(arg launch_teleop)" />
+           if="$(arg launch_teleop)" >
+      <arg name="odom_topic" value="/odom_combined" />
+  </include>
 
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
@@ -144,6 +146,7 @@
       <arg name="use_keepout" value="false" />
       <arg name="use_map_topic" value="true" />
       <arg name="launch_map_server" value="false" />
+      <arg name="odom_topic" value="/odom_combined" />
     </include>
 
     <!-- robot localization ukf -->
