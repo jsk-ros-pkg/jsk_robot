@@ -1,6 +1,7 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "twitter_client_tablet")
+(ros::roseus-add-msgs "roseus")
 
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 

@@ -114,3 +114,29 @@
            (push (cons l l2) pairs))))
      pairs))
   )
+
+;; Mainly copied from pr2eus/pr2.l
+(defclass fetch-sensor-robot
+  :super fetch-robot
+  :slots (head-depth head-rgb))
+
+(defmethod fetch-sensor-robot
+  (:init (&rest args)
+   (send-super* :init args)
+   ;; get frame coordinates data from fetch1075:/etc/ros/indigo/calibrated_latest.urdf
+   ;; define cameras
+   ;; $ rostopic echo /head_camera/depth/camera_info/P -n1
+   ;; [534.9872552593961, 0.0, 323.9101183855545, 0.0, 0.0, 540.9124629824223, 224.6645702171863, 0.0, 0.0, 0.0, 1.0, 0.0]
+   (setq head-depth (make-camera-from-ros-camera-info-aux 640 480 #f(575.816 0.0 315.0 0.0 0.0 575.816 237.0 0.0 0.0 0.0 1.0 0.0) head_camera_depth_optical_frame_lk :name :head/depth))
+   ;; $ rostopic echo /head_camera/depth/camera_info/P -n1
+   ;; [534.9872552593961, 0.0, 323.9101183855545, 0.0, 0.0, 540.9124629824223, 224.6645702171863, 0.0, 0.0, 0.0, 1.0, 0.0]
+   (setq head-rgb (make-camera-from-ros-camera-info-aux 640 480 #f(575.816 0.0 315.0 0.0 0.0 575.816 237.0 0.0 0.0 0.0 1.0 0.0) head_camera_rgb_optical_frame_lk :name :head/rgb))
+
+   (setq cameras (list  (send self :head-depth) (send self :head-rgb)))
+   self)
+
+  (:head-depth (&rest args) (forward-message-to head-depth args))
+  (:head-rgb (&rest args) (forward-message-to head-rgb args))
+  )
+
+(defun fetch () (setq *fetch* (instance fetch-sensor-robot :init)))
