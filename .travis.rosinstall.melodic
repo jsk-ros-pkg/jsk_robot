@@ -23,20 +23,20 @@
    uri: https://github.com/tork-a/jsk_demos-release.git
    local-name: jsk_maps
    version: release/kinetic/jsk_maps
-- git: # wait until releasing (https://github.com/PR2/app_manager/issues/12)
-   uri: https://github.com/pr2/app_manager.git
-   local-name: app_manager
 - git: # wait for melodic release https://github.com/ros-naoqi/pepper_robot/issues/50
    uri: https://github.com/ros-naoqi/pepper_robot.git
    local-name: pepper_robot
 - git: # https://github.com/ros-naoqi/nao_robot/issues/40
    uri: https://github.com/ros-naoqi/nao_robot.git
    local-name: nao_robot
-- git: # use latest pr2_computer_monitor, wait for melodic release https://github.com/PR2/pr2_robot/issues/261
-   uri: https://github.com/pr2-gbp/pr2_robot-release.git
-   local-name: pr2_computer_monitor
-   version: release/kinetic/pr2_computer_monitor
 - git: # use naoqi_pose, wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
    uri: https://github.com/ros-naoqi/naoqi_bridge-release.git
    local-name: naoqi_pose
    version: release/kinetic/naoqi_pose
+# jsk_fetch_startup requires fetch_ros with following PRs.
+# https://github.com/fetchrobotics/fetch_ros/pull/144
+# https://github.com/fetchrobotics/fetch_ros/pull/146
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: ba4bafdb802e474487d1e0d893aa25c9535dc55f
