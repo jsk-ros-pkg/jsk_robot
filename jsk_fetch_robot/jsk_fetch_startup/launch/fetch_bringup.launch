@@ -26,12 +26,18 @@
     </rosparam>
   </node>
 
-  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+  <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
     </rosparam>
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
+
+  <!-- look at human for Fetch -->
+  <node name="look_at_human"
+        pkg="jsk_fetch_startup" type="fetch-look-at-human.l" output="screen">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
 
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
