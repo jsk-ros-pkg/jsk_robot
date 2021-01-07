@@ -70,6 +70,12 @@
     <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
   </include>
 
+  <!-- look at human for PR2 -->
+  <node name="look_at_human"
+        pkg="jsk_pr2_startup" type="pr2-look-at-human.l">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
+
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
@@ -143,7 +149,11 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_moveit/start_pr2_moveit.launch" />
 
   <node if="$(arg launch_reset_motors)"
-        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py"/>
+        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py">
+    <rosparam>
+      watch_duration: 30
+    </rosparam>
+  </node>
 
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
