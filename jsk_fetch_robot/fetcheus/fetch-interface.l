@@ -94,7 +94,11 @@
    (if (member :start-offset-time args) (setq start-offset-time (cadr (member :start-offset-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
-   (when (send self :simulation-modep)
+   (when (and (not (boundp '*co*)) (send self :simulation-modep))
+     (if (member :use-torso args)
+       (setq args (append (subseq args 0 (position :use-torso args))
+                          (if (> (length args) (+ 2 (position :use-torso args)))
+                            (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
    ;;
    (when (not (numberp tm))
@@ -125,6 +129,10 @@
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
+     (if (member :use-torso args)
+       (setq args (append (subseq args 0 (position :use-torso args))
+                          (if (> (length args) (+ 2 (position :use-torso args)))
+                            (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector-sequence
                   (send* self :angle-vector-sequence-raw avs tms ctype start-time args)))
    (unless (and (listp tms) (every #'numberp tms))
@@ -191,7 +199,14 @@
 Arguments:
  - key (:position :velocity :effort)
 Example: (send self :gripper :position) => 0.00"
-   (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
+   (if (send self :simulation-modep)
+       (let ((pos (* 0.001 2 (vmean (send robot :rarm :gripper :angle-vector)))))
+         (case key
+               (:position pos)
+               (:velocity 0)
+               (:effort (+ (* -110 pos) 1)))) ;; effot is -10 on open, 1.2 for close
+     ;; for real robot
+     (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*))))
   ;;
   (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
     (send-super* :speak text :topic-name topic-name args))
@@ -363,7 +378,11 @@ Example: (send self :gripper :position) => 0.00"
 (defun fetch-init (&optional (create-viewer))
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
-  (unless (boundp '*co*) (setq *co* (instance collision-object-publisher :init)))
+  (unless (boundp '*co*)
+    (ros::ros-warn ";; collision-object-publisher wait for \"apply_planning_scene\" service for ~A sec~%" 5)
+    (if (ros::wait-for-service "apply_planning_scene" 5)
+      (setq *co* (instance collision-object-publisher :init))
+      (ros::ros-warn ";; could not find \"apply_planning_scene\" skip creating *co*~%")))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
 
   (ros::spin-once)
