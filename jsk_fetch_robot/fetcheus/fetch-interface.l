@@ -37,10 +37,13 @@
      ))
   (:state (&rest args)
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
-   (send-super* :state
-                (if (or (eq (car args) :worldcoords)
-                        (member :wait-until-update args))
-                    args (append args (list :wait-until-update t)))))
+   (case (car args)
+     (:worldcoords
+       (send-super :state :worldcoords (or (cadr args) "world")))
+     (t
+       (send-super* :state
+                    (if (member :wait-until-update args)
+                        args (append args (list :wait-until-update t)))))))
   (:check-continuous-joint-move-over-180 ;; can be removed if http//github.com/jsk-ros-pkg/jsk_pr2eus/pull/322 merged
    (diff-av)
    (let ((i 0) add-new-trajectory-point)
