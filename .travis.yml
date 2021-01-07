@@ -48,4 +48,4 @@ before_script:
   - if [ "$ROS_DISTRO" == "melodic" ]; then export BEFORE_SCRIPT="pwd; ls -al ; ls -al jsk_robot/; ls -al jsk_robot/.travis.rosinstall.melodic; wstool merge jsk_robot/.travis.rosinstall.melodic; wstool update"; fi
   # skip running postinst for ros-ROS_DISTRO-julius https://gist.github.com/jordansissel/748313#file-stripdeb-sh
   - export BEFORE_SCRIPT="apt-get download ros-$ROS_DISTRO-julius; wget -O stripdeb.sh https://gist.githubusercontent.com/jordansissel/748313/raw/8aebce360bc082e33af7bba3c90f755eb655783b/stripdeb.sh; bash stripdeb.sh ros-$ROS_DISTRO-julius*.deb; sudo dpkg --force-all -i ros-$ROS_DISTRO-julius*.deb; sudo apt-get -y -f install; sudo apt-mark hold ros-$ROS_DISTRO-julius; $BEFORE_SCRIPT"
-script: source .travis/travis.sh
+script: .travis/travis.sh
