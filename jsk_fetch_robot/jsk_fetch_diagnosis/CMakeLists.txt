@@ -23,7 +23,7 @@ catkin_package(
   CATKIN_DEPENDS message_runtime
 )
 
-install(DIRECTORY scripts
+install(DIRECTORY node_scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
 )

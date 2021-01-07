@@ -25,9 +25,10 @@
    uri: https://github.com/tork-a/jsk_demos-release.git
    local-name: jsk_maps
    version: release/kinetic/jsk_maps
-# Need to wait for app_manager 1.1.1 for kinetic and later. For indigo, we could not expect newer releases.....
-# https://github.com/PR2/app_manager/issues/12 (Relerase request 1.1.1)
+# jsk_fetch_startup requires fetch_ros with following PRs.
+# https://github.com/fetchrobotics/fetch_ros/pull/144
+# https://github.com/fetchrobotics/fetch_ros/pull/146
 - git:
-    local-name: PR2/app_manager
-    uri: https://github.com/PR2/app_manager.git
-    version: kinetic-devel
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 0ad250a996a2ef68172fc064698f253bc9cf08d0
