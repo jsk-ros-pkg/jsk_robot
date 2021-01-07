@@ -52,6 +52,7 @@ class PR2ResetMotorsNode(object):
                 self.history)
             if len(history) > self.max_retry_num:
                 rospy.logerr("Maximum retry count reached. Give up resetting motors")
+                rospy.logerr("Waiting for {} seconds for other retries".format(self.watch_duration))
                 return
             rospy.logwarn("resetting motors")
             self.reset_srv()
