@@ -108,6 +108,8 @@ class TimeSignal(object):
         url = 'http://api.openweathermap.org/data/2.5/weather?q=tokyo&lang={}&units=metric&appid={}'.format(lang, self.appid)  # NOQA
         resp = json.loads(urllib2.urlopen(url).read())
         weather = resp['weather'][0]['description']
+        # aques_talk replaces decimal point to "。" (e.g. 7.8度 -> 7。8ど)
+        # So we use integer for temperature, humidity and wind speed.
         temp = int(resp['main']['temp'])
         humidity = int(resp['main']['humidity'])
         wind_speed = int(resp['wind']['speed'])
