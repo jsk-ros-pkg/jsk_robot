@@ -9,6 +9,11 @@
 (setq *fetch* (fetch))
 (send *fetch* :reset-pose)
 
+
+(deftest test-fetch-state-worldcoords ()
+  (let ((coords (send *ri* :state :worldcoords "base_link")))
+    (assert coords (format nil "failed to get :state :worldcoords" coords))))
+
 (deftest test-fetch-moveit ()
   (let (tm-0 tm-1)
     (setq tm-0 (ros::time-now))
@@ -51,8 +56,8 @@
     (setq tm-1 (ros::time-now))
     (setq tm-diff (send (ros::time- tm-1 tm-0) :to-sec))
     (ros::ros-info "time for duration ~A" tm-diff)
-    (assert (> tm-diff 5) (format nil "start-time is ignored. Traj finishes at ~A" tm-diff))
-    (assert (< tm-diff 7) (format nil "start-time is considered multiple times. Traj finishes at ~A" tm-diff))
+    (assert (> tm-diff 4.5) (format nil "start-time is ignored. Traj finishes at ~A" tm-diff))
+    (assert (< tm-diff 8) (format nil "start-time is considered multiple times. Traj finishes at ~A" tm-diff))
     (send *ri* :angle-vector (send *fetch* :reset-pose) 2000 nil 4 :start-offset-time 0)
     (setq tm-0 (ros::time-now))
     (send *ri* :wait-interpolation)
@@ -75,7 +80,7 @@
     (setq tm-1 (ros::time-now))
     (setq tm-diff (send (ros::time- tm-1 tm-0) :to-sec))
     (ros::ros-info "time for duration ~A" tm-diff)
-    (assert (> tm-diff 5) (format nil "start-time is ignored. Traj finishes at ~A" tm-diff))
+    (assert (> tm-diff 4.5) (format nil "start-time is ignored. Traj finishes at ~A" tm-diff))
     (assert (< tm-diff 8) (format nil "start-time is considered multiple times. Traj finishes at ~A" tm-diff))
     (send *ri* :angle-vector-sequence avs 2000 nil 4 :start-offset-time 0)
     (setq tm-0 (ros::time-now))
