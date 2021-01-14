@@ -14,8 +14,6 @@
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <!-- add jsk startups -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
-
   <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
         respawn="true" output="screen">
     <rosparam>
