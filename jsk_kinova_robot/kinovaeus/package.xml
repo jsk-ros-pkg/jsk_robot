@@ -24,6 +24,8 @@
   <run_depend>pr2eus_moveit</run_depend>
 
   <test_depend>kortex_gazebo</test_depend>
+  <!-- Remove these dependencies after below PR is merged -->
+  <!-- https://github.com/Kinovarobotics/ros_kortex/pull/142 -->
   <test_depend>gen3_robotiq_2f_85_move_it_config</test_depend>
   <test_depend>gen3_robotiq_2f_140_move_it_config</test_depend>
   <test_depend>gen3_lite_gen3_lite_2f_move_it_config</test_depend>

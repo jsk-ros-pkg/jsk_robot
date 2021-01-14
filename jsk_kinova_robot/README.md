@@ -42,10 +42,13 @@ source devel/setup.bash
 
 ## Start ROS Node
 
-Start real kinova robot
+Start real kinova robot. `ip_address` can be given by both ip address and FQDN (e.g. abc.def.jp)
 
 ```bash
-roslaunch jsk_kinova_startup kinova_bringup.launch
+# Gen3 robot
+roslaunch jsk_kinova_startup kinova_bringup.launch ip_address:=xxxx
+# Gen3 lite robot
+roslaunch jsk_kinova_startup kinova_bringup.launch ip_address:=xxxx arm:=gen3_lite
 ```
 
 Start rviz from different terminal
