@@ -51,7 +51,7 @@ def gen_callback(expr, select, index):
     return (lambda m: callback(m, expr, select, index))
 
 
-def add_trigger(topic, expr, select, index):
+def add_trigger(topic, expr, select, index, wait=False):
     global topics
     if topic in topics:
         topic_type = topics[topic]
@@ -60,9 +60,19 @@ def add_trigger(topic, expr, select, index):
         topic_type, _, _ = rostopic.get_topic_type(topic)
         topic_class, _, _ = rostopic.get_topic_class(topic)
 
-    if(topic_type is None):
-        rospy.loginfo('%s is not published yet', topic)
-        return None
+    if topic_type is None:
+        if wait is False:
+            rospy.loginfo('%s is not published yet', topic)
+            return None
+        elif wait is True:
+            rate = rospy.Rate(1)
+            while not rospy.is_shutdown() and topic_type is None:
+                topic_type, _, _ = rostopic.get_topic_type(topic)
+                topic_class, _, _ = rostopic.get_topic_class(topic)
+                rospy.loginfo('waiting topic %s' % topic)
+                rate.sleep()
+        else:
+            raise ValueError('wait should be bool')
 
     if(topic_class is None):
         rospy.loginfo('%s is not builded yet', topic_type)
@@ -79,14 +89,15 @@ def add_trigger(topic, expr, select, index):
     return sub
 
 
-def update_trigger(conditions):
+def update_trigger(conditions, wait=False):
     # setting triggers
     global subs
     for index in range(len(conditions)):
         if subs[index] is not None:
             continue
         cond = conditions[index]
-        subs[index] = add_trigger(cond[0],cond[1],cond[2],index)
+        subs[index] = add_trigger(cond[0],cond[1],cond[2],index,
+                                  wait=wait)
 
 
 if __name__ == "__main__":
@@ -112,6 +123,7 @@ if __name__ == "__main__":
     deadtime = rospy.get_param('~patient', 0.5)
     freq = rospy.get_param('~frequency', 20.0)
     default_select = rospy.get_param('~default_select', None)
+    wait = rospy.get_param('~wait', False)
 
     mux_name_ = rospy.resolve_name('mux')
     rospy.wait_for_service(mux_name_+'/select')
@@ -128,7 +140,7 @@ if __name__ == "__main__":
     # loop
     try:
         before = default_select
-        update_trigger(conditions)
+        update_trigger(conditions, wait=wait)
         looprate = rospy.Rate(freq)
         while not rospy.is_shutdown():
             lockobj.acquire()
@@ -140,7 +152,7 @@ if __name__ == "__main__":
             else:
                 next_topic = default_select
             try:
-                if before != next_topic and before is not None:
+                if not (before == next_topic or next_topic is None):
                     mux_client(next_topic)
             except rospy.ServiceException, e:
                 rospy.loginfo("Service did not process request: %s", str(e))
