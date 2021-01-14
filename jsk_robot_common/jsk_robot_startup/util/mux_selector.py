@@ -12,11 +12,16 @@ The first one is the topic to be monitored.
 When a message from this topic is received, it is assigned as a variable `m`.
 If a condition specified as the second argument,
 this node calls a service to select the topic specified as the third argument.
+
+If the type of the monitored topic is unknown, you can set the type with `~topics` rosparam.
+`~topics` should be the list like
+[{'name': '/joy1', 'type': 'sensor_msgs/Joy'}, {'name': '/joy2', 'type': 'sensor_msgs/Joy'}, ...]
 """
 
 import rospy
 import thread
 import sys
+import roslib.message
 import rostopic
 from topic_tools.srv import MuxSelect
 import traceback
@@ -47,8 +52,13 @@ def gen_callback(expr, select, index):
 
 
 def add_trigger(topic, expr, select, index, wait=False):
-    topic_type, _, _ = rostopic.get_topic_type(topic)
-    topic_class, _, _ = rostopic.get_topic_class(topic)
+    global topics
+    if topic in topics:
+        topic_type = topics[topic]
+        topic_class = roslib.message.get_message_class(topic_type)
+    else:
+        topic_type, _, _ = rostopic.get_topic_type(topic)
+        topic_class, _, _ = rostopic.get_topic_class(topic)
 
     if topic_type is None:
         if wait is False:
@@ -91,11 +101,12 @@ def update_trigger(conditions, wait=False):
 
 
 if __name__ == "__main__":
-    global selects, subs
+    global selects, subs, topics
     global lockobj
     lockobj = thread.allocate_lock()
     selects = []
     subs = []
+    topics = {}
 
     # parse arguments
     conditions = [x for x in sys.argv[1:] if not ':=' in x]
@@ -122,6 +133,10 @@ if __name__ == "__main__":
     selects = [(None, rospy.Time(0))] * size
     subs = [None] * size
 
+    topic_list = rospy.get_param('~topics', [])
+    for topic in topic_list:
+        topics[topic['name']] = topic['type']
+
     # loop
     try:
         before = default_select
@@ -137,7 +152,7 @@ if __name__ == "__main__":
             else:
                 next_topic = default_select
             try:
-                if before != next_topic and before is not None:
+                if not (before == next_topic or next_topic is None):
                     mux_client(next_topic)
             except rospy.ServiceException, e:
                 rospy.loginfo("Service did not process request: %s", str(e))

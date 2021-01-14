@@ -1,6 +1,10 @@
 jsk_pr2_robot
 =============
 
+## Teleoperation
+
+For the JSK safe teleop system, please see [data flow diagram of safe_teleop.launch](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#launchsafe_teleoplaunch)
+
 ![teleop_command](images/pr2_teleop_command.png)
 
 
