@@ -89,10 +89,12 @@ class Warning:
         self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
         #
         self.battery_sub = rospy.Subscriber("battery_state", BatteryState, self.battery_callback, queue_size = 1)
-        self.cmd_vel_sub = rospy.Subscriber("base_controller/command", Twist, self.cmd_vel_callback, queue_size = 1)
+        self.cmd_vel_sub = rospy.Subscriber("base_controller/command_unchecked", Twist, self.cmd_vel_callback, queue_size = 1)
         self.robot_state_sub = rospy.Subscriber("robot_state", RobotState, self.robot_state_callback, queue_size = 1)
         self.diagnostics_status_sub = rospy.Subscriber("diagnostics", DiagnosticArray, self.diagnostics_status_callback, queue_size = 1)
         self.undock_sub = rospy.Subscriber("/undock/status", GoalStatusArray, self.undock_status_callback)
+        #
+        self.cmd_vel_pub = rospy.Publisher("base_controller/command", Twist, queue_size=1)
 
     def undock_status_callback(self, msg):
         for status in msg.status_list:
@@ -131,6 +133,8 @@ class Warning:
             sound.play(4) # play builtin sound Boom!
             time.sleep(5)
             self.base_breaker(BreakerCommandRequest(enable=True))
+        else:
+            self.cmd_vel_pub.publish(msg)
         ##
         self.twist_msgs = msg
 
