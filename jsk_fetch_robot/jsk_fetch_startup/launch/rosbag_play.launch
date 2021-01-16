@@ -7,7 +7,9 @@
   <arg name="loop_flag" value="--loop" if="$(arg loop)" />
   <arg name="loop_flag" value="" unless="$(arg loop)" />
   <arg name="start_time" default="0" />
-
+  <arg name="duration_time" default="0" />
+  <arg name="duration" default="--duration $(arg duration_time)" if="$(eval duration_time != 0)" />
+  <arg name="duration" default="" if="$(eval duration_time == 0)" />
   <arg name="audio_play" default="false" />
   <arg name="audio_device" default="" />
 
@@ -102,7 +104,7 @@
 
   <!-- rosbag player -->
   <node pkg="rosbag" type="play" name="rosbag_play"
-        args="$(arg rosbag) $(arg loop_flag) -s $(arg start_time) --clock" output="screen" />
+        args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)" output="screen" />
 
   <node pkg="rviz" type="rviz" name="$(anon rviz)" if="$(arg gui)"
         args="-d $(find jsk_fetch_startup)/config/jsk_startup.rviz" />
