@@ -15,43 +15,31 @@
     <rosparam command="load" file="$(find pr2_base_trajectory_action)/config/pr2_base_link.yaml"/>
     <param name="goal_threshold" value="10.0" /> <!-- ignore goal error -->
     <param name="stopped_velocity_tolerance" value="0.35" /> <!-- ignore goal stopped velocity tolerance -->
-    <remap from="command" to="/navigation/cmd_vel"/>
+    <remap from="command" to="/base_controller/cmd_vel"/>
     <remap from="odom" to="/base_odometry/odom"/>
   </node>
 
-  <node pkg="topic_tools" type="mux" name="unsafe_vel_mux" respawn="true"
-	args="/navigation/unsafe_vel /input_vel /navigation/cmd_vel /teleop/joy_vel" machine="c2">
-    <remap from="mux" to="vel_type_mux" />
-  </node>
-  <!-- args is (topic, condition, select)* -->
-  <node pkg="jsk_robot_startup" type="mux_selector.py" machine="c2"
-	name="vel_type_selector" respawn="true" output="screen"
-	args="/joy 'm.buttons[10]==1' /teleop/joy_vel /navigation/cmd_vel 'True' /navigation/cmd_vel">
-    <remap from="mux" to="vel_type_mux" />
-    <param name="default_select" value="/input_vel"/>
-  </node>
-
-  <node pkg="safe_teleop_base" type="safe_teleop_base" respawn="true"
-        name="safe_teleop_base" machine="c2" clear_params="true">
-    <remap from="/odom" to="/base_odometry/odom"/>
-    <remap from="base_velocity" to="/navigation/unsafe_vel"/>
-    <remap from="~safe_vel" to="/navigation/safe_vel"/>
+  <!-- Mux cmd_vel topics -->
+  <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch">
+    <arg name="machine" value="c2" />
+    <arg name="odom_topic" value="/odom_teleop" />
+    <arg name="joy_topic" value="/joy_vel" />
+    <arg name="navigation_topic" value="/navigation/cmd_vel" />
+    <arg name="input_topic" value="/input_vel" />
+    <arg name="base_controller_topic" value="/base_controller/cmd_vel" />
+  </include>
+  <!-- Relay topic names according to system diagram -->
+  <node name="relay_odom"
+        pkg="topic_tools" type="relay"
+        args="/base_odometry/odom /odom_teleop" />
+  <node name="relay_teleop_cmd_vel"
+        pkg="topic_tools" type="relay"
+        args="/teleop/joy_vel /joy_vel" />
+  <group ns="safe_teleop_base">
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/local_costmap_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find jsk_pr2_startup)/jsk_pr2_move_base/safe_teleop_pr2_params.yaml" command="load" ns="local_costmap"/>
-  </node>
-
-  <!-- switch base velocity, safe or not -->
-  <node pkg="topic_tools" type="mux" name="cmd_vel_mux" respawn="true" machine="c2"
-	args="base_controller/command_unchecked /navigation/unsafe_vel /navigation/safe_vel">
-    <remap from="mux" to="cmd_vel_mux" />
-  </node>
-  <node pkg="jsk_robot_startup" type="mux_selector.py" machine="c2"
-	name="cmd_vel_selector" respawn="true" output="screen"
-	args="/joy 'm.buttons[9]==0 and m.buttons[10]==1' /navigation/safe_vel /input_vel 'True' /navigation/safe_vel">
-    <remap from="mux" to="cmd_vel_mux" />
-    <param name="default_select" value="/navigation/unsafe_vel"/>
-  </node>
+  </group>
 
   <!-- check cable and filter baser_controller/command -->
   <node pkg="roseus" type="roseus" name="cable_warning" respawn="true"
