@@ -1,13 +1,6 @@
 amcl:
-  kld_err: 0.1
-  kld_z: 0.5
-  update_min_a: 0.05 # update filter every 0.05 [m] translation
-  update_min_d: 0.1  # update filter every 0.1 [rad] rotation
-  resample_interval: 1
-  laser_z_hit: 0.9
-  laser_z_rand: 0.5
-  laser_sigma_hit: 0.1
-  laser_likelihood_max_dist: 4.0
+  update_min_a: 0.05 # update filter every 0.05 [rad] rotation
+  update_min_d: 0.1  # update filter every 0.1 [m] translation
   odom_alpha1: 0.1   # rotation noise per rotation
   odom_alpha2: 0.05  # rotation noise per translation
   odom_alpha3: 0.05  # translation noise per translation
