@@ -1,0 +1,2 @@
+move_base:
+  controller_frequency: 10.0
