@@ -1,17 +1,17 @@
 move_base:
+  controller_frequency: 10.0
   global_costmap:
     inflater:
-      inflation_radius: 0.7 # 0.7
-      cost_scaling_factor: 5.0 # 10.0
+      inflation_radius: 1.0 # 0.7
+      cost_scaling_factor: 10.0 # 10.0
     obstacles:
       min_obstacle_height: 0.05
     footprint_padding: 0.05
-    update_frequency: 2.0
     publish_frequency: 1.0
   local_costmap:
     inflater:
-      inflation_radius: 0.7 # 0.7
-      cost_scaling_factor: 5.0 # 25.0 default 10, increasing factor decrease the cost value
+      inflation_radius: 1.0 # 0.7
+      cost_scaling_factor: 10.0 # 25.0 default 10, increasing factor decrease the cost value
     obstacles:
       min_obstacle_height: 0.05
     # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
@@ -23,7 +23,7 @@ move_base:
     xy_goal_tolerance: 0.17
     max_vel_x: 0.5
     min_vel_x: 0.1
-    min_in_place_vel_theta: 0.3
+    min_in_place_vel_theta: 0.5
     escape_vel: 0.0
     sim_time: 1.5
     sim_granularity: 0.025
@@ -68,8 +68,8 @@ move_base:
     sim_granularity: 0.017
   move_slow_and_clear:
     clearing_distance: 3.0
-    limited_trans_speed: 0.2
-    limited_rot_speed: 0.52
+    limited_trans_speed: 0.3
+    limited_rot_speed: 0.8
     limited_distance: 0.3
     planner_namespace: TrajectoryPlannerROS
     max_trans_param_name: max_vel_x
