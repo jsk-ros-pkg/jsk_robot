@@ -1,0 +1,77 @@
+move_base:
+  global_costmap:
+    inflater:
+      inflation_radius: 0.7 # 0.7
+      cost_scaling_factor: 5.0 # 10.0
+    obstacles:
+      min_obstacle_height: 0.05
+    footprint_padding: 0.05
+    update_frequency: 2.0
+    publish_frequency: 1.0
+  local_costmap:
+    inflater:
+      inflation_radius: 0.7 # 0.7
+      cost_scaling_factor: 5.0 # 25.0 default 10, increasing factor decrease the cost value
+    obstacles:
+      min_obstacle_height: 0.05
+    # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+    footprint_padding: 0.05
+    update_frequency: 5.0
+  base_local_planner: base_local_planner/TrajectoryPlannerROS
+  TrajectoryPlannerROS:
+    yaw_goal_tolerance: 0.1
+    xy_goal_tolerance: 0.17
+    max_vel_x: 0.5
+    min_vel_x: 0.1
+    min_in_place_vel_theta: 0.3
+    escape_vel: 0.0
+    sim_time: 1.5
+    sim_granularity: 0.025
+    angular_sim_granularity: 0.025
+    vx_samples: 10
+    vth_samples: 40
+    meter_scoring: true
+    pdist_scale: 4.0
+    gdist_scale: 2.5
+    occdist_scale: 0.00625
+    dwa: true
+  recovery_behavior_enabled: true
+  recovery_behaviors:
+    - name: "conservative_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery0"
+      type: "rotate_recovery/RotateRecovery"
+    - name: "aggressive_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery1"
+      type: "rotate_recovery/RotateRecovery"
+    - name: "all_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery2"
+      type: "rotate_recovery/RotateRecovery"
+    - name: "move_slow_and_clear"
+      type: "move_slow_and_clear/MoveSlowAndClear"
+  conservative_reset:
+    reset_distance: 2.0 # 3.0
+  rotate_recovery0:
+    frequency: 20.0
+    sim_granularity: 0.017
+  aggressive_reset:
+    reset_distance: 1.0 # 0.5
+  rotate_recovery1:
+    frequency: 20.0
+    sim_granularity: 0.017
+  all_reset:
+    reset_distance: 0.0
+  rotate_recovery2:
+    frequency: 20.0
+    sim_granularity: 0.017
+  move_slow_and_clear:
+    clearing_distance: 3.0
+    limited_trans_speed: 0.2
+    limited_rot_speed: 0.52
+    limited_distance: 0.3
+    planner_namespace: TrajectoryPlannerROS
+    max_trans_param_name: max_vel_x
+    max_rot_param_name: max_vel_theta
+  max_planning_retries: 2
