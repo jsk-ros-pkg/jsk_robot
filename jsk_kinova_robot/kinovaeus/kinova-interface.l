@@ -184,7 +184,7 @@
          (setq add-new-trajectory-point t))
        (incf i (send j :joint-dof)))
      add-new-trajectory-point))
-  (:angle-vector-raw (av &optional (tm 3000) &rest args)
+  (:angle-vector-raw (av &optional (tm 3000) (ctype controller-type) (start-time 0) &rest args)
    (let* ((prev-av (send self :state :potentio-vector :wait-until-update t))
           (diff-av (v- av prev-av)))
      (when (send self :check-continuous-joint-move-over-180 diff-av)
@@ -200,10 +200,10 @@
          (send minjerk :pass-time (/ tm div))
          (dotimes (i div)
            (setq avs (append avs (list (send minjerk :pass-time (/ tm div))))))
-         (send* self :angle-vector-sequence-raw avs (make-list div :initial-element (/ tm div)) args)
+         (send* self :angle-vector-sequence-raw avs (make-list div :initial-element (/ tm div)) ctype start-time args)
          (return-from :angle-vector-raw (car (last avs)))))
-     (send-super* :angle-vector av tm args)))
-  (:angle-vector-sequence-raw (&rest args) (send-super* :angle-vector-sequence args))
+     (send-super* :angle-vector av tm ctype start-time :minjerk-interpolation t args)))
+  (:angle-vector-sequence-raw (avs &optional (tms (list 3000)) (ctype controller-type) (start-time 0.1) &rest args) (send-super* :angle-vector-sequence avs tms ctype start-time :minjerk-interpolation t args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
                                        ;;  &key (clear-velocities t) &allow-other-keys)
@@ -231,7 +231,8 @@
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
                :start-offset-time (if start-offset-time start-offset-time start-time)
-               :clear-velocities clear-velocities args)))
+               :clear-velocities clear-velocities
+               :minjerk-interpolation t args)))
   (:angle-vector-sequence
    (avs &optional tms &rest args) ;; (ctype controller-type) (start-time 0) &rest args
                                   ;; &key (clear-velocities t) &allow-other-keys)
@@ -261,7 +262,8 @@
      (setq tms 3000))
    (send* self :angle-vector-motion-plan avs :ctype ctype :move-arm :rarm :total-time tms
                :start-offset-time (if start-offset-time start-offset-time start-time)
-               :clear-velocities clear-velocities args)))
+               :clear-velocities clear-velocities
+               :minjerk-interpolation t args)))
   )
 
 (defclass kinova-moveit-environment
