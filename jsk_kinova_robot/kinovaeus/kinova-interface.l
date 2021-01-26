@@ -256,9 +256,10 @@
 - tms : list of time to goal from previous angle-vector point in [msec]
 "
    (ros::ros-warn
-    (format nil "~A~%~A"
+    (format nil "~A~%~A~%~A"
             ":angle-vector-sequence with minjerk-interpolation and MoveIt! sometimes returns large acceleration, which is not allowed by the actual kinova arm."
-            "This is because trajectory calculated by MoveIt! jumps at boundaries between angle-vectors"))
+            "This is because trajectory calculated by MoveIt! jumps at boundaries between angle-vectors"
+            "Please see https://github.com/jsk-ros-pkg/jsk_robot/pull/1313#issuecomment-767373516"))
    (let ((ctype controller-type) (start-time 0) (start-offset-time nil) (clear-velocities t))
    ;; as of 0.3.x, :angle-vector (robot-interface) :acceps tm ctype start-time as optional arguments, but in here we prefer old API
    (if (= (length args) 1) ;; args must be ctype
