@@ -216,7 +216,9 @@
          (send* self :angle-vector-sequence-raw avs (make-list div :initial-element (/ tm div)) ctype start-time args)
          (return-from :angle-vector-raw (car (last avs)))))
      (send-super* :angle-vector av tm ctype start-time :minjerk-interpolation t args)))
-  (:angle-vector-sequence-raw (avs &optional (tms (list 3000)) (ctype controller-type) (start-time 0.1) &rest args) (send-super* :angle-vector-sequence avs tms ctype start-time :minjerk-interpolation t args))
+  (:angle-vector-sequence-raw
+   (avs &optional (tms (list 3000)) (ctype controller-type) (start-time 0.1) &rest args)
+   (send-super* :angle-vector-sequence avs tms ctype start-time :minjerk-interpolation t args))
   (:angle-vector
    (av &optional (tm 3000) &rest args) ;; (ctype controller-type) (start-time 0) &rest args
                                        ;;  &key (clear-velocities t) &allow-other-keys)
@@ -253,6 +255,10 @@
 - avs : sequence of joint angle vector [rad]
 - tms : list of time to goal from previous angle-vector point in [msec]
 "
+   (ros::ros-warn
+    (format nil "~A~%~A"
+            ":angle-vector-sequence with minjerk-interpolation and MoveIt! sometimes returns large acceleration, which is not allowed by the actual kinova arm."
+            "This is because trajectory calculated by MoveIt! jumps at boundaries between angle-vectors"))
    (let ((ctype controller-type) (start-time 0) (start-offset-time nil) (clear-velocities t))
    ;; as of 0.3.x, :angle-vector (robot-interface) :acceps tm ctype start-time as optional arguments, but in here we prefer old API
    (if (= (length args) 1) ;; args must be ctype
