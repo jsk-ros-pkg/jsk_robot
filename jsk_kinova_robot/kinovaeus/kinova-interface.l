@@ -15,7 +15,20 @@
    (&key type &rest args)
    (let ()
      (prog1
-         (send-super* :init :robot (apply #'kinova (if type (list :type type) nil)) :joint-states-topic "/arm_gen3/joint_states" :groupname "kinova_interface" args)
+         (send-super* :init
+                      :robot
+                      ;; Create robot instance different from *kinova*
+                      (case type
+                            (:gen3_robotiq_2f_85
+                             (instance gen3_robotiq_2f_85-robot :init))
+                            (:gen3_robotiq_2f_140
+                             (instance gen3_robotiq_2f_140-robot :init))
+                            (:gen3_lite_gen3_lite_2f
+                             (instance gen3_lite_gen3_lite_2f-robot :init))
+                            (t
+                             (warning-message 1 "unknown kinova robot type ~A~%" type)))
+                      :joint-states-topic "/arm_gen3/joint_states"
+                      :groupname "kinova_interface" args)
        (send self :add-controller :arm-controller)
        (setq gripper-action
              (instance ros::simple-action-client :init
