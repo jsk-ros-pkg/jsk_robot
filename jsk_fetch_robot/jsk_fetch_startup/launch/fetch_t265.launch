@@ -33,9 +33,9 @@
   </node>
 
   <rosparam>
-    /t265/tracking_module/enable_mapping: false
-    /t265/tracking_module/enable_relocalization: false
-    /t265/tracking_module/enable_pose_jumping: false
+    /t265/tracking_module/enable_mapping: true
+    /t265/tracking_module/enable_relocalization: true
+    /t265/tracking_module/enable_pose_jumping: true
     /t265/tracking_module/enable_dynamic_calibration: true
     /t265/tracking_module/enable_map_preservation: false
   </rosparam>
