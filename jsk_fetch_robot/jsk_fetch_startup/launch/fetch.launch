@@ -3,7 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
-  <arg name="use_visual_odom" default="true" />
+  <arg name="use_visual_odom" default="false" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
