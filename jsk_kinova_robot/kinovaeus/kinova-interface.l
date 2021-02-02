@@ -377,8 +377,11 @@
          (setq r (pos-list-interpolation (list (send robot :angle-vector) av)
                                          (list (/ tm 1000.0))
                                          0.001))
+         ;; TODO: Set vel and acc
          (setq trajpoints
-               (mapcar #'(lambda (pos vel tim acc) (list pos vel tim acc))
+               (mapcar #'(lambda (pos vel tim acc)
+                           ;; (list pos vel tim acc)) ;; ideal
+                           (list pos (make-list (length vel) :initial-element 0) tim (make-list (length acc) :initial-element 0))) ;; temporary
                        (cadr (memq :data r))           ;; positions
                        (cadr (memq :velocity r))       ;; velocities
                        (cadr (memq :time r))           ;; duration
@@ -511,8 +514,11 @@
            (setq r (pos-list-interpolation (append (list (send robot :angle-vector)) avs)
                                            (mapcar #'(lambda (x) (/ x 1000.0)) tms)
                                            0.001))
+           ;; TODO: Set vel and acc
            (setq traj-points
-                 (mapcar #'(lambda (pos vel tim acc) (list pos vel tim acc))
+                 (mapcar #'(lambda (pos vel tim acc)
+                             ;; (list pos vel tim acc)) ;; ideal
+                             (list pos (make-list (length vel) :initial-element 0) tim (make-list (length acc) :initial-element 0))) ;; temporary
                          (cadr (memq :data r))           ;; positions
                          (cadr (memq :velocity r))       ;; velocities
                          (cadr (memq :time r))           ;; duration
@@ -707,11 +713,14 @@
              (setq tm-prev tm))
            (setq r (pos-list-interpolation avs (cdr tms) 0.001))
            (setq points-lst
+                 ;; TODO: Set vel and acc
                  (mapcar #'(lambda (pos vel acc tim)
                              (instance trajectory_msgs::JointTrajectoryPoint :init
                                        :positions pos
-                                       :velocities vel
-                                       :accelerations acc
+                                       ;; :velocities vel ;; ideal
+                                       :velocities (make-list (length vel) :initial-element 0) ;; temporary
+                                       ;; :accelerations acc ;; ideal
+                                       :accelerations (make-list (length acc) :initial-element 0) ;; temporary
                                        :time_from_start (ros::time tim)))
                          (cadr (memq :data r))
                          (cadr (memq :velocity r))
