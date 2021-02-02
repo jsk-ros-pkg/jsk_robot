@@ -1,6 +1,7 @@
 (require "package://kinovaeus/kinova-utils.l")
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
+(ros::load-ros-manifest "kortex_driver")
 
 (if (not (find-package "kinova"))
     (make-package "kinova"))
@@ -45,6 +46,11 @@
                        :groupname groupname))
        (setq moveit-robot (instance (eval (send (class robot) :name)) :init))
        (send self :set-moveit-environment (instance kinova-moveit-environment :init :robot moveit-robot))
+       (ros::advertise "/arm_gen3/in/cartesian_velocity" kortex_driver::TwistCommand)
+       (ros::advertise "/arm_gen3/in/joint_velocity" kortex_driver::Base_JointSpeeds)
+       (ros::advertise "/arm_gen3/in/clear_faults" std_msgs::Empty)
+       (ros::advertise "/arm_gen3/in/stop" std_msgs::Empty)
+       (ros::advertise "/arm_gen3/in/emergency_stop" std_msgs::Empty)
        self)))
   ;; default robot-interface methods
   (:default-controller () (send self :arm-controller))
@@ -279,6 +285,47 @@
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities
                :minjerk-interpolation t args)))
+  (:joint-velocity (joint-vel)
+   "Send cartesian joint velocity command.
+joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
+"
+   (let ((joint-length (length (send robot :angle-vector)))
+         (bj (instance kortex_driver::Base_JointSpeeds :init))
+         js)
+     (when (not (eq (length joint-vel) joint-length))
+       (ros::ros-error (format nil "joint-vel must be the length of ~A" joint-length))
+       (return-from :joint-velocity))
+     (dotimes (i joint-length)
+       (push (instance kortex_driver::JointSpeed :init
+                       :joint_identifier i
+                       :value (elt joint-vel i))
+             js))
+     (send bj :joint_speeds (reverse js))
+     (ros::publish "/arm_gen3/in/joint_velocity" bj)))
+  (:stop-joint-velocity ()
+    (send self :joint-velocity
+          (make-list (length (send robot :angle-vector)) :initial-element 0)))
+  (:cartesian-velocity (linear-vel angular-vel)
+   "Send cartesian velocity command to end effector
+- linear  : linear velocity [m/s]. 3-dim float-vector.
+- angular : angular velocity [rad/s]. 3-dim float-vector.
+"
+   (let ((tc (instance kortex_driver::TwistCommand :init)))
+     (send tc :twist :linear_x (elt linear-vel 0))
+     (send tc :twist :linear_y (elt linear-vel 1))
+     (send tc :twist :linear_z (elt linear-vel 2))
+     (send tc :twist :angular_x (elt angular-vel 0))
+     (send tc :twist :angular_y (elt angular-vel 1))
+     (send tc :twist :angular_z (elt angular-vel 2))
+     (ros::publish "/arm_gen3/in/cartesian_velocity" tc)))
+  (:stop-cartesian-velocity ()
+    (send self :cartesian-velocity #f(0 0 0) #f(0 0 0)))
+  (:clear-faults ()
+    (ros::publish "/arm_gen3/in/clear_faults" (instance std_msgs::Empty :init)))
+  (:stop ()
+    (ros::publish "/arm_gen3/in/stop" (instance std_msgs::Empty :init)))
+  (:emergency-stop ()
+    (ros::publish "/arm_gen3/in/emergency_stop" (instance std_msgs::Empty :init)))
   )
 
 (defclass kinova-moveit-environment
