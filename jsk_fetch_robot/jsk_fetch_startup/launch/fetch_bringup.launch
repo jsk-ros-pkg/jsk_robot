@@ -37,6 +37,9 @@
     <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
   </node>
 
+  <!-- insta360 air images -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_insta360_$(env ROS_DISTRO).launch" />
+
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->

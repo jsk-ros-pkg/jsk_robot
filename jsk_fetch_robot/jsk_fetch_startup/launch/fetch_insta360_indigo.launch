@@ -1,0 +1,24 @@
+<launch>
+  <!-- Insta360 images -->
+  <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
+    <arg name="gui" value="false" />
+    <!-- Reduce CPU load -->
+    <!-- To check the valid formats, -->
+    <!-- $ sudo apt-get install v4l-utils -->
+    <!-- $ v4l2-ctl -d /dev/insta360 -\-list-formats-ext -->
+    <arg name="height" value="736" />
+    <arg name="width" value="1472" />
+    <!-- for indigo -->
+    <arg name="use_usb_cam" value="true" />
+  </include>
+  <!-- Split insta360 air image into 2 fisheye image -->
+  <!-- This node can be removed if below is merged -->
+  <!-- https://github.com/jsk-ros-pkg/jsk_recognition/pull/2555 -->
+  <node pkg="jsk_perception" name="split_image" type="split_image.py" output="screen">
+    <remap from="~input" to="/insta360/image_raw" />
+    <rosparam>
+      vertical_parts: 1
+      horizontal_parts: 2
+    </rosparam>
+  </node>
+</launch>
