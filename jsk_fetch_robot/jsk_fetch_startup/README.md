@@ -2,6 +2,15 @@
 
 ## SetUp (Running following commands in the first time)
 
+### Install a udev rule for realsense
+
+udev rule have to be manually installed according to [this issue](https://github.com/IntelRealSense/realsense-ros/issues/1426) when using realsense-ros from ROS repository.
+
+```bash
+wget https://github.com/IntelRealSense/librealsense/raw/master/config/99-realsense-libusb.rules
+sudo mv 99-realsense-libusb.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules && sudo udevadm trigger
+```
 
 ### upstart
 ```
