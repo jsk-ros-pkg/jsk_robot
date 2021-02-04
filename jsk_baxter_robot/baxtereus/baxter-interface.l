@@ -393,3 +393,6 @@
         (setq *baxter* (instance baxter-robot-safe :init))
       (setq *baxter* (instance baxter-robot :init))))
     (send *ri* :calib-grasp :arms)))
+
+
+(provide :baxter-interface)
