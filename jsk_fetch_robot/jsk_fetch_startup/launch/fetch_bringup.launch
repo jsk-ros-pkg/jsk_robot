@@ -86,6 +86,12 @@
     <arg name="respawn" value="false" />
   </include>
 
+  <!-- rwt_image_view -->
+  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch">
+    <arg name="launch_roswww" value="false" />
+    <arg name="launch_websocket" value="false" />
+  </include>
+
   <!-- downsample / throttle sensor data -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" >
     <arg name="launch_manager" value="false"/>
