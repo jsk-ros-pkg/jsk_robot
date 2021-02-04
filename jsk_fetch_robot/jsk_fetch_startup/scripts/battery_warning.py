@@ -12,7 +12,10 @@ from sound_play.msg import SoundRequestGoal
 
 class BatteryWarning(object):
     def __init__(self):
-        self.speak_client = actionlib.SimpleActionClient('/robotsound_jp', SoundRequestAction)
+        self.client_en = actionlib.SimpleActionClient(
+            '/sound_play', SoundRequestAction)
+        self.client_jp = actionlib.SimpleActionClient(
+            '/robotsound_jp', SoundRequestAction)
         self.duration = rospy.get_param('~duration', 180.0)
         self.threshold = rospy.get_param('~charge_level_threshold', 40.0)
         self.step = rospy.get_param('~charge_level_step', 10.0)
@@ -23,27 +26,35 @@ class BatteryWarning(object):
         self.prev_charge_level = None
         self.is_charging = False
 
-    def _speak(self, sentence):
-        req = SoundRequest()
-        req.command = SoundRequest.PLAY_ONCE
-        req.sound = SoundRequest.SAY
-        req.arg = sentence
-        req.arg2 = 'ja'
-        req.volume = 0.8
-        self.speak_client.send_goal(SoundRequestGoal(sound_request=req))
-        self.speak_client.wait_for_result(timeout=rospy.Duration(10))
+    def _speak(self, client, speech_text, lang=None):
+        client.wait_for_server(timeout=rospy.Duration(1.0))
+        sound_goal = SoundRequestGoal()
+        sound_goal.sound_request.sound = -3
+        sound_goal.sound_request.command = 1
+        sound_goal.sound_request.volume = 1.0
+        if lang is not None:
+            sound_goal.sound_request.arg2 = lang
+        sound_goal.sound_request.arg = speech_text
+        client.send_goal(sound_goal)
+        client.wait_for_result()
+        return client.get_result()
 
     def _warn(self):
         if self.charge_level < self.threshold and not self.is_charging:
             rospy.logerr("Low battery: only {}% remaining".format(self.charge_level))
-            sentence = "バッテリー残り{}パーセントです。".format(self.charge_level)
-            sentence += "もう限界ですので、僕をお家にかえしてください。"
-            self._speak(sentence)
+            sentence_jp = "バッテリー残り{}パーセントです。".format(self.charge_level)
+            sentence_jp += "もう限界ですので、僕をお家にかえしてください。"
+            sentence_en = "My battery is {} percent remaining.".format(self.charge_level)
+            sentence_en += "I want to go back home to charge my battery."
+            self._speak(self.client_jp, sentence_jp, 'jp')
+            self._speak(self.client_en, sentence_en)
             self.prev_charge_level = self.charge_level
         elif (self.prev_charge_level // self.step) > (self.charge_level // self.step):
             rospy.loginfo("Battery: {}% remaining".format(self.charge_level))
-            sentence = "バッテリー残り{}パーセントです。".format(self.charge_level)
-            self._speak(sentence)
+            sentence_jp = "バッテリー残り{}パーセントです。".format(self.charge_level)
+            sentence_en = "My battery is {} percent remaining.".format(self.charge_level)
+            self._speak(self.client_jp, sentence_jp, 'jp')
+            self._speak(self.client_en, sentence_en)
             self.prev_charge_level = self.charge_level
 
     def _cb(self, msg):
