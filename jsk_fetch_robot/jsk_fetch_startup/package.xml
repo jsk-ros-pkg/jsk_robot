@@ -20,6 +20,7 @@
   <run_depend>fetch_navigation</run_depend>
   <run_depend>fetch_moveit_config</run_depend>
   <run_depend>fetch_driver_msgs</run_depend>
+  <run_depend>pr2_computer_monitor</run_depend>
   <run_depend>rviz</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>voice_text</run_depend>
