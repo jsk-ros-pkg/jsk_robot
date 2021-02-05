@@ -19,6 +19,7 @@
     <rosparam>
       vertical_parts: 1
       horizontal_parts: 2
+      rate: 5
     </rosparam>
   </node>
 </launch>
