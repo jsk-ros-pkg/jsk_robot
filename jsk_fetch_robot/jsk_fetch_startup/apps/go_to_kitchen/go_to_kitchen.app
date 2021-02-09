@@ -3,6 +3,7 @@ platform: fetch
 launch: jsk_fetch_startup/go_to_kitchen.xml
 interface: jsk_fetch_startup/go_to_kitchen.interface
 icon: jsk_fetch_startup/go_to_kitchen.png
+timeout: 1200
 plugins:
   - name: service_notification_saver_plugin
     type: app_notification_saver/service_notification_saver
