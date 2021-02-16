@@ -1,0 +1,8 @@
+<launch>
+    <arg name="use_insta_360" default="true"/>
+
+    <include if="$(arg use_insta_360)" file="$(find jsk_perception)/sample/sample_insta360_air.launch" >
+        <arg name="gui" value="false" />
+    </include>
+
+</launch>
