@@ -15,6 +15,22 @@
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
 
+(defun call-set-bool-service (srvname data &key (wait nil))
+  "Call std_srv/Trigger service"
+  (let (r)
+    (if wait (ros::wait-for-service srvname))
+    (setq r (ros::service-call srvname (instance std_srvs::SetBoolRequest :init :data data)))
+    (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
+    (send r :success)))
+
+(defun call-set-locomotion-service (srvname locomotion_hint &key (wait nil))
+  "Call spot_msgs/SetLocomotion service"
+  (let (r)
+    (if wait (ros::wait-for-service srvname))
+    (setq r (ros::service-call srvname (instance spot_msgs::SetLocomotion :init :locomotion_mode locomotion_hint)))
+    (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
+    (send r :success)))
+
 (defclass spot-interface
   :super robot-move-base-interface
   :slots ()
@@ -194,6 +210,8 @@
   (:stand () "Stand the robot up" (call-trigger-service "/spot/stand"))
   (:sit () "Sit the robot down" (call-trigger-service "/spot/sit"))
   (:stop () "Stop the robot in place with minimal motion" (call-trigger-service "/spot/stop"))
+  (:set-locomotion-mode (locomotion-hint) "Set locomotion mode" (call-set-locomotion-service "/spot/locomotion_mode"))
+  (:set-stair-mode (is-stair-mode) "Set stair mode" (call-set-bool-service "/spot/stair_mode"))
   ;;
   (:send-cmd-vel-raw
    (x y d &key (topic-name "/spot/cmd_vel"))
