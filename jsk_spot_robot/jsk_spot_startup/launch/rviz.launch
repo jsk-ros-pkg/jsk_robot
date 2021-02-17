@@ -1,3 +1,14 @@
 <launch>
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find jsk_spot_startup)/config/spot.rviz" />
+  <node
+      pkg="rviz"
+      type="rviz"
+      name="rviz"
+      args="-d $(find jsk_spot_startup)/config/spot.rviz"
+      />
+
+  <node
+      pkg="jsk_spot_startup"
+      type="battery_visualizer.py"
+      name="battery_visualizer"
+      />
 </launch>
