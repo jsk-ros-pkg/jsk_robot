@@ -1,8 +1,114 @@
 <launch>
-    <arg name="ROSBAG_FILENAME" />
-    <param name="robot_description" command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro --inorder" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-    <node pkg="rosbag" type="play" name="$(anon rosbag)"
-        args="$(arg ROSBAG_FILENAME) -l"
+    <arg name="rosbag" doc="rosbag file path" />
+    <arg name="use_decompress" default="true" />
+    <arg name="use_rviz" default="true" />
+
+    <include
+        file="$(find jsk_spot_startup)/launch/rviz.launch"
+        if="$(arg use_rviz)"
+        />
+
+    <param name="/use_sim_time" value="true" />
+
+    <param
+        name="robot_description"
+        command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro --inorder"
+        />
+    <node
+        name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        />
+
+    <node
+        pkg="rosbag"
+        type="play"
+        name="$(anon rosbag)"
+        args="$(arg rosbag) --clock"
+        />
+    <node
+        pkg="jsk_spot_startup"
+        type="static_tf_republisher.py"
+        name="static_tf_republisher"
+        args="$(arg rosbag)"
+        />
+
+    <!-- image decompression -->
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="panorama_decompress"
+        args="compressed in:=/dual_fisheye_to_panorama/output raw out:=/dual_fisheye_to_panorama/output"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="back_camera_decompress"
+        args="compressed in:=/spot/camera/back/image raw out:=/spot/camera/back/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontleft_camera_decompress"
+        args="compressed in:=/spot/camera/frontleft/image raw out:=/spot/camera/frontleft/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontright_camera_decompress"
+        args="compressed in:=/spot/camera/frontright/image raw out:=/spot/camera/frontright/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="left_camera_decompress"
+        args="compressed in:=/spot/camera/left/image raw out:=/spot/camera/left/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="right_camera_decompress"
+        args="compressed in:=/spot/camera/right/image raw out:=/spot/camera/right/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="back_depth_decompress"
+        args="compressedDepth in:=/spot/depth/back/image raw out:=/spot/depth/back/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontleft_depth_decompress"
+        args="compressedDepth in:=/spot/depth/frontleft/image raw out:=/spot/depth/frontleft/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontright_depth_decompress"
+        args="compressedDepth in:=/spot/depth/frontright/image raw out:=/spot/depth/frontright/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="left_depth_decompress"
+        args="compressedDepth in:=/spot/depth/left/image raw out:=/spot/depth/left/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="right_depth_decompress"
+        args="compressedDepth in:=/spot/depth/right/image raw out:=/spot/depth/right/image"
+        if="$(arg use_decompress)"
         />
 </launch>
