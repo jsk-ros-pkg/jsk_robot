@@ -6,8 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /OverlayImage1
       Splitter Ratio: 0.5
-    Tree Height: 853
+    Tree Height: 806
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -16,10 +17,11 @@ Panels:
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
-    Splitter Ratio: 0.588679016
+    Splitter Ratio: 0.5886790156364441
   - Class: rviz/Views
     Expanded:
       - /Current View1
+      - /Current View1/Focal Point1
     Name: Views
     Splitter Ratio: 0.5
   - Class: rviz/Time
@@ -27,6 +29,8 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: FrontLeftDepthCloud
+Preferences:
+  PromptSaveOnExit: true
 Toolbars:
   toolButtonStyle: 2
 Visualization Manager:
@@ -38,7 +42,7 @@ Visualization Manager:
       Color: 160; 160; 164
       Enabled: true
       Line Style:
-        Line Width: 0.0299999993
+        Line Width: 0.029999999329447746
         Value: Lines
       Name: Grid
       Normal Cell Count: 0
@@ -60,6 +64,10 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         body:
           Alpha: 1
           Show Axes: false
@@ -80,6 +88,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        front_rail:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         front_right_hip:
           Alpha: 1
           Show Axes: false
@@ -110,6 +122,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        rear_rail:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         rear_right_hip:
           Alpha: 1
           Show Axes: false
@@ -140,13 +156,19 @@ Visualization Manager:
           Value: true
         back_fisheye:
           Value: true
+        base_link:
+          Value: true
         body:
+          Value: true
+        flat_body:
           Value: true
         front_left_hip:
           Value: true
         front_left_lower_leg:
           Value: true
         front_left_upper_leg:
+          Value: true
+        front_rail:
           Value: true
         front_right_hip:
           Value: true
@@ -178,6 +200,8 @@ Visualization Manager:
           Value: true
         rear_left_upper_leg:
           Value: true
+        rear_rail:
+          Value: true
         rear_right_hip:
           Value: true
         rear_right_lower_leg:
@@ -196,43 +220,51 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        body:
-          front_left_hip:
-            front_left_upper_leg:
-              front_left_lower_leg:
-                {}
-          front_right_hip:
-            front_right_upper_leg:
-              front_right_lower_leg:
-                {}
-          head:
-            back:
-              back_fisheye:
-                {}
-            frontleft:
-              frontleft_fisheye:
-                {}
-            frontright:
-              frontright_fisheye:
-                {}
-            left:
-              left_fisheye:
-                {}
-            right:
-              right_fisheye:
-                {}
-          odom:
-            gpe:
+        odom:
+          body:
+            base_link:
               {}
-          rear_left_hip:
-            rear_left_upper_leg:
-              rear_left_lower_leg:
-                {}
-          rear_right_hip:
-            rear_right_upper_leg:
-              rear_right_lower_leg:
-                {}
-          vision:
+            flat_body:
+              {}
+            front_left_hip:
+              front_left_upper_leg:
+                front_left_lower_leg:
+                  {}
+            front_rail:
+              {}
+            front_right_hip:
+              front_right_upper_leg:
+                front_right_lower_leg:
+                  {}
+            head:
+              back:
+                back_fisheye:
+                  {}
+              frontleft:
+                frontleft_fisheye:
+                  {}
+              frontright:
+                frontright_fisheye:
+                  {}
+              left:
+                left_fisheye:
+                  {}
+              right:
+                right_fisheye:
+                  {}
+            rear_left_hip:
+              rear_left_upper_leg:
+                rear_left_lower_leg:
+                  {}
+            rear_rail:
+              {}
+            rear_right_hip:
+              rear_right_upper_leg:
+                rear_right_lower_leg:
+                  {}
+            vision:
+              {}
+          gpe:
             {}
       Update Interval: 0
       Value: true
@@ -244,8 +276,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 2.45363283
-            Min Value: -0.155580759
+            Max Value: -9.409031867980957
+            Min Value: -20.270145416259766
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -282,8 +314,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 2.612113
-            Min Value: -0.112739921
+            Max Value: -8.122518539428711
+            Min Value: -27.92945671081543
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -320,8 +352,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 1.41352618
-            Min Value: -0.128979474
+            Max Value: -11.243830680847168
+            Min Value: -16.490161895751953
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -358,8 +390,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 1.45274436
-            Min Value: -0.124786079
+            Max Value: -11.186031341552734
+            Min Value: -14.862651824951172
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -396,8 +428,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 0.655641437
-            Min Value: -0.0852906406
+            Max Value: -8.481880187988281
+            Min Value: -17.851600646972656
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -453,6 +485,19 @@ Visualization Manager:
         {}
       Update Interval: 0
       Value: false
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: OverlayImage
+      Topic: /dual_fisheye_to_panorama/output
+      Value: true
+      alpha: 0.800000011920929
+      height: 128
+      keep aspect ratio: true
+      left: 0
+      overwrite alpha value: false
+      top: 0
+      transport hint: raw
+      width: 700
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -468,7 +513,10 @@ Visualization Manager:
     - Class: rviz/FocusCamera
     - Class: rviz/Measure
     - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
       Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
     - Class: rviz/SetGoal
       Topic: /move_base_simple/goal
     - Class: rviz/PublishPoint
@@ -478,33 +526,33 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.59715652
+      Distance: 10
       Enable Stereo Rendering:
-        Stereo Eye Separation: 0.0599999987
+        Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.143477932
-        Y: 0.615365922
-        Z: 0.880245864
+        X: 0
+        Y: 0
+        Z: 0
       Focal Shape Fixed Size: false
-      Focal Shape Size: 0.0500000007
+      Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
-      Near Clip Distance: 0.00999999978
-      Pitch: 0.530398846
-      Target Frame: <Fixed Frame>
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.7853981852531433
+      Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 4.32234859
+      Yaw: 0.7853981852531433
     Saved: ~
 Window Geometry:
   Displays:
-    collapsed: false
-  Height: 1056
-  Hide Left Dock: false
+    collapsed: true
+  Height: 1025
+  Hide Left Dock: true
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd0000000400000000000002ad00000396fc0200000011fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000006100fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002800000396000000d700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002300000018e0000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000000a0049006d00610067006501000002f4000000ca0000000000000000fb0000000a0049006d00610067006501000002f4000000ca0000000000000000fb0000000a0049006d006100670065000000013f000000660000000000000000fb0000000a0049006d0061006700650000000164000000940000000000000000fb0000000a0049006d00610067006500000001a3000000e80000000000000000fc00000227000001970000000000fffffffa000000000100000002fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000000a0049006d0061006700650000000000000002ad0000000000000000000000010000010f00000396fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000002800000396000000ad00fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073f0000003efc0100000002fb0000000800540069006d006501000000000000073f0000030000fffffffb0000000800540069006d006501000000000000045000000000000000000000048c0000039600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000002ad00000363fc0200000011fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000003d00000363000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002300000018e0000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000000a0049006d00610067006501000002f4000000ca0000000000000000fb0000000a0049006d00610067006501000002f4000000ca0000000000000000fb0000000a0049006d006100670065000000013f000000660000000000000000fb0000000a0049006d0061006700650000000164000000940000000000000000fb0000000a0049006d00610067006500000001a3000000e80000000000000000fc00000227000001970000000000fffffffa000000000100000002fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000000a0049006d0061006700650000000000000002ad0000000000000000000000010000010f00000363fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000363000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d0000003efc0100000002fb0000000800540069006d006501000000000000073d000002eb00fffffffb0000000800540069006d006501000000000000045000000000000000000000073d0000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -513,6 +561,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 1855
-  X: 65
-  Y: 24
+  Width: 1853
+  X: 67
+  Y: 27
