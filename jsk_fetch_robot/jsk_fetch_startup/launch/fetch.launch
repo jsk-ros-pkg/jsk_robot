@@ -91,6 +91,7 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch">
       <arg name="topic_odom_out" value="/odom_visual" />
       <arg name="odom_frame_id" value="odom" />
+      <arg name="topic_tf" value="tf_odom_visual" />
   </include>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
