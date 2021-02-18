@@ -18,20 +18,21 @@ class OdometryMuxSelector(object):
             self._topic_odom_backup = str(rospy.get_param('~topic_odom_backup', ''))
             self._topic_tf_initial = str(rospy.get_param('~topic_tf_initial', ''))
             self._topic_tf_backup = str(rospy.get_param('~topic_tf_backup', ''))
+            self._duration_timeout_topic = float(rospy.get_param('~duration_timeout_topic',10.0))
         except Exception as e:
             rospy.logerr('Error:{}'.format(e))
             sys.exit(1)
 
         try:
-            rospy.wait_for_service('~select_service_topic', 10.0)
-            rospy.wait_for_service('~select_service_tf', 10.0)
+            rospy.wait_for_service('~select_service_topic', 30.0)
+            rospy.wait_for_service('~select_service_tf', 30.0)
         except rospy.ROSException as e:
             rospy.logerr('Service is not found:{}'.format(e))
             sys.exit(1)
 
         try:
-            rospy.wait_for_message(self._topic_odom_initial,Odometry,30.0)
-            rospy.wait_for_message(self._topic_odom_backup,Odometry,30.0)
+            rospy.wait_for_message(self._topic_odom_initial,Odometry,self._duration_timeout_topic)
+            rospy.wait_for_message(self._topic_odom_backup,Odometry,self._duration_timeout_topic)
         except rospy.ROSException as e:
             rospy.logwarn('Message is not published:{}'.format(e))
 
@@ -58,7 +59,7 @@ class OdometryMuxSelector(object):
         while not rospy.is_shutdown():
             rate.sleep()
             try:
-                rospy.wait_for_message(self._topic_odom_initial,Odometry,30.0)
+                rospy.wait_for_message(self._topic_odom_initial,Odometry,self._duration_timeout_topic)
             except rospy.ROSException as e:
                 if not self._flag_backup:
                     rospy.logwarn('Initial topic "{}" seems not to be published. switched to backup topics'.format(self._topic_odom_initial))
