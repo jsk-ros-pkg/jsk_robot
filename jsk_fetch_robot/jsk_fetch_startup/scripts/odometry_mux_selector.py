@@ -4,7 +4,6 @@
 import rospy
 import rostopic
 
-from sensor_msgs.msg import Odometry
 from topic_tools.srv import MuxSelectRequest
 
 class OdometryMuxSelector(object):
