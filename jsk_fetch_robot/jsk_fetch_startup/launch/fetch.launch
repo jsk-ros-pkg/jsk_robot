@@ -32,6 +32,8 @@
   <!-- stop using graft: s-kitagawa (2019/10/17) -->
   <!-- <include file="$(find fetch_bringup)/launch/include/graft.launch.xml"/> -->
 
+  <!-- Odometry without visual odom -->
+  <!-- use robot localization ukf -->
   <!-- odometry topic mux -->
   <node
       pkg="topic_tools"
