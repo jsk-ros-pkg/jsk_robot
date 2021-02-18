@@ -1,0 +1,80 @@
+<launch>
+
+  <arg name="required" default="false" />
+
+  <node
+      pkg="jsk_fetch_startup"
+      type="reload_udev.sh"
+      name="reload_udev"
+      />
+
+  <!-- t265 -->
+  <group ns="t265">
+    <rosparam>
+      /tracking_module/enable_mapping: false
+      /tracking_module/enable_relocalization: false
+      /tracking_module/enable_pose_jumping: false
+      /tracking_module/enable_dynamic_calibration: true
+      /tracking_module/enable_map_preservation: false
+    </rosparam>
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="external_manager"         value="false"/>
+      <arg name="tf_prefix"                value="t265"/>
+      <arg name="serial_no"                value=""/>
+      <arg name="usb_port_id"              value=""/>
+      <arg name="device_type"              value="t265"/>
+      <arg name="json_file_path"           value=""/>
+
+      <arg name="enable_sync"              value="false"/>
+
+      <arg name="fisheye_width"            value="848"/>
+      <arg name="fisheye_height"           value="800"/>
+      <arg name="enable_fisheye1"          value="false"/>
+      <arg name="enable_fisheye2"          value="false"/>
+
+      <arg name="fisheye_fps"              value="30"/>
+      <arg name="gyro_fps"                 value="200"/>
+      <arg name="accel_fps"                value="62"/>
+      <arg name="enable_gyro"              value="true"/>
+      <arg name="enable_accel"             value="true"/>
+      <arg name="enable_pose"              value="true"/>
+
+      <arg name="linear_accel_cov"         value="0.01"/>
+      <arg name="initial_reset"            value="true"/>
+      <arg name="unite_imu_method"         value=""/>
+
+      <arg name="publish_odom_tf"          value="false"/>
+      <arg name="publish_tf"               value="false"/>
+
+      <arg name="required"                 value="$(arg required)"/>
+    </include>
+  </group>
+
+  <!-- d435 -->
+  <node
+      pkg="tf"
+      type="static_transform_publisher"
+      name="base_link_to_d435_front_virtual_joint"
+      args="0.285 0 0.3752 0 0.5236 0 base_link d435_front_link 0"
+      output="screen"
+      />
+  <group ns="d435_front">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="external_manager"      value="false"/>
+      <arg name="device_type"           value="d435"/>
+      <arg name="serial_no"             value=""/>
+      <arg name="tf_prefix"             value="d435_front"/>
+      <arg name="initial_reset"         value="true"/>
+      <arg name="align_depth"           value="true"/>
+      <arg name="filters"               value="pointcloud"/>
+      <arg name="color_width"           value="640"/>
+      <arg name="color_height"          value="480"/>
+      <arg name="depth_width"           value="640"/>
+      <arg name="depth_height"          value="480"/>
+      <arg name="clip_distance"         value="-2"/>
+      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="required"              value="$(arg required)"/>
+    </include>
+  </group>
+
+</launch>

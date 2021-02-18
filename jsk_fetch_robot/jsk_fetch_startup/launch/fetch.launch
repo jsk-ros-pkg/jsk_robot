@@ -3,7 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
-  <arg name="use_visual_odom" default="false" />
+  <arg name="use_visual_odom" default="true" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -49,12 +49,18 @@
     </rosparam>
   </node>
 
+  <!-- launch realsense cameras -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_visual_odom)">
+      <arg name="required" value="true" />
+  </include>
+  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" unless="$(arg use_visual_odom)">
+      <arg name="required" value="false" />
+  </include>
+
   <!-- Use Visual Odom -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_t265.launch" if="$(arg use_visual_odom)">
+  <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch" if="$(arg use_visual_odom)">
       <arg name="topic_odom_out" value="/odom_combined" />
       <arg name="odom_frame_id" value="odom" />
-      <arg name="base_link_frame_id" value="base_link" />
-      <arg name="publish_tf" value="true" />
   </include>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
