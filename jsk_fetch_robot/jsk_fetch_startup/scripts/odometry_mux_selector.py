@@ -26,6 +26,7 @@ class OdometryMuxSelector(object):
 
         self.r = rostopic.ROSTopicHz(-1)
         rospy.Subscriber(self._topic_odom_initial, rospy.AnyMsg, self.r.callback_hz, callback_args=self._topic_odom_initial)
+        self._flag_backup = False
 
     def select(self, topic_odom, topic_tf):
 
@@ -40,7 +41,10 @@ class OdometryMuxSelector(object):
         rate = rospy.sleep(1)
         while not rospy.is_shutdown():
             rate.sleep()
-            if self.r.get_hz(self._topic_odom_initial)[0] < self._rate_threshold:
+            if not self._flag_backup and \
+                    self.r.get_hz(self._topic_odom_initial)[0] < self._rate_threshold:
+                rospy.logwarn('Publish rate of initial topic is low. switched to backup topics')
+                self._flag_backup = True
                 self.select( self._topic_odom_backup, self._topic_tf_backup )
 
 def main():
