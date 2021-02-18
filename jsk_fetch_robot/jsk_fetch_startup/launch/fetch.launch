@@ -49,7 +49,19 @@
   <param name="~initial_topic" value="tf_odom_visual" />
   </node>
   <!-- odometry mux selector -->
-  <!-- TODO -->
+  <node
+      pkg="jsk_fetch_startup"
+      type="odometry_mux_selector.py"
+      name="odometry_mux_selector"
+      >
+      <param name="~rate_threshold" value="10" />
+      <param name="~topic_odom_initial" value="odom_visual" />
+      <param name="~topic_odom_backup" value="odom_robot_localization" />
+      <param name="~topic_tf_initial" value="tf_odom_visual" />
+      <param name="~topic_tf_backup" value="tf_odom_robot_localization" />
+      <remap from="~select_service_topic" to="odom_topic_mux/select" />
+      <remap from="~select_service_tf" to="odom_tf_mux/select" />
+  </node>
 
   <!-- Odometry with robot localization ukf using wheel and imu -->
   <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
