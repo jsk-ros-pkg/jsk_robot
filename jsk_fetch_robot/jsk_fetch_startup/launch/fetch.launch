@@ -43,7 +43,7 @@
   <node
       pkg="topic_tools"
       type="mux"
-      name="odom_topic_mux"
+      name="odom_tf_mux"
       args="tf tf_odom_robot_localization tf_odom_visual"
       >
   <param name="~initial_topic" value="tf_odom_visual" />
