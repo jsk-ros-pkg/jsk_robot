@@ -2,6 +2,7 @@
 
   <arg name="topic_odom_out" default="odom_visual" />
   <arg name="odom_frame_id" default="odom_visual" />
+  <arg name="topic_tf" default="/tf" />
 
   <node
       pkg="jsk_fetch_startup"
@@ -11,16 +12,17 @@
       >
       <remap from="~odom_in" to="/t265/odom/sample" />
       <remap from="~odom_out" to="$(arg topic_odom_out)" />
+      <remap from="/tf" to="$(arg topic_tf)" />
 
       <param name="~frame_id_base_link" value="base_link" />
       <param name="~frame_id_odom" value="$(arg odom_frame_id)" />
       <param name="~publish_tf" value="true" />
       <param name="~2d_mode" value="true" />
 
+      <!-- transform from base_link to t265 pose frame -->
       <param name="~translation_base_link_to_pose_frame_x" value="0.269" />
       <param name="~translation_base_link_to_pose_frame_y" value="0.008" />
       <param name="~translation_base_link_to_pose_frame_z" value="0.415" />
-
       <param name="~rotation_base_link_to_pose_frame_x" value="0" />
       <param name="~rotation_base_link_to_pose_frame_y" value="-0.259" />
       <param name="~rotation_base_link_to_pose_frame_z" value="0" />

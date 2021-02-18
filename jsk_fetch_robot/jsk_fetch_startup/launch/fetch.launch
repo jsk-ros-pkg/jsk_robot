@@ -3,7 +3,6 @@
   <arg name="launch_teleop" default="true" />
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
-  <arg name="use_visual_odom" default="true" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -20,15 +19,42 @@
   <arg name="rgb_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
   <arg name="depth_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
 
+
+  <!-- Launch realsense cameras -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch">
+      <arg name="required" value="false" />
+  </include>
+
   <!-- Odometry -->
   <param name="base_controller/publish_tf" value="false"/>
   <!-- stop using graft: s-kitagawa (2019/10/17) -->
   <!-- <include file="$(find fetch_bringup)/launch/include/graft.launch.xml"/> -->
 
-  <!-- Odometry without visual odom -->
-  <!-- use robot localization ukf -->
-  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true" unless="$(arg use_visual_odom)">
-    <remap from="odometry/filtered" to="/odom_combined" />
+  <!-- odometry topic mux -->
+  <node
+      pkg="topic_tools"
+      type="mux"
+      name="odom_topic_mux"
+      args="odom_combined odom_robot_localization odom_visual"
+      >
+      <param name="~initial_topic" value="odom_visual" />
+  </node>
+  <!-- odometry tf mux -->
+  <node
+      pkg="topic_tools"
+      type="mux"
+      name="odom_topic_mux"
+      args="tf tf_odom_robot_localization tf_odom_visual"
+      >
+  <param name="~initial_topic" value="tf_odom_visual" />
+  </node>
+  <!-- odometry mux selector -->
+  <!-- TODO -->
+
+  <!-- Odometry with robot localization ukf using wheel and imu -->
+  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+    <remap from="odometry/filtered" to="/odom_robot_localization" />
+    <remap from="/tf" to="/tf_odom_robot_localization"/>
     <rosparam>
       frequency: 50
       sensor_timeout: 1.0
@@ -49,17 +75,9 @@
     </rosparam>
   </node>
 
-  <!-- launch realsense cameras -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_visual_odom)">
-      <arg name="required" value="true" />
-  </include>
-  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" unless="$(arg use_visual_odom)">
-      <arg name="required" value="false" />
-  </include>
-
-  <!-- Use Visual Odom -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch" if="$(arg use_visual_odom)">
-      <arg name="topic_odom_out" value="/odom_combined" />
+  <!-- Visual Odom -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch">
+      <arg name="topic_odom_out" value="/odom_visual" />
       <arg name="odom_frame_id" value="odom" />
   </include>
 
