@@ -55,7 +55,7 @@
       pkg="tf"
       type="static_transform_publisher"
       name="base_link_to_d435_front_virtual_joint"
-      args="0.285 0 0.3752 0 0.5236 0 base_link d435_front_link 0"
+      args="0.285 0 0.3752 0 0.5236 0 base_link d435_front_link 100"
       output="screen"
       />
   <group ns="d435_front">
