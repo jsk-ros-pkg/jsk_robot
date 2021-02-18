@@ -1,0 +1,11 @@
+<launch>
+    <!-- spot driver -->
+    <include
+        file="$(arg jsk_spot_startup)/launch/driver.launch"
+        />
+
+    <!-- peripheral devices -->
+    <include
+        file="$(arg jsk_spot_startup)/launch/peripheral.launch"
+        />
+</launch>
