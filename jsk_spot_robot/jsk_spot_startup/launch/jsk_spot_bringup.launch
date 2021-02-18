@@ -1,16 +1,16 @@
 <launch>
     <!-- spot driver -->
     <include
-        file="$(arg jsk_spot_startup)/launch/driver.launch"
+        file="$(find jsk_spot_startup)/launch/driver.launch"
         />
 
     <!-- peripheral devices -->
     <include
-        file="$(arg jsk_spot_startup)/launch/peripheral.launch"
+        file="$(find jsk_spot_startup)/launch/peripheral.launch"
         />
 
     <!-- teleop node -->
     <include
-        file="$(arg jsk_spot_teleop)/launch/teleop.launch"
+        file="$(find jsk_spot_teleop)/launch/teleop.launch"
         />
 </launch>
