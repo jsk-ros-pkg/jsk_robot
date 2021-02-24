@@ -12,7 +12,7 @@
 
     <param
         name="robot_description"
-        command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro --inorder"
+        command="$(find xacro)/xacro $(find jsk_spot_startup)/robots/jsk_spot.urdf.xacro --inorder" 
         />
     <node
         name="robot_state_publisher"

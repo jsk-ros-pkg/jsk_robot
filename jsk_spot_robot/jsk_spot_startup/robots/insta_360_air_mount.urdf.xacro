@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<robot name="insta_360_air_mount" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link name="camera" />
+    <joint name="head_mount_to_insta_360_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0.3" />
+        <parent link="jsk_head_mount_frame" />
+        <child link="camera" />
+    </joint>
+</robot>
