@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<robot name="spot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:arg name="insta_360_air" default="true" />
+
+    <xacro:include filename="$(find spot_description)/urdf/spot.urdf.xacro" />
+
+    <link name="jsk_head_mount_frame" />
+    <joint name="body_to_jsk_head_mount_joint" type="fixed" >
+        <origin rpy="0 0 0" xyz="0.29 0 0.09" />
+        <parent link="body" />
+        <child link="jsk_head_mount_frame" />
+    </joint>
+
+    <xacro:if value="$(arg insta_360_air)" >
+        <xacro:include filename="$(find jsk_spot_startup)/robots/insta_360_air_mount.urdf.xacro" />
+    </xacro:if>
+</robot>

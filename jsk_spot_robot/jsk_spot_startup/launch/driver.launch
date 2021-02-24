@@ -3,7 +3,16 @@
   <arg name="password" default="dummypassword" />
   <arg name="hostname" default="192.168.50.3" />
 
-  <include file="$(find spot_description)/launch/description.launch" />
+  <param
+    name="robot_description"
+    command="$(find xacro)/xacro $(find jsk_spot_startup)/robots/jsk_spot.urdf.xacro --inorder" 
+    />
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+    />
+
   <include file="$(find spot_driver)/launch/control.launch" />
 
   <node pkg="spot_driver" type="spot_ros.py" name="spot_ros"  ns="spot" output="screen" required="true">
