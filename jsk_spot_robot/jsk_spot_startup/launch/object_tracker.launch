@@ -36,8 +36,8 @@
       clear_params="true"
       unless="$(arg use_object_detector)">
     <remap from="~input" to="$(arg input_panorama_image)" />
-    <remap from="~input/rects" to="$(arg input_class)" />
-    <remap from="~input/class" to="$(arg input_rects)" />
+    <remap from="~input/rects" to="$(arg input_rects)" />
+    <remap from="~input/class" to="$(arg input_class)" />
     <rosparam subst_value="true">
       gpu: $(arg gpu)
       pretrained_model: $(find jsk_perception)/trained_data/deepsort_chainermodel.npz
