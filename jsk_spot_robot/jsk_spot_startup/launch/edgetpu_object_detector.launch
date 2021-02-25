@@ -1,0 +1,7 @@
+<launch>
+  <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/output/quater" />
+
+  <include file="$(find coral_usb)/launch/edgetpu_panorama_object_detector.launch" >
+    <arg name="INPUT_IMAGE" value="$(arg input_panorama_image)" />
+  </include>
+</launch>
