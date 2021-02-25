@@ -1,9 +1,11 @@
 <launch>
+  <arg name="config_type" default="spot" />
+
   <node
       pkg="rviz"
       type="rviz"
       name="rviz"
-      args="-d $(find jsk_spot_startup)/config/spot.rviz"
+      args="-d $(find jsk_spot_startup)/config/$(arg config_type).rviz"
       />
 
   <node
