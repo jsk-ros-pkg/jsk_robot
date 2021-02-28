@@ -43,7 +43,17 @@
       >
       <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
       <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
-      <remap from="~input" to="ssd_object_detector/output/class" />
+      <remap from="~input" to="ssd_object_detector/output/rects" />
+  </node>
+  <node
+      pkg="jsk_perception"
+      type="panorama_rect_array_to_bounding_box_array.py"
+      name="panorama_rect_array_to_bounding_box_array"
+      if="$(arg use_object_detector)"
+      >
+      <param name="~frame_fixed" to="odom" />
+      <remap from="~input_class" to="ssd_object_detector/output/class" />
+      <remap from="~input_panorama_rects" to="rect_array_to_panorama_rect_array/output" />
   </node>
 
   <!-- use_object_detector: false -->
@@ -73,5 +83,15 @@
       <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
       <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
       <remap from="~input" to="$(arg input_rects)" />
+  </node>
+  <node
+      pkg="jsk_perception"
+      type="panorama_rect_array_to_bounding_box_array.py"
+      name="panorama_rect_array_to_bounding_box_array"
+      if="$(arg use_object_detector)"
+      >
+      <param name="~frame_fixed" to="odom" />
+      <remap from="~input_class" to="$(arg input_class)" />
+      <remap from="~input_panorama_rects" to="rect_array_to_panorama_rect_array/output" />
   </node>
 </launch>
