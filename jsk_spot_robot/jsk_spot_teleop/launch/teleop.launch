@@ -48,6 +48,8 @@
       <param name="~button_stand" value="0" />
       <param name="~button_release" value="8" />
       <param name="~button_claim" value="9" />
+      <param name="~button_stair_mode" value="-1" />
+      <param name="~button_locomotion_mode" value="2" />
 
       <param name="~num_buttons" value="18" />
   </node>
@@ -58,13 +60,13 @@
     cross : stand
     circle : sit
     rectangle : self_right
-    triangle : (None)
+    triangle : toggle locomotion mode
 
     start : claim
     select : release
 
-    up : power_on
     down : power_off
+    up : power_on
 
     L1 : Unlock movement
     R1 : Estop (gentle)
