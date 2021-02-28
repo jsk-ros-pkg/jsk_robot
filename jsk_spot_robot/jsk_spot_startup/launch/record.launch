@@ -90,6 +90,7 @@
             /tf
             /tf_static
             /dual_fisheye_to_panorama/output/compressed
+            /dual_fisheye_to_panorama/panorama_info
             /spot/body_pose
             /spot/camera/back/camera_info
             /spot/camera/back/image/compressed
@@ -141,6 +142,7 @@
             /tf
             /tf_static
             /dual_fisheye_to_panorama/output
+            /dual_fisheye_to_panorama/panorama_info
             /spot/body_pose
             /spot/camera/back/camera_info
             /spot/camera/back/image
