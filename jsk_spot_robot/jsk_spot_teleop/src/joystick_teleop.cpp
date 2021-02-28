@@ -2,6 +2,8 @@
 
 #include <sensor_msgs/Joy.h>
 #include <std_srvs/Trigger.h>
+#include <std_srvs/SetBool.h>
+#include <spot_msgs/SetLocomotion.h>
 
 class TeleopManager
 {
@@ -18,6 +20,8 @@ public:
         ros::param::param<int>("~button_stop", button_stop_, -1);
         ros::param::param<int>("~button_release", button_release_, -1);
         ros::param::param<int>("~button_claim", button_claim_, -1);
+        ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
+        ros::param::param<int>("~button_locomotion_mode", button_locomotion_mode_, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
         num_buttons_ = num_buttons_ < 0 ? 0 : num_buttons_;
@@ -36,8 +40,13 @@ public:
         client_stop_ = nh.serviceClient<std_srvs::Trigger>("/spot/stop");
         client_release_ = nh.serviceClient<std_srvs::Trigger>("/spot/release");
         client_claim_ = nh.serviceClient<std_srvs::Trigger>("/spot/claim");
+        client_stair_mode_ = nh.serviceClient<std_srvs::SetBool>("/spot/stair_mode");
+        client_locomotion_mode_ = nh.serviceClient<spot_msgs::SetLocomotion>("/spot/locomotion_mode");
 
         sub_joy_ = nh.subscribe<sensor_msgs::Joy, TeleopManager>("joy", 1, &TeleopManager::callbackJoy, this);
+
+        req_next_stair_mode_.data = true;
+        req_next_locomotion_mode_.locomotion_mode = 4;
     }
 
     void callbackJoy(const sensor_msgs::Joy::ConstPtr& msg)
@@ -263,6 +272,59 @@ public:
         } else {
             ROS_DEBUG("Button 'claim' is disabled.");
         }
+
+        // stair_mode
+        if ( button_stair_mode_ >= 0
+                and button_stair_mode_ < msg->buttons.size()
+                and button_stair_mode_ < num_buttons_ ) {
+            if ( msg->buttons[button_stair_mode_] == 1 ) {
+                if ( not pressed_[button_stair_mode_] ) {
+                    std_srvs::SetBool::Response res;
+                    if ( client_stair_mode_.call(req_next_stair_mode_,res) && res.success ) {
+                        ROS_INFO_STREAM("Service 'stair_mode' succeeded. set to " << req_next_stair_mode_.data);
+                        req_next_stair_mode_.data = not req_next_stair_mode_.data;
+                    } else {
+                        ROS_ERROR("Service 'stair_mode' failed.");
+                    }
+                    pressed_[button_stair_mode_] = true;
+                }
+            } else {
+                if ( pressed_[button_stair_mode_] ) {
+                    pressed_[button_stair_mode_] = false;
+                }
+            }
+        } else {
+            ROS_DEBUG("Button 'stair_mode' is disabled.");
+        }
+
+        // locomotion_mode
+        if ( button_locomotion_mode_ >= 0
+                and button_locomotion_mode_ < msg->buttons.size()
+                and button_locomotion_mode_ < num_buttons_ ) {
+            if ( msg->buttons[button_locomotion_mode_] == 1 ) {
+                if ( not pressed_[button_locomotion_mode_] ) {
+                    std_srvs::SetBool::Response res;
+                    if ( client_locomotion_mode_.call(req_next_locomotion_mode_,res) && res.success ) {
+                        ROS_INFO_STREAM("Service 'locomotion_mode' succeeded. set to " << req_next_locomotion_mode_.locomotion_mode);
+                        switch (req_next_locomotion_mode_.locomotion_mode) {
+                            case 1:
+                                req_next_locomotion_mode_.locomotion_mode = 4;
+                            default:
+                                req_next_locomotion_mode_.locomotion_mode = 1;
+                        }
+                    } else {
+                        ROS_ERROR("Service 'locomotion_mode' failed.");
+                    }
+                    pressed_[button_locomotion_mode_] = true;
+                }
+            } else {
+                if ( pressed_[button_locomotion_mode_] ) {
+                    pressed_[button_locomotion_mode_] = false;
+                }
+            }
+        } else {
+            ROS_DEBUG("Button 'locomotion_mode' is disabled.");
+        }
     }
 
 private:
@@ -276,6 +338,8 @@ private:
     int button_stop_;
     int button_release_;
     int button_claim_;
+    int button_stair_mode_;
+    int button_locomotion_mode_;
 
     ros::ServiceClient client_estop_hard_;
     ros::ServiceClient client_estop_gentle_;
@@ -287,11 +351,17 @@ private:
     ros::ServiceClient client_stop_;
     ros::ServiceClient client_release_;
     ros::ServiceClient client_claim_;
+    ros::ServiceClient client_stair_mode_;
+    ros::ServiceClient client_locomotion_mode_;
 
     ros::Subscriber sub_joy_;
 
     int num_buttons_;
     std::vector<bool> pressed_;
+
+    //
+    std_srvs::SetBool::Request req_next_stair_mode_;
+    spot_msgs::SetLocomotion::Request req_next_locomotion_mode_;
 };
 
 
