@@ -2,25 +2,31 @@
   <arg name="gpu" default="0" />
   <arg name="use_object_detector" default="false" />
   <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/output/quater" />
-  <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/panorama_info" />
+  <arg name="input_panorama_info" default="/dual_fisheye_to_panorama/panorama_info" />
   <arg name="input_class" default="/edgetpu_panorama_object_detector/output/class" />
   <arg name="input_rects" default="/edgetpu_panorama_object_detector/output/rects" />
 
   <!-- use_object_detector: true -->
-  <node name="ssd_object_detector"
-      pkg="jsk_perception" type="ssd_object_detector.py"
-      if="$(arg use_object_detector)">
+  <node
+      pkg="jsk_perception"
+      type="ssd_object_detector.py"
+      name="ssd_object_detector"
+      if="$(arg use_object_detector)"
+      >
     <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
     <rosparam subst_value="true">
       gpu: $(arg gpu)
     </rosparam>
     <param name="model_path" value="voc0712" />
   </node>
-  <node name="deep_sort_tracker"
-        pkg="jsk_perception" type="deep_sort_tracker_node.py"
-        output="screen"
+  <node
+      pkg="jsk_perception"
+      type="deep_sort_tracker_node.py"
+      name="deep_sort_tracker"
+      output="screen"
       clear_params="true"
-      if="$(arg use_object_detector)">
+      if="$(arg use_object_detector)"
+      >
     <remap from="~input" to="$(arg input_panorama_image)" />
     <remap from="~input/rects" to="ssd_object_detector/output/rect" />
     <remap from="~input/class" to="ssd_object_detector/output/class" />
@@ -33,6 +39,7 @@
       pkg="jsk_perception"
       type="rect_array_to_panorama_rect_array.py"
       name="rect_array_to_panorama_rect_array"
+      if="$(arg use_object_detector)"
       >
       <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
       <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
@@ -40,9 +47,11 @@
   </node>
 
   <!-- use_object_detector: false -->
-  <node name="deep_sort_tracker"
-        pkg="jsk_perception" type="deep_sort_tracker_node.py"
-        output="screen"
+  <node
+      pkg="jsk_perception"
+      type="deep_sort_tracker_node.py"
+      name="deep_sort_tracker"
+      output="screen"
       clear_params="true"
       unless="$(arg use_object_detector)">
     <remap from="~input" to="$(arg input_panorama_image)" />
@@ -59,6 +68,7 @@
       pkg="jsk_perception"
       type="rect_array_to_panorama_rect_array.py"
       name="rect_array_to_panorama_rect_array"
+      unless="$(arg use_object_detector)">
       >
       <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
       <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
