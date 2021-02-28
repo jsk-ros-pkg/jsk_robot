@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     sensor_msgs
     std_srvs
+    spot_msgs
 )
 
 catkin_package(
@@ -13,6 +14,7 @@ catkin_package(
         roscpp
         sensor_msgs
         std_srvs
+        spot_msgs
 )
 
 include_directories(
