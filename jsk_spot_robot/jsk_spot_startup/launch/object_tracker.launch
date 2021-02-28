@@ -51,7 +51,7 @@
       name="panorama_rect_array_to_bounding_box_array"
       if="$(arg use_object_detector)"
       >
-      <param name="~frame_fixed" to="odom" />
+      <param name="~frame_fixed" value="odom" />
       <remap from="~input_class" to="ssd_object_detector/output/class" />
       <remap from="~input_panorama_rects" to="rect_array_to_panorama_rect_array/output" />
   </node>
@@ -88,9 +88,14 @@
       pkg="jsk_perception"
       type="panorama_rect_array_to_bounding_box_array.py"
       name="panorama_rect_array_to_bounding_box_array"
-      if="$(arg use_object_detector)"
+      unless="$(arg use_object_detector)"
       >
-      <param name="~frame_fixed" to="odom" />
+      <rosparam>
+          dimensions:
+              person: [0.5, 0.5, 1.5]
+              chair: [0.5, 0.5, 1.0]
+      </rosparam>
+      <param name="~frame_fixed" value="odom" />
       <remap from="~input_class" to="$(arg input_class)" />
       <remap from="~input_panorama_rects" to="rect_array_to_panorama_rect_array/output" />
   </node>
