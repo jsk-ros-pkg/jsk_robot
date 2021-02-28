@@ -1,7 +1,8 @@
 <launch>
   <arg name="gpu" default="0" />
-  <arg name="use_object_detector" default="true" />
+  <arg name="use_object_detector" default="false" />
   <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/output/quater" />
+  <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/panorama_info" />
   <arg name="input_class" default="/edgetpu_panorama_object_detector/output/class" />
   <arg name="input_rects" default="/edgetpu_panorama_object_detector/output/rects" />
 
@@ -28,6 +29,15 @@
       pretrained_model: $(find jsk_perception)/trained_data/deepsort_chainermodel.npz
     </rosparam>
   </node>
+  <node
+      pkg="jsk_perception"
+      type="rect_array_to_panorama_rect_array.py"
+      name="rect_array_to_panorama_rect_array"
+      >
+      <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
+      <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
+      <remap from="~input" to="ssd_object_detector/output/class" />
+  </node>
 
   <!-- use_object_detector: false -->
   <node name="deep_sort_tracker"
@@ -44,5 +54,14 @@
       approximate_sync: True
       slop: 0.3
     </rosparam>
+  </node>
+  <node
+      pkg="jsk_perception"
+      type="rect_array_to_panorama_rect_array.py"
+      name="rect_array_to_panorama_rect_array"
+      >
+      <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
+      <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
+      <remap from="~input" to="$(arg input_rects)" />
   </node>
 </launch>
