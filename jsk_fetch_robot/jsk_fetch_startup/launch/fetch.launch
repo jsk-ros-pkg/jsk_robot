@@ -3,6 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
+  <arg name="use_realsense" default="true" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -21,7 +22,7 @@
 
 
   <!-- Launch realsense cameras -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch">
+  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
       <arg name="required" value="false" />
   </include>
 
