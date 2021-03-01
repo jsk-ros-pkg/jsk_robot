@@ -71,7 +71,7 @@
     <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
       <arg name="device_type"           value="d435"/>
       <arg name="serial_no"             value=""/>
-      <arg name="tf_prefix"             value="d435_front"/>
+      <arg name="tf_prefix"             value="d435_front_left"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
       <arg name="filters"               value="pointcloud"/>

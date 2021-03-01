@@ -20,9 +20,9 @@
       <param name="~2d_mode" value="true" />
 
       <!-- transform from base_link to t265 pose frame -->
-      <param name="~translation_base_link_to_pose_frame_x" value="0.269" />
-      <param name="~translation_base_link_to_pose_frame_y" value="0.008" />
-      <param name="~translation_base_link_to_pose_frame_z" value="0.415" />
+      <param name="~translation_base_link_to_pose_frame_x" value="0.270" />
+      <param name="~translation_base_link_to_pose_frame_y" value="0.0081" />
+      <param name="~translation_base_link_to_pose_frame_z" value="0.375" />
       <param name="~rotation_base_link_to_pose_frame_x" value="0" />
       <param name="~rotation_base_link_to_pose_frame_y" value="-0.259" />
       <param name="~rotation_base_link_to_pose_frame_z" value="0" />

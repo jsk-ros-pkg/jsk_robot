@@ -64,5 +64,20 @@
         <child link="base_camera_mount" />
         <axis xyz="0 0 1" />
       </joint>
+
+      <link name="d435_front_right_link" type="fixed" />
+      <joint name="base_link_to_d435_front_right_virtual_joint" >
+        <origin rpy="0 0.524 -0.524" xyz="0.242 -0.14 0.375" />
+        <parent link="base_link" />
+        <child link="d435_front_right_link" />
+        <axis xyz="0 0 1" />
+      </joint>
+      <link name="d435_front_left_link" type="fixed" />
+      <joint name="base_link_to_d435_front_left_virtual_joint" >
+        <origin rpy="0 0.524 0.524" xyz="0.242 0.14 0.375" />
+        <parent link="base_link" />
+        <child link="d435_front_left_link" />
+        <axis xyz="0 0 1" />
+      </joint>
     </xacro:if>
 </robot>
