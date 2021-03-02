@@ -1,7 +1,11 @@
 <launch>
     <arg name="use_insta_360" default="true"/>
+    <arg name="use_respeaker" default="true"/>
 
-    <include if="$(arg use_insta_360)" file="$(find jsk_perception)/sample/sample_insta360_air.launch" >
+    <include
+        if="$(arg use_insta_360)"
+        file="$(find jsk_perception)/sample/sample_insta360_air.launch"
+        >
         <arg name="gui" value="false" />
         <arg name="brightness" value="128" />
     </include>
@@ -11,11 +15,34 @@
         pkg="nodelet"
         type="nodelet"
         name="panorama_image_resize"
-        args="standalone image_proc/resize">
+        args="standalone image_proc/resize"
+        if="$(arg use_insta_360)"
+        >
         <param name="scale_height" value="0.5" />
         <param name="scale_width" value="0.5" />
         <remap from="image" to="/dual_fisheye_to_panorama/output" />
         <remap from="~image" to="/dual_fisheye_to_panorama/output/quater" />
     </node>
+
+
+    <group ns="respeaker" if="$(arg use_respeaker)" >
+        <node
+            pkg="respeaker_ros"
+            type="respeaker_node.py"
+            name="respeaker_node"
+            />
+        <node
+            pkg="respeaker_ros"
+            type="speech_to_text.py"
+            name="speech_to_text"
+            >
+            <remap from="audio" to="speech_audio" />
+            <rosparam subst_value="true">
+                language: en-US
+                self_cancellation: true
+                tts_tolerance: 0.5
+            </rosparam>
+        </node>
+    </group>
 
 </launch>
