@@ -303,12 +303,16 @@ public:
                 and button_locomotion_mode_ < num_buttons_ ) {
             if ( msg->buttons[button_locomotion_mode_] == 1 ) {
                 if ( not pressed_[button_locomotion_mode_] ) {
-                    std_srvs::SetBool::Response res;
+                    spot_msgs::SetLocomotion::Response res;
                     if ( client_locomotion_mode_.call(req_next_locomotion_mode_,res) && res.success ) {
                         ROS_INFO_STREAM("Service 'locomotion_mode' succeeded. set to " << req_next_locomotion_mode_.locomotion_mode);
                         switch (req_next_locomotion_mode_.locomotion_mode) {
                             case 1:
                                 req_next_locomotion_mode_.locomotion_mode = 4;
+                                break;
+                            case 4:
+                                req_next_locomotion_mode_.locomotion_mode = 1;
+                                break;
                             default:
                                 req_next_locomotion_mode_.locomotion_mode = 1;
                         }
