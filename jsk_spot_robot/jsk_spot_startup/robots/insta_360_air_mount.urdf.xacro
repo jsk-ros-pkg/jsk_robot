@@ -10,7 +10,7 @@
     <link name="respeaker_base" />
     <joint name="head_mount_to_respeaker_base" type="fixed">
         <origin rpy="0 0 0" xyz="0 0 0.05" />
-        <parent_link="jsk_head_mount_frame" />
+        <parent link="jsk_head_mount_frame" />
         <child link="respeaker_base" />
     </joint>
 </robot>
