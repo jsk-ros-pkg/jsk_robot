@@ -1,0 +1,42 @@
+<launch>
+  <!-- project depth images to mercator -->
+  <node
+      pkg="nodelet"
+      type="nodelet"
+      name="spot_depth_mercator_projection"
+      args="standalone image_projection/PeriodicImageProjectionNodelet"
+      >
+      <rosparam>
+          base_frame: camera
+          projection_type: image_projection_plugins::MercatorProjection
+          projection_parameters:
+            image_width: 2000
+            image_height: 1000
+            cylinder_radius: 1.0
+            vertical_fov: 180
+          cameras:
+          - '/spot/depth/frontleft'
+          - '/spot/depth/frontright'
+          - '/spot/depth/left'
+          - '/spot/depth/right'
+          - '/spot/depth/back'
+          spot:
+            depth:
+              frontleft:
+                image_topic: image
+                camera_info_topic: camera_info
+              frontright:
+                image_topic: image
+                camera_info_topic: camera_info
+              left:
+                image_topic: image
+                camera_info_topic: camera_info
+              right:
+                image_topic: image
+                camera_info_topic: camera_info
+              back:
+                image_topic: image
+                camera_info_topic: camera_info
+      </rosparam>
+  </node>
+</launch>
