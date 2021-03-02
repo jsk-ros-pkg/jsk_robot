@@ -19,6 +19,7 @@
   <exec_depend>jsk_tools</exec_depend>
   <exec_depend>spot_description</exec_depend>
   <exec_depend>spot_driver</exec_depend>
+  <exec_depend>respeaker_ros</exec_depend>
 
   <test_depend>rostest</test_depend>
 
