@@ -6,6 +6,8 @@
   <arg name="input_class" default="/edgetpu_panorama_object_detector/output/class" />
   <arg name="input_rects" default="/edgetpu_panorama_object_detector/output/rects" />
 
+  <arg name="launch_conversion_nodes" default="true" />
+
   <!-- use_object_detector: true -->
   <node
       pkg="jsk_perception"
@@ -40,6 +42,7 @@
       type="rect_array_to_panorama_rect_array.py"
       name="rect_array_to_panorama_rect_array"
       if="$(arg use_object_detector)"
+      if="$(arg launch_conversion_nodes"
       >
       <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
       <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
@@ -50,6 +53,7 @@
       type="panorama_rect_array_to_bounding_box_array.py"
       name="panorama_rect_array_to_bounding_box_array"
       if="$(arg use_object_detector)"
+      if="$(arg launch_conversion_nodes"
       >
       <param name="~frame_fixed" value="odom" />
       <remap from="~input_class" to="ssd_object_detector/output/class" />
@@ -78,7 +82,8 @@
       pkg="jsk_perception"
       type="rect_array_to_panorama_rect_array.py"
       name="rect_array_to_panorama_rect_array"
-      unless="$(arg use_object_detector)">
+      unless="$(arg use_object_detector)"
+      if="$(arg launch_conversion_nodes"
       >
       <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
       <remap from="~input_panorama_info" to="$(arg input_panorama_info)" />
@@ -89,6 +94,7 @@
       type="panorama_rect_array_to_bounding_box_array.py"
       name="panorama_rect_array_to_bounding_box_array"
       unless="$(arg use_object_detector)"
+      if="$(arg launch_conversion_nodes"
       >
       <rosparam>
           dimensions:
