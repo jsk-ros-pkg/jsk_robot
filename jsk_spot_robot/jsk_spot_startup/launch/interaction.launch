@@ -1,6 +1,6 @@
 <launch>
-    <arg name="speech_recognition_language" default="japanese" />
-    <arg name="speech_recognition_network" default="offline" />
+    <arg name="speech_recognition_language" default="english" />
+    <arg name="speech_recognition_network" default="online" />
 
     <arg name="audio_topic" default="/respeaker/speech_audio" />
 
@@ -15,29 +15,11 @@
         <arg name="sound_play_respawn" value="true" />
     </include>
 
-    <!-- speech_recognition (english, online) -->
-    <node name="speech_recognition"
+    <!-- speech_recognition (english, offline) -->
+    <node
         pkg="ros_speech_recognition"
         type="speech_recognition_node.py"
-        respawn="true"
-        output="screen"
-        if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'online')"
-        >
-        <remap from="/Tablet/voice" to="speech_to_text_en" />
-        <rosparam subst_value="true">
-          audio_topic: $(arg audio_topic)
-          n_channel: 1
-          depth: 16
-          sample_rate: 16000
-          engine: "Google"
-          language: "en-US"
-          continuous: True
-        </rosparam>
-    </node>
-    <!-- speech_recognition (english, online) -->
-    <node name="speech_recognition"
-        pkg="ros_speech_recognition"
-        type="speech_recognition_node.py"
+        name="speech_recognition"
         respawn="true"
         output="screen"
         if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'offline')"
@@ -51,6 +33,23 @@
           engine: "Sphinx"
           language: "en-US"
           continuous: True
+        </rosparam>
+    </node>
+    <!-- speech_recognition (english, online) -->
+    <node
+        pkg="respeaker_ros"
+        type="speech_to_text.py"
+        name="speech_to_text"
+        respawn="true"
+        output="screen"
+        if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'online')"
+        >
+        <remap from="audio" to="$(arg audio_topic)" />
+        <remap from="speech_to_text" to="/speech_to_text_en" />
+        <rosparam subst_value="true">
+          language: "en-US"
+          self_cancellation: true
+          tts_tolerance: 0.5
         </rosparam>
     </node>
     <!-- speech_recognition (japanese) -->
