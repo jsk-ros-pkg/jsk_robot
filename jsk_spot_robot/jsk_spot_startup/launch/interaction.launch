@@ -10,8 +10,8 @@
     </node>
 
     <!-- sound_play for japanese (aques_talk) -->
-    <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
-        <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <include file="$(find aques_talk)/launch/aques_talk.launch">
+        <arg name="launch_sound_play" value="true" />
         <arg name="sound_play_respawn" value="true" />
     </include>
 
@@ -21,7 +21,7 @@
         type="speech_recognition_node.py"
         respawn="true"
         output="screen"
-        if="$(eval $(arg speech_recognition_language) == 'english' and $(arg speech_recognition_network) == 'online')"
+        if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'online')"
         >
         <remap from="/Tablet/voice" to="speech_to_text_en" />
         <rosparam subst_value="true">
@@ -40,7 +40,7 @@
         type="speech_recognition_node.py"
         respawn="true"
         output="screen"
-        if="$(eval $(arg speech_recognition_language) == 'english' and $(arg speech_recognition_network) == 'offline')"
+        if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'offline')"
         >
         <remap from="/Tablet/voice" to="speech_to_text_en" />
         <rosparam subst_value="true">
@@ -56,7 +56,7 @@
     <!-- speech_recognition (japanese) -->
     <include
         file="$(find julius_ros)/launch/julius.launch"
-        if="$(eval $(arg speech_recognition_language) == 'japanese' and $(arg speech_recognition_network) == 'offline')"
+        if="$(eval arg('speech_recognition_language') == 'japanese' and arg('speech_recognition_network') == 'offline')"
         >
         <arg name="launch_audio_capture" value="false"/>
         <arg name="launch_sound_play" value="false"/>
