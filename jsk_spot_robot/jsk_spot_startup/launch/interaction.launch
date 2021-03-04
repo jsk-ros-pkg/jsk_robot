@@ -1,5 +1,5 @@
 <launch>
-    <arg name="speech_recognition_language" default="english" />
+    <arg name="speech_recognition_language" default="japanese" />
     <arg name="speech_recognition_network" default="online" />
 
     <arg name="audio_topic" default="/respeaker/speech_audio" />
@@ -49,10 +49,13 @@
         <rosparam subst_value="true">
           language: "en-US"
           self_cancellation: true
+          tts_action_names:
+            - robotsound
+            - robotsound_jp
           tts_tolerance: 0.5
         </rosparam>
     </node>
-    <!-- speech_recognition (japanese) -->
+    <!-- speech_recognition (japanese, offline) -->
     <include
         file="$(find julius_ros)/launch/julius.launch"
         if="$(eval arg('speech_recognition_language') == 'japanese' and arg('speech_recognition_network') == 'offline')"
@@ -61,5 +64,25 @@
         <arg name="launch_sound_play" value="false"/>
         <arg name="speech_to_text_topic" value="speech_to_text_jp"/>
     </include>
+    <!-- speech_recognition (english, online) -->
+    <node
+        pkg="respeaker_ros"
+        type="speech_to_text.py"
+        name="speech_to_text"
+        respawn="true"
+        output="screen"
+        if="$(eval arg('speech_recognition_language') == 'japanese' and arg('speech_recognition_network') == 'online')"
+        >
+        <remap from="audio" to="$(arg audio_topic)" />
+        <remap from="speech_to_text" to="/speech_to_text_en" />
+        <rosparam subst_value="true">
+          language: "ja-JP"
+          self_cancellation: true
+          tts_action_names:
+            - robotsound
+            - robotsound_jp
+          tts_tolerance: 0.5
+        </rosparam>
+    </node>
 
 </launch>
