@@ -31,18 +31,6 @@
             type="respeaker_node.py"
             name="respeaker_node"
             />
-        <node
-            pkg="respeaker_ros"
-            type="speech_to_text.py"
-            name="speech_to_text"
-            >
-            <remap from="audio" to="speech_audio" />
-            <rosparam subst_value="true">
-                language: en-US
-                self_cancellation: true
-                tts_tolerance: 0.5
-            </rosparam>
-        </node>
     </group>
 
 </launch>
