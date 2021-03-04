@@ -9,6 +9,11 @@
         file="$(find jsk_spot_startup)/launch/peripheral.launch"
         />
 
+    <!-- interaction nodes -->
+    <include
+        file="$(find jsk_spot_startup)/launch/interaction.launch"
+        />
+
     <!-- teleop node -->
     <include
         file="$(find jsk_spot_teleop)/launch/teleop.launch"
