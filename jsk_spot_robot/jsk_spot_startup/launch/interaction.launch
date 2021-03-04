@@ -1,5 +1,5 @@
 <launch>
-    <arg name="speech_recognition_language" default="japenese" />
+    <arg name="speech_recognition_language" default="japanese" />
     <arg name="speech_recognition_network" default="offline" />
 
     <arg name="audio_topic" default="/respeaker/speech_audio" />
