@@ -1,0 +1,66 @@
+<launch>
+    <arg name="speech_recognition_language" default="japenese" />
+    <arg name="speech_recognition_network" default="offline" />
+
+    <arg name="audio_topic" default="/respeaker/speech_audio" />
+
+    <!-- sound_play for english -->
+    <node pkg="sound_play" type="soundplay_node.py" name="sound_play" respawn="true">
+        <remap from="sound_play" to="robotsound" />
+    </node>
+
+    <!-- sound_play for japanese (aques_talk) -->
+    <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
+        <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+        <arg name="sound_play_respawn" value="true" />
+    </include>
+
+    <!-- speech_recognition (english, online) -->
+    <node name="speech_recognition"
+        pkg="ros_speech_recognition"
+        type="speech_recognition_node.py"
+        respawn="true"
+        output="screen"
+        if="$(eval $(arg speech_recognition_language) == 'english' and $(arg speech_recognition_network) == 'online')"
+        >
+        <remap from="/Tablet/voice" to="speech_to_text_en" />
+        <rosparam subst_value="true">
+          audio_topic: $(arg audio_topic)
+          n_channel: 1
+          depth: 16
+          sample_rate: 16000
+          engine: "Google"
+          language: "en-US"
+          continuous: True
+        </rosparam>
+    </node>
+    <!-- speech_recognition (english, online) -->
+    <node name="speech_recognition"
+        pkg="ros_speech_recognition"
+        type="speech_recognition_node.py"
+        respawn="true"
+        output="screen"
+        if="$(eval $(arg speech_recognition_language) == 'english' and $(arg speech_recognition_network) == 'offline')"
+        >
+        <remap from="/Tablet/voice" to="speech_to_text_en" />
+        <rosparam subst_value="true">
+          audio_topic: $(arg audio_topic)
+          n_channel: 1
+          depth: 16
+          sample_rate: 16000
+          engine: "Sphinx"
+          language: "en-US"
+          continuous: True
+        </rosparam>
+    </node>
+    <!-- speech_recognition (japanese) -->
+    <include
+        file="$(find julius_ros)/launch/julius.launch"
+        if="$(eval $(arg speech_recognition_language) == 'japanese' and $(arg speech_recognition_network) == 'offline')"
+        >
+        <arg name="launch_audio_capture" value="false"/>
+        <arg name="launch_sound_play" value="false"/>
+        <arg name="speech_to_text_topic" value="speech_to_text_jp"/>
+    </include>
+
+</launch>
