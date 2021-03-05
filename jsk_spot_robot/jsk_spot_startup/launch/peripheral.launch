@@ -2,6 +2,7 @@
     <arg name="use_insta_360" default="true"/>
     <arg name="use_respeaker" default="true"/>
 
+    <!-- insta360 -->
     <include
         if="$(arg use_insta_360)"
         file="$(find jsk_perception)/sample/sample_insta360_air.launch"
@@ -9,8 +10,7 @@
         <arg name="gui" value="false" />
         <arg name="brightness" value="128" />
     </include>
-
-    <!-- image proc -->
+    <!-- image proc for insta360 -->
     <node
         pkg="nodelet"
         type="nodelet"
@@ -25,12 +25,12 @@
     </node>
 
 
-    <group ns="respeaker" if="$(arg use_respeaker)" >
-        <node
-            pkg="respeaker_ros"
-            type="respeaker_node.py"
-            name="respeaker_node"
-            />
-    </group>
+    <!-- Respeaker -->
+    <node
+        pkg="respeaker_ros"
+        type="respeaker_node.py"
+        name="respeaker_node"
+        if="$(arg use_respeaker)"
+        />
 
 </launch>
