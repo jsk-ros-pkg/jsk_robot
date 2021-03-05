@@ -2,7 +2,7 @@
     <arg name="speech_recognition_language" default="japanese" />
     <arg name="speech_recognition_network" default="online" />
 
-    <arg name="audio_topic" default="/respeaker/speech_audio" />
+    <arg name="audio_topic" default="/speech_audio" />
 
     <!-- sound_play for english -->
     <node pkg="sound_play" type="soundplay_node.py" name="sound_play" respawn="true">
@@ -24,7 +24,7 @@
         output="screen"
         if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'offline')"
         >
-        <remap from="/Tablet/voice" to="speech_to_text_en" />
+        <remap from="/Tablet/voice" to="/speech_to_text_en" />
         <rosparam subst_value="true">
           audio_topic: $(arg audio_topic)
           n_channel: 1
@@ -62,7 +62,7 @@
         >
         <arg name="launch_audio_capture" value="false"/>
         <arg name="launch_sound_play" value="false"/>
-        <arg name="speech_to_text_topic" value="speech_to_text_jp"/>
+        <arg name="speech_to_text_topic" value="/speech_to_text_jp"/>
     </include>
     <!-- speech_recognition (english, online) -->
     <node
