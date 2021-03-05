@@ -74,7 +74,7 @@
         if="$(eval arg('speech_recognition_language') == 'japanese' and arg('speech_recognition_network') == 'online')"
         >
         <remap from="audio" to="$(arg audio_topic)" />
-        <remap from="speech_to_text" to="/speech_to_text_en" />
+        <remap from="speech_to_text" to="/speech_to_text_jp" />
         <rosparam subst_value="true">
           language: "ja-JP"
           self_cancellation: true
