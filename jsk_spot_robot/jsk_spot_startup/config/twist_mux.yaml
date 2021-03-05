@@ -11,4 +11,8 @@ topics:
   topic   : joy_head/cmd_vel
   timeout : 0.5
   priority: 7
+- name    : develop_input
+  topic   : develop_input/cmd_vel
+  timeout : 0.5
+  priority: 6
 locks: []
