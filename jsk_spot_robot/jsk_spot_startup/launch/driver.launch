@@ -15,7 +15,14 @@
 
   <include file="$(find spot_driver)/launch/control.launch" />
 
-  <node pkg="spot_driver" type="spot_ros.py" name="spot_ros"  ns="spot" output="screen" required="true">
+  <node
+      pkg="spot_driver"
+      type="spot_ros.py"
+      name="spot_ros"
+      ns="spot"
+      output="screen"
+      respawn="true"
+      >
     <rosparam file="$(find spot_driver)/config/spot_ros.yaml" command="load" />
     <param name="username" value="$(arg username)" />
     <param name="password" value="$(arg password)" />
@@ -24,7 +31,11 @@
     <remap from="tf" to="/tf"/>
   </node>
 
-  <node pkg="twist_mux" type="twist_mux" name="twist_mux" >
+  <node
+      pkg="twist_mux"
+      type="twist_mux"
+      name="twist_mux"
+      >
     <rosparam command="load" file="$(find jsk_spot_startup)/config/twist_mux.yaml" />
     <remap from="cmd_vel_out" to="spot/cmd_vel"/>
   </node>
