@@ -27,7 +27,7 @@
   "Call spot_msgs/SetLocomotion service"
   (let (r)
     (if wait (ros::wait-for-service srvname))
-    (setq r (ros::service-call srvname (instance spot_msgs::SetLocomotion :init :locomotion_mode locomotion_hint)))
+    (setq r (ros::service-call srvname (instance spot_msgs::SetLocomotionRequest :init :locomotion_mode locomotion_hint)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
 
@@ -155,7 +155,7 @@
        (send self :set-robot-state1 (intern (format nil "SYSTEM-FAULTS-~A-ATTRIBUTES" s) *keyword-package*)
              (send fault :attributes))
        (send self :set-robot-state1 (intern (format nil "SYSTEM-FAULTS-~A-SEVERITY" s) *keyword-package*)
-             (case (send fault :sevirity) (0 'unknown) (1 'info) (2 'warn) (3 'critical))))))
+             (case (send fault :severity) (0 'unknown) (1 'info) (2 'warn) (3 'critical))))))
   (:spot-feedback-callback
    (msg)
    (send self :set-robot-state1 :feedback-standing (send msg :standing))
@@ -210,8 +210,8 @@
   (:stand () "Stand the robot up" (call-trigger-service "/spot/stand"))
   (:sit () "Sit the robot down" (call-trigger-service "/spot/sit"))
   (:stop () "Stop the robot in place with minimal motion" (call-trigger-service "/spot/stop"))
-  (:set-locomotion-mode (locomotion-hint) "Set locomotion mode" (call-set-locomotion-service "/spot/locomotion_mode"))
-  (:set-stair-mode (is-stair-mode) "Set stair mode" (call-set-bool-service "/spot/stair_mode"))
+  (:set-locomotion-mode (locomotion-hint) "Set locomotion mode" (call-set-locomotion-service "/spot/locomotion_mode" locomotion-hint))
+  (:set-stair-mode (is-stair-mode) "Set stair mode" (call-set-bool-service "/spot/stair_mode" is-stair-mode))
   ;;
   (:send-cmd-vel-raw
    (x y d &key (topic-name "/spot/cmd_vel"))
