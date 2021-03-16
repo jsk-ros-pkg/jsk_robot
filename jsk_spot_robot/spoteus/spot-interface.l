@@ -251,13 +251,13 @@
     (x y &optional (d 0) &key (timeout 10) (wait t)) ;; [m] [m] [degree]
     "move robot toward (x, y, d) (units are m, m and degrees respectively)."
     ;;
-    (setq trajectory-cmd-goal-msg (instance spot_msgs::TrajectoryActionGoal :init))
+    (setq trajectory-cmd-goal-msg (instance spot_msgs::TrajectoryGoal :init))
     (send trajectory-cmd-goal-msg :target_pose :header :stamp (ros::time-now))
-    (send trajectory-cmd-goal-msg :target_pose :header :frame-id "body")
+    (send trajectory-cmd-goal-msg :target_pose :header :frame_id "body")
     (send trajectory-cmd-goal-msg :target_pose :pose :position :x x)
     (send trajectory-cmd-goal-msg :target_pose :pose :position :y y)
-    (send trajectory-cmd-goal-msg :target_pose :pose :rotation :z (sin (/ (deg2rad d) 2)))
-    (send trajectory-cmd-goal-msg :target_pose :pose :rotation :w (cos (/ (deg2rad d) 2)))
+    (send trajectory-cmd-goal-msg :target_pose :pose :orientation :z (sin (/ (deg2rad d) 2)))
+    (send trajectory-cmd-goal-msg :target_pose :pose :orientation :w (cos (/ (deg2rad d) 2)))
     (send trajectory-cmd-goal-msg :duration :data (ros::time timeout))
     ;;
     (send trajectory-cmd-action :send-goal trajectory-cmd-goal-msg)
