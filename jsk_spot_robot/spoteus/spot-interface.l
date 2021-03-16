@@ -214,6 +214,23 @@
       (send self :send-cmd-vel-raw 0 0 0))
     (ros::rate 10)
     t)
+  (:go-pos-no-wait
+    (x y &optional (d 0) (srvname "") (timeout 10)) ;; [m] [m] [degree]
+    "move robot toward (x, y, d) (units are m, m and degrees respectively) and wait to reach the goal."
+    (setq req (instance spot_msgs::TrajectoryCommandRequest :init))
+    (send req :target_pose :header :frame_id "body")
+    (send req :target_pose :pose :position :x x)
+    (send req :target_pose :pose :position :y y)
+    (send req :target_pose :pose :orientation :z (sin (/ (deg2rad d) 2)))
+    (send req :target_pose :pose :orientation :w (cos (/ (deg2rad d) 2)))
+    (setq r (ros::service-call srvname req))
+    (if (send r :success)
+        (send r :success)
+      (progn
+        (ros::roseus-error (send r :message))
+        (send r :success)
+      ))
+    )
 
   )
 
