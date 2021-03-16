@@ -16,12 +16,12 @@
 
 (defclass spot-interface
   :super robot-move-base-interface
-  :slots ()
+  :slots (trajectory-cmd-action)
   )
 
 (defmethod spot-interface
   (:init
-   (&rest args)
+   (&rest args &key (trajectory-cmd-action-name "/spot/trajectory"))
    (prog1
        (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      ;; http://www.clearpathrobotics.com/assets/guides/melodic/spot-ros/ros_usage.html#view-the-robot
@@ -36,6 +36,9 @@
      (ros::subscribe "/spot/status/behavior_faults" spot_msgs::BehaviorFaultState #'send self :spot-status-behavior-faults-callback :groupname groupname)
      (ros::subscribe "/spot/status/system_faults" spot_msgs::SystemFaultState #'send self :spot-status-system-faults-callback :groupname groupname)
      (ros::subscribe "/spot/status/feedback" spot_msgs::Feedback #'send self :spot-feedback-callback :groupname groupname)
+     (setq trajectory-cmd-action (instance ros::simple-action-client :init
+                                        trajectory-cmd-action-name spot_msgs::TrajectoryAction
+                                        :groupname groupname))
      ))
   (:default-controller () ) ;; spot does not provide any JTA controllers
   (:spot-status-metrics-callback
@@ -214,22 +217,33 @@
       (send self :send-cmd-vel-raw 0 0 0))
     (ros::rate 10)
     t)
+  (:go-pos
+    (x y &optional (d 0) &key (timeout 10) (wait t)) ;; [m] [m] [degree]
+    "move robot toward (x, y, d) (units are m, m and degrees respectively)."
+    ;;
+    (setq trajectory-cmd-goal-msg (instance spot_msgs::TrajectoryActionGoal :init))
+    (send trajectory-cmd-goal-msg :target_pose :header :stamp (ros::time-now))
+    (send trajectory-cmd-goal-msg :target_pose :header :frame-id "body")
+    (send trajectory-cmd-goal-msg :target_pose :pose :position :x x)
+    (send trajectory-cmd-goal-msg :target_pose :pose :position :y y)
+    (send trajectory-cmd-goal-msg :target_pose :pose :rotation :z (sin (/ (deg2rad d) 2)))
+    (send trajectory-cmd-goal-msg :target_pose :pose :rotation :w (cos (/ (deg2rad d) 2)))
+    (send trajectory-cmd-goal-msg :duration :data (ros::time timeout))
+    ;;
+    (send trajectory-cmd-action :send-goal trajectory-cmd-goal-msg)
+    (if wait
+        (send trajectory-cmd-action :wait-for-result)
+        )
+    )
+  (:go-pos-wait
+    "move robot toward (x, y, d) (units are m, m and degrees respectively). and wait"
+    (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
+    (send self :go-pos x y d :timeout timeout :wait t)
+    )
   (:go-pos-no-wait
-    (x y &optional (d 0) (srvname "") (timeout 10)) ;; [m] [m] [degree]
-    "move robot toward (x, y, d) (units are m, m and degrees respectively) and wait to reach the goal."
-    (setq req (instance spot_msgs::TrajectoryCommandRequest :init))
-    (send req :target_pose :header :frame_id "body")
-    (send req :target_pose :pose :position :x x)
-    (send req :target_pose :pose :position :y y)
-    (send req :target_pose :pose :orientation :z (sin (/ (deg2rad d) 2)))
-    (send req :target_pose :pose :orientation :w (cos (/ (deg2rad d) 2)))
-    (setq r (ros::service-call srvname req))
-    (if (send r :success)
-        (send r :success)
-      (progn
-        (ros::roseus-error (send r :message))
-        (send r :success)
-      ))
+    "move robot toward (x, y, d) (units are m, m and degrees respectively)."
+    (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
+    (send self :go-pos x y d :timeout timeout :wait nil)
     )
 
   )
