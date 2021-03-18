@@ -1,8 +1,16 @@
 - git:
-    local-name: jsk_robot
-    uri: https://github.com/k-okada/jsk_robot.git
-    version: spot
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/sktometometo/jsk_robot.git
+    version: develop/spot
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/sktometometo/jsk_recognition.git
+    version: develop/spot
+- git:
+    local-name: common_msgs
+    uri: https://github.com/sktometometo/common_msgs.git
+    version: PR/add-panorama-info
 - git:
     local-name: spot-ros
-    uri: https://github.com/clearpathrobotics/spot_ros.git
-    version: master
+    uri: https://github.com/sktometometo/spot_ros.git
+    version: feature/add-go-pos
