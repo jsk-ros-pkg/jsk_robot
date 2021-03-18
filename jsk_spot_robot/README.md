@@ -1,6 +1,12 @@
 jsk_spot_robot
 ==============
 
+Currently, this packages require
+
+- [spot_ros]() with [this patch](https://github.com/clearpathrobotics/spot_ros/pull/25)
+- [common_msgs]() with [this patch](https://github.com/ros/common_msgs/pull/171)
+- [jsk_recognition]() with [this patch](https://github.com/jsk-ros-pkg/jsk_recognition/pull/2579) and [this patch](https://github.com/jsk-ros-pkg/jsk_recognition/pull/2581)
+
 ## Manuals
 
 - [Supported Documents of Boston Dynamics](https://www.bostondynamics.com/spot/training/documentation)
@@ -14,11 +20,10 @@ jsk_spot_robot
 $ mkdir $HOME/catkin_ws/src -p
 $ cd $HOME/catkin_ws/src
 $ wstool init .
-$ wstool merge -t . https://raw.githubusercontent.com/k-okada/jsk_robot/spot/jsk_spot_robot/jsk_spot.rosinstall
+$ wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
 $ source /opt/ros/$ROS_DISTRO/setup.bash
 $ rosdep install -y -r --from-paths . --ignore-src
-$ cd ../
-$ catkin build spoteus jsk_spot_startup
+$ catkin build
 $ source $HOME/catkin_ws/devel/setup.bash
 ```
 
@@ -26,27 +31,31 @@ $ source $HOME/catkin_ws/devel/setup.bash
 
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf)
 
-After that, please run the ros driver. You can now control spot from ROS!
+After that, please run the ros driver and other basic programs with `jsk_spot_bringup.launch`. You can now control spot from ROS!
 
-```
-$ source /opt/ros/$ROS_DISTRO/setup.bash
-$ source $HOME/catkin_ws/devel/setup.bash
-$ roslaunch jsk_spot_startup driver.launch username:=<username> password:=<password>
+```bash
+$ roslaunch jsk_spot_startup jsk_spot_bringup.launch username:=<username> password:=<password>
 ```
 
-You can launch ros driver without specifying username and password by sourcing catkin_ws under the spot user.
+This launch includes
+- driver launch file for spot
+- bringup launch for additional peripheral devices (Respeaker, insta 360 air and ublox GPS module)
+- teleoperation launch
+- interaction launch with Speech-To-Text and Text-To-Speech
 
-```
-$ source /opt/ros/$ROS_DISTRO/setup.bash
-$ source /home/spot/catkin_ws/devel/setup.bash
-$ roslaunch jsk_spot_startup driver.launch
-```
+For visualization, you can run RViz with jsk configuration.
 
-You can run RViz already configured for spot.
-
-```
-# in another terminal
-$ source /opt/ros/$ROS_DISTRO/setup.bash
-$ source $HOME/catkin_ws/devel/setup.bash
+```bash
 $ roslaunch jsk_spot_startup rviz.launch
+```
+
+You can control spot with DualShock3 controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
+
+For development, `record.launch` and `play.launch` are useful for rosbag recording and playing.
+
+```bash
+# Record a rosbag file
+$ roslaunch jsk_spot_startup record.launch rosbag:=<absolute file path to rosbag file>
+# Play a rosbag file
+$ roslaunch jsk_spot_startup play.launch rosbag:=<absolute file path to rosbag file>
 ```
