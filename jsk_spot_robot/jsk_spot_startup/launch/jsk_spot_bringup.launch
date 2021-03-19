@@ -24,6 +24,6 @@
 
   <!-- teleop node -->
   <include
-      file="$(find jsk_spot_teleop)/launch/include/teleop.launch"
+      file="$(find jsk_spot_teleop)/launch/teleop.launch"
       />
 </launch>
