@@ -79,7 +79,7 @@
       name="deep_sort_tracker"
       output="screen"
       clear_params="true"
-      unless="$(arg use_object_detector)">
+      >
     <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
     <remap from="~input/rects" to="$(arg TOPIC_OBJ_CLASS)" />
     <remap from="~input/class" to="$(arg TOPIC_OBJ_RECTS)" />
