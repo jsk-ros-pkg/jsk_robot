@@ -130,6 +130,35 @@
             /spot/status/power_state
             /spot/status/system_faults
             /spot/status/wifi
+            /spot/trajectory/cancel
+            /spot/trajectory/feedback
+            /spot/trajectory/goal
+            /spot/trajectory/result
+            /spot/trajectory/status
+            /audio
+            /bluetooth_teleop/cmd_vel
+            /develop_input/cmd_vel
+            /is_speeching
+            /joint_states
+            /joy_head/cmd_vel
+            /robotsound
+            /robotsound/cancel
+            /robotsound/feedback
+            /robotsound/goal
+            /robotsound/result
+            /robotsound/status
+            /robotsound_jp
+            /robotsound_jp/cancel
+            /robotsound_jp/feedback
+            /robotsound_jp/goal
+            /robotsound_jp/result
+            /robotsound_jp/status
+            /sound_direction
+            /sound_localization
+            /speech_audio
+            /speech_to_text_jp
+            /speech_to_text
+            /spot_teleop/joy
             "
         output="screen" />
 
@@ -182,6 +211,35 @@
             /spot/status/power_state
             /spot/status/system_faults
             /spot/status/wifi
+            /spot/trajectory/cancel
+            /spot/trajectory/feedback
+            /spot/trajectory/goal
+            /spot/trajectory/result
+            /spot/trajectory/status
+            /audio
+            /bluetooth_teleop/cmd_vel
+            /develop_input/cmd_vel
+            /is_speeching
+            /joint_states
+            /joy_head/cmd_vel
+            /robotsound
+            /robotsound/cancel
+            /robotsound/feedback
+            /robotsound/goal
+            /robotsound/result
+            /robotsound/status
+            /robotsound_jp
+            /robotsound_jp/cancel
+            /robotsound_jp/feedback
+            /robotsound_jp/goal
+            /robotsound_jp/result
+            /robotsound_jp/status
+            /sound_direction
+            /sound_localization
+            /speech_audio
+            /speech_to_text_jp
+            /speech_to_text
+            /spot_teleop/joy
             "
         output="screen" />
 </launch>
