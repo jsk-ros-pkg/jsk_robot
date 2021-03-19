@@ -24,7 +24,7 @@
       respawn="true"
       if="$(arg use_edgetpu)"
       >
-    <remap from="~input" to="$(arg input_panorama_image)" />
+    <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
     <remap from="~output/class" to="$(arg TOPIC_OBJ_CLASS)" />
     <remap from="~output/rects" to="$(arg TOPIC_OBJ_RECTS)" />
     <rosparam subst_value="true" >
@@ -46,7 +46,7 @@
       respawn="true"
       unless="$(arg use_edgetpu)"
       >
-    <remap from="~input_panorama_image" to="$(arg input_panorama_image)" />
+    <remap from="~input_panorama_image" to="$(arg INPUT_PANORAMA_IMAGE)" />
     <remap from="~output/class" to="$(arg TOPIC_OBJ_CLASS)" />
     <remap from="~output/rects" to="$(arg TOPIC_OBJ_RECTS)" />
     <rosparam subst_value="true">
@@ -80,7 +80,7 @@
       output="screen"
       clear_params="true"
       unless="$(arg use_object_detector)">
-    <remap from="~input" to="$(arg input_panorama_image)" />
+    <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
     <remap from="~input/rects" to="$(arg TOPIC_OBJ_CLASS)" />
     <remap from="~input/class" to="$(arg TOPIC_OBJ_RECTS)" />
     <rosparam subst_value="true">
