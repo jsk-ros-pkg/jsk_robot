@@ -1,21 +1,29 @@
 <launch>
-    <!-- spot driver -->
-    <include
-        file="$(find jsk_spot_startup)/launch/driver.launch"
-        />
+  <arg name="username" default="dummyusername" />
+  <arg name="password" default="dummypassword" />
+  <arg name="hostname" default="192.168.50.3" />
 
-    <!-- peripheral devices -->
-    <include
-        file="$(find jsk_spot_startup)/launch/peripheral.launch"
-        />
+  <!-- spot driver -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/driver.launch"
+      >
+      <arg name="username" value="$(arg username)" />
+      <arg name="password" value="$(arg password)" />
+      <arg name="hostname" value="$(arg hostname)" />
+  </include>
 
-    <!-- interaction nodes -->
-    <include
-        file="$(find jsk_spot_startup)/launch/interaction.launch"
-        />
+  <!-- peripheral devices -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+      />
 
-    <!-- teleop node -->
-    <include
-        file="$(find jsk_spot_teleop)/launch/teleop.launch"
-        />
+  <!-- interaction nodes -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+      />
+
+  <!-- teleop node -->
+  <include
+      file="$(find jsk_spot_teleop)/launch/include/teleop.launch"
+      />
 </launch>
