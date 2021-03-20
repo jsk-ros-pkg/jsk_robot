@@ -68,6 +68,7 @@
     <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
     <remap from="~input_class" to="$(arg TOPIC_OBJ_CLASS)" />
     <remap from="~input_rects" to="$(arg TOPIC_OBJ_RECTS)" />
+    <remap from="~bbox_array" to="/spot_recognition/bbox_array" />
     <rosparam subst_value="true">
         frame_fixed: "odom"
         dimensions_labels:
