@@ -74,7 +74,6 @@
         type="nodelet"
         name="panorama_image_resize"
         args="standalone image_proc/resize"
-        if="$(arg use_insta_360)"
         >
         <param name="scale_height" value="0.5" />
         <param name="scale_width" value="0.5" />
@@ -102,7 +101,7 @@
     <node
         pkg="image_transport"
         type="republish"
-        name="panorama_quater_compress"
+        name="detection_visualization_compress"
         args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
         />
 
