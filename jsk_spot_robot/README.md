@@ -16,15 +16,18 @@ Currently, this packages require
 
 ### Setting up a catkin workspace for a new user in the internal pc
 
-```
-$ mkdir $HOME/catkin_ws/src -p
-$ cd $HOME/catkin_ws/src
-$ wstool init .
-$ wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
-$ source /opt/ros/$ROS_DISTRO/setup.bash
-$ rosdep install -y -r --from-paths . --ignore-src
-$ catkin build
-$ source $HOME/catkin_ws/devel/setup.bash
+```bash
+source /opt/ros/$ROS_DISTRO/setup.bash
+mkdir $HOME/catkin_ws/src -p
+cd $HOME/catkin_ws
+catkin init
+cd src
+wstool init .
+wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
+wstool update
+rosdep install -y -r --from-paths . --ignore-src
+catkin build
+source $HOME/catkin_ws/devel/setup.bash
 ```
 
 ### Bringup spot
@@ -34,7 +37,7 @@ First, please turn on spot and turn on motors according to [the OPERATION sectio
 After that, please run the ros driver and other basic programs with `jsk_spot_bringup.launch`. You can now control spot from ROS!
 
 ```bash
-$ roslaunch jsk_spot_startup jsk_spot_bringup.launch username:=<username> password:=<password>
+roslaunch jsk_spot_startup jsk_spot_bringup.launch username:=<username> password:=<password>
 ```
 
 This launch includes
@@ -46,7 +49,7 @@ This launch includes
 For visualization, you can run RViz with jsk configuration.
 
 ```bash
-$ roslaunch jsk_spot_startup rviz.launch
+roslaunch jsk_spot_startup rviz.launch
 ```
 
 You can control spot with DualShock3 controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
@@ -55,7 +58,7 @@ For development, `record.launch` and `play.launch` are useful for rosbag recordi
 
 ```bash
 # Record a rosbag file
-$ roslaunch jsk_spot_startup record.launch rosbag:=<absolute file path to rosbag file>
+roslaunch jsk_spot_startup record.launch rosbag:=<absolute file path to rosbag file>
 # Play a rosbag file
-$ roslaunch jsk_spot_startup play.launch rosbag:=<absolute file path to rosbag file>
+roslaunch jsk_spot_startup play.launch rosbag:=<absolute file path to rosbag file>
 ```
