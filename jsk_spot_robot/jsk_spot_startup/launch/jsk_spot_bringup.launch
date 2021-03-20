@@ -17,6 +17,11 @@
       file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
       />
 
+  <!-- image processing -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/image_processing.launch"
+      />
+
   <!-- interaction nodes -->
   <include
       file="$(find jsk_spot_startup)/launch/include/interaction.launch"
