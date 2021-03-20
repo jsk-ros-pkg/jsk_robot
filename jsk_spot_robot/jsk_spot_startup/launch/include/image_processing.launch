@@ -93,10 +93,10 @@
         type="draw_rects"
         name="object_detection_visualizer"
         >
-        <remap from="~image" to="/dual_fisheye_to_panorama/output/quater" />
-        <remap from="~image/rects" to="/spot_recognition/rects" />
-        <remap from="~image/class" to="/spot_recognition/class" />
-        <remap from="output" to="/spot_recognition/object_detection_image" />
+        <remap from="~input" to="/dual_fisheye_to_panorama/output/quater" />
+        <remap from="~input/rects" to="/spot_recognition/rects" />
+        <remap from="~input/class" to="/spot_recognition/class" />
+        <remap from="~output" to="/spot_recognition/object_detection_image" />
     </node>
     <node
         pkg="image_transport"
