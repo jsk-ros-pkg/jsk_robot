@@ -36,6 +36,7 @@
       device_id: $(arg device_id)
       n_split: $(arg n_split)
       overlap: $(arg overlap)
+      enable_visualization: false
     </rosparam>
   </node>
   <!-- GPU object detection -->
