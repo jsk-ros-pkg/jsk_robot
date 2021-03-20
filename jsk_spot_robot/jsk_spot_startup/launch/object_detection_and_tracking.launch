@@ -3,7 +3,8 @@
   <arg name="INPUT_PANORAMA_INFO" default="/dual_fisheye_to_panorama/panorama_info" />
 
   <arg name="use_edgetpu" default="true"/>
-  <!-- -->
+  <arg name="use_mot" default="false"/>
+  <!-- edge detection parameter -->
   <arg name="model_file" default="$(find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
   <arg name="label_file" default="$(find coral_usb)/models/coco_labels.txt"/>
   <arg name="device_id" default="0" />
@@ -60,34 +61,19 @@
       pkg="jsk_perception"
       type="rect_array_in_panorama_to_bounding_box_array.py"
       name="rect_array_in_panorama_to_bounding_box_array"
+      output="screen"
       >
     <remap from="~panorama_image" to="/dual_fisheye_to_panorama/output/quater" />
     <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
     <remap from="~input_class" to="$(arg TOPIC_OBJ_CLASS)" />
     <remap from="~input_rects" to="$(arg TOPIC_OBJ_RECTS)" />
     <rosparam subst_value="true">
-        fixed_frame: "odom"
+        frame_fixed: "odom"
         dimensions_labels:
             person: [0.5, 0.5, 1.5]
     </rosparam>
   </node>
 
   <!-- multi object tracker -->
-  <node
-      pkg="jsk_perception"
-      type="deep_sort_tracker_node.py"
-      name="deep_sort_tracker"
-      output="screen"
-      clear_params="true"
-      >
-    <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
-    <remap from="~input/rects" to="$(arg TOPIC_OBJ_CLASS)" />
-    <remap from="~input/class" to="$(arg TOPIC_OBJ_RECTS)" />
-    <rosparam subst_value="true">
-      gpu: $(arg gpu)
-      pretrained_model: $(find jsk_perception)/trained_data/deepsort_chainermodel.npz
-      approximate_sync: True
-      slop: 0.3
-    </rosparam>
-  </node>
+  <include file="$(jsk_spot_startup)/launch/include/multi_object_detector.launch" />
 </launch>
