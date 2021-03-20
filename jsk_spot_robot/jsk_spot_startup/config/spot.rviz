@@ -3,10 +3,9 @@ Panels:
     Help Height: 0
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /PanoramaDetection1
+      Expanded: ~
       Splitter Ratio: 0.6832844614982605
-    Tree Height: 806
+    Tree Height: 441
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -279,8 +278,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 0.9668689966201782
-            Min Value: -7.657993316650391
+            Max Value: -2.340333938598633
+            Min Value: -10.503416061401367
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -317,8 +316,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 3.6703248023986816
-            Min Value: -5.959461688995361
+            Max Value: -1.2692270278930664
+            Min Value: -8.975149154663086
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -355,8 +354,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: -0.07669979333877563
-            Min Value: -5.655144691467285
+            Max Value: -3.3314270973205566
+            Min Value: -6.635621547698975
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -393,8 +392,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: -0.6268391609191895
-            Min Value: -4.479696273803711
+            Max Value: -3.897368907928467
+            Min Value: -7.379003047943115
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -431,8 +430,8 @@ Visualization Manager:
             Value: true
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 0.06454968452453613
-            Min Value: -6.0565595626831055
+            Max Value: -3.3236377239227295
+            Min Value: -9.60813045501709
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -522,7 +521,7 @@ Visualization Manager:
     - Class: jsk_rviz_plugin/BoundingBoxArray
       Enabled: true
       Name: DetectedObjects
-      Topic: /rect_array_in_panorama_to_bounding_box_array/bbox_array
+      Topic: /spot_recognition/bbox_array
       Unreliable: false
       Value: true
       alpha: 0.800000011920929
@@ -559,7 +558,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8.336650848388672
+      Distance: 9.355134963989258
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -574,10 +573,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8149988055229187
+      Pitch: 0.6199987530708313
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 0.4968072175979614
+      Yaw: 4.3468146324157715
     Saved: ~
 Window Geometry:
   Displays:
