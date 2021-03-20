@@ -5,6 +5,7 @@
       pkg="rviz"
       type="rviz"
       name="rviz"
+      required="True"
       args="-d $(find jsk_spot_startup)/config/$(arg config_type).rviz"
       />
 
