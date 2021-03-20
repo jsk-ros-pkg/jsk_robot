@@ -10,20 +10,6 @@
         <arg name="gui" value="false" />
         <arg name="brightness" value="128" />
     </include>
-    <!-- image proc for insta360 -->
-    <node
-        pkg="nodelet"
-        type="nodelet"
-        name="panorama_image_resize"
-        args="standalone image_proc/resize"
-        if="$(arg use_insta_360)"
-        >
-        <param name="scale_height" value="0.5" />
-        <param name="scale_width" value="0.5" />
-        <remap from="image" to="/dual_fisheye_to_panorama/output" />
-        <remap from="~image" to="/dual_fisheye_to_panorama/output/quater" />
-    </node>
-
 
     <!-- Respeaker -->
     <node
