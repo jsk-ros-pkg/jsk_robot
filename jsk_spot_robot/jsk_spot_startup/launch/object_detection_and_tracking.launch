@@ -75,5 +75,11 @@
   </node>
 
   <!-- multi object tracker -->
-  <include file="$(jsk_spot_startup)/launch/include/multi_object_detector.launch" />
+  <include file="$(jsk_spot_startup)/launch/include/multi_object_detector.launch"
+      if="$(arg use_mot)">
+      <arg name="INPUT_PANORAMA_IMAGE" value="$(arg INPUT_PANORAMA_IMAGE)"/>
+      <arg name="TOPIC_OBJ_CLASS" default="$(arg TOPIC_OBJ_CLASS)"/>
+      <arg name="TOPIC_OBJ_RECTS" default="$(arg TOPIC_OBJ_RECTS)"/>
+      <arg name="gpu" default="$(arg gpu)"/>
+  </include>
 </launch>
