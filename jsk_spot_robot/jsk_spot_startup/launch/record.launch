@@ -80,6 +80,11 @@
             /speech_to_text_jp
             /speech_to_text
             /spot_teleop/joy
+            /spot_recognition/bbox_array
+            /spot_recognition/class
+            /spot_recognition/rects
+            /spot_recognition/object_detection_image/compressed
+            /spot_recognition/tracking_labels
             "
         output="screen" />
 
@@ -161,6 +166,11 @@
             /speech_to_text_jp
             /speech_to_text
             /spot_teleop/joy
+            /spot_recognition/bbox_array
+            /spot_recognition/class
+            /spot_recognition/rects
+            /spot_recognition/object_detection_image/compressed
+            /spot_recognition/tracking_labels
             "
         output="screen" />
 </launch>
