@@ -1,0 +1,40 @@
+<package>
+  <name>jsk_panda_startup</name>
+  <version>1.1.0</version>
+  <description> Startup utilities for dual arm panda (from franka emika) </description>
+
+  <maintainer email="youhei@jsk.imi.i.u-tokyo.ac.jp">Youhei Kakiuchi</maintainer>
+  <author email="youhei@jsk.imi.i.u-tokyo.ac.jp">Youhei Kakiuchi</author>
+
+  <license>BSD</license>
+
+  <!--url type="website"></url-->
+  <!--url type="repository"></url-->
+  <!--url type="bugtracker"></url-->
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>panda_eus</build_depend>
+
+  <run_depend>panda_eus</run_depend>
+  <run_depend>franka_description</run_depend>
+  <run_depend>franka_msgs</run_depend>
+  <run_depend>franka_gripper</run_depend>
+  <run_depend>franka_control</run_depend>
+  <run_depend>franka_example_controllers</run_depend>
+  <run_depend>franka_visualization</run_depend>
+  <run_depend>pr2eus</run_depend>
+
+  <run_depend>controller_manager</run_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>transmission_interface</run_depend>
+  <run_depend>joint_limits_interface</run_depend>
+  <run_depend>joint_trajectory_controller</run_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <run_depend>velocity_controllers</run_depend>
+  <run_depend>effort_controllers</run_depend>
+
+  <run_depend>image_view2</run_depend>
+  <run_depend>rwt_teleop</run_depend>
+  <run_depend>rwt_image_view</run_depend>
+
+  <run_depend>openni2_launch</run_depend>
+</package>
