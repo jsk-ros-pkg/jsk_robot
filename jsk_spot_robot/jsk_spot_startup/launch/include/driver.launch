@@ -31,13 +31,25 @@
     <remap from="tf" to="/tf"/>
   </node>
 
+  <node name="cmd_vel_smoother" pkg="cmd_vel_smoother" type="cmd_vel_smoother">
+    <remap from="input" to="spot/cmd_vel_unsmoothed" />
+    <remap from="output" to="spot/cmd_vel" />
+
+    <param name="desired_rate" value="10.0" />
+    <param name="x_acc_lim" value="1.0" />
+    <param name="y_acc_lim" value="0.5" />
+    <param name="yaw_acc_lim" value="0.1" />
+    <param name="decel_factor" value="0.8" />
+    <param name="max_count" value="5" />
+  </node>
+
   <node
       pkg="twist_mux"
       type="twist_mux"
       name="twist_mux"
       >
     <rosparam command="load" file="$(find jsk_spot_startup)/config/twist_mux.yaml" />
-    <remap from="cmd_vel_out" to="spot/cmd_vel"/>
+    <remap from="cmd_vel_out" to="spot/cmd_vel_unsmoothed"/>
   </node>
 
 </launch>
