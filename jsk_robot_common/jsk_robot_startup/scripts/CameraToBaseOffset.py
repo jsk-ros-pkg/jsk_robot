@@ -84,7 +84,7 @@ class CameraToBaseOffset(object):
             (trans,rot) = self.listener.lookupTransform(self.camera_frame, self.base_link_frame, stamp)
         except:
             try:
-                rospy.logwarn("[%s] failed to solve camera_to_base tf in %f. Use rospy.Time(0): %s to %s", rospy.get_name(), stamp.to_sec(), self.camera_frame, self.base_link_frame)
+                # rospy.logwarn("[%s] failed to solve camera_to_base tf in %f. Use rospy.Time(0): %s to %s", rospy.get_name(), stamp.to_sec(), self.camera_frame, self.base_link_frame)
                 (trans,rot) = self.listener.lookupTransform(self.camera_frame, self.base_link_frame, rospy.Time(0))
             except:
                 rospy.logwarn("[%s] failed to solve camera_to_base tf: %s to %s", rospy.get_name(), self.camera_frame, self.base_link_frame)
