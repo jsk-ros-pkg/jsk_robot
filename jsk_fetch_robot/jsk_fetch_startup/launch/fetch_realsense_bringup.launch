@@ -2,12 +2,6 @@
 
   <arg name="respawn" default="true" />
 
-  <node
-      pkg="jsk_fetch_startup"
-      type="reload_udev.sh"
-      name="reload_udev"
-      />
-
   <!-- t265 -->
   <group ns="t265">
     <rosparam>
