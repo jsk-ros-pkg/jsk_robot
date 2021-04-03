@@ -6,7 +6,6 @@
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
 (defparameter *spots* nil)
-(defparameter *is-charging* nil)
 (defparameter *tfl* (instance ros::transform-listener :init))
 
 
@@ -94,25 +93,34 @@
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
-  (dotimes (i 3)
-    (let ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout 1500)))
-      ;; You may fail to subscribe /battery_state
-      ;; because of message md5 difference between melodic and indigo.
-      (unless msg
-        (ros::ros-warn "Failed to subscribe /battery_state")
-        (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
-        (return))
-      (setq *is-charging* (send msg :is_charging))
-      (when *is-charging*
-        (undock)
-        ;; rotate after undock
-        (when undock-rotate (send *ri* :go-pos-unsafe 0 0 180)))
-      (unless *is-charging* (return))
-      (if (eq i 2) (progn (send *ri* :speak "Fail to undock") (ros::ros-error "Fail to undock")))))
+  (let ((undock-success nil))
+    (block go-to-spot-undock
+      (dotimes (i 3)
+        (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout 1500))
+               (is-charging (send msg :is_charging)))
+          ;; You may fail to subscribe /battery_state
+          ;; because of message md5 difference between melodic and indigo.
+          (unless msg
+            (ros::ros-warn "Failed to subscribe /battery_state")
+            (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
+            (return-from go-to-spot-undock t))
+          (if is-charging
+            (progn
+              (setq undock-success (auto-undock :n-trial 3))
+              ;; rotate after undock
+              (if (and undock-success undock-rotate)
+                (send *ri* :go-pos-unsafe 0 0 180)))
+            (return-from go-to-spot-undock t))
+          (if (not undock-success)
+            (progn
+              (ros::ros-error "Failed to undock")
+              (send *ri* :speak "I failed to undock."))))))
+    (if (not undock-success) (return-from go-to-spot nil)))
   ;; go to spot
   (let* ((ret (get-spot-coords name))
          (goal-pose (car ret))
          (frame-id (cdr ret)))
+
     (when relative-coords
       (setq goal-pose (send goal-pose :transform relative-coords :world)))
     (send *ri* :clear-costmap)
@@ -125,6 +133,14 @@
         (ros::ros-info "arrived at the dock.")
         (setq success (dock))
         (when success (return-from auto-dock success))))
+    success))
+
+(defun auto-undock (&key (n-trial 1))
+  (let ((success nil))
+    (dotimes (i n-trial)
+      (ros::ros-info "trying to do undock.")
+      (setq success (undock))
+      (when success (return-from auto-undock success)))
     success))
 
 (defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1))
