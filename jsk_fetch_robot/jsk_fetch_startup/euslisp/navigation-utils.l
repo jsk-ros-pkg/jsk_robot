@@ -121,7 +121,7 @@
 (defun auto-dock (&key (n-trial 1))
   (let ((success nil))
     (dotimes (i n-trial)
-      (when (go-to-spot *dock-spot* (make-coords :pos #f(0 -800 0)))
+      (when (go-to-spot *dock-spot* (make-coords :pos #f(-800 0 0)))
         (ros::ros-info "arrived at the dock.")
         (setq success (dock))
         (when success (return-from auto-dock success))))
