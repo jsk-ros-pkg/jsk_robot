@@ -16,7 +16,7 @@
       ((equal robot-name "fetch15")
        "/eng2/7f/room73B2-fetch-dock-front")
       ((equal robot-name "fetch1075")
-       "/eng2/7f/room73B2-fetch-dock-entrance")
+       "/eng2/7f/room73B2-fetch-dock2-front")
       (t nil))))
 
 
