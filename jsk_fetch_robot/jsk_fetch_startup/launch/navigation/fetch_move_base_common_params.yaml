@@ -17,7 +17,12 @@ move_base:
     # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
     footprint_padding: 0.05
     update_frequency: 5.0
+  base_global_planer: global_planner/GlobalPlanner
   base_local_planner: base_local_planner/TrajectoryPlannerROS
+  GlobalPlanner:
+    allow_unknown: true
+    default_tolerance: 0.1
+    orientation_mode: 1
   TrajectoryPlannerROS:
     yaw_goal_tolerance: 0.1
     xy_goal_tolerance: 0.17
