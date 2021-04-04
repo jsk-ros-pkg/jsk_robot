@@ -40,10 +40,6 @@ class OdometryMuxSelector(object):
         self._srv_select_topic = rospy.ServiceProxy('~select_service_topic', MuxSelect)
         self._srv_select_tf = rospy.ServiceProxy('~select_service_tf', MuxSelect)
 
-        self.r = rostopic.ROSTopicHz(-1)
-        rospy.Subscriber(self._topic_odom_primary, rospy.AnyMsg, self.r.callback_hz, callback_args=self._topic_odom_primary)
-        self._flag_secondary = False
-
         rospy.loginfo('odometry_mux_selector is up')
 
     def select(self, topic_odom, topic_tf):
