@@ -9,6 +9,7 @@ import rostopic
 from topic_tools.srv import MuxSelect, MuxSelectRequest
 from nav_msgs.msg import Odometry
 from tf.msg import tfMessage
+from sound_play.libsoundplay import SoundClient
 
 class OdometryMuxSelector(object):
 
@@ -30,6 +31,8 @@ class OdometryMuxSelector(object):
         except rospy.ROSException as e:
             rospy.logerr('Service is not found:{}'.format(e))
             sys.exit(1)
+
+        self._soundhandle = SoundClient(blocking=True,sound_ation="sound_play")
 
         try:
             rospy.wait_for_message(self._topic_odom_primary,Odometry,self._duration_timeout_topic)
@@ -61,11 +64,13 @@ class OdometryMuxSelector(object):
             except rospy.ROSException as e:
                 if not self._flag_secondary:
                     rospy.logwarn('Primary topics "{}" or "{}" are not published. switched to secondary topics'.format(self._topic_odom_primary, self._topic_tf_primary))
+                    self._soundhandle.say("Switched to secondary odometry topics.")
                     self._flag_secondary = True
                     self.select( self._topic_odom_secondary, self._topic_tf_secondary )
             else:
                 if self._flag_secondary:
                     rospy.logwarn('Primary topics "{}" are now published. switched to primary topics'.format(self._topic_odom_primary, self._topic_tf_primary))
+                    self._soundhandle.say("Switched to primary odometry topics back again.")
                     self._flag_secondary = False
                     self.select( self._topic_odom_primary, self._topic_tf_primary )
 
