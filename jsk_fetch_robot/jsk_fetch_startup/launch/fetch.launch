@@ -57,14 +57,16 @@
       type="odometry_mux_selector.py"
       name="odometry_mux_selector"
       >
-      <param name="~topic_odom_initial" value="odom_visual" />
-      <param name="~topic_odom_backup" value="odom_robot_localization" />
-      <param name="~topic_tf_initial" value="tf_odom_visual" />
-      <param name="~topic_tf_backup" value="tf_odom_robot_localization" />
+      <param name="~topic_odom_primary" value="odom_visual" />
+      <param name="~topic_odom_secondary" value="odom_robot_localization" />
+      <param name="~topic_tf_primary" value="tf_odom_visual" />
+      <param name="~topic_tf_secondary" value="tf_odom_robot_localization" />
       <param name="~duration_timeout_topic" value="10.0" />
 
       <remap from="~select_service_topic" to="/odom_topic_mux/select" />
       <remap from="~select_service_tf" to="/odom_tf_mux/select" />
+
+      <remap from="~sound_play" to="sound_play" />
   </node>
 
   <!-- Odometry with robot localization ukf using wheel and imu -->
