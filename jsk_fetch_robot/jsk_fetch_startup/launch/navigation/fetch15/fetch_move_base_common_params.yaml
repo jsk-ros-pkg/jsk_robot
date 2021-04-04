@@ -154,7 +154,7 @@ move_base:
     limited_trans_speed: 0.3
     limited_rot_speed: 0.8
     limited_distance: 0.3
-    planner_namespace: TrajectoryPlannerROS
+    planner_namespace: TebLocalPlannerROS
     max_trans_param_name: max_vel_x
     max_rot_param_name: max_vel_theta
   max_planning_retries: 2
