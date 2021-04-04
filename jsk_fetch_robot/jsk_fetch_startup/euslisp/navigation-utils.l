@@ -193,7 +193,7 @@
     (dotimes (i n-kitchen-trial)
       (setq success-go-to-kitchen
             (go-to-spot "/eng2/7f/room73B2-sink-front0"
-                        (make-coords :pos #f(100 -500 0)) :undock-rotate t))
+                        (make-coords :pos #f(400 -500 0)) :undock-rotate t))
       (when success-go-to-kitchen (return)))
     (if success-go-to-kitchen
       (progn ;; succeeded to go to kitchen
@@ -210,8 +210,7 @@
         (when tweet
           (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                         :with-image "/edgetpu_object_detector/output/image" :speak t))
-        (send *ri* :go-pos-unsafe 0 0 -90)
-        (send *ri* :go-pos-unsafe 0 0 -90))
+        (send *ri* :go-pos-unsafe 0 0 135))
       (progn ;; failed to go to kitchen
         (ros::ros-error "failed going to the kitchen.")
         (send *ri* :speak-jp "失敗しました。" :wait t)))
