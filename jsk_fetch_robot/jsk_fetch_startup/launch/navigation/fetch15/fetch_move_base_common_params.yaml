@@ -133,7 +133,7 @@ move_base:
     frequency: 20.0
     sim_granularity: 0.017
   speak_and_wait0:
-    speak_text: "通れません、道を開けてください"
+    speak_text: "とおれません、みちをあけてください"
     duration_wait: 5.0
     duration_timeout: 1.0
     sound_action: /robotsound_jp
@@ -143,7 +143,7 @@ move_base:
     frequency: 20.0
     sim_granularity: 0.017
   speak_and_wait1:
-    speak_text: "通れません、道を開けてください"
+    speak_text: "とおれません、みちをあけてください"
     duration_wait: 5.0
     duration_timeout: 1.0
     sound_action: /robotsound_jp
