@@ -1,5 +1,5 @@
 move_base:
-  controller_frequency: 10.0
+  controller_frequency: 20.0
   global_costmap:
     inflater:
       inflation_radius: 1.0 # 0.7
@@ -36,8 +36,8 @@ move_base:
     max_global_plan_lookahead_dist: 3.0
     feasibility_check_no_poses: 5
     # Robot
-    max_vel_x: 0.8
-    max_vel_x_backwards: 0.8
+    max_vel_x: 0.5
+    max_vel_x_backwards: 0.3
     max_vel_theta: 1.0
     acc_lim_x: 1.0
     acc_lim_theta: 1.0
