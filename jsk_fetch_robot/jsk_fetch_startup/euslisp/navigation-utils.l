@@ -114,8 +114,8 @@
           (if (not undock-success)
             (progn
               (ros::ros-error "Failed to undock")
-              (send *ri* :speak "I failed to undock."))))))
-    (if (not undock-success) (return-from go-to-spot nil)))
+	      (send *ri* :speak "I failed to undock.")))))
+      (if (not undock-success) (return-from go-to-spot nil))))
   ;; go to spot
   (let* ((ret (get-spot-coords name))
          (goal-pose (car ret))
