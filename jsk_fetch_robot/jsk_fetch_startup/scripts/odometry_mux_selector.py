@@ -32,7 +32,9 @@ class OdometryMuxSelector(object):
             rospy.logerr('Service is not found:{}'.format(e))
             sys.exit(1)
 
-        self._soundhandle = SoundClient(blocking=True,sound_action="sound_play")
+        self._soundhandle = SoundClient(
+                                    sound_topic='robotsound',
+                                    sound_action='sound_play')
 
         try:
             rospy.wait_for_message(self._topic_odom_primary,Odometry,self._duration_timeout_topic)
