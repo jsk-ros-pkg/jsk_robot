@@ -8,7 +8,7 @@ import rostopic
 
 from topic_tools.srv import MuxSelect, MuxSelectRequest
 from nav_msgs.msg import Odometry
-from tf.msg import tfMessage
+from tf2_msgs.msg import TFMessage
 from sound_play.libsoundplay import SoundClient
 
 class OdometryMuxSelector(object):
@@ -36,7 +36,7 @@ class OdometryMuxSelector(object):
 
         try:
             rospy.wait_for_message(self._topic_odom_primary,Odometry,self._duration_timeout_topic)
-            rospy.wait_for_message(self._topic_tf_primary,tfMessage,self._duration_timeout_topic)
+            rospy.wait_for_message(self._topic_tf_primary,TFMessage,self._duration_timeout_topic)
         except rospy.ROSException as e:
             rospy.logwarn('Message is not published:{}'.format(e))
 
@@ -62,7 +62,7 @@ class OdometryMuxSelector(object):
             rate.sleep()
             try:
                 rospy.wait_for_message(self._topic_odom_primary,Odometry,self._duration_timeout_topic)
-                rospy.wait_for_message(self._topic_tf_primary,tfMessage,self._duration_timeout_topic)
+                rospy.wait_for_message(self._topic_tf_primary,TFMessage,self._duration_timeout_topic)
             except rospy.ROSException as e:
                 if not self._flag_secondary:
                     rospy.logwarn('Primary topics "{}" or "{}" are not published. switched to secondary topics'.format(self._topic_odom_primary, self._topic_tf_primary))
