@@ -18,7 +18,7 @@
 
   <!-- pr2_etherCAT -->
   <node name="realtime_loop" machine="c1" launch-prefix="pr2-grant" pkg="pr2_ethercat" type="pr2_ethercat" args="-i ecat0 -x robot_description" output="screen" />
-  <param name="pr2_etherCAT/realtime_socket_timeout" value="5000" />
+  <param name="pr2_ethercat/realtime_socket_timeout" value="5000" />
 
   <!-- PR2 Calibration -->
   <node name="calibrate_pr2" pkg="pr2_bringup" type="calibrate_pr2.py" output="screen" 
