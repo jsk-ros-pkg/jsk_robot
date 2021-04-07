@@ -36,14 +36,26 @@ class CheckRoomLightNode(ConnectionBasedTransport):
 
     def _image_cb(self, msg):
         if self.transport_hint == 'compressed':
-            np_arr = np.fromstring(msg.data, np.uint8)
-            img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-            img = img[:, :, ::-1]
+            encoding = msg.format.split(';')[0]
         else:
-            img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
-        # lum = 0. 299 * R + 0.587 * G + 0.114 * B
-        lum_img = 0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] \
-            + 0.114 * img[:, :, 2]
+            encoding = msg.encoding
+        if encoding == 'mono8':
+            if self.transport_hint == 'compressed':
+                np_arr = np.fromstring(msg.data, np.uint8)
+                img = cv2.imdecode(np_arr, cv2.IMREAD_GRAYSCALE)
+            else:
+                img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='mono8')
+            lum_img = img
+        else:
+            if self.transport_hint == 'compressed':
+                np_arr = np.fromstring(msg.data, np.uint8)
+                img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+                img = img[:, :, ::-1]
+            else:
+                img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
+            # lum = 0. 299 * R + 0.587 * G + 0.114 * B
+            lum_img = 0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] \
+                + 0.114 * img[:, :, 2]
         luminance = np.mean(lum_img)
         light_msg = RoomLight(header=msg.header)
         light_msg.light_on = luminance > self.luminance_threshold
