@@ -11,5 +11,5 @@ wstool update --delete-changed-uris
 cd $HOME/ros/melodic
 catkin init
 catkin config -DCMAKE_BUILD_TYPE=Release
-catkin build -DCMAKE_BUILD_TYPE=Release
+catkin build
 set +x
