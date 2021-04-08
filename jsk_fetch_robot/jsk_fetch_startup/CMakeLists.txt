@@ -64,12 +64,16 @@ if(CATKIN_ENABLE_TESTING)
   # https://github.com/ros/ros_comm/pull/998 respect if/unless for roslaunch-check (1.13.1)
   # https://github.com/ros/ros_comm/pull/1455 make roslaunch-check respect arg remappings with command line argument (1.14.4)
   set(roslaunch_check_script ${PROJECT_SOURCE_DIR}/scripts/roslaunch-check)
-  # xacro parser error in kinetic and below
-  # xacro tries finding /etc/$ROS_DISTRO/calibrated_latest.urdf even if use_fetch_description is true.
-  if($ENV{ROS_DISTRO} STRGREATER "kinetic")
+  # test fetch_bringup.launch only in indigo, melodic and above, because kinetic fetch is not released.
+  if("$ENV{ROS_DISTRO}" STREQUAL "indigo")
+    # disable launch_teleop because fetch_auto_dock package exists only in the fetch's PC
+    roslaunch_add_file_check(launch/fetch_bringup.launch launch_teleop:=false)
+  elseif("$ENV{ROS_DISTRO}" STRGREATER "kinetic")
+    # xacro parser error in kinetic and below
+    # xacro tries finding /etc/$ROS_DISTRO/calibrated_latest.urdf even if use_fetch_description is true.
     roslaunch_add_file_check(launch/fetch.launch use_fetch_description:=true)
+    roslaunch_add_file_check(launch/fetch_bringup.launch)
   endif()
-  roslaunch_add_file_check(launch/fetch_bringup.launch launch_teleop:=false) # disable launch_teleop because fetch_auto_dock package exists only in the fetch's PC
   roslaunch_add_file_check(launch/rviz.launch)
   roslaunch_add_file_check(launch/fetch_gazebo_bringup.launch)
   set(roslaunch_check_script ${roslaunch_DIR}/../scripts/roslaunch-check)
