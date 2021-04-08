@@ -97,7 +97,7 @@
     (block go-to-spot-undock
       (dotimes (i 3)
         (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout 1500))
-               (is-charging (send msg :is_charging)))
+               (is-charging (if msg (send msg :is_charging))))
           ;; You may fail to subscribe /battery_state
           ;; because of message md5 difference between melodic and indigo.
           (unless msg
