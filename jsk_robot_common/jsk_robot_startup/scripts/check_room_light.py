@@ -53,13 +53,15 @@ class CheckRoomLightNode(ConnectionBasedTransport):
                 img = img[:, :, ::-1]
             else:
                 img = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
+            # relative luminance calculation with RGB from Digital ITU BT.601
+            # relative luminance is not illuminance and not in Lux unit
             # lum = 0. 299 * R + 0.587 * G + 0.114 * B
             lum_img = 0.299 * img[:, :, 0] + 0.587 * img[:, :, 1] \
                 + 0.114 * img[:, :, 2]
         luminance = np.mean(lum_img)
         light_msg = RoomLight(header=msg.header)
         light_msg.light_on = luminance > self.luminance_threshold
-        light_msg.luminance = luminance
+        light_msg.relative_luminance = luminance
         self.pub.publish(light_msg)
 
 
