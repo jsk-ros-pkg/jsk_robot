@@ -3,6 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
+  <arg name="launch_insta360" default="true" />
   <arg name="use_voice_text" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="eng2" />
@@ -45,7 +46,8 @@
   </node>
 
   <!-- insta360 air images -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_insta360_$(env ROS_DISTRO).launch" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_insta360_$(env ROS_DISTRO).launch"
+           if="$(arg launch_insta360)" />
 
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
