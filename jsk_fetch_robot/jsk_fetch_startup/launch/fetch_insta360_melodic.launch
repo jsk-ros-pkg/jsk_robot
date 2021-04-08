@@ -11,14 +11,4 @@
     <!-- for melodic -->
     <arg name="use_usb_cam" value="false" />
   </include>
-  <!-- Split insta360 air image into 2 fisheye image -->
-  <!-- This node can be removed if below is merged -->
-  <!-- https://github.com/jsk-ros-pkg/jsk_recognition/pull/2555 -->
-  <node pkg="jsk_perception" name="split_image" type="split_image.py" output="screen">
-    <remap from="~input" to="/insta360/image_raw" />
-    <rosparam>
-      vertical_parts: 1
-      horizontal_parts: 2
-    </rosparam>
-  </node>
 </launch>
