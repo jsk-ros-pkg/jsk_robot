@@ -275,17 +275,6 @@
     (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
     (send self :go-pos x y d :timeout timeout :wait nil)
     )
-
-  (:list-graph
-   (upload-filepath)
-   (let (r)
-     (setq r (ros::service-call "/spot/list_graph"
-				(instance spot_msgs::ListGraphRequest :init :upload_filepath upload-filepath)))
-     (ros::ros-info "Call \"/spot/list_graph\" returns ..")
-     (dolist (id (send r :waypoint_ids))
-       (ros::ros-info "  \"~A\"" id))
-     (send r :waypoint_ids)))
-
   (:find-waypoint-position-from-id
    (id ids)
    (let (ret)
@@ -300,10 +289,50 @@
      (if (< index (length ids))
 	 (setq ret (elt ids index)))
      ret))
+  (:initial-localization-fiducial
+   ()
+   "initial the localization for autowalk based on the fiducial marker"
+   (let (r)
+     (setq r (ros::service-call "/spot/set_localization_fiducial"
+                                (instance spot_msgs::SetLocalizationFiducialRequest :init)))
+     (ros::ros-info "Call \"/spot/set_localization_fiducial\" returns \"~A\"" (send r :message))
+     t))
+  (:initial-localization-waypoint
+   (init-waypoint)
+   "initial the localization for waypoint id in the graph"
+   (let (r)
+     (if (numberp init-waypoint)
+         (prog1
+             (setq ids (send self :list-graph))
+           (setq init-waypoint (send self :find-waypoint-id-from-position init-waypoint ids))))
+     (setq r (ros::service-call "/spot/set_localization_waypoint"
+                                (instance spot_msgs::SetLocalizationWaypointRequest :init :waypoint_id init-waypoint)))
+     (ros::ros-info "Call \"/spot/set_localization_waypoint\" returns \"~A\"" (send r :message))
+     t))
+  (:upload-path
+   (filepath &key (initial-localization-fiducial t) (wait nil))
+   "upload graph for autowalk"
+   (let (r)
+     (if wait (ros::wait-for-service srvname))
+     (setq r (ros::service-call "/spot/upload_graph"
+                                (instance spot_msgs::UploadGraphRequest :init :upload_filepath filepath)))
+     (ros::ros-info "Call \"/spot/upload_graph\" returns .. \"~A\"" (send r :message))
+     (if initial-localization-fiducial (send self :initial-localization-fiducial))
+     (send r :message)))
+  (:list-graph
+   ()
+   "list up the waypoint (a string type hash id) list in the uploaded graph"
+   (let (r)
+     (setq r (ros::service-call "/spot/list_graph"
+                                (instance spot_msgs::ListGraphRequest :init)))
+     (ros::ros-info "Call \"/spot/list_graph\" returns ..")
+     (dolist (id (send r :waypoint_ids))
+       (ros::ros-info "  \"~A\"" id))
+     (send r :waypoint_ids)))
   (:navigate-to
-   (upload-path navigate-to &key (initial-localization-fiducial t) (initial-localization-waypoint nil))
+   (navigate-to &key (initial-localization-waypoint nil))
    (let (ids c goal ret)
-     (setq ids (send self :list-graph upload-path))
+     (setq ids (send self :list-graph))
      (if (numberp navigate-to)
 	 (setq navigate-to (send self :find-waypoint-id-from-position navigate-to ids)))
      (if (numberp initial-localization-waypoint)
@@ -311,8 +340,6 @@
      (setq c (instance ros::simple-action-client :init
 		       "/spot/navigate_to" spot_msgs::NavigateToAction))
      (send c :wait-for-server)
-     (ros::ros-info "run navigation from ~A" upload-path)
-     (ros::ros-info "use fiducal localization ~A" initial-localization-fiducial)
      (ros::ros-info "initial waypoit ~3D/~3D ~A"
 		    (if initial-localization-waypoint
 			(position initial-localization-waypoint ids :test #'string=)
@@ -322,10 +349,7 @@
      (ros::ros-info "   goal waypoit ~3D/~3D ~A"
 		    (position navigate-to ids :test #'string=) (length ids) navigate-to)
      (setq goal (instance spot_msgs::NavigateToActionGoal :init))
-     (send goal :goal :upload_path upload-path)
-     (send goal :goal :navigate_to navigate-to)
-     (send goal :goal :initial_localization_fiducial initial-localization-fiducial)
-     (send goal :goal :initial_localization_waypoint initial-localization-waypoint)
+     (send goal :goal :id_navigate_to navigate-to)
      (send c :send-goal goal :feedback-cb #'(lambda (msg) (let ((id (send msg :feedback :waypoint_id))) (ros::ros-info "~A/~A ~A" (position id ids :test #'string=) (length ids) id))))
      (setq ret (send c :wait-for-result))
      (ros::ros-info "~A ~A" ret (send (send c :get-result) :message))
