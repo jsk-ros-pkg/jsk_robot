@@ -23,7 +23,7 @@
 
   <!-- Launch realsense cameras -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
-      <arg name="required" value="false" />
+      <arg name="respawn" value="true" />
   </include>
 
   <!-- Odometry -->
