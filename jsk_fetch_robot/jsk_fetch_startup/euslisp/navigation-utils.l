@@ -168,7 +168,7 @@
   (unix::sleep 1)
   ;; Check if the lights are on in the room
   (let* ((room-light-msg (one-shot-subscribe "/check_room_light/output" jsk_robot_startup::RoomLight))
-         (initial-light-on (send room-light-msg :light_on))
+         (initial-light-on (if room-light-msg (send room-light-msg :light_on)))
          (success-go-to-kitchen nil)
          (success-auto-dock nil))
     (if initial-light-on
