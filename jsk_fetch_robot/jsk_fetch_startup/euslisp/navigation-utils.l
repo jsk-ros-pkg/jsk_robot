@@ -1,6 +1,7 @@
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
+(ros::load-ros-manifest "jsk_robot_startup")
 (ros::load-ros-manifest "power_msgs")
 
 (defparameter *dock-action* nil)
@@ -166,28 +167,15 @@
   (send *ri* :speak-jp "キッチンに向かいます。" :wait t)
   (unix::sleep 1)
   ;; Check if the lights are on in the room
-  (let ((initial-light-on nil)
-        (success-go-to-kitchen nil)
-        (success-auto-dock nil))
-    (let* ((ros-img (one-shot-subscribe "/head_camera/rgb/quater/image_rect_color" sensor_msgs::Image))
-           (eus-img (ros::sensor_msgs/Image->image ros-img))
-           (luminance 0) rgb-oct r g b)
-      (dotimes (w (send eus-img :width))
-        (dotimes (h (send eus-img :height))
-          (setq rgb-oct (send eus-img :pixel-hex-string w h))
-          (setq r (read-from-string (format nil "#X~A" (subseq rgb-oct 0 2))))
-          (setq g (read-from-string (format nil "#X~A" (subseq rgb-oct 2 4))))
-          (setq b (read-from-string (format nil "#X~A" (subseq rgb-oct 4 6))))
-          (setq luminance (+ luminance (+ (* 0.299 r) (* 0.587 g) (* 0.114 b))))))
-      (setq luminance (/ luminance (* (send eus-img :width) (send eus-img :height))))
-      (if (> luminance 50)
-        (setq initial-light-on t)
-        (setq initial-light-on nil))
-      (if initial-light-on
-        (send *ri* :speak-jp "すでに電気がついています。" :wait t)
-        (progn
-          (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-          (send *ri* :speak-jp "電気をつけて" :wait t))))
+  (let* ((room-light-msg (one-shot-subscribe "/check_room_light/output" jsk_robot_startup::RoomLight))
+         (initial-light-on (send room-light-msg :light_on))
+         (success-go-to-kitchen nil)
+         (success-auto-dock nil))
+    (if initial-light-on
+      (send *ri* :speak-jp "すでに電気がついています。" :wait t)
+      (progn
+        (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+        (send *ri* :speak-jp "電気をつけて" :wait t))))
     (unix::sleep 1)
     ;; stove
     (dotimes (i n-kitchen-trial)
