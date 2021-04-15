@@ -25,7 +25,7 @@
         type="play"
         name="$(anon rosbag)"
         args="$(arg rosbag) --clock"
-        required="true"
+        launch-prefix="xterm -e"
         />
     <node
         pkg="jsk_spot_startup"
