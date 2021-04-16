@@ -1,75 +1,49 @@
 <launch>
-  <arg name="joy_dev" default="/dev/input/js0" />
-  <arg name="joy_topic" default="spot_teleop/joy" />
+  <arg name="pad_type" default="dualshock3" />
+
+  <arg name="joy_dev" default="/dev/input/js_$(arg pad_type)" />
+  <arg name="joy_topic" default="/joy_$(arg pad_type)" />
   <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
-  
-  <node pkg="joy" type="joy_node" name="joy_node">
-    <param name="dev" value="$(arg joy_dev)" />
-    <param name="deadzone" value="0.3" />
-    <param name="autorepeat_rate" value="20" />
 
+  <node
+      pkg="joy"
+      type="joy_node"
+      name="joy_node_$(arg pad_type)"
+      >
     <remap from="joy" to="$(arg joy_topic)" />
-  </node>
-
-  <node pkg="teleop_twist_joy" name="teleop_twist_joy" type="teleop_node">
-    <remap from="joy" to="$(arg joy_topic)" />
-    <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
 
     <rosparam subst_value="True">
-        axis_linear:
-          x: 1
-          y: 0
-        scale_linear:
-          x: 0.5
-          y: 0.4
-        scale_linear_turbo:
-          x: 1.2
-          y: 0.5
-        axis_angular:
-          yaw: 3
-        scale_angular:
-          yaw: 0.5
-        scale_angular_turbo:
-          yaw: 0.7
-        enable_button: 4
-        enable_turbo_button: 7
+        dev: $(arg joy_dev)
+        deadzone: 0.5
+        autorepeat_rate: 20
     </rosparam>
   </node>
 
-  <node pkg="jsk_spot_teleop" name="joystick_teleop" type="joystick_teleop" output="screen">
-      <remap from="joy" to="$(arg joy_topic)" />
+  <node
+      pkg="teleop_twist_joy"
+      type="teleop_node"
+      name="teleop_twist_joy_$(arg pad_type)"
+      >
+    <remap from="joy" to="$(arg joy_topic)" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
 
-      <param name="~button_estop_hard" value="-1" />
-      <param name="~button_estop_gentle" value="5" />
-      <param name="~button_power_off" value="14" />
-      <param name="~button_power_on" value="13" />
-      <param name="~button_self_right" value="3" />
-      <param name="~button_sit" value="1" />
-      <param name="~button_stand" value="0" />
-      <param name="~button_release" value="8" />
-      <param name="~button_claim" value="9" />
-      <param name="~button_stair_mode" value="-1" />
-      <param name="~button_locomotion_mode" value="2" />
-
-      <param name="~num_buttons" value="18" />
+    <rosparam
+        command="load"
+        file="$(find jsk_spot_teleop)/config/$(arg pad_type)_teleop_twist_joy.yaml"
+        />
   </node>
 
-  <!--
-    Key Mapping For Teleoperation
+  <node
+      pkg="jsk_spot_teleop"
+      type="joystick_teleop"
+      name="joystick_teleop_$(arg pad_type)"
+      output="screen"
+      >
+      <remap from="joy" to="$(arg joy_topic)" />
 
-    cross : stand
-    circle : sit
-    rectangle : self_right
-    triangle : toggle locomotion mode
-
-    start : claim
-    select : release
-
-    down : power_off
-    up : power_on
-
-    L1 : Unlock movement
-    R1 : Estop (gentle)
-    R2 : Unlock movement with fast mode
-   -->
+      <rosparam
+          command="load"
+          file="$(find jsk_spot_teleop)/config/$(arg pad_type)_joystick_teleop.yaml"
+          />
+  </node>
 </launch>
