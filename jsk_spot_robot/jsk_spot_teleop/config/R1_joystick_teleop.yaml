@@ -1,0 +1,12 @@
+button_estop_hard: -1
+button_estop_gentle: 7
+button_power_off: -1
+button_power_on: 1
+button_self_right: -1
+button_sit: 4
+button_stand: 0
+button_release: -1
+button_claim: 3
+button_stair_mode: -1
+button_locomotion_mode: -1
+num_buttons: 12
