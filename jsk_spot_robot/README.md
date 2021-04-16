@@ -30,6 +30,14 @@ catkin build
 source $HOME/catkin_ws/devel/setup.bash
 ```
 
+After this, please modify the credential file and remove it from git tracking.
+
+```bash
+roscd jsk_spot_startup
+# modify auth/credential_config.yaml
+git update-index --skip-worktree auth/spot_credential.yaml
+```
+
 ### Bringup spot
 
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf)
@@ -37,7 +45,7 @@ First, please turn on spot and turn on motors according to [the OPERATION sectio
 After that, please run the ros driver and other basic programs with `jsk_spot_bringup.launch`. You can now control spot from ROS!
 
 ```bash
-roslaunch jsk_spot_startup jsk_spot_bringup.launch username:=<username> password:=<password>
+roslaunch jsk_spot_startup jsk_spot_bringup.launch
 ```
 
 This launch includes
