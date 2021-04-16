@@ -1,0 +1,1 @@
+KERNEL=="js*", ATTRS{name}=="Magicsee R1", SYMLINK+="input/js_R1"
