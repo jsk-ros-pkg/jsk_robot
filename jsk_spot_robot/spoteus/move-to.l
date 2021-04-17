@@ -2,7 +2,7 @@
 
 (spot-init nil) ;; do not create-viewer
 
-(setq *path* (ros::get-param "~path" "/home/spot/autowalk_files/2021-04-12_eng2_73b2_to_81c1_night.walk"))
+(setq *path* (ros::get-param "~path" "/home/spot/autowalk_files/2021-04-16_eng2_73b2_to_81c1_night.walk"))
 (setq *init-waypoint* (floor (ros::get-param "~init_waypoint" 0)))
 (setq *upload* (ros::get-param "~upload" t))
 
@@ -21,12 +21,8 @@
 ;; go to 81C1
 (send *ri* :navigate-to -1)
 
-(ros::ros-info "start barometer measurement?")
-(if (y-or-n-p) t (exit))
-
 (ros::ros-info "ready go back to 73B2?")
 (if (y-or-n-p) t (exit))
-
 
 ;; go back to 73B2
 (send *ri* :navigate-to 0)
