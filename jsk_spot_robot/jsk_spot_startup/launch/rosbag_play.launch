@@ -1,11 +1,18 @@
 <launch>
     <arg name="rosbag" doc="rosbag file path" />
     <arg name="use_decompress" default="true" />
-    <arg name="use_rviz" default="true" />
+    <arg name="loop" default="true" />
+    <arg name="gui" default="true" />
+    <arg name="loop_flag" value="--loop" if="$(arg loop)" />
+    <arg name="loop_flag" value="" unless="$(arg loop)" />
+    <arg name="start_time" default="0" />
+    <arg name="duration_time" default="0" />
+    <arg name="duration" default="--duration $(arg duration_time)" if="$(eval duration_time != 0)" />
+    <arg name="duration" default="" if="$(eval duration_time == 0)" />
 
     <include
         file="$(find jsk_spot_startup)/launch/rviz.launch"
-        if="$(arg use_rviz)"
+        if="$(arg gui)"
         />
 
     <param name="/use_sim_time" value="true" />
@@ -24,7 +31,7 @@
         pkg="rosbag"
         type="play"
         name="$(anon rosbag)"
-        args="$(arg rosbag) --clock"
+        args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)"
         launch-prefix="xterm -e"
         />
     <node
