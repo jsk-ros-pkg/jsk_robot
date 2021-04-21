@@ -26,6 +26,7 @@ wstool init .
 wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
 wstool update
 rosdep install -y -r --from-paths . --ignore-src
+pip3 install -r requirements.txt
 catkin build
 source $HOME/catkin_ws/devel/setup.bash
 ```
