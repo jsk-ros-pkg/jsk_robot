@@ -43,7 +43,7 @@
        (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      ;; check if spot_ros/driver.launch started
      (unless (ros::wait-for-service "/spot/claim" 5)
-       (ros::ros-error "could not communicate with robot, may be forget to roslaunch spot_driver driver.launh, or did not power on the robot"))
+       (ros::ros-error "could not communicate with robot, may be forget to roslaunch spot_driver driver.launch, or did not power on the robot"))
      ;; http://www.clearpathrobotics.com/assets/guides/melodic/spot-ros/ros_usage.html#view-the-robot
      ;; spot_msgs version 0.0.0
      (ros::subscribe "/spot/status/metrics" spot_msgs::Metrics #'send self :spot-status-metrics-callback :groupname groupname)
@@ -232,7 +232,7 @@
     (x y d ;; [m/sec] [m/sec] [rad/sec]
        &optional (msec 1000) ;; msec is total animation time [msec]
        &key (stop t) (wait t))
-    "contorl the robot velocity x([m/sec]) y([m/sec]) d([rad/sec]) msec([msec]). msec is the time to travel."
+    "control the robot velocity x([m/sec]) y([m/sec]) d([rad/sec]) msec([msec]). msec is the time to travel."
     (unless wait
       (ros::ros-error ":go-velocity without wait is unsupported")
       (return-from :go-velocity nil))
@@ -266,13 +266,13 @@
         )
     )
   (:go-pos-wait
-    "move robot toward (x, y, d) (units are m, m and degrees respectively). and wait"
     (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
+    "move robot toward (x, y, d) (units are m, m and degrees respectively). and wait"
     (send self :go-pos x y d :timeout timeout :wait t)
     )
   (:go-pos-no-wait
-    "move robot toward (x, y, d) (units are m, m and degrees respectively)."
     (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
+    "move robot toward (x, y, d) (units are m, m and degrees respectively)."
     (send self :go-pos x y d :timeout timeout :wait nil)
     )
   (:find-waypoint-position-from-id
