@@ -12,7 +12,7 @@
   (let (r)
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance std_srvs::TriggerRequest :init)))
-    (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
+    (ros::ros-debug "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
 
 (defun call-set-bool-service (srvname data &key (wait nil))
@@ -374,9 +374,6 @@
    (let ((sin-roll  (sin (* roll  0.5))) (cos-roll  (cos (* roll  0.5)))
          (sin-pitch (sin (* pitch 0.5))) (cos-pitch (cos (* pitch 0.5)))
          (sin-yaw   (sin (* yaw   0.5))) (cos-yaw   (cos (* yaw   0.5))))
-     (print (list sin-roll cos-roll
-                  sin-pitch cos-pitch
-                  sin-yaw cos-yaw))
      (float-vector (+ (* cos-roll cos-pitch cos-yaw) (* sin-roll sin-pitch sin-yaw))
                    (- (* sin-roll cos-pitch cos-yaw) (* cos-roll sin-pitch sin-yaw))
                    (+ (* cos-roll sin-pitch cos-yaw) (* sin-roll cos-pitch sin-yaw))
