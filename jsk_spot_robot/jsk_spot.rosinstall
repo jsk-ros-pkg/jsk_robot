@@ -24,6 +24,12 @@
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: master
+# Until https://github.com/jsk-ros-pkg/jsk_common/pull/1685 is merged, this patch is
+# required to build spoteus_demo
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/sktometometo/jsk_common.git
+    version: PR/update-download-data
 # This is a develop branch for jsk version.
 # We need to use it until it is merged to master
 - git:
