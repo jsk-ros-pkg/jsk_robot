@@ -9,6 +9,7 @@ ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $HO
 wstool foreach --git 'git stash'
 wstool update --delete-changed-uris
 cd $HOME/ros/melodic
+catkin clean -y
 catkin init
 catkin config -DCMAKE_BUILD_TYPE=Release
 catkin build
