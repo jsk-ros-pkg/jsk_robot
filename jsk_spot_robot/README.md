@@ -16,19 +16,22 @@ Currently, this packages require
 
 ### Setting up a catkin workspace for a new user in the internal pc
 
+#### setup a catkin workspace for spot driver
+
+Create a workspace for spot driver
+
 ```bash
 source /opt/ros/$ROS_DISTRO/setup.bash
 mkdir $HOME/catkin_ws/src -p
-cd $HOME/catkin_ws
-catkin init
-cd src
+cd $HOME/catkin_ws/src
 wstool init .
 wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
 wstool update
 rosdep install -y -r --from-paths . --ignore-src
 pip3 install -r requirements.txt
+cd $HOME/catkin_ws
+catkin init
 catkin build
-source $HOME/catkin_ws/devel/setup.bash
 ```
 
 After this, please modify the credential file and remove it from git tracking.
@@ -39,6 +42,37 @@ roscd jsk_spot_startup
 git update-index --skip-worktree auth/spot_credential.yaml
 ```
 
+#### setup a catkin workspace for coral usb
+
+Please see [this page](https://github.com/knorth55/coral_usb_ros) for details.
+
+First, install requirements.
+
+```bash
+sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
+sudo apt-get install python3-opencv
+sudo apt-get install ros-melodic-catkin
+```
+
+And create a workspace for coral_usb_ros
+
+```bash
+source /opt/ros/$ROS_DISTRO/setup.bash
+mkdir $HOME/coral_ws/src -p
+cd $HOME/coral_ws/src
+git clone https://github.com/knorth55/coral_usb_ros.git
+wstool init .
+wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot_coral.rosinstall
+wstool merge -t . coral_usb_ros/fc.rosinstall
+wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
+wstool update
+rosdep install -y -r --from-paths . --ignore-src
+cd $HOME/coral_ws
+catkin init
+catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
+catkin build jsk_spot_startup coral_usb
+```
+
 ### Bringup spot
 
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf)
@@ -46,6 +80,7 @@ First, please turn on spot and turn on motors according to [the OPERATION sectio
 After that, please run the ros driver and other basic programs with `jsk_spot_bringup.launch`. You can now control spot from ROS!
 
 ```bash
+source $HOME/catkin_ws/devel/setup.bash
 roslaunch jsk_spot_startup jsk_spot_bringup.launch
 ```
 
@@ -55,9 +90,17 @@ This launch includes
 - teleoperation launch
 - interaction launch with Speech-To-Text and Text-To-Speech
 
+And you can run object detection with
+
+```bash
+source $HOME/coral_ws/devel/setup.bash
+roslaunch jsk_spot_startup object_detection_and_tracking.launch
+```
+
 For visualization, you can run RViz with jsk configuration.
 
 ```bash
+source $HOME/catkin_ws/devel/setup.bash
 roslaunch jsk_spot_startup rviz.launch
 ```
 
@@ -66,6 +109,7 @@ You can control spot with DualShock3 controller. Please see [jsk_spot_teleop](./
 For development, `record.launch` and `play.launch` are useful for rosbag recording and playing.
 
 ```bash
+source $HOME/catkin_ws/devel/setup.bash
 # Record a rosbag file
 roslaunch jsk_spot_startup record.launch rosbag:=<absolute file path to rosbag file>
 # Play a rosbag file
