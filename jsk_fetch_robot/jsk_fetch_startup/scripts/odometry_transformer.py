@@ -67,7 +67,8 @@ class OdometryTransformer(object):
             math.isnan(msg.twist.twist.angular.x) or
             math.isnan(msg.twist.twist.angular.y) or
             math.isnan(msg.twist.twist.angular.z)):
-            rospy.logwarn('Recieved an odom message with nan values')
+            rospy.logwarn_throttle(
+                10, 'Received an odom message with nan values')
             return
 
         pos_t265_odombased = np.array([
