@@ -7,6 +7,11 @@
   <include file="$(find pr2_machine)/$(env ROBOT).machine"/>
 
   <group if="$(arg use_tilt_laser)">
+    <node pkg="topic_tools" type="throttle" name="tilt_scan_throttle"
+          args="messages tilt_scan 1.0 tilt_scan_throttled" machine="c2">
+      <param name="lazy" value="true"/>
+    </node>
+
     <!-- Filter for tilt laser shadowing/veiling -->
     <node pkg="laser_filters" type="scan_to_cloud_filter_chain" name="tilt_shadow_filter"
           respawn="true" machine="c2" clear_params="true">

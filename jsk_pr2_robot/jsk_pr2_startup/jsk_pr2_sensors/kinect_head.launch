@@ -85,6 +85,15 @@
         <remap from="~output" to="throttled/image_rect_color" />
         <param name="update_rate" value="$(arg throttle_rate)" />
       </node>
+      <node name="throttle_rgb_compressed"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg camera)/$(arg manager)"
+            machine="$(arg machine)"
+            respawn="true">
+        <remap from="~input" to="image_rect_color/compressed" />
+        <remap from="~output" to="throttled/image_rect_color/compressed" />
+        <param name="update_rate" value="$(arg throttle_rate)" />
+      </node>
       <node name="downsample_half"
             pkg="nodelet" type="nodelet"
             args="load image_proc/resize /$(arg camera)/$(arg manager)"
@@ -148,6 +157,16 @@
             respawn="true">
         <remap from="~input" to="image_rect" />
         <remap from="~output" to="throttled/image_rect" />
+        <param name="update_rate" value="$(arg throttle_rate)" />
+      </node>
+      <node name="throttle_image_compressed"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg camera)/$(arg manager)"
+            if="$(arg throttle_depth)"
+            machine="$(arg machine)"
+            respawn="true">
+        <remap from="~input" to="image_rect/compressedDepth" />
+        <remap from="~output" to="throttled/image_rect/compressedDepth" />
         <param name="update_rate" value="$(arg throttle_rate)" />
       </node>
       <node name="throttle_cloud"
