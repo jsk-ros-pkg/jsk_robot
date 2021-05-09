@@ -78,5 +78,5 @@ TebLocalPlannerROS:
   viapoints_all_candidates: true ## If true, all trajectories of different topologies are attached to the set of via-points, otherwise only the trajectory sharing the same topology as the initial/global plan is connected with them (no effect on test_optim_node).
   switching_blocking_period: 0.0 ## Specify a time duration in seconds that needs to be expired before a switch to a new equivalence class is allowed.
 
-  odom_topic: odom_base_footprint
+#  odom_topic: odom_base_footprint
   map_frame: odom

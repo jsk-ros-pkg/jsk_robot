@@ -1,11 +1,4 @@
 <launch>
-  <node pkg="topic_tools" type="mux" name="odom_mux" args="odom_mux odom">
-    <remap from="mux" to="odom_mux"/>
-  </node>
-  <node pkg="jsk_footstep_controller" type="simple_footcoords" name="simple_footcoords">
-    <remap from="odom" to="odom_mux"/>
-  </node>
-
   <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/self_filter.launch"/>
   <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/global_map.launch"/>
   <include file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/local_map.launch"/>
