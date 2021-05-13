@@ -8,6 +8,7 @@
     <!-- $ v4l2-ctl -d /dev/insta360 -\-list-formats-ext -->
     <arg name="height" value="736" />
     <arg name="width" value="1472" />
+    <arg name="throttle" value="true" />
     <!-- for melodic -->
     <arg name="use_usb_cam" value="false" />
   </include>
