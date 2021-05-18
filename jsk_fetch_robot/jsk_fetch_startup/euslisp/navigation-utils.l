@@ -174,8 +174,11 @@
     (if initial-light-on
       (send *ri* :speak-jp "すでに電気がついています。" :wait t)
       (progn
-        (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-        (send *ri* :speak-jp "電気をつけて" :wait t))))
+        ;; The accuracy of Google Home recognition is better in English than in Japanese.
+        ;; (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+        ;; (send *ri* :speak-jp "電気をつけて" :wait t)
+        (send *ri* :speak "OK, Google" :wait t)
+        (send *ri* :speak "Turn on the light." :wait t))))
     (unix::sleep 1)
     ;; stove
     (dotimes (i n-kitchen-trial)
@@ -224,7 +227,10 @@
     (setq success-auto-dock (auto-dock :n-trial n-dock-trial))
     (when (and success-auto-dock (not initial-light-on))
       (unix::sleep 1)
-      (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-      (send *ri* :speak-jp "電気を消して" :wait t))
+      ;; The accuracy of Google Home recognition is better in English than in Japanese.
+      ;; (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+      ;; (send *ri* :speak-jp "電気を消して" :wait t)
+      (send *ri* :speak "OK, Google" :wait t)
+      (send *ri* :speak "Turn off the light." :wait t))
     (unix::sleep 1)
     (and success-go-to-kitchen success-auto-dock)))
