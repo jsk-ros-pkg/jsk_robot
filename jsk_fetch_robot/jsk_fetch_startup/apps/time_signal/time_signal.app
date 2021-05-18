@@ -11,6 +11,7 @@ plugins:
       client_name: /tweet_image_server/tweet
       image: true
       image_topic_name: /edgetpu_object_detector/output/image
+      warning: false
   - name: user_speech_notifier_plugin
     type: app_notifier/user_speech_notifier_plugin
     plugin_args:
