@@ -1,0 +1,9 @@
+<!-- Check if the ROS topics using the fetch device are published. -->
+<!-- Usage: roslaunch jsk_fetch_startup fetch_test_topics.launch -->
+
+<launch>
+  <node name="test_device_topics"
+        pkg="jsk_tools" type="test_topic_published.py" output="screen">
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/test_device_topics.yaml" />
+  </node>
+</launch>

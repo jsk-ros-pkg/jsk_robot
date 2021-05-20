@@ -1,0 +1,29 @@
+topic_0: /audio
+timeout_0: 10
+
+topic_1: /base_scan
+timeout_1: 10
+
+topic_2: /battery_state
+timeout_2: 10
+
+topic_3: /edgetpu_human_pose_estimator/output/image
+timeout_3: 10
+
+topic_4: /edgetpu_object_detector/output/image
+timeout_4: 10
+
+topic_5: /gripper/imu
+timeout_5: 10
+
+topic_6: /head_camera/depth/image_raw
+timeout_6: 10
+
+topic_7: /imu
+timeout_7: 10
+
+topic_8: /insta360/image_raw
+timeout_8: 10
+
+topic_9: /tf
+timeout_9: 10
