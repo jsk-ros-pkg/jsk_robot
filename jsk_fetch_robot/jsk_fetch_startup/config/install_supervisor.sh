@@ -15,4 +15,7 @@ for file in $(ls ./*.conf); do
     echo "copied $file to /etc/supervisor/conf.d"
 done
 
+# Enable jsk_dstat job to save the csv log under /var/log
+ln -s /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk_dstat.csv
+
 set +x
