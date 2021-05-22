@@ -178,7 +178,7 @@
         ;; (send *ri* :speak-jp "オッケー、グーグル" :wait t)
         ;; (send *ri* :speak-jp "電気をつけて" :wait t)
         (send *ri* :speak "OK, Google" :wait t)
-        (send *ri* :speak "Turn on the light." :wait t))))
+        (send *ri* :speak "Turn on the light." :wait t)))
     (unix::sleep 1)
     ;; stove
     (dotimes (i n-kitchen-trial)
