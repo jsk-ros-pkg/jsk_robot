@@ -19,11 +19,14 @@ timeout_5: 10
 topic_6: /head_camera/depth/image_raw
 timeout_6: 10
 
-topic_7: /imu
+topic_7: /head_camera/rgb/image_raw
 timeout_7: 10
 
-topic_8: /insta360/image_raw
+topic_8: /imu
 timeout_8: 10
 
-topic_9: /tf
+topic_9: /insta360/image_raw
 timeout_9: 10
+
+topic_10: /tf
+timeout_10: 10
