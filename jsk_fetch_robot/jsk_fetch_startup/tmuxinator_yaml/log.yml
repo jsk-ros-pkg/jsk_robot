@@ -42,3 +42,4 @@ windows:
   - jsk-human-pose-estimator: tail -f -n 1000 /var/log/ros/jsk-human-pose-estimator.log
   - jsk-dialog: tail -f -n 1000 /var/log/ros/jsk-dialog.log
   - jsk-gdrive: tail -f -n 1000 /var/log/ros/jsk-gdrive.log
+  - jsk-dstat: tail -f -n 1000 /var/log/ros/jsk-dstat.log
