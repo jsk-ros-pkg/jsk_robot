@@ -1,0 +1,34 @@
+<launch>
+  <arg name="launch_sound_play" default="true" />
+
+  <arg name="engine" default="GoogleCloud" />
+  <arg name="language" default="ja-JP" />
+  <arg name="continuous" default="true" />
+  <arg name="google_cloud_credentials_json" default="/etc/opt/jsk/robot/google-speech-recognition.json"/>
+
+  <!-- audio capture from microphone -->
+  <node name="audio_capture"
+        pkg="audio_capture" type="audio_capture"
+        respawn="true">
+    <rosparam>
+      format: wave
+      channels: 1
+      depth: 16
+      sample_rate: 16000
+    </rosparam>
+  </node>
+
+  <node name="speech_recognition"
+        pkg="ros_speech_recognition" type="speech_recognition_node.py"
+        respawn="true"
+        output="screen">
+    <rosparam subst_value="true">
+      engine: $(arg engine)
+      language: $(arg language)
+      continuous: $(arg continuous)
+      google_cloud_credentials_json: $(arg google_cloud_credentials_json)
+    </rosparam>
+  </node>
+
+</launch>
+

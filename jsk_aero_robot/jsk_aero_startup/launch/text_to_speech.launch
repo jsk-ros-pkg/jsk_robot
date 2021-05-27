@@ -1,0 +1,16 @@
+<launch>
+
+  <arg name="sound_play_respawn" default="true" />
+
+  <node name="sound_play_jp"
+        pkg="sound_play" type="soundplay_node.py"
+        respawn="$(arg sound_play_respawn)"
+        output="screen" >
+    <remap from="robotsound" to="robotsound_jp"/>
+    <remap from="sound_play" to="robotsound_jp"/>
+    <env name="PATH" value="$(find jsk_aero_startup)/scripts:$(env PATH)" />
+    <env name="PYTHONIOENCODING" value="utf-8" />
+    <env name="GOOGLE_APPLICATION_CREDENTIALS" value="/etc/opt/jsk/robot/google-speech-recognition.json" />
+  </node>
+
+</launch>

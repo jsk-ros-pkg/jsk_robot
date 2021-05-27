@@ -1,0 +1,50 @@
+controller_list:
+  - name: rarm_controller
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - r_shoulder_p_joint
+      - r_shoulder_r_joint
+      - r_shoulder_y_joint
+      - r_elbow_joint
+      - r_wrist_y_joint
+      - r_wrist_p_joint
+      - r_wrist_r_joint
+      - r_hand_y_joint
+  - name: larm_controller
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - l_shoulder_p_joint
+      - l_shoulder_r_joint
+      - l_shoulder_y_joint
+      - l_elbow_joint
+      - l_wrist_y_joint
+      - l_wrist_p_joint
+      - l_wrist_r_joint
+      - l_hand_y_joint
+  - name: waist_controller
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - waist_y_joint
+      - waist_p_joint
+      - waist_r_joint
+  - name: head_controller
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - neck_y_joint
+      - neck_p_joint
+      - neck_r_joint
+  - name: lifter_controller
+    type: FollowJointTrajectory
+    action_ns: follow_joint_trajectory
+    default: true
+    joints:
+      - ankle_joint
+      - knee_joint
