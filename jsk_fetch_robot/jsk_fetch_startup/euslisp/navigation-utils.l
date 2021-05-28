@@ -7,7 +7,6 @@
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
 (defparameter *spots* nil)
-(defparameter *dock-spot* "/eng2/7f/room73B2-fetch-dock-front")
 (defparameter *is-charging* nil)
 (defparameter *tfl* (instance ros::transform-listener :init))
 
@@ -24,6 +23,15 @@
     (send (send spot-coords :position) :z 0)
     (setq spot-coords (ros::tf-pose->coords spot-coords))
     (cons spot-coords frame-id)))
+
+(let ((robot-name (ros::get-param "/robot/name")))
+  (defparameter *dock-spot*
+    (cond
+      ((equal robot-name "fetch15")
+       "/eng2/7f/room73B2-fetch-dock-front")
+      ((equal robot-name "fetch1075")
+       "/eng2/7f/room73B2-fetch-dock-entrance")
+      (t nil))))
 
 (defun simple-dock ()
   (unless *dock-action*

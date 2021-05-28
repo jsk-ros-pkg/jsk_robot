@@ -17,8 +17,13 @@ class CorrectPosition(ConnectionBasedTransport):
                                   PoseWithCovarianceStamped,
                                   queue_size=1)
         self.dock_pose = Pose()
+        robot_name = rospy.get_param('/robot/name')
+        if robot_name == 'fetch15':
+            dock_name = '/eng2/7f/room73B2-fetch-dock-front'
+        elif robot_name == 'fetch1075':
+            dock_name = '/eng2/7f/room73B2-fetch-dock-entrance'
         for spot in spots.markers:
-            if spot.text == '/eng2/7f/room73B2-fetch-dock-front':
+            if spot.text == dock_name:
                 self.dock_pose = spot.pose
 
         self.is_docking = False
