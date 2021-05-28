@@ -1,29 +1,52 @@
-recovery_behavior_enabled: false
+recovery_behavior_enabled: true
 recovery_behaviors:
   - name: 'conservative_reset'
     type: 'clear_costmap_recovery/ClearCostmapRecovery'
-  - name: 'rotate_recovery'
+  - name: 'rotate_recovery0'
     type: 'rotate_recovery/RotateRecovery'
   - name: 'aggressive_reset'
     type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'rotate_recovery1'
+    type: 'rotate_recovery/RotateRecovery'
+  - name: 'all_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'rotate_recovery2'
+    type: 'rotate_recovery/RotateRecovery'
   - name: 'move_slow_and_clear'
     type: 'move_slow_and_clear/MoveSlowAndClear'
 
 conservative_reset:
-  reset_distance: 3.0
+  reset_distance: 2.0
+
+rotate_recovery0:
+  frequency: 20.0
+  sim_granularity: 0.017
 
 aggressive_reset:
-  reset_distance: 1.84
+  reset_distance: 1.2  # diameter of bounding circle of footprint polygon is 0.98
 
-rotate_recovery:
+rotate_recovery1:
+  frequency: 20.0
+  sim_granularity: 0.017
+
+all_reset:
+  reset_distance: 0.0  # diameter of bounding circle of footprint polygon is 0.98
+
+rotate_recovery2:
   frequency: 20.0
   sim_granularity: 0.017
 
 move_slow_and_clear:
-  clearing_distance: 0.5
-  limited_trans_speed: 0.25
-  limited_rot_speed: 0.45
+  clearing_distance: 3.0
+  limited_trans_speed: 0.2
+  limited_rot_speed: 0.52  # 30 deg/s
   limited_distance: 0.3
 
-max_planning_retries: -1  # To enable recovery behavior, set to positive value.
-clearing_radius: 0.30
+# For rotate_recovery with local planner other than TrajectoryPlannerROS
+TrajectoryPlannerROS:
+  yaw_goal_tolerance: 0.17  # 10 deg
+  acc_lim_theta: 2.0
+  max_rotational_vel: 1.05  # 60 deg/s
+  min_in_place_rotational_vel: 0.17  # 10 deg. This name will be deprecated in the future.
+
+max_planning_retries: 2  # To enable recovery behavior, set to positive value.
