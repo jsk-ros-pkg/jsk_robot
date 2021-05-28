@@ -235,7 +235,7 @@ coordinates can be made with
 (send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
 ```
 
-- Move forward at 0.1m/sec for 10 seconds (CAUTION, this will move the real robot)
+- Move forward at 0.1[m/s] for 10 seconds (CAUTION, this will move the real robot)
 
 ```lisp
 (send *ri* :go-velocity 0.1 0 0 10000)
