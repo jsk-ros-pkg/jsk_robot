@@ -232,5 +232,5 @@
       ;; (send *ri* :speak-jp "電気を消して" :wait t)
       (send *ri* :speak "OK, Google" :wait t)
       (send *ri* :speak "Turn off the light." :wait t))
-    (unix::sleep 1)
+    (unix::sleep 5)
     (and success-go-to-kitchen success-auto-dock)))
