@@ -47,7 +47,7 @@ class NavSpeak(object):
         self.is_speaking = False
 
     def move_base_goal_callback(self, msg):
-        self.sound.play(2)
+        self.sound.play(2, volume=self.volume)
 
     def move_base_result_callback(self, msg):
         # Wait if other node is speaking
@@ -63,33 +63,33 @@ class NavSpeak(object):
             sound_goal.sound_request.arg2 = "jp"
 
         if msg.status.status == GoalStatus.SUCCEEDED:
-            self.sound.play(1)
+            self.sound.play(1, volume=self.volume)
             time.sleep(1)
             if self.lang == "japanese":
                 sound_goal.sound_request.arg = "到着しました"
                 self.client.send_goal(sound_goal)
             else:
-                self.sound.say(text)
+                self.sound.say(text, volume=self.volume)
         elif msg.status.status == GoalStatus.PREEMPTED:
-            self.sound.play(2)
+            self.sound.play(2, volume=self.volume)
             time.sleep(1)
             if self.lang == "japanese":
                 sound_goal.sound_request.arg = "別のゴールがセットされました"
                 self.client.send_goal(sound_goal)
             else:
-                self.sound.say(text)
+                self.sound.say(text, volume=self.volume)
         elif msg.status.status == GoalStatus.ABORTED:
-            self.sound.play(3)
+            self.sound.play(3, volume=self.volume)
             time.sleep(1)
             if self.lang == "japanese":
                 sound_goal.sound_request.arg = "中断しました"
                 self.client.send_goal(sound_goal)
             else:
-                self.sound.say(text)
+                self.sound.say(text, volume=self.volume)
         else:
-            self.sound.play(4)
+            self.sound.play(4, volume=self.volume)
             time.sleep(1)
-            self.sound.say(text)
+            self.sound.say(text, volume=self.volume)
 
     def robotsound_jp_status_callback(self, msg):
         if len(msg.status_list) == 0:
