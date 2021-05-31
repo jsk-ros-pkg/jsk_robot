@@ -40,6 +40,7 @@ class NavSpeak(object):
             self.robotsound_jp_status_callback, queue_size=1)
         self.sound = SoundClient(blocking=True)
         self.lang = rospy.get_param("~lang", "japanese")
+        self.volume = rospy.get_param("~volume", 1.0)
         self.client = actionlib.SimpleActionClient(
             'robotsound_jp', SoundRequestAction)
         self.client.wait_for_server()
@@ -58,7 +59,7 @@ class NavSpeak(object):
             sound_goal = SoundRequestGoal()
             sound_goal.sound_request.sound = -3
             sound_goal.sound_request.command = 1
-            sound_goal.sound_request.volume = 1.0
+            sound_goal.sound_request.volume = self.volume
             sound_goal.sound_request.arg2 = "jp"
 
         if msg.status.status == GoalStatus.SUCCEEDED:
