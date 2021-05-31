@@ -1,5 +1,5 @@
 <launch>
-  <arg name="USE_LASER_AND_KINECT" default="true" />
+  <arg name="USE_LASER_AND_KINECT" default="false" />
   <arg name="USE_LASER" default="false" />
   <arg name="USE_KINECT" default="true" />
   <arg name="RGB_CAMERA_INFO" value="/kinect_head/rgb/camera_info" />
