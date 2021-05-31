@@ -55,7 +55,7 @@ If this happens, please connect Pepper to network with DHCP and exit Setting.
 
 % First, you need to install ros. 
 For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation).
-For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation).
+For ros melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation).
 
 1. Install ``Python NAOqi SDK``
 You can download it (version = 2.5.5) from [here](https://drive.google.com/file/d/1xHuYREDa78xGiikEpsjxfZQ7Gfvo1E9D/view?usp=sharing).  
@@ -94,7 +94,7 @@ cd  catkin_ws
 wstool init src
 wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
 wstool update -t src
-source /opt/ros/kinetic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 ```
 
@@ -142,13 +142,12 @@ wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
 wstool update naoqi_driver
 wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
 wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
 ## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
-For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
 
 ```
 cd catkin_ws/src
@@ -168,7 +167,7 @@ git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 ```
 
-In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+In addition, if you have ROS >= kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
 
 ```
 cd .. # catkin_ws/src
@@ -180,6 +179,7 @@ Finally, please compile them.
 
 ```
 cd .. # catkin_ws
+catkin clean
 catkin build --continue-on-failure
 source devel/setup.bash
 ```
