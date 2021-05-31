@@ -22,6 +22,7 @@
       duration: 180
       charge_level_threshold: 40.0
       charge_level_step: 10.0
+      volume: 1.0
     </rosparam>
   </node>
 
