@@ -1,7 +1,7 @@
 <launch>
   <arg name="USE_LASER_AND_KINECT" default="true" />
   <arg name="USE_LASER" default="false" />
-  <arg name="USE_KINECT" default="false" />
+  <arg name="USE_KINECT" default="true" />
   <arg name="RGB_CAMERA_INFO" value="/kinect_head/rgb/camera_info" />
   <arg name="RGB_IMAGE" value="/kinect_head/rgb/image_rect_color" />
   <arg name="RGB_IMAGE_REMOTE" value="/kinect_head_remote/rgb/image_rect_color" />
