@@ -192,10 +192,12 @@
         (send *ri* :wait-interpolation)))
     (unix::sleep 1)
     ;; change the inflation_radius
+    ;; Increase the global inflation to generate a path that is less sensitive to differences between the map shape and the actual object placement.
     (ros::set-dynamic-reconfigure-param
       "/move_base/global_costmap/inflater" "inflation_radius" :double 0.7)
+    ;; Decrease the local inflation to generate a path that allows the robot to pass close to the object.
     (ros::set-dynamic-reconfigure-param
-      "/move_base/local_costmap/inflater" "inflation_radius" :double 0.7)
+      "/move_base/local_costmap/inflater" "inflation_radius" :double 0.35)
     ;; stove
     (dotimes (i n-kitchen-trial)
       (setq success-go-to-kitchen
