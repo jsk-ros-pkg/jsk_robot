@@ -16,6 +16,6 @@ for file in $(ls ./*.conf); do
 done
 
 # Enable jsk_dstat job to save the csv log under /var/log
-ln -s /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk_dstat.csv
+ln -s /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk-dstat.csv
 
 set +x
