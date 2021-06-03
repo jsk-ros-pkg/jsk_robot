@@ -180,6 +180,7 @@
       (progn
         ;; Look at Google Home
         (send *fetch* :head :neck-y :joint-angle 89)
+        (send *fetch* :head :neck-p :joint-angle 25)
         (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
         (send *ri* :wait-interpolation)
         ;; The accuracy of Google Home recognition is better in English than in Japanese.
@@ -247,6 +248,7 @@
       (unix::sleep 1)
       ;; Look at Google Home
       (send *fetch* :head :neck-y :joint-angle 89)
+      (send *fetch* :head :neck-p :joint-angle 25)
       (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
       (send *ri* :wait-interpolation)
       ;; The accuracy of Google Home recognition is better in English than in Japanese.
