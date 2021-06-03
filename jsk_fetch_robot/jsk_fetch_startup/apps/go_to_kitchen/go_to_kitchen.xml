@@ -7,6 +7,6 @@
 
   <node name="go_to_kitchen_object_detector_score_thresh" pkg="dynamic_reconfigure" type="dynparam"
         args="set_from_parameters edgetpu_object_detector">
-    <param name="score_thresh" type="double" value="0.80" /> <!-- default: 0.6 -->
+    <param name="score_thresh" type="double" value="0.60" /> <!-- default: 0.6 -->
   </node>
 </launch>
