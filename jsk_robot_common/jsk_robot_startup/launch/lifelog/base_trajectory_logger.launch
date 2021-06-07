@@ -1,0 +1,43 @@
+<launch>
+
+  <arg name="node_name" default="base_trajectory_logger" />
+  <arg name="map_frame" default="map" doc="map's frame id" />
+  <arg name="robot_frame" default="base_link" doc="base's frame id" />
+  <arg name="thre" default="0.005"
+       doc="Threshold value of difference of position. Unit is [m]" />
+  <arg name="rthre" default="0.017453292519943295"
+       doc="Threshold value of difference of rotation. Unit is [rad]. Default threshold value is 1[deg]" />
+  <arg name="use_amcl" default="true" doc="Specify whether the node use amcl" />
+  <arg name="update_rate" default="1.0" doc="Rate of update interval" />
+  <arg name="use_tf2" default="true" doc="Specify whether the node use tf2" />
+
+  <arg name="respawn" default="false" doc="Specify respawn node" />
+  <arg name="output" default="log" doc="If 'screen', stdout/stderr from the node will be sent to the screen.
+If 'log', the stdout/stderr output will be sent to a log file
+in $ROS_HOME/log, and stderr will continue to be sent to screen.
+The default is 'log'." />
+
+  <!-- machine -->
+  <arg name="localhost" default="true" doc="Specify whether the node use localhost" />
+  <arg unless="$(arg localhost)" name="machine"/>
+  <arg     if="$(arg localhost)" name="machine" value="localhost" />
+  <machine if="$(arg localhost)" name="localhost" address="localhost" />
+
+  <arg name="initialpose" default="/initialpose" doc="Topic name of initialpose" />
+
+  <node name="$(arg node_name)"
+        pkg="jsk_robot_startup" type="base_trajectory_logger.py"
+        output="$(arg output)" >
+    <remap from="/initialpose" to="$(arg initialpose)" />
+    <rosparam subst_value="true">
+      map_frame: $(arg map_frame)
+      robot_frame: $(arg robot_frame)
+      update_rate: $(arg update_rate)
+      use_amcl: $(arg use_amcl)
+      use_tf2: $(arg use_tf2)
+      thre: $(arg thre)
+      rthre: $(arg rthre)
+    </rosparam>
+  </node>
+
+</launch>
