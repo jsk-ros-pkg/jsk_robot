@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<launch>
+  <!--Be sure to pass the IPs of your pandas like robot_ips:={panda_1/robot_ip: <my_ip_1>, panda_2/robot_ip: <my_ip_2>}   -->
+
+  <!-- argments -->
+  <arg name="rviz" default="true" />
+
+  <arg name="reference_frame" default="/map"/>
+  <arg name="units" default="mm"/>
+  <arg name="publish_rate" default="1000"/>
+
+  <!-- start touch usb -->
+  <group ns="left_device">
+    <node name="omni_state" pkg="omni_common" type="omni_state" output="screen">
+      <param name="device_name" value="Left Device"/>
+      <param name="omni_name" value="phantom"/>
+      <param name="publish_rate" value="$(arg publish_rate)"/>
+      <param name="reference_frame" value="/larm_link_0"/>
+      <param name="units" value="$(arg units)"/>
+    </node>
+  </group>
+  <group ns="right_device">
+    <node name="omni_state" pkg="omni_common" type="omni_state" output="screen">
+      <param name="device_name" value="Right Device"/>
+      <param name="omni_name" value="phantom"/>
+      <param name="publish_rate" value="$(arg publish_rate)"/>
+      <param name="reference_frame" value="$(arg reference_frame)"/>
+      <param name="units" value="$(arg units)"/>
+    </node>
+  </group>
+
+
+  <!-- visualization -->
+  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find jsk_panda_teleop)/config/rviz/dual_panda.rviz" if="$(arg rviz)" />
+
+  <!-- start MIDI controller-->
+  <node pkg="jsk_teleop_joy" type="midi_config_player.py"
+        output="screen" name="midi_controller"
+        args="$(find jsk_teleop_joy)/configs/b_control.yaml">
+    <remap from="/joy" to="/midi_controller/joy" />
+  </node>
+</launch>

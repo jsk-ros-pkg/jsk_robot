@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<launch>
+  <arg name="rarm_ip" default="172.16.0.2"/>
+  <arg name="larm_ip" default="172.16.1.2"/>
+
+  <arg name="robot_id" default="dual_panda" />
+
+  <include file="$(find franka_control)/launch/franka_combined_control.launch" >
+    <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
+    <arg name="robot_id"  value="$(arg robot_id)" />
+    <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
+    <arg name="hw_config_file"   value="$(find jsk_panda_teleop)/config/dual_panda_control_node.yaml"/>
+    <arg name="controllers_file" value="$(find jsk_panda_teleop)/config/dual_panda_controllers.yaml" />
+    <arg name="controllers_to_start"     value="rarm_state_controller larm_state_controller dual_panda_effort_joint_trajectory_controller"/>
+    <arg name="joint_states_source_list" value="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]"/>
+  </include>
+
+  <group ns="$(arg robot_id)">
+    <group ns="rarm">
+      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
+        <arg name="robot_ip" value="$(arg rarm_ip)" />
+        <arg name="stop_at_shutdown" value="true" />
+        <arg name="arm_id" value="rarm" />
+      </include>
+    </group>
+    <group ns="larm">
+      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
+        <arg name="robot_ip" value="$(arg larm_ip)" />
+        <arg name="stop_at_shutdown" value="true" />
+        <arg name="arm_id" value="larm" />
+      </include>
+    </group>
+  </group>
+  
+  <node pkg="jsk_panda_teleop" type="move_to_initial.l" name="move_to_initial" output="log"/>
+  
+
+</launch>
