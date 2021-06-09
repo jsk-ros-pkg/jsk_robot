@@ -19,10 +19,6 @@
    uri: https://github.com/ros-planning/moveit_robots.git
    local-name: ros-planning/moveit_robots
    version: kinetic-devel
-- git: # wait until releasing
-   uri: https://github.com/tork-a/jsk_demos-release.git
-   local-name: jsk_maps
-   version: release/kinetic/jsk_maps
 - git: # wait for melodic release https://github.com/ros-naoqi/pepper_robot/issues/50
    uri: https://github.com/ros-naoqi/pepper_robot.git
    local-name: pepper_robot
@@ -40,3 +36,9 @@
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
     version: ba4bafdb802e474487d1e0d893aa25c9535dc55f
+# for drc_task_common in jsk_demos
+# jsk_control is not released in melodic
+- tar:
+    local-name: jsk_control/jsk_ik_server
+    uri: https://github.com/tork-a/jsk_control-release/archive/release/kinetic/jsk_ik_server/0.1.14-0.tar.gz
+    version: jsk_control-release-release-kinetic-jsk_ik_server-0.1.14-0
