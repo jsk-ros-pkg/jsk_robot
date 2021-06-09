@@ -1,7 +1,6 @@
-<?xml version="1.0"?>
-<package format="2">
-  <name>jsk_panda_teleop</name>
-  <version>0.0.0</version>
+<package>
+  <name>panda_eus</name>
+  <version>1.1.0</version>
   <description>Teleopration of dual-franka using TouchUSB</description>
 
   <maintainer email="y-kawamura@jsk.imi.i.u-tokyo.ac.jp">Yoichiro Kawamura</maintainer>
@@ -13,21 +12,21 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
 
-  <exec_depend>franka_description</exec_depend>
-  <exec_depend>franka_msgs</exec_depend>
-  <exec_depend>franka_gripper</exec_depend>
-  <exec_depend>franka_control</exec_depend>
-  <exec_depend>franka_example_controllers</exec_depend>
-  <exec_depend>franka_visualization</exec_depend>
+  <run_depend>franka_description</run_depend>
+  <run_depend>franka_msgs</run_depend>
+  <run_depend>franka_gripper</run_depend>
+  <run_depend>franka_control</run_depend>
+  <run_depend>franka_example_controllers</run_depend>
+  <run_depend>franka_visualization</run_depend>
 
-  <exec_depend>omni_common</exec_depend>
-  <exec_depend>omni_msgs</exec_depend>
+  <run_depend>omni_common</run_depend>
+  <run_depend>omni_msgs</run_depend>
 
-  <exec_depend>python-scipy</exec_depend>
-  <exec_depend>python-numpy</exec_depend>
+  <run_depend>python-scipy</run_depend>
+  <run_depend>python-numpy</run_depend>
   <!-- Waiting until https://github.com/ros/rosdistro/pull/29805 to be merged -->
-  <!-- <exec_depend>python-absl-py-pip</exec_depend> -->
+  <!-- <run_depend>python-absl-py-pip</run_depend> -->
 
-  <exec_depend>jsk_teleop_joy</exec_depend>
+  <run_depend>jsk_teleop_joy</run_depend>
 
 </package>
