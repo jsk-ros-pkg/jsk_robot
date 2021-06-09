@@ -7,6 +7,44 @@ ROS package for KINOVA Gen3/Gen3 Lite robot.
 - GitHub
   https://github.com/Kinovarobotics/ros_kortex
 
+## How to setup the network of KINOVA robot
+
+This is an overview of the network setup process.
+Refer to the documentation on [KINOVA resouce page](https://www.kinovarobotics.com/en/resources/technical-resources-library) if necessary.
+
+Kinova can be connected with a computer via **USB, Ethernet and Wi-Fi**. 
+
+### Via USB
+
+Micro-B USB to type-A cable is required.
+
+1. Connect one end of the micro-B USB to type-A cable to the micro-B USB connector in the robot and connect the other end to the computer.
+2. DHCP server on the robot base has worked correctly, and then the computer automatically is assigned an IP address. Try to connect to the robot via _Web App_ below. If not, you have to configure the computer RNDIS settings manually. See the steps below.
+3. Open the network settings in your computer and set the IPv4 address:192.168.1.11 and Subnet mask:255.255.255.0. 
+
+### Via Ethernet
+USB-A to Ethernet adapter is required.
+
+1. Connect an Ethernet cable to the robot by using the USB type-A to Ethernet adapter.
+2. On your computer, open the network settings and set the IPv4 address:192.168.2.11 and Subnet mask:255.255.255.0.
+3. Try to connect to the robot via _Web App_ below.
+
+### Via Wi-Fi
+Connecting your computer to ```133.11.xx.xxx``` is necessary.
+
+1. Before you begin, you need to have a wired connection between the computer and the robot. **See the chapter Ethernet or USB and complete it** and see _Open Web App_ below.
+2. Open Web App and connect to the robot. 
+3. Go to the Wireless & Networks page under the Configurations page. 
+4. You can see all of the detected Wi-Fi networks. Choose the networks you use, and fill in the required information.
+
+### Open Web App
+You can interact with the arm and perform basic tasks through an Web browser.
+
+1. Confirm connecting the robot with a computer. From the web browser, enter the appropriate IP address for the arm base to access the Web App.
+- 192.168.1.10 if connecting via USB
+- 192.168.2.10 if connecting via Ethernet
+- See the robot base if connecting via Wi-Fi. You can read xx.xx.xx...jp here.
+2. Fill in the credenrials in the login window and click CONNECT.
 
 ## How to setup development environment
 
@@ -42,7 +80,9 @@ source devel/setup.bash
 
 ## Start ROS Node
 
-Start real kinova robot. `ip_address` can be given by both ip address and FQDN (e.g. abc.def.jp)
+Start real kinova robot. `ip_address` can be given by both ip address and FQDN (e.g. abc.def.jp)  
+Use the appropriate ip address according to the type of network you are using  
+The IP address is the same as when using Web App
 
 ```bash
 # Gen3 robot
