@@ -17,7 +17,7 @@ Kinova can be connected with a computer via **USB, Ethernet and Wi-Fi**.
 ### Via USB
 
 Micro-B USB to type-A cable is required.
-
+TheThe
 1. Connect one end of the micro-B USB to type-A cable to the micro-B USB connector in the robot and connect the other end to the computer.
 2. DHCP server on the robot base has worked correctly, and then the computer automatically is assigned an IP address. Try to connect to the robot via _Web App_ below. If not, you have to configure the computer RNDIS settings manually. See the steps below.
 3. Open the network settings in your computer and set the IPv4 address:192.168.1.11 and Subnet mask:255.255.255.0. 
@@ -132,8 +132,8 @@ You can also use move-end-rot method to turn the gripper.
 
 To open/close gripper, you can use `start-grasp` and `stop-grasp` method.
 ```
-(send *gen3* :start-grasp)
-(send *gen3* :stop-grasp)
+(send *ri* :start-grasp)
+(send *ri* :stop-grasp)
 ```
 
 To control real robot. you can use *ri* object.
