@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=touchegg
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en]=TouchEgg
+Name=TouchEgg
+Comment[en]=Adds touchpad gestures to Ubuntu.
+Comment=Adds touchpad gestures to Ubuntu.

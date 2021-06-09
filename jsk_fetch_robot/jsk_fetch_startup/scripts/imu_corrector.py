@@ -14,10 +14,12 @@ class ImuCorrector(object):
             '~output', Imu, queue_size=1)
 
     def _cb(self, msg):
-        msg.header.frame_id = 'base_link'
-        msg.angular_velocity_covariance = [0, 0, 0,
-                                           0, 0, 0,
-                                           0, 0, 4e-6]
+        if msg.header.frame_id == '':
+            msg.header.frame_id = 'base_link'
+        if all([x == 0 for x in msg.angular_velocity_covariance]):
+            msg.angular_velocity_covariance = [4e-6, 0, 0,
+                                               0, 4e-6, 0,
+                                               0, 0, 4e-6]
         self.pub.publish(msg)
 
 

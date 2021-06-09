@@ -1,0 +1,42 @@
+# ~/.tmuxinator/log.yml
+
+name: log
+root: ~/
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+# Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
+# startup_window: editor
+
+# Specitifes (by index) which pane of the specified window will be selected on project startup. If not set, the first pane is used.
+# startup_pane: 1
+
+# Controls whether the tmux session should be attached to automatically. Defaults to true.
+# attach: false
+
+# Runs after everything. Use it to attach to tmux with custom options etc.
+# post: tmux -CC attach -t log
+
+windows:
+  - roscore: tail -f -n 1000 /var/log/ros/roscore.log
+  - robot: tail -f -n 1000 /var/log/ros/robot.log
+  - jsk-fetch-startup: tail -f -n 1000 /var/log/ros/jsk-fetch-startup.log
+  - jsk-network-monitor: tail -f -n 1000 /var/log/ros/jsk-network-monitor.log
+  - jsk-log-wifi: tail -f -n 1000 /var/log/ros/jsk-log-wifi.log
+  - jsk-app-scheduler: tail -f -n 1000 /var/log/ros/jsk-app-scheduler.log
+  - jsk-coral: tail -f -n 1000 /var/log/ros/jsk-coral.log
+  - jsk-dialog: tail -f -n 1000 /var/log/ros/jsk-dialog.log
+  - jsk-gdrive: tail -f -n 1000 /var/log/ros/jsk-gdrive.log
