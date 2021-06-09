@@ -196,5 +196,7 @@ Erroneous value is -150.149 but minimum permitted is -150.115 and maximum permit
 Additional message is : Invalid Position - Position of actuator(2) in Trajectory Point (37) exceeds limits
 -----------------------------
 ```
+- Joint limits are different from the ones in the URDF! This causes the problem above.
+  - See User guides(ex.[PDF:Gen3_Lite](https://artifactory.kinovaapps.com/artifactory/generic-documentation-public/Documentation/Gen3%20lite/Technical%20documentation/User%20Guide/Gen3_lite_USER_GUIDE_R03.pdf) pp.71-72)  
 ---
 If you have any question, please feel free to file open at https://github.com/jsk-ros-pkg/jsk_robot/issues
