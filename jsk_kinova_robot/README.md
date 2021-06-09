@@ -181,5 +181,20 @@ roseus kinova-interface.l
 (kinova-init :type :gen3_lite_gen3_lite_2f)
 ```
 
+## Trouble shooting
+- The robot doesn't work and you see the following error in the terminal where you launched the launch file. TODO
+  - Turn off the power
+  - Make a posture that does not exceed the upper of lower limit of the joint angle
+  - Turn it back on
+```bash
+-----------------------------
+Error #38
+Type : TRAJECTORY_ERROR_TYPE_JOINT_POSITION_LIMIT
+Identifier : TRAJECTORY_ERROR_IDENTIFIER_POSITION
+Actuator : 3
+Erroneous value is -150.149 but minimum permitted is -150.115 and maximum permitted is 150.115
+Additional message is : Invalid Position - Position of actuator(2) in Trajectory Point (37) exceeds limits
+-----------------------------
+```
 ---
 If you have any question, please feel free to file open at https://github.com/jsk-ros-pkg/jsk_robot/issues
