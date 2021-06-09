@@ -17,7 +17,7 @@ Kinova can be connected with a computer via **USB, Ethernet and Wi-Fi**.
 ### Via USB
 
 Micro-B USB to type-A cable is required.
-TheThe
+
 1. Connect one end of the micro-B USB to type-A cable to the micro-B USB connector in the robot and connect the other end to the computer.
 2. DHCP server on the robot base has worked correctly, and then the computer automatically is assigned an IP address. Try to connect to the robot via _Web App_ below. If not, you have to configure the computer RNDIS settings manually. See the steps below.
 3. Open the network settings in your computer and set the IPv4 address:192.168.1.11 and Subnet mask:255.255.255.0. 
@@ -44,7 +44,7 @@ You can interact with the arm and perform basic tasks through an Web browser.
 - 192.168.1.10 if connecting via USB
 - 192.168.2.10 if connecting via Ethernet
 - See the robot base if connecting via Wi-Fi. You can read xx.xx.xx...jp here.
-2. Fill in the credenrials in the login window and click CONNECT.
+2. Fill in the credentials in the login window and click CONNECT.
 
 ## How to setup development environment
 
