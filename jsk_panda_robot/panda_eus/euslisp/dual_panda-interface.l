@@ -260,7 +260,7 @@
                     ))
   ;; gripper action for real-controller
   (:send-gripper-grasp-action
-   (act width speed force &key (wait t) (inner 0.005) (outer 0.005))
+   (act width speed force &key (wait t) (inner 0.005) (outer 0.06))
    (let ((goal (instance franka_gripper::GraspActionGoal :init)))
      (send goal :header :stamp (ros::time-now))
      (send goal :goal :width width) ;; [m]
