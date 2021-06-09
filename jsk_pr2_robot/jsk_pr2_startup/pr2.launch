@@ -174,4 +174,10 @@
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
         name="finish_launch_sound" />
+
+  <!-- check if room light is on -->
+  <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
+    <remap from="~input" to="/kinect_head/rgb/image_raw" />
+  </node>
+
 </launch>
