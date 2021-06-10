@@ -197,6 +197,7 @@ Additional message is : Invalid Position - Position of actuator(2) in Trajectory
 -----------------------------
 ```
 - Joint limits are different from the ones in the URDF! This causes the problem above.
-  - See User guides(ex.[PDF:Gen3_Lite](https://artifactory.kinovaapps.com/artifactory/generic-documentation-public/Documentation/Gen3%20lite/Technical%20documentation/User%20Guide/Gen3_lite_USER_GUIDE_R03.pdf) pp.71-72)  
+  - See User guides(ex.[PDF:Gen3_Lite](https://artifactory.kinovaapps.com/artifactory/generic-documentation-public/Documentation/Gen3%20lite/Technical%20documentation/User%20Guide/Gen3_lite_USER_GUIDE_R03.pdf) pp.71-72) 
+  - See URDF descriptions([gen3_7dof](https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/arms/gen3/7dof/urdf/gen3_macro.xacro), [gen3_6dof](https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/arms/gen3/6dof/urdf/gen3_macro.xacro), [gen3_lite](https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/arms/gen3_lite/6dof/urdf/gen3_lite_macro.xacro)
 ---
 If you have any question, please feel free to file open at https://github.com/jsk-ros-pkg/jsk_robot/issues
