@@ -89,6 +89,16 @@
     (return-from undock nil))
   (send (send *undock-action* :get-result) :undocked))
 
+
+(defun check-battery-charging-state (&key (timeout 1500))
+   (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout timeout))
+          (is-charging (send msg :is_charging)))
+     ;; You may fail to subscribe /battery_state
+     ;; because of message md5 difference between melodic and indigo.
+     (if (not msg) (return-from check-battery-charging-state nil))
+     (if is-charging :charging :discharging)))
+
+
 (defun go-to-spot (name &optional (relative-coords (make-coords)) &key (undock-rotate nil))
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
@@ -97,15 +107,14 @@
   (let ((undock-success nil))
     (block go-to-spot-undock
       (dotimes (i 3)
-        (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout 1500))
-               (is-charging (if msg (send msg :is_charging))))
+        (let* ((battery-charging-state (check-battery-charging-state)))
           ;; You may fail to subscribe /battery_state
           ;; because of message md5 difference between melodic and indigo.
-          (unless msg
+          (unless battery-charging-state
             (ros::ros-warn "Failed to subscribe /battery_state")
             (ros::ros-warn "Skip undocking, so please make sure that Fetch is already undocked.")
             (return-from go-to-spot-undock t))
-          (if is-charging
+          (if (equal battery-charging-state :charging)
             (progn
               (setq undock-success (auto-undock :n-trial 3))
               ;; rotate after undock
@@ -115,7 +124,7 @@
           (if (not undock-success)
             (progn
               (ros::ros-error "Failed to undock")
-	      (send *ri* :speak "I failed to undock.")))))
+            (send *ri* :speak "I failed to undock.")))))
       (if (not undock-success) (return-from go-to-spot nil))))
   ;; go to spot
   (let* ((ret (get-spot-coords name))
@@ -171,6 +180,7 @@
          (initial-light-on (if room-light-msg (send room-light-msg :light_on)))
          (success-go-to-kitchen nil)
          (success-auto-dock nil)
+         (success-battery-charging)
          (orig-global-inflation-radius
            (ros::get-param "/move_base/global_costmap/inflater/inflation_radius"))
          (orig-local-inflation-radius
@@ -267,4 +277,6 @@
     (ros::set-dynamic-reconfigure-param
       "/move_base/local_costmap/inflater" "inflation_radius"
       :double orig-local-inflation-radius)
-    (and success-go-to-kitchen success-auto-dock)))
+    (setq success-battery-charging
+          (equal (check-battery-charging-state) :charging))
+    (and success-go-to-kitchen success-auto-dock success-battery-charging)))
