@@ -92,7 +92,7 @@
 
 (defun check-battery-charging-state (&key (timeout 1500))
    (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout timeout))
-          (is-charging (send msg :is_charging)))
+          (is-charging (if msg (send msg :is_charging))))
      ;; You may fail to subscribe /battery_state
      ;; because of message md5 difference between melodic and indigo.
      (if (not msg) (return-from check-battery-charging-state nil))
