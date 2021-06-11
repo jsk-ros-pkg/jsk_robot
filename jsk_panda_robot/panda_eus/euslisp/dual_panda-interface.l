@@ -260,7 +260,7 @@
                     ))
   ;; gripper action for real-controller
   (:send-gripper-grasp-action
-   (act width speed force &key (wait t) (inner 0.005) (outer 0.06))
+   (act width speed force &key (wait t) (inner 0.005) (outer 0.07))
    (let ((goal (instance franka_gripper::GraspActionGoal :init)))
      (send goal :header :stamp (ros::time-now))
      (send goal :goal :width width) ;; [m]
@@ -329,7 +329,7 @@
        (if wait (mapcar #'(lambda (act) (send act :wait-for-result)) acts))
        )))
   (:start-grasp
-   (arm &key (effort 80.0) (tm 500) (wait nil)) ;; TODO :arms is not implemented
+   (arm &key (width 0.0)(effort 80.0) (tm 500) (wait nil) (inner 0.005) (outer 0.06)) ;; TODO :arms is not implemented
    (let (acts)
      (case
          arm
@@ -340,15 +340,15 @@
      (when acts
        (dolist (act acts)
          (send self :send-gripper-grasp-action act
-               0.0 (/ (* 1000 0.08) tm) effort :wait nil))
+               width (/ (* 1000 0.08) tm) effort :wait nil :inner inner :outer outer))
        (if wait (mapcar #'(lambda (act) (send act :wait-for-result)) acts))
        )))
   (:stop-grasp
-   (arm &key (wait nil)) ;; TODO :arms is not implemented
+   (arm &key (wait nil) (width 0.08)) ;; TODO :arms is not implemented
    (unless (memq arm '(:larm :rarm :arms))
      (error "you must specify arm ~A from ~A" (car args) '(:larm :rarm :arms))
      (return-from :stop-grasp nil))
-   (send self :move-gripper arm 0.08 :tm 500 :wait wait)
+   (send self :move-gripper arm width :tm 500 :wait wait)
    )
   (:move-gripper
    (arm pos &key (effort 25) (tm 500) (timeout 5000) (wait nil))  ;; TODO :arms is not implemented
