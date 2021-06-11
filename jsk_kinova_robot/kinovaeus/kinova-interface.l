@@ -816,6 +816,25 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
   )
 
 ;; Remove below when below is merged
+;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/460
+(defun controller-result-error-to-string (i)
+  (elt '(SUCCESSFUL INVALID_GOAL INVALID_JOINTS OLD_HEADER_TIMESTAMP PATH_TOLERANCE_VIOLATED GOAL_TOLERANCE_VIOLATED) (* -1 i)))
+
+(defmethod controller-action-client
+  (:action-result-cb
+   (msg)
+   ;; The following error messages will not appear for the first (send *ri* :angle-vector)
+   ;; To display it, use :wait-interpolation or (ros::spin-once groupname)
+   (let ((error-code (send (send msg :result) :error_code)))
+     (when (< error-code 0)
+       ;; Remove the following two lines when below is merged
+       ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/460
+       (ros::ros-error "~A~%" (send (send msg :result) :error_string))
+       (ros::ros-error "error_code: ~A~%" (cons error-code (controller-result-error-to-string error-code)))
+       (ros::ros-error "For detail, see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_kinova_robot/README.md#trouble-shooting")))
+   (send-super :action-result-cb msg)))
+
+;; Remove below when below is merged
 ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/456
 (defun pos-list-interpolation
   (pos-list ;; (list pos_1 pos_2 ... pos_N), pos_i is float-vector
