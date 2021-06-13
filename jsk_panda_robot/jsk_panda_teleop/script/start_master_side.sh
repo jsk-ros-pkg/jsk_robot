@@ -13,7 +13,7 @@ function init_device() {
 }
 
 function start_master_launch () {
-    roslaunch franka_jsk_teleop master_side.launch
+    roslaunch jsk_panda_teleop master_side.launch
 }
 
 init_ros_ip
