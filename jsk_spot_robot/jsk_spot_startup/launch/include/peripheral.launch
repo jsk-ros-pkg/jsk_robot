@@ -12,11 +12,14 @@
     </include>
 
     <!-- Respeaker -->
+    <!--
+    Currently, scripts in the spot workspace runs with python3, So until respeaker_node can run in python3 it is disabled
     <node
         pkg="respeaker_ros"
         type="respeaker_node.py"
         name="respeaker_node"
         if="$(arg use_respeaker)"
         />
+    -->
 
 </launch>
