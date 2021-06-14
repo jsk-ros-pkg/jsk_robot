@@ -20,10 +20,12 @@
     uri: https://github.com/sktometometo/jsk_recognition.git
     version: develop/spot
 # Some TTS and STT nodes and 3rdparty drivers are required
+#  and until PR below are merged, we need to use develop branch
+#   - https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/258
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
-    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-    version: master
+    uri: https://github.com/sktometometo/jsk_3rdparty.git
+    version: develop/spot
 # Until https://github.com/jsk-ros-pkg/jsk_common/pull/1685 is merged, this patch is
 # required to build spoteus_demo
 - git:
@@ -36,3 +38,9 @@
     local-name: spot-ros
     uri: https://github.com/sktometometo/spot_ros.git
     version: develop/spot
+# geometry2 with python3 version is required for spot_ros
+# according to http://www.clearpathrobotics.com/assets/guides/melodic/spot-ros/ros_setup.html
+- git:
+    local-name: geometry2
+    uri: https://github.com/ros/geometry2.git
+    version: 0.6.5
