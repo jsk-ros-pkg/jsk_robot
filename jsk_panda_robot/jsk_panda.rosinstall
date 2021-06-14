@@ -1,0 +1,20 @@
+# This file is for work space in pand PC.
+# Currently .rosintall is shared with user PC's one.
+
+
+# Wait until https://github.com/jsk-ros-pkg/jsk_robot/pull/1343 to be merged
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/ykawamura96/jsk_robot.git
+    version: add_panda_robot
+
+# Needed for using haptics devices
+- git:
+  local-name: phantom_drivers
+  uri: https://github.com/ykawamura96/Geomagic_Touch_ROS_Drivers.git
+  version: dual_phantom
+
+- git:
+    local-name: franka_ros
+    uri: https://github.com/ykawamura96/franka_ros.git
+    version: add_dual_arm_impedance_controller
