@@ -44,3 +44,7 @@
     local-name: geometry2
     uri: https://github.com/ros/geometry2.git
     version: melodic-devel
+# coral_usb_ros is required for detections
+- git:
+    local-name: coral_usb_ros
+    uri: https://github.com/knorth55/coral_usb_ros.git
