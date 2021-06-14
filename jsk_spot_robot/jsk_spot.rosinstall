@@ -43,4 +43,4 @@
 - git:
     local-name: geometry2
     uri: https://github.com/ros/geometry2.git
-    version: 0.6.5
+    version: melodic-devel
