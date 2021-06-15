@@ -1,0 +1,9 @@
+<launch>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/move_base_params.yaml" command="load" />
+    <rosparam file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/navfn_ros_params.yaml" command="load" />
+    <rosparam file="$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/teb_local_planner_params.yaml" command="load" />
+  </node>
+</launch>

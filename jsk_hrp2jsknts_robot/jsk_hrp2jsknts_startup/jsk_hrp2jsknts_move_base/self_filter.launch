@@ -1,0 +1,17 @@
+<launch>
+  <group ns="self_filter">
+    <node pkg="robot_self_filter" type="self_filter" name="self_filter">
+      <!-- <remap from="cloud_in" to="point_cloud_xyz/points"/> -->
+      <remap from="cloud_in" to="/camera_remote/depth_registered/points"/>
+      <remap from="cloud_out" to="/camera_remote/depth_registered/points_self_filtered"/>
+      <remap from="robot_description" to="/robot_description"/>
+      <rosparam>
+        sensor_frame: "" ## There are no shadow points
+        use_rgb: true
+        keep_organized: true
+        subsample_value: 0.0
+      </rosparam>
+      <rosparam command='load' file='$(find jsk_hrp2jsknts_startup)/jsk_hrp2jsknts_move_base/self_filter.yaml'/>
+    </node>
+  </group>
+</launch>
