@@ -138,6 +138,37 @@ wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msg
 wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
+5. (optional) If you want to use [`ros_speech_recognition`](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/ros_speech_recognition) with NAO microphone
+
+Please check the version of ros-$ROS_DISTRO-ros-speech-recognition
+
+```
+sudo apt update
+apt search ros-$ROS_DISTRO-ros-speech-recognition
+```
+
+If version of ros_speech_recognition < 2.1.18
+
+```
+cd catkin_ws/src
+mkdir ros_speech_recognition
+cd ros_speech_recognition
+git init
+git config core.sparsecheckout true
+git remote add origin https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+echo ros_speech_recognition > .git/info/sparse-checkout
+git pull origin master
+cd ../..
+catkin build ros_speech_recognition
+source devel/setup.bash
+```
+
+If version of ros_speech_recognition >=2.1.18
+```
+sudo apt-get install ros-$ROS_DISTRO-ros-speech-recognition
+```
+
+
 ## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  

@@ -100,3 +100,14 @@ Related nodes: `/joy_client`, `joy_node`, `/teleop_twist_joy`
 ![](../doc/img/naoqi-dashboard.png)
 
 Related nodes: `/naoqi_dashboard`, `/naoqi_dashboard_aggregator`, `/tf_monitor`
+
+### ros_speech_recognition
+
+When you want to use [`ros_speech_recognition`](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/ros_speech_recognition) with NAO microphone, please set `launch_ros_sppech_recognition` "true"
+
+You can change `audio_org`(default="/nao_robot/naoqi_driver/audio"), `depth`, `sample_rate`(please ssh your robot and check by `"pactl list short sinks"`), `engine`(default="Google"), `language`(default="ja-JP"), `dynamic_energy_threshold` and `energy_threshold`.
+
+Example of usage
+```
+roslaunch jsk_nao_startup jsk_nao_startup.launch network_interface:=enp4s0 launch_ros_speech_recognition:=true audio_org:=/nao_robot/naoqi_driver/audio
+```
