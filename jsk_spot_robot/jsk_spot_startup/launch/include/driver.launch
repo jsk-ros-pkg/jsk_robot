@@ -48,4 +48,11 @@
     <remap from="cmd_vel_out" to="spot/cmd_vel_unsmoothed"/>
   </node>
 
+  <node
+      pkg="laptop_battery_monitor"
+      type="laptop_battery.py"
+      name="laptop_battery"
+      >
+  </node>
+
 </launch>
