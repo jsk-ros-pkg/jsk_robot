@@ -61,6 +61,7 @@
             /is_speeching
             /joint_states
             /joy_head/cmd_vel
+            /laptop_charge
             /robotsound
             /robotsound/cancel
             /robotsound/feedback
