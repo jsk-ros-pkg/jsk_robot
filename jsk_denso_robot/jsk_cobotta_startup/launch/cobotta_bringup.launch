@@ -1,0 +1,14 @@
+<launch>
+  <arg name="ip_address" default="192.168.0.1" />
+
+  <include file="$(find denso_robot_control)/launch/denso_robot_control.launch">
+    <arg name="robot_name" value="cobotta"/>
+    <arg name="ip_address" value="$(arg ip_address)"/>
+    <arg name="send_format" value="0" />
+    <arg name="recv_format" value="2" />
+  </include>
+
+  <include file="$(find bcap_service)/launch/bcap_service.launch">
+    <arg name="ip_address" value="$(arg ip_address)"/>
+  </include>
+</launch>

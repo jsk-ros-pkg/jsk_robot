@@ -1,0 +1,11 @@
+- git:
+    local-name: jsk_robot
+    uri: https://github.com/k-okada/jsk_robot.git
+    version: add_cobotta
+- git:
+    local-name: denso_cobotta_ros
+    uri: https://github.com/DENSORobot/denso_cobotta_ros
+- git:
+    local-name: denso_robot_ros
+    uri: https://github.com/k-okada/denso_robot_ros
+    version: use_tinyxml2
