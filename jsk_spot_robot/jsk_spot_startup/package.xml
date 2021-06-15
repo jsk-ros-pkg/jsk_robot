@@ -13,6 +13,7 @@
   <build_depend>roslaunch</build_depend>
   <build_depend>roslint</build_depend>
 
+  <exec_depend>laptop_battery_monitor</exec_depend>
   <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>roslaunch</exec_depend>
   <exec_depend>rviz</exec_depend>
