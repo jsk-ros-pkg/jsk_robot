@@ -16,4 +16,4 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-roslaunch jsk_panda_teleop panda_play.launch bagfile_name:="$FILENAMES" rosbag_option:="$OPTIONS"
+roslaunch jsk_panda_startup panda_play.launch bagfile_name:="$FILENAMES" rosbag_option:="$OPTIONS"
