@@ -1,0 +1,3 @@
+<launch>
+  <test pkg="kinovaeus" type="test-kinova.l" test-name="kinova_lisp" time-limit="300" />
+</launch>
