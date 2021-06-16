@@ -60,5 +60,6 @@ if(CATKIN_ENABLE_TESTING)
   # Test with Kinematic Simulator
   add_rostest(test/test-kinova-kinematic-simulator.test)
   # Test with Gazebo and MoveIt!
-  add_rostest(test/test-kinova-moveit.test)
+  # TODO: We can use this test after https://github.com/Kinovarobotics/ros_kortex/pull/141 is merged
+  # add_rostest(test/test-kinova-moveit.test)
 endif()

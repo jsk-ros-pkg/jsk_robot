@@ -425,6 +425,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
                                          (list (/ tm 1000.0))
                                          0.001))
          ;; TODO: Set vel and acc
+         ;; https://github.com/jsk-ros-pkg/jsk_robot/pull/1313#issuecomment-771768492
          (setq trajpoints
                (mapcar #'(lambda (pos vel tim acc)
                            ;; (list pos vel tim acc)) ;; ideal
