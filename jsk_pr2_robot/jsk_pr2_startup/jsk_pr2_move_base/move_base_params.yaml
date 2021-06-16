@@ -1,5 +1,5 @@
 # Oscillation
-oscillation_timeout: 0.0  # infinite because recovery behavior is disabled
+oscillation_timeout: 5.0  # 0.0 means infinite, which is useful when recovery behavior is disabled
 oscillation_distance: 0.5
 
 # Global Planner

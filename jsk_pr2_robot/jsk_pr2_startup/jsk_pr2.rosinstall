@@ -1,64 +1,124 @@
 - git:
     local-name: PR2/app_manager
-    uri: https://github.com/furushchev/app_manager
-    version: indigo
+    uri: https://github.com/PR2/app_manager
+    version: kinetic-devel
 - git:
-    local-name: PR2/pr2_navigation
-    uri: https://github.com/PR2/pr2_navigation.git
-    version: hydro-devel
+    local-name: PR2/pr2_common
+    uri: https://github.com/PR2/pr2_common.git
+    version: pr1040
 - git:
-    local-name: code-iai/snap_map_icp
-    uri: https://github.com/code-iai/snap_map_icp.git
-    version: hydro-devel
+    local-name: PR2/pr2_controllers
+    uri: https://github.com/PR2/pr2_controllers.git
+    version: 8de51270e0361f10495de06f83ce85f43490af35
 - git:
-    local-name: iai_common_msgs
+    local-name: PR2/pr2_self_test
+    uri: https://github.com/PR2/pr2_self_test.git
+    version: pr1040
+- git:
+    local-name: RobotWebTools/rosbridge_suite
+    uri: https://github.com/RobotWebTools/rosbridge_suite.git
+    version: 0.11.9
+- git:
+    local-name: code-iai/iai_common_msgs
     uri: https://github.com/code-iai/iai_common_msgs.git
     version: 0.0.6
 - git:
+    local-name: code-iai/snap_map_icp
+    uri: https://github.com/code-iai/snap_map_icp.git
+    version: da2d590c5b4923c0776d990bb3ba9ec8e9122ecf
+- git:
+    local-name: euslisp/Euslisp
+    uri: https://github.com/euslisp/Euslisp.git
+    version: f70dd58cebcd7fe775dff303c1155858cd3750b9
+- git:
+    local-name: euslisp/jskeus
+    uri: https://github.com/euslisp/jskeus.git
+    version: ecfc50e528f04afadc4f79847e92ac26863fa8bf
+- git:
+    local-name: jsk-ros-pkg/geneus
+    uri: https://github.com/jsk-ros-pkg/geneus.git
+    version: 5fd8ee51fc0b7fcfdaabf458bd9b44428499c4a2
+- git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-    version: 2.1.6
+    version: pr1040
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: 2.2.6
-- git:
-    local-name: jsk-ros-pkg/jsk_common_msgs
-    uri: https://github.com/jsk-ros-pkg/jsk_common_msgs.git
-    version: 4.3.1
-- git:
-    local-name: jsk-ros-pkg/jsk_control
-    uri: https://github.com/jsk-ros-pkg/jsk_control.git
-    version: 0.1.14
+    version: pr1040
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: 0.0.4
-- git:
-    local-name: jsk-ros-pkg/jsk_model_tools
-    uri: https://github.com/jsk-ros-pkg/jsk_model_tools.git
-    version: 0.3.5
+    version: pr1040
 - git:
     local-name: jsk-ros-pkg/jsk_planning
     uri: https://github.com/jsk-ros-pkg/jsk_planning.git
-    version: 0.1.10
+    version: 65ba806c276a3558cb2df9d45494f26bd01dad0d
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    version: 0.3.13
+    version: 2ed81c579507b9dcddd4c33f5a8474482fd0c5d7
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    version: 1.2.4
+    version: master 
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: pr1040
 - git:
     local-name: jsk-ros-pkg/jsk_roseus
     uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
-    version: 1.6.3
+    version: 0d17efcc43504037a9ba8b3facfc3195be3aaa39
 - git:
     local-name: jsk-ros-pkg/jsk_smart_apps
     uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
-    version: 0.0.2
+    version: 57a355333a4f001d219003b52ecefdb0ff5b0acf
 - git:
     local-name: jsk-ros-pkg/jsk_visualization
     uri: https://github.com/jsk-ros-pkg/jsk_visualization.git
-    version: 2.1.3
+    version: master 
+- git:
+    local-name: knorth55/app_manager_utils
+    uri: https://github.com/knorth55/app_manager_utils
+    version: master
+- git:
+    local-name: locusrobotics/catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 0.5.2
+- git:
+    local-name: ros-drivers/audio_common
+    uri: https://github.com/ros-drivers/audio_common.git
+    version: master 
+- git:
+    local-name: ros-drivers/prosilica_driver
+    uri: https://github.com/ros-drivers/prosilica_driver
+    version: 3991df761ce0400b9993166c09a2529ef684cdc1
+- tar:
+    local-name: ros/common_msgs/visualization_msgs
+    uri: https://github.com/ros-gbp/common_msgs-release/archive/release/kinetic/visualization_msgs/1.12.7-0.tar.gz
+    version: common_msgs-release-release-kinetic-visualization_msgs-1.12.7-0
+- git:
+    local-name: ros-visualization/interactive_markers
+    uri: https://github.com/ros-visualization/interactive_markers.git
+    version: noetic-devel
+- tar:
+    local-name: ros/ros_comm/message_filters
+    uri: https://github.com/ros-gbp/ros_comm-release/archive/release/kinetic/message_filters/1.12.14-0.tar.gz
+    version: ros_comm-release-release-kinetic-message_filters-1.12.14-0
+- tar:
+    local-name: ros/ros_comm/topic_tools
+    uri: https://github.com/ros-gbp/ros_comm-release/archive/release/kinetic/topic_tools/1.12.14-0.tar.gz
+    version: ros_comm-release-release-kinetic-topic_tools-1.12.14-0
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/strands-project/mongodb_store
+    version: 0.4.5
+- git:
+    local-name: tork-a/roswww
+    uri: https://github.com/tork-a/roswww.git
+    version: pr1040
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: pr1040

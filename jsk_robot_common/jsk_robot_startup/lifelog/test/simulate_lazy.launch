@@ -1,0 +1,55 @@
+<launch>
+  <rosparam>
+    robot:
+      type: sample_robot
+      name: test
+  </rosparam>
+
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb_local.launch"/>
+
+  <node name="driver1"
+        pkg="jsk_robot_startup" type="lazy_publisher.py"/>
+
+  <node name="driver2"
+        pkg="jsk_robot_startup" type="lazy_publisher.py"/>
+
+  <node name="driver3"
+        pkg="jsk_robot_startup" type="lazy_publisher.py"/>
+
+  <node name="process1"
+        pkg="topic_tools" type="relay"
+        args="driver1/output process1/output">
+    <rosparam>
+      lazy: true
+    </rosparam>
+  </node>
+
+  <node name="process2"
+        pkg="topic_tools" type="relay"
+        args="driver2/output process2/output">
+    <rosparam>
+      lazy: true
+    </rosparam>
+  </node>
+
+  <node name="process34_manager"
+        pkg="nodelet" type="nodelet" args="manager" output="screen"/>
+
+  <node name="process3"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_topic_tools/Relay process34_manager">
+    <remap from="~input" to="process2/output"/>
+  </node>
+
+  <node name="process4"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_topic_tools/Relay process34_manager">
+    <remap from="~input" to="process3/output"/>
+  </node>
+
+  <node name="main"
+        pkg="jsk_robot_startup" type="lazy_subscriber.py"
+        output="screen">
+    <remap from="~input" to="process4/output"/>
+  </node>
+</launch>

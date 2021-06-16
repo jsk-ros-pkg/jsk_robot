@@ -45,6 +45,7 @@
   <test_depend>pr2_gazebo</test_depend>
 
   <export>
+    <app_manager app_dir="${prefix}/apps"/>
     <nodelet plugin="${prefix}/lifelog_nodelet_plugins.xml" />
   </export>
 </package>
