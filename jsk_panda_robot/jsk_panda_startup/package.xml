@@ -37,4 +37,5 @@
   <run_depend>rwt_image_view</run_depend>
 
   <run_depend>openni2_launch</run_depend>
+  <run_depend>jsk_data</run_depend>
 </package>

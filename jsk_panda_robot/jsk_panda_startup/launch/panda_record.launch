@@ -20,14 +20,14 @@
     <arg name="save_multisense" value="$(arg save_multisense)" />
     <arg if = "$(arg quiet)" name="other_options" value="-q"/>
     <arg name="other_topics" value="$(arg other_topics)
-				                    /camera/depth/camera_info
+				                            /camera/depth/camera_info
                                     /camera/depth/image_raw/compressedDepth
                                     /camera/rgb/camera_info
                                     /camera/rgb/image_raw/compressed
-				                    /right_camera/camera_info
-				                    /right_camera/image_raw/compressed
-				                    /left_camera/camera_info
-				                    /left_camera/image_raw/compressed
+				                            /right_camera/camera_info
+        				                    /right_camera/image_raw/compressed
+				                            /left_camera/camera_info
+				                            /left_camera/image_raw/compressed
                                     /dual_panda/larm/status_overlay
                                     /dual_panda/rarm/status_overlay
                                     /dual_panda/larm/franka_gripper/joint_states
