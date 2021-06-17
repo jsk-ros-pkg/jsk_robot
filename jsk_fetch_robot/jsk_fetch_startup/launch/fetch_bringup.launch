@@ -12,6 +12,7 @@
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
+  <arg name="fetch_switchbot" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -96,6 +97,11 @@
 
   <!-- twitter -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+
+  <!-- switchbot -->
+  <include file="$(find switchbot_ros)/launch/switchbot.launch" if="$(arg fetch_switchbot)">
+    <arg name="token" value="/var/lib/robot/switchbot_token.txt" />
+  </include>
 
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
