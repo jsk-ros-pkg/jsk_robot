@@ -37,8 +37,13 @@
      (setq r (send-super* :inverse-kinematics target-coords :avoid-collision-distance avoid-collision-distance :warnp warnp :dump-command dump-command args))
      (unless r ;;
        (format *error-output* "; failed for normal ik, starting from relaxed position~%")
-       (let  ((current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
-         (send-super* :inverse-kinematics current-coords :rotation-axis nil :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200 :avoid-collision-distance avoid-collision-distance args)
+       (let*  ((move-target (cadr (memq :move-target args)))
+               (current-coords (if (listp move-target)
+                                 (mapcar #'(lambda (x) (send x :copy-worldcoords)) move-target)
+                                 (send move-target :copy-worldcoords)))
+               (rotation-axis (if (listp current-coords) (make-list (length current-coords)) nil)))
+         (send-super* :inverse-kinematics current-coords :move-target move-target :rotation-axis rotation-axis :avoid-nspace-gain 0.1 :avoid-weight-gain 0.1 :stop 200
+                      :avoid-collision-distance avoid-collision-distance args)
          (setq r (send-super* :inverse-kinematics target-coords :warnp warnp :dump-command dump-command args))
          (if (and (null r) (or (null (memq :revert-if-fail args)) (cadr (memq :revert-if-fail args))))
              ;; when fail and :rever-if-fail is nil
@@ -46,12 +51,20 @@
          ))
      (unless r ;;
        (format *error-output* "; failed for normal ik, try to move arms very slowly~%")
-       (let  ((step 0.0)
-              (current-coords (send (cadr (memq :move-target args)) :copy-worldcoords)))
+       (let*  ((step 0.0)
+               (move-target (cadr (memq :move-target args)))
+               (current-coords (if (listp move-target)
+                                 (mapcar #'(lambda (x) (send x :copy-worldcoords)) move-target)
+                                 (send move-target :copy-worldcoords))))
          (setq r t)
          (while (and r (<= step 1.0))
-           (setq r (send-super* :inverse-kinematics (midcoords step current-coords target-coords) :avoid-collision-distance avoid-collision-distance :warnp warnp :dump-command dump-command args))
-           (incf step 0.01))
+           (let ((mid-coords (if (listp current-coords)
+                               (mapcar #'(lambda (x) (midcoords step (car x) (cadr x)))
+                                       (mapcar #'list current-coords target-coords))
+                               (midcoords step current-coords target-coords))))
+             (setq r (send-super* :inverse-kinematics mid-coords
+                                  :move-target move-target :avoid-collision-distance avoid-collision-distance :warnp warnp :dump-command dump-command args))
+             (incf step 0.01)))
          (unless r (send self :angle-vector prev-av))))
      (unless r ;; start from ik-frendly position
        (format *error-output* "; failed for slow ik, try to start from prepared poses~%")
