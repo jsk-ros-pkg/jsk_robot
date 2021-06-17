@@ -131,4 +131,22 @@
         args="compressedDepth in:=/spot/depth/right/image raw out:=/spot/depth/right/image"
         if="$(arg use_decompress)"
         />
+
+    <!-- Create object detection visuzaliation image and comress it -->
+    <node
+        pkg="jsk_perception"
+        type="draw_rects"
+        name="object_detection_visualizer"
+        >
+        <remap from="~input" to="/dual_fisheye_to_panorama/output/quater" />
+        <remap from="~input/rects" to="/spot_recognition/rects" />
+        <remap from="~input/class" to="/spot_recognition/class" />
+        <remap from="~output" to="/spot_recognition/object_detection_image" />
+    </node>
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="detection_visualization_compress"
+        args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
+        />
 </launch>
