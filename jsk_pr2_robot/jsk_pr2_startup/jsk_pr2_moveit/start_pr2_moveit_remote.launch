@@ -1,0 +1,59 @@
+<launch>
+  <arg name="USE_LASER_AND_KINECT" default="false" />
+  <arg name="USE_LASER" default="false" />
+  <arg name="USE_KINECT" default="true" />
+  <arg name="RGB_CAMERA_INFO" value="/kinect_head/rgb/camera_info" />
+  <arg name="RGB_IMAGE" value="/kinect_head/rgb/image_rect_color" />
+  <arg name="RGB_IMAGE_REMOTE" value="/kinect_head_remote/rgb/image_rect_color" />
+  <arg name="DEPTH_CAMERA_INFO" value="/kinect_head/depth_registered/camera_info" />
+  <arg name="DEPTH_IMAGE" value="/kinect_head/depth_registered/image_rect" />
+  <arg name="DEPTH_IMAGE_REMOTE" value="/kinect_head_remote/depth_registered/image_rect" />
+  <arg name="POINT_CLOUD_REMOTE" value="/kinect_head_remote/depth_registered/points" />
+  
+  <!-- select sensor -->
+  <arg if="$(arg USE_LASER_AND_KINECT)" name="sensor_params_file" value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_remote.yaml" />
+  <arg if="$(arg USE_LASER)"
+       name="sensor_params_file"
+       value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_laser.yaml" />
+  <arg if="$(arg USE_KINECT)"
+       name="sensor_params_file"
+       value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_kinect_remote.yaml" />
+
+  <!-- publish compressed point cloud -->
+  <node name="rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg RGB_IMAGE) out:=$(arg RGB_IMAGE_REMOTE)" />
+  <node name="depth_decompress" pkg="image_transport" type="republish"
+        args="compressedDepth in:=$(arg DEPTH_IMAGE) out:=$(arg DEPTH_IMAGE_REMOTE)" />
+  <node pkg="nodelet" type="nodelet" name="point_cloud_xyzrgb"
+        args="standalone depth_image_proc/point_cloud_xyzrgb" output="screen" >
+    <remap from="rgb/camera_info" to="$(arg RGB_CAMERA_INFO)" />
+    <remap from="rgb/image_rect_color" to="$(arg RGB_IMAGE_REMOTE)" />
+    <remap from="depth_registered/image_rect" to="$(arg DEPTH_IMAGE_REMOTE)" />
+    <remap from="depth_registered/points" to="$(arg POINT_CLOUD_REMOTE)" />
+    <rosparam>
+      queue_size: 100
+    </rosparam>
+  </node>
+
+  <include file="$(find pr2_moveit_config)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="false"/>
+  </include>
+
+  <!--node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 odom_combined base_footprint 100" /-->
+  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="true"/>
+  </node-->
+  <!--node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" /-->
+
+  <include file="$(find pr2_moveit_config)/launch/move_group.launch">
+    <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="moveit_octomap_sensor_params_file"
+         value="$(arg sensor_params_file)" />
+  </include>
+
+  <!-- <include file="$(find pr2_moveit_config)/launch/moveit_rviz.launch"> -->
+  <!--   <arg name="config" value="true"/> -->
+  <!-- </include> -->
+
+  <!--include file="$(find pr2_moveit_config)/launch/default_warehouse_db.launch" /-->
+</launch>
