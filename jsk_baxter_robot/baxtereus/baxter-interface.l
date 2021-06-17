@@ -177,6 +177,8 @@
 
   (:command-grasp
    (cmd arm &key ((:pos pos) nil))
+   ;; command-grasp is not supported in kinematics simulator
+   (if (send self :simulation-modep) (return-from :command-grasp nil))
    (ros::spin-once)
    (dolist (tmp-arm (if (eq arm :arms) (list :larm :rarm) (list arm)))
      (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
