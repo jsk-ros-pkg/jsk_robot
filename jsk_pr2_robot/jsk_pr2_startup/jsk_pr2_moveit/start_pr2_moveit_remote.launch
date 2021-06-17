@@ -25,7 +25,7 @@
   <node name="depth_decompress" pkg="image_transport" type="republish"
         args="compressedDepth in:=$(arg DEPTH_IMAGE) out:=$(arg DEPTH_IMAGE_REMOTE)" />
   <node pkg="nodelet" type="nodelet" name="point_cloud_xyzrgb"
-        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager)" output="screen" >
+        args="standalone depth_image_proc/point_cloud_xyzrgb" output="screen" >
     <remap from="rgb/camera_info" to="$(arg RGB_CAMERA_INFO)" />
     <remap from="rgb/image_rect_color" to="$(arg RGB_IMAGE_REMOTE)" />
     <remap from="depth_registered/image_rect" to="$(arg DEPTH_IMAGE_REMOTE)" />
