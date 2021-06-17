@@ -1,14 +1,16 @@
-language: c++
+sudo: true
+dist: bionic
+language: python
+services:
+  - docker
 cache:
   apt: true
   pip: true
   directories:
     - $HOME/.ccache
+    - $HOME/.cache/pip
     - $HOME/apt-cacher-ng
-sudo: required
-services:
-  - docker
-dist: trusty
+    - $HOME/.ros/data
 notifications:
   email:
     on_success: always
