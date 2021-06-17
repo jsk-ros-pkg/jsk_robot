@@ -97,6 +97,11 @@
   <!-- twitter -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
 
+  <!-- switchbot -->
+  <include file="$(find switchbot_ros)/launch/switchbot.launch">
+    <arg name="token" value="/var/lib/robot/switchbot_token.txt" />
+  </include>
+
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
     <arg name="use_applist" value="false" /> <!-- use plugin -->
