@@ -25,6 +25,7 @@
   <run_depend>pr2_computer_monitor</run_depend>
   <run_depend>robot_pose_publisher</run_depend>
   <run_depend>rviz</run_depend>
+  <run_depend>switchbot_ros</run_depend>
   <run_depend>touchegg</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>voice_text</run_depend>
