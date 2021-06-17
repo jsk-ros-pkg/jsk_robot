@@ -150,6 +150,8 @@
 
   (:go-grasp
    (&optional (arm :arms) &key (pos 0) (effort 50) (wait t))
+   ;; go-grasp is not supported in kinematics simulator
+   (if (send self :simulation-modep) (return-from :go-grasp nil))
    (let (goal
 	 (clients (case arm
 		    (:larm (list left-gripper-action))
