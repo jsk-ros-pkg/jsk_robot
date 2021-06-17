@@ -1,4 +1,5 @@
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
+(load "package://switchbot_ros/scripts/switchbot.l")
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "jsk_robot_startup")
@@ -167,7 +168,7 @@
         (ros::ros-error "Enable base breaker")))
     success))
 
-(defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1))
+(defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1) (control-switchbot :api))
   ;; go to kitchen
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
@@ -187,20 +188,27 @@
            (ros::get-param "/move_base/local_costmap/inflater/inflation_radius")))
     (if initial-light-on
       (send *ri* :speak-jp "すでに電気がついています。" :wait t)
-      (progn
+      (cond
+       ((or (eq control-switchbot :en) (eq control-switchbot :jp))
         ;; Look at Google Home
         (send *fetch* :head :neck-y :joint-angle 89)
         (send *fetch* :head :neck-p :joint-angle 25)
         (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
         (send *ri* :wait-interpolation)
         ;; The accuracy of Google Home recognition is better in English than in Japanese.
-        ;; (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-        ;; (send *ri* :speak-jp "電気をつけて" :wait t)
-        (send *ri* :speak "OK, Google" :wait t)
-        (send *ri* :speak "Turn on the light." :wait t)
+        (if (eq control-switchbot :en)
+          (progn
+            (send *ri* :speak "OK, Google" :wait t)
+            (send *ri* :speak "Turn on the light." :wait t))
+          (progn
+            (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+            (send *ri* :speak-jp "電気をつけて" :wait t)))
         (send *fetch* :head :neck-y :joint-angle 0)
         (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-        (send *ri* :wait-interpolation)))
+        (send *ri* :wait-interpolation))
+       ((eq control-switchbot :api)
+        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn")
+        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn"))))
     (unix::sleep 1)
     ;; change the inflation_radius
     ;; Increase the global inflation to generate a path that is less sensitive to differences between the map shape and the actual object placement.
@@ -256,19 +264,27 @@
     (setq success-auto-dock (auto-dock :n-trial n-dock-trial))
     (when (and success-auto-dock (not initial-light-on))
       (unix::sleep 1)
-      ;; Look at Google Home
-      (send *fetch* :head :neck-y :joint-angle 89)
-      (send *fetch* :head :neck-p :joint-angle 25)
-      (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-      (send *ri* :wait-interpolation)
-      ;; The accuracy of Google Home recognition is better in English than in Japanese.
-      ;; (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-      ;; (send *ri* :speak-jp "電気を消して" :wait t)
-      (send *ri* :speak "OK, Google" :wait t)
-      (send *ri* :speak "Turn off the light." :wait t)
-      (send *fetch* :head :neck-y :joint-angle 0)
-      (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-      (send *ri* :wait-interpolation))
+      (cond
+       ((or (eq control-switchbot :en) (eq control-switchbot :jp))
+        ;; Look at Google Home
+        (send *fetch* :head :neck-y :joint-angle 89)
+        (send *fetch* :head :neck-p :joint-angle 25)
+        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+        (send *ri* :wait-interpolation)
+        ;; The accuracy of Google Home recognition is better in English than in Japanese.
+        (if (eq control-switchbot :en)
+          (progn
+            (send *ri* :speak "OK, Google" :wait t)
+            (send *ri* :speak "Turn off the light." :wait t))
+          (progn
+            (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+            (send *ri* :speak-jp "電気を消して" :wait t)))
+        (send *fetch* :head :neck-y :joint-angle 0)
+        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+        (send *ri* :wait-interpolation))
+       ((eq control-switchbot :api)
+        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff")
+        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff"))))
     (unix::sleep 5)
     ;; change the inflation_radius
     (ros::set-dynamic-reconfigure-param
