@@ -1,0 +1,11 @@
+string command_type  # eihter 'reset', 'act', 'get_trajectory'
+sensor_msgs/Image[]  input_images
+float64[] input_vector
+int64 trajectory_steps
+---
+bool ok
+float64 calc_time
+float64 end_prob
+float64[] action
+std_msgs/Float64MultiArray trajectory
+

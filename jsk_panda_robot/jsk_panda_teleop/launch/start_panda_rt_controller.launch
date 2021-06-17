@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<launch>
+  
+  <!-- uvc_cam -->
+  <!-- TODO: Use udev rule -->
+  <arg name="right_camera_dev" default="/dev/video0" />
+  <arg name="left_camera_dev" default="/dev/video2" />
+  <!--Be sure to pass the IPs of your pandas like robot_ips:={panda_1/robot_ip: <my_ip_1>, panda_2/robot_ip: <my_ip_2>}   -->
+
+  <!-- argments -->
+  <arg name="robot_id" default="dual_panda" />
+  <arg name="rviz" default="true" />
+  <arg name="rarm_ip" default="172.16.0.100"/>
+  <arg name="larm_ip" default="172.16.0.200"/>
+  <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
+  <arg name="start_bilateral" default="false" doc="Set this value True to immidiently start Teleop-connection"/>
+  <!-- controller for arms -->
+  <include file="$(find franka_control)/launch/franka_combined_control.launch" >
+    <!-- <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" /> -->
+    <arg name="robot"     value="$(find panda_eus)/models/dual_panda_with_handeye.urdf.xacro" />
+    <arg name="robot_id"  value="$(arg robot_id)" />
+    <arg name="robot_ips" value="$(arg robot_ips)" />
+    <arg name="hw_config_file"   value="$(find jsk_pand_teleop)/config/dual_panda_control_node.yaml"/>
+    <arg name="controllers_file" value="$(find jsk_pand_teleop)/config/dual_panda_controllers.yaml" />
+    <arg name="controllers_to_start"     value="rarm_state_controller larm_state_controller dual_arm_cartesian_pose_controller"/>
+    <arg name="joint_states_source_list" value="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]"/>
+  </include>
+
+  <!-- controller for grippers  -->
+  <group ns="$(arg robot_id)">
+    <group ns="rarm">
+      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
+        <arg name="robot_ip" value="$(arg rarm_ip)" />
+        <arg name="stop_at_shutdown" value="true" />
+        <arg name="arm_id" value="rarm" />
+      </include>
+    </group>
+    <group ns="larm">
+      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
+        <arg name="robot_ip" value="$(arg larm_ip)" />
+        <arg name="stop_at_shutdown" value="true" />
+        <arg name="arm_id" value="larm" />
+      </include>
+    </group>
+  </group>
+
+  <!-- middle vision -->
+  <include file="$(find openni2_launch)/launch/openni2.launch" />
+
+  <!-- hand eye cameras -->
+  <node name="uvc_camera_left" pkg="uvc_camera" type="uvc_camera_node" output="screen">
+    <remap from="image_raw" to="/left_camera/image_raw"/>
+    <remap from="image_raw/compressed" to="/left_camera/image_raw/compressed"/>
+    <remap from="camera_info" to="/left_camera/camera_info"/>
+    <param name="device" value="$(arg left_camera_dev)"/>
+    <param name="fps" value="30"/>
+    <param name="width" value="640"/>
+    <param name="height" value="360"/>
+    <param name="format" value="rgb"/>
+  </node>
+
+  <node name="uvc_camera_right" pkg="uvc_camera" type="uvc_camera_node" output="screen">
+    <remap from="image_raw" to="/right_camera/image_raw"/>
+    <remap from="image_raw/compressed" to="/right_camera/image_raw/compressed"/>
+    <remap from="camera_info" to="/right_camera/camera_info"/>
+    <param name="device" value="$(arg right_camera_dev)"/>
+    <param name="fps" value="30"/>
+    <param name="width" value="640"/>
+    <param name="height" value="360"/>
+    <param name="format" value="rgb"/>
+  </node>
+
+  <!-- Touch USB to Panda connection -->
+  <node pkg="jsk_pand_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--connect_pose --connect_force" if="$(arg start_bilateral)"/>
+  <node pkg="jsk_pand_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--noconnect_pose --noconnect_force" unless="$(arg start_bilateral)"/>
+
+
+</launch>
