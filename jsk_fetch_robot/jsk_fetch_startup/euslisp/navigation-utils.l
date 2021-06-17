@@ -207,8 +207,9 @@
         (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
         (send *ri* :wait-interpolation))
        ((eq control-switchbot :api)
-        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn")
-        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn"))))
+        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn" :wait t)
+        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn" :wait t)
+        (send *ri* :speak-jp "電気をつけました" :wait t))))
     (unix::sleep 1)
     ;; change the inflation_radius
     ;; Increase the global inflation to generate a path that is less sensitive to differences between the map shape and the actual object placement.
@@ -283,8 +284,9 @@
         (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
         (send *ri* :wait-interpolation))
        ((eq control-switchbot :api)
-        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff")
-        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff"))))
+        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff" :wait t)
+        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff" :wait t)
+        (send *ri* :speak-jp "電気を消しました" :wait t))))
     (unix::sleep 5)
     ;; change the inflation_radius
     (ros::set-dynamic-reconfigure-param
