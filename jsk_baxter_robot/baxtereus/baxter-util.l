@@ -68,7 +68,11 @@
          (unless r (send self :angle-vector prev-av))))
      (unless r ;; start from ik-frendly position
        (format *error-output* "; failed for slow ik, try to start from prepared poses~%")
-       (let* ((move-joints (send-all (cadr (memq :link-list args)) :joint))
+       (let* ((link-list (cadr (memq :link-list args)))
+              (move-joints
+                (if (listp link-list)
+                  (apply #'append (mapcar #'(lambda (x) (send-all x :joint)) link-list))
+                  (send-all link-list :joint)))
               (av (mapcar #'(lambda (j) (send j :joint-angle)) (send self :joint-list)))
               (ik-prepared-poses (send self :ik-prepared-poses)))
          (dolist (pose ik-prepared-poses)
