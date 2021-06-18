@@ -24,8 +24,7 @@
 
   <run_depend>python-scipy</run_depend>
   <run_depend>python-numpy</run_depend>
-  <!-- Waiting until https://github.com/ros/rosdistro/pull/29805 to be merged -->
-  <!-- <run_depend>python-absl-py-pip</run_depend> -->
+  <run_depend>python-absl-py-pip</run_depend>
 
   <run_depend>jsk_teleop_joy</run_depend>
 
