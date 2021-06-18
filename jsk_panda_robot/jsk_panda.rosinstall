@@ -10,9 +10,9 @@
 
 # Needed for using haptics devices
 - git:
-  local-name: phantom_drivers
-  uri: https://github.com/ykawamura96/Geomagic_Touch_ROS_Drivers.git
-  version: dual_phantom
+    local-name: phantom_drivers
+    uri: https://github.com/ykawamura96/Geomagic_Touch_ROS_Drivers.git
+    version: dual_phantom
 
 - git:
     local-name: franka_ros
