@@ -46,6 +46,13 @@ plugins:
       video_title: go_to_kitchen_panorama.avi
       video_topic_name: /dual_fisheye_to_panorama/output
       video_fps: 1.0
+  - name: rviz_video_recorder_plugin
+    type: app_recorder/video_recorder_plugin
+    launch_args:
+      video_path: /tmp
+      video_title: go_to_kitchen_rviz.avi
+      video_topic_name: /rviz/image
+      video_fps: 30.0
   - name: respeaker_audio_recorder_plugin
     type: app_recorder/audio_recorder_plugin
     launch_args:
@@ -98,6 +105,7 @@ plugins:
         - /tmp/go_to_kitchen_head_camera.avi
         - /tmp/go_to_kitchen_object_detection.avi
         - /tmp/go_to_kitchen_panorama.avi
+        - /tmp/go_to_kitchen_rviz.avi
         - /tmp/go_to_kitchen_audio.wav
         - /tmp/go_to_kitchen_rosbag.bag
       upload_file_titles:
@@ -105,6 +113,7 @@ plugins:
         - go_to_kitchen_head_camera.avi
         - go_to_kitchen_object_detection.avi
         - go_to_kitchen_panorama.avi
+        - go_to_kitchen_rviz.avi
         - go_to_kitchen_audio.wav
         - go_to_kitchen_rosbag.bag
       upload_parents_path: fetch_go_to_kitchen
@@ -151,6 +160,7 @@ plugin_order:
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
     - panorama_video_recorder_plugin
+    - rviz_video_recorder_plugin
     - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - result_recorder_plugin
@@ -166,6 +176,7 @@ plugin_order:
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
     - panorama_video_recorder_plugin
+    - rviz_video_recorder_plugin
     - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - result_recorder_plugin
