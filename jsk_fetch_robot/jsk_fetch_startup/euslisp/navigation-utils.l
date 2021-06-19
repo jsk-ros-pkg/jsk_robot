@@ -21,6 +21,38 @@
       (t nil))))
 
 
+(defun store-params ()
+  (defparameter *global-inflation-radius*
+    (ros::get-param "/move_base/global_costmap/inflater/inflation_radius"))
+  (defparameter *local-inflation-radius*
+    (ros::get-param "/move_base/local_costmap/inflater/inflation_radius"))
+  t)
+
+
+(defun restore-params ()
+  (if (boundp '*global-inflation-radius*)
+    (ros::set-dynamic-reconfigure-param
+      "/move_base/global_costmap/inflater" "inflation_radius"
+      :double *global-inflation-radius*))
+  (if (boundp '*local-inflation-radius*)
+    (ros::set-dynamic-reconfigure-param
+      "/move_base/local_costmap/inflater" "inflation_radius"
+      :double *local-inflation-radius*))
+  t)
+
+
+(defun inflation-loose ()
+  ;; Increase the global inflation to generate a path
+  ;; that is less sensitive to differences between the map shape and the actual object placement.
+  (ros::set-dynamic-reconfigure-param
+    "/move_base/global_costmap/inflater" "inflation_radius" :double 0.7)
+  ;; Decrease the local inflation to generate a path
+  ;; that allows the robot to pass close to the object.
+  (ros::set-dynamic-reconfigure-param
+    "/move_base/local_costmap/inflater" "inflation_radius" :double 0.35)
+  t)
+
+
 (defun get-spot-coords (name)
   (unless *spots*
     (setq *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
@@ -33,6 +65,7 @@
     (send (send spot-coords :position) :z 0)
     (setq spot-coords (ros::tf-pose->coords spot-coords))
     (cons spot-coords frame-id)))
+
 
 (defun simple-dock (&key (use-pose t))
   (unless *dock-action*
@@ -63,6 +96,7 @@
       (return-from simple-dock nil))
     (send (send *dock-action* :get-result) :docked)))
 
+
 (defun dock ()
   ;; look down
   (unless (boundp '*ri*)
@@ -74,6 +108,7 @@
   (send *ri* :wait-interpolation)
   (simple-dock))
 
+
 (defun undock ()
   (unless *undock-action*
     (setq *undock-action*
@@ -82,7 +117,6 @@
   (unless (send *undock-action* :wait-for-server 5)
     (ros::ros-error "/undock action server is not started")
     (return-from undock nil))
-
   (send *undock-action* :send-goal
         (instance fetch_auto_dock_msgs::UndockActionGoal :init))
   (unless (send *undock-action* :wait-for-result :timeout 60)
@@ -91,12 +125,12 @@
   (send (send *undock-action* :get-result) :undocked))
 
 
-(defun check-battery-charging-state (&key (timeout 1500))
+(defun get-battery-charging-state (&key (timeout 1500))
    (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout timeout))
           (is-charging (if msg (send msg :is_charging))))
      ;; You may fail to subscribe /battery_state
      ;; because of message md5 difference between melodic and indigo.
-     (if (not msg) (return-from check-battery-charging-state nil))
+     (if (not msg) (return-from get-battery-charging-state nil))
      (if is-charging :charging :discharging)))
 
 
@@ -108,7 +142,7 @@
   (let ((undock-success nil))
     (block go-to-spot-undock
       (dotimes (i 3)
-        (let* ((battery-charging-state (check-battery-charging-state)))
+        (let* ((battery-charging-state (get-battery-charging-state)))
           ;; You may fail to subscribe /battery_state
           ;; because of message md5 difference between melodic and indigo.
           (unless battery-charging-state
@@ -131,11 +165,11 @@
   (let* ((ret (get-spot-coords name))
          (goal-pose (car ret))
          (frame-id (cdr ret)))
-
     (when relative-coords
       (setq goal-pose (send goal-pose :transform relative-coords :world)))
     (send *ri* :clear-costmap)
     (send *ri* :move-to goal-pose :frame-id frame-id)))
+
 
 (defun auto-dock (&key (n-trial 1))
   (let ((success nil))
@@ -145,6 +179,7 @@
         (setq success (dock))
         (when success (return-from auto-dock success))))
     success))
+
 
 (defun auto-undock (&key (n-trial 1))
   (let ((success nil))
@@ -168,133 +203,154 @@
         (ros::ros-error "Enable base breaker")))
     success))
 
-(defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1) (control-switchbot :api))
+
+(defun get-light-on ()
+  (let* ((room-light-msg
+           (one-shot-subscribe "/check_room_light/output" jsk_robot_startup::RoomLight))
+         (light-on (if room-light-msg (send room-light-msg :light_on))))
+    light-on))
+
+
+(defun room-light-on (&key (control-switchbot :api))
+  (cond
+   ((or (eq control-switchbot :en) (eq control-switchbot :jp))
+    ;; Look at Google Home
+    (send *fetch* :head :neck-y :joint-angle 89)
+    (send *fetch* :head :neck-p :joint-angle 25)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation)
+    ;; The accuracy of Google Home recognition is better in English than in Japanese.
+    (if (eq control-switchbot :en)
+      (progn
+        (send *ri* :speak "OK, Google" :wait t)
+        (send *ri* :speak "Turn on the light." :wait t))
+      (progn
+        (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+        (send *ri* :speak-jp "電気をつけて" :wait t)))
+    (send *fetch* :head :neck-y :joint-angle 0)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation))
+   ((eq control-switchbot :api)
+    (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn" :wait t)
+    (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn" :wait t)
+    (send *ri* :speak-jp "電気をつけました" :wait t))))
+
+
+(defun room-light-off (&key (control-switchbot :api))
+  (cond
+   ((or (eq control-switchbot :en) (eq control-switchbot :jp))
+    ;; Look at Google Home
+    (send *fetch* :head :neck-y :joint-angle 89)
+    (send *fetch* :head :neck-p :joint-angle 25)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation)
+    ;; The accuracy of Google Home recognition is better in English than in Japanese.
+    (if (eq control-switchbot :en)
+      (progn
+        (send *ri* :speak "OK, Google" :wait t)
+        (send *ri* :speak "Turn off the light." :wait t))
+      (progn
+        (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+        (send *ri* :speak-jp "電気を消して" :wait t)))
+    (send *fetch* :head :neck-y :joint-angle 0)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation))
+   ((eq control-switchbot :api)
+    (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff" :wait t)
+    (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff" :wait t)
+    (send *ri* :speak-jp "電気を消しました" :wait t))))
+
+
+(defun report-auto-dock ()
+  (ros::ros-info "start going back to the dock.")
+  (send *ri* :speak-jp "ドックに戻ります。" :wait t))
+
+
+(defun report-move-to-sink-front-success ()
+  (ros::ros-info "arrived at the kitchen stove.")
+  (send *ri* :speak-jp "キッチンのコンロの前につきました。" :wait t))
+
+
+(defun report-move-to-sink-front-failure ()
+  (ros::ros-error "failed going to the kitchen.")
+  (send *ri* :speak-jp "キッチンのコンロの前に行くのに失敗しました。" :wait t))
+
+
+(defun report-start-go-to-kitchen ()
+  (ros::ros-info "start going to the kitchen.")
+  (send *ri* :speak-jp "キッチンに向かいます。" :wait t))
+
+
+(defun report-light-on ()
+  (ros::ros-info "room light is already on.")
+  (send *ri* :speak-jp "すでに電気がついています。" :wait t))
+
+
+(defun report-light-off ()
+  (ros::ros-info "room light is off.")
+  (send *ri* :speak-jp "電気が消えています。" :wait t))
+
+
+(defun inspect-kitchen (&key (tweet t))
+  (report-move-to-sink-front-success)
+  (if tweet
+    (progn
+      ;; stove
+      (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
+                    :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (send *ri* :go-pos-unsafe 0 0 -45)
+      ;; sink
+      (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
+                    :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (send *ri* :go-pos-unsafe 0 0 135))
+    (progn
+      (send *ri* :go-pos-unsafe 0 0 90))))
+
+
+(defun move-to-sink-front (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-sink-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-sink-front
+            (go-to-spot "/eng2/7f/room73B2-sink-front0"
+                        (make-coords :pos offset) :undock-rotate t))
+      (when success-move-to-sink-front (return)))
+    success-move-to-sink-front))
+
+
+(defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1)
+                           (control-switchbot :api))
   ;; go to kitchen
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
-  (ros::ros-info "start going to the kitchen.")
-  (send *ri* :speak-jp "キッチンに向かいます。" :wait t)
-  (unix::sleep 1)
+  (report-start-go-to-kitchen)
   ;; Check if the lights are on in the room
-  (let* ((room-light-msg (one-shot-subscribe "/check_room_light/output" jsk_robot_startup::RoomLight))
-         (initial-light-on (if room-light-msg (send room-light-msg :light_on)))
-         (success-go-to-kitchen nil)
-         (success-auto-dock nil)
-         (success-battery-charging)
-         (orig-global-inflation-radius
-           (ros::get-param "/move_base/global_costmap/inflater/inflation_radius"))
-         (orig-local-inflation-radius
-           (ros::get-param "/move_base/local_costmap/inflater/inflation_radius")))
+  (let ((initial-light-on (get-light-on))
+        (success-go-to-kitchen nil)
+        (success-auto-dock nil)
+        (success-battery-charging nil))
+    (store-params)
+    ;; turn on light
     (if initial-light-on
-      (send *ri* :speak-jp "すでに電気がついています。" :wait t)
-      (cond
-       ((or (eq control-switchbot :en) (eq control-switchbot :jp))
-        ;; Look at Google Home
-        (send *fetch* :head :neck-y :joint-angle 89)
-        (send *fetch* :head :neck-p :joint-angle 25)
-        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-        (send *ri* :wait-interpolation)
-        ;; The accuracy of Google Home recognition is better in English than in Japanese.
-        (if (eq control-switchbot :en)
-          (progn
-            (send *ri* :speak "OK, Google" :wait t)
-            (send *ri* :speak "Turn on the light." :wait t))
-          (progn
-            (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-            (send *ri* :speak-jp "電気をつけて" :wait t)))
-        (send *fetch* :head :neck-y :joint-angle 0)
-        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-        (send *ri* :wait-interpolation))
-       ((eq control-switchbot :api)
-        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn" :wait t)
-        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn" :wait t)
-        (send *ri* :speak-jp "電気をつけました" :wait t))))
-    (unix::sleep 1)
+      (report-light-on)
+      (progn
+        (report-light-off)
+        (room-light-on :control-switchbot control-switchbot)))
     ;; change the inflation_radius
-    ;; Increase the global inflation to generate a path that is less sensitive to differences between the map shape and the actual object placement.
-    (ros::set-dynamic-reconfigure-param
-      "/move_base/global_costmap/inflater" "inflation_radius" :double 0.7)
-    ;; Decrease the local inflation to generate a path that allows the robot to pass close to the object.
-    (ros::set-dynamic-reconfigure-param
-      "/move_base/local_costmap/inflater" "inflation_radius" :double 0.35)
-    ;; stove
-    (dotimes (i n-kitchen-trial)
-      (setq success-go-to-kitchen
-            (go-to-spot "/eng2/7f/room73B2-sink-front0"
-                        (make-coords :pos #f(400 -500 0)) :undock-rotate t))
-      (when success-go-to-kitchen (return)))
+    (inflation-loose)
+    ;; go to kitchen sink
+    (setq success-go-to-kitchen (move-to-sink-front :n-trial n-kitchen-trial))
+    ;; report result to go to kitchen
     (if success-go-to-kitchen
-      (progn ;; succeeded to go to kitchen
-        (unix:sleep 1)
-        (ros::ros-info "arrived at the kitchen stove.")
-        (send *ri* :speak-jp "キッチンのコンロの前につきました。" :wait t)
-        (unix:sleep 1)
-        ;; stove
-        (when tweet
-          (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
-                        :with-image "/edgetpu_object_detector/output/image" :speak t))
-        (send *ri* :go-pos-unsafe 0 0 -45)
-        ;; sink
-        (when tweet
-          (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
-                        :with-image "/edgetpu_object_detector/output/image" :speak t))
-        (send *ri* :go-pos-unsafe 0 0 135))
-      (progn ;; failed to go to kitchen
-        (ros::ros-error "failed going to the kitchen.")
-        (send *ri* :speak-jp "失敗しました。" :wait t)))
-    ;; sink
-    ;; (send *ri* :speak-jp "シンクに向かいます。")
-    ;; (if (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -200 0)))
-    ;;   (progn ;; succeeded to go to kitchen
-    ;;     (unix:sleep 1)
-    ;;     (ros::ros-info "arrived at the kitchen.")
-    ;;     (send *ri* :speak-jp "キッチンのシンクの前につきました。" :wait t)
-    ;;     (unix:sleep 1)
-    ;;     (when tweet
-    ;;       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
-    ;;                     :with-image "/edgetpu_object_detector/output/image" :speak t)))
-    ;;   (progn ;; failed to go to kitchen
-    ;;     (ros::ros-error "failed going to the kitchen.")
-    ;;     (send *ri* :speak-jp "失敗しました。ドックに戻ります。" :wait t)
-    ;;     (ros::ros-info "start going back to the dock.")
-    ;;     (auto-dock :n-trial n-dock-trial)
-    ;;     (return-from go-to-kitchen nil)))
-    (ros::ros-info "start going back to the dock.")
-    (send *ri* :speak-jp "ドックに戻ります。" :wait t)
+      (inspect-kitchen :tweet tweet)
+      (report-move-to-sink-front-failure))
+    ;; go back from dock
+    (report-auto-dock)
     (setq success-auto-dock (auto-dock :n-trial n-dock-trial))
-    (when (and success-auto-dock (not initial-light-on))
-      (unix::sleep 1)
-      (cond
-       ((or (eq control-switchbot :en) (eq control-switchbot :jp))
-        ;; Look at Google Home
-        (send *fetch* :head :neck-y :joint-angle 89)
-        (send *fetch* :head :neck-p :joint-angle 25)
-        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-        (send *ri* :wait-interpolation)
-        ;; The accuracy of Google Home recognition is better in English than in Japanese.
-        (if (eq control-switchbot :en)
-          (progn
-            (send *ri* :speak "OK, Google" :wait t)
-            (send *ri* :speak "Turn off the light." :wait t))
-          (progn
-            (send *ri* :speak-jp "オッケー、グーグル" :wait t)
-            (send *ri* :speak-jp "電気を消して" :wait t)))
-        (send *fetch* :head :neck-y :joint-angle 0)
-        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
-        (send *ri* :wait-interpolation))
-       ((eq control-switchbot :api)
-        (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff" :wait t)
-        (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff" :wait t)
-        (send *ri* :speak-jp "電気を消しました" :wait t))))
-    (unix::sleep 5)
+    ;; turn off light
+    (if (and success-auto-dock (not initial-light-on))
+      (room-light-off :control-switchbot control-switchbot))
     ;; change the inflation_radius
-    (ros::set-dynamic-reconfigure-param
-      "/move_base/global_costmap/inflater" "inflation_radius"
-      :double orig-global-inflation-radius)
-    (ros::set-dynamic-reconfigure-param
-      "/move_base/local_costmap/inflater" "inflation_radius"
-      :double orig-local-inflation-radius)
-    (setq success-battery-charging
-          (equal (check-battery-charging-state) :charging))
+    (restore-params)
+    (setq success-battery-charging (equal (get-battery-charging-state) :charging))
     (and success-go-to-kitchen success-auto-dock success-battery-charging)))
