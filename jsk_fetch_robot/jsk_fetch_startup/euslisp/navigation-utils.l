@@ -1,5 +1,8 @@
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 (load "package://switchbot_ros/scripts/switchbot.l")
+(require :state-machine "package://roseus_smach/src/state-machine.l")
+(require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
+(require :state-machine-utils "package://roseus_smach/src/state-machine-utils.l")
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "jsk_robot_startup")
@@ -354,3 +357,88 @@
     (restore-params)
     (setq success-battery-charging (equal (get-battery-charging-state) :charging))
     (and success-go-to-kitchen success-auto-dock success-battery-charging)))
+
+
+(defun go-to-kitchen-state-machine ()
+  (setq *sm*
+        (make-state-machine
+          '((:init -> :report-start-go-to-kitchen)
+            (:report-start-go-to-kitchen -> :get-light-on)
+            (:get-light-on -> :report-light-on)
+            (:get-light-on !-> :room-light-on)
+            (:report-light-on -> :move-to-sink-front)
+            (:room-light-on -> :move-to-sink-front)
+            (:move-to-sink-front -> :inspect-kitchen)
+            (:move-to-sink-front !-> :report-move-to-sink-front-failure)
+            (:inspect-kitchen -> :auto-dock)
+            (:report-move-to-sink-front-failure -> :auto-dock)
+            (:auto-dock -> :room-light-off)
+            (:room-light-off -> :finish)
+            (:finish -> t)
+            (:finish !-> nil))
+          '((:init
+              '(lambda (userdata)
+                 (fetch-init)
+                 (send *ri* :clear-costmap)
+                 (store-params)
+                 (inflation-loose)
+                 t))
+            (:report-start-go-to-kitchen
+              '(lambda (userdata)
+                 (report-start-go-to-kitchen)
+                 t))
+            (:get-light-on
+              '(lambda (userdata)
+                 (let ((light-on (get-light-on)))
+                   (setf (cdr (assoc 'initial-light-on userdata)) light-on)
+                   light-on)))
+            (:report-light-on
+              '(lambda (userdata)
+                 (report-light-on)
+                 t))
+            (:room-light-on
+              '(lambda (userdata)
+                 (let ((control-switchbot (cdr (assoc 'control-switchbot userdata))))
+                   (report-light-off)
+                   (room-light-on :control-switchbot control-switchbot)
+                   t)))
+            (:move-to-sink-front
+              '(lambda (userdata)
+                 (let* ((n-trial (cdr (assoc 'n-kitchen-trial userdata)))
+                        (success (move-to-sink-front :n-trial n-trial)))
+                   (setf (cdr (assoc 'success-go-to-kitchen userdata)) success)
+                   success)))
+            (:inspect-kitchen
+              '(lambda (userdata)
+                 (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
+                 t))
+            (:report-move-to-sink-front-failure
+              '(lambda (userdata)
+                 (report-move-to-sink-front-failure)
+                 t))
+            (:auto-dock
+              '(lambda (userdata)
+                 (report-auto-dock)
+                 (let* ((n-trial (cdr (assoc 'n-dock-trial userdata)))
+                        (success (auto-dock :n-trial n-trial)))
+                   (setf (cdr (assoc 'success-auto-dock userdata)) success)
+                   success)))
+            (:room-light-off
+              '(lambda (userdata)
+                 (let ((success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
+                       (initial-light-on (cdr (assoc 'initial-light-on userdata)))
+                       (control-switchbot (cdr (assoc 'control-switchbot userdata))))
+                   (if (and success-auto-dock (not initial-light-on))
+                     (room-light-off :control-switchbot control-switchbot)))
+                 t))
+            (:finish
+              '(lambda (userdata)
+                 (let ((success-battery-charging
+                         (equal (get-battery-charging-state) :charging))
+                       (success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
+                       (success-go-to-kitchen
+                         (cdr (assoc 'success-go-to-kitchen userdata))))
+                   (restore-params)
+                   (and success-go-to-kitchen success-auto-dock success-battery-charging)))))
+          '(:init)
+          '(t nil))))
