@@ -7,4 +7,4 @@
 (fetch-init)
 (send *ri* :clear-costmap)
 (auto-dock)
-(exit)
+(sys::exit 0)
