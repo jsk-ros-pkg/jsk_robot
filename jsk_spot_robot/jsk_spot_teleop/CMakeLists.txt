@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     sensor_msgs
     std_srvs
+    sound_play
     spot_msgs
 )
 
@@ -14,6 +15,7 @@ catkin_package(
         roscpp
         sensor_msgs
         std_srvs
+        sound_play
         spot_msgs
 )
 

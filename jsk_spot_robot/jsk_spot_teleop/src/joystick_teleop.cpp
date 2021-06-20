@@ -4,11 +4,12 @@
 #include <std_srvs/Trigger.h>
 #include <std_srvs/SetBool.h>
 #include <spot_msgs/SetLocomotion.h>
+#include <sound_play/SoundRequest.h>
 
 class TeleopManager
 {
 public:
-    void init(ros::NodeHandle& nh)
+    TeleopManager(ros::NodeHandle& nh)
     {
         ros::param::param<int>("~button_estop_hard", button_estop_hard_, -1);
         ros::param::param<int>("~button_estop_gentle", button_estop_gentle_, -1);
@@ -30,6 +31,8 @@ public:
             index = false;
         }
 
+        pub_sound_play_ = nh.advertise<sound_play::SoundRequest>("~/robotsound", 1);
+
         client_estop_hard_ = nh.serviceClient<std_srvs::Trigger>("/spot/estop/hard");
         client_estop_gentle_ = nh.serviceClient<std_srvs::Trigger>("/spot/estop/gentle");
         client_power_off_ = nh.serviceClient<std_srvs::Trigger>("/spot/power_off");
@@ -49,6 +52,20 @@ public:
         req_next_locomotion_mode_.locomotion_mode = 4;
     }
 
+    void say(std::string message)
+    {
+        sound_play::SoundRequest msg;
+        msg.sound = sound_play::SoundRequest::SAY;
+        msg.command = sound_play::SoundRequest::PLAY_ONCE;
+        msg.arg = message;
+        pub_sound_play_.publish(msg);
+    }
+
+    void say(const char str[])
+    {
+        say(std::string(str));
+    }
+
     void callbackJoy(const sensor_msgs::Joy::ConstPtr& msg)
     {
         std_srvs::Trigger srv;
@@ -59,6 +76,7 @@ public:
                 and button_estop_hard_ < num_buttons_ ) {
             if ( msg->buttons[button_estop_hard_] == 1 ) {
                 if ( not pressed_[button_estop_hard_] ) {
+                    this->say(std::string("estop hard calling"));
                     if ( client_estop_hard_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'estop_hard' succeeded.");
                     } else {
@@ -81,6 +99,7 @@ public:
                 and button_estop_gentle_ < num_buttons_ ) {
             if ( msg->buttons[button_estop_gentle_] == 1 ) {
                 if ( not pressed_[button_estop_gentle_] ) {
+                    this->say(std::string("estop gentle calling"));
                     if ( client_estop_gentle_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'estop_gentle' succeeded.");
                     } else {
@@ -103,6 +122,7 @@ public:
                 and button_power_off_ < num_buttons_ ) {
             if ( msg->buttons[button_power_off_] == 1 ) {
                 if ( not pressed_[button_power_off_] ) {
+                    this->say(std::string("power off calling"));
                     if ( client_power_off_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'power_off' succeeded.");
                     } else {
@@ -125,6 +145,7 @@ public:
                 and button_power_on_ < num_buttons_ ) {
             if ( msg->buttons[button_power_on_] == 1 ) {
                 if ( not pressed_[button_power_on_] ) {
+                    this->say(std::string("power on calling"));
                     if ( client_power_on_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'power_on' succeeded.");
                     } else {
@@ -147,6 +168,7 @@ public:
                 and button_self_right_ < num_buttons_ ) {
             if ( msg->buttons[button_self_right_] == 1 ) {
                 if ( not pressed_[button_self_right_] ) {
+                    this->say(std::string("self right calling"));
                     if ( client_self_right_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'self_right' succeeded.");
                     } else {
@@ -169,6 +191,7 @@ public:
                 and button_sit_ < num_buttons_ ) {
             if ( msg->buttons[button_sit_] == 1 ) {
                 if ( not pressed_[button_sit_] ) {
+                    this->say(std::string("sit calling"));
                     if ( client_sit_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'sit' succeeded.");
                     } else {
@@ -191,6 +214,7 @@ public:
                 and button_stand_ < num_buttons_ ) {
             if ( msg->buttons[button_stand_] == 1 ) {
                 if ( not pressed_[button_stand_] ) {
+                    this->say(std::string("stand calling"));
                     if ( client_stand_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'stand' succeeded.");
                     } else {
@@ -213,6 +237,7 @@ public:
                 and button_stop_ < num_buttons_ ) {
             if ( msg->buttons[button_stop_] == 1 ) {
                 if ( not pressed_[button_stop_] ) {
+                    this->say(std::string("stop calling"));
                     if ( client_stop_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'stop' succeeded.");
                     } else {
@@ -235,6 +260,7 @@ public:
                 and button_release_ < num_buttons_ ) {
             if ( msg->buttons[button_release_] == 1 ) {
                 if ( not pressed_[button_release_] ) {
+                    this->say(std::string("release calling"));
                     if ( client_release_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'release' succeeded.");
                     } else {
@@ -257,6 +283,7 @@ public:
                 and button_claim_ < num_buttons_ ) {
             if ( msg->buttons[button_claim_] == 1 ) {
                 if ( not pressed_[button_claim_] ) {
+                    this->say(std::string("claim calling"));
                     if ( client_claim_.call(srv) && srv.response.success ) {
                         ROS_INFO("Service 'claim' succeeded.");
                     } else {
@@ -279,6 +306,11 @@ public:
                 and button_stair_mode_ < num_buttons_ ) {
             if ( msg->buttons[button_stair_mode_] == 1 ) {
                 if ( not pressed_[button_stair_mode_] ) {
+                    if ( req_next_stair_mode_.data ) {
+                        this->say(std::string("stair mode on"));
+                    } else {
+                        this->say(std::string("stair mode off"));
+                    }
                     std_srvs::SetBool::Response res;
                     if ( client_stair_mode_.call(req_next_stair_mode_,res) && res.success ) {
                         ROS_INFO_STREAM("Service 'stair_mode' succeeded. set to " << req_next_stair_mode_.data);
@@ -303,6 +335,7 @@ public:
                 and button_locomotion_mode_ < num_buttons_ ) {
             if ( msg->buttons[button_locomotion_mode_] == 1 ) {
                 if ( not pressed_[button_locomotion_mode_] ) {
+                    this->say(std::string("locomotion mode switching"));
                     spot_msgs::SetLocomotion::Response res;
                     if ( client_locomotion_mode_.call(req_next_locomotion_mode_,res) && res.success ) {
                         ROS_INFO_STREAM("Service 'locomotion_mode' succeeded. set to " << req_next_locomotion_mode_.locomotion_mode);
@@ -358,6 +391,8 @@ private:
     ros::ServiceClient client_stair_mode_;
     ros::ServiceClient client_locomotion_mode_;
 
+    ros::Publisher pub_sound_play_;
+
     ros::Subscriber sub_joy_;
 
     int num_buttons_;
@@ -374,8 +409,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "spot_teleop");
     ros::NodeHandle nh;
 
-    TeleopManager teleop;
-    teleop.init(nh);
+    TeleopManager teleop(nh);
 
     ros::spin();
 }
