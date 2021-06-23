@@ -50,40 +50,37 @@
 
 (setq *debug-view-p* (null (unix::getenv "TRAVIS_BRANCH")))
 
+
+(defun test-ik-bin (robot)
+  (send robot :locate #f(0 0 950) :world)
+  (when *debug-view-p*
+    (objects (list robot)))
+  (dolist (pos *pod-bin*)
+    (dolist (arm '(:larm :rarm))
+      (assert (send robot arm :inverse-kinematics
+                    (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                    :rotation-axis t
+                    :debug-view (if *debug-view-p* :no-message nil))
+              "fail to solve ik")
+      (assert (send robot :inverse-kinematics
+                    (list (make-cascoords :pos (v+ pos #f(-90 0 0))))
+                    :move-target
+                    (list (send robot arm :end-coords))
+                    :link-list
+                    (list (send robot :link-list (send (send robot arm :end-coords) :parent)))
+                    :rotation-axis (list t)
+                    :debug-view (if *debug-view-p* :no-message nil))
+              "fail to solve ik"))))
+
 (deftest test-robot-ik-bin
   (let (robot)
     (setq robot (instance baxter-robot :init))
-    (send robot :locate #f(0 0 950) :world)
-    (when *debug-view-p*
-      (objects (list robot)))
-    (dolist (pos *pod-bin*)
-      (dolist (arm '(:larm :rarm))
-        (assert (send robot arm :inverse-kinematics
-                      (make-cascoords :pos (v+ pos #f(-90 0 0)))
-                      :rotation-axis t
-                      :debug-view (if *debug-view-p* :no-message nil))
-                "fail to solve ik")
-        )) ;; do list
-    )) ;; let
+    (test-ik-bin robot)))
 
-(deftest test-robot-ik-safe-bin
+(deftest test-robot-safe-ik-bin
   (let (robot)
     (setq robot (instance baxter-robot-safe :init))
-    (send robot :locate #f(0 0 950) :world)
-    (when *debug-view-p*
-      (objects (list robot)))
-    (dolist (pos *pod-bin*)
-      (dolist (arm '(:larm :rarm))
-        (send robot :reset-pose)
-        (assert (send robot arm :inverse-kinematics
-                      (make-cascoords :pos (v+ pos #f(-90 0 0)))
-                      :rotation-axis t
-                      :debug-view (if *debug-view-p* :no-message nil))
-                "fail to solve ik")
-        )) ;; do list
-    )) ;; let
-
-(deftest test-robot-multiple-ik-target
+    (test-ik-bin robot)))
 
 (defun test-multi-ik-bin (robot)
   (send robot :locate #f(0 0 950) :world)
