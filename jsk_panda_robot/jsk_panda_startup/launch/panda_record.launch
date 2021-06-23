@@ -35,6 +35,8 @@
                                     /dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
                                     /dual_panda/dual_arm_cartesian_pose_controller/left_frame
                                     /dual_panda/dual_arm_cartesian_pose_controller/right_frame
+				    /dual_panda/end_coords/rarm
+				    /dual_panda/end_coords/larm
                                     /dual_panda/joint_states
                                     /dual_panda/larm_state_controller/F_ext
                                     /dual_panda/larm_state_controller/franka_states
