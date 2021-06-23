@@ -1,24 +1,31 @@
+(ros::roseus "spot_kinova")
+
 (load "package://spoteus/spot-interface.l")
 (load "package://kinovaeus/kinova-interface.l")
-(load "package://spotkinovaeus/spotkinova-utils.l")
+(load "package://spotkinovaeus/spotkinova-util.l")
 
-(eval `(defclass spot-kinova-interface :super robot-interface
-         :slots ((spot-inst :forward ,(mapcar #'car (send spot-interface :all-methods)))
-                 (kinova-inst :forward ,(mapcar #'car (send kinova-interface :all-methods))))))
+;; (eval `(defclass spot-kinova-interface :super robot-interface
+;;          :slots ((spot-inst :forward ,(mapcar #'car (send spot-interface :all-methods)))
+;;                  (kinova-inst :forward ,(mapcar #'car (send kinova-interface :all-methods))))))
+(defclass spot-kinova-interface :super robot-interface
+  :slots (spot-inst kinova-inst)
+  )
 
-(defmethod spotkinova-interface
+(defmethod spot-kinova-interface
   (:init
    (&key type &rest args)
+   (setq spot-inst (instance spot-interface :init))
+   (setq kinova-inst (instance kinova-interface :init :type type))
    (let ()
      (send-super* :init
                   :robot
                   ;; Create robot instance different from *kinova*
                   (case type
-                        (:spot_gen3_robotiq_2f_85
+                        (:gen3_robotiq_2f_85
                          (instance spot_gen3_robotiq_2f_85-robot :init))
-                        (:spot_gen3_robotiq_2f_140
+                        (:gen3_robotiq_2f_140
                          (instance spot_gen3_robotiq_2f_140-robot :init))
-                        (:spot_gen3_lite_gen3_lite_2f
+                        (:gen3_lite_gen3_lite_2f
                          (instance spot_gen3_lite_gen3_lite_2f-robot :init))
                         (t
                          (warning-message 1 "unknown kinova robot type ~A~%" type)))
@@ -26,6 +33,10 @@
                   :groupname "spot_kinova_interface" args))
    (send self :add-controller :arm-controller)
    self)
+  (:default-controller ()
+    (send self :arm-controller))
+  (:arm-controller ()
+    (send kinova-inst :arm-controller))
   (:angle-vector (av &rest args)
     (let* ((kinova-av (coerce (nthcdr 12 (coerce av cons)) float-vector))
            (spot-av-list (butlast (coerce av cons) 6)))
@@ -55,3 +66,9 @@
                   (coerce (append (coerce spot-av cons) (coerce kinova-av cons)) float-vector))
               spot-avs kinova-avs)))
   )
+
+(defun spot-kinova-init (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
+  (unless (boundp '*spot-kinova*)
+    (setq *spot-kinova* (spot-kinova :type type)))
+  (unless (boundp '*ri*)
+    (setq *ri* (instance spot-kinova-interface :init :type type))))

@@ -1,4 +1,6 @@
 <launch>
+  <arg name="robot_type" default="gen3_robotiq_2f_140" doc="gen3_lite_gen3_lite_2f or gen3_robotiq_2f_85 or gen3_robotiq_2f_140"/>
+
   <!-- launch for spot -->
   TODO
   <!-- launch for kinova -->
@@ -7,11 +9,15 @@
   <!-- Transform between spot and kinova -->
   <!-- The same as spotkinovaeus/robots/spot_kinova.xacro -->
   <node name="spot_to_kinova_transformer" pkg="tf" type="static_transform_publisher"
-        args="0.1 0 0 0 0 0 0 front_rail kinova_base_link 100"/>
+        args="0.1 0 0 0 0 0 1 front_rail kinova_base_link 100"/>
 
   <!-- Topic relay for joint_states  -->
   <node name="joint_states_relay_spot" pkg="topic_tools" type="relay"
         args="/joint_states /spot_kinova/joint_states" />
   <node name="joint_states_relay_kinova" pkg="topic_tools" type="relay"
         args="/arm_gen3/joint_states /spot_kinova/joint_states" />
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro --inorder $(find spotkinovaeus)/robots/spot_kinova.xacro robot_type:=$(arg robot_type) prefix:=kinova_"/>
+
 </launch>
