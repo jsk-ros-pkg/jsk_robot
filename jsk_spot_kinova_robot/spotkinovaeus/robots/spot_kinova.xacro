@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="spotkinova">
+
+  <xacro:arg name="robot_type" default="gen3_lite_gen3_lite_2f"/>
+  <xacro:arg name="prefix" default="kinova_"/>
+  <xacro:arg name="sim" default="false"/>
+
+  <xacro:include filename="$(find spot_description)/urdf/spot.urdf.xacro"/>
+  <xacro:include filename="$(find kortex_description)/robots/$(arg robot_type).xacro">
+    <xacro:arg name="sim" value="$(arg sim)"/>
+    <xacro:arg name="prefix" value="$(arg prefix)"/>
+  </xacro:include>
+
+  <joint name="left_gripper_base_fixed" type="fixed">
+    <origin rpy="0 0 0" xyz="0. 0 0" />
+    <parent link="front_rail"/>
+    <child link="$(arg prefix)base_link"/>
+  </joint>
+
+</robot>
