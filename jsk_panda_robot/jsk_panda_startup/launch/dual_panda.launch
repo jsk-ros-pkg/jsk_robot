@@ -8,7 +8,7 @@
   <arg name="rviz"     default="true" />
   <arg name="load_gripper"  default="false" />
   <arg name="gripper_homed" default="false" />
-  <arg name="end_pose_publishing_hz" default="30" />
+  <arg name="end_coords_publishing_hz" default="30" />
 
 
   <!--remap from="dyn_reconf_teleop_param_node"
@@ -75,6 +75,6 @@
   </group>
 
   <!-- add end-pose publisher -->
-  <rosparam param="/dual_panda/end_coords_pub_hz" subst_value="True">$(arg end_pose_publishing_hz)</rosparam>
+  <rosparam param="/dual_panda/end_coords_pub_hz" subst_value="True">$(arg end_coords_publishing_hz)</rosparam>
   <node pkg="jsk_panda_startup" type="end-coords_publisher.l" name="end_coords_publisher" />
 </launch>
