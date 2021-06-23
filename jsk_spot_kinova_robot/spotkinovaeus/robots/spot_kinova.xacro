@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="spotkinova">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="spot_$(arg robot_type)">
 
-  <xacro:arg name="robot_type" default="gen3_lite_gen3_lite_2f"/>
   <xacro:arg name="prefix" default="kinova_"/>
   <xacro:arg name="sim" default="false"/>
 
