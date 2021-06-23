@@ -117,109 +117,65 @@
     (assert (eps-v= (send robot :angle-vector) av 5) "unable to revert after ik failed")
     ))
 
+
+(defun test-ik-bin-cube (robot)
+  (send (send robot :rarm :end-coords)
+        :newcoords (make-coords :pos #f(50 0 310)
+                                :rpy (float-vector 0 -pi/2 0)))
+  (send (send robot :larm :end-coords)
+        :newcoords (make-coords :pos #f(50 0 310)
+                                :rpy (float-vector 0 -pi/2 0)))
+  (send robot :locate #f(0 0 950) :world)
+  (when *debug-view-p*
+    (objects (append (list robot) *pod-bin-cube*)))
+  (setq step-dist 200)
+  (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
+    (setq limit (car cube-data))
+    (setq cube (cadr cube-data))
+    (setq x (elt (send (send cube :worldcoords) :pos) 0))
+    (setq y (elt (send (send cube :worldcoords) :pos) 1))
+    (setq z (elt (send (send cube :worldcoords) :pos) 2))
+    (setq dx (x-of-cube cube))
+    (setq dy (y-of-cube cube))
+    (setq dz (z-of-cube cube))
+    (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
+      ((> tmp-x (+ x (/ dx 2))) t)
+      (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
+        ((> tmp-y (+ y (/ dy 2))) t)
+        (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (+ tmp-z step-dist)))
+          ((> tmp-z (+ z (/ dz 2))) t)
+          (setq pos (float-vector tmp-x tmp-y tmp-z))
+          (assert
+            (or
+              (send robot :rarm :inverse-kinematics
+                    (list (make-cascoords :pos pos))
+                    :move-target (list (send robot :larm :end-coords))
+                    :link-list
+                    (send robot :link-list (send (send robot :larm :end-coords) :parent))
+                    :rotation-axis (list t)
+                    :debug-view (if *debug-view-p* :no-message nil))
+              (send robot :inverse-kinematics
+                    (list (make-cascoords :pos pos))
+                    :move-target (list (send robot :rarm :end-coords))
+                    :link-list
+                    (send robot :link-list (send (send robot :rarm :end-coords) :parent))
+                    :rotation-axis (list t)
+                    :debug-view (if *debug-view-p* :no-message nil))
+              (> tmp-x limit))
+            "fail to solve ik"))))))
+
+
 (deftest test-robot-ik-bin-cube
   (let (robot)
     (setq robot (instance baxter-robot :init))
-    (send (send robot :rarm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
-                                  :rpy (float-vector 0 -pi/2 0)))
-    (send (send robot :larm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
-                                  :rpy (float-vector 0 -pi/2 0)))
-    (send robot :locate #f(0 0 950) :world)
-    (when *debug-view-p*
-      (objects (append (list robot) *pod-bin-cube*)))
-    (setq step-dist 200)
-    (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
-      (setq limit (car cube-data))
-      (setq cube (cadr cube-data))
-      (setq x (elt (send (send cube :worldcoords) :pos) 0))
-      (setq y (elt (send (send cube :worldcoords) :pos) 1))
-      (setq z (elt (send (send cube :worldcoords) :pos) 2))
-      (setq dx (x-of-cube cube))
-      (setq dy (y-of-cube cube))
-      (setq dz (z-of-cube cube))
-      (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
-        ((> tmp-x (+ x (/ dx 2))) t)
-        (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
-          ((> tmp-y (+ y (/ dy 2))) t)
-          (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (+ tmp-z step-dist)))
-            ((> tmp-z (+ z (/ dz 2))) t)
-            (setq pos (float-vector tmp-x tmp-y tmp-z))
-            (assert
-              (or
-                (send robot :rarm :inverse-kinematics
-                  (make-cascoords :pos pos)
-                  :rotation-axis t
-                  :debug-view (if *debug-view-p* :no-message nil))
-                (send robot :larm :inverse-kinematics
-                  (make-cascoords :pos pos)
-                  :rotation-axis t
-                  :debug-view (if *debug-view-p* :no-message nil))
-                (> tmp-x limit))
-              "fail to solve ik")
-            )
-          )
-        )
-      )
-    )
-  )
+    (test-ik-bin-cube robot)))
+
 
 (deftest test-robot-ik-safe-bin-cube
   (let (robot)
     (setq robot (instance baxter-robot-safe :init))
-    (send (send robot :rarm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
-                                  :rpy (float-vector 0 -pi/2 0)))
-    (send (send robot :larm :end-coords)
-          :newcoords (make-coords :pos #f(50 0 310)
-                                  :rpy (float-vector 0 -pi/2 0)))
-    (send robot :locate #f(0 0 950) :world)
-    (when *debug-view-p*
-      (objects (append (list robot) *pod-bin-cube*)))
-    (setq step-dist 200)
-    (dolist (cube-data (mapcar #'list *pod-bin-ik-limit* *pod-bin-cube*))
-      (setq limit (car cube-data))
-      (setq cube (cadr cube-data))
-      (setq x (elt (send (send cube :worldcoords) :pos) 0))
-      (setq y (elt (send (send cube :worldcoords) :pos) 1))
-      (setq z (elt (send (send cube :worldcoords) :pos) 2))
-      (setq dx (x-of-cube cube))
-      (setq dy (y-of-cube cube))
-      (setq dz (z-of-cube cube))
-      (do ((tmp-x (+ (- x (/ dx 2)) (/ step-dist 2)) (+ tmp-x step-dist)))
-        ((> tmp-x (+ x (/ dx 2))) t)
-        (do ((tmp-y (+ (- y (/ dy 2)) (/ step-dist 2)) (+ tmp-y step-dist)))
-          ((> tmp-y (+ y (/ dy 2))) t)
-          (do ((tmp-z (+ (- z (/ dz 2)) (/ step-dist 2)) (+ tmp-z step-dist)))
-            ((> tmp-z (+ z (/ dz 2))) t)
-            (setq pos (float-vector tmp-x tmp-y tmp-z))
-            (assert
-              (or
-                (and
-                  (send robot :reset-pose)
-                  (send robot :rarm :inverse-kinematics
-                    (make-cascoords :pos pos)
-                    :rotation-axis t
-                    :debug-view (if *debug-view-p* :no-message nil))
-                  )
-                (and
-                  (send robot :reset-pose)
-                  (send robot :larm :inverse-kinematics
-                    (make-cascoords :pos pos)
-                    :rotation-axis t
-                    :debug-view (if *debug-view-p* :no-message nil))
-                  )
-                (> tmp-x limit)
-                )
-                "fail to solve ik"
-              )
-            )
-          )
-        )
-      )
-    )
-  )
+    (test-ik-bin-cube robot)))
+
 
 (deftest test-robot-l/r-reverse
   (let (robot reversed)
@@ -228,6 +184,7 @@
     (dotimes (i (length (send robot :rarm :angle-vector)))
       (assert (= (elt (send robot :rarm :angle-vector) i) (elt reversed i))))
     ))
+
 
 (when (string> (unix::getenv "ROS_DISTRO") "hydro")
 (load "package://baxtereus/baxter-interface.l")
