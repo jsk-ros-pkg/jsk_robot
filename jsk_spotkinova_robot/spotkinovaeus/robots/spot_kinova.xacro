@@ -10,8 +10,10 @@
     <xacro:arg name="prefix" value="$(arg prefix)"/>
   </xacro:include>
 
+  <!-- Transform between spot and kinova -->
+  <!-- The same as jsk_spotkinova_startup/launch/spot_kinova_bringup.launch -->
   <joint name="left_gripper_base_fixed" type="fixed">
-    <origin rpy="0 0 0" xyz="0. 0 0" />
+    <origin rpy="0 0 0" xyz="0.1 0 0" />
     <parent link="front_rail"/>
     <child link="$(arg prefix)base_link"/>
   </joint>
