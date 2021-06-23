@@ -83,6 +83,26 @@
         )) ;; do list
     )) ;; let
 
+(deftest test-robot-multiple-ik-target
+  (let (robot)
+    (setq robot (instance baxter-robot :init))
+    (send robot :locate #f(0 0 950) :world)
+    (when *debug-view-p*
+      (objects (list robot)))
+    (dolist (pos *pod-bin*)
+      (assert (send robot :inverse-kinematics
+                    (list (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                          (make-cascoords :pos (v+ pos #f(-90 0 0))))
+                    :move-target
+                    (list (send robot :larm :end-coords)
+                          (send robot :rarm :end-coords))
+                    :link-list
+                    (list (send robot :link-list (send (send robot :larm :end-coords) :parent))
+                          (send robot :link-list (send (send robot :rarm :end-coords) :parent)))
+                    :rotation-axis (list t t)
+                    :debug-view (if *debug-view-p* :no-message nil))
+              "fail to solve ik"))))
+
 ;; test to check the robot back to the original pose, if the ik failed
 (deftest test-robot-ik-revert
   (let (robot av)
