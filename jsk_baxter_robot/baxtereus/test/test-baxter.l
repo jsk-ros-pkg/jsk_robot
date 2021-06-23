@@ -113,6 +113,69 @@
     (setq robot (instance baxter-robot-safe :init))
     (test-multi-ik-bin robot)))
 
+(defun test-ik-fail (robot)
+  (send robot :locate #f(0 0 950) :world)
+  (when *debug-view-p*
+    (objects (list robot)))
+  (dolist (arm (list :larm :rarm))
+    (assert
+      (not (send robot :inverse-kinematics
+                 (list (make-cascoords :pos #f(0 0 0)))
+                 :move-target
+                 (list (send robot arm :end-coords))
+                 :link-list
+                 (list (send robot :link-list (send (send robot arm :end-coords) :parent)))
+                 :rotation-axis (list t)
+                 :debug-view (if *debug-view-p* :no-message nil)))
+            "ik calculation failure")
+    (assert
+      (not (send robot arm :inverse-kinematics
+                 (make-cascoords :pos #f(0 0 0))
+                 :move-target
+                 (send robot arm :end-coords)
+                 :link-list
+                 (send robot :link-list (send (send robot arm :end-coords) :parent))
+                 :rotation-axis (list t)
+                 :debug-view (if *debug-view-p* :no-message nil)))
+            "ik calculation failure")))
+
+(deftest test-robot-ik-fail
+  (let (robot)
+    (setq robot (instance baxter-robot :init))
+    (test-ik-fail robot)))
+
+(deftest test-robot-safe-ik-fail
+  (let (robot)
+    (setq robot (instance baxter-robot-safe :init))
+    (test-ik-fail robot)))
+
+(defun test-multi-ik-fail (robot)
+  (send robot :locate #f(0 0 950) :world)
+  (when *debug-view-p*
+    (objects (list robot)))
+  (assert
+    (not (send robot :inverse-kinematics
+               (list (make-cascoords :pos #f(0 0 0))
+                     (make-cascoords :pos #f(0 0 0)))
+               :move-target
+               (list (send robot :larm :end-coords)
+                     (send robot :rarm :end-coords))
+               :link-list
+               (list (send robot :link-list (send (send robot :larm :end-coords) :parent))
+                     (send robot :link-list (send (send robot :rarm :end-coords) :parent)))
+               :rotation-axis (list t t)
+               :debug-view (if *debug-view-p* :no-message nil)))
+          "ik calculation failure"))
+
+(deftest test-robot-multiple-ik-fail
+  (let (robot)
+    (setq robot (instance baxter-robot :init))
+    (test-multi-ik-fail robot)))
+
+(deftest test-robot-safe-multiple-ik-fail
+  (let (robot)
+    (setq robot (instance baxter-robot-safe :init))
+    (test-multi-ik-fail robot)))
 
 ;; test to check the robot back to the original pose, if the ik failed
 (deftest test-robot-ik-revert
