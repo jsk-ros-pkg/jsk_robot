@@ -1,0 +1,17 @@
+<launch>
+  <!-- launch for spot -->
+  TODO
+  <!-- launch for kinova -->
+  TODO
+
+  <!-- Transform between spot and kinova -->
+  <!-- The same as spotkinovaeus/robots/spot_kinova.xacro -->
+  <node name="spot_to_kinova_transformer" pkg="tf" type="static_transform_publisher"
+        args="0.1 0 0 0 0 0 0 front_rail kinova_base_link 100"/>
+
+  <!-- Topic relay for joint_states  -->
+  <node name="joint_states_relay_spot" pkg="topic_tools" type="relay"
+        args="/joint_states /spot_kinova/joint_states" />
+  <node name="joint_states_relay_kinova" pkg="topic_tools" type="relay"
+        args="/arm_gen3/joint_states /spot_kinova/joint_states" />
+</launch>
