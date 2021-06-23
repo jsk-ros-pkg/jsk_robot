@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>spotkinovaeus</name>
+  <version>1.1.0</version>
+  <description>The spotkinovaeus package</description>
+
+  <maintainer email="708yamaguchi@gmail.com">Naoya Yamaguchi</maintainer>
+
+  <license>BSD</license>
+  <author email="708yamaguchi@gmail.com">Naoya Yamaguchi</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>spoteus</build_depend>
+  <build_depend>kinovaeus</build_depend>
+
+  <export>
+  </export>
+</package>
