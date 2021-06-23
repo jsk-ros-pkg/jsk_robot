@@ -14,7 +14,7 @@
   )
 (defmethod dual_panda-robot-interface
   (:init
-   (&rest args &key ((:controller-timeout ct) nil))
+   (&rest args &key ((:controller-timeout ct) nil)  &allow-other-keys)
    (prog1
        (send-super* :init :robot dual_panda-robot
                     :joint-states-topic "dual_panda/joint_states"
