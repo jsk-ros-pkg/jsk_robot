@@ -222,14 +222,14 @@
                     (list (make-cascoords :pos pos))
                     :move-target (list (send robot :larm :end-coords))
                     :link-list
-                    (send robot :link-list (send (send robot :larm :end-coords) :parent))
+                    (list (send robot :link-list (send (send robot :larm :end-coords) :parent)))
                     :rotation-axis (list t)
                     :debug-view (if *debug-view-p* :no-message nil))
               (send robot :inverse-kinematics
                     (list (make-cascoords :pos pos))
                     :move-target (list (send robot :rarm :end-coords))
                     :link-list
-                    (send robot :link-list (send (send robot :rarm :end-coords) :parent))
+                    (list (send robot :link-list (send (send robot :rarm :end-coords) :parent)))
                     :rotation-axis (list t)
                     :debug-view (if *debug-view-p* :no-message nil))
               (> tmp-x limit))
