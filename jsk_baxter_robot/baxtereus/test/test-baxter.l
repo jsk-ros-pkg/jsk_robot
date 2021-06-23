@@ -84,24 +84,35 @@
     )) ;; let
 
 (deftest test-robot-multiple-ik-target
+
+(defun test-multi-ik-bin (robot)
+  (send robot :locate #f(0 0 950) :world)
+  (when *debug-view-p*
+    (objects (list robot)))
+  (dolist (pos *pod-bin*)
+    (assert (send robot :inverse-kinematics
+                  (list (make-cascoords :pos (v+ pos #f(-90 0 0)))
+                        (make-cascoords :pos (v+ pos #f(-90 0 0))))
+                  :move-target
+                  (list (send robot :larm :end-coords)
+                        (send robot :rarm :end-coords))
+                  :link-list
+                  (list (send robot :link-list (send (send robot :larm :end-coords) :parent))
+                        (send robot :link-list (send (send robot :rarm :end-coords) :parent)))
+                  :rotation-axis (list t t)
+                  :debug-view (if *debug-view-p* :no-message nil))
+            "fail to solve ik")))
+
+(deftest test-robot-multi-ik-bin
   (let (robot)
     (setq robot (instance baxter-robot :init))
-    (send robot :locate #f(0 0 950) :world)
-    (when *debug-view-p*
-      (objects (list robot)))
-    (dolist (pos *pod-bin*)
-      (assert (send robot :inverse-kinematics
-                    (list (make-cascoords :pos (v+ pos #f(-90 0 0)))
-                          (make-cascoords :pos (v+ pos #f(-90 0 0))))
-                    :move-target
-                    (list (send robot :larm :end-coords)
-                          (send robot :rarm :end-coords))
-                    :link-list
-                    (list (send robot :link-list (send (send robot :larm :end-coords) :parent))
-                          (send robot :link-list (send (send robot :rarm :end-coords) :parent)))
-                    :rotation-axis (list t t)
-                    :debug-view (if *debug-view-p* :no-message nil))
-              "fail to solve ik"))))
+    (test-multi-ik-bin robot)))
+
+(deftest test-robot-safe-multi-ik-bin
+  (let (robot)
+    (setq robot (instance baxter-robot-safe :init))
+    (test-multi-ik-bin robot)))
+
 
 ;; test to check the robot back to the original pose, if the ik failed
 (deftest test-robot-ik-revert
