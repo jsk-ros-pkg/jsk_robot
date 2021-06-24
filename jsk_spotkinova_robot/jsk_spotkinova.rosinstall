@@ -48,7 +48,7 @@
     uri: https://github.com/Kinovarobotics/ros_kortex.git
     version: master
 
--git:
+- git:
     local-name: ros_kortex_vision
     uri: https://github.com/Kinovarobotics/ros_kortex_vision.git
     version: master
