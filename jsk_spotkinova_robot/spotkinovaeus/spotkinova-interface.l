@@ -80,6 +80,18 @@
       (mapcar #'(lambda (spot-av kinova-av)
                   (coerce (append (coerce spot-av cons) (coerce kinova-av cons)) float-vector))
               spot-avs kinova-avs)))
+  (:go-pos (&rest args)
+    (send* spot-inst :go-pos args))
+  (:go-pos-no-wait (&rest args)
+    (send* spot-inst :go-pos-no-wait args))
+  (:go-wait (&rest args)
+    (send* spot-inst :go-wait args))
+  (:go-velocity (&rest args)
+    (send* spot-inst :go-velocity args))
+  (:go-stop (&rest args)
+    (send* spot-inst :go-stop args))
+  (:gripper (&rest args)
+    (send* kinova-inst :gripper args))
   )))
 
 ;; Forward spot-specific and kinova-specific methods
