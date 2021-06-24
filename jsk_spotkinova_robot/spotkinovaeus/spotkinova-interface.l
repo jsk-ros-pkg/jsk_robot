@@ -4,16 +4,7 @@
 (load "package://kinovaeus/kinova-interface.l")
 (load "package://spotkinovaeus/spotkinova-util.l")
 
-(defvar *spot-methods* (mapcar #'car (send spot-interface :methods)))
-(defvar *kinova-methods* (mapcar #'car (send spot-interface :methods)))
-;; Do not forward methods defined in spot-kinova-interface class ;; TODO : use defmethod function definition
-(defvar *non-forward-methods*
-  (list :init :default-controller :head-controller :angle-vector :angle-vector-raw :angle-vector-sequence :angle-vector-sequence-raw))
-
-(eval `(defclass spot-kinova-interface :super robot-interface
-         :slots ((spot-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *spot-methods*))
-                 (kinova-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *kinova-methods*)))))
-
+(defvar *spot-kinova-interface* (quote
 (defmethod spot-kinova-interface
   (:init
    (&key type &rest args)
@@ -89,7 +80,21 @@
       (mapcar #'(lambda (spot-av kinova-av)
                   (coerce (append (coerce spot-av cons) (coerce kinova-av cons)) float-vector))
               spot-avs kinova-avs)))
-  )
+  )))
+
+;; Forward spot-specific and kinova-specific methods
+;; Do not forward methods defined in spot-kinova-interface class methods
+(defvar *spot-methods* (mapcar #'car (send spot-interface :methods)))
+(defvar *kinova-methods* (mapcar #'car (send kinova-interface :methods)))
+(defvar *non-forward-methods* (mapcar #'car (cddr *spot-kinova-interface*)))
+
+;; defclass (To see raw definition, replace eval with macroexpand)
+(eval `(defclass spot-kinova-interface :super robot-interface
+         :slots ((spot-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *spot-methods*))
+                 (kinova-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *kinova-methods*)))))
+
+;; defmethod (To see raw definition, replace eval with macroexpand)
+(eval *spot-kinova-interface*)
 
 (defun spot-kinova-init (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
   (unless (boundp '*spot-kinova*)
