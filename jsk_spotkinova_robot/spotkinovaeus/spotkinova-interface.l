@@ -16,7 +16,7 @@
   (:init
    (&key type &rest args)
    (setq spot-inst (instance spot-interface :init))
-   (setq kinova-inst (instance kinova-interface :init :type type))
+   (setq kinova-inst (instance kinova-interface :init :type type :prefix-arg "kinova_"))
    (let ()
      (send-super* :init
                   :robot
@@ -42,13 +42,13 @@
       (cond ((or (derivedp robot spot_gen3_robotiq_2f_140-robot) (derivedp robot spot_gen3_robotiq_2f_85-robot))
              (list
               (cons :controller-action
-                    "spot_kinova/gen3_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
-              (cons :controller-state "spot_kinova/gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name.
+                    "arm_gen3/kinova_gen3_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+              (cons :controller-state "arm_gen3/kinova_gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name.
             ((derivedp robot spot_gen3_lite_gen3_lite_2f-robot)
              (list
               (cons :controller-action
-                    "spot_kinova/gen3_lite_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
-              (cons :controller-state "spot_kinova/gen3_lite_joint_trajectory_controller/state")))) ;; @TODO: This is dummy topoic name.
+                    "arm_gen3/kinova_gen3_lite_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+              (cons :controller-state "arm_gen3/kinova_gen3_lite_joint_trajectory_controller/state")))) ;; @TODO: This is dummy topoic name.
       (list (cons :action-type control_msgs::FollowJointTrajectoryAction)
             (cons :joint-names (send-all (send robot :joint-list) :name))))))
   (:angle-vector (av &optional tm &rest args)
