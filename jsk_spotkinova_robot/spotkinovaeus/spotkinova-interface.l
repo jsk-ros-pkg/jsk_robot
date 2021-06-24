@@ -31,37 +31,58 @@
                          (warning-message 1 "unknown kinova robot type ~A~%" type)))
                   :joint-states-topic "/spot_kinova/joint_states"
                   :groupname "spot_kinova_interface" args))
-   (send self :add-controller :arm-controller)
+   (send self :add-controller :head-controller)
    self)
   (:default-controller ()
-    (send self :arm-controller))
-  (:arm-controller ()
-    (send kinova-inst :arm-controller))
-  (:angle-vector (av &rest args)
+    (send self :head-controller))
+  (:head-controller ()
+    (list
+     (append
+      (cond ((or (derivedp robot spot_gen3_robotiq_2f_140-robot) (derivedp robot spot_gen3_robotiq_2f_85-robot))
+             (list
+              (cons :controller-action
+                    "spot_kinova/gen3_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+              (cons :controller-state "spot_kinova/gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name.
+            ((derivedp robot spot_gen3_lite_gen3_lite_2f-robot)
+             (list
+              (cons :controller-action
+                    "spot_kinova/gen3_lite_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+              (cons :controller-state "spot_kinova/gen3_lite_joint_trajectory_controller/state")))) ;; @TODO: This is dummy topoic name.
+      (list (cons :action-type control_msgs::FollowJointTrajectoryAction)
+            (cons :joint-names (send-all (send robot :joint-list) :name))))))
+  (:angle-vector (av &optional tm &rest args)
+    (when (send self :simulation-modep)
+      (return-from :angle-vector (send-super :angle-vector-simulation av tm :head-controller)))
     (let* ((kinova-av (coerce (nthcdr 12 (coerce av cons)) float-vector))
            (spot-av-list (butlast (coerce av cons) 6)))
-      (setq kinova-av (send kinova-inst :angle-vector kinova-av args))
+      (setq kinova-av (send* kinova-inst :angle-vector kinova-av args))
       (coerce (append spot-av-list (coerce kinova-av cons)) float-vector)))
-  (:angle-vector-raw (av &rest args)
+  (:angle-vector-raw (av &optional tm &rest args)
+    (when (send self :simulation-modep)
+      (return-from :angle-vector-raw (send-super :angle-vector-simulation av tm :head-controller)))
     (let* ((kinova-av (coerce (nthcdr 12 (coerce av cons)) float-vector))
            (spot-av (coerce (butlast (coerce av cons) 6) float-vector)))
-      (setq kinova-av (send kinova-inst :angle-vector-raw kinova-av args))
+      (setq kinova-av (send* kinova-inst :angle-vector-raw kinova-av args))
       (coerce (append (coerce spot-av cons) (coerce kinova-av cons)) float-vector)))
-  (:angle-vector-sequence (avs &rest args)
+  (:angle-vector-sequence (avs &optional tms &rest args)
+    (when (send self :simulation-modep)
+      (return-from :angle-vector-sequence (send-super :angle-vector-sequence avs tms :head-controller)))
     (let* ((kinova-avs
             (mapcar #'(lambda (av) (coerce (nthcdr 12 (coerce av cons)) float-vector)) avs))
            (spot-avs
             (mapcar #'(lambda (av) (coerce (butlast (coerce av cons) 6) float-vector)) avs)))
-      (setq kinova-avs (send kinova-inst :angle-vector-sequence kinova-avs args))
+      (setq kinova-avs (send* kinova-inst :angle-vector-sequence kinova-avs args))
       (mapcar #'(lambda (spot-av kinova-av)
                   (coerce (append (coerce spot-av cons) (coerce kinova-av cons)) float-vector))
               spot-avs kinova-avs)))
-  (:angle-vector-sequence-raw (avs &rest args)
+  (:angle-vector-sequence-raw (avs &optional tms &rest args)
+    (when (send self :simulation-modep)
+      (return-from :angle-vector-sequence-raw (send-super :angle-vector-sequence avs tms :head-controller)))
     (let* ((kinova-avs
             (mapcar #'(lambda (av) (coerce (nthcdr 12 (coerce av cons)) float-vector)) avs))
            (spot-avs
             (mapcar #'(lambda (av) (coerce (butlast (coerce av cons) 6) float-vector)) avs)))
-      (setq kinova-avs (send kinova-inst :angle-vector-sequence-raw kinova-avs args))
+      (setq kinova-avs (send* kinova-inst :angle-vector-sequence-raw kinova-avs args))
       (mapcar #'(lambda (spot-av kinova-av)
                   (coerce (append (coerce spot-av cons) (coerce kinova-av cons)) float-vector))
               spot-avs kinova-avs)))
