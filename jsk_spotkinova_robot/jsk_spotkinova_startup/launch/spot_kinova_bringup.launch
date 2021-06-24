@@ -18,26 +18,22 @@
       <arg name="credential_config" value="$(arg credential_config)" />
   </include>
 
-  <!-- peripheral devices -->
-  <include
-      file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
-      />
+  <!-- <!-\- peripheral devices -\-> -->
+  <!-- <include file="$(find jsk_spot_startup)/launch/include/peripheral.launch" /> -->
 
-  <!-- image processing -->
-  <include
-      file="$(find jsk_spot_startup)/launch/include/image_processing.launch"
-      />
+  <!-- <!-\- image processing -\-> -->
+  <!-- <include file="$(find jsk_spot_startup)/launch/include/image_processing.launch" /> -->
 
-  <!-- interaction nodes -->
-  <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"/>
+  <!-- <!-\- interaction nodes -\-> -->
+  <!-- <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"/> -->
 
-  <!-- teleop node -->
-  <include file="$(find jsk_spot_teleop)/launch/teleop.launch">
-      <arg name="pad_type" value="R1" />
-  </include>
-  <include file="$(find jsk_spot_teleop)/launch/teleop.launch">
-      <arg name="pad_type" value="dualshock3" />
-  </include>
+  <!-- <!-\- teleop node -\-> -->
+  <!-- <include file="$(find jsk_spot_teleop)/launch/teleop.launch"> -->
+  <!--     <arg name="pad_type" value="R1" /> -->
+  <!-- </include> -->
+  <!-- <include file="$(find jsk_spot_teleop)/launch/teleop.launch"> -->
+  <!--     <arg name="pad_type" value="dualshock3" /> -->
+  <!-- </include> -->
   
   <!-- launch for kinova -->
   <!-- main launch file-->
