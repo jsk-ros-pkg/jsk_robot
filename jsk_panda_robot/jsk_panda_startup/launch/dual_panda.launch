@@ -1,13 +1,16 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="rarm_ip" default="172.16.0.2"/>
-  <arg name="larm_ip" default="172.16.1.2"/>
+  <arg name="rarm_ip" default="172.16.0.100"/>
+  <arg name="larm_ip" default="172.16.0.200"/>
 
   <arg name="robot_id" default="dual_panda" />
   <arg name="debug"    default="false" />
   <arg name="rviz"     default="true" />
   <arg name="load_gripper"  default="false" />
   <arg name="gripper_homed" default="false" />
+  <!-- this pub rate is same as gripper, three times as big as arms-->
+  <arg name="end_coords_publishing_hz" default="30" />
+
 
   <!--remap from="dyn_reconf_teleop_param_node"
       to="$(arg robot_id)/dyn_reconf_teleop_param_node" />
@@ -52,8 +55,7 @@
   <include file="$(find openni2_launch)/launch/openni2.launch" />
 
   <!-- teleop -->
-  <include file="$(find rwt_image_view)/launch/rwt_image_view.launch"/>
-
+  <include file="$(find rwt_image_view)/launch/rwt_image_view.launch"/> 
   <node pkg="rwt_teleop" type="draw_force_on_image.py" name="draw_force_on_image"/>
 
   <group ns="larm_marker">
@@ -73,4 +75,7 @@
     </node>
   </group>
 
+  <!-- add end-pose publisher -->
+  <rosparam param="/dual_panda/end_coords_pub_hz" subst_value="True">$(arg end_coords_publishing_hz)</rosparam>
+  <node pkg="jsk_panda_startup" type="end-coords_publisher.l" name="end_coords_publisher" />
 </launch>
