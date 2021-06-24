@@ -46,7 +46,8 @@
 - git:
     local-name: ros_kortex
     uri: https://github.com/Kinovarobotics/ros_kortex.git
-    version: master
+    version: 330c55bce8c3d463cca2492b3e0c89204f235640
+# kortex_firmware is updating to 2.3.0, failed in master branch
 
 - git:
     local-name: ros_kortex_vision
