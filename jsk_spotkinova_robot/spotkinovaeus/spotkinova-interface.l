@@ -96,6 +96,11 @@
 
 ;; Forward spot-specific and kinova-specific methods
 ;; Do not forward methods defined in spot-kinova-interface class methods
+
+;; Priority of method call with the same name in different classes:
+;; 1. spot-kinova-interface 2. robot-interface 3. spot-interface & kinova-interface
+;; Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
+
 (defvar *spot-methods* (mapcar #'car (send spot-interface :methods)))
 (defvar *kinova-methods* (mapcar #'car (send kinova-interface :methods)))
 (defvar *non-forward-methods* (mapcar #'car (cddr *spot-kinova-interface*)))
