@@ -22,6 +22,9 @@ move_base:
   # base_local_planner: base_local_planner/TrajectoryPlannerROS
   GlobalPlanner:
     allow_unknown: true
+    neural_cost: 50
+    lethal_cost: 253
+    cost_factor: 0.8
     default_tolerance: 0.0
     orientation_mode: 1
     visualize_potential: false
