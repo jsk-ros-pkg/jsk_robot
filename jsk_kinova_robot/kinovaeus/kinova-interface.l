@@ -8,13 +8,14 @@
 
 (defclass kinova-interface
   :super robot-interface
-  :slots (controller-handle robot-handle move-robot)
+  :slots (controller-handle robot-handle move-robot prefix)
   )
 
 (defmethod kinova-interface
   (:init
-   (&key type &rest args)
+   (&key type (prefix-arg "") &rest args)
    (let ()
+     (setq prefix prefix-arg)
      (prog1
          (send-super* :init
                       :robot
@@ -34,11 +35,11 @@
        (setq gripper-action
              (instance ros::simple-action-client :init
                        (cond ((derivedp robot gen3_robotiq_2f_140-robot)
-                              "/arm_gen3/robotiq_2f_140_gripper_controller/gripper_cmd")
+                              (format nil "/arm_gen3/~Arobotiq_2f_140_gripper_controller/gripper_cmd" prefix))
                              ((derivedp robot gen3_robotiq_2f_85-robot)
-                              "/arm_gen3/robotiq_2f_85_gripper_controller/gripper_cmd")
+                              (format nil "/arm_gen3/~Arobotiq_2f_85_gripper_controller/gripper_cmd" prefix))
                              ((derivedp robot gen3_lite_gen3_lite_2f-robot)
-                              "/arm_gen3/gen3_lite_2f_gripper_controller/gripper_cmd")
+                              (format nil "/arm_gen3/~Agen3_lite_2f_gripper_controller/gripper_cmd" prefix))
                              (t
                               (warning-message 1 "unknown kinova robot type ~A~%" robot)
                               ))
@@ -60,13 +61,15 @@
       (cond ((or (derivedp robot gen3_robotiq_2f_140-robot) (derivedp robot gen3_robotiq_2f_85-robot))
              (list
               (cons :controller-action
-                    "arm_gen3/gen3_joint_trajectory_controller/follow_joint_trajectory")
-              (cons :controller-state "arm_gen3/gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
+                    (format nil "arm_gen3/~Agen3_joint_trajectory_controller/follow_joint_trajectory" prefix))
+              (cons :controller-state
+		    (format nil "arm_gen3/~Agen3_joint_trajectory_controller/state" prefix)))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
             ((derivedp robot gen3_lite_gen3_lite_2f-robot)
              (list
               (cons :controller-action
-                    "arm_gen3/gen3_lite_joint_trajectory_controller/follow_joint_trajectory")
-              (cons :controller-state "arm_gen3/gen3_lite_joint_trajectory_controller/state")))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
+                    (format nil "arm_gen3/~Agen3_lite_joint_trajectory_controller/follow_joint_trajectory" prefix))
+              (cons :controller-state
+		    (format nil "arm_gen3/~Agen3_lite_joint_trajectory_controller/state" prefix))))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
       (list (cons :action-type control_msgs::FollowJointTrajectoryAction)
             (cons :joint-names (send-all (send robot :joint-list) :name))))))
   (:go-grasp
