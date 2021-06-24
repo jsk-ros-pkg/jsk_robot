@@ -33,6 +33,10 @@
     (send self :go-grasp :pos 0.8))
   (:stop-grasp ()
     (send self :go-grasp :pos 0.0))
+  (:spot-angle-vector ()
+    (coerce (butlast (coerce (send self :angle-vector) cons) 7) float-vector))
+  (:kinova-angle-vector ()
+    (coerce (nthcdr 12 (coerce (send self :angle-vector) cons)) float-vector))
   )
 (defmethod spot_gen3_robotiq_2f_140-robot
   (:arm (&rest args) (send* self :head args))      ;; enable to call send *kinova* :arm :angle-vector
@@ -50,6 +54,10 @@
     (send self :go-grasp :pos 0.69))
   (:stop-grasp ()
     (send self :go-grasp :pos 0.0))
+  (:spot-angle-vector ()
+    (coerce (butlast (coerce (send self :angle-vector) cons) 7) float-vector))
+  (:kinova-angle-vector ()
+    (coerce (nthcdr 12 (coerce (send self :angle-vector) cons)) float-vector))
   )
 (defmethod spot_gen3_lite_gen3_lite_2f-robot
   (:arm (&rest args) (send* self :head args))      ;; enable to call send *kinova* :arm :angle-vector
@@ -68,4 +76,8 @@
     (send self :go-grasp :pos -0.05))
   (:stop-grasp ()
     (send self :go-grasp :pos 0.95))
+  (:spot-angle-vector ()
+    (coerce (butlast (coerce (send self :angle-vector) cons) 6) float-vector))
+  (:kinova-angle-vector ()
+    (coerce (nthcdr 12 (coerce (send self :angle-vector) cons)) float-vector))
   )
