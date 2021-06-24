@@ -4,13 +4,15 @@
 (load "package://kinovaeus/kinova-interface.l")
 (load "package://spotkinovaeus/spotkinova-util.l")
 
-;; Do not forward methods defined in spot-kinova-interface class
+(defvar *spot-methods* (mapcar #'car (send spot-interface :methods)))
+(defvar *kinova-methods* (mapcar #'car (send spot-interface :methods)))
+;; Do not forward methods defined in spot-kinova-interface class ;; TODO : use defmethod function definition
 (defvar *non-forward-methods*
   (list :init :default-controller :head-controller :angle-vector :angle-vector-raw :angle-vector-sequence :angle-vector-sequence-raw))
 
 (eval `(defclass spot-kinova-interface :super robot-interface
-         :slots ((spot-inst :forward (remove-if #'(lambda (x) (member x ,*non-forward-methods*)) ,(mapcar #'car (send spot-interface :methods))))
-                 (kinova-inst :forward (remove-if #'(lambda (x) (member x ,*non-forward-methods*)) ,(mapcar #'car (send kinova-interface :methods)))))))
+         :slots ((spot-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *spot-methods*))
+                 (kinova-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *kinova-methods*)))))
 
 (defmethod spot-kinova-interface
   (:init
