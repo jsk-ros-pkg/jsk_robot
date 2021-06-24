@@ -1,7 +1,7 @@
 <launch>
 
   <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
-  <arg name="robot_type" default="gen3_robotiq_2f_140" doc="gen3_lite_gen3_lite_2f or gen3_robotiq_2f_85 or gen3_robotiq_2f_140"/>
+  <!-- <arg name="robot_type" default="gen3_robotiq_2f_140" doc="gen3_lite_gen3_lite_2f or gen3_robotiq_2f_85 or gen3_robotiq_2f_140"/> -->
   <arg name="ip_address" default="192.168.1.10" doc="IP adress of the Kinova robot" />
   <arg name="robot_name" default="arm_gen3" doc="Kinova robot name. Basically, this name should not be changed." />
   <arg name="arm" default="gen3_lite" doc="Use 'gen3' for gen3 robot, 'gen3_lite' for gen3 lite robot." />
@@ -9,7 +9,7 @@
   <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')" doc="For gen3 lite robot"/>
   <arg name="vision" default="true" if="$(eval arg('arm') == 'gen3')" doc="Set true if you use gen3 camera module." />
   <arg name="vision" default="false" if="$(eval arg('arm') == 'gen3_lite')" doc="gen3 lite robot does not have camera module." />
-  
+  <arg name="rviz" default="false" />
   <!-- launch for spot -->
   <!-- spot driver -->
   <include
@@ -44,6 +44,7 @@
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
     <arg name="vision" value="$(arg vision)" />
+    <arg name="prefix" value="kinova_" />
   </include>
 
   <!-- Vision for kinova-->
@@ -66,6 +67,6 @@
         args="/arm_gen3/joint_states /spot_kinova/joint_states" />
 
   <param name="robot_description"
-         command="$(find xacro)/xacro --inorder $(find spotkinovaeus)/robots/spot_kinova.xacro robot_type:=$(arg robot_type) prefix:=kinova_"/>
+         command="$(find xacro)/xacro --inorder $(find spotkinovaeus)/robots/spot_kinova.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
 
 </launch>
