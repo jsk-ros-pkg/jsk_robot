@@ -4,7 +4,19 @@
 (load "package://kinovaeus/kinova-interface.l")
 (load "package://spotkinovaeus/spotkinova-util.l")
 
-(defvar *spot-kinova-interface* (quote
+;; defclass (To see raw definition, replace eval with macroexpand)
+(eval `(defclass spot-kinova-interface :super robot-interface
+         :slots ((spot-inst :forward ,(mapcar #'car (send spot-interface :methods)))
+                 (kinova-inst :forward ,(mapcar #'car (send kinova-interface :methods))))
+         :documentation "This is a robot interface class for using spot + kinova.
+This class is designed to be able to call both the methods defined in spot-interface and kinova-interface.
+
+The following is priority when calling methods of the same name defined in different classes.
+1. spot-kinova-interface 2. robot-interface 3. spot-interface 4. kinova-interface
+Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
+"
+         ))
+
 (defmethod spot-kinova-interface
   (:init
    (&key type &rest args)
@@ -92,26 +104,7 @@
     (send* spot-inst :go-stop args))
   (:gripper (&rest args)
     (send* kinova-inst :gripper args))
-  )))
-
-;; Forward spot-specific and kinova-specific methods
-;; Do not forward methods defined in spot-kinova-interface class methods
-
-;; Priority of method call with the same name in different classes:
-;; 1. spot-kinova-interface 2. robot-interface 3. spot-interface & kinova-interface
-;; Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
-
-(defvar *spot-methods* (mapcar #'car (send spot-interface :methods)))
-(defvar *kinova-methods* (mapcar #'car (send kinova-interface :methods)))
-(defvar *non-forward-methods* (mapcar #'car (cddr *spot-kinova-interface*)))
-
-;; defclass (To see raw definition, replace eval with macroexpand)
-(eval `(defclass spot-kinova-interface :super robot-interface
-         :slots ((spot-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *spot-methods*))
-                 (kinova-inst :forward ,(remove-if #'(lambda (x) (member x *non-forward-methods*)) *kinova-methods*)))))
-
-;; defmethod (To see raw definition, replace eval with macroexpand)
-(eval *spot-kinova-interface*)
+  )
 
 (defun spot-kinova-init (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
   (unless (boundp '*spot-kinova*)
