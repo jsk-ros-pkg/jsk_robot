@@ -8,6 +8,7 @@
   <arg name="rviz"     default="true" />
   <arg name="load_gripper"  default="false" />
   <arg name="gripper_homed" default="false" />
+  <!-- this pub rate is same as gripper, three times as big as arms-->
   <arg name="end_coords_publishing_hz" default="30" />
 
 
