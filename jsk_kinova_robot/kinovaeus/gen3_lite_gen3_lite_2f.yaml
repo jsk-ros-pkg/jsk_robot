@@ -3,12 +3,12 @@
 ##
 
 rarm:
-  - joint_1 : rarm-collar-y
-  - joint_2 : rarm-shoulder-p
-  - joint_3 : rarm-shoulder-y
-  - joint_4 : rarm-elbow-p
-  - joint_5 : rarm-elbow-y
-  - joint_6 : rarm-wrist-p
+  - kinova_joint_1 : rarm-collar-y
+  - kinova_joint_2 : rarm-shoulder-p
+  - kinova_joint_3 : rarm-shoulder-y
+  - kinova_joint_4 : rarm-elbow-p
+  - kinova_joint_5 : rarm-elbow-y
+  - kinova_joint_6 : rarm-wrist-p
 
 # reset-pose is the home pose
 # https://github.com/Kinovarobotics/ros_kortex/blob/330c55bce8c3d463cca2492b3e0c89204f235640/kortex_move_it_config/gen3_lite_gen3_lite_2f_move_it_config/config/gen3_lite_gen3_lite_2f.srdf.xacro#L31-L38
