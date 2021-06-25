@@ -1,5 +1,5 @@
 # Until https://github.com/jsk-ros-pkg/jsk_robot/pull/1313 and https://github.com/jsk-ros-pkg/jsk_robot/pull/1325
-# are marged, We need to use it 
+# are marged, We need to use it
 - git:
     local-name: jsk-ros-pkg/jsk_robot
     uri: https://github.com/708yamaguchi/jsk_robot.git
@@ -9,7 +9,7 @@
 #     local-name: jsk-ros-pkg/jsk_robot
 #     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
 #     version: master
-    
+
 # Copied from https://github.com/sktometometo/jsk_robot/blob/develop/spot/jsk_spot_robot/jsk_spot_coral.rosinstall
 # PanoramaInfo.msg is used.
 # So we need to use this branch until it is merged to master
@@ -47,13 +47,15 @@
 # Copied from https://github.com/708yamaguchi/jsk_robot/blob/kinova-gen3/jsk_kinova_robot/kinova.rosinstall
 # kortex_firmware is updating to ver2.3.0 in master branch
 # but the firmware in internal kinova is still ver2.2.0
+
+# This fix is needed to use prefix arg
+# Please see https://github.com/Kinovarobotics/ros_kortex/pull/162
 - git:
     local-name: ros_kortex
-    uri: https://github.com/Kinovarobotics/ros_kortex.git
-    version: 330c55bce8c3d463cca2492b3e0c89204f235640
+    uri: https://github.com/708yamaguchi/ros_kortex.git
+    version: add-prefix-
 
 - git:
     local-name: ros_kortex_vision
     uri: https://github.com/Kinovarobotics/ros_kortex_vision.git
     version: master
-    
