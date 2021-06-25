@@ -1,5 +1,3 @@
-(ros::roseus "spot_kinova")
-
 (load "package://spoteus/spot-interface.l")
 (load "package://kinovaeus/kinova-interface.l")
 (load "package://spotkinovaeus/spotkinova-util.l")
@@ -106,6 +104,8 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                     avs))
       (send robot :angle-vector av-orig)
       (send* kinova-inst :angle-vector-sequence-raw kinova-avs args)))
+  (:wait-interpolation (&rest args)
+    (send* kinova-inst :wait-interpolation args))
   (:go-pos (&rest args)
     (send* spot-inst :go-pos args))
   (:go-pos-no-wait (&rest args)
@@ -123,5 +123,12 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
 (defun spot-kinova-init (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
   (unless (boundp '*spot-kinova*)
     (setq *spot-kinova* (spot-kinova :type type)))
+  (unless (ros::ok)
+    (ros::roseus "spot_kinova_interface"))
   (unless (boundp '*ri*)
-    (setq *ri* (instance spot-kinova-interface :init :type type))))
+    (setq *ri* (instance spot-kinova-interface :init :type type)))
+
+  ;; TODO (send *ri* :state :power-state-motor-power-state) has bug
+  ;; (spot-init nil)
+  ;; (kinova-init :type :gen3_lite_gen3_lite_2f :prefix-arg "kinova_")
+  )
