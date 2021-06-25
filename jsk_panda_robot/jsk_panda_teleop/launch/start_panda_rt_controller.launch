@@ -20,8 +20,8 @@
     <arg name="robot"     value="$(find panda_eus)/models/dual_panda_with_handeye.urdf.xacro" />
     <arg name="robot_id"  value="$(arg robot_id)" />
     <arg name="robot_ips" value="$(arg robot_ips)" />
-    <arg name="hw_config_file"   value="$(find jsk_pand_teleop)/config/dual_panda_control_node.yaml"/>
-    <arg name="controllers_file" value="$(find jsk_pand_teleop)/config/dual_panda_controllers.yaml" />
+    <arg name="hw_config_file"   value="$(find jsk_panda_teleop)/config/dual_panda_control_node.yaml"/>
+    <arg name="controllers_file" value="$(find jsk_panda_teleop)/config/dual_panda_controllers.yaml" />
     <arg name="controllers_to_start"     value="rarm_state_controller larm_state_controller dual_arm_cartesian_pose_controller"/>
     <arg name="joint_states_source_list" value="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]"/>
   </include>
@@ -71,8 +71,8 @@
   </node>
 
   <!-- Touch USB to Panda connection -->
-  <node pkg="jsk_pand_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--connect_pose --connect_force" if="$(arg start_bilateral)"/>
-  <node pkg="jsk_pand_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--noconnect_pose --noconnect_force" unless="$(arg start_bilateral)"/>
+  <node pkg="jsk_panda_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--connect_pose --connect_force" if="$(arg start_bilateral)"/>
+  <node pkg="jsk_panda_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--noconnect_pose --noconnect_force" unless="$(arg start_bilateral)"/>
 
 
 </launch>
