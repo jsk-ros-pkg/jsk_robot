@@ -13,7 +13,7 @@
 
 (defmethod kinova-interface
   (:init
-   (&key type (prefix-arg "") &rest args)
+   (&key type (prefix-arg "kinova_") &rest args)
    (let ()
      (setq prefix prefix-arg)
      (prog1
@@ -354,7 +354,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
   )
 
 
-(defun kinova-init (&key (type nil) (prefix-arg "") &rest args &alow-other-keys)
+(defun kinova-init (&key (type nil) (prefix-arg "kinova_") &rest args &alow-other-keys)
   (unless (boundp '*kinova*) (apply #'kinova (if type (list :type type) nil)) (send *kinova* :reset-pose))
   (unless (ros::ok) (ros::roseus "kinova_eus_interface"))
   (unless (boundp '*co*)
