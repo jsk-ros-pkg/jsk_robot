@@ -37,7 +37,7 @@ message("collada2eus: ${_collada2eus}")
 # xacro command: https://github.com/Kinovarobotics/ros_kortex/tree/kinetic-devel/kortex_description
 foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f gen3_robotiq_2f_85 gen3_robotiq_2f_140)
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/${ROBOT_TYPE}.urdf
-    COMMAND xacro ${_kinova_urdf}/${ROBOT_TYPE}.xacro sim:=false > ${PROJECT_BINARY_DIR}/${ROBOT_TYPE}.urdf
+    COMMAND xacro ${_kinova_urdf}/${ROBOT_TYPE}.xacro prefix:=kinova_ sim:=false > ${PROJECT_BINARY_DIR}/${ROBOT_TYPE}.urdf
     DEPENDS ${_kinova_urdf}/${ROBOT_TYPE}.xacro)
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.l
     COMMAND echo "${_collada2eus} ${PROJECT_BINARY_DIR}/${ROBOT_TYPE}.urdf ${ROBOT_TYPE}.l"
