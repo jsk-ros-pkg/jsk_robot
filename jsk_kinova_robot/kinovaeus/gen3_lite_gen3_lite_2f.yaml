@@ -17,6 +17,6 @@ angle-vector:
   reset-pose: [0.0, -16.0, 75.0, 0.0, -60.0, 0.0]
 
 rarm-end-coords:
-  parent : tool_frame
+  parent : kinova_tool_frame
   translate : [0, 0, 0]
   rotate : [-0.57735, -0.57735, -0.57735, 120]
