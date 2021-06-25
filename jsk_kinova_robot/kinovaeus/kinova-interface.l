@@ -354,7 +354,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
   )
 
 
-(defun kinova-init (&key (type nil) &rest args &alow-other-keys)
+(defun kinova-init (&key (type nil) (prefix-arg "") &rest args &alow-other-keys)
   (unless (boundp '*kinova*) (apply #'kinova (if type (list :type type) nil)) (send *kinova* :reset-pose))
   (unless (ros::ok) (ros::roseus "kinova_eus_interface"))
   (unless (boundp '*co*)
@@ -365,7 +365,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
                            :service-name "arm_gen3/apply_planning_scene"
                            :scene-service "arm_gen3/get_planning_scene"))
       (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
-  (unless (boundp '*ri*) (setq *ri* (instance kinova-interface :init :type type)))
+  (unless (boundp '*ri*) (setq *ri* (instance kinova-interface :init :type type :prefix-arg prefix-arg)))
 
   (ros::spin-once)
   (send *ri* :spin-once)
