@@ -54,10 +54,6 @@
   <!-- vision -->
   <include file="$(find openni2_launch)/launch/openni2.launch" />
 
-  <!-- teleop -->
-  <include file="$(find rwt_image_view)/launch/rwt_image_view.launch"/> 
-  <node pkg="rwt_teleop" type="draw_force_on_image.py" name="draw_force_on_image"/>
-
   <group ns="larm_marker">
     <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
       <remap from="image" to="/edgetpu_object_detector/output/image"/>
