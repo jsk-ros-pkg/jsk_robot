@@ -119,6 +119,18 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
     (send* spot-inst :go-stop args))
   (:gripper (&rest args)
     (send* kinova-inst :gripper args))
+  (:state (&rest args)
+    (cond
+     ;; For several methods, call spot-interface's :state method.
+     ((member (car args)
+              (list :metrics :leases :feet :estop :wifi :power-state :battery-states :behvior-faults :system-fault :feedback :power-state-motor-power-state))
+      (send* spot-inst :state args))
+     (t
+      (send-super* :state args))))
+  (:spin-once (&rest args)
+    (send-super* :spin-once args)
+    (send* spot-inst :spin-once args)
+    (send* kinova-inst :spin-once args))
   )
 
 (defun spot-kinova-init (&key (type :gen3_lite_gen3_lite_2f) &rest args &allow-other-keys)
@@ -134,11 +146,10 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
   (ros::spin-once)
   (send (*ri* . spot-inst) :spin-once)
   (send (*ri* . spot-inst) :claim)
-  ;; TODO
-  ;; (while (member (send (*ri* . spot-inst) :state :power-state-motor-power-state) (list 'off nil))
-  ;;   (unix::sleep 1)
-  ;;   (ros::ros-info "powering on...")
-  ;;   (send (*ri* . spot-inst) :power-on))
+  (while (member (send (*ri* . spot-inst) :state :power-state-motor-power-state) (list 'off nil))
+    (unix::sleep 1)
+    (ros::ros-info "powering on...")
+    (send (*ri* . spot-inst) :power-on))
   (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send (*ri* . spot-inst) :state :feet)))
       (ros::ros-info "run (send *ri* :stand) to stand the robot"))
 
