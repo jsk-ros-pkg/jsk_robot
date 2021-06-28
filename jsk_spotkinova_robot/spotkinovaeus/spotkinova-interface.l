@@ -37,6 +37,8 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                   :joint-states-topic "/spot_kinova/joint_states"
                   :groupname "spot_kinova_interface" args))
    (send self :add-controller :head-controller)
+   (send self :add-pc-case-collision-object)
+   (send self :add-insta360-collision-object)
    self)
   (:default-controller ()
     (send self :head-controller))
@@ -119,6 +121,20 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
     (send* spot-inst :go-stop args))
   (:gripper (&rest args)
     (send* kinova-inst :gripper args))
+  (:add-pc-case-collision-object ()
+    (let ((cube (make-cube 460 330 200)))
+      (send cube :translate #f(-300 0 100))
+      (send *co* :add-attached-object cube
+            "kinova_base_link"
+            :frame-id "kinova_base_link"
+            :object-id "pc_case")))
+  (:add-insta360-collision-object ()
+    (let ((cube (make-cube 50 50 400)))
+      (send cube :translate #f(-100 0 300))
+      (send *co* :add-attached-object cube
+            "kinova_base_link"
+            :frame-id "kinova_base_link"
+            :object-id "insta360")))
   (:state (&rest args)
     (cond
      ;; For several methods, call spot-interface's :state method.
