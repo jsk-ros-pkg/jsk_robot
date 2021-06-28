@@ -37,8 +37,6 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                   :joint-states-topic "/spot_kinova/joint_states"
                   :groupname "spot_kinova_interface" args))
    (send self :add-controller :head-controller)
-   (send self :add-pc-case-collision-object)
-   (send self :add-insta360-collision-object)
    self)
   (:default-controller ()
     (send self :head-controller))
@@ -179,6 +177,8 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                            :service-name "arm_gen3/apply_planning_scene"
                            :scene-service "arm_gen3/get_planning_scene"))
       (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
+  (send *ri* :add-pc-case-collision-object)
+  (send *ri* :add-insta360-collision-object)
 
   *ri*
   )
