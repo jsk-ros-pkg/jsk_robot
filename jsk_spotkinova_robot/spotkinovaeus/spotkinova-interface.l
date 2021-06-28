@@ -128,7 +128,7 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
             :object-id "pc_case")))
   (:add-insta360-collision-object ()
     (let ((cube (make-cube 50 50 400)))
-      (send cube :translate #f(-100 0 300))
+      (send cube :translate #f(-150 0 300))
       (send *co* :add-attached-object cube
             "kinova_base_link"
             :frame-id "kinova_base_link"
@@ -177,6 +177,8 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                            :service-name "arm_gen3/apply_planning_scene"
                            :scene-service "arm_gen3/get_planning_scene"))
       (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
+  (unix:usleep (* 100 1000))
+  (send *co* :wipe-all)
   (send *ri* :add-pc-case-collision-object)
   (send *ri* :add-insta360-collision-object)
 
