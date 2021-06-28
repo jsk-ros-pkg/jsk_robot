@@ -53,7 +53,7 @@
   </include>
 
   <!-- Rviz for kinova-->
-  <include if="$(arg rviz)" file="$(find jsk_kinova_startup)/launch/rviz.launch" />
+  <include if="$(arg rviz)" file="$(find jsk_spotkinova_startup)/launch/rviz.launch" />
 
   <!-- Transform between spot and kinova -->
   <!-- The same as spotkinovaeus/robots/spot_kinova.xacro -->
