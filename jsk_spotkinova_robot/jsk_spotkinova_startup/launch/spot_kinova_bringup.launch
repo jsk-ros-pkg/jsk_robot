@@ -34,7 +34,7 @@
   <!-- <include file="$(find jsk_spot_teleop)/launch/teleop.launch"> -->
   <!--     <arg name="pad_type" value="dualshock3" /> -->
   <!-- </include> -->
-  
+
   <!-- launch for kinova -->
   <!-- main launch file-->
   <include file="$(find kortex_driver)/launch/kortex_driver.launch">
@@ -54,7 +54,7 @@
 
   <!-- Rviz for kinova-->
   <include if="$(arg rviz)" file="$(find jsk_kinova_startup)/launch/rviz.launch" />
-  
+
   <!-- Transform between spot and kinova -->
   <!-- The same as spotkinovaeus/robots/spot_kinova.xacro -->
   <node name="spot_to_kinova_transformer" pkg="tf" type="static_transform_publisher"
@@ -65,6 +65,27 @@
         args="/joint_states /spot_kinova/joint_states" />
   <node name="joint_states_relay_kinova" pkg="topic_tools" type="relay"
         args="/arm_gen3/joint_states /spot_kinova/joint_states" />
+
+  <!-- Publish and Subscribe dummy follow_joint_trajectry topics -->
+  <!-- Not to start Kinematics Simulator in spotkinova-interface -->
+  <node name="dummy_fjt_goal_subscriber" pkg="rostopic" type="rostopic"
+        args="echo /dummy/follow_joint_trajectory/goal" />
+  <node name="dummy_fjt_cancel_subscriber" pkg="rostopic" type="rostopic"
+        args="echo /dummy/follow_joint_trajectory/cancel" />
+  <node name="dummy_fjt_feedback_publisher" pkg="rostopic" type="rostopic"
+        args="pub /dummy/follow_joint_trajectory/feedback control_msgs/FollowJointTrajectoryActionFeedback
+              '{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+                status: {goal_id: {stamp: {secs: 0, nsecs: 0}, id: ''}, status: 0, text: ''},
+                feedback: {header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+                           joint_names: [''],
+                           desired: {positions: [0], velocities: [0], accelerations: [0], effort: [0], time_from_start: {secs: 0, nsecs: 0}},
+                           actual: {positions: [0], velocities: [0], accelerations: [0], effort: [0], time_from_start: {secs: 0, nsecs: 0}},
+                           error: {positions: [0], velocities: [0], accelerations: [0], effort: [0], time_from_start: {secs: 0, nsecs: 0}}}}'" />
+  <node name="dummy_fjt_result_publisher" pkg="rostopic" type="rostopic"
+        args="pub /dummy/follow_joint_trajectory/result control_msgs/FollowJointTrajectoryActionResult
+              '{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+                status: {goal_id: {stamp: {secs: 0, nsecs: 0}, id: ''}, status: 0, text: ''},
+                result: {error_code: 0, error_string: ''}}'" />
 
   <param name="robot_description"
          command="$(find xacro)/xacro --inorder $(find spotkinovaeus)/robots/spot_kinova.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
