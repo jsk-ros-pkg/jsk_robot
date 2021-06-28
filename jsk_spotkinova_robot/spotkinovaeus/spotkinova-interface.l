@@ -1,3 +1,4 @@
+(ros::roseus "spot_kinova_interface")
 (load "package://spoteus/spot-interface.l")
 (load "package://kinovaeus/kinova-interface.l")
 (load "package://spotkinovaeus/spotkinova-util.l")
@@ -45,12 +46,12 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
       (cond ((or (derivedp robot spot_gen3_robotiq_2f_140-robot) (derivedp robot spot_gen3_robotiq_2f_85-robot))
              (list
               (cons :controller-action
-                    "arm_gen3/kinova_gen3_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+                    "dummy/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
               (cons :controller-state "arm_gen3/kinova_gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name.
             ((derivedp robot spot_gen3_lite_gen3_lite_2f-robot)
              (list
               (cons :controller-action
-                    "arm_gen3/kinova_gen3_lite_joint_trajectory_controller/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+                    "dummy/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
               (cons :controller-state "arm_gen3/kinova_gen3_lite_joint_trajectory_controller/state")))) ;; @TODO: This is dummy topoic name.
       (list (cons :action-type control_msgs::FollowJointTrajectoryAction)
             (cons :joint-names (send-all (send robot :joint-list) :name))))))
@@ -120,7 +121,7 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
     (send* kinova-inst :gripper args))
   )
 
-(defun spot-kinova-init (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
+(defun spot-kinova-init (&key (type :gen3_lite_gen3_lite_2f) &rest args &allow-other-keys)
   (unless (boundp '*spot-kinova*)
     (setq *spot-kinova* (spot-kinova :type type)))
   (unless (ros::ok)
@@ -128,7 +129,28 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
   (unless (boundp '*ri*)
     (setq *ri* (instance spot-kinova-interface :init :type type)))
 
-  ;; TODO (send *ri* :state :power-state-motor-power-state) has bug
-  ;; (spot-init nil)
-  ;; (kinova-init :type :gen3_lite_gen3_lite_2f :prefix-arg "kinova_")
+  ;; Copied from spot-interface (spot-init)
+  ;; This should be done in (spot-interface :init) ?
+  (ros::spin-once)
+  (send (*ri* . spot-inst) :spin-once)
+  (send (*ri* . spot-inst) :claim)
+  ;; TODO
+  ;; (while (member (send (*ri* . spot-inst) :state :power-state-motor-power-state) (list 'off nil))
+  ;;   (unix::sleep 1)
+  ;;   (ros::ros-info "powering on...")
+  ;;   (send (*ri* . spot-inst) :power-on))
+  (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send (*ri* . spot-inst) :state :feet)))
+      (ros::ros-info "run (send *ri* :stand) to stand the robot"))
+
+  ;; Copied from kinova-interface (kinova-init)
+  ;; This should be done in (kinova-interface :init) ?
+  (unless (boundp '*co*)
+    (ros::ros-warn ";; collision-object-publisher wait for \"arm_gen3/apply_planning_scene\" service for ~A sec~%" 5)
+    (if (ros::wait-for-service "arm_gen3/apply_planning_scene" 5)
+      (setq *co* (instance collision-object-publisher
+                           :init
+                           :service-name "arm_gen3/apply_planning_scene"
+                           :scene-service "arm_gen3/get_planning_scene"))
+      (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
+
   )
