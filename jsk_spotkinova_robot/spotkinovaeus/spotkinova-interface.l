@@ -18,7 +18,7 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
 
 (defmethod spot-kinova-interface
   (:init
-   (&key type &rest args)
+   (&key (type :gen3_lite_gen3_lite_2f) &rest args)
    (setq spot-inst (instance spot-interface :init))
    (setq kinova-inst (instance kinova-interface :init :type type :prefix-arg "kinova_"))
    (let ()
