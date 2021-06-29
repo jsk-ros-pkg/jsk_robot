@@ -25,6 +25,11 @@
   <exec_depend>respeaker_ros</exec_depend>
   <exec_depend>cmd_vel_smoother</exec_depend>
   <exec_depend>xterm</exec_depend>
+  <exec_depend>sound_play</exec_depend>
+  <exec_depend>jsk_perception</exec_depend>
+  <exec_depend>aques_talk</exec_depend>
+  <exec_depend>jsk_spot_teleop</exec_depend>
+  <exec_depend>spoteus</exec_depend>
 
   <test_depend>rostest</test_depend>
 
