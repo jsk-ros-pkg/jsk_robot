@@ -75,5 +75,5 @@ You can also use `move-end-rot` method to turn the gripper.
 ```
 You can use `inverse-kinematics` to move arm.
 ```
-(send spot-kinova :head :inverse-kinematics (make-coords :pos #f(700 0 500) :rotation-axis nil))
+(send *spot-kinova* :head :inverse-kinematics (make-coords :pos #f(700 0 500) :rotation-axis nil))
 ```
