@@ -8,7 +8,7 @@ Make sure that each euslisp model is created with `spot_description` and `kortex
 # Usage
 With IRT Viewer
 ```
-roseus spotkinova-util.l
+roseus spotkinova-utils.l
 (spot-kinova :type :gen3_lite_gen3_lite_2f)
 (objects (list *spot-kinova*))
 (send *spot-kinova* :init-pose)
