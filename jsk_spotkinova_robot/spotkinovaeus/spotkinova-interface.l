@@ -1,7 +1,7 @@
 (ros::roseus "spot_kinova_interface")
 (load "package://spoteus/spot-interface.l")
 (load "package://kinovaeus/kinova-interface.l")
-(load "package://spotkinovaeus/spotkinova-util.l")
+(load "package://spotkinovaeus/spotkinova-utils.l")
 
 ;; defclass (To see raw definition, replace eval with macroexpand)
 (eval `(defclass spot-kinova-interface :super robot-interface
