@@ -819,6 +819,71 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
      ))
   )
 
+;; Remove defmethod robot-interface when below is merged
+;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/???
+(defmethod robot-interface
+  (:trajectory-filter ;; simple trajectory for zero duration
+   (traj &key (copy) (total-time 5000.0) (clear-velocities) (min-time-step) &rest args &allow-other-keys)
+   "traj (moveit_msgs/RobotTrajectory): input trajectory"
+   (let ((orig-total-time (send (send (car (last (send traj :joint_trajectory :points))) :time_from_start) :to-sec)))
+     ;; check if valid filtering can be applied
+     (when (null total-time)
+       (ros::ros-debug ";; Trajectory filter is skipped")
+       (return-from :trajectory-filter traj))
+
+     (when copy
+       (setq traj (copy-object traj)))
+     (let* ((points (send traj :joint_trajectory :points))
+            (mdof-points (send traj :multi_dof_joint_trajectory :points))
+            (size (length points))
+            (time-step (/ 1 (float (1- size))))
+            (time-scale (/ (/ total-time 1000.0) orig-total-time)))
+       (when min-time-step
+         (let (points-filtered (list (car points)))
+               (mdof-points-filtered (list (car mdof-points)))
+               (current-time (send (send (car points) :time_from_start) :to-sec)))
+           (dolist (pt points)
+             (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
+                    min-time-step)
+               (setq points-filtered (append points-filtered pt))
+               (setq current-time (send (send pt :time_from_start) :to-sec))))
+           (setq points points-filtered)
+           (setq current-time (send (send (car mdof-points) :time_from_start) :to-sec))
+           (dolist (pt mdof-points)
+             (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
+                      min-time-step)
+               (setq mdof-points-filtered (append mdof-points-filtered pt))
+               (setq current-time (send (send pt :time_from_start) :to-sec))))
+           (setq mdof-points mdof-points-filtered))
+       (dolist (pt points)
+         (if clear-velocities
+           (progn
+             (send pt :velocities #f())
+             (send pt :accelerations #f()))
+           (progn
+             (send pt :velocities
+                   (map float-vector #'(lambda (x) (/ x time-scale)) (send pt :velocities)))
+             (send pt :accelerations
+                   (map float-vector #'(lambda (x) (/ x (expt time-scale 2))) (send pt :accelerations)))))
+         (send pt :time_from_start (ros::time (* time-scale (send (send pt :time_from_start) :to-sec)))))
+       (dolist (pt mdof-points)
+         (if clear-velocities
+           (progn
+             (send pt :velocities nil)
+             (send pt :accelerations nil))
+           (progn
+             (dolist (twist-key (list :linear :angular))
+               (dolist (vec-key (list :x :y :z))
+                 (dolist (vel (send pt :velocities))
+                   (send vel twist-key vec-key
+                         (/ (send vel twist-key vec-key) time-scale)))
+                 (dolist (acc (send pt :accelerations))
+                   (send acc twist-key vec-key
+                         (/ (send acc twist-key vec-key) (expt time-scale 2))))))))
+         (send pt :time_from_start (ros::time (* time-scale (send (send pt :time_from_start) :to-sec))))))
+       traj))
+  )
+
 ;; Remove below when below is merged
 ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/460
 (defun controller-result-error-to-string (i)
