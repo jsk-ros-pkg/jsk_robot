@@ -159,13 +159,14 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
   ;; This should be done in (spot-interface :init) ?
   (ros::spin-once)
   (send *ri* :spin-once)
-  (send *ri* :claim)
-  (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
-    (unix::sleep 1)
-    (ros::ros-info "powering on...")
-    (send *ri* :power-on))
-  (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
-      (ros::ros-info "run (send *ri* :stand) to stand the robot"))
+  (unless (send *ri* :simulation-modep)
+    (send *ri* :claim)
+    (while (member (send *ri* :state :power-state-motor-power-state) (list 'off nil))
+      (unix::sleep 1)
+      (ros::ros-info "powering on...")
+      (send *ri* :power-on))
+    (unless (every #'(lambda (x) (eq x 'made)) (mapcar #'(lambda (x) (cdr (assoc :contact x))) (send *ri* :state :feet)))
+        (ros::ros-info "run (send *ri* :stand) to stand the robot")))
 
   ;; Copied from kinova-interface (kinova-init)
   ;; This should be done in (kinova-interface :init) ?
@@ -178,9 +179,10 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                            :scene-service "arm_gen3/get_planning_scene"))
       (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
   (unix:usleep (* 100 1000))
-  (send *co* :wipe-all)
-  (send *ri* :add-pc-case-collision-object)
-  (send *ri* :add-insta360-collision-object)
+  (when (boundp '*co*)
+    (send *co* :wipe-all)
+    (send *ri* :add-pc-case-collision-object)
+    (send *ri* :add-insta360-collision-object))
 
   *ri*
   )
