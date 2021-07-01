@@ -822,7 +822,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
   )
 
 ;; Remove defmethod robot-interface when below is merged
-;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/???
+;; https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/462
 (defmethod robot-interface
   (:trajectory-filter ;; simple trajectory for zero duration
    (traj &key (copy) (total-time 5000.0) (clear-velocities) (min-time-step) &rest args &allow-other-keys)
