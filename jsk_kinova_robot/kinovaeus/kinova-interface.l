@@ -256,6 +256,7 @@
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities
+	       :min-time-step 300
                :minjerk-interpolation t args)))
   (:angle-vector-sequence
    (avs &optional tms &rest args) ;; (ctype controller-type) (start-time 0) &rest args
@@ -287,6 +288,7 @@
    (send* self :angle-vector-motion-plan avs :ctype ctype :move-arm :rarm :total-time tms
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities
+	       :min-time-step 300
                :minjerk-interpolation t args)))
   (:joint-velocity (joint-vel)
    "Send cartesian joint velocity command.
@@ -864,23 +866,33 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
                    (send acc twist-key vec-key
                          (/ (send acc twist-key vec-key) (expt time-scale 2))))))))
          (send pt :time_from_start (ros::time (* time-scale (send (send pt :time_from_start) :to-sec)))))
+       ;; Extract trajectory every min-time-step [ms] from original trajectory
        (when min-time-step
          (let ((points-filtered (list (car points)))
                (mdof-points-filtered (list (car mdof-points)))
-               (current-time (send (send (car points) :time_from_start) :to-sec)))
-           (dolist (pt points)
-             (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
-                    min-time-step)
-               (setq points-filtered (append points-filtered pt))
-               (setq current-time (send (send pt :time_from_start) :to-sec))))
-           (send traj :joint_trajectory :points points-filtered)
-           (setq current-time (send (send (car mdof-points) :time_from_start) :to-sec))
-           (dolist (pt mdof-points)
-             (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
-                      min-time-step)
-               (setq mdof-points-filtered (append mdof-points-filtered pt))
-               (setq current-time (send (send pt :time_from_start) :to-sec))))
-           (send traj :multi_dof_joint_trajectory :points mdof-points-filtered))))
+               current-time)
+           (when points
+             (setq current-time (send (send (car points) :time_from_start) :to-sec))
+	     (dolist (pt points)
+	       (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
+			(* min-time-step 0.001)) ;; [ms] -> [s]
+		 (setq points-filtered (append points-filtered (list pt)))
+		 (setq current-time (send (send pt :time_from_start) :to-sec))))
+	     (ros::ros-info
+               (format nil ";; Trajectory points are resized: ~A -> ~A"
+		       (length points) (length points-filtered)))
+	     (send traj :joint_trajectory :points points-filtered))
+	   (when mdof-points
+	     (setq current-time (send (send (car mdof-points) :time_from_start) :to-sec))
+	     (dolist (pt mdof-points)
+	       (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
+			min-time-step)
+		 (setq mdof-points-filtered (append mdof-points-filtered (list pt)))
+		 (setq current-time (send (send pt :time_from_start) :to-sec))))
+	     (ros::ros-info
+               (format nil ";; Trajectory mdof points are resized: ~A -> ~A"
+		       (length mdof-points) (length mdof-points-filtered)))
+	     (send traj :multi_dof_joint_trajectory :points mdof-points-filtered))))
        traj))
   )
 
