@@ -872,26 +872,26 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
                current-time)
            (when points
              (setq current-time (send (send (car points) :time_from_start) :to-sec))
-	     (dolist (pt points)
-	       (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
-			(* min-time-step 0.001)) ;; [ms] -> [s]
-		 (setq points-filtered (append points-filtered (list pt)))
-		 (setq current-time (send (send pt :time_from_start) :to-sec))))
-	     (ros::ros-info
-               (format nil ";; Trajectory points are resized: ~A -> ~A"
-		       (length points) (length points-filtered)))
-	     (send traj :joint_trajectory :points points-filtered))
-	   (when mdof-points
-	     (setq current-time (send (send (car mdof-points) :time_from_start) :to-sec))
-	     (dolist (pt mdof-points)
-	       (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
-			min-time-step)
-		 (setq mdof-points-filtered (append mdof-points-filtered (list pt)))
-		 (setq current-time (send (send pt :time_from_start) :to-sec))))
-	     (ros::ros-info
-               (format nil ";; Trajectory mdof points are resized: ~A -> ~A"
-		       (length mdof-points) (length mdof-points-filtered)))
-	     (send traj :multi_dof_joint_trajectory :points mdof-points-filtered))))
+             (dolist (pt points)
+               (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
+                        (* min-time-step 0.001)) ;; [ms] -> [s]
+                 (setq points-filtered (append points-filtered (list pt)))
+                 (setq current-time (send (send pt :time_from_start) :to-sec))))
+             (ros::ros-info
+              (format nil ";; Trajectory points are resized: ~A -> ~A"
+                      (length points) (length points-filtered)))
+             (send traj :joint_trajectory :points points-filtered))
+           (when mdof-points
+             (setq current-time (send (send (car mdof-points) :time_from_start) :to-sec))
+             (dolist (pt mdof-points)
+               (when (> (- (send (send pt :time_from_start) :to-sec) current-time)
+                        min-time-step)
+                 (setq mdof-points-filtered (append mdof-points-filtered (list pt)))
+                 (setq current-time (send (send pt :time_from_start) :to-sec))))
+             (ros::ros-info
+              (format nil ";; Trajectory mdof points are resized: ~A -> ~A"
+                      (length mdof-points) (length mdof-points-filtered)))
+             (send traj :multi_dof_joint_trajectory :points mdof-points-filtered)))))
        traj))
   )
 
