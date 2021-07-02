@@ -1,5 +1,10 @@
 <?xml version="1.0" ?>
 <launch>
+  <!-- uvc_cam -->
+  <!-- TODO: Use udev rule -->
+  <arg name="right_camera_dev" default="/dev/video0" />
+  <arg name="left_camera_dev" default="/dev/video2" />
+
   <arg name="rarm_ip" default="172.16.0.100"/>
   <arg name="larm_ip" default="172.16.0.200"/>
 
@@ -74,4 +79,28 @@
   <!-- add end-pose publisher -->
   <rosparam param="/dual_panda/end_coords_pub_hz" subst_value="True">$(arg end_coords_publishing_hz)</rosparam>
   <node pkg="jsk_panda_startup" type="end-coords_publisher.l" name="end_coords_publisher" />
+
+  <!-- hand eye cameras -->
+  <node name="uvc_camera_left" pkg="uvc_camera" type="uvc_camera_node" output="screen">
+    <remap from="image_raw" to="/left_camera/image_raw"/>
+    <remap from="image_raw/compressed" to="/left_camera/image_raw/compressed"/>
+    <remap from="camera_info" to="/left_camera/camera_info"/>
+    <param name="device" value="$(arg left_camera_dev)"/>
+    <param name="fps" value="30"/>
+    <param name="width" value="640"/>
+    <param name="height" value="360"/>
+    <param name="format" value="rgb"/>
+  </node>
+
+  <node name="uvc_camera_right" pkg="uvc_camera" type="uvc_camera_node" output="screen">
+    <remap from="image_raw" to="/right_camera/image_raw"/>
+    <remap from="image_raw/compressed" to="/right_camera/image_raw/compressed"/>
+    <remap from="camera_info" to="/right_camera/camera_info"/>
+    <param name="device" value="$(arg right_camera_dev)"/>
+    <param name="fps" value="30"/>
+    <param name="width" value="640"/>
+    <param name="height" value="360"/>
+    <param name="format" value="rgb"/>
+  </node>
+
 </launch>
