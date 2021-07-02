@@ -14,7 +14,7 @@ function init_device() {
 }
 
 function start_master_launch () {
-    roslaunch jsk_panda_teleop master_side.launch
+    roslaunch jsk_panda_teleop start_panda_teleop_master_side.launch
 }
 
 init_ros_ip
