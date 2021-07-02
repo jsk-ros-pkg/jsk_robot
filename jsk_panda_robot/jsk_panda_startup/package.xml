@@ -38,4 +38,9 @@
 
   <run_depend>openni2_launch</run_depend>
   <run_depend>jsk_data</run_depend>
+
+  <run_depend>audio_capture</run_depend>
+  <run_depend>audio_play</run_depend>
+  <run_depend>audio_common_msgs</run_depend>
+  
 </package>

@@ -27,5 +27,10 @@
   <run_depend>python-absl-py-pip</run_depend>
 
   <run_depend>jsk_teleop_joy</run_depend>
+  <run_depend>jsk_teleop_joy</run_depend>
+  
+  <run_depend>audio_capture</run_depend>
+  <run_depend>audio_play</run_depend>
+  <run_depend>audio_common_msgs</run_depend>
 
 </package>
