@@ -11,6 +11,14 @@
   <arg name="quiet" default="true"/>
   <arg name="machine" default="localhost" />
 
+  <!-- for audio play -->
+  <arg name="play_device" default="hw:6,0"/>
+  <arg name="dst" default="alsasink"/>
+  <arg name="format" default="wave"/>
+  <arg name="n_channels" default="1"/>
+  <arg name="sample_rate" default="16000"/>
+  <arg name="sample_format" default="S16LE"/>
+
   <include file="$(find jsk_data)/launch/common_record.launch">
     <arg name="camera_namespace" value="$(arg camera_namespace)" />
     <arg name="save_openni2" value="$(arg save_openni)" />
@@ -20,14 +28,15 @@
     <arg name="save_multisense" value="$(arg save_multisense)" />
     <arg if = "$(arg quiet)" name="other_options" value="-q"/>
     <arg name="other_topics" value="$(arg other_topics)
-				                            /camera/depth/camera_info
+                                    /audio
+				                    /camera/depth/camera_info
                                     /camera/depth/image_raw/compressedDepth
                                     /camera/rgb/camera_info
                                     /camera/rgb/image_raw/compressed
-				                            /right_camera/camera_info
-        				                    /right_camera/image_raw/compressed
-				                            /left_camera/camera_info
-				                            /left_camera/image_raw/compressed
+				                    /right_camera/camera_info
+        				            /right_camera/image_raw/compressed
+				                    /left_camera/camera_info
+				                    /left_camera/image_raw/compressed
                                     /dual_panda/larm/status_overlay
                                     /dual_panda/rarm/status_overlay
                                     /dual_panda/larm/franka_gripper/joint_states
@@ -35,8 +44,8 @@
                                     /dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
                                     /dual_panda/dual_arm_cartesian_pose_controller/left_frame
                                     /dual_panda/dual_arm_cartesian_pose_controller/right_frame
-				      /dual_panda/end_coords/rarm
-				      /dual_panda/end_coords/larm
+				                    /dual_panda/end_coords/rarm
+				                    /dual_panda/end_coords/larm
                                     /dual_panda/joint_states
                                     /dual_panda/larm_state_controller/F_ext
                                     /dual_panda/larm_state_controller/franka_states
@@ -53,4 +62,16 @@
     <arg name="bagfile_prefix" value="$(arg bagfile_prefix)" />
     <arg name="machine" value="$(arg machine)" />
   </include>
+
+  <!-- sound play -->
+  <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
+    <param name="device" value="$(arg play_device)"/>
+    <param name="dst" value="$(arg dst)"/>
+    <param name="do_timestamp" value="true"/>
+    <param name="format" value="$(arg format)"/>
+    <param name="channels" value="$(arg n_channels)"/>
+    <param name="sample_rate" value="$(arg sample_rate)"/>
+    <param name="sample_format" value="$(arg sample_format)"/>
+  </node>
+
 </launch>
