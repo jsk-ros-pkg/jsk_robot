@@ -24,6 +24,10 @@
       />
 
   <!-- app manager -->
+  <rosparam>
+    robot:
+        type: spot
+  </rosparam>
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
     <arg name="use_applist" value="false" /> <!-- use plugin -->
     <arg name="respawn" value="false" />
