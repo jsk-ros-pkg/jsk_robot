@@ -23,7 +23,7 @@
       file="$(find jsk_spot_startup)/launch/include/interaction.launch"
       />
 
-  <!-- app manager -->
+  <!-- app manager and dialogflow -->
   <rosparam>
     robot:
         type: spot
@@ -34,6 +34,7 @@
     <arg name="basic" value="true" />
     <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
+  <include file="$(find jsk_spot_startup)/launch/include/dialogflow.launch" />
 
   <!-- teleop node -->
   <include
