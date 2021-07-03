@@ -45,3 +45,8 @@
     local-name: tork-a/roswww
     uri: https://github.com/knorth55/roswww.git
     version: fetch15
+# visualization_rwt is not released for melodic
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: kinetic-devel
