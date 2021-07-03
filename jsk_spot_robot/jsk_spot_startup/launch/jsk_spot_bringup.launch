@@ -23,6 +23,14 @@
       file="$(find jsk_spot_startup)/launch/include/interaction.launch"
       />
 
+  <!-- app manager -->
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="use_applist" value="false" /> <!-- use plugin -->
+    <arg name="respawn" value="false" />
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+  </include>
+
   <!-- teleop node -->
   <include
       file="$(find jsk_spot_teleop)/launch/teleop.launch"
