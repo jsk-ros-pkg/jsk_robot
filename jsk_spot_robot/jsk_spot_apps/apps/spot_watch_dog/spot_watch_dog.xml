@@ -1,0 +1,5 @@
+<launch>
+    <include
+        file="$(find jsk_spot_watch_dog)/launch/watch_dog_smach.launch"
+        />
+</launch>

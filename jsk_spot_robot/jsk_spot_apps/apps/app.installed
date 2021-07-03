@@ -1,0 +1,3 @@
+apps:
+- app: jsk_spot_apps/spot_watch_dog
+  display: spot_watch_dog
