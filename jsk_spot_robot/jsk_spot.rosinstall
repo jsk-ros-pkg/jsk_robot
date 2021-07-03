@@ -36,3 +36,12 @@
     local-name: spot-ros
     uri: https://github.com/sktometometo/spot_ros.git
     version: develop/spot
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel
+## fetch15 version of roswww is necessary for basic authentication
+- git:
+    local-name: tork-a/roswww
+    uri: https://github.com/knorth55/roswww.git
+    version: fetch15
