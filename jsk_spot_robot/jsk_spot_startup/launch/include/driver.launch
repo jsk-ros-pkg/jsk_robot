@@ -55,4 +55,11 @@
       >
   </node>
 
+  <node
+      pkg="jsk_spot_startup"
+      type="cable_connection_detector.py"
+      name="cable_connection_detector"
+      >
+  </node>
+
 </launch>
