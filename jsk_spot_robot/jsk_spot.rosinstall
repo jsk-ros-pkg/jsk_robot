@@ -31,6 +31,11 @@
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/sktometometo/jsk_common.git
     version: feature/add-tf-relay-package
+# jsk_spot_watch_dog is requried for jsk_spot_apps
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/sktometometo/jsk_demos.git
+    version: develop/spot
 # This is a develop branch for jsk version.
 # We need to use it until it is merged to master
 - git:
