@@ -20,10 +20,11 @@
     uri: https://github.com/sktometometo/jsk_recognition.git
     version: develop/spot
 # Some TTS and STT nodes and 3rdparty drivers are required
+# And dialogflow-executive, switchbot_ros, webrtcvad\ros is required
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
-    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-    version: master
+    uri: https://github.com/sktometometo/jsk_3rdparty.git
+    version: develop/spot
 # Until sktometometo/feature/add-tf-relay-package is merged, this patch is
 # required for spot_basic_behaviors
 - git:
