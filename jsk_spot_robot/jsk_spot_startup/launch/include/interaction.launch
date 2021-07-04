@@ -2,7 +2,7 @@
     <arg name="speech_recognition_language" default="japanese" />
     <arg name="speech_recognition_network" default="online" />
 
-    <arg name="audio_topic" default="/speech_audio" />
+    <arg name="audio_topic" default="/webrtcvad_ros/speech_audio" />
 
     <!-- sound_play for english -->
     <node pkg="sound_play" type="soundplay_node.py" name="sound_play" respawn="true">
