@@ -1,6 +1,7 @@
 <launch>
     <arg name="use_insta_360" default="true"/>
     <arg name="use_respeaker" default="true"/>
+    <arg name="use_front_mirophone" default="true"/>
 
     <!-- insta360 -->
     <include
@@ -17,6 +18,40 @@
         type="respeaker_node.py"
         name="respeaker_node"
         if="$(arg use_respeaker)"
-        />
+        >
+        <remap from="is_speeching" to="/respeaker_node/is_speeching"/>
+        <remap from="sound_direction" to="/respeaker_node/sound_direction"/>
+        <remap from="sound_localization" to="/respeaker_node/sound_localization"/>
+        <remap from="sound_audio" to="/respeaker_node/sound_audio"/>
+        <remap from="speech_audio" to="/respeaker_node/speech_audio"/>
+    </node>
+
+    <!-- front microphone -->
+    <node
+        pkg="audio_capture"
+        type="audio_capture"
+        name="audio_capture"
+        >
+        <rosparam subst_value="true">
+            bitrate: 128
+            device: default
+            channels: 1
+            sample_rate: 16000
+            sample_format: S16LE
+            format: wave
+        </rosparam>
+    </node>
+    <node
+        pkg="webrtcvad_ros"
+        type="webrtcvad_ros.py"
+        name="webrtcvad_ros"
+        >
+        <rosparam>
+            aggressiveness: 1
+            minimum_duration: 0.5
+        </rosparam>
+        <remap from="audio_info" to="/audio_info" />
+        <remap from="audio_data" to="/audio" />
+    </node>
 
 </launch>
