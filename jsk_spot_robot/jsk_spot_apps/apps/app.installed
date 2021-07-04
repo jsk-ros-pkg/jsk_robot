@@ -1,3 +1,9 @@
 apps:
 - app: jsk_spot_apps/spot_watch_dog
-  display: spot_watch_dog
+  display: Watch Dog
+- app: jsk_spot_apps/play_music
+  display: Play Music
+- app: jsk_spot_apps/go_to_elevator
+  display: Go To Elevator
+- app: jsk_spot_apps/go_to_73B2
+  display: Go To 73B2
