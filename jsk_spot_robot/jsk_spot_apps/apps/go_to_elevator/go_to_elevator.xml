@@ -1,0 +1,7 @@
+<launch>
+    <include
+        file="$(find jsk_spot_go_to_spot)/launch/demo.launch"
+        >
+        <arg name="target_node_id" value="eng2_7FElevator"/>
+    </include>
+</launch>
