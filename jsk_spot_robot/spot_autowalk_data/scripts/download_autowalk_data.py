@@ -70,6 +70,22 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_3FElevator_to_Mech_Office.walk.tar.gz',
+        url='https://drive.google.com/uc?id=10pWP1qnbr5TCfQVUeOHnDacdwQ3X3Awh',
+        md5='52564afd6471c9551c8f77ac031a366d',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_elevator_3FElevator_to_2FElevator.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1OFB38ISYjTtu9A87QtfYyVLhtcGnpu2a',
+        md5='e8ed341b22c5eb66373d29b580bede05',
+        extract=True
+    )
+
 
 if __name__ == '__main__':
     main()
