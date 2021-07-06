@@ -46,7 +46,7 @@ rosdep install -y -r --from-paths . --ignore-src
 pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
 cd $HOME/catkin_ws
 catkin init
-catkin build
+catkin build -j4 -c
 ```
 
 After this, please modify the credential file and remove it from git tracking.
@@ -85,7 +85,7 @@ rosdep install -y -r --from-paths . --ignore-src
 cd $HOME/coral_ws
 catkin init
 catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
-catkin build jsk_spot_startup coral_usb
+catkin build jsk_spot_startup coral_usb -j4 -c
 ```
 
 ### Bringup spot
