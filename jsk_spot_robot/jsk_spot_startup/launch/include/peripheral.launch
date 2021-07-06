@@ -63,7 +63,7 @@
             >
             <rosparam>
                 baud: 921600
-                port: /dev/spot_spinal
+                port: /dev/spot-spinal
             </rosparam>
         </node>
     </group>
