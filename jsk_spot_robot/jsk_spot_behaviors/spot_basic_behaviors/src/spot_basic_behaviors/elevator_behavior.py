@@ -12,6 +12,7 @@ import math
 from switchbot_ros.msg import SwitchBotCommandGoal, SwitchBotCommandAction
 from sensor_msgs.msg import PointCloud2
 from spinal.msg import Barometer
+from geometry_msgs.msg import Quaternion
 
 class ElevatorBehavior(BaseBehavior):
 
@@ -208,6 +209,14 @@ class ElevatorBehavior(BaseBehavior):
             if self.door_is_open and self.is_target_floor:
                 break
         rospy.loginfo('elevator door opened and at the target_floor')
+
+        # dance before starting to move
+        self.spot_client.pubBodyPose(-0.2,Quaternion(w=1))
+        self.spot_client.stand()
+        self.spot_client.pubBodyPose(0.2,Quaternion(w=1))
+        self.spot_client.stand()
+        self.spot_client.pubBodyPose(0.0,Quaternion(w=1))
+        self.spot_client.stand()
 
         # get off the elevator
         self.spot_client.navigate_to(end_id, blocking=True)
