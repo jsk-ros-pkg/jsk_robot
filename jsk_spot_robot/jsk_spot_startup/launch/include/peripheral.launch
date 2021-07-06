@@ -54,4 +54,18 @@
         <remap from="audio_data" to="/audio" />
     </node>
 
+    <!-- spot spinal (Imu, barometer and so on) -->
+    <group ns="/spinal">
+        <node
+            pkg="rosserial_python"
+            type="serial_node.py"
+            name="spot_spinal"
+            >
+            <rosparam>
+                baud: 921600
+                port: /dev/spot_spinal
+            </rosparam>
+        </node>
+    </group>
+
 </launch>
