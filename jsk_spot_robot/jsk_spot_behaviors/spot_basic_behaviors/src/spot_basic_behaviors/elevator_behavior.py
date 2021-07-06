@@ -7,8 +7,11 @@ import roslaunch
 import rospkg
 import rospy
 
+import math
+
 from switchbot_ros.msg import SwitchBotCommandGoal, SwitchBotCommandAction
 from sensor_msgs.msg import PointCloud2
+from spinal.msg import Barometer
 
 class ElevatorBehavior(BaseBehavior):
 
@@ -17,6 +20,14 @@ class ElevatorBehavior(BaseBehavior):
             self.door_is_open = True
         else:
             self.door_is_open = False
+
+    def barometer_callback(self, msg):
+
+        rospy.logdebug('altitude: {}'.format(msg.altitude))
+        if math.fabs(msg.altitude - self.target_altitude) < self.threshold_altitude:
+            self.is_target_floor = True
+        else:
+            self.is_target_floor = False
 
     def run_initial(self, start_node, end_node, edge, pre_edge ):
 
@@ -34,9 +45,17 @@ class ElevatorBehavior(BaseBehavior):
                                         )
         self.roslaunch_parent.start()
 
+        #
+        self.threshold_altitude = rospy.get_param('/elevator_behavilr/threshold_altitude', 2)
+
         # value for door openring checker
         self.door_is_open = False
         self.subscriber_door_check = None
+
+        # value for floor detection
+        self.is_target_floor = False
+        self.target_altitude = 0
+        self.subscriber_floor_detection = None
 
         # value for switchbot
         self.action_client_switchbot = actionlib.SimpleActionClient(
@@ -63,6 +82,9 @@ class ElevatorBehavior(BaseBehavior):
                     start_node.properties['waypoints_on_graph']
                     )[0]['localization_method']
 
+        start_altitude = start_node.properties['floor_height']
+        end_altitude = end_node.properties['floor_height']
+
         # graph uploading and localization
         if pre_edge is not None and \
             graph_name == pre_edge.properties['graph']:
@@ -87,6 +109,18 @@ class ElevatorBehavior(BaseBehavior):
             else:
                 rospy.logwarn('Localization failed: {}'.format(ret[1]))
                 return False
+
+        # start floor detection
+        try:
+            current_altitude = rospy.wait_for_message( '/spinal/baro', Barometer, rospy.Duration(5)).altitude
+            self.target_altitude = current_altitude - ( start_altitude - end_altitude )
+            self.subscriber_floor_detection = rospy.Subscriber(
+                                                '/spinal/baro',
+                                                Barometer,
+                                                self.barometer_callback)
+        except Exception as e:
+            rospy.logerr('{}'.format(e))
+            return False
 
         # start door opening check from outside
         self.subscriber_door_check = rospy.Subscriber(
@@ -165,13 +199,15 @@ class ElevatorBehavior(BaseBehavior):
                 break
         rospy.loginfo('elevator door closed')
 
-        # check if the door is open
-        rate = rospy.Rate(2)
+        # check if the door is open and at the target floor
+        rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             rate.sleep()
-            if self.door_is_open:
+            rospy.loginfo('door_is_open: {}, is_target_floor: {}'.format(
+                                self.door_is_open, self.is_target_floor))
+            if self.door_is_open and self.is_target_floor:
                 break
-        rospy.loginfo('elevator door opened')
+        rospy.loginfo('elevator door opened and at the target_floor')
 
         # get off the elevator
         self.spot_client.navigate_to(end_id, blocking=True)
@@ -186,4 +222,9 @@ class ElevatorBehavior(BaseBehavior):
         if self.subscriber_door_check != None:
             self.subscriber_door_check.unregister()
             self.subscriber_door_check = None
+
+        if self.subscriber_floor_detection != None:
+            self.subscriber_floor_detection.unregister()
+            self.subscriber_floor_detection = None
+
         self.roslaunch_parent.shutdown()
