@@ -107,7 +107,7 @@ nodes:
         localization_method: 'fiducial'
     switchbot_device: '/eng2/7f/elevator/down/button'
     floor: 7
-    floor_height: 20
+    floor_height: 24
   'eng2_2FElevator':
     name_en: 'Elevator'
     name_jp: 'エレベーター'
@@ -129,7 +129,7 @@ nodes:
         localization_method: 'fiducial'
     switchbot_device: '/eng2/2f/elevator/up/button'
     floor: 2
-    floor_height: 5
+    floor_height: 0
   'eng_TelephoneBox':
     name_en: 'telephone box'
     name_jp: '電話ボックス'
