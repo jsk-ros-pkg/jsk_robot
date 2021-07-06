@@ -14,6 +14,20 @@ Currently, this packages require
 
 ## How to run
 
+### Setting up udev file for peripheral devices
+
+Create udev rule for spot spinal
+
+```bash
+sudo sh -c 'echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", ATTRS{serial}==\"A7044PJ7\", SYMLINK+=\"spot-spinal\", GROUP=\"dialout\"" > /etc/udev/rules.d/99-spot-spinal.rules'
+```
+
+and your user to dialout group
+
+```bash
+sudo groupadd <your user> dialout
+```
+
 ### Setting up a catkin workspace for a new user in the internal pc
 
 #### setup a catkin workspace for spot driver

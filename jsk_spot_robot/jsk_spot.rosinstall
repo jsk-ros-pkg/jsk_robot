@@ -56,3 +56,8 @@
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
     version: kinetic-devel
+# msgs for spot spinal
+- git:
+    local-name: aerial_robot
+    uri: https://github.com/tongtybj/aerial_robot.git
+    version: PR/feature/RTOS
