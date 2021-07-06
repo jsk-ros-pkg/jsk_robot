@@ -59,8 +59,8 @@ edges:
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
-  - from: 'eng8_Piloti_Center'
-    to: 'eng2_2FElevator'
+  - from: 'eng_TelephoneBox'
+    to: 'eng8_Piloti_Center'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
@@ -71,6 +71,32 @@ edges:
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng2_3FElevator'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+  - from: 'eng2_2FElevator'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+  - from: 'eng2_3FElevator'
+    to: 'eng2_Mech_Office'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_Mech_Office'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
 nodes:
   'dummy':
     name_en: 'dummy'
@@ -127,9 +153,32 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'inland-remora-FqtX8ScP+.inEd4xFYKq4A=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+        id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
+        localization_method: 'fiducial'
     switchbot_device: '/eng2/2f/elevator/up/button'
     floor: 2
     floor_height: 0
+  'eng2_3FElevator':
+    name_en: 'Elevator'
+    name_jp: 'エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+        id: 'eighth-ant-0Ot3VoMm0uiJNBHnbJOF9w=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'doughy-vulture-kMie2F0bAno9STnKFjNadA=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/3f/elevator/up/button'
+    floor: 3
+    floor_height: 4.5
+  'eng2_Mech_Office':
+    name_en: 'Mech Office'
+    name_jp: '機械系事務室'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'foiled-ibis-dAio3Ld6rCSWQgy9ERDulw=='
+        localization_method: 'fiducial'
   'eng_TelephoneBox':
     name_en: 'telephone box'
     name_jp: '電話ボックス'
