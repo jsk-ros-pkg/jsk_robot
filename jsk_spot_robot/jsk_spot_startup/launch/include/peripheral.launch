@@ -12,20 +12,6 @@
         <arg name="brightness" value="128" />
     </include>
 
-    <!-- Respeaker -->
-    <node
-        pkg="respeaker_ros"
-        type="respeaker_node.py"
-        name="respeaker_node"
-        if="$(arg use_respeaker)"
-        >
-        <remap from="is_speeching" to="/respeaker_node/is_speeching"/>
-        <remap from="sound_direction" to="/respeaker_node/sound_direction"/>
-        <remap from="sound_localization" to="/respeaker_node/sound_localization"/>
-        <remap from="sound_audio" to="/respeaker_node/sound_audio"/>
-        <remap from="speech_audio" to="/respeaker_node/speech_audio"/>
-    </node>
-
     <!-- front microphone -->
     <node
         pkg="audio_capture"
