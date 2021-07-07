@@ -11,7 +11,7 @@ import math
 
 from switchbot_ros.msg import SwitchBotCommandGoal, SwitchBotCommandAction
 from sensor_msgs.msg import PointCloud2
-from spinal.msg import Barometer
+from spinal.msg import Barometer, Imu
 from geometry_msgs.msg import Quaternion
 
 class ElevatorBehavior(BaseBehavior):
@@ -30,6 +30,14 @@ class ElevatorBehavior(BaseBehavior):
         else:
             self.is_target_floor = False
 
+    def imu_callback(self, msg):
+
+        rospy.logdebug('acc z: {}'.format(msg.acc_data[2]))
+        if math.fabs(msg.acc_data[2] - self.stable_acc_z) < self.threshold_acc:
+            self.elevator_stop_acc = True
+        else:
+            self.elevator_stop_acc = False
+
     def run_initial(self, start_node, end_node, edge, pre_edge ):
 
         rospy.logdebug('run_initial() called')
@@ -46,17 +54,21 @@ class ElevatorBehavior(BaseBehavior):
                                         )
         self.roslaunch_parent.start()
 
-        #
-        self.threshold_altitude = rospy.get_param('/elevator_behavilr/threshold_altitude', 2)
-
         # value for door openring checker
         self.door_is_open = False
         self.subscriber_door_check = None
 
         # value for floor detection
+        self.threshold_altitude = rospy.get_param('/elevator_behavior/threshold_altitude', 2)
         self.is_target_floor = False
         self.target_altitude = 0
         self.subscriber_floor_detection = None
+
+        #
+        self.threshold_acc = rospy.get_param('/elevator_behavior/threshold_acc', 0.2)
+        self.stable_acc_z = 0
+        self.elevator_stop_acc = False
+        self.subscriber_imu = None
 
         # value for switchbot
         self.action_client_switchbot = actionlib.SimpleActionClient(
@@ -119,6 +131,17 @@ class ElevatorBehavior(BaseBehavior):
                                                 '/spinal/baro',
                                                 Barometer,
                                                 self.barometer_callback)
+        except Exception as e:
+            rospy.logerr('{}'.format(e))
+            return False
+
+        # start imu
+        try:
+            self.stable_acc_z = rospy.wait_for_message( '/spinal/imu', Imu, rospy.Duration(5)).acc_data[2]
+            self.subscriber_imu = rospy.Subscriber(
+                                    '/spinal/imu',
+                                    Imu,
+                                    self.imu_callback)
         except Exception as e:
             rospy.logerr('{}'.format(e))
             return False
@@ -204,9 +227,9 @@ class ElevatorBehavior(BaseBehavior):
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             rate.sleep()
-            rospy.loginfo('door_is_open: {}, is_target_floor: {}'.format(
-                                self.door_is_open, self.is_target_floor))
-            if self.door_is_open and self.is_target_floor:
+            rospy.loginfo('door_is_open: {}, is_target_floor: {}, stop from acc: {}'.format(
+                                self.door_is_open, self.is_target_floor, self.elevator_stop_acc))
+            if self.door_is_open and self.is_target_floor and self.elevator_stop_acc
                 break
         rospy.loginfo('elevator door opened and at the target_floor')
 
@@ -235,5 +258,9 @@ class ElevatorBehavior(BaseBehavior):
         if self.subscriber_floor_detection != None:
             self.subscriber_floor_detection.unregister()
             self.subscriber_floor_detection = None
+
+        if self.subscriber_imu != None:
+            self.subscriber_imu.unregister()
+            self.subscriber_imu = None
 
         self.roslaunch_parent.shutdown()
