@@ -171,7 +171,7 @@ class ElevatorBehavior(BaseBehavior):
         rospy.loginfo('elevator calling when riding on has succeeded')
 
         # wait for elevator
-        rate = rospy.Rate(2)
+        rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             rate.sleep()
             if self.door_is_open:
@@ -182,32 +182,32 @@ class ElevatorBehavior(BaseBehavior):
 
         # start navigation to rest point
         rate = rospy.Rate(10)
-        self.spot_client.navigate_to( rest_waypoint_id, blocking=True)
-        result = self.spot_client.get_navigate_to_result()
-        ## recovery when riding on
-        if not result.success:
-            rospy.logwarn('Navigation failed when riding on')
+        self.spot_client.navigate_to( rest_waypoint_id, blocking=False)
+        ## call elevator from destination floor while
+        rospy.loginfo('calling elevator when getting off...')
+        switchbot_goal = SwitchBotCommandGoal()
+        switchbot_goal.device_name = end_node.properties['switchbot_device']
+        switchbot_goal.command = 'press'
+        self.action_client_switchbot.send_goal(switchbot_goal)
+        ##
+        if not self.action_client_switchbot.wait_for_result(timeout=rospy.Duration(20)):
+            rospy.logerr('Switchbot timeout')
+            self.spot_client.wait_for_navigate_to_result()
             self.spot_client.navigate_to( start_id, blocking=True)
             self.spot_client.wait_for_navigate_to_result()
-            return result.success             
-
-        # call elevator from destination floor
-        rospy.loginfo('calling elevator when getting off...')
-        if not self.action_client_switchbot.wait_for_server(rospy.Duration(10)):
-            rospy.logerr('switchbot server seems to fail.')
+            return False
+        result_switchbot = self.action_client_switchbot.get_result()
+        self.spot_client.wait_for_navigate_to_result()
+        result_navigation = self.spot_client.get_navigate_to_result()
+        ## recovery when riding on
+        if not result_navigation.success or not result_switchbot.done:
+            rospy.logerr('Failed to ride on a elevator. result_navigation: {}, result_switchbot: {}'.format(result_navigation,result_switchbot))
+            self.spot_client.navigate_to( start_id, blocking=True)
+            self.spot_client.wait_for_navigate_to_result()
             return False
         else:
-            switchbot_goal = SwitchBotCommandGoal()
-            switchbot_goal.device_name = end_node.properties['switchbot_device']
-            switchbot_goal.command = 'press'
-            self.action_client_switchbot.send_goal(switchbot_goal)
-            self.action_client_switchbot.wait_for_result()
-            result = self.action_client_switchbot.get_result()
-            rospy.loginfo('switchbot result: {}'.format(result))
-            if not result.done:
-                rospy.logerr('switchbot calling failed.')
-                return False
-        rospy.loginfo('elevator calling when getting off has succeeded')
+            rospy.loginfo('Riding on succeded.')
+
 
         # start door openning check from inside
         self.subscriber_door_check = rospy.Subscriber(
@@ -229,7 +229,7 @@ class ElevatorBehavior(BaseBehavior):
             rate.sleep()
             rospy.loginfo('door_is_open: {}, is_target_floor: {}, stop from acc: {}'.format(
                                 self.door_is_open, self.is_target_floor, self.elevator_stop_acc))
-            if self.door_is_open and self.is_target_floor and self.elevator_stop_acc
+            if self.door_is_open and self.is_target_floor and self.elevator_stop_acc:
                 break
         rospy.loginfo('elevator door opened and at the target_floor')
 
