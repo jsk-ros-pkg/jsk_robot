@@ -40,6 +40,7 @@ edges:
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
       rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+      goal_waypoint_id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
   - from: 'eng2_2FElevator'
     to: 'eng2_7FElevator'
     behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
@@ -47,6 +48,7 @@ edges:
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
       rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+      goal_waypoint_id: 'sly-chetah-IZ4pVY7vrqO36OoKCYk9Zg=='
   - from: 'eng2_2FElevator'
     to: 'eng_TelephoneBox'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
@@ -78,6 +80,7 @@ edges:
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
       rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+      goal_waypoint_id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
   - from: 'eng2_2FElevator'
     to: 'eng2_3FElevator'
     behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
@@ -85,6 +88,7 @@ edges:
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
       rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+      goal_waypoint_id: 'eighth-ant-0Ot3VoMm0uiJNBHnbJOF9w=='
   - from: 'eng2_3FElevator'
     to: 'eng2_Mech_Office'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
@@ -97,6 +101,22 @@ edges:
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3FElevator':
+    to: 'eng2_7FElevator':
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+      goal_waypoint_id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
+  - from: 'eng2_7FElevator'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+      goal_waypoint_id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
 nodes:
   'dummy':
     name_en: 'dummy'
