@@ -85,10 +85,7 @@ class ElevatorBehavior(BaseBehavior):
                     lambda x: x['graph'] == graph_name,
                     start_node.properties['waypoints_on_graph']
                     )[0]['id']
-        end_id = filter(
-                    lambda x: x['graph'] == graph_name,
-                    end_node.properties['waypoints_on_graph']
-                    )[0]['id']
+        end_id = edge.properties['goal_waypoint_id']
         rest_waypoint_id = edge.properties['rest_waypoint_id']
         localization_method = filter(
                     lambda x: x['graph'] == graph_name,
