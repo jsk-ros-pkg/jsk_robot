@@ -133,6 +133,9 @@
     <remap from="sound_play" to="robotsound" />
   </node>
 
+  <!-- Virtual force -->
+  <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
+
   <!-- Runtime Diagnostics and Motor Trace Logging -->
   <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
 	args="-o /hwlog/pr2_diagnostics --split --size=200 --bz2 /diagnostics -e '/motor_trace/.*'"
