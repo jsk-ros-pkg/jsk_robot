@@ -11,6 +11,7 @@
 
   <author email="higashide@jsk.imi.i.u-tokyo.ac.jp">Taichi Higashide</author>
   <author email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</author>
+  <author email="sasabuchi@jsk.imi.i.u-tokyo.ac.jp">Kazuhiro Sasabuchi</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>aeroeus</run_depend>
