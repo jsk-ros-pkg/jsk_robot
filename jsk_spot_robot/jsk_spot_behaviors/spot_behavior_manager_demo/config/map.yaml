@@ -101,8 +101,8 @@ edges:
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
-  - from: 'eng2_3FElevator':
-    to: 'eng2_7FElevator':
+  - from: 'eng2_3FElevator'
+    to: 'eng2_7FElevator'
     behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
     cost: 10
     args:
