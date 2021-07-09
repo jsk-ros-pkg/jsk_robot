@@ -4,7 +4,7 @@
   <xacro:arg name="prefix" default="kinova_"/>
   <xacro:arg name="sim" default="false"/>
 
-  <xacro:include filename="$(find spot_description)/urdf/spot.urdf.xacro"/>
+  <xacro:include filename="$(find jsk_spot_startup)/robots/jsk_spot.urdf.xacro"/>
   <xacro:include filename="$(find kortex_description)/robots/$(arg robot_type).xacro">
     <xacro:arg name="sim" value="$(arg sim)"/>
     <xacro:arg name="prefix" value="$(arg prefix)"/>
