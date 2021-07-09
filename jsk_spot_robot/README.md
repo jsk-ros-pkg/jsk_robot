@@ -39,7 +39,9 @@ source /opt/ros/$ROS_DISTRO/setup.bash
 mkdir $HOME/catkin_ws/src -p
 cd $HOME/catkin_ws/src
 wstool init .
-wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot.rosinstall
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool update
+wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot.rosinstall
 wstool update
 rosdep update
 rosdep install -y -r --from-paths . --ignore-src
@@ -75,9 +77,11 @@ And create a workspace for coral_usb_ros
 source /opt/ros/$ROS_DISTRO/setup.bash
 mkdir $HOME/coral_ws/src -p
 cd $HOME/coral_ws/src
-git clone https://github.com/knorth55/coral_usb_ros.git
 wstool init .
-wstool merge -t . https://github.com/sktometometo/jsk_robot/raw/develop/spot/jsk_spot_robot/jsk_spot_coral.rosinstall
+wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git --git
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool update
+wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall
 wstool merge -t . coral_usb_ros/fc.rosinstall
 wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
 wstool update
