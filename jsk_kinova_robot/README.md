@@ -68,8 +68,10 @@ Use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 mkdir -p ~/kinova_ws/src
 cd ~/kinova_ws/src
 wstool init
-### TODO: Change this line 708yamaguchi -> jsk-ros-pkg if approved ##
-wstool merge https://raw.githubusercontent.com/708yamaguchi/jsk_robot/kinova-gen3/jsk_kinova_robot/kinova.rosinstall
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+### TODO: Change this line if approved ##
+wstool update
+wstool merge jsk-ros-pkg/jsk_robot/jsk_kinova_robot/kinova.rosinstall
 wstool update
 cd ../
 source /opt/ros/melodic/setup.bash

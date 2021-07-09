@@ -1,14 +1,4 @@
 # TODO
-# Use jsk-ros-pkg/jsk_robot master after approved
-# - git:
-#     local-name: jsk_robot
-#     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-#     version: master
-- git:
-    local-name: jsk_robot
-    uri: https://github.com/708yamaguchi/jsk_robot.git
-    version: kinova-gen3
-# TODO
 # Use Kinovarobotics/ros_kortex kinetic-devel after merging below:
 # https://github.com/Kinovarobotics/ros_kortex/pull/140
 # https://github.com/Kinovarobotics/ros_kortex/pull/141
