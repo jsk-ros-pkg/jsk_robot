@@ -11,14 +11,11 @@ If you have not installed `conan`, please see [Conan Setup](https://github.com/7
 mkdir ~/spotkinova_ws/src -p
 cd spotkinova_ws/src
 wstool init .
-wstool merge -t . https://raw.githubusercontent.com/708yamaguchi/jsk_robot/spot-kinova/jsk_spotkinova_robot/jsk_spotkinova.rosinstall
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
 wstool update
-##  If jsk_spot_robot package is updated, we need to merge it until the package is merged into master.
-# cd jsk-ros-pkg/jsk_robot
-# git remote add sktometometo https://github.com/sktometometo/jsk_robot.git
-# git fetch sktometometo
-# git merge sktometometo/develop/spot
-# cd ~/spotkinova_ws/src
+wstool merge jsk-ros-pkg/jsk_robot/jsk_kinova_robot/kinova.rosinstall
+wstool merge jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot.rosinstall
+wstool update
 rosdep update
 rosdep install --from-paths . --ignore-src -y -r
 pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
