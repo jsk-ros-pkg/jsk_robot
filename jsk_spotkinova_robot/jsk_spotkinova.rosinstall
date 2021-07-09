@@ -53,7 +53,7 @@
 - git:
     local-name: ros_kortex
     uri: https://github.com/708yamaguchi/ros_kortex.git
-    version: add-prefix-
+    version: develop/spot
 
 - git:
     local-name: ros_kortex_vision

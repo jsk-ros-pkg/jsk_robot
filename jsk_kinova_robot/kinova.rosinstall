@@ -19,7 +19,7 @@
 - git:
     local-name: ros_kortex
     uri: https://github.com/708yamaguchi/ros_kortex
-    version: jsk-pr
+    version: develop/spot
 - git:
     local-name: ros_kortex_vision
     uri: https://github.com/Kinovarobotics/ros_kortex_vision
