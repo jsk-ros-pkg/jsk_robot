@@ -4,12 +4,6 @@
     local-name: common_msgs
     uri: https://github.com/sktometometo/common_msgs.git
     version: PR/add-panorama-info
-# this is a develop branch for spot
-# We need to use this develop branch until it is merged to master
-- git:
-    local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/sktometometo/jsk_robot.git
-    version: develop/spot
 # currently, patches below are required for object detection with insta 360 air
 #  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2579
 #  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2581
