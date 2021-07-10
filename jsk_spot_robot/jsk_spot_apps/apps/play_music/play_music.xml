@@ -1,5 +1,0 @@
-<launch>
-    <include
-        file="$(find play_music)/launch/demo.launch"
-        />
-</launch>
