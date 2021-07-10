@@ -1,5 +1,4 @@
-;; go-dock.l
-;; Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
+(load "package://switchbot_ros/scripts/switchbot.l")
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "power_msgs")
@@ -114,3 +113,53 @@
       (setq success (dock))
       (when success (return-from auto-dock success)))
     success))
+
+
+(defun room-light-on (&key (control-switchbot :api))
+  (cond
+   ((or (eq control-switchbot :en) (eq control-switchbot :jp))
+    ;; Look at Google Home
+    (send *fetch* :head :neck-y :joint-angle 89)
+    (send *fetch* :head :neck-p :joint-angle 25)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation)
+    ;; The accuracy of Google Home recognition is better in English than in Japanese.
+    (if (eq control-switchbot :en)
+      (progn
+        (send *ri* :speak "OK, Google" :wait t)
+        (send *ri* :speak "Turn on the light." :wait t))
+      (progn
+        (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+        (send *ri* :speak-jp "電気をつけて" :wait t)))
+    (send *fetch* :head :neck-y :joint-angle 0)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation))
+   ((eq control-switchbot :api)
+    (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn" :wait t)
+    (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn" :wait t)
+    (send *ri* :speak-jp "電気をつけました" :wait t))))
+
+
+(defun room-light-off (&key (control-switchbot :api))
+  (cond
+   ((or (eq control-switchbot :en) (eq control-switchbot :jp))
+    ;; Look at Google Home
+    (send *fetch* :head :neck-y :joint-angle 89)
+    (send *fetch* :head :neck-p :joint-angle 25)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation)
+    ;; The accuracy of Google Home recognition is better in English than in Japanese.
+    (if (eq control-switchbot :en)
+      (progn
+        (send *ri* :speak "OK, Google" :wait t)
+        (send *ri* :speak "Turn off the light." :wait t))
+      (progn
+        (send *ri* :speak-jp "オッケー、グーグル" :wait t)
+        (send *ri* :speak-jp "電気を消して" :wait t)))
+    (send *fetch* :head :neck-y :joint-angle 0)
+    (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+    (send *ri* :wait-interpolation))
+   ((eq control-switchbot :api)
+    (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff" :wait t)
+    (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff" :wait t)
+    (send *ri* :speak-jp "電気を消しました" :wait t))))
