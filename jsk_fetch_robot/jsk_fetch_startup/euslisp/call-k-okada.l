@@ -1,5 +1,4 @@
-;; go-dock.l
-;; Author: Yuki Furuta <furushchev@jsk.imi.i.u-tokyo.ac.jp>
+#!/usr/bin/env roseus
 
 (ros::roseus "call_k_okada")
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
@@ -16,3 +15,4 @@
   (auto-dock))
 
 (call-k-okada)
+(sys::exit 0)

@@ -7,3 +7,4 @@
 (ros::roseus "fetch_look_at_human")
 (fetch-init)
 (main *fetch* (send *fetch* :head-rgb))
+(sys::exit 0)
