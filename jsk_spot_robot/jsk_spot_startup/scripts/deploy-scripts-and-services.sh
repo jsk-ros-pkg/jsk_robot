@@ -4,10 +4,8 @@ PACKAGE_PATH=$(rospack find jsk_spot_startup)
 SCRIPT_DESTINATION_PATH=/var/lib/robot
 SERVICE_DESTINATION_PATH=/etc/systemd/system
 
-if [ -e $SCRIPT_DESTINATION_PATH/update-network-connection.sh ]; then
-    mv $PACKAGE_PATH/scripts/update-network-connection.sh $SCRIPT_DESTINATION_PATH/update-network-connection.sh
-fi
+sudo cp $PACKAGE_PATH/scripts/update-network-connection.sh $SCRIPT_DESTINATION_PATH/update-network-connection.sh
 
-if [ -e $SERVICE_DESTINATION_PATH/jsk_spot_networkd.service ]; then
-    mv $PACKAGE_PATH/services/jsk_spot_networkd.service $SERVICE_DESTINATION_PATH/jsk_spot_networkd.service
-fi
+sudo cp $PACKAGE_PATH/services/jsk-spot-network.service $SERVICE_DESTINATION_PATH/jsk-spot-network.service
+sudo chmod 777 $SERVICE_DESTINATION_PATH/jsk-spot-network.service
+sudo chown root:root $SERVICE_DESTINATION_PATH/jsk-spot-network.service
