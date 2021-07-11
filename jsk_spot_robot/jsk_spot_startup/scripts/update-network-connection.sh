@@ -6,6 +6,19 @@ IF_LTE="enxf8b7975c750a"
 
 CURRENT_CONNECTION_TYPE="none"
 
+function existIF() {
+    interface_name=$1
+    for DEV in `find /sys/devices -name net | grep -v virtual`
+    do
+        if [ `ls $DEV/` = $interface_name ]; then
+            echo 0
+            return 0
+        fi
+    done
+    echo 1
+    return 1
+}
+
 function connectETH() {
     sudo ifmetric $IF_ETH 100
     sudo ifmetric $IF_LTE 101
@@ -29,20 +42,22 @@ function connectLTE() {
 function updateConnection() {
 
     # connect with Ethernet if available
-    ping -c 1 -W 1 1.1.1.1 -I $IF_ETH
-    if [ $? = 0 ]; then
-        echo "ethernet is online"
-        echo $CURRENT_CONNECTION_TYPE
-        if [ $CURRENT_CONNECTION_TYPE = "ethernet" ]; then
-            echo "connection type is still on ethernet"
+    if [ $(existIF $IF_ETH) = 0 ]; then
+        ping -c 1 -W 1 1.1.1.1 -I $IF_ETH
+        if [ $? = 0 ]; then
+            echo "ethernet is online"
+            echo $CURRENT_CONNECTION_TYPE
+            if [ $CURRENT_CONNECTION_TYPE = "ethernet" ]; then
+                echo "connection type is still on ethernet"
+            else
+                echo "connection type switched to ethernet"
+                CURRENT_CONNECTION_TYPE="ethernet"
+                connectETH
+            fi
+            return
         else
-            echo "connection type switched to ethernet"
-            CURRENT_CONNECTION_TYPE="ethernet"
-            connectETH
+            echo "ethernet is not online"
         fi
-        return
-    else
-        echo "ethernet is not online"
     fi
 
     # connect with Wi-Fi if available
