@@ -58,22 +58,28 @@ function updateConnection() {
         else
             echo "ethernet is not online"
         fi
+    else
+        echo "ethernet device is not found"
     fi
 
     # connect with Wi-Fi if available
-    ping -c 1 -W 1 1.1.1.1 -I $IF_SANSHIRO
-    if [ $? = 0 ]; then
-        echo "wifi is online"
-        if [ $CURRENT_CONNECTION_TYPE = "wifi" ]; then
-            echo "connection type is still on wifi"
+    if [ $(existIF $IF_WIFI) = 0 ]; then
+        ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
+        if [ $? = 0 ]; then
+            echo "wifi is online"
+            if [ $CURRENT_CONNECTION_TYPE = "wifi" ]; then
+                echo "connection type is still on wifi"
+            else
+                echo "connection type switched to wifi"
+                CURRENT_CONNECTION_TYPE="wifi"
+                connectWIFI
+            fi
+            return
         else
-            echo "connection type switched to wifi"
-            CURRENT_CONNECTION_TYPE="wifi"
-            connectWIFI
+            echo "wifi is not online"
         fi
-        return
     else
-        echo "wifi is not online"
+        echo "wifi device is not found"
     fi
 
     # connect with LTE if available
