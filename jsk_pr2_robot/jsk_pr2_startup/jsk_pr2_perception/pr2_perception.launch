@@ -1,0 +1,37 @@
+<launch>
+  <arg name="GPU" default="0" />
+
+  <arg name="CAMERA_INFO" default="/kinect_head/depth_registered/camera_info" />
+  <arg name="IMAGE_DEPTH" default="/kinect_head/depth_registered/image_rect" />
+  <arg name="IMAGE_COLOR" default="/kinect_head/rgb/image_rect_color" />
+  <arg name="DECOMP_CAMERA_INFO" default="/kinect_head_decompressed/depth_registered/camera_info" />
+  <arg name="DECOMP_RGB_CAMERA_INFO" default="/kinect_head_decompressed/rgb/camera_info" />
+  <arg name="DECOMP_IMAGE_DEPTH" default="/kinect_head_decompressed/depth_registered/image_rect" />
+  <arg name="DECOMP_IMAGE_COLOR" default="/kinect_head_decompressed/rgb/image_rect_color" />
+  <arg name="DECOMP_POINTS" default="/kinect_head_decompressed/depth_registered/points" />
+
+  <group ns="kinect_head_decompressed">
+    <node name="camera_info_relay" pkg="topic_tools" type="relay"
+          args="$(arg CAMERA_INFO) $(arg DECOMP_CAMERA_INFO)" />
+    <node name="rgb_camera_info_relay" pkg="topic_tools" type="relay"
+          args="$(arg CAMERA_INFO) $(arg DECOMP_RGB_CAMERA_INFO)" />
+    <node name="depth_image_transport" pkg="image_transport" type="republish"
+          args="compressedDepth in:=$(arg IMAGE_DEPTH) raw out:=$(arg DECOMP_IMAGE_DEPTH)" />
+    <node name="rgb_image_transport" pkg="image_transport" type="republish"
+          args="compressed in:=$(arg IMAGE_COLOR) raw out:=$(arg DECOMP_IMAGE_COLOR)" />
+    <node name="point_cloud_xyzrgb" pkg="nodelet" type="nodelet"
+          args="standalone depth_image_proc/point_cloud_xyzrgb" output="screen" />
+  </group>
+
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_perception/openpose.launch">
+    <arg name="GPU" value="$(arg GPU)" />
+    <arg name="IMAGE_DEPTH" value="$(arg DECOMP_IMAGE_DEPTH)" />
+    <arg name="IMAGE_COLOR" value="$(arg DECOMP_IMAGE_COLOR)" />
+    <arg name="CAMERA_INFO" value="$(arg DECOMP_CAMERA_INFO)" />
+  </include>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_perception/mask_rcnn.launch">
+    <arg name="GPU" value="$(arg GPU)" />
+    <arg name="IMAGE_COLOR" value="$(arg DECOMP_IMAGE_COLOR)" />
+    <arg name="POINTS" value="$(arg DECOMP_POINTS)" />
+  </include>
+</launch>
