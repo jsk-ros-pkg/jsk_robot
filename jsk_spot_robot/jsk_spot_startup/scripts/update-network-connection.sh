@@ -92,4 +92,8 @@ function updateConnection() {
     fi
 }
 
-updateConnection
+while :
+do
+    sleep 5
+    updateConnection
+done
