@@ -151,6 +151,7 @@ class ElevatorBehavior(BaseBehavior):
 
         # push button with switchbot
         rospy.loginfo('calling elevator when riding...')
+        success_calling = False
         if not self.action_client_switchbot.wait_for_server(rospy.Duration(10)):
             rospy.logerr('switchbot server seems to fail.')
             return False
@@ -158,8 +159,15 @@ class ElevatorBehavior(BaseBehavior):
             switchbot_goal = SwitchBotCommandGoal()
             switchbot_goal.device_name = start_node.properties['switchbot_device']
             switchbot_goal.command = 'press'
-            self.action_client_switchbot.send_goal(switchbot_goal)
-            self.action_client_switchbot.wait_for_result()
+            count = 0
+            while True:
+                self.action_client_switchbot.send_goal(switchbot_goal)
+                if self.action_client_switchbot.wait_for_result(rospy.Duration(10)):
+                    break
+                count += 1
+            if count >= 3:
+                rospy.logerr('switchbot calling failed.')
+                return False
             result = self.action_client_switchbot.get_result()
             rospy.loginfo('switchbot result: {}'.format(result))
             if not result.done:
