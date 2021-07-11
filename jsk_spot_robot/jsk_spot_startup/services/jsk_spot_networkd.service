@@ -1,0 +1,8 @@
+[Unit]
+Description=JSK Spot Network Service
+
+[Service]
+Type=simple
+ExecStart=/var/lib/robot/update-network-connection.sh
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillSignal=SIGCONT
