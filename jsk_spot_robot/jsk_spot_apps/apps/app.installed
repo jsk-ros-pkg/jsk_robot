@@ -7,3 +7,5 @@ apps:
   display: Go To Elevator
 - app: jsk_spot_apps/go_to_73b2
   display: Go To 73B2
+- app: jsk_spot_apps/take_envelop_to_mech_office
+  display: Take Envelop To Mech Office
