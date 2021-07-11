@@ -40,6 +40,10 @@
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
     version: kinetic-devel
+- git:
+    local-name: knorth55/app_manager_utils
+    uri: https://github.com/knorth55/app_manager_utils.git
+    version: master
 ## fetch15 version of roswww is necessary for basic authentication
 - git:
     local-name: tork-a/roswww
