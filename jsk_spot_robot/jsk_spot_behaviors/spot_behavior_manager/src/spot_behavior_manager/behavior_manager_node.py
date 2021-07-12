@@ -138,6 +138,7 @@ class BehaviorManagerNode(object):
         except Exception as e:
             rospy.logerr('Failed to load and initialize behavior class: {}'.format(e))
             self.sound_client.say('行動クラスを読み込めませんでした',blocking=True)
+            self.pre_edge = None
             return False
 
         node_from = self.graph.nodes[edge.node_id_from]
@@ -150,6 +151,10 @@ class BehaviorManagerNode(object):
         except Exception as e:
             rospy.logerr('Got error while running a behavior: {}'.format(e))
             self.sound_client.say('行動中にエラーが発生しました',blocking=True)
+            self.pre_edge = None
             return False
+
+        if not success:
+            self.pre_edge = None
 
         return success
