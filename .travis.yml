@@ -3,6 +3,10 @@ dist: bionic
 language: python
 services:
   - docker
+addons:
+  apt:
+    packages:
+    - 2to3
 cache:
   apt: true
   pip: true
@@ -26,6 +30,7 @@ env:
     - CATKIN_PARALLEL_TEST_JOBS="-p1"
     - NOT_TEST_INSTALL=true
   matrix:
+    - CHECK_PYTHON3_COMPILE=true
     - ROS_DISTRO=hydro   USE_DEB=true
     - ROS_DISTRO=hydro   USE_DEB=false EXTRA_DEB="ros-hydro-convex-decomposition ros-hydro-ivcon" BUILD_PKGS="jsk_pr2_calibration jsk_robot_startup pr2_base_trajectory_action jsk_pr2_startup jsk_pr2_desktop"
     - ROS_DISTRO=indigo  USE_DEB=true  TEST_PKGS="jsk_robot_startup" # app_manager required to pass jsk_fetch test, so this job mainly test if we can build sources
@@ -50,4 +55,6 @@ before_script:
   - if [ "$ROS_DISTRO" == "melodic" ]; then export BEFORE_SCRIPT="pwd; ls -al ; ls -al jsk_robot/; ls -al jsk_robot/.travis.rosinstall.melodic; wstool merge jsk_robot/.travis.rosinstall.melodic; wstool update"; fi
   # skip running postinst for ros-ROS_DISTRO-julius https://gist.github.com/jordansissel/748313#file-stripdeb-sh
   - export BEFORE_SCRIPT="apt-get download ros-$ROS_DISTRO-julius; wget -O stripdeb.sh https://gist.githubusercontent.com/jordansissel/748313/raw/8aebce360bc082e33af7bba3c90f755eb655783b/stripdeb.sh; bash stripdeb.sh ros-$ROS_DISTRO-julius*.deb; sudo dpkg --force-all -i ros-$ROS_DISTRO-julius*.deb; sudo apt-get -y -f install; sudo apt-mark hold ros-$ROS_DISTRO-julius; $BEFORE_SCRIPT"
-script: .travis/travis.sh
+script:
+  - if [ "${CHECK_PYTHON3_COMPILE}" == "true" ]; then bash -c "ret=0; trap 'ret=1' ERR; python3 -m compileall .; 2to3 -w -f except -f execfile -f has_key -f import -f raw_input -f zip .; git diff --exit-code . :^.travis > /dev/null; echo Exitting with \$ret; exit \$ret"; exit $?; fi
+  - source .travis/travis.sh
