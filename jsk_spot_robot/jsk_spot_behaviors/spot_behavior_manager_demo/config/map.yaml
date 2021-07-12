@@ -90,13 +90,37 @@ edges:
       rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
       goal_waypoint_id: 'eighth-ant-0Ot3VoMm0uiJNBHnbJOF9w=='
   - from: 'eng2_3FElevator'
+    to: 'eng2_3F_door_inside'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_inside'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_inside'
+    to: 'eng2_3F_door_outside'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_outside'
+    to: 'eng2_3F_door_inside'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_outside'
     to: 'eng2_Mech_Office'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
   - from: 'eng2_Mech_Office'
-    to: 'eng2_3FElevator'
+    to: 'eng2_3F_door_outside'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
@@ -199,6 +223,16 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
         id: 'foiled-ibis-dAio3Ld6rCSWQgy9ERDulw=='
         localization_method: 'fiducial'
+  'eng2_3F_door_inside':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'silty-llama-gdnA1Y.5ugUuDuZ9RL9upQ=='
+        localization_method: 'waypoint'
+  'eng2_3F_door_outside':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'plane-marlin-gaEqSGH8WX35X1619X0NwQ=='
+        localization_method: 'waypoint'
   'eng_TelephoneBox':
     name_en: 'telephone box'
     name_jp: '電話ボックス'
