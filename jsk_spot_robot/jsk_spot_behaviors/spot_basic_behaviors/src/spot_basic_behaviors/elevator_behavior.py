@@ -177,9 +177,14 @@ class ElevatorBehavior(BaseBehavior):
 
         # wait for elevator
         rate = rospy.Rate(1)
+        door_open_count = 0
         while not rospy.is_shutdown():
             rate.sleep()
             if self.door_is_open:
+                door_open_count += 1
+            else:
+                door_open_count = 0
+            if door_open_count > 5:
                 break
         rospy.loginfo('elevator door opened.')
         self.subscriber_door_check.unregister()
