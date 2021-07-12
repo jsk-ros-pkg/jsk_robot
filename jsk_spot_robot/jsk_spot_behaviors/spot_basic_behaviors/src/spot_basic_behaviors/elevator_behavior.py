@@ -185,7 +185,7 @@ class ElevatorBehavior(BaseBehavior):
                 door_open_count += 1
             else:
                 door_open_count = 0
-            if door_open_count > 5:
+            if door_open_count >= 2:
                 break
         rospy.loginfo('elevator door opened.')
         self.subscriber_door_check.unregister()
