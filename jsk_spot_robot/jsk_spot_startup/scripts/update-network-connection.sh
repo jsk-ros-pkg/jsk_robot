@@ -77,7 +77,22 @@ function updateConnection() {
             fi
             return
         else
-            echo "wifi is not online"
+            echo "wifi is not online now"
+            sudo nmcli connection up sanshiro
+            ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
+            if [ $? = 0 ]; then
+                echo "wifi is online"
+                if [ $CURRENT_CONNECTION_TYPE = "wifi" ]; then
+                    echo "connection type is still on wifi"
+                else
+                    echo "connection type switched to wifi"
+                    CURRENT_CONNECTION_TYPE="wifi"
+                    connectWIFI
+                fi
+                return
+            else
+                echo "wifi is still not online"
+            fi
         fi
     else
         echo "wifi device is not found"
