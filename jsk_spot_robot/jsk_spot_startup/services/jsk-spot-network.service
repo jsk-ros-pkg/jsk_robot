@@ -6,3 +6,6 @@ Type=simple
 ExecStart=/var/lib/robot/update-network-connection.sh
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillSignal=SIGCONT
+
+[Install]
+WantedBy=multi-user.target
