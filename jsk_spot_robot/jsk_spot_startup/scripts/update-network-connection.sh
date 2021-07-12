@@ -64,7 +64,6 @@ function updateConnection() {
 
     # connect with Wi-Fi if available
     if [ $(existIF $IF_WIFI) = 0 ]; then
-        sudo nmcli connection up sanshiro
         ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
         if [ $? = 0 ]; then
             echo "wifi is online"
