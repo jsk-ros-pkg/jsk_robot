@@ -35,6 +35,9 @@
     <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
   <include file="$(find jsk_spot_startup)/launch/include/dialogflow.launch" />
+  <include file="$(find app_scheduler)/launch/app_scheduler.launch" >
+    <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
+  </include>
 
   <!-- teleop node -->
   <include
