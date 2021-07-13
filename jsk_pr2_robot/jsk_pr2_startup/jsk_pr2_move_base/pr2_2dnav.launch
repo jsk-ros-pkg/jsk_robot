@@ -4,6 +4,7 @@
   <arg name="launch_look_forward" default="true"/>
   <arg name="launch_teleop_joystick" default="true" />
   <arg name="launch_navigation" default="true" />
+  <arg name="use_map_keepout" default="false" />
 
   <include file="$(find pr2_machine)/$(env ROBOT).machine" />
 
@@ -17,7 +18,9 @@
     <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/lasers_and_filters.xml">
       <arg name="gazebo" value="$(arg gazebo)"/>
     </include>
-    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base.xml" />
+    <include file="$(find jsk_pr2_startup)/jsk_pr2_move_base/move_base.xml">
+      <arg name="use_map_keepout" value="$(arg use_map_keepout)" />
+    </include>
 
     <!-- To ignore tilt-laser -->
     <node name="tilt_laser_mux" pkg="topic_tools" type="mux"
@@ -37,5 +40,12 @@
           args="$(find jsk_pr2_startup)/jsk_pr2_move_base/look-forward-in-nav.l"
           machine="c2" respawn="true"
           if="$(arg launch_look_forward)"/>
+
+    <!-- speak about move base -->
+    <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+      <rosparam>
+        lang: japanese
+      </rosparam>
+    </node>
   </group>
 </launch>
