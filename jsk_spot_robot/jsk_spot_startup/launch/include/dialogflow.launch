@@ -12,6 +12,7 @@
       language: ja-JP
       use_tts: true
       project_id: $(arg project_id)
+      timeout: 30.0
     </rosparam>
   </node>
 
