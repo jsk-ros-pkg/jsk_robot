@@ -1,0 +1,10 @@
+<launch>
+    <arg name="music_list_file" default="/var/lib/robot/music_list.yaml" />
+
+    <include
+        file="$(find jsk_spot_sing_and_dance)/launch/sing_and_dance.launch"
+        >
+        <arg name="music_list_file" value="$(arg music_list_file)" />
+        <arg name="music_name" value="radio_exercise_no1" />
+    </include>
+</launch>
