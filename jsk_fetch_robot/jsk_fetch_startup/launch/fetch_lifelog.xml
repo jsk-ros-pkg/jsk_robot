@@ -20,8 +20,8 @@
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
     <arg name="approximate_sync" value="true"/>
-    <arg name="save_rgb" value="true" />
-    <arg name="save_depth" value="true" />
+    <arg name="save_rgb" value="false" />
+    <arg name="save_depth" value="false" />
     <arg name="save_tf" value="true" />
     <arg name="save_joint_states" value="true" />
     <arg name="save_base_trajectory" value="true" />

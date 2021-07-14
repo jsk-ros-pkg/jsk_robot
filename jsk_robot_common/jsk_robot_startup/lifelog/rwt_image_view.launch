@@ -1,0 +1,30 @@
+<launch>
+  <arg name="launch_roswww" default="false"
+       doc="launch roswww server if true"/>
+  <arg name="launch_websocket" default="false"
+       doc="launch rosbridge_websocket if true"/>
+  <arg name="websocket_port" default="9090"
+       doc="port number for rosbridge_websocket server"/>
+  <arg name="roswww_port" default="8000"
+       doc="port number for roswww server"/>
+
+  <include file="$(find roswww)/launch/roswww.launch" if="$(arg launch_roswww)">
+    <arg name="port" value="$(arg roswww_port)" />
+  </include>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"
+           if="$(arg launch_websocket)">
+    <arg name="port" value="$(arg websocket_port)" />
+  </include>
+  <node pkg="web_video_server" type="web_video_server"
+        name="web_video_server"
+        output="screen"
+        clear_params="true">
+   <param name="port" value="8080" />
+   <param name="address" value="0.0.0.0" />
+  </node>
+  <node pkg="rwt_image_view" type="rosbag_record_server.py"
+        name="rosbag_record_server"
+        output="screen"
+        clear_params="true">
+  </node>
+</launch>

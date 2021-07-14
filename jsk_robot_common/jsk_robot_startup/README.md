@@ -112,6 +112,33 @@ rosrun jsk_robot_startup mux_selector.py /joy1 'm.buttons[9]==1' /cmd_vel1 /joy2
 The topic specified in the argument is subscribed.
 
 
+## scripts/check_room_light.py
+
+This node publish the luminance calculated from input image and room light status.
+
+### Subscribing Topics
+
+* `~input` (`sensor_msgs/Image` or `sensor_msgs/CompressedImage`)
+
+  Input topic image
+
+### Publishing Topics
+
+* `~output` (`jsk_robot_startup/RoomLight`)
+
+  Room light status and room luminance
+
+
+### Parameters
+
+* `~luminance_threshold` (Float, default: 50)
+
+  Luminance threshold to deteremine whether room light is on or off
+
+* `~image_transport` (String, default: raw)
+
+  Image transport hint.
+
 ## launch/safe_teleop.launch
 
 This launch file provides a set of nodes for safe teleoperation common to mobile robots. Robot-specific nodes such as `/joy`, `/teleop` or `/cable_warning` must be included in the teleop launch file for each robot, such as [safe_teleop.xml for PR2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_move_base/safe_teleop.xml) or [safe_teleop.xml for fetch](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml).

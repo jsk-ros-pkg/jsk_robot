@@ -27,12 +27,21 @@
         output="$(arg output)" respawn="true" >
   </node>
 
+  <node name="tweet_image_server" pkg="rostwitter" type="tweet_image_server.py"
+        machine="$(arg machine)"
+        output="$(arg output)" respawn="true" >
+    <rosparam subst_value="true">
+      account_info: $(arg account_info)
+    </rosparam>
+  </node>
+
   <node name="tweet_image_mux" pkg="topic_tools" type="mux"
         args="/tweet_image $(arg image_topics)"
         machine="$(arg machine)">
     <remap from="mux" to="tweet_image_mux" />
     <param name="lazy" value="true" />
   </node>
+
   <!--
   <node name="tweet_image_saver" pkg="image_view" type="image_saver"
         machine="$(arg machine)">
@@ -42,6 +51,7 @@
     <param name="image_transport" value="raw" />
   </node>
   -->
+
   <node name="active_user" pkg="roseus"
         type="roseus" args="$(find jsk_robot_startup)/lifelog/active_user.l"
         machine="$(arg machine)"

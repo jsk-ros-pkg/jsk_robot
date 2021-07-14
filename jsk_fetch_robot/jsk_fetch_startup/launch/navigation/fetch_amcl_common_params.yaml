@@ -1,0 +1,7 @@
+amcl:
+  update_min_a: 0.05 # update filter every 0.05 [rad] rotation
+  update_min_d: 0.1  # update filter every 0.1 [m] translation
+  odom_alpha1: 0.1   # rotation noise per rotation
+  odom_alpha2: 0.05  # rotation noise per translation
+  odom_alpha3: 0.05  # translation noise per translation
+  odom_alpha4: 0.1   # translation noise per rotation

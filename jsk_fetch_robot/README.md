@@ -224,6 +224,18 @@ coordinates can be made with
 (send *ri* :move-to (make-coords :pos #f(-1000 7000 0) :rpy (float-vector pi/2 0 0)) :frame-id "/map") ;; :retry 1 ;;[mm]
 ```
 
+- Move forward at 0.1[m/s] for 10 seconds (CAUTION, this will move the real robot)
+
+```lisp
+(send *ri* :go-velocity 0.1 0 0 10000)
+```
+
+- Get current position of the real robot
+```lisp
+(send *ri* :state :worldcoords)
+```
+Please see [costmap_2d](http://wiki.ros.org/costmap_2d?distro=melodic), [move_base](http://wiki.ros.org/move_base?distro=melodic), if you would like to understand the self-positioning system in detail.
+
 ### Speak
 
 - Use text-to-speech engine to speak text
@@ -231,6 +243,7 @@ coordinates can be made with
 ```lisp
 (send *ri* :speak "hello")
 (send *ri* :speak (format nil "hello, ~A + ~A is ~A" 1 1 (+ 1 1)))
+(send *ri* :speak-jp "こんにちは")
 ```
 
 ## FAQ
