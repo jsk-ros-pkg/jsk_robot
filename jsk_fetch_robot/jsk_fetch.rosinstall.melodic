@@ -112,6 +112,6 @@
     version: melodic-devel
 # Use https://github.com/ros-planning/navigation/pull/839 based on 7f22997e6804d9d7249b8a1d789bf27343b26f75
 - git:
-    local-name: 708yamaguchi/navigation
+    local-name: ros-planning/navigation
     uri: https://github.com/708yamaguchi/navigation.git
     version: fetch15
