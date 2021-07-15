@@ -3,6 +3,7 @@
   <arg name="launch_moveit" default="true" />
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
+  <arg name="custom_move_base_config" default="false" />
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_insta360" default="true" />
   <arg name="use_voice_text" default="true" />
@@ -228,10 +229,12 @@
     <rosparam command="load"
               file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_$(env ROS_DISTRO)_params.yaml" />
     <!-- load move_base params -->
-    <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_common_params.yaml" />
-    <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
+    <group if="$(arg custom_move_base_config)">
+      <rosparam command="load"
+		file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_common_params.yaml" />
+      <rosparam command="load"
+		file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
+    </group>
   </group>
 
   <!-- slam for build a map -->
