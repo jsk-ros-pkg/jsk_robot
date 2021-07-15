@@ -89,6 +89,90 @@
             "
         output="screen" />
 
+    <group if="$(arg use_compress)">
+        <!-- Image compression nodes for spot cameras -->
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="back_camera_compress"
+            args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontleft_camera_compress"
+            args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontright_camera_compress"
+            args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="left_camera_compress"
+            args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="right_camera_compress"
+            args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="back_depth_compress"
+            args="raw in:=/spot/depth/back/image compressedDepth out:=/spot/depth/back/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontleft_depth_compress"
+            args="raw in:=/spot/depth/frontleft/image compressedDepth out:=/spot/depth/frontleft/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontright_depth_compress"
+            args="raw in:=/spot/depth/frontright/image compressedDepth out:=/spot/depth/frontright/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="left_depth_compress"
+            args="raw in:=/spot/depth/left/image compressedDepth out:=/spot/depth/left/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="right_depth_compress"
+            args="raw in:=/spot/depth/right/image compressedDepth out:=/spot/depth/right/image"
+            />
+        <!-- Image compression nodes for Insta 360 Air camera -->
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="panorama_compress"
+            args="raw in:=/dual_fisheye_to_panorama/output compressed out:=/dual_fisheye_to_panorama/output"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="panorama_quater_compress"
+            args="raw in:=/dual_fisheye_to_panorama/output/quater compressed out:=/dual_fisheye_to_panorama/output/quater"
+            />
+        <!-- Compression node for object detection visuzaliation image -->
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="detection_visualization_compress"
+            args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
+            />
+    </group>
+
     <!-- rosbag recording with raw images -->
     <node name="rosbag_record" pkg="rosbag" type="record" unless="$(arg use_compress)"
         args="-O $(arg rosbag) -b 0
