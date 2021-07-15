@@ -1,0 +1,19 @@
+<launch>
+    <node
+        pkg="spot_behavior_manager_demo"
+        type="demo.py"
+        name="spot_behavior_manager_demo"
+        output="screen"
+        >
+
+        <rosparam
+            ns="map"
+            file="$(find spot_behavior_manager_demo)/config/map.yaml"
+            subst_value="true"
+            />
+
+        <rosparam subst_value="true">
+            initial_node_id: 'eng2_73B2'
+        </rosparam>
+    </node>
+</launch>

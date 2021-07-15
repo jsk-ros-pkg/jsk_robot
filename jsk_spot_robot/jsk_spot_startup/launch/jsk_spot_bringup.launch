@@ -1,0 +1,50 @@
+<launch>
+  <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
+
+  <!-- spot driver -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/driver.launch"
+      >
+      <arg name="credential_config" value="$(arg credential_config)" />
+  </include>
+
+  <!-- peripheral devices -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+      />
+
+  <!-- image processing -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/image_processing.launch"
+      />
+
+  <!-- interaction nodes -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+      />
+
+  <!-- app manager and dialogflow -->
+  <rosparam>
+    robot:
+        type: spot
+  </rosparam>
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="use_applist" value="false" /> <!-- use plugin -->
+    <arg name="respawn" value="false" />
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+  </include>
+  <include file="$(find jsk_spot_startup)/launch/include/dialogflow.launch" />
+
+  <!-- teleop node -->
+  <include
+      file="$(find jsk_spot_teleop)/launch/teleop.launch"
+      >
+      <arg name="pad_type" value="R1" />
+  </include>
+  <include
+      file="$(find jsk_spot_teleop)/launch/teleop.launch"
+      >
+      <arg name="pad_type" value="dualshock3" />
+  </include>
+</launch>

@@ -1,0 +1,55 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+
+larm:
+  - front_left_hip_x : larm-shoulder-r
+  - front_left_hip_y : larm-shoulder-p
+  - front_left_knee  : larm-elbow-p
+rarm:
+  - front_right_hip_x : rarm-shoulder-r
+  - front_right_hip_y : rarm-shoulder-p
+  - front_right_knee  : rarm-elbow-p
+lleg:
+  - rear_left_hip_x : lleg-crotch-r
+  - rear_left_hip_y : lleg-crotch-p
+  - rear_left_knee  : lleg-knee-p
+rleg:
+  - rear_right_hip_x : rleg-crotch-r
+  - rear_right_hip_y : rleg-crotch-p
+  - rear_right_knee  : rleg-knee-p
+head:
+  - kinova_joint_1 : head-collar-y
+  - kinova_joint_2 : head-shoulder-p
+  - kinova_joint_3 : head-shoulder-y
+  - kinova_joint_4 : head-elbow-p
+  - kinova_joint_5 : head-elbow-y
+  - kinova_joint_6 : head-wrist-p
+
+# reset-pose is the home pose
+# https://github.com/Kinovarobotics/ros_kortex/blob/330c55bce8c3d463cca2492b3e0c89204f235640/kortex_move_it_config/gen3_lite_gen3_lite_2f_move_it_config/config/gen3_lite_gen3_lite_2f.srdf.xacro#L31-L38
+angle-vector:
+  init-pose : [0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  reset-pose: [0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, -16.0, 75.0, 0.0, -60.0, 0.0]
+  kinova-rest-pose: [0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0, -149.9, -150.0, -90, 55, 90]
+
+head-end-coords:
+  parent : kinova_tool_frame
+  translate : [0, 0, 0]
+  rotate : [-0.57735, -0.57735, -0.57735, 120]
+larm-end-coords:
+  parent : front_left_lower_leg
+  translate : [0, 0, -0.38]
+  rotate : [0, 1, 0, 0]
+rarm-end-coords:
+  parent : front_right_lower_leg
+  translate : [0, 0, -0.38]
+  rotate : [0, 1, 0, 0]
+lleg-end-coords:
+  parent : rear_left_lower_leg
+  translate : [0, 0, -0.38]
+  rotate : [0, 1, 0, 0]
+rleg-end-coords:
+  parent : rear_right_lower_leg
+  translate : [0, 0, -0.38]
+  rotate : [0, 1, 0, 0]

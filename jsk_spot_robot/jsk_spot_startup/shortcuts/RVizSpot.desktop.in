@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=RViz @ROBOT_NAME@
+Comment=RViz for @ROBOT_NAME@
+Exec=/bin/bash -l -i -c "rossetip && rossetmaster @ROBOT_NAME@ && roslaunch jsk_spot_startup rviz.launch"
+Icon=@PROJECT_SOURCE_DIR@/shortcuts/icons/icon_spot_rviz.png
+Terminal=true
+Type=Application
+Categories=Application;

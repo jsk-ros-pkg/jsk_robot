@@ -1,0 +1,57 @@
+# Until PRs below are merged, we need to use develop/spot branch in sktometometo/jsk_recognition.git
+#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2581
+#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/sktometometo/jsk_recognition.git
+    version: develop/spot
+# Some TTS and STT nodes and 3rdparty drivers are required
+# And dialogflow-executive, switchbot_ros, webrtcvad\ros is required
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty
+    uri: https://github.com/sktometometo/jsk_3rdparty.git
+    version: develop/spot
+# Until sktometometo/feature/add-tf-relay-package is merged, this patch is
+# required for spot_basic_behaviors
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/sktometometo/jsk_common.git
+    version: feature/add-tf-relay-package
+# jsk_spot_watch_dog is requried for jsk_spot_apps
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/sktometometo/jsk_demos.git
+    version: develop/spot
+# This is a develop branch for jsk version.
+# We need to use it until it is merged to master
+- git:
+    local-name: spot-ros
+    uri: https://github.com/sktometometo/spot_ros.git
+    version: develop/spot
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel
+- git:
+    local-name: knorth55/app_manager_utils
+    uri: https://github.com/knorth55/app_manager_utils.git
+    version: master
+- git:
+    local-name: knorth55/audio_video_recorder
+    uri: https://github.com/knorth55/audio_video_recorder.git
+    version: main
+## fetch15 version of roswww is necessary for basic authentication
+- git:
+    local-name: tork-a/roswww
+    uri: https://github.com/knorth55/roswww.git
+    version: fetch15
+# visualization_rwt is not released for melodic
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: kinetic-devel
+# msgs for spot spinal
+- git:
+    local-name: aerial_robot
+    uri: https://github.com/tongtybj/aerial_robot.git
+    version: PR/feature/RTOS

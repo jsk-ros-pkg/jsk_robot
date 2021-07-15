@@ -1,0 +1,5 @@
+string target_node_id
+---
+bool success
+---
+string current_node_id

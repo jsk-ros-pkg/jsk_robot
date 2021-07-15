@@ -1,0 +1,1 @@
+KERNEL=="js*", ATTRS{name}=="Sony PLAYSTATION(R)3 Controller", SYMLINK+="input/js_dualshock3"

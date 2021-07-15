@@ -1,0 +1,27 @@
+<package>
+  <name>jsk_spotkinova_startup</name>
+  <version>1.1.0</version>
+  <description>
+     jsk_spotkinova_startup
+  </description>
+  <maintainer email="708yamaguchi@gmail.com">Naoya Yamaguchi</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/jsk_spotkinova_startup</url>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>jsk_spot_startup</run_depend>
+  <run_depend>jsk_kinova_startup</run_depend>
+  <run_depend>spotkinovaeus</run_depend>
+
+  <!-- for diagnostic aggregator -->
+  <run_depend>diagnostic_aggregator</run_depend>
+
+  <test_depend>roslaunch</test_depend>
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+    <app_manager app_dir="${prefix}/apps"/>
+  </export>
+</package>

@@ -1,0 +1,5 @@
+<launch>
+  <node
+      pkg="rviz" type="rviz" name="$(anon spot_kinova_rviz)"
+      args="-d $(find jsk_spotkinova_startup)/config/spot_kinova.rviz" />
+</launch>

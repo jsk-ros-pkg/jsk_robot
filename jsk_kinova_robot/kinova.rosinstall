@@ -1,0 +1,19 @@
+# TODO
+# Use Kinovarobotics/ros_kortex kinetic-devel after merging below:
+# https://github.com/Kinovarobotics/ros_kortex/pull/140
+# https://github.com/Kinovarobotics/ros_kortex/pull/141
+# - git:
+#     local-name: ros_kortex
+#     uri: https://github.com/Kinovarobotics/ros_kortex
+#     version: kinetic-devel
+
+# kortex_firmware is updating to ver2.3.0 in master branch
+# but the firmware in internal kinova is still ver2.2.0
+
+- git:
+    local-name: ros_kortex
+    uri: https://github.com/708yamaguchi/ros_kortex
+    version: develop/spot
+- git:
+    local-name: ros_kortex_vision
+    uri: https://github.com/Kinovarobotics/ros_kortex_vision

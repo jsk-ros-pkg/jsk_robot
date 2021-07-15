@@ -1,0 +1,27 @@
+<launch>
+  <arg name="webhook_server" default="false" />
+  <arg name="credential" default="$(env GOOGLE_APPLICATION_CREDENTIALS)"/>
+  <arg name="project_id" default="$(env DIALOGFLOW_PROJECT_ID)"/>
+
+  <node name="dialogflow_client"
+        pkg="dialogflow_task_executive" type="dialogflow_client.py"
+        output="screen">
+    <remap from="speech_to_text" to="/speech_to_text_jp"/>
+    <rosparam subst_value="true">
+      use_audio: false
+      language: ja-JP
+      use_tts: true
+      project_id: $(arg project_id)
+    </rosparam>
+  </node>
+
+  <node name="task_executive"
+        pkg="dialogflow_task_executive" type="task_executive.py"
+        output="screen">
+    <rosparam subst_value="true">
+    </rosparam>
+  </node>
+
+  <include if="$(arg webhook_server)" file="$(find dialogflow_task_executive)/launch/webhook_server.launch" />
+  
+</launch>

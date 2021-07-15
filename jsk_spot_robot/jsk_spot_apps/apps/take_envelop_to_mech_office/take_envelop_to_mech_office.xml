@@ -1,0 +1,6 @@
+<launch>
+    <include
+        file="$(find jsk_spot_take_envelop_to_mech_office)/launch/take_envelop_to_mech_office.launch"
+        >
+    </include>
+</launch>
