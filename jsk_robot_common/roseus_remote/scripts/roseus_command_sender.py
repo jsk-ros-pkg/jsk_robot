@@ -9,7 +9,7 @@ from roseus_remote.msg import RawCommand
 
 def cmd_res_cb(msg):
     input_str = str(msg.data).rstrip(' \t\r\n\0')
-    print input_str
+    print(input_str)
 
 def on_shutdown():
     rospy.logwarn("to exit immediately, press Enter")

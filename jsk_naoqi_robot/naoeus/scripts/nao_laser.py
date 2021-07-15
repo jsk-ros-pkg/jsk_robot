@@ -40,15 +40,15 @@ class NaoLaser (NaoNode):
             self.alurg.setDetectingLength(20, 5600)
             self.alurg.laserON()
         except Exception as e:
-            print "Error when creating ALLaser proxy:"
-            print str(e)
+            print("Error when creating ALLaser proxy:")
+            print(str(e))
             exit(1)
 
         try:
             self.almem = self.getProxy("ALMemory")
         except Exception as e:
-            print "Error when creating ALMemory proxy:"
-            print str(e)
+            print("Error when creating ALMemory proxy:")
+            print(str(e))
             exit(1)
 
         self.pub_laser = rospy.Publisher('scan', LaserScan)

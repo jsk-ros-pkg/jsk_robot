@@ -23,9 +23,9 @@ def get_output(out, queue):
         if data:
             queue.put(data)
         else:
-            print "nodata"
+            print("nodata")
     else:
-        print "error"
+        print("error")
 
 
 cmd = ['roseus']
@@ -51,7 +51,7 @@ get_stdout_thread.start()
 get_stderr_thread.start()
 
 while p.poll() is None:
-    print "alive?: ", p.poll()
+    print("alive?: ", p.poll())
     cmd = raw_input('cmd$ ')
     p.stdin.write(cmd)
     p.stdin.flush()
@@ -67,5 +67,5 @@ while p.poll() is None:
             stderr += stderr_queue.get_nowait()
     except:
         pass
-    print "stdout: ", stdout
-    print "stderr: ", stderr
+    print("stdout: ", stdout)
+    print("stderr: ", stderr)
