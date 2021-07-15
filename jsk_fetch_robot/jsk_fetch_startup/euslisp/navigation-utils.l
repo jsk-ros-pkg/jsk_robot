@@ -137,11 +137,13 @@
      (if is-charging :charging :discharging)))
 
 
-(defun go-to-spot (name &optional (relative-coords (make-coords)) &key (undock-rotate nil))
+(defun go-to-spot (name &optional (relative-coords (make-coords))
+                        &key (undock-rotate nil) (clear-costmap t))
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
     (fetch-init))
+  (if clear-costmap (send *ri* :clear-costmap))
   (let ((undock-success nil))
     (block go-to-spot-undock
       (dotimes (i 3)
@@ -170,14 +172,14 @@
          (frame-id (cdr ret)))
     (when relative-coords
       (setq goal-pose (send goal-pose :transform relative-coords :world)))
-    (send *ri* :clear-costmap)
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 
-(defun auto-dock (&key (n-trial 1))
+(defun auto-dock (&key (n-trial 1) (clear-costmap t))
   (let ((success nil))
     (dotimes (i n-trial)
-      (when (go-to-spot *dock-spot* (make-coords :pos #f(-800 0 0)))
+      (when (go-to-spot *dock-spot* (make-coords :pos #f(-800 0 0))
+                        :clear-costmap clear-costmap)
         (ros::ros-info "arrived at the dock.")
         (setq success (dock))
         (when success (return-from auto-dock success))))
@@ -349,7 +351,7 @@
       (report-move-to-sink-front-failure))
     ;; go back from dock
     (report-auto-dock)
-    (setq success-auto-dock (auto-dock :n-trial n-dock-trial))
+    (setq success-auto-dock (auto-dock :n-trial n-dock-trial :clear-costmap nil))
     ;; turn off light
     (if (and success-auto-dock (not initial-light-on))
       (room-light-off :control-switchbot control-switchbot))
@@ -420,7 +422,7 @@
               '(lambda (userdata)
                  (report-auto-dock)
                  (let* ((n-trial (cdr (assoc 'n-dock-trial userdata)))
-                        (success (auto-dock :n-trial n-trial)))
+                        (success (auto-dock :n-trial n-trial :clear-costmap nil)))
                    (setf (cdr (assoc 'success-auto-dock userdata)) success)
                    success)))
             (:room-light-off
