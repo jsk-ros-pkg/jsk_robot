@@ -6,6 +6,9 @@ import os
 import rospy
 from roseus_remote.msg import RawCommand
 
+# use raw_input for python2 c.f. https://stackoverflow.com/questions/5868506/backwards-compatible-input-calls-in-python
+if hasattr(__builtins__, 'raw_input'):
+    input = raw_input
 
 def cmd_res_cb(msg):
     input_str = str(msg.data).rstrip(' \t\r\n\0')
@@ -22,7 +25,7 @@ def main():
     sub = rospy.Subscriber("input", RawCommand, cmd_res_cb)
     while not rospy.is_shutdown():
         try:
-            cmd = raw_input("roseus$ ")
+            cmd = input("roseus$ ")
             if cmd:
                 pub.publish(RawCommand(data=cmd))
                 rospy.sleep(0.01)

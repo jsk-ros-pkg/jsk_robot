@@ -14,6 +14,10 @@ try:
 except ImportError:
     from queue import Queue, Empty
 
+# use raw_input for python2 c.f. https://stackoverflow.com/questions/5868506/backwards-compatible-input-calls-in-python
+if hasattr(__builtins__, 'raw_input'):
+    input = raw_input
+
 ON_POSIX = 'posix' in sys.builtin_module_names
 BUFF_SIZE = 1
 
@@ -52,7 +56,7 @@ get_stderr_thread.start()
 
 while p.poll() is None:
     print("alive?: ", p.poll())
-    cmd = raw_input('cmd$ ')
+    cmd = input('cmd$ ')
     p.stdin.write(cmd)
     p.stdin.flush()
     stdout = ""
