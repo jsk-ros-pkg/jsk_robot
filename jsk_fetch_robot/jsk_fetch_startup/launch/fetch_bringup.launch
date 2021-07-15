@@ -193,6 +193,25 @@
       <arg name="launch_map_server" value="false" />
       <arg name="odom_topic" value="/odom_combined" />
     </include>
+    <!-- relay plan path topic for visualization -->
+    <node name="relay_navfn_planner_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/NavfnROS/plan /move_base/navigation_plan_viz" />
+    <node name="relay_global_planner_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/GlobalPlanner/plan /move_base/navigation_plan_viz" />
+    <node name="relay_trajectory_planner_global_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TrajectoryPlannerROS/global_plan /move_base/global_plan_viz" />
+    <node name="relay_trajectory_planner_local_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TrajectoryPlannerROS/local_plan /move_base/local_plan_viz" />
+    <node name="relay_teb_planner_global_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TebLocalPlannerROS/global_plan /move_base/global_plan_viz" />
+    <node name="relay_teb_planner_local_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TebLocalPlannerROS/local_plan /move_base/local_plan_viz" />
 
     <!-- slam for build a map -->
     <node pkg="slam_karto" type="slam_karto" name="slam_karto"
