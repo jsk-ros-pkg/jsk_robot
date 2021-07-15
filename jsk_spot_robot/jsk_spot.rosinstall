@@ -1,14 +1,6 @@
-# PanoramaInfo.msg is used.
-# So we need to use this branch until it is merged to master
-- git:
-    local-name: common_msgs
-    uri: https://github.com/sktometometo/common_msgs.git
-    version: PR/add-panorama-info
-# currently, patches below are required for object detection with insta 360 air
-#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2579
+# Until PRs below are merged, we need to use develop/spot branch in sktometometo/jsk_recognition.git
 #  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2581
-# this branch is applied version of these patches.
-# We need to use it until these patches are merged.
+#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/sktometometo/jsk_recognition.git
