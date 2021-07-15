@@ -154,7 +154,7 @@ class ParticleOdometry(object):
     def state_transition_probability_rvs(self, u, u_cov): # rvs = Random Varieties Sampling
         u_mean = [u.linear.x, u.linear.y, u.linear.z,
                   u.angular.x, u.angular.y, u.angular.z]
-        u_cov_matrix = zip(*[iter(u_cov)]*6)
+        u_cov_matrix = list(zip(*[iter(u_cov)]*6))
         return numpy.random.multivariate_normal(u_mean, u_cov_matrix, int(self.particle_num)).tolist()
 
     # input: x(pose), mean(array), cov_inv(matrix), output: pdf value for x
@@ -207,8 +207,8 @@ class ParticleOdometry(object):
         self.odom.header.stamp = self.source_odom.header.stamp
         self.odom.twist = self.source_odom.twist
         # use only important particels
-        combined_prt_weight = zip(self.particles, self.weights)
-        selected_prt_weight = zip(*sorted(combined_prt_weight, key = itemgetter(1), reverse = True)[:int(self.valid_particle_num)]) # [(p0, w0), (p1, w1), ..., (pN, wN)] -> [(sorted_p0, sorted_w0), (sorted_p1, sorted_w1), ..., (sorted_pN', sorted_wN')] -> [(sorted_p0, ..., sorted_pN'), (sorted_w0, ..., sorted_wN')]
+        combined_prt_weight = list(zip(self.particles, self.weights))
+        selected_prt_weight = list(zip(*sorted(combined_prt_weight, key = itemgetter(1), reverse = True)[:int(self.valid_particle_num)])) # [(p0, w0), (p1, w1), ..., (pN, wN)] -> [(sorted_p0, sorted_w0), (sorted_p1, sorted_w1), ..., (sorted_pN', sorted_wN')] -> [(sorted_p0, ..., sorted_pN'), (sorted_w0, ..., sorted_wN')]
         # estimate gaussian distribution for Odometry msg 
         mean, cov = self.guess_normal_distribution(selected_prt_weight[0], selected_prt_weight[1])
         self.odom.pose.pose = self.convert_list_to_pose(mean)
@@ -318,7 +318,7 @@ class ParticleOdometry(object):
             histogram_array_msg.histograms.append(range_msg)
         # count
         particle_array = numpy.array([self.convert_pose_to_list(prt) for prt in particles])
-        data = zip(*particle_array) # [(x_data), (y_data), ..., (yaw_data)]
+        data = list(zip(*particle_array)) # [(x_data), (y_data), ..., (yaw_data)]
         for i, d in enumerate(data):
             hist, bins = numpy.histogram(d, bins=50)
             for count, min_value, max_value in zip(hist, bins[:-1], bins[1:]):
