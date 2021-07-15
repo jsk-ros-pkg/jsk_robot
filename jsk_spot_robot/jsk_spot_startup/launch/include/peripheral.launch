@@ -11,7 +11,7 @@
         <arg name="gui" value="false" />
         <arg name="brightness" value="128" />
         <arg name="throttle" value="true" />
-        <arg anme="throttled_rate" value="2" />
+        <arg name="throttled_rate" value="2" />
     </include>
 
     <!-- front microphone -->
