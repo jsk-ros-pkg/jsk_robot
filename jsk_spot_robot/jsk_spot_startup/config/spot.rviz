@@ -10,7 +10,7 @@ Panels:
         - /DepthClouds1/RightDepthCloud1/Autocompute Value Bounds1
         - /DepthClouds1/RearDepthCloud1/Autocompute Value Bounds1
       Splitter Ratio: 0.6832844614982605
-    Tree Height: 806
+    Tree Height: 370
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -211,108 +211,444 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        back:
-          Value: true
-        back_fisheye:
-          Value: true
-        base_link:
-          Value: true
-        body:
-          Value: true
-        camera:
-          Value: true
-        flat_body:
-          Value: true
-        front_left_hip:
-          Value: true
-        front_left_lower_leg:
-          Value: true
-        front_left_upper_leg:
-          Value: true
-        front_rail:
-          Value: true
-        front_right_hip:
-          Value: true
-        front_right_lower_leg:
-          Value: true
-        front_right_upper_leg:
-          Value: true
-        frontleft:
-          Value: true
-        frontleft_fisheye:
-          Value: true
-        frontright:
-          Value: true
-        frontright_fisheye:
-          Value: true
-        gpe:
-          Value: true
-        head:
-          Value: true
-        jsk_head_mount_frame:
-          Value: true
-        kinova_arm_link:
-          Value: true
-        kinova_base_link:
-          Value: true
-        kinova_dummy_link:
-          Value: true
-        kinova_end_effector_link:
-          Value: true
-        kinova_forearm_link:
-          Value: true
-        kinova_gripper_base_link:
-          Value: true
-        kinova_left_finger_dist_link:
-          Value: true
-        kinova_left_finger_prox_link:
-          Value: true
-        kinova_lower_wrist_link:
-          Value: true
-        kinova_right_finger_dist_link:
-          Value: true
-        kinova_right_finger_prox_link:
-          Value: true
-        kinova_shoulder_link:
-          Value: true
-        kinova_tool_frame:
-          Value: true
-        kinova_upper_wrist_link:
-          Value: true
-        left:
-          Value: true
-        left_fisheye:
-          Value: true
-        odom:
-          Value: true
-        rear_left_hip:
-          Value: true
-        rear_left_lower_leg:
-          Value: true
-        rear_left_upper_leg:
-          Value: true
-        rear_rail:
-          Value: true
-        rear_right_hip:
-          Value: true
-        rear_right_lower_leg:
-          Value: true
-        rear_right_upper_leg:
-          Value: true
-        respeaker_base:
-          Value: true
-        right:
-          Value: true
-        right_fisheye:
-          Value: true
-        vision:
-          Value: true
       Marker Scale: 0.25
       Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        {}
+      Update Interval: 0
+      Value: false
+    - Class: rviz/Group
+      Displays:
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 3.2305479049682617
+            Min Value: -0.3259410858154297
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: AxisColor
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /spot/depth/frontleft/image
+          Depth Map Transport Hint: raw
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: FrontLeftDepthCloud
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2.065394163131714
+            Min Value: -0.46760129928588867
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: AxisColor
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /spot/depth/frontright/image
+          Depth Map Transport Hint: raw
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: FrontRightDepthCloud
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 1.4258588552474976
+            Min Value: -0.40428322553634644
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: AxisColor
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /spot/depth/left/image
+          Depth Map Transport Hint: raw
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: LeftDepthCloud
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 1.0295515060424805
+            Min Value: -0.33090418577194214
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: AxisColor
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /spot/depth/right/image
+          Depth Map Transport Hint: raw
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: RightDepthCloud
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+        - Alpha: 1
+          Auto Size:
+            Auto Size Factor: 1
+            Value: true
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 2.5774011611938477
+            Min Value: -0.597380518913269
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/DepthCloud
+          Color: 255; 255; 255
+          Color Image Topic: ""
+          Color Transformer: AxisColor
+          Color Transport Hint: raw
+          Decay Time: 0
+          Depth Map Topic: /spot/depth/back/image
+          Depth Map Transport Hint: raw
+          Enabled: true
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Max Intensity: 4096
+          Min Color: 0; 0; 0
+          Min Intensity: 0
+          Name: RearDepthCloud
+          Occlusion Compensation:
+            Occlusion Time-Out: 30
+            Value: false
+          Position Transformer: XYZ
+          Queue Size: 5
+          Selectable: true
+          Size (Pixels): 3
+          Style: Flat Squares
+          Topic Filter: true
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: true
+      Enabled: true
+      Name: DepthClouds
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: false
+      Name: PanoramaImage
+      Topic: /dual_fisheye_to_panorama/output/quater
+      Value: false
+      alpha: 0.800000011920929
+      height: 128
+      keep aspect ratio: true
+      left: 0
+      overwrite alpha value: false
+      top: 0
+      transport hint: raw
+      width: 700
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: PanoramaDetection
+      Topic: /spot_recognition/object_detection_image
+      Value: true
+      alpha: 0.800000011920929
+      height: 128
+      keep aspect ratio: true
+      left: 0
+      overwrite alpha value: false
+      top: 0
+      transport hint: raw
+      width: 700
+    - Class: jsk_rviz_plugin/TFTrajectory
+      Enabled: true
+      Name: BodyTrajectory
+      Value: true
+      color: 25; 255; 240
+      duration: 1000
+      frame: base_link
+      line_width: 0.009999999776482582
+    - Class: jsk_rviz_plugin/PieChart
+      Enabled: true
+      Name: SpotBattery
+      Topic: /spot/status/battery_percentage
+      Value: true
+      auto color change: false
+      background color: 0; 0; 0
+      backround alpha: 0
+      clockwise rotate direction: false
+      foreground alpha: 0.699999988079071
+      foreground alpha 2: 0.4000000059604645
+      foreground color: 25; 255; 240
+      left: 750
+      max color: 255; 0; 0
+      max value: 100
+      min value: 0
+      show caption: true
+      size: 128
+      text size: 10
+      top: 50
+    - Class: jsk_rviz_plugin/PieChart
+      Enabled: true
+      Name: LaptopBattery
+      Topic: /spot/status/laptop_battery_percentage
+      Value: true
+      auto color change: false
+      background color: 0; 0; 0
+      backround alpha: 0
+      clockwise rotate direction: false
+      foreground alpha: 0.699999988079071
+      foreground alpha 2: 0.4000000059604645
+      foreground color: 25; 255; 240
+      left: 900
+      max color: 255; 0; 0
+      max value: 100
+      min value: 0
+      show caption: true
+      size: 128
+      text size: 10
+      top: 50
+    - Class: jsk_rviz_plugin/BoundingBoxArray
+      Enabled: true
+      Name: DetectedObjects
+      Topic: /spot_recognition/bbox_array
+      Unreliable: false
+      Value: true
+      alpha: 0.800000011920929
+      color: 25; 255; 0
+      coloring: Label
+      line width: 0.05000000074505806
+      only edge: true
+      show coords: false
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /dual_fisheye_to_panorama/output/quater
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: ElevatorDoorPoints
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /spot_recognition/elevator_door_points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        back:
+          Value: false
+        back_fisheye:
+          Value: false
+        base_link:
+          Value: false
+        body:
+          Value: false
+        camera:
+          Value: false
+        flat_body:
+          Value: false
+        front_left_hip:
+          Value: false
+        front_left_lower_leg:
+          Value: false
+        front_left_upper_leg:
+          Value: false
+        front_rail:
+          Value: false
+        front_right_hip:
+          Value: false
+        front_right_lower_leg:
+          Value: false
+        front_right_upper_leg:
+          Value: false
+        frontleft:
+          Value: false
+        frontleft_fisheye:
+          Value: false
+        frontright:
+          Value: false
+        frontright_fisheye:
+          Value: false
+        gpe:
+          Value: false
+        head:
+          Value: false
+        jsk_head_mount_frame:
+          Value: false
+        kinova_arm_link:
+          Value: false
+        kinova_base_link:
+          Value: false
+        kinova_dummy_link:
+          Value: false
+        kinova_end_effector_link:
+          Value: false
+        kinova_forearm_link:
+          Value: false
+        kinova_gripper_base_link:
+          Value: false
+        kinova_left_finger_dist_link:
+          Value: false
+        kinova_left_finger_prox_link:
+          Value: false
+        kinova_lower_wrist_link:
+          Value: false
+        kinova_right_finger_dist_link:
+          Value: false
+        kinova_right_finger_prox_link:
+          Value: false
+        kinova_shoulder_link:
+          Value: false
+        kinova_tool_frame:
+          Value: false
+        kinova_upper_wrist_link:
+          Value: false
+        left:
+          Value: false
+        left_fisheye:
+          Value: false
+        odom:
+          Value: false
+        rear_left_hip:
+          Value: false
+        rear_left_lower_leg:
+          Value: false
+        rear_left_upper_leg:
+          Value: false
+        rear_rail:
+          Value: false
+        rear_right_hip:
+          Value: false
+        rear_right_lower_leg:
+          Value: false
+        rear_right_upper_leg:
+          Value: false
+        respeaker_base:
+          Value: false
+        right:
+          Value: false
+        right_fisheye:
+          Value: false
+        vision:
+          Value: false
+      Marker Scale: 2
+      Name: ElevatorFrame
       Show Arrows: true
       Show Axes: true
       Show Names: true
@@ -386,298 +722,6 @@ Visualization Manager:
             {}
       Update Interval: 0
       Value: true
-    - Class: rviz/Group
-      Displays:
-        - Alpha: 1
-          Auto Size:
-            Auto Size Factor: 1
-            Value: true
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 1.5
-            Min Value: -1.5
-            Value: false
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/DepthCloud
-          Color: 255; 255; 255
-          Color Image Topic: ""
-          Color Transformer: AxisColor
-          Color Transport Hint: raw
-          Decay Time: 0
-          Depth Map Topic: /spot/depth/frontleft/image
-          Depth Map Transport Hint: compressedDepth
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Max Intensity: 4096
-          Min Color: 0; 0; 0
-          Min Intensity: 0
-          Name: FrontLeftDepthCloud
-          Occlusion Compensation:
-            Occlusion Time-Out: 30
-            Value: false
-          Position Transformer: XYZ
-          Queue Size: 5
-          Selectable: true
-          Size (Pixels): 3
-          Style: Flat Squares
-          Topic Filter: true
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Auto Size:
-            Auto Size Factor: 1
-            Value: true
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 1.5
-            Min Value: -1.5
-            Value: false
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/DepthCloud
-          Color: 255; 255; 255
-          Color Image Topic: ""
-          Color Transformer: AxisColor
-          Color Transport Hint: raw
-          Decay Time: 0
-          Depth Map Topic: /spot/depth/frontright/image
-          Depth Map Transport Hint: compressedDepth
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Max Intensity: 4096
-          Min Color: 0; 0; 0
-          Min Intensity: 0
-          Name: FrontRightDepthCloud
-          Occlusion Compensation:
-            Occlusion Time-Out: 30
-            Value: false
-          Position Transformer: XYZ
-          Queue Size: 5
-          Selectable: true
-          Size (Pixels): 3
-          Style: Flat Squares
-          Topic Filter: true
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Auto Size:
-            Auto Size Factor: 1
-            Value: true
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 1.5
-            Min Value: -1.5
-            Value: false
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/DepthCloud
-          Color: 255; 255; 255
-          Color Image Topic: ""
-          Color Transformer: AxisColor
-          Color Transport Hint: raw
-          Decay Time: 0
-          Depth Map Topic: /spot/depth/left/image
-          Depth Map Transport Hint: compressedDepth
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Max Intensity: 4096
-          Min Color: 0; 0; 0
-          Min Intensity: 0
-          Name: LeftDepthCloud
-          Occlusion Compensation:
-            Occlusion Time-Out: 30
-            Value: false
-          Position Transformer: XYZ
-          Queue Size: 5
-          Selectable: true
-          Size (Pixels): 3
-          Style: Flat Squares
-          Topic Filter: true
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Auto Size:
-            Auto Size Factor: 1
-            Value: true
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 1.5
-            Min Value: -1.5
-            Value: false
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/DepthCloud
-          Color: 255; 255; 255
-          Color Image Topic: ""
-          Color Transformer: AxisColor
-          Color Transport Hint: raw
-          Decay Time: 0
-          Depth Map Topic: /spot/depth/right/image
-          Depth Map Transport Hint: compressedDepth
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Max Intensity: 4096
-          Min Color: 0; 0; 0
-          Min Intensity: 0
-          Name: RightDepthCloud
-          Occlusion Compensation:
-            Occlusion Time-Out: 30
-            Value: false
-          Position Transformer: XYZ
-          Queue Size: 5
-          Selectable: true
-          Size (Pixels): 3
-          Style: Flat Squares
-          Topic Filter: true
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-        - Alpha: 1
-          Auto Size:
-            Auto Size Factor: 1
-            Value: true
-          Autocompute Intensity Bounds: true
-          Autocompute Value Bounds:
-            Max Value: 1.5
-            Min Value: -1.5
-            Value: false
-          Axis: Z
-          Channel Name: intensity
-          Class: rviz/DepthCloud
-          Color: 255; 255; 255
-          Color Image Topic: ""
-          Color Transformer: AxisColor
-          Color Transport Hint: raw
-          Decay Time: 0
-          Depth Map Topic: /spot/depth/back/image
-          Depth Map Transport Hint: compressedDepth
-          Enabled: true
-          Invert Rainbow: false
-          Max Color: 255; 255; 255
-          Max Intensity: 4096
-          Min Color: 0; 0; 0
-          Min Intensity: 0
-          Name: RearDepthCloud
-          Occlusion Compensation:
-            Occlusion Time-Out: 30
-            Value: false
-          Position Transformer: XYZ
-          Queue Size: 5
-          Selectable: true
-          Size (Pixels): 3
-          Style: Flat Squares
-          Topic Filter: true
-          Use Fixed Frame: true
-          Use rainbow: true
-          Value: true
-      Enabled: true
-      Name: DepthClouds
-    - Class: jsk_rviz_plugin/OverlayImage
-      Enabled: false
-      Name: PanoramaImage
-      Topic: /dual_fisheye_to_panorama/output/quater
-      Value: false
-      alpha: 0.800000011920929
-      height: 128
-      keep aspect ratio: true
-      left: 0
-      overwrite alpha value: false
-      top: 0
-      transport hint: compressed
-      width: 700
-    - Class: jsk_rviz_plugin/OverlayImage
-      Enabled: true
-      Name: PanoramaDetection
-      Topic: /spot_recognition/object_detection_image
-      Value: true
-      alpha: 0.800000011920929
-      height: 128
-      keep aspect ratio: true
-      left: 0
-      overwrite alpha value: false
-      top: 0
-      transport hint: compressed
-      width: 700
-    - Class: jsk_rviz_plugin/TFTrajectory
-      Enabled: true
-      Name: BodyTrajectory
-      Value: true
-      color: 25; 255; 240
-      duration: 1000
-      frame: base_link
-      line_width: 0.009999999776482582
-    - Class: jsk_rviz_plugin/PieChart
-      Enabled: true
-      Name: SpotBattery
-      Topic: /spot/status/battery_percentage
-      Value: true
-      auto color change: false
-      background color: 0; 0; 0
-      backround alpha: 0
-      clockwise rotate direction: false
-      foreground alpha: 0.699999988079071
-      foreground alpha 2: 0.4000000059604645
-      foreground color: 25; 255; 240
-      left: 750
-      max color: 255; 0; 0
-      max value: 100
-      min value: 0
-      show caption: true
-      size: 128
-      text size: 10
-      top: 50
-    - Class: jsk_rviz_plugin/PieChart
-      Enabled: true
-      Name: LaptopBattery
-      Topic: /spot/status/laptop_battery_percentage
-      Value: true
-      auto color change: false
-      background color: 0; 0; 0
-      backround alpha: 0
-      clockwise rotate direction: false
-      foreground alpha: 0.699999988079071
-      foreground alpha 2: 0.4000000059604645
-      foreground color: 25; 255; 240
-      left: 900
-      max color: 255; 0; 0
-      max value: 100
-      min value: 0
-      show caption: true
-      size: 128
-      text size: 10
-      top: 50
-    - Class: jsk_rviz_plugin/BoundingBoxArray
-      Enabled: true
-      Name: DetectedObjects
-      Topic: /spot_recognition/bbox_array
-      Unreliable: false
-      Value: true
-      alpha: 0.800000011920929
-      color: 25; 255; 0
-      coloring: Label
-      line width: 0.05000000074505806
-      only edge: true
-      show coords: false
-    - Class: rviz/Image
-      Enabled: false
-      Image Topic: /dual_fisheye_to_panorama/output/quater
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: Image
-      Normalize Range: true
-      Queue Size: 2
-      Transport Hint: raw
-      Unreliable: false
-      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -706,7 +750,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.0503926277160645
+      Distance: 8.482810974121094
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -721,10 +765,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7799983620643616
+      Pitch: 0.3449980318546295
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 2.6418099403381348
+      Yaw: 4.94684362411499
     Saved: ~
 Window Geometry:
   Displays:
@@ -734,7 +778,7 @@ Window Geometry:
   Hide Right Dock: true
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000015700000363fc0200000012fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000363000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002300000018e0000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000000a0049006d00610067006500000001f2000001ae0000001600fffffffb0000000a0049006d00610067006501000002f4000000ca0000000000000000fb0000000a0049006d006100670065000000013f000000660000000000000000fb0000000a0049006d0061006700650000000164000000940000000000000000fb0000000a0049006d00610067006500000001a3000000e80000000000000000fc00000227000001970000000000fffffffa000000000100000002fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000000a0049006d0061006700650000000000000002ad0000000000000000fb0000000a0049006d00610067006503000004f5000002820000028800000157000000010000010f00000363fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000363000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d0065010000000000000780000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000006230000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000015700000363fc0200000012fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000001af000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002300000018e0000000000000000fb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000000a0049006d00610067006501000001f2000001ae0000001600fffffffb0000000a0049006d00610067006501000002f4000000ca0000000000000000fb0000000a0049006d006100670065000000013f000000660000000000000000fb0000000a0049006d0061006700650000000164000000940000000000000000fb0000000a0049006d00610067006500000001a3000000e80000000000000000fc00000227000001970000000000fffffffa000000000100000002fb0000000a0049006d0061006700650000000000ffffffff0000000000000000fb0000000a0049006d0061006700650000000000000002ad0000000000000000fb0000000a0049006d00610067006503000004f5000002820000028800000157000000010000010f00000363fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000363000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d0065010000000000000780000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000006230000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
