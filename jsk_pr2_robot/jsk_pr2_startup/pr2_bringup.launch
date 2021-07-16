@@ -226,6 +226,12 @@
     <arg name="respawn" value="false"/>
   </include>
 
+  <!-- rwt_image_view -->
+  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch">
+    <arg name="launch_roswww" value="false" />
+    <arg name="launch_websocket" value="false" />
+  </include>
+
   <!-- mannequin mode -->
   <group if="$(arg setup_mannequin_mode)">
     <include file="$(find pr2_mannequin_mode)/launch/trajectory_lock.launch"/>
