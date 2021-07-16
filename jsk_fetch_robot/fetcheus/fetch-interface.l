@@ -36,7 +36,12 @@
        (send self :add-ground-collision-object))
      ))
   (:state (&rest args)
-   ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
+   "We do not have :wait-until-update option for :state :worldcoords.
+In other cases, :state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency.
+Example usage:
+(send *ri* :state :worldcoords frame_id) returns current coordinates in frame_id frame. If frame_id is not given, it returns current coordinates in '/world' frame.
+(send *ri* :state :potentio-vector) returns current real fetch's angle vector.
+"
    (case (car args)
      (:worldcoords
        (send-super :state :worldcoords (or (cadr args) "world")))
