@@ -13,7 +13,7 @@ import std_msgs.msg
 import actionlib_msgs.msg
 from actionlib_msgs.msg import GoalID, GoalStatus
 
-from logger_base import LoggerBase
+from .logger_base import LoggerBase
 
 
 class ActionLogger(LoggerBase):
