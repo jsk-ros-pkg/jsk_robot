@@ -25,13 +25,14 @@
   <!-- openni driver on C1 -->
   <param name="/kinect_head/driver/depth_ir_offset_x" value="4.5" />
   <param name="/kinect_head/driver/depth_ir_offset_y" value="2.5" />
+
   <include file="$(find openni_launch)/launch/openni.launch"
            if="$(arg load_driver)">
     <arg name="camera" value="$(arg camera)"/>
     <arg name="num_worker_threads" value="$(arg num_worker_threads)" />
-    <arg name="rgb_frame_id" value="/head_mount_kinect_rgb_optical_frame" />
-    <arg name="depth_frame_id" value="/head_mount_kinect_ir_optical_frame" />
-    <arg name="respawn" value="false" />
+    <arg name="rgb_frame_id" value="head_mount_kinect_rgb_optical_frame" />
+    <arg name="depth_frame_id" value="head_mount_kinect_ir_optical_frame" />
+    <arg name="respawn" value="$(arg respawn)" />
     <arg name="publish_tf" value="false"/>
     <arg name="depth_registration" value="true"/>
     <arg name="rgb_processing"                  value="$(arg registration_c1)"/>
@@ -50,7 +51,8 @@
         args="camera:=$(arg camera)
               load_driver:=false
               publish_tf:=false
-              depth_registration:=true
+              hw_registered_processing:=true
+              sw_registered_processing:=false
               respawn:=$(arg respawn)
               manager:=$(arg manager)
               deprecated_relay:=$(arg deprecated_relay)
@@ -81,6 +83,15 @@
             respawn="true">
         <remap from="~input" to="image_rect_color" />
         <remap from="~output" to="throttled/image_rect_color" />
+        <param name="update_rate" value="$(arg throttle_rate)" />
+      </node>
+      <node name="throttle_rgb_compressed"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg camera)/$(arg manager)"
+            machine="$(arg machine)"
+            respawn="true">
+        <remap from="~input" to="image_rect_color/compressed" />
+        <remap from="~output" to="throttled/image_rect_color/compressed" />
         <param name="update_rate" value="$(arg throttle_rate)" />
       </node>
       <node name="downsample_half"
@@ -146,6 +157,16 @@
             respawn="true">
         <remap from="~input" to="image_rect" />
         <remap from="~output" to="throttled/image_rect" />
+        <param name="update_rate" value="$(arg throttle_rate)" />
+      </node>
+      <node name="throttle_image_compressed"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg camera)/$(arg manager)"
+            if="$(arg throttle_depth)"
+            machine="$(arg machine)"
+            respawn="true">
+        <remap from="~input" to="image_rect/compressedDepth" />
+        <remap from="~output" to="throttled/image_rect/compressedDepth" />
         <param name="update_rate" value="$(arg throttle_rate)" />
       </node>
       <node name="throttle_cloud"
