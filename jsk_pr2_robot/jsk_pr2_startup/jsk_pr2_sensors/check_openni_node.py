@@ -46,7 +46,7 @@ class CheckOpenNINode:
             try:
                 cv_image = self.bridge.imgmsg_to_cv(msg, "bgr8")
                 sum_of_pixels = max(cv.Sum(cv_image))
-            except CvBridgeError, e:
+            except CvBridgeError as e:
                 rospy.logerr("[%s] failed to convert image to cv", self.__class__.__name__)
                 return
 
@@ -84,7 +84,7 @@ class CheckOpenNINode:
             # 3 restarting
             self.speak("restarting processes")
             retcode = subprocess.call('roslaunch openni_launch openni.launch camera:=%s publish_tf:=false depth_registration:=true rgb_processing:=false ir_processing:=false depth_processing:=false depth_registered_processing:=false disparity_processing:=false disparity_registered_processing:=false hw_registered_processing:=true sw_registered_processing:=false rgb_frame_id:=/head_mount_kinect_rgb_optical_frame depth_frame_id:=/head_mount_kinect_ir_optical_frame' % self.camera, shell=True)
-        except Exception, e:
+        except Exception as e:
             rospy.logerr('[%s] Unable to kill kinect node, caught exception:\n%s', self.__class__.__name__, traceback.format_exc())
 
     def run(self):
