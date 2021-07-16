@@ -269,7 +269,7 @@ Example: (send self :gripper :position) => 0.00"
     (ros::rate 10)
     t)
   (:go-pos-unsafe
-    (x y d &rest args)
+    (x y d &rest args) ;; [m] [m] [degree]
     (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
     (send* self :go-pos-unsafe-wait args)
     t)
@@ -301,7 +301,9 @@ Example: (send self :gripper :position) => 0.00"
         (send self :remprop :go-pos-unsafe-no-wait-goal)
 
         ;; yaw-x-yaw approach
-        (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)" d0 d1 d2)
+        (ros::ros-info "go-pos-unsafe: (x y d) = (~A ~A ~A)" x y d)
+        (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)"
+                       d0 (* (if forward-p 1.0 -1.0) d1) d2)
 
         ;; yaw
         (send self :spin-once)
