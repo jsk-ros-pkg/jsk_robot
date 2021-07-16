@@ -5,6 +5,7 @@
   <arg name="launch_ntp_monitor" default="true"/>
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="true" />
+  <arg name="launch_audio_play" default="true"/>
   <arg name="launch_app_manager" default="true" />
   <arg name="setup_mannequin_mode" default="true"
        doc="prepares mannequin_mode to be callable by EusLisp interface"/>
@@ -135,6 +136,15 @@
   <node pkg="sound_play" type="soundplay_node.py" machine="c1" name="sound_play" respawn="true">
     <remap from="sound_play" to="robotsound" />
   </node>
+
+  <!-- Audio -->
+  <include file="$(find audio_play)/launch/play.launch" if="$(arg launch_audio_play)">
+    <arg name="ns" value="audio_play" />
+    <arg name="format" value="wave" />
+    <arg name="channels" value="1" />
+    <arg name="sample_rate" value="16000" />
+    <arg name="sample_format" value="S16LE" />
+  </include>
 
   <!-- Runtime Diagnostics and Motor Trace Logging -->
   <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
