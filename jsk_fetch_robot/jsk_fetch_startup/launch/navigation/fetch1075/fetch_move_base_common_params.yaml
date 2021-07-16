@@ -1,0 +1,36 @@
+move_base:
+  recovery_behavior_enabled: true
+  recovery_behaviors:
+    - name: "conservative_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery0"
+      type: "rotate_recovery/RotateRecovery"
+    - name: "speak_and_wait0"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+    - name: "aggressive_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery1"
+      type: "rotate_recovery/RotateRecovery"
+    - name: "speak_and_wait1"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+    - name: "all_reset"
+      type: "clear_costmap_recovery/ClearCostmapRecovery"
+    - name: "rotate_recovery2"
+      type: "rotate_recovery/RotateRecovery"
+    - name: "move_slow_and_clear"
+      type: "move_slow_and_clear/MoveSlowAndClear"
+  speak_and_wait0:
+    speak_text: "とおれません、みちをあけてください"
+    duration_wait: 5.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
+  speak_and_wait1:
+    speak_text: "とおれません、みちをあけてください"
+    duration_wait: 5.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
+  move_slow_and_clear:
+    planner_namespace: TrajectoryPlannerROS
+    max_trans_param_name: max_vel_x
+    max_rot_param_name: max_vel_theta
+  max_planning_retries: 2
