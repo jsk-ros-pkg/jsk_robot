@@ -54,7 +54,18 @@
     (send move_hand_msg :joint_angles (list value))
     (ros::publish "/pepper_robot/pose/joint_angles" move_hand_msg)))
 
-(defun tweet (str)
+(defun tweet-without-image (str)
+  (let (speech-language)
+    (setq speech-language (get-language))
+    ;; tweet
+    (ros::publish "/tweet" (instance std_msgs::String :init :data (format nil "~A" str)))
+    (if (string= speech-language "Japanese")
+	(speak (format nil "\\vct=120\\~A\\pau=500\\ってツイートしました" str))
+      (speak (format nil "\\pau=1000\\\\rspd=90\\\\vct=120\\I tweeted \\pau=500\\ ~A\\rspd=100\\" str)))
+    (ros::ros-info "tweet ~A" str)
+    ))
+
+(defun tweet-with-image (str)
   (let (speech-language (timestamp0 0) (timestamp1 0) (filename "/tmp/pepper_camera.png") tm)
     (setq speech-language (get-language))
     ;; taking picture pose
@@ -110,7 +121,8 @@
     (ros::ros-info "tweet ~A" str)
     ))
 
-(ros::subscribe "/pepper_tweet" std_msgs::String #'(lambda (msg) (tweet (send msg :data))))
+(ros::subscribe "/pepper_tweet" std_msgs::String #'(lambda (msg) (tweet-with-image (send msg :data))))
+(ros::subscribe "/pepper_tweet_without_image" std_msgs::String #'(lambda (msg) (tweet-without-image (send msg :data))))
 (ros::ros-info "subscribing /pepper_tweet")
 (ros::spin)
 (exit)

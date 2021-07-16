@@ -9,7 +9,7 @@
 
 (defclass naoqi-interface
   :super robot-interface
-  :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action)
+  :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action body-pose-with-speed-action)
   )
 
 (defmethod naoqi-interface
@@ -31,6 +31,10 @@
 	 (instance ros::simple-action-client :init
 		   (format nil "~A/~A/pose/joint_stiffness_trajectory" group-namespace naoqi-namespace)
 		   naoqi_bridge_msgs::JointTrajectoryAction))
+   (setq body-pose-with-speed-action
+	 (instance ros::simple-action-client :init
+		   (format nil "~A/~A/pose/body_pose_naoqi" group-namespace naoqi-namespace)
+		   naoqi_bridge_msgs::BodyPoseWithSpeedAction))
    self)
   ;;
   (:dcm-head-controller
@@ -322,16 +326,16 @@
   (:set-master-volume
    (volume)
    (let ((ret (instance nao_interaction_msgs::SetAudioMasterVolumeRequest :init)))
-     (ros::wait-for-service (format nil "~A/naoqi_driver/set_master_volume" group-namespace))
+     (ros::wait-for-service (format nil "~A/naoqi_driver/set_volume" group-namespace))
      (send ret :master_volume :data volume)
-     (ros::service-call (format nil "~A/naoqi_driver/set_master_volume" group-namespace) ret)
+     (ros::service-call (format nil "~A/naoqi_driver/set_volume" group-namespace) ret)
      ))
   (:get-master-volume
    ()
    (let ((ret (instance nao_interaction_msgs::GetAudioMasterVolumeRequest :init))
 	 res)
-     (ros::wait-for-service (format nil "~A/naoqi_driver/get_master_volume" group-namespace))
-     (setq res (ros::service-call (format nil "~A/naoqi_driver/get_master_volume" group-namespace) ret))
+     (ros::wait-for-service (format nil "~A/naoqi_driver/get_volume" group-namespace))
+     (setq res (ros::service-call (format nil "~A/naoqi_driver/get_volume" group-namespace) ret))
      (send res :master_volume :data)))
   (:enable-life () (call-empty-service (format nil "~A/~A/pose/life/enable" group-namespace naoqi-namespace)))
   (:disable-life () (call-empty-service (format nil "~A/~A/pose/life/disable" group-namespace naoqi-namespace)))
@@ -498,5 +502,19 @@
      (setq res (ros::service-call (format nil "~A/get_take_picture_folder_path" group-namespace) ret))
      (send res :data)
      ))
+  (:set-body-pose-with-speed
+   (posture-name &optional (speed 0.7))
+   (let ((goal (send body-pose-with-speed-action :make-goal-instance)))
+     (send goal :goal :posture_name posture-name)
+     (send goal :goal :speed speed)
+     (send body-pose-with-speed-action :send-goal goal)
+     ))
+  (:get-defined-pose-list
+   ()
+   "prints available poses in :set-body-pose-with-speed method"
+   (if (string= naoqi-namespace "nao_robot")
+       (print "Crouch LyingBack LyingBelly Sit SitOnChair SitRelax Stand StandInit StandZero"))
+   (if (string= naoqi-namespace "pepper_robot")
+       (print "Crouch Stand StandInit StandZero")))
   )
 ;;

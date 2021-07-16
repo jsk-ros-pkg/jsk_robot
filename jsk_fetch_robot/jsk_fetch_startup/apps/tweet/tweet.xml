@@ -1,0 +1,4 @@
+<launch>
+  <node name="run_tweet" pkg="roseus" type="roseus"
+        args="$(find jsk_fetch_startup)/euslisp/tweet.l"/>
+</launch>

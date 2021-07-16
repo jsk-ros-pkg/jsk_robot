@@ -2,9 +2,12 @@
   <arg name="launch_stereo_camera" default="true" />
   <arg name="launch_runtime_logger" default="false" />
   <arg name="launch_hd_monitor" default="true" />
+  <arg name="launch_ntp_monitor" default="true"/>
   <arg name="launch_wifi_ddwrt" default="false" />
-  <arg name="launch_network_detector" default="false" />
+  <arg name="launch_network_detector" default="true" />
   <arg name="launch_app_manager" default="true" />
+  <arg name="setup_mannequin_mode" default="true"
+       doc="prepares mannequin_mode to be callable by EusLisp interface"/>
 
   <param name="/use_sim_time" value="false"/>
   <include file="$(find pr2_machine)/pr2.machine" />
@@ -47,8 +50,14 @@
     <param name="port3" type="string" value="/etc/ros/sensors/battery3" />
     <param name="debug_level" type="int" value="0" />
   </node>
-  <node pkg="power_monitor" type="power_monitor"  name="power_monitor" respawn="true"/>
-  
+  <node name="power_monitor"
+        pkg="power_monitor" type="power_monitor"
+        respawn="true" >
+    <rosparam>
+      frequency: 1.0
+    </rosparam>
+  </node>
+
   <!-- Base Laser -->
   <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
     <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
@@ -130,8 +139,10 @@
 	if="$(arg launch_runtime_logger)" />
 
   <!-- NTP monitoring script reports clock sync on diagnostics -->
-  <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="10.68.255.1 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
-  <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --diag-hostname=c2" machine="c2"/>
+  <group if="$(arg launch_ntp_monitor)">
+    <node pkg="pr2_computer_monitor" name="ntp_c1" type="ntp_monitor.py" args="133.11.216.42 --offset-tolerance 50000 --diag-hostname=c1" machine="c1" />
+    <node pkg="pr2_computer_monitor" name="ntp_c2" type="ntp_monitor.py" args="c1 --offset-tolerance 50000 --diag-hostname=c2" machine="c2"/>
+  </group>
 
   <!-- Disk usage monitoring script monitors HD temperature, usage on diagnostics -->
   <group if="$(arg launch_hd_monitor)">
@@ -158,7 +169,13 @@
       <param name="router" type="string" value="wifi-router" />
     </node>
   </group>
-  
+
+  <!-- Network detector -->
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector"
+        if="$(arg launch_network_detector)">
+    <param name="interface_name" value="wan0"/>
+  </node>
+
   <!-- Diagnostics aggregation -->
   <node pkg="diagnostic_aggregator" type="aggregator_node"  name="diag_agg">
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/jsk_pr2_analyzers.yaml"/>
@@ -187,11 +204,6 @@
     <param name="buffer_size" value="120.0"/>
   </node>
 
-  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector"
-        if="$(arg launch_network_detector)">
-    <param name="interface_name" value="wan0"/>
-  </node>
-
   <!-- logging database -->
   <!-- NOTE: parameter robot/type and robot/name are defined at /etc/ros/robot.yaml -->
   <!-- expected mongod server runs on c2 -->
@@ -210,4 +222,15 @@
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
     <arg name="respawn" value="false"/>
   </include>
+
+  <!-- mannequin mode -->
+  <group if="$(arg setup_mannequin_mode)">
+    <include file="$(find pr2_mannequin_mode)/launch/trajectory_lock.launch"/>
+    <rosparam command="load" file="$(find pr2_mannequin_mode)/config/pr2_arm_controllers_loose.yaml" />
+    <rosparam command="load" file="$(find pr2_mannequin_mode)/config/head_position_controller_loose.yaml" />
+    <node pkg="pr2_controller_manager" type="pr2_controller_manager"
+          name="load_mannequin_controllers"
+          args="load head_traj_controller_loose l_arm_controller_loose r_arm_controller_loose"/>
+  </group>
+
 </launch>

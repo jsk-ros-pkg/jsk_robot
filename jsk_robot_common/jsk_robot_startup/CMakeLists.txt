@@ -3,11 +3,11 @@ project(jsk_robot_startup)
 
 # for ROS indigo compile without c++11 support
 if(DEFINED ENV{ROS_DISTRO})
-  if(NOT $ENV{ROS_DISTRO} STREQUAL "indigo")
+  if($ENV{ROS_DISTRO} STRGREATER "indigo")
     add_compile_options(-std=c++11)
     message(STATUS "Building with C++11 support")
   else() 
-    message(STATUS "ROS Indigo: building without C++11 support")
+    message(STATUS "ROS Indigo and before: building without C++11 support")
   endif()
 else()
   message(STATUS "Environmental variable ROS_DISTRO not defined, checking OS version")
@@ -29,7 +29,11 @@ find_package(catkin REQUIRED COMPONENTS
   urdf
 )
 
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS program_options thread system)
+if ("${BOOST_MAJOR_VERSION}" VERSION_EQUAL "1" AND "${Boost_MINOR_VERSION}" VERSION_GREATER "46")
+  find_package(Boost REQUIRED COMPONENTS chrono)
+endif()
+
 find_package(OpenCV REQUIRED)
 
 catkin_python_setup()
@@ -58,7 +62,15 @@ macro(add_lifelog_nodelet _cpp _cls _bin)
     ${PROJECT_NAME}_LIFELOG_NODELET_EXECUTABLES)
 endmacro()
 
-add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
+# jsk_topic_tools >= 2.2.27 only available from indigo
+# mongodb_store >= 0.4.4 required in kinetic
+# mongodb_store >= 0.5.2 required in melodic
+if($ENV{ROS_DISTRO} STRGREATER "hydro")
+  if (("${mongodb_store_VERSION}" VERSION_GREATER "0.4.3" AND "${mongodb_store_VERSION}" VERSION_LESS "0.5.0")
+      OR "${mongodb_store_VERSION}" VERSION_GREATER "0.5.1")
+    add_lifelog_nodelet(src/lightweight_logger_nodelet.cpp "jsk_robot_lifelog/LightweightLogger" "lightweight_logger")
+  endif()
+endif()
 
 add_library(jsk_robot_lifelog SHARED
   ${${PROJECT_NAME}_LIFELOG_NODELET_SRCS}
@@ -87,7 +99,7 @@ install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(TARGETS jsk_robot_lifelog ${${PROJET_NAME}_LIFELOG_NODELET_EXECUTABLES}
+install(TARGETS jsk_robot_lifelog joint_states_throttle ${${PROJET_NAME}_LIFELOG_NODELET_EXECUTABLES}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

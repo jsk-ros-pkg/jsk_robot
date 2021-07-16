@@ -38,6 +38,10 @@ class XdisplayImageTopic(object):
         self.sub = rospy.Subscriber(from_topic, Image, self.cb)
         self.do_resize = rospy.get_param('~resize', True)
         self.do_centerize = rospy.get_param('~centerize', True)
+        # JSK baxter's xdisplay is 1920x1200.
+        # But default baxter's xdisplay is 1024x600.
+        self.max_width = rospy.get_param('~max_width', 1920)
+        self.max_height = rospy.get_param('~max_height', 1200)
         if not self.do_resize and self.do_centerize:
             jsk_topic_tools.jsk_logerr(
                 "If '~centerize' is True, '~resize' must be True also."
@@ -49,19 +53,15 @@ class XdisplayImageTopic(object):
             self.pub.publish(msg)
             return
 
-        # Baxter's xdisplay is 1024x600
-        MAX_WIDTH = 1920
-        MAX_HEIGHT = 1200
-
         # resize image
         br = cv_bridge.CvBridge()
         img = br.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         h, w = img.shape[:2]
-        scale = min(1.0 * MAX_HEIGHT / h, 1.0 * MAX_WIDTH / w)
+        scale = min(1.0 * self.max_height / h, 1.0 * self.max_width / w)
         img = cv2.resize(img, None, None, fx=scale, fy=scale)
 
         # centerize image
-        centerized_shape = (MAX_HEIGHT, MAX_WIDTH, 3)
+        centerized_shape = (self.max_height, self.max_width, 3)
         if self.do_centerize:
             img = cv_centerize(img, centerized_shape)
 

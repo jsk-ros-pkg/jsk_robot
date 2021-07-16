@@ -45,6 +45,14 @@ class DiagnosticsSpeakThread(threading.Thread):
     def run(self):
         global sound
         for status in  self.error_status:
+            # ignore error status if the error already occured in the latest 10 minites
+            if status.message in error_status_in_10_min:
+                if rospy.Time.now().secs - error_status_in_10_min[status.message] < 600:
+                    continue
+                else:
+                    error_status_in_10_min[status.message] = rospy.Time.now().secs
+            else:
+                error_status_in_10_min[status.message] = rospy.Time.now().secs
             # we can ignore "Joystick not open."
             if status.message == "Joystick not open." :
                 continue
@@ -81,10 +89,12 @@ class Warning:
         self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
         #
         self.battery_sub = rospy.Subscriber("battery_state", BatteryState, self.battery_callback, queue_size = 1)
-        self.cmd_vel_sub = rospy.Subscriber("base_controller/command", Twist, self.cmd_vel_callback, queue_size = 1)
+        self.cmd_vel_sub = rospy.Subscriber("base_controller/command_unchecked", Twist, self.cmd_vel_callback, queue_size = 1)
         self.robot_state_sub = rospy.Subscriber("robot_state", RobotState, self.robot_state_callback, queue_size = 1)
         self.diagnostics_status_sub = rospy.Subscriber("diagnostics", DiagnosticArray, self.diagnostics_status_callback, queue_size = 1)
         self.undock_sub = rospy.Subscriber("/undock/status", GoalStatusArray, self.undock_status_callback)
+        #
+        self.cmd_vel_pub = rospy.Publisher("base_controller/command", Twist, queue_size=1)
 
     def undock_status_callback(self, msg):
         for status in msg.status_list:
@@ -123,6 +133,8 @@ class Warning:
             sound.play(4) # play builtin sound Boom!
             time.sleep(5)
             self.base_breaker(BreakerCommandRequest(enable=True))
+        else:
+            self.cmd_vel_pub.publish(msg)
         ##
         self.twist_msgs = msg
 
@@ -132,7 +144,7 @@ class Warning:
         ##
         ## check if this comes from /robot_driver
         callerid = msg._connection_header['callerid']
-        if not self.diagnostics_speak_thread.has_key(callerid):
+        if callerid not in self.diagnostics_speak_thread:
             self.diagnostics_speak_thread[callerid] = None
         error_status = filter(lambda n: n.level in self.diagnostics_list, msg.status)
         # when RunStopped, ignore message from *_mcb and *_breaker
@@ -151,6 +163,9 @@ class Warning:
 
 if __name__ == "__main__":
     global sound
+    # store error status and time of the error in the latest 10 minites
+    global error_status_in_10_min
+    error_status_in_10_min = {}
     rospy.init_node("cable_warning")
     sound = SoundClient()
     w = Warning()

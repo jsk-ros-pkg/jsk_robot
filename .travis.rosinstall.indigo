@@ -1,0 +1,27 @@
+# Need to wait for app_manager 1.1.1 for kinetic and later. For indigo, we could not expect newer releases.....
+# https://github.com/PR2/app_manager/issues/12 (Relerase request 1.1.1)
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel
+# fetch_bringup.launch in jsk_fetch_startup requires respeaker_ros 2.1.13 or upper
+# indigo is already EOL and 2.1.13 is never released. (2019/08/16)
+# https://github.com/jsk-ros-pkg/jsk_robot/pull/1017#issuecomment-519573806
+- tar:
+    local-name: jsk_3rdparty/respeaker_ros
+    uri: https://github.com/tork-a/jsk_3rdparty-release/archive/release/kinetic/respeaker_ros/2.1.13-1.tar.gz
+    version: jsk_3rdparty-release-release-kinetic-respeaker_ros-2.1.13-1
+# jsk_robot_startup LightweightLogger requires mongodb_store 0.4.5.
+# indigo is already EOL and 0.4.5 is never released. (2019/08/20)
+# more detailed information, see https://github.com/jsk-ros-pkg/jsk_robot/pull/1121
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: 0.4.5
+# jsk_fetch_startup requires fetch_ros with following PRs.
+# https://github.com/fetchrobotics/fetch_ros/pull/144
+# https://github.com/fetchrobotics/fetch_ros/pull/146
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 0ad250a996a2ef68172fc064698f253bc9cf08d0

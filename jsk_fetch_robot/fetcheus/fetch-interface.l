@@ -13,8 +13,8 @@
   )
 
 (defmethod fetch-interface
-  (:init (&rest args)
-   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "/base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
+  (:init (&key (default-collision-object t) &rest args)
+   (prog1 (send-super* :init :robot fetch-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
      (send self :add-controller :head-controller)
@@ -29,10 +29,18 @@
                      :groupname groupname))
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
+     (when (and (boundp '*co*) default-collision-object)
+       (send self :delete-keepout-collision-object)
+       (send self :delete-ground-collision-object)
+       (send self :add-keepout-collision-object)
+       (send self :add-ground-collision-object))
      ))
   (:state (&rest args)
    ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
-   (send-super* :state (if (member :wait-until-update args) args (append args (list :wait-until-update t)))))
+   (send-super* :state
+                (if (or (eq (car args) :worldcoords)
+                        (member :wait-until-update args))
+                    args (append args (list :wait-until-update t)))))
   (:check-continuous-joint-move-over-180 ;; can be removed if http//github.com/jsk-ros-pkg/jsk_pr2eus/pull/322 merged
    (diff-av)
    (let ((i 0) add-new-trajectory-point)
@@ -86,7 +94,11 @@
    (if (member :start-offset-time args) (setq start-offset-time (cadr (member :start-offset-time args))))
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
-   (when (send self :simulation-modep)
+   (when (and (not (boundp '*co*)) (send self :simulation-modep))
+     (if (member :use-torso args)
+       (setq args (append (subseq args 0 (position :use-torso args))
+                          (if (> (length args) (+ 2 (position :use-torso args)))
+                            (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
    ;;
    (when (not (numberp tm))
@@ -117,6 +129,10 @@
    (if (member :clear-velocities args) (setq clear-velocities (cadr (member :clear-velocities args))))
    ;; for simulation mode
    (when (send self :simulation-modep)
+     (if (member :use-torso args)
+       (setq args (append (subseq args 0 (position :use-torso args))
+                          (if (> (length args) (+ 2 (position :use-torso args)))
+                            (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector-sequence
                   (send* self :angle-vector-sequence-raw avs tms ctype start-time args)))
    (unless (and (listp tms) (every #'numberp tms))
@@ -183,7 +199,14 @@
 Arguments:
  - key (:position :velocity :effort)
 Example: (send self :gripper :position) => 0.00"
-   (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*)))
+   (if (send self :simulation-modep)
+       (let ((pos (* 0.001 2 (vmean (send robot :rarm :gripper :angle-vector)))))
+         (case key
+               (:position pos)
+               (:velocity 0)
+               (:effort (+ (* -110 pos) 1)))) ;; effot is -10 on open, 1.2 for close
+     ;; for real robot
+     (send-super :state (intern (format nil "GRIPPER-~A" (string key)) *keyword-package*))))
   ;;
   (:speak (text &rest args &key (topic-name "sound_play") &allow-other-keys)
     (send-super* :speak text :topic-name topic-name args))
@@ -191,7 +214,26 @@ Example: (send self :gripper :position) => 0.00"
     (send-super* :speak-en text :topic-name topic-name args))
   (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
     (send-super* :speak-jp text :topic-name topic-name args))
-  )
+  (:add-keepout-collision-object ()
+    (let ((cube (make-cube 200 350 50))
+          (keepout (make-cylinder 300 50)))
+      (send cube :translate #f(-120 0 0))
+      (send keepout :translate #f(0 0 -25))
+      (setq keepout (body- keepout cube))
+      (send keepout :translate #f(0 0 375))
+      (send *co* :add-object keepout :frame-id base-frame-id :object-id "keepout")))
+  (:delete-keepout-collision-object ()
+    (send *co* :delete-object-by-id "keepout"))
+  (:add-ground-collision-object ()
+    (let ((cube (make-cube 200 350 50))
+          (ground (make-cylinder 1000 50)))
+      (send cube :translate #f(-120 0 0))
+      (send ground :translate #f(0 0 -25))
+      (setq ground (body- ground cube))
+      (send ground :translate #f(0 0 -25))
+      (send *co* :add-object ground :frame-id base-frame-id :object-id "ground")))
+  (:delete-ground-collision-object ()
+    (send *co* :delete-object-by-id "ground")))
 
 ;; interface for simple base actions
 (defmethod fetch-interface
@@ -209,7 +251,7 @@ Example: (send self :gripper :position) => 0.00"
     (x y d ;; [m/sec] [m/sec] [rad/sec]
        &optional (msec 1000) ;; msec is total animation time [msec]
        &key (stop t) (wait t))
-    (unless (not (zerop y))
+    (unless (zerop y)
       (ros::ros-error
         "Setting velocity in y-axis is not valid for non-holonomic robot")
       (return-from :go-velocity nil))
@@ -229,9 +271,9 @@ Example: (send self :gripper :position) => 0.00"
     (ros::rate 10)
     t)
   (:go-pos-unsafe
-    (&rest args)
-    (send self :put :go-pos-unsafe-no-wait-goal (coerce args float-vector))
-    (send self :go-pos-unsafe-wait)
+    (x y d &rest args)
+    (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
+    (send* self :go-pos-unsafe-wait args)
     t)
   (:go-pos-unsafe-no-wait
     (x y &optional (d 0)) ;; [m] [m] [degree]
@@ -240,7 +282,8 @@ Example: (send self :gripper :position) => 0.00"
     t)
   (:go-pos-unsafe-wait
     (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
-          (translation-gain 1.0) (rotation-gain 1.0))
+          (translation-gain 1.0) (rotation-gain 1.0)
+          (min-translation-abs-vel 0.3) (min-rotation-abs-vel 0.8))
     (unless (send self :get :go-pos-unsafe-no-wait-goal)
       (ros::ros-error ":go-pos-unsafe-wait is called without goal")
       (return-from :go-pos-unsafe-wait nil))
@@ -255,7 +298,7 @@ Example: (send self :gripper :position) => 0.00"
              (forward-p (>= x 0))
              (d0 (if forward-p (atan2 y x) (atan2 (- y) (- x))))
              (d1 (distance (float-vector 0 0) (float-vector x y)))
-             (d2 (shortest-angle (- d d0) 0))
+             (d2 (shortest-angle (- (deg2rad d) d0) 0))
              org-cds cur-cds diffrot diffpos err)
         (send self :remprop :go-pos-unsafe-no-wait-goal)
 
@@ -279,7 +322,10 @@ Example: (send self :gripper :position) => 0.00"
           (when (send self :simulation-modep)
             (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (let ((d-vel (* rotation-gain err)))
+            (send self :send-cmd-vel-raw 0
+              (if (> (abs d-vel) min-rotation-abs-vel)
+                d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
 
         ;; x
@@ -299,8 +345,10 @@ Example: (send self :gripper :position) => 0.00"
                         :translate (float-vector
                                     (if forward-p 0.1 -0.1) 0 0)))
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw
-                (* translation-gain (if forward-p err (- err))) 0)
+          (let ((x-vel (* translation-gain (if forward-p err (- err)))))
+            (send self :send-cmd-vel-raw
+              (if (> (abs x-vel) min-translation-abs-vel)
+                x-vel (* (if (>= x-vel 0) 1.0 -1.0) min-translation-abs-vel)) 0))
           (ros::sleep))
 
         ;; yaw
@@ -317,14 +365,24 @@ Example: (send self :gripper :position) => 0.00"
           (when (send self :simulation-modep)
             (send self :robot :rotate (deg2rad (if (> err 0) 5 -5)) :z)
             (send self :draw-objects))
-          (send self :send-cmd-vel-raw 0 (* rotation-gain err))
+          (let ((d-vel (* rotation-gain err)))
+            (send self :send-cmd-vel-raw 0
+              (if (> (abs d-vel) min-rotation-abs-vel)
+                d-vel (* (if (>= d-vel 0) 1.0 -1.0) min-rotation-abs-vel))))
           (ros::sleep))
         t)))
+  (:move-to-wait (&rest args &key (correction nil) &allow-other-keys)
+                 (send-super* :move-to-wait :correction correction args))
 ) ;; fetch-interface (simple base actions)
 
 (defun fetch-init (&optional (create-viewer))
   (unless (boundp '*fetch*) (fetch) (send *fetch* :reset-pose))
   (unless (ros::ok) (ros::roseus "fetch_eus_interface"))
+  (unless (boundp '*co*)
+    (ros::ros-warn ";; collision-object-publisher wait for \"apply_planning_scene\" service for ~A sec~%" 5)
+    (if (ros::wait-for-service "apply_planning_scene" 5)
+      (setq *co* (instance collision-object-publisher :init))
+      (ros::ros-warn ";; could not find \"apply_planning_scene\" skip creating *co*~%")))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
 
   (ros::spin-once)

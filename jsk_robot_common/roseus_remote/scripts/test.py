@@ -14,6 +14,10 @@ try:
 except ImportError:
     from queue import Queue, Empty
 
+# use raw_input for python2 c.f. https://stackoverflow.com/questions/5868506/backwards-compatible-input-calls-in-python
+if hasattr(__builtins__, 'raw_input'):
+    input = raw_input
+
 ON_POSIX = 'posix' in sys.builtin_module_names
 BUFF_SIZE = 1
 
@@ -23,9 +27,9 @@ def get_output(out, queue):
         if data:
             queue.put(data)
         else:
-            print "nodata"
+            print("nodata")
     else:
-        print "error"
+        print("error")
 
 
 cmd = ['roseus']
@@ -51,8 +55,8 @@ get_stdout_thread.start()
 get_stderr_thread.start()
 
 while p.poll() is None:
-    print "alive?: ", p.poll()
-    cmd = raw_input('cmd$ ')
+    print("alive?: ", p.poll())
+    cmd = input('cmd$ ')
     p.stdin.write(cmd)
     p.stdin.flush()
     stdout = ""
@@ -67,5 +71,5 @@ while p.poll() is None:
             stderr += stderr_queue.get_nowait()
     except:
         pass
-    print "stdout: ", stdout
-    print "stderr: ", stderr
+    print("stdout: ", stdout)
+    print("stderr: ", stderr)
