@@ -72,3 +72,48 @@ This script sets initial pose with relative pose from specified TF frame by publ
 ### Subscribing Topics
 
 * `/amcl_pose` (`geometry_msgs/PoseWithcovariancestamped`)
+
+
+## util/mux_selector.py
+
+This node check and select mux input topic on condition of the specified topic.
+This node takes three arguments for one topic.
+The first one is the topic to be monitored.
+When a message from this topic is received, it is assigned as a variable `m`.
+If a condition specified as the second argument,
+this node calls a service to select the topic specified as the third argument.
+
+### Usage
+
+```
+rosrun jsk_robot_startup mux_selector.py /joy1 'm.buttons[9]==1' /cmd_vel1 /joy2 'm.buttons[9]==1' /cmd_vel2
+```
+
+### Parameters
+
+* `~patient` (Double, default: 0.5)
+
+  Indicates the allowable range of the difference between the received topic time and the current time.
+
+* `~frequency` (Double, default: 20.0)
+
+  Frequency of processing loop.
+
+* `~default_select` (String, default: `None`)
+
+  Default topic name.
+
+* `~wait` (Bool, default: `False`)
+
+  If wait is `True`, this node waits for the topic to be received.
+
+### Subscribing Topics
+
+The topic specified in the argument is subscribed.
+
+
+## launch/safe_teleop.launch
+
+This launch file provides a set of nodes for safe teleoperation common to mobile robots. Robot-specific nodes such as `/joy`, `/teleop` or `/cable_warning` must be included in the teleop launch file for each robot, such as [safe_teleop.xml for PR2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_move_base/safe_teleop.xml) or [safe_teleop.xml for fetch](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml).
+
+![JSK teleop_base system](images/jsk_safe_teleop_system.png)
