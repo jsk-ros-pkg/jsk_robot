@@ -11,6 +11,7 @@
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_mjpeg_server" default="false" />
   <arg name="launch_gripper_sensor" default="true" />
+  <arg name="launch_virtual_force" default="true" />
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="false" />
   <arg name="launch_jsk_pcl" default="false" />
@@ -119,6 +120,11 @@
       <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  </group>
+
+  <!-- for virtual force publisher-->
+  <group if="$(arg launch_virtual_force)">
+    <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
   </group>
 
   <!-- for iPad or android apps -->
