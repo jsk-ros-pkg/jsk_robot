@@ -22,7 +22,7 @@ class JoyController():
 
     def joy_execute(self):
         if self.check_pushed(0):
-            print "0 is pushed"
+            print("0 is pushed")
         pass
 
     def check_pushed(self, index):
