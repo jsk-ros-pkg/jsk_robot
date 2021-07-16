@@ -123,6 +123,12 @@ roslaunch fetch_moveit_config move_group.launch
 (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
 ```
 
+- Get current coordinates in frame_id frame. If frame_id is not given, it returns current coordinates in '/world' frame.
+
+```lisp
+(send *ri* :state :worldcoords frame_id)
+```
+
 - Set angle values to the robot model
 
 ```lisp
