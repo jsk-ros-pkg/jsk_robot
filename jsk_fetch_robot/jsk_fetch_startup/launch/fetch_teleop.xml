@@ -1,5 +1,6 @@
 <launch>
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <arg name="use_safe_teleop" default="true" />
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="launch_fetch_bringup_teleop" default="false" />
@@ -11,13 +12,6 @@
     <node name="joy" pkg="joy" type="joy_node" respawn="true">
       <param name="autorepeat_rate" value="1"/>
       <param name="dev" value="$(arg joy_device)"/>
-    </node>
-
-    <!-- need to launch cmd_vel_mux because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
-         see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
-    <node name="cmd_vel_mux" pkg="topic_tools" type="mux" respawn="true" output="screen"
-          args="base_controller/command /cmd_vel /teleop/cmd_vel">
-      <remap from="mux" to="cmd_vel_mux" />
     </node>
   </group>
 
@@ -35,6 +29,41 @@
     <param name="head/button_deadman" value="11"/>
     <param name="base/use_mux" value="false" />
   </node>
+
+  <!-- Mux cmd_vel topics -->
+  <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" >
+    <arg name="use_safe_teleop" value="$(arg use_safe_teleop)" />
+    <arg name="odom_topic" value="/odom_teleop"/>
+    <arg name="joy_topic" value="/joy_vel"/>
+    <arg name="navigation_topic" value="/navigation/cmd_vel"/>
+    <arg name="input_topic" value="/input_vel"/>
+  </include>
+  <!-- Relay topic names according to system diagram -->
+  <node name="relay_odom"
+        pkg="topic_tools" type="relay"
+        args="/odom_combined /odom_teleop" />
+  <node name="relay_navigation_cmd_vel"
+        pkg="topic_tools" type="relay"
+        args="/cmd_vel /navigation/cmd_vel" />
+  <group ns="safe_teleop_base">
+    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam ns="local_costmap">
+      inflater:
+        inflation_radius: 1.0 # 0.7
+        cost_scaling_factor: 3.0 # 25.0 default 10, increasing factor decrease the cost value
+      obstacles:
+        min_obstacle_height: 0.05
+      # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      update_frequency: 10.0
+      footprint_padding: 0.05
+    </rosparam>
+  </group>
+
+  <!-- Do not publish /base_controller/command if fetch is docking -->
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
 
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">

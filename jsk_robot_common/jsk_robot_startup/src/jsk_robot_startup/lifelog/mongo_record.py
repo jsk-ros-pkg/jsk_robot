@@ -6,7 +6,7 @@ import argparse
 import re
 import rospy
 import rostopic
-from logger_base import LoggerBase
+from .logger_base import LoggerBase
 
 REGEX = re.compile(r"\$\{param\s*(\S+)\s*\}")
 
