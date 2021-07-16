@@ -6,6 +6,7 @@
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="true" />
   <arg name="launch_network_status" default="true" />
+  <arg name="launch_audio_play" default="true"/>
   <arg name="launch_app_manager" default="true" />
   <arg name="setup_mannequin_mode" default="true"
        doc="prepares mannequin_mode to be callable by EusLisp interface"/>
@@ -19,11 +20,14 @@
 
   <!-- pr2_etherCAT -->
   <node name="realtime_loop" machine="c1" launch-prefix="pr2-grant" pkg="pr2_ethercat" type="pr2_ethercat" args="-i ecat0 -x robot_description" output="screen" />
-  <param name="pr2_etherCAT/realtime_socket_timeout" value="5000" />
+  <param name="pr2_ethercat/realtime_socket_timeout" value="5000" />
 
   <!-- PR2 Calibration -->
   <node name="calibrate_pr2" pkg="pr2_bringup" type="calibrate_pr2.py" output="screen" 
         args="$(find pr2_controller_configuration)/pr2_calibration_controllers.yaml $(find pr2_controller_configuration)/pr2_joint_position_controllers.yaml"/>
+
+  <node name="pr2_calibration_warning"
+        pkg="jsk_pr2_startup" type="calibration_warning.py" />
 
   <!-- Controller Manager -->
   <include file="$(find pr2_controller_manager)/controller_manager.launch" />
@@ -134,6 +138,15 @@
     <remap from="sound_play" to="robotsound" />
   </node>
 
+  <!-- Audio -->
+  <include file="$(find audio_play)/launch/play.launch" if="$(arg launch_audio_play)">
+    <arg name="ns" value="audio_play" />
+    <arg name="format" value="wave" />
+    <arg name="channels" value="1" />
+    <arg name="sample_rate" value="16000" />
+    <arg name="sample_format" value="S16LE" />
+  </include>
+
   <!-- Runtime Diagnostics and Motor Trace Logging -->
   <node name="runtime_logger" machine="c1"  pkg="rosbag" type="record"
 	args="-o /hwlog/pr2_diagnostics --split --size=200 --bz2 /diagnostics -e '/motor_trace/.*'"
@@ -231,6 +244,14 @@
     <arg name="use_applist" value="false"/> <!-- use plugin -->
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
     <arg name="respawn" value="false"/>
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+  </include>
+
+  <!-- rwt_image_view -->
+  <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch">
+    <arg name="launch_roswww" value="false" />
+    <arg name="launch_websocket" value="false" />
   </include>
 
   <!-- mannequin mode -->
