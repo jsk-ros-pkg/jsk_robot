@@ -46,7 +46,7 @@ class DiagnosticsSpeakThread(threading.Thread):
         global sound
         for status in  self.error_status:
             # ignore error status if the error already occured in the latest 10 minites
-            if error_status_in_10_min.has_key(status.message):
+            if status.message in error_status_in_10_min:
                 if rospy.Time.now().secs - error_status_in_10_min[status.message] < 600:
                     continue
                 else:
@@ -144,7 +144,7 @@ class Warning:
         ##
         ## check if this comes from /robot_driver
         callerid = msg._connection_header['callerid']
-        if not self.diagnostics_speak_thread.has_key(callerid):
+        if callerid not in self.diagnostics_speak_thread:
             self.diagnostics_speak_thread[callerid] = None
         error_status = filter(lambda n: n.level in self.diagnostics_list, msg.status)
         # when RunStopped, ignore message from *_mcb and *_breaker
