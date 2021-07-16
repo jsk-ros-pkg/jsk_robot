@@ -11,7 +11,7 @@ import threading
 import copy
 from dynamic_reconfigure.server import Server
 from jsk_robot_startup.cfg import OdometryOffsetReconfigureConfig
-from odometry_utils import make_homogeneous_matrix, update_twist_covariance, update_pose, update_pose_covariance, broadcast_transform, transform_local_twist_to_global, transform_local_twist_covariance_to_global
+from .odometry_utils import make_homogeneous_matrix, update_twist_covariance, update_pose, update_pose_covariance, broadcast_transform, transform_local_twist_to_global, transform_local_twist_covariance_to_global
 
 class OdometryOffset(object):
     def __init__(self):

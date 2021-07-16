@@ -15,7 +15,7 @@ def handle_start_srv(req):
     try:
         p=Popen(['roslaunch', 'jsk_pepper_startup', 'play_audio_stream.launch']) 
         return EmptyResponse()
-    except RuntimeError, e:
+    except RuntimeError as e:
         rospy.logerr("Exception caught:\n%s", e)
         return res
 
@@ -34,7 +34,7 @@ def handle_stop_srv(req):
                 call(['rosnode', 'kill', nodelist[i]])
                 break
         return EmptyResponse()
-    except RuntimeError, e:
+    except RuntimeError as e:
         rospy.logerr("Exception caught:\n%s", e)
         return res                    
         

@@ -126,6 +126,20 @@
             (format nil ":go-velocity returns t with argument ~A" go-vel-arg))
     ))
 
+(deftest fetch-use-torso
+  (let ()
+    (setq *ri* (instance fetch-interface :init))
+    (assert (send *ri* :angle-vector (send *fetch* :angle-vector) 3000 :use-torso t)
+            "failed to do :angle-vector with :use-torso in kinematics simulator")
+    (assert (send *ri* :angle-vector-sequence
+                  (list (send *fetch* :init-pose) (send *fetch* :angle-vector))
+                  (list 3000 3000) :use-torso t)
+            "failed to do :angle-vector-sequence with :use-torso in kinematics simulator")
+    ))
+
+(deftest fetch-init-test
+  (let ()
+    (fetch-init)))
 
 (run-all-tests)
 (exit)
