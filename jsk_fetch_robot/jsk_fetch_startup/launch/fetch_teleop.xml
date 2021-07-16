@@ -1,5 +1,6 @@
 <launch>
   <!-- mainly copied from $(find fetch_bringup)/launch/include/teleop.launch.xml -->
+  <arg name="use_safe_teleop" default="true" />
   <arg name="enable_auto_dock" default="true" />
   <arg name="joy_device" default="/dev/ps3joy"/>
   <arg name="launch_fetch_bringup_teleop" default="false" />
@@ -11,13 +12,6 @@
       <param name="autorepeat_rate" value="1"/>
       <param name="dev" value="$(arg joy_device)"/>
     </node>
-
-    <!-- need to launch cmd_vel_mux because of launch_teleop:=false is set at /etc/ros/indigo/robot.launch,
-         see https://github.com/fetchrobotics/fetch_robots/pull/40 -->
-    <node name="cmd_vel_mux" pkg="topic_tools" type="mux" respawn="true" output="screen"
-          args="base_controller/command /cmd_vel /teleop/cmd_vel">
-      <remap from="mux" to="cmd_vel_mux" />
-    </node>
   </group>
 
   <!-- copied for button mapping is changed to standardize with PR2 joy.
@@ -27,12 +21,47 @@
        joystick_teleop need to publish /teleop/cmd_vel/unsafe ,
        see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/README.md -->
   <node name="teleop" pkg="fetch_teleop" type="joystick_teleop" respawn="true">
-    <remap from="teleop/cmd_vel" to="/teleop/cmd_vel/unsafe" />
+    <remap from="teleop/cmd_vel" to="/joy_vel" />
     <param name="arm/button_arm_linear" value="4"/>
     <param name="arm/button_arm_angular" value="6"/>
     <param name="head/button_deadman" value="11"/>
     <param name="base/use_mux" value="false" />
   </node>
+
+  <!-- Mux cmd_vel topics -->
+  <include file="$(find jsk_robot_startup)/launch/safe_teleop.launch" >
+    <arg name="use_safe_teleop" value="$(arg use_safe_teleop)" />
+    <arg name="odom_topic" value="/odom_teleop"/>
+    <arg name="joy_topic" value="/joy_vel"/>
+    <arg name="navigation_topic" value="/navigation/cmd_vel"/>
+    <arg name="input_topic" value="/input_vel"/>
+  </include>
+  <!-- Relay topic names according to system diagram -->
+  <node name="relay_odom"
+        pkg="topic_tools" type="relay"
+        args="/odom_combined /odom_teleop" />
+  <node name="relay_navigation_cmd_vel"
+        pkg="topic_tools" type="relay"
+        args="/cmd_vel /navigation/cmd_vel" />
+  <group ns="safe_teleop_base">
+    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
+    <rosparam ns="local_costmap">
+      inflater:
+        inflation_radius: 1.0 # 0.7
+        cost_scaling_factor: 3.0 # 25.0 default 10, increasing factor decrease the cost value
+      obstacles:
+        min_obstacle_height: 0.05
+      # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
+      update_frequency: 10.0
+      footprint_padding: 0.05
+    </rosparam>
+  </group>
+
+  <!-- Do not publish /base_controller/command if fetch is docking -->
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
 
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">
@@ -44,49 +73,6 @@
   <node name="tuck_arm" pkg="fetch_teleop" type="tuck_arm.py" args="--joystick" respawn="true" >
     <param name="tuck_button" value="5"/>
   </node>
-
-  <!-- safe teleop -->
-  <node name="unsafe_vel_mux" pkg="topic_tools" type="mux" respawn="true"
-	args="/teleop/cmd_vel /teleop/cmd_vel/safe /teleop/cmd_vel/unsafe">
-    <remap from="mux" to="unsafe_vel_mux" />
-  </node>
-
-  <!-- m.button[10]: L1 -->
-  <!-- m.button[9] : R2 -->
-  <!-- safe teleop with L1 -->
-  <node name="cmd_vel_mux_selector" pkg="jsk_robot_startup" type="mux_selector.py"
-	respawn="true"
-	args="/joy 'm.buttons[10]==1' /teleop/cmd_vel /cmd_vel 'True' /cmd_vel">
-    <remap from="mux" to="cmd_vel_mux" />
-    <param name="default_select" value="/cmd_vel" />
-  </node>
-
-  <!-- unsafe teleop with L1 and R2 -->
-  <node name="unsafe_vel_mux_selector" pkg="jsk_robot_startup" type="mux_selector.py"
-	respawn="true"
-	args="/joy 'm.buttons[10]==1 and m.buttons[9]==1' /teleop/cmd_vel/unsafe /joy 'm.buttons[10]==1 and m.buttons[9]==0' /teleop/cmd_vel/safe">
-    <remap from="mux" to="unsafe_vel_mux" />
-    <param name="default_select" value="/teleop/cmd_vel/safe" />
-  </node>
-
-  <node name="safe_teleop_base" pkg="safe_teleop_base" type="safe_teleop_base">
-    <remap from="base_velocity" to="/teleop/cmd_vel/unsafe" />
-    <remap from="~safe_vel"     to="/teleop/cmd_vel/safe" />
-    <rosparam file="$(find fetch_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_common.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find fetch_navigation)/config/costmap_local.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find fetch_navigation)/config/fetch/costmap_local.yaml" command="load" ns="local_costmap" />
-  </node>
-  <rosparam ns="safe_teleop_base/local_costmap">
-    inflater:
-      inflation_radius: 1.0 # 0.7
-      cost_scaling_factor: 3.0 # 25.0 default 10, increasing factor decrease the cost value
-    obstacles:
-      min_obstacle_height: 0.05
-    # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
-    update_frequency: 10.0
-    footprint_padding: 0.05
-  </rosparam>
 
   <node name="safe_tilt_head" pkg="jsk_fetch_startup" type="safe_tilt_head.py" />
 
