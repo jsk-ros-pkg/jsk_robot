@@ -10,8 +10,8 @@ import rospy
 import rosgraph
 from geometry_msgs.msg import PoseStamped
 from posedetection_msgs.msg import ObjectDetection
-from logger_base import LoggerBase
-from transformations import TransformListener
+from .logger_base import LoggerBase
+from .transformations import TransformListener
 
 
 class ObjectDetectionLogger(LoggerBase):
