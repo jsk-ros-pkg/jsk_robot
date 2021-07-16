@@ -1,5 +1,5 @@
 <launch>
     <include
-        file="$(find jsk_spot_watch_dog)/launch/watch_dog_smach.launch"
+        file="$(find jsk_spot_watch_dog)/launch/watch_dog_roseus_smach.launch"
         />
 </launch>
