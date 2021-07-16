@@ -163,7 +163,7 @@ class TakeWakeUpPose():
             msg.data = "\\vct=140\\よしっ\\vct=120\\\\rspd=100\\"
             self.pub.publish(msg)
 
-        except RuntimeError, e:
+        except RuntimeError as e:
             rospy.logerr("Exception caught:\n%s", e)
                 
 if __name__=="__main__":
