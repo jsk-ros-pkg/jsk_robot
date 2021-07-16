@@ -82,7 +82,7 @@ def add_trigger(topic, expr, select, index, wait=False):
         cb_obj = gen_callback(expr, select, index)
         rospy.loginfo("start subscribe (topic=%s type=%s)", topic, topic_type);
         sub = rospy.Subscriber(topic,topic_class,cb_obj)
-    except Exception, e:
+    except Exception as e:
         rospy.loginfo(str(e))
         return None
 
@@ -154,10 +154,10 @@ if __name__ == "__main__":
             try:
                 if not (before == next_topic or next_topic is None):
                     mux_client(next_topic)
-            except rospy.ServiceException, e:
+            except rospy.ServiceException as e:
                 rospy.loginfo("Service did not process request: %s", str(e))
             before = next_topic
             looprate.sleep()
-    except Exception, e:
+    except Exception as e:
         rospy.logerr('Error: '+str(e))
         rospy.logerr(traceback.format_exc())
