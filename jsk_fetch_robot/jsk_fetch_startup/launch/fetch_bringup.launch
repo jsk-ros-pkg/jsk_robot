@@ -7,6 +7,7 @@
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
+  <arg name="use_keepout" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -14,8 +15,6 @@
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <!-- add jsk startups -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
-
   <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
         respawn="true" output="screen">
     <rosparam>
@@ -132,6 +131,7 @@
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
       <arg name="launch_map_server" value="true" />
+      <arg name="keepout" value="$(arg use_keepout)" />
     </include>
 
     <!-- dock localization -->
@@ -141,7 +141,7 @@
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
       <arg name="map_file" value="$(arg map_file)" />
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
-      <arg name="use_keepout" value="false" />
+      <arg name="use_keepout" value="$(arg use_keepout)" />
       <arg name="use_map_topic" value="true" />
       <arg name="launch_map_server" value="false" />
     </include>
