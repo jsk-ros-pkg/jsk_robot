@@ -1,0 +1,11 @@
+- git:
+    local-name: jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
+- git:
+    local-name: ros_kortex
+    uri: https://github.com/Kinovarobotics/ros_kortex
+    version: kinetic-devel
+- git:
+    local-name: ros_kortex_vision
+    uri: https://github.com/Kinovarobotics/ros_kortex_vision

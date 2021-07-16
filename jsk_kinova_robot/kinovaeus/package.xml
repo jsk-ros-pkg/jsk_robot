@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package>
+  <name>kinovaeus</name>
+  <version>1.1.0</version>
+  <description>The kinovaeus package</description>
+
+  <maintainer email="708yamaguchi@gmail.com">Naoya Yamaguchi</maintainer>
+
+  <license>BSD</license>
+  <author email="708yamaguchi@gmail.com">Naoya Yamaguchi</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>collada_urdf</build_depend>
+  <build_depend>euscollada</build_depend>
+  <build_depend>rostest</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>pr2eus</build_depend>
+  <build_depend>pr2eus_moveit</build_depend>
+  <build_depend>kortex_description</build_depend>
+  <build_depend>kortex_driver</build_depend>
+
+  <run_depend>roseus</run_depend>
+  <run_depend>pr2eus</run_depend>
+  <run_depend>pr2eus_moveit</run_depend>
+
+  <test_depend>kortex_gazebo</test_depend>
+  <!-- TODO: Remove this dependency after below PR is merged -->
+  <!-- https://github.com/Kinovarobotics/ros_kortex/pull/140 -->
+  <test_depend>kortex_control</test_depend>
+  <!-- TODO: Remove these dependencies after below PR is merged -->
+  <!-- https://github.com/Kinovarobotics/ros_kortex/pull/142 -->
+  <test_depend>gen3_robotiq_2f_85_move_it_config</test_depend>
+  <test_depend>gen3_robotiq_2f_140_move_it_config</test_depend>
+  <test_depend>gen3_lite_gen3_lite_2f_move_it_config</test_depend>
+
+  <export>
+  </export>
+</package>
