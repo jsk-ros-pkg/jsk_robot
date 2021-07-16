@@ -18,11 +18,14 @@
 
   <!-- pr2_etherCAT -->
   <node name="realtime_loop" machine="c1" launch-prefix="pr2-grant" pkg="pr2_ethercat" type="pr2_ethercat" args="-i ecat0 -x robot_description" output="screen" />
-  <param name="pr2_etherCAT/realtime_socket_timeout" value="5000" />
+  <param name="pr2_ethercat/realtime_socket_timeout" value="5000" />
 
   <!-- PR2 Calibration -->
   <node name="calibrate_pr2" pkg="pr2_bringup" type="calibrate_pr2.py" output="screen" 
         args="$(find pr2_controller_configuration)/pr2_calibration_controllers.yaml $(find pr2_controller_configuration)/pr2_joint_position_controllers.yaml"/>
+
+  <node name="pr2_calibration_warning"
+        pkg="jsk_pr2_startup" type="calibration_warning.py" />
 
   <!-- Controller Manager -->
   <include file="$(find pr2_controller_manager)/controller_manager.launch" />
@@ -223,6 +226,8 @@
     <arg name="respawn" value="false"/>
     <arg name="machine" value="c2" />
     <arg name="remote" value="true" />
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
 
   <!-- rwt_image_view -->
