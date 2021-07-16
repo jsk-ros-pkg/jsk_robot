@@ -1,11 +1,11 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 75
+    Help Height: 78
     Name: Displays
     Property Tree Widget:
       Expanded: ~
-      Splitter Ratio: 0.625293
-    Tree Height: 725
+      Splitter Ratio: 0.4187380373477936
+    Tree Height: 595
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -25,6 +25,11 @@ Panels:
     Name: Time
     SyncMode: 0
     SyncSource: BaseScan
+  - Class: jsk_rviz_plugin/CancelAction
+    Name: CancelAction
+    Topic: /move_base
+    topics:
+      - /move_base
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -224,7 +229,7 @@ Visualization Manager:
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
       Line Style: Billboards
-      Line Width: 0.05000000074505806
+      Line Width: 0.3
       Name: NavigationPath
       Offset:
         X: 0
@@ -247,7 +252,7 @@ Visualization Manager:
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
       Line Style: Billboards
-      Line Width: 0.029999999329447746
+      Line Width: 0.1
       Name: GlobalPath
       Offset:
         X: 0
@@ -494,4 +499,4 @@ Window Geometry:
     collapsed: true
   Width: 1853
   X: 67
-  Y: 0
+  Y: 27
