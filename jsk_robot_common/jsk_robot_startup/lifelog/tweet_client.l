@@ -1,7 +1,9 @@
 #!/usr/bin/env roseus
 
-(ros::load-ros-manifest "roseus")
-(ros::load-ros-manifest "topic_tools")
+(ros::roseus-add-srvs "topic_tools")
+(ros::roseus-add-msgs "std_msgs")
+(ros::roseus-add-msgs "sensor_msgs")
+
 (load "package://pr2eus/speak.l")
 
 (ros::roseus "tweet_client")
@@ -33,7 +35,7 @@
   (setq *waking-target-second* *waking-tweet-second*)))
 
 (defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t))
-  (let (prev-image-topic (save-wait 0))
+  (let (prev-image-topic img)
   (when warning-time
     (unless (numberp warning-time)
       (setq warning-time 3))
@@ -73,18 +75,18 @@
         (setq prev-image-topic (send (one-shot-subscribe "/tweet_image_mux/selected" std_msgs::String) :data)))
 
       ;; retrieve image
-      (call-empty-service "/tweet_image_saver/save" :wait t)
-      (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic))
-
-      (ros::ros-info "tweeting ~A" twit-str)
-      ;; waiting for 10 seconds for image saver
-      (while (and (not (probe-file "/tmp/tweet_image.jpg")) (< save-wait 10))
-        (incf save-wait 1)
-        (unix:sleep 1))
-      (ros::publish "/tweet"
-                    (instance std_msgs::String :init
-                              :data (format nil "~A ~A"
-                                            twit-str (format nil "/tmp/tweet_image.jpg")))))
+      ;; (call-empty-service "/tweet_image_saver/save" :wait t)
+      (setq img (one-shot-subscribe "/tweet_image" sensor_msgs::Image :timeout 1000))
+      (if img
+        (progn
+          (write-image-file "/tmp/tweet_image.jpg" (ros::sensor_msgs/Image->image img))
+          (ros::ros-info "tweeting ~A" twit-str)
+          (ros::publish "/tweet"
+                        (instance std_msgs::String :init
+                                  :data (format nil "~A ~A"
+                                                twit-str (format nil "/tmp/tweet_image.jpg")))))
+        (ros::ros-error "fail saving image and tweeting"))
+      (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic)))
     (t
       (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))))
   (when speak (speak-jp "ついーとしました" :wait t))))
