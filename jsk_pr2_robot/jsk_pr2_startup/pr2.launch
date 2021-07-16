@@ -11,6 +11,7 @@
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_mjpeg_server" default="false" />
   <arg name="launch_gripper_sensor" default="true" />
+  <arg name="launch_virtual_force" default="true" />
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="false" />
   <arg name="launch_jsk_pcl" default="false" />
@@ -80,6 +81,12 @@
     <arg name="visualize_log" value="$(arg launch_visualize_log)"/>
   </include>
 
+  <!-- look at human for PR2 -->
+  <node name="look_at_human"
+        pkg="jsk_pr2_startup" type="pr2-look-at-human.l">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
+
   <!-- pr2 warning -->
   <!-- battery warning -->
   <group if="$(arg launch_safety_warning)" >
@@ -113,6 +120,11 @@
       <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  </group>
+
+  <!-- for virtual force publisher-->
+  <group if="$(arg launch_virtual_force)">
+    <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
   </group>
 
   <!-- for iPad or android apps -->
@@ -153,7 +165,11 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_moveit/start_pr2_moveit.launch" />
 
   <node if="$(arg launch_reset_motors)"
-        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py"/>
+        name="pr2_reset_motors" pkg="jsk_pr2_startup" type="pr2_reset_motors.py">
+    <rosparam>
+      watch_duration: 30
+    </rosparam>
+  </node>
 
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
