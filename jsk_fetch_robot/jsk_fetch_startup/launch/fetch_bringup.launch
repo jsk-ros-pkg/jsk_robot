@@ -261,6 +261,8 @@
         limited_distance: 0.3
         limited_rot_speed: 0.45
         limited_trans_speed: 0.25
+        max_trans_param_name: max_vel_x
+        max_rot_param_name: max_vel_theta
     </rosparam>
   </group>
 
