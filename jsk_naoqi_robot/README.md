@@ -53,13 +53,17 @@ If this happens, please connect Pepper to network with DHCP and exit Setting.
 
 ## Setup Environment
 
-% First, you need to install ros. For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation)
+% First, you need to install ros. 
+For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation).
+For ros melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation).
 
 1. Install ``Python NAOqi SDK``
-You can download it from [here](https://community.aldebaran.com/en/resources/software). (You may need an account.)  
+You can download it (version = 2.5.5) from [here](https://drive.google.com/file/d/1xHuYREDa78xGiikEpsjxfZQ7Gfvo1E9D/view?usp=sharing).  
 Please unzip the downloaded file.  
 Please create ``pynaoqi`` folder in your home directory.  
 Then put the file under your ``pynaoqi`` folder.  
+
+% You can download other version SDKs from [here](https://www.softbankrobotics.com/emea/en/support/nao-6/downloads-softwares/former-versions?os=49&category=39). Please change the tab to SDKs. Version < 2.5.5 may cause error.
 
 2. Export environment variables in your ``.bashrc``
 
@@ -79,7 +83,7 @@ export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 
 % NAO_IP is IP address of Pepper. Pepper tells you their address when pushing their belly button.
 
-% Please install ```ros-kinetic-jsk-tools``` to use ```rossetip``` command.
+% Please install ```ros-${ROS_DISTRO}-jsk-tools``` to use ```rossetip``` command.
 
 
 3. Install ROS packages for NAO and Pepper
@@ -90,19 +94,19 @@ cd  catkin_ws
 wstool init src
 wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
 wstool update -t src
-source /opt/ros/kinetic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 ```
 
 Then, please install Nao/ Pepper mesh files from deb with manual approval of license.  
 
 ```
-sudo apt-get install ros-kinetic-pepper-meshes
-sudo apt-get install ros-kinetic-nao-meshes
+sudo apt-get install ros-${ROS_DISTRO}-pepper-meshes
+sudo apt-get install ros-${ROS_DISTRO}-nao-meshes
 ```
 
-If you have ROS kinetic, please use [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).  
-This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for ROS kinetic.
+If you have ROS >= kinetic, please use [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).  
+This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for ROS >= kinetic.
 
 ```
 cd  catkin_ws/src
@@ -117,6 +121,7 @@ git checkout -b modify-for-kinetic kochigami/kochigami-develop
 Finally, please compile them.  
 
 ```
+cd ../.. # catkin_ws
 catkin build --continue-on-failure
 source devel/setup.bash
 ```
@@ -131,28 +136,21 @@ Please add following source codes which you need for debugging.
 ```
 cd  catkin_ws/src
 wstool set nao_robot --git https://github.com/ros-naoqi/nao_robot
+(if you use ROS >= melodic) wstool update nao_robot
 wstool set pepper_robot --git https://github.com/ros-naoqi/pepper_robot
 wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
+wstool update naoqi_driver
 wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
 wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
 ```
 
 ## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
-For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
 
 ```
 cd catkin_ws/src
-wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
-wstool update naoqi_driver
-cd naoqi_driver
-git remote add kochigami https://github.com/kochigami/naoqi_driver.git
-git fetch kochigami
-git checkout -b kochigami-develop kochigami/kochigami-develop
-
-cd .. # catkin_ws/src
 wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
 wstool update naoqi_bridge
 cd naoqi_bridge
@@ -169,12 +167,21 @@ git fetch kochigami
 git checkout -b kochigami-develop kochigami/kochigami-develop
 ```
 
-In addition, if you have ROS kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
+In addition, if you have ROS >= kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
 
 ```
 cd .. # catkin_ws/src
 wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
 wstool update nao_interaction
+```
+
+Finally, please compile them.  
+
+```
+cd .. # catkin_ws
+catkin clean
+catkin build --continue-on-failure
+source devel/setup.bash
 ```
 
 ## NAO & Pepper
