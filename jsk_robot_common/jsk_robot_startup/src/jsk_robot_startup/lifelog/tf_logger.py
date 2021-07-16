@@ -8,7 +8,7 @@ import yaml
 from tf2_msgs.srv import FrameGraph
 from tf2_msgs.msg import TFMessage
 from tf2_ros import ExtrapolationException
-from logger_base import LoggerBase
+from .logger_base import LoggerBase
 
 
 class TFLogger(LoggerBase):
