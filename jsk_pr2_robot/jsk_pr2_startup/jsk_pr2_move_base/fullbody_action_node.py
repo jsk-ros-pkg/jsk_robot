@@ -32,7 +32,7 @@ class FullbodyAction(object):
         for client in self._clients:
             client.wait_for_server()
 
-        print 'fullbody action initialized'
+        print('fullbody action initialized')
 
     # action methods
     def larm(self, traj):
@@ -72,7 +72,7 @@ class FullbodyAction(object):
                           for pt in traj.points]
             client.send_goal(JointTrajectoryGoal(trajectory=jgoal))
         except:
-            print 'error in joint client'
+            print('error in joint client')
 
     def execute_cb(self, goal):
         self.larm(goal.trajectory)
