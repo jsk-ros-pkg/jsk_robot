@@ -6,7 +6,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Quaternion, Vector3, TransformStamped
 import tf
 import threading
-from odometry_utils import make_homogeneous_matrix
+from .odometry_utils import make_homogeneous_matrix
 
 class CalculateOdomInitToBaseLinkTransform(object):
     def __init__(self):

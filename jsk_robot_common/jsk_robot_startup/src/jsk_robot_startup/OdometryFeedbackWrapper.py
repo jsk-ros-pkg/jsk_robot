@@ -16,7 +16,7 @@ from scipy import signal
 from dynamic_reconfigure.server import Server
 from jsk_robot_startup.cfg import OdometryFeedbackWrapperReconfigureConfig
 
-from odometry_utils import transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform, make_homogeneous_matrix
+from .odometry_utils import transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform, make_homogeneous_matrix
 
 class OdometryFeedbackWrapper(object):
     def __init__(self):
