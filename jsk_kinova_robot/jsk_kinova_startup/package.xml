@@ -1,0 +1,31 @@
+<package>
+  <name>jsk_kinova_startup</name>
+  <version>1.1.0</version>
+  <description>
+     jsk_kinova_startup
+  </description>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/jsk_kinova_startup</url>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend version_gte="0.7.11">kinova_teleop</build_depend>
+
+  <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>kortex_driver</run_depend>
+  <run_depend>kinova_vision</run_depend>
+  <run_depend>kinovaeus</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+
+  <!-- for diagnostic aggregator -->
+  <run_depend>diagnostic_aggregator</run_depend>
+
+  <test_depend>roslaunch</test_depend>
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+    <app_manager app_dir="${prefix}/apps"/>
+  </export>
+</package>

@@ -30,7 +30,7 @@
       <arg name="world_name" value="$(arg world)" />
     </include>
     <include file="$(find pr2_description)/robots/upload_pr2.launch" />
-    <node name="spawn_pr2_model" pkg="gazebo_ros" type="spawn_model" args="-x $(arg INITIAL_POSE_X) -y $(arg INITIAL_POSE_Y) -z $(arg INITIAL_POSE_Z) -R $(arg INITIAL_POSE_ROLL) -P $(arg INITIAL_POSE_PITCH) -Y $(arg INITIAL_POSE_YAW) -unpause -urdf -param robot_description -model pr2 -ros_namespace /gazebo" respawn="false" output="screen" />
+    <node name="spawn_pr2_model" pkg="gazebo_ros" type="spawn_model" args="-x $(arg INITIAL_POSE_X) -y $(arg INITIAL_POSE_Y) -z $(arg INITIAL_POSE_Z) -R $(arg INITIAL_POSE_ROLL) -P $(arg INITIAL_POSE_PITCH) -Y $(arg INITIAL_POSE_YAW) -unpause -urdf -param robot_description -model pr2" respawn="false" output="screen" />
     <include file="$(find pr2_gazebo)/launch/pr2_bringup.launch" />
     <include file="$(find pr2_controller_configuration_gazebo)/launch/pr2_default_controllers.launch" />
   </group>
@@ -141,7 +141,7 @@
            if="$(arg launch_pr2)">
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="launch_map" value="$(arg launch_map)" />
-    <arg name="launch_openni" value="false" />
+    <arg name="launch_kinect" value="false" />
     <arg name="launch_db" value="true" />
     <arg name="launch_c3_startup" value="false" />
     <arg name="launch_gripper_sensor" value="false" />
