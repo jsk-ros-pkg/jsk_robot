@@ -1,0 +1,116 @@
+# This is rosinstall file for melodic PC inside fetch.
+# $ ln -s $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $HOME/ros/$ROS_DISTRO/src/.rosinstall
+
+# we need https://github.com/PR2/app_manager/pull/31 to handle timeout
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/knorth55/app_manager.git
+    version: fetch15
+- git:
+    local-name: RobotWebTools/rosbridge_suite
+    uri: https://github.com/RobotWebTools/rosbridge_suite.git
+    version: 0.11.9
+- git:
+    local-name: RoboticMaterials/FA-I-sensor
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+# Waiting 0.8.3 release
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: melodic-devel
+# Waiting 0.6.1 release
+- git:
+    local-name: fetchrobotics/robot_controllers
+    uri: https://github.com/fetchrobotics/robot_controllers.git
+    version: melodic-devel
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty
+    uri: https://github.com/knorth55/jsk_3rdparty.git
+    version: fetch15
+# we need to use the development branch (fetch15 branch in knorth55's fork)
+# until it is merged to master
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/knorth55/jsk_common.git
+    version: fetch15
+# we need to use the development branch (fetch15 branch in knorth55's fork)
+# until it is merged to master
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/knorth55/jsk_demos.git
+    version: fetch15
+- git:
+    local-name: jsk-ros-pkg/jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master
+# we need to use the development branch (throttle-insta360 branch in 708yamaguchi's fork)
+# Restore jsk-ros-pkg/jsk_recognition master branch if https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596 is merged.
+# - git:
+#     local-name: jsk-ros-pkg/jsk_recognition
+#     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+#     version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/708yamaguchi/jsk_recognition.git
+    version: throttle-insta360
+# we need to use the development branch (fetch15 branch in knorth55's fork)
+# until it is merged to master
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/knorth55/jsk_robot.git
+    version: fetch15
+- git:
+    local-name: knorth55/app_manager_utils
+    uri: https://github.com/knorth55/app_manager_utils
+    version: master
+- git:
+    local-name: locusrobotics/catkin_virtualenv
+    uri: https://github.com/locusrobotics/catkin_virtualenv.git
+    version: 0.5.0
+- git:
+    local-name: mikeferguson/robot_calibration
+    uri: https://github.com/mikeferguson/robot_calibration.git
+    version: 0.5.5
+- git:
+    local-name: ros-drivers/audio_common
+    uri: https://github.com/ros-drivers/audio_common.git
+    version: master
+- git:
+    local-name: ros-perception/slam_gmapping
+    uri: https://github.com/ros-perception/slam_gmapping.git
+    version: 1.3.10
+- tar:
+    local-name: ros/common_msgs/visualization_msgs
+    uri: https://github.com/ros-gbp/common_msgs-release/archive/release/kinetic/visualization_msgs/1.12.7-0.tar.gz
+    version: common_msgs-release-release-kinetic-visualization_msgs-1.12.7-0
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: 0.4.4
+# we need to use the development branch (fetch15 branch in knorth55's fork)
+# until it is merged to master
+- git:
+    local-name: tork-a/roswww
+    uri: https://github.com/knorth55/roswww.git
+    version: fetch15
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: kinetic-devel
+# robot_pose_publisher is not released on melodic
+- git:
+    local-name: GT-RAIL/robot_pose_publisher
+    uri: https://github.com/GT-RAIL/robot_pose_publisher.git
+    version: 0.2.4
+- git:
+    local-name: IntelRealSense/realsense-ros
+    uri: https://github.com/IntelRealSense/realsense-ros.git
+    version: 2.2.21
+- git:
+    local-name: fetchrobotics/fetch_open_auto_dock
+    uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
+    version: melodic-devel
+- git:
+    local-name: ros-planning/navigation
+    uri: https://github.com/ros-planning/navigation.git
+    version: 7f22997e6804d9d7249b8a1d789bf27343b26f75
