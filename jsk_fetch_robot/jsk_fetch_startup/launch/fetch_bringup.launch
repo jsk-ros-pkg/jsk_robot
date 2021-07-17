@@ -103,9 +103,7 @@
 
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
-           if="$(arg launch_teleop)" >
-      <arg name="odom_topic" value="/odom_combined" />
-  </include>
+           if="$(arg launch_teleop)" />
 
   <!-- network status -->
   <node pkg="jsk_network_tools" type="network_status.py" name="network_status" />
@@ -173,7 +171,6 @@
       <arg name="use_keepout" value="$(arg use_keepout)" />
       <arg name="use_map_topic" value="true" />
       <arg name="launch_map_server" value="false" />
-      <arg name="odom_topic" value="/odom_combined" />
     </include>
 
     <!-- slam for build a map -->
