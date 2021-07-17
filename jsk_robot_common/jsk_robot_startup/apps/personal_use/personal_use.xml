@@ -1,0 +1,3 @@
+<launch>
+  <node name="personal_use" pkg="jsk_robot_startup" type="personal_use.py" output="screen"/>
+</launch>
