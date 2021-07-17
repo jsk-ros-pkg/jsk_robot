@@ -34,11 +34,19 @@
        (send self :add-ground-collision-object))
      ))
   (:state (&rest args)
-   ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
-   (send-super* :state
-                (if (or (eq (car args) :worldcoords)
-                        (member :wait-until-update args))
-                    args (append args (list :wait-until-update t)))))
+   "We do not have :wait-until-update option for :state :worldcoords.
+In other cases, :state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency.
+Example usage:
+(send *ri* :state :worldcoords frame_id) returns current coordinates in frame_id frame. If frame_id is not given, it returns current coordinates in '/world' frame.
+(send *ri* :state :potentio-vector) returns current real fetch's angle vector.
+"
+   (case (car args)
+     (:worldcoords
+       (send-super :state :worldcoords (or (cadr args) "world")))
+     (t
+       (send-super* :state
+                    (if (member :wait-until-update args)
+                        args (append args (list :wait-until-update t)))))))
   (:check-continuous-joint-move-over-180 ;; can be removed if http//github.com/jsk-ros-pkg/jsk_pr2eus/pull/322 merged
    (diff-av)
    (let ((i 0) add-new-trajectory-point)

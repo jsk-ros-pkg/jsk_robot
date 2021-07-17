@@ -7,6 +7,9 @@
        doc="port number for rosbridge_websocket server"/>
   <arg name="roswww_port" default="8000"
        doc="port number for roswww server"/>
+  <arg name="machine" default="localhost"/>
+
+  <machine name="localhost" address="localhost"/>
 
   <include file="$(find roswww)/launch/roswww.launch" if="$(arg launch_roswww)">
     <arg name="port" value="$(arg roswww_port)" />
@@ -17,14 +20,14 @@
   </include>
   <node pkg="web_video_server" type="web_video_server"
         name="web_video_server"
-        output="screen"
+        output="screen" machine="$(arg machine)"
         clear_params="true">
    <param name="port" value="8080" />
    <param name="address" value="0.0.0.0" />
   </node>
   <node pkg="rwt_image_view" type="rosbag_record_server.py"
         name="rosbag_record_server"
-        output="screen"
+        output="screen" machine="$(arg machine)"
         clear_params="true">
   </node>
 </launch>

@@ -5,6 +5,7 @@
   <arg name="launch_ntp_monitor" default="true"/>
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="true" />
+  <arg name="launch_network_status" default="true" />
   <arg name="launch_audio_play" default="true"/>
   <arg name="launch_app_manager" default="true" />
   <arg name="setup_mannequin_mode" default="true"
@@ -19,7 +20,11 @@
 
   <!-- pr2_etherCAT -->
   <node name="realtime_loop" machine="c1" launch-prefix="pr2-grant" pkg="pr2_ethercat" type="pr2_ethercat" args="-i ecat0 -x robot_description" output="screen" />
-  <param name="pr2_ethercat/realtime_socket_timeout" value="5000" />
+  <!-- change this parameter to prevent sudden servo off caused by ethetcat timeout -->
+  <!-- http://wiki.ros.org/ethercat_hardware/Tutorials/ChangingRealtimePacketTimeout -->
+  <!-- <param name="pr2_ethercat/realtime_socket_timeout" value="5000" /> -->
+  <param name="pr2_ethercat/realtime_socket_timeout" value="20000" />
+  <param name="pr2_ethercat/max_pd_retries" value="5" />
 
   <!-- PR2 Calibration -->
   <node name="calibrate_pr2" pkg="pr2_bringup" type="calibrate_pr2.py" output="screen" 
@@ -137,6 +142,9 @@
     <remap from="sound_play" to="robotsound" />
   </node>
 
+  <!-- Virtual force -->
+  <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
+
   <!-- Audio -->
   <include file="$(find audio_play)/launch/play.launch" if="$(arg launch_audio_play)">
     <arg name="ns" value="audio_play" />
@@ -182,6 +190,15 @@
       <param name="router" type="string" value="wifi-router" />
     </node>
   </group>
+
+  <!-- Monitor network status -->
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status"
+        if="$(arg launch_network_status)">
+    <rosparam>
+      skip_interfaces:
+        - ecat0
+    </rosparam>
+  </node>
 
   <!-- Network detector -->
   <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector"
@@ -234,6 +251,8 @@
     <arg name="use_applist" value="false"/> <!-- use plugin -->
     <arg name="applist" value="$(find jsk_pr2_startup)/apps"/>
     <arg name="respawn" value="false"/>
+    <arg name="machine" value="c2" />
+    <arg name="remote" value="true" />
     <arg name="basic" value="true" />
     <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
@@ -242,6 +261,7 @@
   <include file="$(find jsk_robot_startup)/lifelog/rwt_image_view.launch">
     <arg name="launch_roswww" value="false" />
     <arg name="launch_websocket" value="false" />
+    <arg name="machine" value="c2" />
   </include>
 
   <!-- mannequin mode -->

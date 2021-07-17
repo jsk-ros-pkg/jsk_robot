@@ -7,6 +7,7 @@
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
+  <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
 
   <param name="robot/type" value="fetch" />
@@ -102,8 +103,12 @@
 
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
-           if="$(arg launch_teleop)" />
+           if="$(arg launch_teleop)" >
+      <arg name="odom_topic" value="/odom_combined" />
+  </include>
 
+  <!-- network status -->
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" />
   <!-- network detector -->
   <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector">
     <rosparam>
@@ -162,13 +167,20 @@
     <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
 
     <!-- include fetch_navigation -->
-    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
+    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
       <arg name="map_file" value="$(arg map_file)" />
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
       <arg name="use_keepout" value="$(arg use_keepout)" />
       <arg name="use_map_topic" value="true" />
       <arg name="launch_map_server" value="false" />
+      <arg name="odom_topic" value="/odom_combined" />
     </include>
+
+    <!-- slam for build a map -->
+    <node pkg="slam_karto" type="slam_karto" name="slam_karto"
+          output="screen" if="$(arg use_build_map)" >
+      <remap from="scan" to="base_scan"/>
+    </node>
 
     <!-- robot localization ukf -->
     <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
