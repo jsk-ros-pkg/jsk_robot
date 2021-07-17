@@ -1,0 +1,13 @@
+<package>
+  <name>jsk_fetch_accessories</name>
+  <version>1.1.0</version>
+  <description>
+     jsk_fetch_accessories
+  </description>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <license>BSD</license>
+  <url></url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <export>
+  </export>
+</package>
