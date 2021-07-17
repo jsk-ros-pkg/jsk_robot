@@ -52,6 +52,8 @@
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>nao_bringup</run_depend>
 
+  <run_depend>ros_speech_recognition</run_depend>
+
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- You can specify that this package is a metapackage here: -->
