@@ -11,7 +11,7 @@
 # waiting for jsk_maps release
 # add keepout map for entire eng2 building
 # https://github.com/jsk-ros-pkg/jsk_demos/pull/1300
-- git:
-    local-name: jsk-ros-pkg/jsk_demos
-    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: master
+- tar:
+    local-name: jsk-ros-pkg/jsk_demos/jsk_maps
+    uri: https://github.com/tork-a/jsk_demos-release/archive/release/melodic/jsk_maps/0.0.5-1.tar.gz
+    version: jsk_demos-release-release-melodic-jsk_maps-0.0.5-1
