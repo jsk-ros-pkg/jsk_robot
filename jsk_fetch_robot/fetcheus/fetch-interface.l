@@ -1,5 +1,3 @@
-(ros::roseus "fetch")
-
 (require "package://fetcheus/fetch-utils.l")
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
@@ -36,11 +34,19 @@
        (send self :add-ground-collision-object))
      ))
   (:state (&rest args)
-   ":state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency"
-   (send-super* :state
-                (if (or (eq (car args) :worldcoords)
-                        (member :wait-until-update args))
-                    args (append args (list :wait-until-update t)))))
+   "We do not have :wait-until-update option for :state :worldcoords.
+In other cases, :state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency.
+Example usage:
+(send *ri* :state :worldcoords frame_id) returns current coordinates in frame_id frame. If frame_id is not given, it returns current coordinates in '/world' frame.
+(send *ri* :state :potentio-vector) returns current real fetch's angle vector.
+"
+   (case (car args)
+     (:worldcoords
+       (send-super :state :worldcoords (or (cadr args) "world")))
+     (t
+       (send-super* :state
+                    (if (member :wait-until-update args)
+                        args (append args (list :wait-until-update t)))))))
   (:check-continuous-joint-move-over-180 ;; can be removed if http//github.com/jsk-ros-pkg/jsk_pr2eus/pull/322 merged
    (diff-av)
    (let ((i 0) add-new-trajectory-point)
@@ -214,20 +220,33 @@ Example: (send self :gripper :position) => 0.00"
     (send-super* :speak-en text :topic-name topic-name args))
   (:speak-jp (text &rest args &key (topic-name "robotsound_jp") &allow-other-keys)
     (send-super* :speak-jp text :topic-name topic-name args))
+  (:set-workspace (x y z)
+    (let ((bound (make-cube (+ x 50) (+ y 50) (+ z 50)))
+          (inner-cube (make-cube x y z)))
+      (setq bound (body- bound inner-cube))
+      (send bound :translate (float-vector 0 0 (- (/ z 2) 10)))
+      (send *co* :add-attached-object bound
+            "base_link"
+            :frame-id base-frame-id
+            :object-id "workspace"
+            :touch-links nil)))
+  (:delete-workspace ()
+    (send *co* :delete-attached-object-by-id "workspace")
+    (send *co* :delete-object-by-id "workspace"))
   (:add-keepout-collision-object ()
-    (let ((cube (make-cube 200 350 50))
-          (keepout (make-cylinder 300 50)))
+    (let ((cube (make-cube 200 350 10))
+          (keepout (make-cylinder 300 10)))
       (send cube :translate #f(-120 0 0))
-      (send keepout :translate #f(0 0 -25))
+      (send keepout :translate #f(0 0 -5))
       (setq keepout (body- keepout cube))
-      (send keepout :translate #f(0 0 375))
+      (send keepout :translate #f(0 0 370))
       (send *co* :add-object keepout :frame-id base-frame-id :object-id "keepout")))
   (:delete-keepout-collision-object ()
     (send *co* :delete-object-by-id "keepout"))
   (:add-ground-collision-object ()
-    (let ((cube (make-cube 200 350 50))
+    (let ((cube (make-cube 500 500 50))
           (ground (make-cylinder 1000 50)))
-      (send cube :translate #f(-120 0 0))
+      (send cube :translate #f(-20 0 0))
       (send ground :translate #f(0 0 -25))
       (setq ground (body- ground cube))
       (send ground :translate #f(0 0 -25))
@@ -271,7 +290,7 @@ Example: (send self :gripper :position) => 0.00"
     (ros::rate 10)
     t)
   (:go-pos-unsafe
-    (x y d &rest args)
+    (x y d &rest args) ;; [m] [m] [degree]
     (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
     (send* self :go-pos-unsafe-wait args)
     t)
@@ -303,7 +322,9 @@ Example: (send self :gripper :position) => 0.00"
         (send self :remprop :go-pos-unsafe-no-wait-goal)
 
         ;; yaw-x-yaw approach
-        (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)" d0 d1 d2)
+        (ros::ros-info "go-pos-unsafe: (x y d) = (~A ~A ~A)" x y d)
+        (ros::ros-info "go-pos-unsafe: (yaw, x, yaw) = (~A ~A ~A)"
+                       d0 (* (if forward-p 1.0 -1.0) d1) d2)
 
         ;; yaw
         (send self :spin-once)
@@ -444,3 +465,6 @@ Example: (send self :gripper :position) => 0.00"
 (send *fetch* :reset-pose)
 (send *ri* :angle-vector (send *fetch* :angle-vector) 2000)
 |#
+
+
+(provide :fetch-interface)

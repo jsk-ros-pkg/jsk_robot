@@ -150,6 +150,8 @@
 
   (:go-grasp
    (&optional (arm :arms) &key (pos 0) (effort 50) (wait t))
+   ;; go-grasp is not supported in kinematics simulator
+   (if (send self :simulation-modep) (return-from :go-grasp nil))
    (let (goal
 	 (clients (case arm
 		    (:larm (list left-gripper-action))
@@ -175,6 +177,8 @@
 
   (:command-grasp
    (cmd arm &key ((:pos pos) nil))
+   ;; command-grasp is not supported in kinematics simulator
+   (if (send self :simulation-modep) (return-from :command-grasp nil))
    (ros::spin-once)
    (dolist (tmp-arm (if (eq arm :arms) (list :larm :rarm) (list arm)))
      (let ((ee-cmd (instance baxter_core_msgs::EndEffectorCommand :init)))
@@ -393,3 +397,6 @@
         (setq *baxter* (instance baxter-robot-safe :init))
       (setq *baxter* (instance baxter-robot :init))))
     (send *ri* :calib-grasp :arms)))
+
+
+(provide :baxter-interface)
