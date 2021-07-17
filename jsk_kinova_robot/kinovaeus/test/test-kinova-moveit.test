@@ -1,0 +1,14 @@
+<launch>
+  <include file="$(find kortex_gazebo)/launch/spawn_kortex_robot.launch">
+    <arg name="arm" value="gen3" />
+    <arg name="gripper" value="robotiq_2f_85" />
+    <arg name="robot_name" value="arm_gen3" />
+    <arg name="gazebo_gui" value="false" />
+    <arg name="start_rviz" value="false" />
+    <!-- TODO: Wait for https://github.com/Kinovarobotics/ros_kortex/pull/141 -->
+    <arg name="enable_test" value="false" />
+  </include>
+
+  <test pkg="kinovaeus" type="test-kinova-moveit.l" test-name="gen3_robotiq_2f_85_moveit"
+        time-limit="300" retry="2" />
+</launch>

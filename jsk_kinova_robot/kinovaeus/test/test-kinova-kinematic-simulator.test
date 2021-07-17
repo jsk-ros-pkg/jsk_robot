@@ -1,0 +1,3 @@
+<launch>
+  <test pkg="kinovaeus" type="test-kinova-kinematic-simulator.l" test-name="kinova_kinematic_simulator_lisp" time-limit="300" />
+</launch>
