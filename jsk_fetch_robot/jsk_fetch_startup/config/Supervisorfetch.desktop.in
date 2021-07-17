@@ -1,0 +1,7 @@
+# For fetch PC
+[Desktop Entry]
+Encoding=UTF-8
+Name=Supervisor @FETCH_NAME@
+Type=Link
+URL=http://localhost:9001
+Icon=@PROJECT_SOURCE_DIR@/data/supervisor_@ICON_COLOR@.png
