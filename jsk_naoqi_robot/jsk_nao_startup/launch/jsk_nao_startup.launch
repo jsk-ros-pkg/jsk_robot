@@ -6,6 +6,19 @@
   <arg name="network_interface"   default="eth0" />
   <arg name="launch_twitter" default="false" />
   <arg name="launch_joy" default="true" />
+
+  <arg name="launch_ros_speech_recognition" default="false" />
+  <arg name="audio_org" default="/nao_robot/naoqi_driver/audio" />
+  <arg name="audio_topic" default="/audio" />
+  <arg name="n_channel" default="1" />
+  <arg name="depth" default="16" />
+  <arg name="sample_rate" default="48000" />
+  <arg name="engine" default="Google" />
+  <arg name="language" default="ja-JP" />
+  <arg name="continuous" default="true" />
+  <arg name="dynamic_energy_threshold" default="false" />
+  <arg name="energy_threshold" default="50" />
+
   <include file="$(find nao_bringup)/launch/nao_full.launch" >
     <arg name="nao_ip" value="$(arg nao_ip)"/>
     <arg name="roscore_ip" value="$(arg roscore_ip)"/>
@@ -64,4 +77,35 @@ enable_turbo_button: 0  # A button
   <node name="speaking_program_is_started_or_terminated"
         pkg="roseus" type="roseus"
         args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 2) (good-morning) (ros::spin))&quot;"/>
+
+  <group if="$(arg launch_ros_speech_recognition)">
+    <node pkg="jsk_nao_startup"
+          name="publish_audiodata"
+          type="publish_audiodata.py"
+          output="screen">
+      <rosparam subst_value="true">
+        audio_org: $(arg audio_org)
+        audio_topic: $(arg audio_topic)
+      </rosparam>
+    </node>
+
+    <node pkg="ros_speech_recognition"
+	  name="speech_recognition"
+          type="speech_recognition_node.py"
+          respawn="true"
+          output="screen">
+      <rosparam subst_value="true"> 
+        audio_topic: $(arg audio_topic)
+        n_channel: $(arg n_channel)
+        depth: $(arg depth)
+        sample_rate: $(arg sample_rate)
+        engine: $(arg engine)
+        language: $(arg language)
+        continuous: $(arg continuous)
+        dynamic_energy_threshold: $(arg dynamic_energy_threshold)
+        energy_threshold: $(arg energy_threshold)
+      </rosparam>
+    </node>
+  </group>
+
 </launch>

@@ -1,0 +1,37 @@
+<launch>
+  <arg name="rosbag" doc="rosbag file path" />
+  <arg name="compress" default="false" doc="whether compress rosbag or not." />
+
+  <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
+  <arg unless="$(arg compress)" name="compress_flag" value="" />
+
+  <node name="rosbag_record" pkg="rosbag" type="record"
+      args="-q $(arg compress_flag) -O $(arg rosbag) -b 0 
+          /rosout
+          /tf
+          /tf_static
+          /joint_states
+          /map
+          /base_odometry/odom
+          /robot_pose_ekf/odom_combined
+          /base_controller/command
+          /navigation/cmd_vel
+          /move_base_node/NavFnROS/plan
+          /move_base_node/DWAPlannerROS/global_plan
+          /move_base_node/DWAPlannerROS/local_plan
+          /move_base_node/local_costmap/costmap
+          /move_base_node/global_costmap/costmap
+          /move_base_node/global_costmap/footprint
+          /safe_teleop_base/local_costmap/costmap
+          /spots_marker_array
+          /particlecloud
+          /base_scan_throttled
+          /tilt_scan_throttled
+          /kinect_head/rgb/throttled/camera_info
+          /kinect_head/depth_registered/throttled/camera_info
+          /kinect_head/rgb/throttled/image_rect_color/compressed
+          /kinect_head/depth_registered/throttled/image_rect/compressedDepth
+          /audio"
+      output="screen" />
+
+</launch>
