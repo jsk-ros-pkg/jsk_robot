@@ -1,0 +1,19 @@
+<launch>
+  <rosparam command="load" file="$(find pr2eus)/test/pr1012_urdf.yaml" param="robot_description"/>
+  <node name="pr2_camera_info" pkg="rosbag" type="play"
+	args="-k -r 0.1 $(find pr2eus)/test/pr1012_camera_info.bag" />
+  <node name="pr2_sensor_data" pkg="rosbag" type="play"
+	args="-k -r 0.1 $(find pr2eus)/test/pr1012_sensors.bag" />
+  <rosparam>
+    /robot/name: pr1012
+    /amcl/global_frame_id: map
+    /amcl/base_frame_id: base_link
+  </rosparam>
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch" >
+    <arg name="save_base_trajectory" value="true" />
+  </include>
+
+  <test name="common_logger_rosout_test"
+        test-name="common_logger_rosout_test"
+        pkg="jsk_robot_startup" type="test_common_logger.py" />
+</launch>

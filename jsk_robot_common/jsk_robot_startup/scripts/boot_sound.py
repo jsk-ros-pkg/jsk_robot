@@ -14,20 +14,25 @@ from sound_play.msg import SoundRequestAction
 
 if __name__ == "__main__":
     rospy.init_node("boot_sound")
+    if rospy.has_param("~wav_file"):
+        wav_file = rospy.get_param("~wav_file")
+    else:
+        wav_file = "/usr/share/sounds/alsa/Front_Center.wav"
+
     sound = SoundClient()
     time.sleep(1) # ???
     ac = actionlib.SimpleActionClient('sound_play', SoundRequestAction)
     ac.wait_for_server()
-    if len(ni.ifaddresses('eth0')) > 2 :
-        ip = ni.ifaddresses('eth0')[2][0]['addr']
-    elif len(ni.ifaddresses('wlan0')) > 2 :
-        ip = ni.ifaddresses('wlan0')[2][0]['addr']
+
+
+    interfaces =  [x for x in ni.interfaces() if x[0:3] in ['eth', 'enp', 'wla', 'wlp'] and
+                   2 in ni.ifaddresses(x).keys()]
+    if len(interfaces) > 0 :
+        ip = ni.ifaddresses(interfaces[0])[2][0]['addr']
     else:
         ip = None
 
     # play sound
-    rospack = rospkg.RosPack()
-    wav_file = os.path.join(rospack.get_path("jsk_fetch_startup"),"data/boot_sound.wav")
     rospy.loginfo("Playing {}".format(wav_file))
     sound.playWave(wav_file)
     time.sleep(10) # make sure to topic is going out
