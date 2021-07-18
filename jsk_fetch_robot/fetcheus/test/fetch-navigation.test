@@ -10,6 +10,10 @@
   <node name="$(anon rviz)" pkg="rviz" type="rviz" if="$(arg gui)"
         args="-d $(find fetch_navigation)/config/navigation.rviz" />
   <!-- start test -->
-  <test test-name="fetch_navigation_test" pkg="fetcheus" type="test-fetch-navigation.l"
-	    retry="1" time-limit="600" />
+  <test test-name="fetch_navigation_go_pos_test" pkg="fetcheus" type="test-fetch-navigation-go-pos.l"
+	    retry="2" time-limit="600" />
+  <test test-name="fetch_navigation_go_velocity_test" pkg="fetcheus" type="test-fetch-navigation-go-velocity.l"
+	    retry="2" time-limit="600" />
+  <test test-name="fetch_navigation_move_to_test" pkg="fetcheus" type="test-fetch-navigation-move-to.l"
+	    retry="2" time-limit="600" />
 </launch>
