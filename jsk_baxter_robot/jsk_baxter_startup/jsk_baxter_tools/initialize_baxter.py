@@ -18,10 +18,17 @@ def main():
 
     rospy.init_node('initialize_baxter')
 
-    rospy.loginfo('waiting for /clock & /robot/state')
-    rospy.wait_for_message('/clock', Clock)
-    rospy.wait_for_message('/robot/state', AssemblyState)
-    rospy.loginfo('found /clock & /robot/state')
+    while True:
+        rospy.loginfo('waiting for /clock & /robot/state')
+        try:
+            rospy.wait_for_message('/clock', Clock)
+            rospy.wait_for_message('/robot/state', AssemblyState)
+            rospy.loginfo('found /clock & /robot/state')
+            break
+        except Exception as e:
+            rospy.logerr('failed waiting for /clock & /robot/state')
+            rospy.logerr('{}'.format(e))
+            rospy.sleep(1)
 
     # enable robot
     baxter_interface.RobotEnable(CHECK_VERSION).enable()

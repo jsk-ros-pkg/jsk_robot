@@ -1,0 +1,33 @@
+<launch>
+  <arg name="GPU" default="0" />
+  <arg name="IMAGE_COLOR" default="/kinect_head/rgb/image_rect_color" />
+  <arg name="POINTS" default="/kinect_head/depth_registered/points" />
+
+  <node name="mask_rcnn_instance_segmentation"
+        pkg="jsk_perception" type="mask_rcnn_instance_segmentation.py"
+        clear_params="true" output="screen" respawn="true" >
+    <remap from="~input" to="$(arg IMAGE_COLOR)" />
+    <rosparam subst_value="true">
+      gpu: $(arg GPU)
+      pretrained_model: $(find jsk_perception)/trained_data/mask_rcnn_resnet50_coco_20180730.npz
+      anchor_scales: [2, 4, 8, 16, 32]
+      min_size: 480
+      max_size: 640
+    </rosparam>
+    <rosparam ns="fg_class_names" file="$(find jsk_perception)/sample/config/coco_class_names.yaml"/>
+  </node>
+  <node name="mask_rcnn_cluster_indices_decomposer"
+        pkg="nodelet" type="nodelet" args="standalone jsk_pcl/ClusterPointIndicesDecomposer"
+        clear_params="true" output="screen" respawn="true">
+    <remap from="~input" to="$(arg POINTS)" />
+    <remap from="~target" to="mask_rcnn_instance_segmentation/output/cluster_indices" />
+    <rosparam>
+      align_boxes: true
+      align_boxes_with_plane: false
+      target_frame_id: base_footprint
+      use_pca: true
+      approximate_sync: true
+      queue_size: 500
+    </rosparam>
+  </node>
+</launch>

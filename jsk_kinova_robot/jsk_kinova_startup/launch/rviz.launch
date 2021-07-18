@@ -1,0 +1,5 @@
+<launch>
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find jsk_kinova_startup)/config/kinova.rviz"
+        ns="/arm_gen3/" />
+</launch>
