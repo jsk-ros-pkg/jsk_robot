@@ -30,7 +30,9 @@
       lang: japanese
     </rosparam>
   </node>
-  <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
+  <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
+    <param name="wav_file" value="$(find jsk_fetch_startup)/data/boot_sound.wav" />
+  </node>
 
   <!-- look at human for Fetch -->
   <node name="look_at_human"
@@ -292,4 +294,13 @@
     <remap from="~input" to="/odom" />
     <remap from="~output" to="/odom_corrected" />
   </node>
+
+  <!-- robot_pose_publisher for rwt_nav -->
+  <node name="robot_pose_publisher" pkg="robot_pose_publisher" type="robot_pose_publisher">
+    <rosparam>
+      map_frame: /map
+      base_frame: /base_link
+    </rosparam>
+  </node>
+
 </launch>

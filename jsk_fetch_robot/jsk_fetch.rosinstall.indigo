@@ -71,3 +71,11 @@
     local-name: ros-drivers/joystick_drivers
     uri: https://github.com/ros-drivers/joystick_drivers.git
     version: 1.14.0
+# indigo is already EOL and fetch_ros is never released.
+# We cannot use version 0.8.x (for melodic) because some packages of fetch_ros cannot be built in indigo PC. This is because indigo PC uses OpenCV 2.4.8 while fetch_ros of 0.8.x requires OpenCV 3.2.
+# See https://github.com/jsk-ros-pkg/jsk_robot/pull/1148 and https://github.com/jsk-ros-pkg/jsk_robot/pull/1153
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 4680118106ba8ffa99a803122bf1a9e383edf3df
+
