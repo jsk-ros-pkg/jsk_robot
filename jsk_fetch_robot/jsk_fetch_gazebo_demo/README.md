@@ -12,6 +12,7 @@ cd catkin_ws/src
 git clone https://github.com/jsk-ros-pkg/jsk_robot.git
 rosdep install --from-paths . --ignore-src -y -r
 cd ..
+catkin config
 catkin build jsk_fetch_gazebo_demo
 source devel/setup.bash
 ```
