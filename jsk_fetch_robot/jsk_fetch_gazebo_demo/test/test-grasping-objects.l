@@ -9,6 +9,8 @@
   (:init () self)
   (:wipe-all () t)
   )
+(ros::roseus "test_grasping_objects")
+(setq *tfl* (instance ros::transform-listener :init))
 (setq *co* (instance dummy-collision-object-publisher :init))
 ;; fake action goal/result id, skip wait-for-server
 (in-package "ROS")
