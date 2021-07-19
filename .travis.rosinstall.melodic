@@ -64,3 +64,9 @@
     local-name: jsk-ros-pkg/jsk_3rdparty 
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: f0ab7bba54523b8f9945ed4a3e9c0efec0c8dde9 
+# jsk_fetch_startup requires rwt_image_view with following PRs.
+# https://github.com/tork-a/visualization_rwt/pull/124
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: 6a14ae64aeebe52854a5711816aa56fc0bffe6c6

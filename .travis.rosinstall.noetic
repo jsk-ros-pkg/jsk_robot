@@ -55,3 +55,9 @@
     local-name: DENSORobot/denso_cobotta_ros
     uri: https://github.com/DENSORobot/denso_cobotta_ros.git
     version: bb60e75adb8477ed3402561b4ec3ba687af3f397
+# jsk_fetch_startup requires rwt_image_view with following PRs.
+# https://github.com/tork-a/visualization_rwt/pull/124
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: 6a14ae64aeebe52854a5711816aa56fc0bffe6c6
