@@ -43,11 +43,6 @@
          (cyl (make-cylinder radius height)))
     cyl))
 
-(unless (boundp '*tfl*)
-  (setq *tfl* (instance ros::transform-listener :init)))
-(unless (boundp '*co*)
-  (setq *co* (instance collision-object-publisher :init)))
-
 (defclass grasping-client
   :super propertied-object
   :slots (find-client objects support-surfaces)
@@ -127,6 +122,12 @@
 (defun main ()
   ;; Create *ri* to use fetch with MoveIt! and Navigation stack
   (fetch-init)
+
+  ;; To initialie tfl/co, we need node initialiation. see https://github.com/jsk-ros-pkg/jsk_robot/pull/1218/
+  (unless (boundp '*tfl*)
+    (setq *tfl* (instance ros::transform-listener :init)))
+  (unless (boundp '*co*)
+    (setq *co* (instance collision-object-publisher :init)))
 
   ;; Move the base to be in front of the table
   ;; Demonstrates the use of the navigation stack
