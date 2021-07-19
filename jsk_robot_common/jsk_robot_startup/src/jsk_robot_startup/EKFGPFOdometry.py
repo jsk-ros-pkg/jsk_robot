@@ -12,8 +12,8 @@ from operator import itemgetter
 
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseWithCovariance, TwistWithCovariance, Twist, Pose, Point, Quaternion, Vector3, TransformStamped
-from ParticleOdometry import ParticleOdometry
-from odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform
+from .ParticleOdometry import ParticleOdometry
+from .odometry_utils import norm_pdf_multivariate, transform_quaternion_to_euler, transform_local_twist_to_global, transform_local_twist_covariance_to_global, update_pose, update_pose_covariance, broadcast_transform
 
 class EKFGPFOdometry(ParticleOdometry):
     def __init__(self):
@@ -75,13 +75,13 @@ class EKFGPFOdometry(ParticleOdometry):
             
     def sampling(self, current_pose_with_covariance):
         pose_mean = self.convert_pose_to_list(current_pose_with_covariance.pose)
-        pose_cov_matrix = zip(*[iter(current_pose_with_covariance.covariance)]*6)
+        pose_cov_matrix = list(zip(*[iter(current_pose_with_covariance.covariance)]*6))
         return [self.convert_list_to_pose(x) for x in numpy.random.multivariate_normal(pose_mean, pose_cov_matrix, int(self.particle_num)).tolist()]
 
     def approximate_odometry(self, particles, weights):
         # use only important particels
-        combined_prt_weight = zip(self.particles, self.weights)
-        selected_prt_weight = zip(*sorted(combined_prt_weight, key = itemgetter(1), reverse = True)[:int(self.valid_particle_num)]) # [(p0, w0), (p1, w1), ..., (pN, wN)] -> [(sorted_p0, sorted_w0), (sorted_p1, sorted_w1), ..., (sorted_pN', sorted_wN')] -> [(sorted_p0, ..., sorted_pN'), (sorted_w0, ..., sorted_wN')]
+        combined_prt_weight = list(zip(self.particles, self.weights))
+        selected_prt_weight = list(zip(*sorted(combined_prt_weight, key = itemgetter(1), reverse = True)[:int(self.valid_particle_num)])) # [(p0, w0), (p1, w1), ..., (pN, wN)] -> [(sorted_p0, sorted_w0), (sorted_p1, sorted_w1), ..., (sorted_pN', sorted_wN')] -> [(sorted_p0, ..., sorted_pN'), (sorted_w0, ..., sorted_wN')]
         # estimate gaussian distribution for Odometry msg 
         mean, cov = self.guess_normal_distribution(selected_prt_weight[0], selected_prt_weight[1])
         # overwrite pose pdf

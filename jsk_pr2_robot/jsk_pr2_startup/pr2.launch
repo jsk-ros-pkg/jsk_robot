@@ -8,9 +8,9 @@
   <arg name="launch_moveit" default="false" />
   <arg name="launch_imagesift" default="false" />
   <arg name="launch_facedetection" default="false" />
-  <arg name="launch_sound_play" default="true" />
   <arg name="launch_mjpeg_server" default="false" />
   <arg name="launch_gripper_sensor" default="true" />
+  <arg name="launch_virtual_force" default="true" />
   <arg name="launch_safety_warning" default="true" />
   <arg name="launch_tablet" default="false" />
   <arg name="launch_jsk_pcl" default="false" />
@@ -57,15 +57,6 @@
            if="$(arg launch_map)">
     <arg name="MACHINE" value="c2" />
     <arg name="keepout" value="$(arg use_map_keepout)" />
-  </include>
-
-  <!-- japanese speech node -->
-  <include file="$(find voice_text)/launch/voice_text.launch"
-           if="$(arg launch_sound_play)">
-    <arg name="use_machine" value="false" />
-    <arg name="sound_play_machine" value="c1" />
-    <arg name="voice_text_machine" value="c1" />
-    <arg name="sound_play_respawn" value="true" />
   </include>
 
   <!-- kinect node -->
@@ -119,6 +110,11 @@
       <param name="publish_skip" value="100" /> <!--10Hz-->
     </group>
     <include file="$(find pr2_gripper_sensor_action)/launch/pr2_gripper_sensor_actions.launch" />
+  </group>
+
+  <!-- for virtual force publisher-->
+  <group if="$(arg launch_virtual_force)">
+    <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
   </group>
 
   <!-- for iPad or android apps -->

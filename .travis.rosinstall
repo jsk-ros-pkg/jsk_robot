@@ -1,1 +1,17 @@
 # see .travis.rosinstall.ROS_DISTRO
+
+# waiting for release 0.3.15
+# we need :go-pos-unsafe bug fix commit for fetch navigation test
+# see https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/425
+- git:
+    local-name: jsk-ros-pkg/jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: 32f729d32bdb393fa325daaa0082a8a67930b2a9
+# see also .travis.rosinstall.ROS_DISTRO
+# waiting for jsk_maps release
+# add keepout map for entire eng2 building
+# https://github.com/jsk-ros-pkg/jsk_demos/pull/1300
+- tar:
+    local-name: jsk-ros-pkg/jsk_demos/jsk_maps
+    uri: https://github.com/tork-a/jsk_demos-release/archive/release/melodic/jsk_maps/0.0.5-1.tar.gz
+    version: jsk_demos-release-release-melodic-jsk_maps-0.0.5-1

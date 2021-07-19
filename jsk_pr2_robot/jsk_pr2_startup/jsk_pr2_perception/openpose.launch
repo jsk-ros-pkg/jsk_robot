@@ -1,0 +1,26 @@
+<launch>
+  <arg name="GPU" default="0" />
+  <arg name="IMAGE_DEPTH" default="/kinect_head/depth_registered/image_rect" />
+  <arg name="IMAGE_COLOR" default="/kinect_head/rgb/image_rect_color" />
+  <arg name="CAMERA_INFO" default="/kinect_head/depth_registered/camera_info" />
+
+  <node name="people_pose_estimation_2d"
+        pkg="jsk_perception" type="people_pose_estimation_2d.py"
+        clear_params="true" output="screen" respawn="true" >
+    <remap from="~input" to="$(arg IMAGE_COLOR)" />
+    <remap from="~input/info" to="$(arg CAMERA_INFO)" />
+    <remap from="~input/depth" to="$(arg IMAGE_DEPTH)" />
+    <rosparam subst_value="true">
+      gpu: $(arg GPU)
+      model_file: $(find jsk_perception)/trained_data/pose_estimation_2d_chainermodel.pkl
+      hand:
+        enable: true
+        model_file: $(find jsk_perception)/trained_data/pose_estimation_2d_hand.chainermodel
+      with_depth: true
+      scales: [0.38]
+      stride: 8
+      approximate_sync: true
+      queue_size: 1000
+    </rosparam>
+  </node>
+</launch>
