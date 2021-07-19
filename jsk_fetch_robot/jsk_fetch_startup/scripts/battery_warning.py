@@ -3,19 +3,15 @@
 
 import actionlib
 import rospy
+from sound_play.libsoundplay import SoundClient
 
 from power_msgs.msg import BatteryState
-from sound_play.msg import SoundRequest
-from sound_play.msg import SoundRequestAction
-from sound_play.msg import SoundRequestGoal
 
 
 class BatteryWarning(object):
     def __init__(self):
-        self.client_en = actionlib.SimpleActionClient(
-            '/sound_play', SoundRequestAction)
-        self.client_jp = actionlib.SimpleActionClient(
-            '/robotsound_jp', SoundRequestAction)
+        self.client_en = SoundClient(sound_action='/sound_play', blocking=True)
+        self.client_jp = SoundClient(sound_action='/robotsound_jp', blocking=True)
         self.duration = rospy.get_param('~duration', 180.0)
         self.threshold = rospy.get_param('~charge_level_threshold', 40.0)
         self.step = rospy.get_param('~charge_level_step', 10.0)
@@ -28,17 +24,13 @@ class BatteryWarning(object):
         self.is_charging = False
 
     def _speak(self, client, speech_text, lang=None):
-        client.wait_for_server(timeout=rospy.Duration(1.0))
-        sound_goal = SoundRequestGoal()
-        sound_goal.sound_request.sound = -3
-        sound_goal.sound_request.command = 1
-        sound_goal.sound_request.volume = self.volume
+        client.actionclient.wait_for_server(timeout=rospy.Duration(1.0))
         if lang is not None:
-            sound_goal.sound_request.arg2 = lang
-        sound_goal.sound_request.arg = speech_text
-        client.send_goal(sound_goal)
-        client.wait_for_result()
-        return client.get_result()
+            client.say(speech_text, voice=lang, volume=self.volume, replace=False)
+        else:
+            client.say(speech_text, volume=self.volume, replace=False)
+        client.actionclient.wait_for_result()
+        return client.actionclient.get_result()
 
     def _warn(self):
         if self.charge_level < self.threshold and not self.is_charging:
