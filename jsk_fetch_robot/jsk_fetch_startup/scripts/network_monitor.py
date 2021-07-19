@@ -34,10 +34,10 @@ from sound_play.msg import SoundRequestActionGoal
 try:
     import network_monitor_emailer
     if not network_monitor_emailer.credentials_exist():
-        print "Note: Emailing disabled. Emailing requires auth process be completed"
+        print("Note: Emailing disabled. Emailing requires auth process be completed")
         network_monitor_emailer = None
     else:
-        print "Note: Emailing enabled."
+        print("Note: Emailing enabled.")
 except ImportError as e:
     network_monitor_emailer = None
 
@@ -50,7 +50,7 @@ TOUCH_FILE = "/home/fetch/.Network_Monitor_Restarted_Robot"
 def ping(use_arping, hosts):
     for host in hosts:
         for _ in xrange(5):
-	    print datetime.now(),"Sending ping request"
+            print(datetime.now(),"Sending ping request")
             if use_arping:
                 response = os.system("arping -I wlan0 -c 1 " + host)
             else:
@@ -81,10 +81,10 @@ def get_saved_networks(filepaths=None):
                 networks.append([rc.get("connection", "id"),
                                  rc.get("802-11-wireless", "ssid")])
             else:
-                print "Failed to parse " + fn
+                print("Failed to parse " + fn)
         except ConfigParser.Error as e:
-            print "Failure with: " + fn
-            print e
+            print("Failure with: " + fn)
+            print(e)
 
     return networks
 
@@ -93,16 +93,16 @@ def get_saved_networks(filepaths=None):
 def reconnect_to_wlan():
     if call(["nmcli", "d", "disconnect", "iface", "wlan0"]) == 0:
         sleep(0.3)
-        print "disconnect from wlan0"
+        print("disconnect from wlan0")
     else:
-        print "'nmcli d disconnect iface wlan0' do not work correctly!"
+        print("'nmcli d disconnect iface wlan0' do not work correctly!")
 
     if call(["nmcli", "c", "up", "id", "sanshiro"]) == 0:
         sleep(0.3)
-        print "connect to sanshiro"
+        print("connect to sanshiro")
         return True
     else:
-        print "'nmcli c up id sanshiro' do not work correctly!"
+        print("'nmcli c up id sanshiro' do not work correctly!")
         return False
 
 
@@ -139,9 +139,9 @@ def get_avail_networks_by_strength(wifi_signal_output=None):
 def connect_by_nmcli_id(nid, ssid="SSID not given"):
     # Tell nmcli to connect to it's saved connection 'nid'.
     # Returns True if successfully connected
-    print "Trying to connect to '%s' (%s)" % (nid, ssid)
+    print("Trying to connect to '%s' (%s)" % (nid, ssid))
     if call(["nmcli", "c", "up", "id", nid, "--timeout", "10"]) == 0:
-        print 'Connected'
+        print('Connected')
         return True
     else:
         return False
@@ -180,7 +180,7 @@ def check_if_just_restarted(args, hosts):
             if ping(args.arping, hosts):
                 break
         os.remove(TOUCH_FILE)
-        print "Detected a robot restart by network monitor. Sending email..."
+        print("Detected a robot restart by network monitor. Sending email...")
         network_monitor_emailer.main()
 
 
@@ -204,7 +204,7 @@ def main(args):
         if "NETWORK_MONITOR_HOSTNAMES" in os.environ:
             hostname = os.environ["NETWORK_MONITOR_HOSTNAMES"]
         else:
-            print "No hostname to ping was defined. Sleeping monitor for 60s..."
+            print("No hostname to ping was defined. Sleeping monitor for 60s...")
             time.sleep(60)
             # Expect upstart job to rerun this script, at which point changes to
             # /etc/environment will be seen.
@@ -233,11 +233,11 @@ def main(args):
             sleep(15 * 60) # if disabled wait 15 minutes and restart to check again
             exit()
 
-    print datetime.now(), "Ping and restart network Manager script Started!"
-    print "Using host(s):", ', '.join(hostnames)
+    print(datetime.now(), "Ping and restart network Manager script Started!")
+    print("Using host(s):", ', '.join(hostnames))
 
     # Sleep for 3 minutes to ensure on boot to ensure we don't reconnect before network inits
-    print "Waiting 3 mins for network monitor to init"
+    print("Waiting 3 mins for network monitor to init")
     sleep(3 * 60)
 
     # Send email if TOUCH_FILE exists
@@ -247,19 +247,19 @@ def main(args):
         try:
             # Check if we can ping the access point
             if not ping(args.arping, hostnames):
-                print datetime.now(), "Cannot connect to", ', '.join(hostnames)
+                print(datetime.now(), "Cannot connect to", ', '.join(hostnames))
                 sound_goal.goal.sound_request.arg = "ピングが通りません"
                 pub.publish(sound_goal)
                 # Try to connect to any known network
                 if not attempt_reconnect_to_network():
                     # TODO use check_output instead of Popen and handle truly
                     # bad issues with computer restarts or notification.
-                    print datetime.now(), "Restarting network-manager"
+                    print(datetime.now(), "Restarting network-manager")
                     sound_goal.goal.sound_request.arg = "ネットワークに再接続できないので、ネットワークマネージャを再起動します。"
                     pub.publish(sound_goal)
                     cmd = "sudo service network-manager restart"
                     proc = Popen(cmd, shell=True, stdout=PIPE)
-                    print datetime.now(), "Sleeping monitor for 3 minutes"
+                    print(datetime.now(), "Sleeping monitor for 3 minutes")
                     sleep(3 * 60)
                     if args.enable_reboot_option:
                         # Check for severe failure; try restarting robot if email enabled
@@ -269,10 +269,10 @@ def main(args):
                         except ValueError as e:
                             linecnt = 0
                         if linecnt == 1:
-                            print "Output of 'nmcli d wifi' is empty, indicating " \
-                                    "non-recoverable problem"
+                            print("Output of 'nmcli d wifi' is empty, indicating " \
+                                    "non-recoverable problem")
                             if network_monitor_emailer:
-                                print datetime.now(), "Restarting robot as last resort"
+                                print(datetime.now(), "Restarting robot as last resort")
                                 # Touch our "robot has been restarted" file
                                 open(TOUCH_FILE, 'a').close()
                                 call("reboot".split())
@@ -308,7 +308,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.version:
-        print VERSION
+        print(VERSION)
         exit()
 
     # Ensure root
