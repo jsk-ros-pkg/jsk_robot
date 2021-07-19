@@ -14,7 +14,6 @@ rosdep install --from-paths . --ignore-src -y -r
 cd ..
 catkin build jsk_fetch_gazebo_demo
 source devel/setup.bash
-roslaunch jsk_fetch_gazebo_demo demo.launch
 ```
 
 - Launch demo
