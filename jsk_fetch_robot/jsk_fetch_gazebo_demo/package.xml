@@ -14,8 +14,11 @@
   <exec_depend>fetcheus</exec_depend>
 
   <!-- to avoid roslaunch-check, this should be include in fetch_gazebo -->
+  <!-- The following two packages can be removed when fetch_gazebo 0.9.3 is released -->
+  <!-- See https://github.com/fetchrobotics/fetch_gazebo/pull/108 -->
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>topic_tools</exec_depend>
+
   <exec_depend>simple_grasping</exec_depend>
   <exec_depend>fetch_gazebo</exec_depend>
   <exec_depend>rviz</exec_depend>
