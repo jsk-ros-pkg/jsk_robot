@@ -20,6 +20,14 @@ if __name__ == "__main__":
 
     interfaces = [x for x in ni.interfaces() if x[0:3] in ['eth', 'enp', 'wla', 'wlp'] and
                   2 in ni.ifaddresses(x).keys()]
+
+    # If preferred interface is given, it is placed at the top of the interfaces list
+    if rospy.has_param("~preferred_interface"):
+        preferred_interface = rospy.get_param("~preferred_interface")
+        if preferred_interface in interfaces:
+            interfaces.remove(preferred_interface)
+        interfaces.insert(0, preferred_interface)
+
     if len(interfaces) > 0:
         ip = ni.ifaddresses(interfaces[0])[2][0]['addr']
     else:
