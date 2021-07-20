@@ -18,10 +18,10 @@ if __name__ == "__main__":
     sound = SoundClient(sound_action='sound_play', blocking=True)
     sound.actionclient.wait_for_server()
 
-    if len(ni.ifaddresses('eth0')) > 2:
-        ip = ni.ifaddresses('eth0')[2][0]['addr']
-    elif len(ni.ifaddresses('wlan0')) > 2:
-        ip = ni.ifaddresses('wlan0')[2][0]['addr']
+    interfaces = [x for x in ni.interfaces() if x[0:3] in ['eth', 'enp', 'wla', 'wlp'] and
+                  2 in ni.ifaddresses(x).keys()]
+    if len(interfaces) > 0:
+        ip = ni.ifaddresses(interfaces[0])[2][0]['addr']
     else:
         ip = None
 
