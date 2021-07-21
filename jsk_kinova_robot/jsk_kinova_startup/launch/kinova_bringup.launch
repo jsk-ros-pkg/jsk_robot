@@ -18,6 +18,14 @@
     <arg name="vision" value="$(arg vision)" />
   </include>
 
+  <!-- Do not create too dense trajectory in MoveIt! -->
+  <!-- Decreasing the number of waypoint reduces minjerk interpolation calculation time by roseus-->
+  <group ns="$(arg robot_name)">
+    <group ns="move_group">
+    <param name="sample_duration" value="0.3" /> <!-- Default: 0.05 -->
+    </group>
+  </group>
+
   <!-- Vision -->
   <include if="$(arg vision)" file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch">
     <arg name="device" value="$(arg ip_address)" />
