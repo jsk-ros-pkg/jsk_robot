@@ -1,4 +1,5 @@
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
+(load "package://jsk_fetch_startup/euslisp/notify-app.l")
 (load "package://switchbot_ros/scripts/switchbot.l")
 (require :state-machine "package://roseus_smach/src/state-machine.l")
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
@@ -6,6 +7,7 @@
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "jsk_robot_startup")
+(ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "power_msgs")
 
 (defparameter *dock-action* nil)
@@ -293,9 +295,20 @@
   (ros::ros-info "room light is off.")
   (send *ri* :speak-jp "電気が消えています。" :wait t))
 
+(defun notify-recognition ()
+  (let* ((msg (one-shot-subscribe "/edgetpu_object_detector/output/class"
+                                  jsk_recognition_msgs::ClassificationResult))
+         (label-names (send msg :label_names)))
+    (when label-names
+      (ros::ros-info (format nil "Notify app that ~A is found." label-names))
+      (notify-app "object recognition"
+                  (send msg :header :stamp)
+                  "kitchen"
+                  (format nil "~A is found." label-names)))))
 
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
+  (notify-recognition)
   (if tweet
     (progn
       ;; stove
