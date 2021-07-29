@@ -395,6 +395,7 @@
                  (send *ri* :clear-costmap)
                  (store-params)
                  (inflation-loose)
+                 (clear-app-notification)
                  t))
             (:report-start-go-to-kitchen
               '(lambda (userdata)
