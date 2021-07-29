@@ -1,4 +1,5 @@
 (ros::load-ros-manifest "app_notification_saver")
+(ros::load-ros-manifest "std_srvs")
 
 (defun notify-app (title stamp location message)
   "
@@ -18,3 +19,7 @@ Returns:
     (send req :location location)
     (send req :message message)
     (ros::service-call "/service_notification_saver/save_app_notification" req)))
+
+(defun clear-app-notification ()
+  (ros::service-call "/service_notification_saver/clear_app_notification"
+                     (instance std_srvs::EmptyRequest :init)))
