@@ -307,7 +307,7 @@
       (notify-app "object recognition"
                   (send msg :header :stamp)
                   "kitchen"
-                  (format nil "~A is found." label-names)))))
+                  (format nil "~A is found" label-names)))))
 
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
