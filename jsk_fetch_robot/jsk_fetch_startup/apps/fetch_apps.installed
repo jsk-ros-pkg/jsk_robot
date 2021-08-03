@@ -29,3 +29,5 @@ apps:
     display: light on
   - app: jsk_fetch_startup/light_off
     display: light off
+  - app: jsk_fetch_startup/upload_notification
+    display: Upload notification
