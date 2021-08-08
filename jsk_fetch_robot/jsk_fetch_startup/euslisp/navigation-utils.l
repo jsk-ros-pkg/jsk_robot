@@ -298,7 +298,7 @@
   (ros::ros-info "room light is off.")
   (send *ri* :speak-jp "電気が消えています。" :wait t))
 
-(defun notify-recognition ()
+(defun notify-recognition (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/edgetpu_object_detector/output/class"
                                   jsk_recognition_msgs::ClassificationResult))
          (label-names (send msg :label_names)))
@@ -306,23 +306,25 @@
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
       (notify-app "object recognition"
                   (send msg :header :stamp)
-                  "kitchen"
+                  location
                   (format nil "~A is found" label-names)))))
 
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
-  (notify-recognition)
   (if tweet
     (progn
       ;; stove
       (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (notify-recognition :location "kitchen stove")
       (send *ri* :go-pos-unsafe 0 0 -45)
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (notify-recognition :location "kitchen sink")
       (send *ri* :go-pos-unsafe 0 0 135))
     (progn
+      (notify-recognition :location "kitchen")
       (send *ri* :go-pos-unsafe 0 0 90))))
 
 
