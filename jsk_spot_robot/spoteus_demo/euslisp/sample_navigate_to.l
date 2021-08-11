@@ -9,7 +9,7 @@
 
 (spot-init nil) ;; do not create-viewer
 
-(setq *path* (ros::get-param "~path" (format nil "~A/autowalk/eng2_73b2_to_81c1_night.walk" (ros::rospack-find "spoteus_demo"))))
+(setq *path* (ros::get-param "~path" (format nil "~A/autowalk/eng2_73B2_to_81C1.walk" (ros::rospack-find "spot_autowalk_data"))))
 (setq *init-waypoint* (floor (ros::get-param "~init_waypoint" 0)))
 (setq *upload* (ros::get-param "~upload" t))
 

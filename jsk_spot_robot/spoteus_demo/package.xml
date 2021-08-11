@@ -13,8 +13,8 @@
   <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <buildtool_depend>jsk_data</buildtool_depend>
 
+  <exec_depend>spot_autowalk_data</exec_depend>
   <exec_depend>roseus</exec_depend>
   <exec_depend>spoteus</exec_depend>
 
