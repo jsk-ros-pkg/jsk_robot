@@ -11,6 +11,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <depend>spot_behavior_manager</depend>
+
   <export>
   </export>
 </package>
