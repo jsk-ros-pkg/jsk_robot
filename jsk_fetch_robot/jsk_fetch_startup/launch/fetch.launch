@@ -4,6 +4,7 @@
   <arg name="use_base_camera_mount" default="true" />
   <arg name="use_head_box" default="true" />
   <arg name="launch_diagnostics_agg" default="false" />
+  <arg name="use_head_l515" default="true" />
   <arg name="use_realsense" default="true" />
   <arg name="use_fetch_description" default="false" />
 
@@ -132,7 +133,8 @@
   <param name="robot_description"
          command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
                   ros_distro:=$(env ROS_DISTRO) use_fetch_description:=$(arg use_fetch_description)
-                  base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)" />
+                  base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)
+                  head_l515:=$(arg use_head_l515)" />
 
   <!-- Drivers for Base -->
   <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
