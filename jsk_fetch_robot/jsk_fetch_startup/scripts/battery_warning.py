@@ -19,6 +19,7 @@ class BatteryWarning(object):
         self.duration = rospy.get_param('~duration', 180.0)
         self.threshold = rospy.get_param('~charge_level_threshold', 40.0)
         self.step = rospy.get_param('~charge_level_step', 10.0)
+        self.volume = rospy.get_param('~volume', 1.0)
         self.subscriber = rospy.Subscriber(
             '/battery_state', BatteryState, self._cb, queue_size=1)
         self.timer = rospy.Timer(rospy.Duration(self.duration), self._timer_cb)
@@ -31,7 +32,7 @@ class BatteryWarning(object):
         sound_goal = SoundRequestGoal()
         sound_goal.sound_request.sound = -3
         sound_goal.sound_request.command = 1
-        sound_goal.sound_request.volume = 1.0
+        sound_goal.sound_request.volume = self.volume
         if lang is not None:
             sound_goal.sound_request.arg2 = lang
         sound_goal.sound_request.arg = speech_text

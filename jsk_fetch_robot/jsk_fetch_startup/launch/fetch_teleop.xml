@@ -71,7 +71,11 @@
   </group>
 
   <!-- Do not publish /base_controller/command if fetch is docking -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true">
+    <rosparam>
+      volume: 0.3
+    </rosparam>
+  </node>
 
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">
