@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 
 import rospy
 from spot_msgs.msg import BatteryStateArray
