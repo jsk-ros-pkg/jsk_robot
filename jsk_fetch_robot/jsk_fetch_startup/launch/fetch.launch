@@ -187,7 +187,7 @@
     <!-- overwrite fetch.srdf -->
     <!-- The semantic description that corresponds to the URDF -->
     <param name="robot_description_semantic"
-	   command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
+	   command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro head_l515:=$(arg use_head_l515)" />
   </group>
 
   <!-- Diagnostics Aggregator -->
