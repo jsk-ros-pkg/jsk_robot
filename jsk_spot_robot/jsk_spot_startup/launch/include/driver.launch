@@ -62,4 +62,11 @@
       >
   </node>
 
+  <node
+      pkg="jsk_spot_startup"
+      type="battery_notifier.py"
+      name="battery_notifier"
+      >
+  </node>
+
 </launch>
