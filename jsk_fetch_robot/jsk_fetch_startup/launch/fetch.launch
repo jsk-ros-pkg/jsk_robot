@@ -1,6 +1,8 @@
 <launch>
   <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
   <arg name="launch_teleop" default="true" />
+  <arg name="launch_moveit" default="true" />
+
   <arg name="use_base_camera_mount" default="true" />
   <arg name="use_head_box" default="true" />
   <arg name="launch_diagnostics_agg" default="false" />
@@ -178,6 +180,15 @@
   <include file="$(find fetch_bringup)/launch/include/runstop.launch.xml">
     <arg name="flags" value="-a -b -g -t"/>
   </include>
+
+  <!-- include fetch moveit -->
+  <group if="$(arg launch_moveit)">
+    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+    <!-- overwrite fetch.srdf -->
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="robot_description_semantic"
+	   command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
+  </group>
 
   <!-- Diagnostics Aggregator -->
   <include if="$(arg launch_diagnostics_agg)"
