@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-import spot_msgs.msg.BatteryStateArray, spot_msgs.msg.BatteryState
-import sensor_msgs.msg.BatteryState
+import spot_msgs.msg
+import sensor_msgs.msg
 from std_msgs.msg import Bool
 
 class CalbeConnectionDetector:
