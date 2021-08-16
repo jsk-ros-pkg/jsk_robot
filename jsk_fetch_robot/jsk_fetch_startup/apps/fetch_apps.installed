@@ -31,3 +31,7 @@ apps:
     display: light off
   - app: jsk_fetch_startup/upload_notification
     display: Upload notification
+  - app: jsk_fetch_startup/plug_spot_power_connector
+    display: Plug Spot Power Connector
+  - app: jsk_fetch_startup/unplug_spot_power_connector
+    display: Unplug Spot Power Connector
