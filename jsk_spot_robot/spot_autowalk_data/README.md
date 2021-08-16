@@ -42,13 +42,21 @@ this script visualize autowalk data and each waypoint id
 
 ![eng_TelephoneBox_to_HongoMainGate](https://user-images.githubusercontent.com/9410362/124134207-90ec2000-dabd-11eb-988b-62ffbf98ca67.png)
 
-### eng_elevator_3FElevator_to_2FElevator.walk
+### eng2_elevator_3FElevator_to_2FElevator.walk
 
 ![eng2_elevator_3FElevator_to_2FElevator walk](https://user-images.githubusercontent.com/9410362/124587250-6077fd80-de92-11eb-8014-2852dfa7f60a.png)
 
-### eng_3FElevator_to_Mech_Office.walk
+### eng2_3FElevator_to_Mech_Office.walk
 
 ![eng2_3FElevator_to_Mech_Office walk](https://user-images.githubusercontent.com/9410362/124587299-6f5eb000-de92-11eb-9427-0ed88e6ca414.png)
+
+### eng2_2FElevator_to_MainEntrance.walk
+
+![eng2_2FElevator_to_MainEntrance](https://user-images.githubusercontent.com/9410362/129509474-c3429db1-6a6f-4076-bbbb-c3fb27bc3167.png)
+
+### eng2_MainEntrance_to_HongoMainGate.walk
+
+![eng2_MainEntrance_to_HongoMainGate](https://user-images.githubusercontent.com/9410362/129509500-1bde2818-66c7-4770-a87d-88c4f9d65ae3.png)
 
 ## How to add autowalk data in this package
 
