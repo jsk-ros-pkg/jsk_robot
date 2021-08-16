@@ -86,6 +86,22 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_2FElevator_to_MainEntrance.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1e5hCLtfOlDYWhrQoefYGxz2AnjaSfs_f',
+        md5='e79f25769b702c203d4f9229c81a1f89',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_MainEntrance_to_HongoMainGate.walk.tar.gz',
+        url='https://drive.google.com/uc?id=13mG7iFMkFWN04S7BeR2rPwvpL-0cTgko',
+        md5='e0260203d5a3fa4958014b4149c3749a',
+        extract=True
+    )
+
 
 if __name__ == '__main__':
     main()
