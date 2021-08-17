@@ -9,15 +9,15 @@ plugins:
     type: app_recorder/audio_video_recorder_plugin
     launch_args:
       video_path: /tmp
-      video_title: plug_spot_power_connector.avi
+      video_title: plug_spot_power_connector_head_camera.avi
       audio_topic_name: /audio
       audio_channels: 1
       audio_sample_rate: 16000
       audio_format: wave
       audio_sample_format: S16LE
-      video_topic_name: /head_camera/rgb/image_rect_color
-      video_height: 480
-      video_width: 640
+      video_topic_name: /tag_detections_image
+      video_height: 1080
+      video_width: 1920
       video_framerate: 30
       video_encoding: RGB
   - name: panorama_video_recorder_plugin
