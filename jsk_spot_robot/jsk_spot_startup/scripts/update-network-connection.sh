@@ -25,9 +25,12 @@ function connectETH() {
     sudo ifmetric $IF_WIFI 101
 }
 
-function connectWIFI() {
+function restartWIFI() {
     sudo nmcli connection down sanshiro
     sudo nmcli connection up sanshiro
+}
+
+function connectWIFI() {
     sudo ifmetric $IF_WIFI 100
     sudo ifmetric $IF_LTE 101
     sudo ifmetric $IF_ETH 102
@@ -39,22 +42,47 @@ function connectLTE() {
     sudo ifmetric $IF_ETH 102
 }
 
+function checkConnection() {
+    ping -c 1 -W 1.1.1.1
+    if [ $? = 0 ]; then
+        echo 0
+        return 0
+    else
+        echo 1
+        return 1
+    fi
+}
+
 function updateConnection() {
+
+    echo "Connection update"
+
+    # Reconnect WIFI
+    if [ $(existIF $IF_WIFI) = 0 ]; then
+        ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
+        if [ $? = 0 ]; then
+            echo "wifi connected"
+        else
+            echo "wifi not connected. trying to connect sanshiro"
+            restartWIFI
+        fi
+    else
+        echo "wifi device not found. skipped wifi reconnection."
+    fi
+
+    # Check internet connection
+    if [ $(checkConnection) = 0 ]; then
+        echo "Network connected"
+        return 0
+    fi
 
     # connect with Ethernet if available
     if [ $(existIF $IF_ETH) = 0 ]; then
         ping -c 1 -W 1 1.1.1.1 -I $IF_ETH
         if [ $? = 0 ]; then
-            echo "ethernet is online"
-            echo $CURRENT_CONNECTION_TYPE
-            if [ $CURRENT_CONNECTION_TYPE = "ethernet" ]; then
-                echo "connection type is still on ethernet"
-            else
-                echo "connection type switched to ethernet"
-                CURRENT_CONNECTION_TYPE="ethernet"
-                connectETH
-            fi
-            return
+            echo "ethernet is online. switched to ethernet"
+            connectETH
+            return 0
         else
             echo "ethernet is not online"
         fi
@@ -66,49 +94,31 @@ function updateConnection() {
     if [ $(existIF $IF_WIFI) = 0 ]; then
         ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
         if [ $? = 0 ]; then
-            echo "wifi is online"
-            if [ $CURRENT_CONNECTION_TYPE = "wifi" ]; then
-                echo "connection type is still on wifi"
-            else
-                echo "connection type switched to wifi"
-                CURRENT_CONNECTION_TYPE="wifi"
-                connectWIFI
-            fi
-            return
+            echo "wifi is online. switched to wifi"
+            connectWIFI
+            return 0
         else
             echo "wifi is not online now"
-            sudo nmcli connection up sanshiro
-            ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
-            if [ $? = 0 ]; then
-                echo "wifi is online"
-                if [ $CURRENT_CONNECTION_TYPE = "wifi" ]; then
-                    echo "connection type is still on wifi"
-                else
-                    echo "connection type switched to wifi"
-                    CURRENT_CONNECTION_TYPE="wifi"
-                    connectWIFI
-                fi
-                return
-            else
-                echo "wifi is still not online"
-            fi
         fi
     else
         echo "wifi device is not found"
     fi
 
     # connect with LTE if available
-    if [ $CURRENT_CONNECTION_TYPE = "lte" ]; then
-        echo "connection type is still on lte"
-    else
+    if [ $(existIF $IF_LTE) = 0 ]; then
         echo "connection type switched to lte"
-        CURRENT_CONNECTION_TYPE="lte"
         connectLTE
+        return 1
+    else
+        echo "lte device is not found"
     fi
+
+    echo "No network device found."
+    return 1
 }
 
 while :
 do
-    sleep 5
+    sleep 1
     updateConnection
 done
