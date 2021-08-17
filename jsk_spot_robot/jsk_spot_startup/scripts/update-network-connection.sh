@@ -42,17 +42,6 @@ function connectLTE() {
     sudo ifmetric $IF_ETH 102
 }
 
-function checkConnection() {
-    ping -c 1 -W 1.1.1.1
-    if [ $? = 0 ]; then
-        echo 0
-        return 0
-    else
-        echo 1
-        return 1
-    fi
-}
-
 function updateConnection() {
 
     echo "Connection update"
@@ -71,7 +60,8 @@ function updateConnection() {
     fi
 
     # Check internet connection
-    if [ $(checkConnection) = 0 ]; then
+    ping -c 1 -W 1 1.1.1.1
+    if [ $? = 0 ]; then
         echo "Network connected"
         return 0
     fi
