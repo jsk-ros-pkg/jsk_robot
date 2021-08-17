@@ -52,7 +52,7 @@ plugins:
   - name: mail_notifier_plugin
     type: app_notifier/mail_notifier_plugin
     plugin_args:
-      mail_title: Fetch Plug Spot Power Connector Demo
+      mail_title: Fetch Unplug Spot Power Connector Demo
       use_timestamp_title: true
     plugin_arg_yaml: /var/lib/robot/fetch_mail_notifier_plugin.yaml
 plugin_order:
