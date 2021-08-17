@@ -15,7 +15,7 @@ plugins:
       audio_sample_rate: 16000
       audio_format: wave
       audio_sample_format: S16LE
-      video_topic_name: /tag_detections_image
+      video_topic_name: /l515_head/color/image_raw
       video_height: 1080
       video_width: 1920
       video_framerate: 30
