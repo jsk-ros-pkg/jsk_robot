@@ -167,13 +167,13 @@ edges:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'eng2_MainEntrance_lower'
     to: 'eng2_MainEntrance_outer'
-    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    behavior_type: 'spot_basic_behaviors.crosswalk_behavior.CrosswalkBehavior'
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'eng2_MainEntrance_outer'
     to: 'eng2_MainEntrance_lower'
-    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    behavior_type: 'spot_basic_behaviors.crosswalk_behavior.CrosswalkBehavior'
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
