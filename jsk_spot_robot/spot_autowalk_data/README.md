@@ -58,6 +58,10 @@ this script visualize autowalk data and each waypoint id
 
 ![eng2_MainEntrance_to_HongoMainGate](https://user-images.githubusercontent.com/9410362/129509500-1bde2818-66c7-4770-a87d-88c4f9d65ae3.png)
 
+### eng2_MainEntrance_to_HongoMainGate_Daylight.walk
+
+![eng2_MainEntrance_to_HongoMainGate_Daylight](https://user-images.githubusercontent.com/9410362/129997430-620ee1dc-6659-4028-acd7-f80b7539364a.png)
+
 ## How to add autowalk data in this package
 
 1. record a new autowalk data
