@@ -1,0 +1,26 @@
+<launch>
+    <!-- car tracker -->
+    <node
+        pkg="spot_person_lead_behaviors"
+        type="car_tracker.py"
+        name="crosswalk_detection_car_tracker"
+        output="screen"
+        >
+        <remap from="~input_bbox_array" to="/spot_recognition/bbox_array" />
+        <remap from="~input_tracking_labels" to="/spot_recognition/tracking_labels" />
+
+        <rosparam subst_value="true">
+            frame_fixed: 'odom'
+            frame_robot: 'body'
+            timeout_transform: 0.05
+            num_max_track: 10
+            thresholds_distance:
+                '2': 50
+                '5': 50
+                '7': 50
+            threshold_move_velocity: 2
+            threshold_lost_duration: 1.0
+        </rosparam>
+    </node>
+
+</launch>
