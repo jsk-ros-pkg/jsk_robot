@@ -102,6 +102,14 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1EHpKaMBa8rnRZRyK8KwTK3727cxNqph4',
+        md5='43cff60ed9dc444d3d7de0e4ef304d0f',
+        extract=True
+    )
+
 
 if __name__ == '__main__':
     main()
