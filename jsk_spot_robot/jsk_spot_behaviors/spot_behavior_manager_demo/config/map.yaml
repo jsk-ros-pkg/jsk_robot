@@ -158,37 +158,37 @@ edges:
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
-      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'eng2_MainEntrance_lower'
     to: 'eng2_MainEntrance_upper'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
-      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'eng2_MainEntrance_lower'
     to: 'eng2_MainEntrance_outer'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
-      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'eng2_MainEntrance_outer'
     to: 'eng2_MainEntrance_lower'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
-      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'eng2_MainEntrance_outer'
     to: 'HongoMainGate'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
-      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
   - from: 'HongoMainGate'
     to: 'eng2_MainEntrance_outer'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
     args:
-      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
 nodes:
   'dummy':
     name_en: 'dummy'
@@ -308,12 +308,18 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
         id: 'about-goat-EHRLqkk7XWmMXAdfcXHP5g=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'ahead-mink-Fml31k5vw.Y2XR.7v1BSeg=='
+        localization_method: 'fiducial'
   'eng2_MainEntrance_lower':
     name_en: 'Entrance'
     name_jp: '入り口'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
         id: 'aft-tick-clWAq8obxtWm64bTthYwMQ=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'rested-grouse-GzVp6htKyt6kdIcS+Tu6aA=='
         localization_method: 'waypoint'
   'eng2_MainEntrance_outer':
     name_en: 'Entrance'
@@ -322,10 +328,16 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
         id: 'tilled-weevil-slAZLtX3U2NcqaINkGY0Sw=='
         localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'sown-pincer-NcgfKhWf9H+B3yWIKA8W7A=='
+        localization_method: 'waypoint'
   'HongoMainGate':
     name_en: 'Maingate'
     name_jp: '正門'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
         id: 'aglow-gadfly-tSusAUqUNtqVaKFO49pDbQ=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'regal-bison-qmAA7fyZh10L2bzoTNqUFQ=='
         localization_method: 'waypoint'
