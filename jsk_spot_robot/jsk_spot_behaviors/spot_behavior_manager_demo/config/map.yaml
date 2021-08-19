@@ -248,6 +248,9 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
         id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
+        id: 'mythic-leech-Uslc00eTIhygFsCdH2q1Qg=='
+        localization_method: 'fiducial'
     switchbot_device: '/eng2/2f/elevator/up/button'
     floor: 2
     floor_height: 0
