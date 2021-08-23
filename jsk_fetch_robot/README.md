@@ -256,6 +256,24 @@ coordinates can be made with
 ```
 Please see [costmap_2d](http://wiki.ros.org/costmap_2d?distro=melodic), [move_base](http://wiki.ros.org/move_base?distro=melodic), if you would like to understand the self-positioning system in detail.
 
+### Build Map
+
+- Stop jsk_fetch_startup on the supervisor
+
+- Launch slam program
+
+```
+roslaunch jsk_fetch_startup fetch_bringup.launch use_build_map:=true launch_move_base:=false
+```
+
+- You can see built map(`/map`) on Rviz
+
+- Make map_directory and save map
+
+```
+rosrun map_server map_saver -f <map_directory/map_name>
+```
+
 ### Speak
 
 - Use text-to-speech engine to speak text
