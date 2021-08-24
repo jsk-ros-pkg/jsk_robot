@@ -121,4 +121,4 @@
 - git:
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
-    version: pr1040
+    version: kinetic-devel
