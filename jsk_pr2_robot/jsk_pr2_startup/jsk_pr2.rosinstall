@@ -1,11 +1,11 @@
 - git:
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager
-    version: kinetic-devel
+    version: pr1040
 - git:
     local-name: PR2/pr2_common
     uri: https://github.com/PR2/pr2_common.git
-    version: pr1040
+    version: melodic-devel
 - git:
     local-name: PR2/pr2_controllers
     uri: https://github.com/PR2/pr2_controllers.git
@@ -13,7 +13,7 @@
 - git:
     local-name: PR2/pr2_self_test
     uri: https://github.com/PR2/pr2_self_test.git
-    version: pr1040
+    version: kinetic-devel
 - git:
     local-name: RobotWebTools/rosbridge_suite
     uri: https://github.com/RobotWebTools/rosbridge_suite.git
