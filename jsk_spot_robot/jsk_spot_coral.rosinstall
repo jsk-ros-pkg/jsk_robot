@@ -1,5 +1,4 @@
 # Until PRs below are merged, we need to use develop/spot branch in sktometometo/jsk_recognition.git
-#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2581
 #  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
