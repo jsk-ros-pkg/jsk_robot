@@ -79,5 +79,5 @@
 # aerial_robot packages are requied for msgs for spot spinal
 - git:
     local-name: aerial_robot
-    uri: https://github.com/tongtybj/aerial_robot.git
-    version: PR/feature/RTOS
+    uri: https://github.com/sktometometo/aerial_robot.git
+    version: develop/spot
