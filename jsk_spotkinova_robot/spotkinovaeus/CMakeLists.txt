@@ -13,11 +13,12 @@ find_package(kortex_description)
 find_package(spot_description)
 find_package(kinovaeus)
 find_package(spoteus)
+find_package(jsk_spotkinova_description)
 
 catkin_package()
 
 if(NOT kortex_description_FOUND OR NOT spot_description_FOUND)
-  message(WARNING "kortex_description is not found, so skip generating eus models.")
+  message(WARNING "kortex_description or spot_description is not found, so skip generating eus models.")
   message(WARNING "Install kortex_description from https://github.com/Kinovarobotics/ros_kortex.git")
   return()
 endif()
@@ -27,13 +28,11 @@ endif()
 ## Build ##
 ###########
 set(_spoteus ${spoteus_SOURCE_PREFIX})
-set(_kinova_urdf ${kortex_description_SOURCE_PREFIX}/robots)
 set(_kinovaeus ${kinovaeus_SOURCE_PREFIX})
-set(_spot_kinova_urdf ${PROJECT_SOURCE_DIR}/robots)
+set(_spot_kinova_urdf ${jsk_spotkinova_description_SOURCE_PREFIX}/robots)
 set(_collada2eus ${euscollada_PREFIX}/lib/euscollada/collada2eus)
 
 message("_spoteus: ${_spoteus}")
-message("_kinova_urdf: ${_kinova_urdf}")
 message("_kinovaeus: ${_kinovaeus}")
 message("_spot_kinova_urdf: ${_spot_kinova_urdf}")
 message("collada2eus: ${_collada2eus}")
@@ -44,8 +43,8 @@ message("collada2eus: ${_collada2eus}")
 foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f gen3_robotiq_2f_85 gen3_robotiq_2f_140)
   # Create spot_${ROBOT_TYPE}.urdf
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
-    COMMAND xacro ${_spot_kinova_urdf}/spot_kinova.xacro robot_type:=${ROBOT_TYPE} prefix:=kinova_ > ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
-    DEPENDS ${_spot_kinova_urdf}/spot_kinova.xacro)
+    COMMAND xacro ${_spot_kinova_urdf}/jsk_spotkinova.urdf.xacro robot_type:=${ROBOT_TYPE} prefix:=kinova_ > ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
+    DEPENDS ${_spot_kinova_urdf}/jsk_spotkinova.urdf.xacro)
   # Create spot_${ROBOT_TYPE}.l
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l
     COMMAND echo "${_collada2eus} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf spot_${ROBOT_TYPE}.l"
