@@ -12,7 +12,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <exec_depend>xacro</exec_depend>
+  <depend>xacro</depend>
+  <depend>spot_description</depend>
 
   <export>
   </export>

@@ -12,6 +12,6 @@
     </joint>
 
     <xacro:if value="$(arg insta_360_air)" >
-        <xacro:include filename="$(find jsk_spot_startup)/robots/insta_360_air_mount.urdf.xacro" />
+        <xacro:include filename="$(find jsk_spot_description)/robots/insta_360_air_mount.urdf.xacro" />
     </xacro:if>
 </robot>
