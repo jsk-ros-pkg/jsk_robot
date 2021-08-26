@@ -39,7 +39,9 @@
     name="robot_state_publisher"
     pkg="robot_state_publisher"
     type="robot_state_publisher"
-    />
+    >
+    <remap from="/joint_states" to="/spot_kinova/joint_states" />
+  </node>
 
   <!-- Rviz for kinova-->
   <include if="$(arg rviz)" file="$(find jsk_spotkinova_startup)/launch/rviz.launch" />
