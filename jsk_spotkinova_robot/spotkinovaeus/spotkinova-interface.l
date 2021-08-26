@@ -1,22 +1,22 @@
-(ros::roseus "spot_kinova_interface")
+(ros::roseus "spotkinova_interface")
 (load "package://spoteus/spot-interface.l")
 (load "package://kinovaeus/kinova-interface.l")
 (load "package://spotkinovaeus/spotkinova-utils.l")
 
 ;; defclass (To see raw definition, replace eval with macroexpand)
-(eval `(defclass spot-kinova-interface :super robot-interface
+(eval `(defclass spotkinova-interface :super robot-interface
          :slots ((spot-inst :forward ,(mapcar #'car (send spot-interface :methods)))
                  (kinova-inst :forward ,(mapcar #'car (send kinova-interface :methods))))
          :documentation "This is a robot interface class for using spot + kinova.
 This class is designed to be able to call both the methods defined in spot-interface and kinova-interface.
 
 The following is priority when calling methods of the same name defined in different classes.
-1. spot-kinova-interface 2. robot-interface 3. spot-interface 4. kinova-interface
+1. spotkinova-interface 2. robot-interface 3. spot-interface 4. kinova-interface
 Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
 "
          ))
 
-(defmethod spot-kinova-interface
+(defmethod spotkinova-interface
   (:init
    (&key (type :gen3_lite_gen3_lite_2f) &rest args)
    (setq spot-inst (instance spot-interface :init))
@@ -34,8 +34,8 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                          (instance spot_gen3_lite_gen3_lite_2f-robot :init))
                         (t
                          (warning-message 1 "unknown kinova robot type ~A~%" type)))
-                  :joint-states-topic "/spot_kinova/joint_states"
-                  :groupname "spot_kinova_interface" args))
+                  :joint-states-topic "/spotkinova/joint_states"
+                  :groupname "spotkinova_interface" args))
    (send self :add-controller :head-controller)
    self)
   (:default-controller ()
@@ -147,13 +147,13 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
     (send* kinova-inst :spin-once args))
   )
 
-(defun spot-kinova-init (&key (type :gen3_lite_gen3_lite_2f) &rest args &allow-other-keys)
-  (unless (boundp '*spot-kinova*)
-    (setq *spot-kinova* (spot-kinova :type type)))
+(defun spotkinova-init (&key (type :gen3_lite_gen3_lite_2f) &rest args &allow-other-keys)
+  (unless (boundp '*spotkinova*)
+    (setq *spotkinova* (spotkinova :type type)))
   (unless (ros::ok)
-    (ros::roseus "spot_kinova_interface"))
+    (ros::roseus "spotkinova_interface"))
   (unless (boundp '*ri*)
-    (setq *ri* (instance spot-kinova-interface :init :type type)))
+    (setq *ri* (instance spotkinova-interface :init :type type)))
 
   ;; Copied from spot-interface (spot-init)
   ;; This should be done in (spot-interface :init) ?

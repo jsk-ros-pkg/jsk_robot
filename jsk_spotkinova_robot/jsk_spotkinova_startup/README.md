@@ -7,5 +7,5 @@ Make sure that each euslisp model is created with `spot_description` and `kortex
 
 # Usage
 ```
-roslaunch jsk_spotkinova_startup spot_kinova_bringup.launch robot_type:=gen3_lite_gen3_lite_2f
+roslaunch jsk_spotkinova_startup spotkinova_bringup.launch robot_type:=gen3_lite_gen3_lite_2f
 ```

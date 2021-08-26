@@ -29,12 +29,12 @@ endif()
 ###########
 set(_spoteus ${spoteus_SOURCE_PREFIX})
 set(_kinovaeus ${kinovaeus_SOURCE_PREFIX})
-set(_spot_kinova_urdf ${jsk_spotkinova_description_SOURCE_PREFIX}/robots)
+set(_spotkinova_urdf ${jsk_spotkinova_description_SOURCE_PREFIX}/robots)
 set(_collada2eus ${euscollada_PREFIX}/lib/euscollada/collada2eus)
 
 message("_spoteus: ${_spoteus}")
 message("_kinovaeus: ${_kinovaeus}")
-message("_spot_kinova_urdf: ${_spot_kinova_urdf}")
+message("_spotkinova_urdf: ${_spotkinova_urdf}")
 message("collada2eus: ${_collada2eus}")
 
 # Gen3 robot with robotiq gripper
@@ -43,8 +43,8 @@ message("collada2eus: ${_collada2eus}")
 foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f gen3_robotiq_2f_85 gen3_robotiq_2f_140)
   # Create spot_${ROBOT_TYPE}.urdf
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
-    COMMAND xacro ${_spot_kinova_urdf}/jsk_spotkinova.urdf.xacro robot_type:=${ROBOT_TYPE} prefix:=kinova_ > ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
-    DEPENDS ${_spot_kinova_urdf}/jsk_spotkinova.urdf.xacro)
+    COMMAND xacro ${_spotkinova_urdf}/jsk_spotkinova.urdf.xacro robot_type:=${ROBOT_TYPE} prefix:=kinova_ > ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
+    DEPENDS ${_spotkinova_urdf}/jsk_spotkinova.urdf.xacro)
   # Create spot_${ROBOT_TYPE}.l
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l
     COMMAND echo "${_collada2eus} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf spot_${ROBOT_TYPE}.l"
@@ -58,7 +58,13 @@ install(DIRECTORY test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES spot-kinova.l spot-kinova.yaml spot-kinova-interface.l spot-kinova-util.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES
+    spotkinova-interface.l
+    spotkinova-util.l
+    spotkinova.l
+    spot_gen3_lite_gen3_lite_2f.l
+    spot_gen3_lite_gen3_lite_2f.yaml
+DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
