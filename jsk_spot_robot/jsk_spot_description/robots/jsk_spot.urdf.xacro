@@ -4,7 +4,14 @@
 
     <xacro:include filename="$(find spot_description)/urdf/spot.urdf.xacro" />
 
-    <link name="jsk_head_mount_frame" />
+    <link name="jsk_head_mount_frame">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.0000000001" />
+        <inertia ixx="0.0000000001" ixy="0.0000000001" ixz="0.0000000001"
+            iyy="0.0000000001" iyz="0.0000000001" izz="0.0000000001" />
+      </inertial>
+    </link>
     <joint name="body_to_jsk_head_mount_joint" type="fixed" >
         <origin rpy="0 0 0" xyz="0.29 0 0.09" />
         <parent link="body" />
