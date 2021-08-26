@@ -17,7 +17,7 @@
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
     <arg name="vision" value="$(arg vision)" />
-    <arg name="prefix" default="$(arg prefix)" />
+    <arg name="prefix" value="$(arg prefix)" />
   </include>
 
   <!-- Do not create too dense trajectory in MoveIt! -->
