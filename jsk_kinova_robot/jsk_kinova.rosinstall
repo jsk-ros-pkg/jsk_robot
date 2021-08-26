@@ -1,0 +1,11 @@
+# ros_kortex is updating to v2.3.X in master branch
+# but the internal firmware in JSK kinova is still ver2.2.0
+# we need to use it until firmware is updated.
+- git:
+    local-name: ros_kortex
+    uri: https://github.com/708yamaguchi/ros_kortex
+    version: develop/spot
+- git:
+    local-name: ros_kortex_vision
+    uri: https://github.com/Kinovarobotics/ros_kortex_vision
+    version: master
