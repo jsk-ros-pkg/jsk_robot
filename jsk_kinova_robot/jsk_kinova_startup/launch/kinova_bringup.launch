@@ -7,14 +7,13 @@
   <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')" doc="For gen3 lite robot"/>
   <arg name="vision" default="true" if="$(eval arg('arm') == 'gen3')" doc="Set true if you use gen3 camera module." />
   <arg name="vision" default="false" if="$(eval arg('arm') == 'gen3_lite')" doc="gen3 lite robot does not have camera module." />
-  <arg name="prefix" default="" doc="Prefix for kinova joint names" />
+  <arg name="prefix" default="kinova_" doc="Prefix for kinova joint names" />
   <arg name="rviz" default="false" doc="Set true if you want RViz." />
 
   <!-- Driver -->
   <include file="$(find jsk_kinova_startup)/launch/kortex_driver.launch">
     <arg name="ip_address" value="$(arg ip_address)" />
     <arg name="robot_name" value="$(arg robot_name)" />
-    <arg name="start_rviz" value="false" />
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
     <arg name="vision" value="$(arg vision)" />
