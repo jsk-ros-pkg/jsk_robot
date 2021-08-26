@@ -33,7 +33,7 @@
     <!-- -->
     <arg name="launch_robot_state_publisher" default="true" />
 
-    <group ns="$(arg robot_name)" if="$(arg launch_robot_state_publisher)">
+    <group ns="$(arg robot_name)">
         <!-- Load the description for the robot -->
         <group if="$(eval not arg('prefix'))">
             <param
@@ -84,7 +84,7 @@
             <param name="use_gui" value="false"/>
             <param name="rate" value="$(arg cyclic_data_publish_rate)" />
         </node>
-        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
             if="$(arg launch_robot_state_publisher)" />
 
     </group>
