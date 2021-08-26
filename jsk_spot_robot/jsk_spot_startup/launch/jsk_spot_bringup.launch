@@ -1,11 +1,13 @@
 <launch>
   <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
+  <arg name="launch_robot_state_publisher" default="true" />
 
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
       >
       <arg name="credential_config" value="$(arg credential_config)" />
+      <arg name="launch_robot_state_publisher" value="$(arg launch_robot_state_publisher)" />
   </include>
 
   <!-- peripheral devices -->

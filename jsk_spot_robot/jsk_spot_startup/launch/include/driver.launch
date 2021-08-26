@@ -1,15 +1,18 @@
 <launch>
   <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
+  <arg name="launch_robot_state_publisher" default="true" />
 
-  <param
-    name="robot_description"
-    command="$(find xacro)/xacro $(find jsk_spot_description)/robots/jsk_spot.urdf.xacro --inorder" 
-    />
-  <node
-    name="robot_state_publisher"
-    pkg="robot_state_publisher"
-    type="robot_state_publisher"
-    />
+  <group if="$(arg launch_robot_state_publisher)">
+    <param
+      name="robot_description"
+      command="$(find xacro)/xacro $(find jsk_spot_description)/robots/jsk_spot.urdf.xacro --inorder" 
+      />
+    <node
+      name="robot_state_publisher"
+      pkg="robot_state_publisher"
+      type="robot_state_publisher"
+      />
+  </group>
 
   <include file="$(find spot_driver)/launch/control.launch" />
 
