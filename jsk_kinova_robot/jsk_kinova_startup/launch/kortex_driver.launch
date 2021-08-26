@@ -30,8 +30,10 @@
     <arg name="default_goal_time_tolerance" default="0.5"/> <!--seconds-->
     <arg name="default_goal_tolerance" default="0.005"/> <!--radians-->
 
-    <group ns="$(arg robot_name)">
+    <!-- -->
+    <arg name="launch_robot_state_publisher" default="true" />
 
+    <group ns="$(arg robot_name)" if="$(arg launch_robot_state_publisher)">
         <!-- Load the description for the robot -->
         <group if="$(eval not arg('prefix'))">
             <param
@@ -82,7 +84,8 @@
             <param name="use_gui" value="false"/>
             <param name="rate" value="$(arg cyclic_data_publish_rate)" />
         </node>
-        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+            if="$(arg launch_robot_state_publisher)" />
 
     </group>
 </launch>
