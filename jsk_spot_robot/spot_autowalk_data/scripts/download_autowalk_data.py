@@ -110,6 +110,14 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/73b2_inside.walk.tar.gz',
+        url='https://drive.google.com/uc?id=14BPDOJBNS2v5EoUyIZ9gDwm4VFXyj-FD',
+        md5='5b45fcd7271f42f32414602145b77bd8',
+        extract=True
+    )
+
 
 if __name__ == '__main__':
     main()
