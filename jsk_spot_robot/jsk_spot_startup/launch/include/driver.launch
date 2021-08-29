@@ -60,6 +60,18 @@
 
   <node
       pkg="jsk_spot_startup"
+      type="battery_visualizer.py"
+      name="battery_visualizer"
+      />
+
+  <node
+      pkg="jsk_spot_startup"
+      type="laptop_battery_visualizer.py"
+      name="laptop_battery_visualizer"
+      />
+
+  <node
+      pkg="jsk_spot_startup"
       type="cable_connection_detector.py"
       name="cable_connection_detector"
       >
