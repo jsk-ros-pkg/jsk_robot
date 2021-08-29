@@ -8,16 +8,4 @@
       required="True"
       args="-d $(find jsk_spot_startup)/config/$(arg config_type).rviz"
       />
-
-  <node
-      pkg="jsk_spot_startup"
-      type="battery_visualizer.py"
-      name="battery_visualizer"
-      />
-
-  <node
-      pkg="jsk_spot_startup"
-      type="laptop_battery_visualizer.py"
-      name="laptop_battery_visualizer"
-      />
 </launch>
