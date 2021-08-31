@@ -1,7 +1,6 @@
 <launch>
 
   <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
-  <!-- <arg name="robot_type" default="gen3_robotiq_2f_140" doc="gen3_lite_gen3_lite_2f or gen3_robotiq_2f_85 or gen3_robotiq_2f_140"/> -->
   <arg name="ip_address" default="192.168.1.10" doc="IP adress of the Kinova robot" />
   <arg name="robot_name" default="arm_gen3" doc="Kinova robot name. Basically, this name should not be changed." />
   <arg name="arm" default="gen3_lite" doc="Use 'gen3' for gen3 robot, 'gen3_lite' for gen3 lite robot." />
@@ -9,7 +8,8 @@
   <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')" doc="For gen3 lite robot"/>
   <arg name="vision" default="true" if="$(eval arg('arm') == 'gen3')" doc="Set true if you use gen3 camera module." />
   <arg name="vision" default="false" if="$(eval arg('arm') == 'gen3_lite')" doc="gen3 lite robot does not have camera module." />
-  <arg name="rviz" default="false" />
+  <arg name="rviz" default="false" doc="Set true if you want RViz." />
+
   <!-- launch for spot -->
   <!-- spot driver -->
   <include
@@ -19,20 +19,14 @@
   </include>
 
   <!-- launch for kinova -->
-  <!-- main launch file-->
-  <include file="$(find kortex_driver)/launch/kortex_driver.launch">
+  <include file="$(find jsk_kinova_startup)/launch/kinova_bringup.launch">
     <arg name="ip_address" value="$(arg ip_address)" />
     <arg name="robot_name" value="$(arg robot_name)" />
-    <arg name="start_rviz" value="false" />
+    <arg name="rviz" value="false" />
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
     <arg name="vision" value="$(arg vision)" />
     <arg name="prefix" value="kinova_" />
-  </include>
-
-  <!-- Vision for kinova-->
-  <include if="$(arg vision)" file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch">
-    <arg name="device" value="$(arg ip_address)" />
   </include>
 
   <!-- Rviz for kinova-->
