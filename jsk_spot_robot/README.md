@@ -49,6 +49,7 @@ rosdep install -y -r --from-paths . --ignore-src
 pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
 cd $HOME/spot_ws
 catkin init
+catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release
 catkin build -j4 -c
 ```
 
@@ -58,6 +59,10 @@ After this, please modify the credential files and remove it from git tracking.
 roscd jsk_spot_startup
 # modify auth/credential_config.yaml
 git update-index --skip-worktree auth/spot_credential.yaml
+
+roscd spot_basic_behaviors
+# modify config/switchbot_ros/token.yaml
+git update-index --skip-worktree config/switchbot_ros/token.yaml
 ```
 
 #### setup a catkin workspace for coral usb
@@ -93,6 +98,14 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build jsk_spot_startup coral_usb -j4 -c
 ```
 
+After that, please download models for coral_usb_ros.
+
+```
+source /opt/ros/$ROS_DISTRO/setup.bash
+source $HOME/coral_ws/devel/setup.bash
+rosrun coral_usb download_models.py
+```
+
 #### Set environmental variables
 
 Set your ROS_IP to WiFi AP address.
@@ -126,7 +139,7 @@ Add your user to dialout and audio group
 sudo groupadd <your user> dialout audio
 ```
 
-### How to bring up spot
+### Bringup spot
 
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf)
 
