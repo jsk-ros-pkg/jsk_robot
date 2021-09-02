@@ -1,12 +1,6 @@
 jsk_spot_robot
 ==============
 
-Currently, this packages require
-
-- [spot_ros]() with [this patch](https://github.com/clearpathrobotics/spot_ros/pull/25)
-- [common_msgs]() with [this patch](https://github.com/ros/common_msgs/pull/171)
-- [jsk_recognition]() with [this patch](https://github.com/jsk-ros-pkg/jsk_recognition/pull/2579) and [this patch](https://github.com/jsk-ros-pkg/jsk_recognition/pull/2581)
-
 ## Manuals
 
 - [Supported Documents of Boston Dynamics](https://www.bostondynamics.com/spot/training/documentation)
@@ -14,30 +8,14 @@ Currently, this packages require
 
 ## How to run
 
-### Setting up udev file for peripheral devices
+### How to set up catkin workspace in a development pc.
 
-Create udev rule for spot spinal
-
-```bash
-sudo sh -c 'echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", ATTRS{serial}==\"A7044PJ7\", SYMLINK+=\"spot-spinal\", GROUP=\"dialout\"" > /etc/udev/rules.d/99-spot-spinal.rules'
-```
-
-and your user to dialout group
-
-```bash
-sudo groupadd <your user> dialout
-```
-
-### Setting up a catkin workspace for a new user in the internal pc
-
-#### setup a catkin workspace for spot driver
-
-Create a workspace for spot driver
+Create a workspace
 
 ```bash
 source /opt/ros/$ROS_DISTRO/setup.bash
-mkdir $HOME/catkin_ws/src -p
-cd $HOME/catkin_ws/src
+mkdir $HOME/spot_ws/src -p
+cd $HOME/spot_ws/src
 wstool init .
 wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
 wstool update
@@ -46,12 +24,35 @@ wstool update
 rosdep update
 rosdep install -y -r --from-paths . --ignore-src
 pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
-cd $HOME/catkin_ws
+cd $HOME/spot_ws
 catkin init
 catkin build -j4 -c
 ```
 
-After this, please modify the credential file and remove it from git tracking.
+### How to set up a new user in the internal pc.
+
+#### setup a catkin workspace for spot driver
+
+Create a workspace for spot driver
+
+```bash
+source /opt/ros/$ROS_DISTRO/setup.bash
+mkdir $HOME/spot_ws/src -p
+cd $HOME/spot_ws/src
+wstool init .
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool update
+wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot.rosinstall
+wstool update
+rosdep update
+rosdep install -y -r --from-paths . --ignore-src
+pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
+cd $HOME/spot_ws
+catkin init
+catkin build -j4 -c
+```
+
+After this, please modify the credential files and remove it from git tracking.
 
 ```bash
 roscd jsk_spot_startup
@@ -92,14 +93,47 @@ catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/inc
 catkin build jsk_spot_startup coral_usb -j4 -c
 ```
 
-### Bringup spot
+#### Set environmental variables
+
+Set your ROS_IP to WiFi AP address.
+
+```
+echo "# ROS_IP
+rossetip 10.42.0.1 # change IP address if your wifi AP address is not this." >> ~/.bashrc
+```
+
+Add environmental variables for [dialogflow_task_executive](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive) and [gdrive_ros](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/gdrive_ros)
+Please see them for more details.
+
+```
+echo "# Credentials
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_json_file
+export DIALOGFLOW_PROJECT_ID=<your dialogflow project id>
+export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml" >> ~/.bashrc
+```
+
+#### Setting up udev file and add the user to groups
+
+Create udev rule for spot spinal if your pc doesn't have it.
+
+```bash
+sudo sh -c 'echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", ATTRS{serial}==\"A7044PJ7\", SYMLINK+=\"spot-spinal\", GROUP=\"dialout\"" > /etc/udev/rules.d/99-spot-spinal.rules'
+```
+
+Add your user to dialout and audio group
+
+```bash
+sudo groupadd <your user> dialout audio
+```
+
+### How to bring up spot
 
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf)
 
 After that, please run the ros driver and other basic programs with `jsk_spot_bringup.launch`. You can now control spot from ROS!
 
 ```bash
-source $HOME/catkin_ws/devel/setup.bash
+source $HOME/spot_ws/devel/setup.bash
 roslaunch jsk_spot_startup jsk_spot_bringup.launch
 ```
 
@@ -108,6 +142,7 @@ This launch includes
 - bringup launch for additional peripheral devices (Respeaker, insta 360 air and ublox GPS module)
 - teleoperation launch
 - interaction launch with Speech-To-Text and Text-To-Speech
+- so on.
 
 And you can run object detection with
 
@@ -119,7 +154,7 @@ roslaunch jsk_spot_startup object_detection_and_tracking.launch
 For visualization, you can run RViz with jsk configuration.
 
 ```bash
-source $HOME/catkin_ws/devel/setup.bash
+source $HOME/spot_ws/devel/setup.bash
 roslaunch jsk_spot_startup rviz.launch
 ```
 
@@ -128,9 +163,13 @@ You can control spot with DualShock3 controller. Please see [jsk_spot_teleop](./
 For development, `rosbag_record.launch` and `rosbag_play.launch` are useful for rosbag recording and playing.
 
 ```bash
-source $HOME/catkin_ws/devel/setup.bash
+source $HOME/spot_ws/devel/setup.bash
 # Record a rosbag file
 roslaunch jsk_spot_startup rosbag_record.launch rosbag:=<absolute file path to rosbag file>
 # Play a rosbag file
 roslaunch jsk_spot_startup rosbag_play.launch rosbag:=<absolute file path to rosbag file>
 ```
+
+### How to control spot from a remove development pc.
+
+TODO
