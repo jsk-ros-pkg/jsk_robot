@@ -185,4 +185,52 @@ roslaunch jsk_spot_startup rosbag_play.launch rosbag:=<absolute file path to ros
 
 ### How to control spot from a remove development pc.
 
-TODO
+First, connect your development PC's wifi adapter to 'spot-jsk' Access point.
+
+For every terminals in this section, Set your ROS_IP and ROS_MASTER_URI and source spot_ws.
+
+```
+rossetip
+rossetmaster spot-jsk.local
+source ~/spot_ws/devel/setup.bash
+```
+
+If spot is already brough up, you can see spot information from RViz.
+
+```
+roslaunch jsk_spot_startup rviz.launch
+```
+
+If you want to control Spot, there are basically 3 options.
+
+- Use spoteus ( roseus client, recommended )
+- Use python client ( spot_ros_client, experimental )
+- Use raw ROS interface
+
+#### spoteus
+
+spoteus is roseus client for ROS Interface of spot_ros.
+
+Open a terminal, setting up it for spot and run roseus repl. ( emacs shell or euslime are recommended. )
+
+Then initialize it for spot
+
+```
+(load "package://spoteus/spot-interface.l")
+(spot-init)
+```
+
+You can now control spot from roseus.
+for example, when you want to move spot 1m forward, type.
+
+```
+send *ri* :go-pose 1 0
+```
+
+And there are some examples in spoteus_demo.
+
+- `sample_basics.l`
+  + example of basic usage of Spot
+- `sample_navigate_to.l`
+  + example of autowalk client
+- `sample_visualization.l`
