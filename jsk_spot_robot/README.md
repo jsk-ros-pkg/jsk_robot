@@ -88,7 +88,6 @@ wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git --git
 wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
 wstool update
 wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall
-wstool merge -t . coral_usb_ros/fc.rosinstall
 wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
 wstool update
 rosdep install -y -r --from-paths . --ignore-src
