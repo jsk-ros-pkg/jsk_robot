@@ -140,8 +140,7 @@
      (if is-charging :charging :discharging)))
 
 
-(defun go-to-spot (name &optional (relative-coords (make-coords))
-                        &key (undock-rotate nil) (clear-costmap t))
+(defun go-to-spot (name &key (relative-pos nil) (relative-rot nil) (undock-rotate nil) (clear-costmap t))
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
@@ -173,15 +172,18 @@
   (let* ((ret (get-spot-coords name))
          (goal-pose (car ret))
          (frame-id (cdr ret)))
-    (when relative-coords
-      (setq goal-pose (send goal-pose :transform relative-coords :world)))
+    (when relative-pos
+      (setq goal-pose (send goal-pose :translate relative-pos :world)))
+    (when relative-rot
+      (setq goal-pose (send goal-pose :rotate relative-rot :local)))
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 
 (defun auto-dock (&key (n-trial 1) (clear-costmap t))
   (let ((success nil))
     (dotimes (i n-trial)
-      (when (go-to-spot *dock-spot* (make-coords :pos #f(-800 0 0))
+      (when (go-to-spot *dock-spot*
+                        :relative-pos #f(-800 0 0)
                         :clear-costmap clear-costmap)
         (ros::ros-info "arrived at the dock.")
         (setq success (dock))
@@ -333,7 +335,7 @@
     (dotimes (i n-trial)
       (setq success-move-to-sink-front
             (go-to-spot "/eng2/7f/room73B2-sink-front0"
-                        (make-coords :pos offset) :undock-rotate t))
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-sink-front (return)))
     success-move-to-sink-front))
 
