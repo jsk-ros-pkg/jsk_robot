@@ -10,6 +10,7 @@
   (let ((result-state
           (exec-state-machine *sm* `((tweet . ,tweet)
                                      (n-kitchen-trial . ,n-kitchen-trial)
+                                     (n-trashcan-trial . ,n-trashcan-trial)
                                      (n-dock-trial . ,n-dock-trial)
                                      (control-switchbot . ,control-switchbot)
                                      (initial-light-on . nil)
