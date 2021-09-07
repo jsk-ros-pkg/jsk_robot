@@ -285,6 +285,13 @@
   (ros::ros-error "failed going to the kitchen.")
   (send *ri* :speak-jp "キッチンのコンロの前に行くのに失敗しました。" :wait t))
 
+(defun report-move-to-trashcan-front ()
+  (ros::ros-info "arrived at the trash can")
+  (send *ri* :speak-jp "ゴミ箱の前につきました。" :wait t))
+
+(defun report-move-to-trashcan-front-failure ()
+  (ros::ros-error "failed going to the trash can front")
+  (send *ri* :speak-jp "ゴミ箱の前に行くのに失敗しました。" :wait t))
 
 (defun report-start-go-to-kitchen ()
   (ros::ros-info "start going to the kitchen.")
@@ -339,6 +346,27 @@
       (when success-move-to-sink-front (return)))
     success-move-to-sink-front))
 
+(defun inspect-trashcan (&key (tweet t))
+  (report-move-to-trashcan-front)
+  (send *fetch* :head :neck-y :joint-angle 70)
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (tweet-string "I took a photo of 73B2 trash cans." :warning-time 3
+                    :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (notify-recognition :location "trash cans"))
+    (progn
+      (notify-recognition :location "trash cans"))))
+
+(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(0 0 0)))
+  (let ((success-move-to-trashcan-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-trashcan-front
+            (go-to-spot "/eng2/7f/room73B2-trashbox-front"
+                        (make-coords :pos offset) :undock-rotate t))
+      (when success-move-to-trashcan-front (return)))
+    success-move-to-trashcan-front))
+
 
 (defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1)
                            (control-switchbot :api))
@@ -350,6 +378,7 @@
   ;; Check if the lights are on in the room
   (let ((initial-light-on (get-light-on))
         (success-go-to-kitchen nil)
+        (success-go-to-trashcan nil)
         (success-auto-dock nil)
         (success-battery-charging nil))
     (store-params)
@@ -367,6 +396,12 @@
     (if success-go-to-kitchen
       (inspect-kitchen :tweet tweet)
       (report-move-to-sink-front-failure))
+    ;; go to kitchen trash can
+    (setq success-go-to-trashcan (move-to-trashcan-front :n-trial n-trashcan-trial))
+    ;; report result to go to trash can
+    (if success-go-to-trashcan
+      (inspect-trashcan :tweet tweet)
+      (report-move-to-trashcan-front-failure))
     ;; go back from dock
     (report-auto-dock)
     (setq success-auto-dock (auto-dock :n-trial n-dock-trial :clear-costmap nil))
@@ -390,8 +425,13 @@
             (:room-light-on -> :move-to-sink-front)
             (:move-to-sink-front -> :inspect-kitchen)
             (:move-to-sink-front !-> :report-move-to-sink-front-failure)
-            (:inspect-kitchen -> :auto-dock)
-            (:report-move-to-sink-front-failure -> :auto-dock)
+            ;;(:inspect-kitchen -> :auto-dock)
+            ;;(:report-move-to-sink-front-failure -> :auto-dock)
+            (:inspect-kitchen -> :move-to-trashcan-front)
+            (:move-to-trashcan-front -> :inspect-trashcan)
+            (:move-to-trashcan-front !-> :report-move-to-trashcan-front-failure)
+            (:inspect-trashcan -> :auto-dock)
+            (:report-move-to-trashcan-front-failure -> :auto-dock)
             (:auto-dock -> :room-light-off)
             (:room-light-off -> :finish)
             (:finish -> t)
@@ -436,6 +476,20 @@
             (:report-move-to-sink-front-failure
               '(lambda (userdata)
                  (report-move-to-sink-front-failure)
+                 t))
+            (:move-to-trashcan-front
+              '(lambda (userdata)
+                 (let* ((n-trial (cdr (assoc 'n-trashcan-trial userdata)))
+                        (success (move-to-trashcan-front :n-trial n-trial)))
+                   (setf (cdr (assoc 'success-go-to-trashcan userdata)) success)
+                   success)))
+            (:inspect-trashcan
+              '(lambda (userdata)
+                 (inspect-trashcan :tweet (cdr (assoc 'tweet userdata)))
+                 t))
+            (:report-move-to-trashcan-front-failure
+              '(lambda (userdata)
+                 (report-move-to-trashcan-front-failure)
                  t))
             (:auto-dock
               '(lambda (userdata)
