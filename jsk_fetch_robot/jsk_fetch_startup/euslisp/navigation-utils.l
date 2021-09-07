@@ -330,11 +330,9 @@
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
-      (notify-recognition :location "kitchen sink")
-      (send *ri* :go-pos-unsafe 0 0 135))
+      (notify-recognition :location "kitchen sink"))
     (progn
-      (notify-recognition :location "kitchen")
-      (send *ri* :go-pos-unsafe 0 0 90))))
+      (notify-recognition :location "kitchen"))))
 
 
 (defun move-to-sink-front (&key (n-trial 1) (offset #f(400 -500 0)))
@@ -348,22 +346,23 @@
 
 (defun inspect-trashcan (&key (tweet t))
   (report-move-to-trashcan-front)
-  (send *fetch* :head :neck-y :joint-angle 70)
+  (send *fetch* :head :neck-p :joint-angle 25)
   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
   (send *ri* :wait-interpolation)
   (if tweet
-      (tweet-string "I took a photo of 73B2 trash cans." :warning-time 3
-                    :with-image "/edgetpu_object_detector/output/image" :speak t)
-      (notify-recognition :location "trash cans"))
+      (progn
+	(tweet-string "I took a photo of 73B2 trash cans." :warning-time 3
+		      :with-image "/edgetpu_object_detector/output/image" :speak t)
+	(notify-recognition :location "trash cans"))
     (progn
       (notify-recognition :location "trash cans"))))
 
-(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(0 0 0)))
+(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(-300 -300 0)))
   (let ((success-move-to-trashcan-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-trashcan-front
-            (go-to-spot "/eng2/7f/room73B2-trashbox-front"
-                        (make-coords :pos offset) :undock-rotate t))
+            (go-to-spot "/eng2/7f/room73B2-microwave-front"
+                        (make-coords :pos offset)))
       (when success-move-to-trashcan-front (return)))
     success-move-to-trashcan-front))
 
