@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import copy
+
 import actionlib
 import rospy
 import roslaunch
@@ -79,40 +81,44 @@ class BehaviorManagerNode(object):
 
         rospy.loginfo('Lead Action started. goal: {}'.format(goal))
 
-        # path calculation
-        path = self.graph.calcPath( self.current_node_id, goal.target_node_id )
-        if path is None:
-            rospy.logerr('No path from {} to {}'.format(self.current_node_id,goal.target_node_id))
-            self.sound_client.say('パスが見つかりませんでした')
-            result = LeadPersonResult(success=False)
-            self.server_lead_person.set_aborted(result)
-            return
-
-        # navigation of edges in the path
-        self.sound_client.say('目的地に向かいます',blocking=True)
-        for edge in path:
-            rospy.loginfo('Navigating Edge {}...'.format(edge))
-            try:
-                if self.navigate_edge(edge):
-                    rospy.loginfo('Edge {} succeeded.'.format(edge))
-                    self.current_node_id = edge.node_id_to
-                    self.pre_edge = edge
-                else:
-                    rospy.logerr('Edge {} failed'.format(edge))
-                    self.sound_client.say('目的地に到達できませんでした',blocking=True)
-                    result = LeadPersonResult(success=False)
-                    self.server_lead_person.set_aborted(result)
-                    return
-            except Exception as e:
-                rospy.logerr('Got an error while navigating edge {}: {}'.format(edge, e))
-                self.sound_client.say('エラーが発生しました',blocking=True)
-                result = LeadPersonResult(success=False)
+        current_graph = copy.deepcopy(self.graph)
+        while True:
+            # path calculation
+            path = current_graph.calcPath( self.current_node_id, goal.target_node_id )
+            if path is None:
+                rospy.logerr('No path from {} to {}'.format(self.current_node_id,goal.target_node_id))
+                self.sound_client.say('パスが見つかりませんでした')
+                result = LeadPersonResult(success=False,message='No path found')
                 self.server_lead_person.set_aborted(result)
                 return
+            else:
+                # navigation of edges in the path
+                self.sound_client.say('目的地に向かいます',blocking=True)
+                for edge in path:
+                    rospy.loginfo('Navigating Edge {}...'.format(edge))
+                    try:
+                        if self.navigate_edge(edge):
+                            rospy.loginfo('Edge {} succeeded.'.format(edge))
+                            self.current_node_id = edge.node_id_to
+                            self.pre_edge = edge
+                        else:
+                            rospy.logwarn('Edge {} failed'.format(edge))
+                            self.sound_client.say('移動に失敗しました。経路を探索し直します。',blocking=True)
+                            current_graph.remove_edge(edge.node_id_from, edge.node_id_to)
+                            continue
+                    except Exception as e:
+                        rospy.logerr('Got an error while navigating edge {}: {}'.format(edge, e))
+                        self.sound_client.say('エラーが発生しました',blocking=True)
+                        self.pre_edge = None
+                        result = LeadPersonResult(
+                                    success=False,
+                                    message='Got an error while navigating edge {}: {}'.format(edge, e))
+                        self.server_lead_person.set_aborted(result)
+                        return
 
+        rospy.loginfo('Goal Reached!')
         self.sound_client.say('目的地に到着しました.',blocking=True)
-
-        result = LeadPersonResult(success=True)
+        result = LeadPersonResult(success=True,message='Goal Reached.')
         self.server_lead_person.set_succeeded(result)
         return
 
@@ -144,17 +150,9 @@ class BehaviorManagerNode(object):
         node_from = self.graph.nodes[edge.node_id_from]
         node_to = self.graph.nodes[edge.node_id_to]
 
-        try:
-            behavior.run_initial( node_from, node_to, edge, self.pre_edge )
-            success = behavior.run_main( node_from, node_to, edge, self.pre_edge )
-            behavior.run_final( node_from, node_to, edge, self.pre_edge )
-        except Exception as e:
-            rospy.logerr('Got error while running a behavior: {}'.format(e))
-            self.sound_client.say('行動中にエラーが発生しました',blocking=True)
-            self.pre_edge = None
-            return False
+        # Exception from behavior will be caught in handler
+        success_initial = behavior.run_initial( node_from, node_to, edge, self.pre_edge )
+        success_main = behavior.run_main( node_from, node_to, edge, self.pre_edge )
+        behavior.run_final( node_from, node_to, edge, self.pre_edge )
 
-        if not success:
-            self.pre_edge = None
-
-        return success
+        return success_main
