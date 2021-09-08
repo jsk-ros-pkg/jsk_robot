@@ -362,7 +362,7 @@
     (dotimes (i n-trial)
       (setq success-move-to-trashcan-front
             (go-to-spot "/eng2/7f/room73B2-microwave-front"
-                        (make-coords :pos offset)))
+                        (make-coords :pos offset :rpy (float-vector -pi/2 0 0))))
       (when success-move-to-trashcan-front (return)))
     success-move-to-trashcan-front))
 
