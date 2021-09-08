@@ -92,6 +92,6 @@ class SupportBehaviorGraph:
 
     def remove_edge(self,
                     node_id_from,
-                    node_it_to):
+                    node_id_to):
         del self.edges[node_id_from, node_id_to]
         self.network.remove_edge(node_id_from, node_id_to)
