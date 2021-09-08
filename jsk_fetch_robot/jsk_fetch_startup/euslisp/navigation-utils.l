@@ -175,7 +175,7 @@
     (when relative-pos
       (setq goal-pose (send goal-pose :translate relative-pos :world)))
     (when relative-rot
-      (setq goal-pose (send goal-pose :rotate relative-rot :local)))
+      (setq goal-pose (send goal-pose :rotate relative-rot :z :local)))
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 
@@ -362,7 +362,7 @@
     (dotimes (i n-trial)
       (setq success-move-to-trashcan-front
             (go-to-spot "/eng2/7f/room73B2-microwave-front"
-                        (make-coords :pos offset :rpy (float-vector -pi/2 0 0))))
+                        :relative-pos offset :relative-rot -pi/2))
       (when success-move-to-trashcan-front (return)))
     success-move-to-trashcan-front))
 
