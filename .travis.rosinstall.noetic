@@ -30,8 +30,7 @@
    local-name: naoqi_pose
    version: release/kinetic/naoqi_pose
 # for drc_task_common in jsk_demos
-# jsk_control is not released in melodic
-- tar:
-    local-name: jsk_control/jsk_ik_server
-    uri: https://github.com/tork-a/jsk_control-release/archive/release/kinetic/jsk_ik_server/0.1.14-0.tar.gz
-    version: jsk_control-release-release-kinetic-jsk_ik_server-0.1.14-0
+# jsk_control is not released in noetic
+- git:
+    local-name: jsk_control
+    uri: https://github.com/jsk-ros-pkg/jsk_control
