@@ -346,7 +346,7 @@
 
 (defun inspect-trashcan (&key (tweet t))
   (report-move-to-trashcan-front)
-  (send *fetch* :head :neck-p :joint-angle 25)
+  (send *fetch* :head :neck-p :joint-angle 40)
   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
   (send *ri* :wait-interpolation)
   (if tweet
