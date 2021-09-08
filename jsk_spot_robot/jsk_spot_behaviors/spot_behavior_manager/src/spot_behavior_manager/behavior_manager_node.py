@@ -121,6 +121,8 @@ class BehaviorManagerNode(object):
                         self.server_execute_behaviors.set_aborted(result)
                         return
 
+                break
+
         rospy.loginfo('Goal Reached!')
         self.sound_client.say('目的地に到着しました.', blocking=True)
         result = LeadPersonResult(success=True, message='Goal Reached.')
