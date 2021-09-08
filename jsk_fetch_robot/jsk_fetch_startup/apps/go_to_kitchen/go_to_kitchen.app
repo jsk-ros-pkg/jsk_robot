@@ -105,6 +105,7 @@ plugins:
           type: GoalID
 plugin_order:
   start_plugin_order:
+    - move_base_cancel_plugin
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
     - respeaker_audio_recorder_plugin
@@ -113,8 +114,8 @@ plugin_order:
     - gdrive_uploader_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
-    - move_base_cancel_plugin
   stop_plugin_order:
+    - move_base_cancel_plugin
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
     - respeaker_audio_recorder_plugin
@@ -123,4 +124,3 @@ plugin_order:
     - gdrive_uploader_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
-    - move_base_cancel_plugin
