@@ -22,6 +22,7 @@
   <exec_depend>jsk_tools</exec_depend>
   <exec_depend>spot_description</exec_depend>
   <exec_depend>spot_driver</exec_depend>
+  <exec_depend>twist_mux</exec_depend>
   <exec_depend>respeaker_ros</exec_depend>
   <exec_depend>cmd_vel_smoother</exec_depend>
   <exec_depend>xterm</exec_depend>
