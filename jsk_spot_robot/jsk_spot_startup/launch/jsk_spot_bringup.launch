@@ -3,6 +3,8 @@
   <arg name="password" default="dummypassword" />
   <arg name="hostname" default="192.168.50.3" />
 
+  <arg name="use_driver" default="true" />
+
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
