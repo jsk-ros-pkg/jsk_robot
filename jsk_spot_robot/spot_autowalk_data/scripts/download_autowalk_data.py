@@ -118,6 +118,37 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1eZbBLwzl9nVpSAebtux5nbN1B4UfGEoh',
+        md5='01ef288775d6c21a634a17fa427e4900',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1_zySu-e94wzHLaLYTbQuUd9A0Sb8x9NQ',
+        md5='fc9fb3161b745ff5f7b62be8977f7e56',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_elevator_7FElevator_to_1FElevator.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1kLSNCn2lhkcdOFBaYSVHUFzklhVz_jL8',
+        md5='fa5a26677d9136ef4671d7a32ca59097',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1oSFjkwG0EcVXapMVgLlc_i1VtcWXwEwE',
+        md5='72ba498fe56700bee31c8ce166e77008',
+        extract=True
+    )
 
 if __name__ == '__main__':
     main()
