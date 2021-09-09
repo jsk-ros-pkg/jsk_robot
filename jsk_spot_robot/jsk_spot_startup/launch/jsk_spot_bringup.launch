@@ -2,6 +2,12 @@
   <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
 
+  <arg name="use_peripheral" default="true" />
+  <arg name="use_image_processing" default="true" />
+  <arg name="use_interaction" default="true" />
+  <arg name="use_app_manager" default="true" />
+  <arg name="use_teleop" default="true" />
+
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
@@ -13,43 +19,54 @@
   <!-- peripheral devices -->
   <include
       file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+      if="$(arg use_peripheral)"
       />
 
   <!-- image processing -->
   <include
       file="$(find jsk_spot_startup)/launch/include/image_processing.launch"
+      if="$(arg use_image_processing)"
       />
 
   <!-- interaction nodes -->
   <include
       file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+      if="$(arg use_interaction)"
       />
 
   <!-- app manager and dialogflow -->
-  <rosparam>
-    robot:
-        type: spot
-  </rosparam>
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
-    <arg name="use_applist" value="false" /> <!-- use plugin -->
-    <arg name="respawn" value="false" />
-    <arg name="basic" value="true" />
-    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
-  </include>
-  <include file="$(find jsk_spot_startup)/launch/include/dialogflow.launch" />
-  <include file="$(find app_scheduler)/launch/app_scheduler.launch" >
-    <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
-  </include>
+  <group
+      if="$(arg use_app_manager)"
+      >
+      <rosparam>
+        robot:
+            type: spot
+      </rosparam>
+      <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+        <arg name="use_applist" value="false" /> <!-- use plugin -->
+        <arg name="respawn" value="false" />
+        <arg name="basic" value="true" />
+        <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+      </include>
+      <include file="$(find jsk_spot_startup)/launch/include/dialogflow.launch" />
+      <include file="$(find app_scheduler)/launch/app_scheduler.launch" >
+        <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
+      </include>
+  </group>
 
   <!-- teleop node -->
-  <include
-      file="$(find jsk_spot_teleop)/launch/teleop.launch"
+  <group
+      if="$(arg use_teleop)"
       >
-      <arg name="pad_type" value="R1" />
-  </include>
-  <include
-      file="$(find jsk_spot_teleop)/launch/teleop.launch"
-      >
-      <arg name="pad_type" value="dualshock3" />
-  </include>
+      <include
+          file="$(find jsk_spot_teleop)/launch/teleop.launch"
+          >
+          <arg name="pad_type" value="R1" />
+      </include>
+      <include
+          file="$(find jsk_spot_teleop)/launch/teleop.launch"
+          >
+          <arg name="pad_type" value="dualshock3" />
+      </include>
+  </group>
 </launch>
