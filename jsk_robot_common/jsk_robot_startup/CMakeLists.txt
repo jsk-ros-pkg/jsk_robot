@@ -64,7 +64,7 @@ endmacro()
 # jsk_topic_tools >= 2.2.27 only available from indigo
 # mongodb_store >= 0.4.4 required in kinetic
 # mongodb_store >= 0.5.2 required in melodic
-find_package(mongodb_store QUIET)
+find_package(catkin COMPONENTS mongodb_store)
 if(mongodb_store_FOUND)
 if($ENV{ROS_DISTRO} STRGREATER "hydro")
   if (("${mongodb_store_VERSION}" VERSION_GREATER "0.4.3" AND "${mongodb_store_VERSION}" VERSION_LESS "0.5.0")
