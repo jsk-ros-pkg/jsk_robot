@@ -4,9 +4,11 @@ project(kinovaeus)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
+  set(ROSEUS_package roseus)
+endif()
 find_package(catkin REQUIRED COMPONENTS
-  roseus
-  euscollada
+  ${ROSEUS_package} # required in indigo
 )
 find_package(kortex_description) # Just in case when description is not released. Avoid compile failing
 
@@ -17,6 +19,13 @@ if(NOT kortex_description_FOUND)
   message(WARNING "Install kortex_description from https://github.com/Kinovarobotics/ros_kortex.git")
   return()
 endif()
+
+find_package(euscollada) # Just in case when euscollada not released. Avoid compile failing
+if(NOT euscollada_FOUND)
+  message(WARNING "euscollada is not found, so skip generating eus models.")
+  return()
+endif()
+
 
 
 ###########
