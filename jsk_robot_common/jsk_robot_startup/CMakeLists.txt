@@ -21,12 +21,21 @@ else()
   endif()
 endif()
 
-find_package(catkin REQUIRED COMPONENTS
+find_package(catkin COMPONENTS # remove REQUIRED for mongodb
   dynamic_reconfigure
   jsk_topic_tools
+  mongodb_store
   sensor_msgs
   urdf
 )
+if(NOT(dynamic_reconfigure_FOUND AND jsk_topic_tools_FOUND AND sensor_msgs_FOUND AND urdf_FOUND))
+  message(FATAL_ERROR "requried package is not found
+dynamic_reconfigure_FOUND : ${dynamic_reconfigure_FOUND}
+jsk_topic_tools_FOUND : ${jsk_topic_tools_FOUND}
+sensor_msgs_FOUND : ${sensor_msgs_FOUND}
+urdf_FOUND : ${urdf_FOUND}")
+endif()
+
 
 find_package(Boost REQUIRED COMPONENTS program_options thread system)
 if ("${BOOST_MAJOR_VERSION}" VERSION_EQUAL "1" AND "${Boost_MINOR_VERSION}" VERSION_GREATER "46")
@@ -64,7 +73,6 @@ endmacro()
 # jsk_topic_tools >= 2.2.27 only available from indigo
 # mongodb_store >= 0.4.4 required in kinetic
 # mongodb_store >= 0.5.2 required in melodic
-find_package(catkin COMPONENTS mongodb_store)
 if(mongodb_store_FOUND)
 if($ENV{ROS_DISTRO} STRGREATER "hydro")
   if (("${mongodb_store_VERSION}" VERSION_GREATER "0.4.3" AND "${mongodb_store_VERSION}" VERSION_LESS "0.5.0")
