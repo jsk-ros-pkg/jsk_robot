@@ -225,6 +225,22 @@ edges:
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+  - from: 'eng2_7FElevator'
+    to: 'eng2_1FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
+      rest_waypoint_id: 'snubbed-puma-5v8XtjdA17XhPNLhsH2WEg=='
+      goal_waypoint_id: 'meager-fox-bT4DU3uCHBJFWuYILkopVg=='
+  - from: 'eng2_1FElevator'
+    to: 'eng2_7FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
+      rest_waypoint_id: 'snubbed-puma-5v8XtjdA17XhPNLhsH2WEg=='
+      goal_waypoint_id: 'meager-fox-bT4DU3uCHBJFWuYILkopVg=='
 nodes:
   'dummy':
     name_en: 'dummy'
@@ -306,6 +322,16 @@ nodes:
     switchbot_device: '/eng2/3f/elevator/up/button'
     floor: 3
     floor_height: 4.5
+  'eng2_1FElevator':
+    name_en: 'Elevator'
+    name_jp: 'エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
+        id: 'brag-eagle-Of.kPg1gvRBhSWzrP+G3Yw=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/1f/elevator/down/button'
+    floor: 1
+    floor_height: -4.5
   'eng2_Mech_Office':
     name_en: 'Mech Office'
     name_jp: '機械系事務室'
