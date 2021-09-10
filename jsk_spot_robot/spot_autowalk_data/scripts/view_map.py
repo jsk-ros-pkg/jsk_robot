@@ -5,6 +5,8 @@
 # is subject to the terms and conditions of the Boston Dynamics Software
 # Development Kit License (20191101-BDSDK-SL).
 
+import argparse
+
 from vtk.util import numpy_support
 import google.protobuf.timestamp_pb2
 import math
@@ -265,7 +267,7 @@ def load_map(path):
                 current_edge_snapshots)
 
 
-def create_graph_objects(current_graph, current_waypoint_snapshots, current_waypoints, renderer):
+def create_graph_objects(current_graph, current_waypoint_snapshots, current_waypoints, renderer, draw_id=True):
     """
     Creates all the VTK objects associated with the graph.
     :param current_graph: the graph to use.
@@ -303,10 +305,11 @@ def create_graph_objects(current_graph, current_waypoint_snapshots, current_wayp
         world_tform_current_waypoint = curr_element[1]
         # Add text to the waypoint.
         print('{}: {}'.format(curr_waypoint.annotations.name, curr_waypoint.id))
-        make_text(
-                '{}: {}'.format(curr_waypoint.annotations.name, curr_waypoint.id),
-                world_tform_current_waypoint[:3, 3],
-                renderer)
+        if draw_id:
+            make_text(
+                    '{}: {}'.format(curr_waypoint.annotations.name, curr_waypoint.id),
+                    world_tform_current_waypoint[:3, 3],
+                    renderer)
 
         # For each fiducial in the waypoint's snapshot, add an object at the world pose of that fiducial.
         if (curr_waypoint.snapshot_id in current_waypoint_snapshots):
@@ -346,9 +349,8 @@ def create_graph_objects(current_graph, current_waypoint_snapshots, current_wayp
     return avg_pos
 
 
-def main(argv):
+def main( path, draw_id ):
     # Load the map from the given file.
-    path = argv[0]
     (current_graph, current_waypoints, current_waypoint_snapshots,
      current_edge_snapshots) = load_map(path)
 
@@ -357,7 +359,7 @@ def main(argv):
     renderer.SetBackground(0.05, 0.1, 0.15)
 
     avg_pos = create_graph_objects(current_graph, current_waypoint_snapshots, current_waypoints,
-                                   renderer)
+                                   renderer, draw_id)
 
     # Compute the average waypoint position to place the camera appropriately.
     avg_pos /= len(current_waypoints)
@@ -385,7 +387,15 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    if (len(sys.argv) != 2):
-        print("Usage: view_map.py <map_directory>")
-        sys.exit(-1)
-    main(sys.argv[1:])
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('map_directory')
+    parser.add_argument('--draw-id', help='Draw ID of each waypoints', action='store_true')
+
+    args = parser.parse_args()
+
+    if args.draw_id:
+        main( args.map_directory, True )
+    else:
+        main( args.map_directory, False )
