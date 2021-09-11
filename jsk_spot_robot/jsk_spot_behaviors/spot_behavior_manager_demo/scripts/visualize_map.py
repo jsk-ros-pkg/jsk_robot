@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
 import argparse
@@ -6,16 +6,38 @@ import yaml
 
 from graphviz import Digraph
 
+import gi
+gi.require_version('Gtk','3.0')
+from gi.repository import Gtk
+
+import xdot
+
+
+class MyDotwindow(xdot.DotWindow):
+
+    def __init__(self):
+        xdot.DotWindow.__init__(self)
+        self.dotwidget.connect('clicked', self.on_url_clicked)
+
+    def on_url_clicked(self, widget, url, event):
+        dialog = Gtk.MessageDialog(
+                parent=self,
+                buttons=Gtk.ButtonsType.OK,
+                message_format='{} clicked'.format(url))
+        dialog.connect('response', lambda dialog, response: dialog.destroy())
+        dialog.run()
+        return True
+
 
 def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--filename',required=True)
-    parser.add_argument('--output',required=True)
+    #parser.add_argument('--output',required=True)
     args = parser.parse_args()
 
     filename = args.filename
-    output = args.output
+    #output = args.output
 
     with open(filename, 'r') as f:
         map_data = yaml.load(f)
@@ -49,7 +71,12 @@ def main():
         dg.attr('edge', color=list_color_for_bt[list_behavior_type.index(edge['behavior_type'])])
         dg.edge(edge['from'], edge['to'], label=edge['behavior_type'].split('.')[2])
 
-    dg.render(output)
+    #dg.render(output)
+
+    window = MyDotwindow()
+    window.set_dotcode(dg.source.encode('utf-8'))
+    window.connect('delete-event', Gtk.main_quit)
+    Gtk.main()
 
 
 if __name__ == '__main__':
