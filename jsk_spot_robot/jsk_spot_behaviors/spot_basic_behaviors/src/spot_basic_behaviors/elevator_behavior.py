@@ -80,6 +80,8 @@ class ElevatorBehavior(BaseBehavior):
             SwitchBotCommandAction
         )
 
+        return True
+
     def run_main(self, start_node, end_node, edge, pre_edge):
 
         rospy.logdebug('run_main() called')
