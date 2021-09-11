@@ -142,6 +142,42 @@ edges:
       rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
       goal_waypoint_id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
   - from: 'eng2_2FElevator'
+    to: 'eng2_subway_pillar'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+  - from: 'eng2_subway_pillar'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+  - from: 'eng2_subway_pillar'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_pillar'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_00'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_table_00'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_2FElevator'
     to: 'eng2_MainEntrance_upper'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
@@ -251,6 +287,9 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
         id: 'mythic-leech-Uslc00eTIhygFsCdH2q1Qg=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+        id: 'brumal-gerbil-NLVgQc0oBXbc8BCZev57LQ=='
+        localization_method: 'fiducial'
     switchbot_device: '/eng2/2f/elevator/up/button'
     floor: 2
     floor_height: 0
@@ -301,6 +340,75 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'azoic-lion-Iapbto7rzlzuFF0MvXdyPA=='
         localization_method: 'fiducial'
+  'eng2_subway_pillar':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+        id: 'quack-snail-Zm7LgLSyql.xcoqi9OeCQA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'risen-bowfin-2he29MpsZLJRToJDhZ3.3g=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+        id: 'unread-donkey-2pdTiY6qfMnAfHD8RNH2ZA=='
+        localization_method: 'fiducial'
+  'eng2_subway_initial':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'skimpy-vole-2plogvKFUrjXTCoxsCsNGA=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+        id: 'fired-minnow-Pw+F4RFHFQwQolGeuHgkEQ=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_00':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'perky-crake-iZWT3e+cQtLKUCo8iVTu7Q=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_01':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'spacy-eland-WlC6wgdJeo5u.TY6T3hA8Q=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_02':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'apodal-drum-o2pzrnIBJdLVWMX.ElaQOQ=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_03':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'formed-gerbil-yZerC+XIahSrvCJK5Duk6A=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_04':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'ruled-otter-2zSijP2KPICZpqU80utSPw=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_10':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'spiral-falcon-bG1t8To8x.p7BWwOWjH2Lg=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_11':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'manky-mite-EvhV0ln+iiG+pTCfeEnArQ=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_12':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'brash-sheep-NYE7iE0HuaqR0i5xnzYE1A=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_13':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'swampy-jay-jEYEQ+FOe4eMKEhoGco9LA=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_14':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'terse-crest-Toj82ugJt2Y029d7Afhq0A=='
+        localization_method: 'waypoint'
   'eng2_MainEntrance_upper':
     name_en: 'Entrance'
     name_jp: '入り口'
