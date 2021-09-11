@@ -150,5 +150,29 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_2FElevator_to_subway.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1uRZA0JnFyenVcZDtXhQGzqGAIcO9lwop',
+        md5='ef40ee8677ef68b4beee4e516a11d1f1',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_subway_tablenavigation.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1Lye5ZfFLgmU-G8TdevSiHG72kN04XnFt',
+        md5='e65a06fbb7b2037659bf657ebb4e5d36',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_subway_tablenavigation_02.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1GgIra90yX21IMYYL8VgrY9YJpGevA1ek',
+        md5='08eca6ac0e1310236f32f229370aa161',
+        extract=True
+    )
+
 if __name__ == '__main__':
     main()
