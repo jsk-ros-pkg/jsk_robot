@@ -24,3 +24,7 @@ pip3 install graphviz xdot
 ```
 rosrun spot_behavior_manager_demo visualize_map.py --filename <config map yaml>
 ```
+
+#### Example Output
+
+![map](https://user-images.githubusercontent.com/9410362/132942120-4a4e652b-3d25-43df-a678-fd3c09782284.png)
