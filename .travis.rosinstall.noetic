@@ -21,6 +21,12 @@
 - tar:
     local-name: euscollada
     uri: https://github.com/tork-a/jsk_model_tools-release/archive/refs/tags/rpm/ros-melodic-euscollada-0.4.3-0_28.tar.gz
+# jsk_robot_startup LightweightLogger requires mongodb_store
+# use package.xml format 3 to install python3-pymongo, see https://github.com/strands-project/mongodb_store/pull/269
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/k-okada/mongodb_store.git
+    version: add_package_3
 #
 - git:
    uri: http://github.com/RethinkRobotics/baxter_common.git
