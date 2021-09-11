@@ -12,6 +12,20 @@ this scripts download autowalk data from google drive. this script will be run w
 
 this script visualize autowalk data and each waypoint id
 
+#### Usage
+
+when you want to visualize autowalk data without waypoint id, just run
+
+```
+rosrun spot_autowalk_data view_map.py <map_directory.walk>
+```
+
+when you want to visualize autowalk data with waypoint id, run the script with `--draw-id` option
+
+```
+rosrun spot_autowalk_data view_map.py <map_directory.walk> --draw-id
+```
+
 ## autowalk data in this packages
 
 ### eng2_2FElevator_to_2FEntrance.walk
