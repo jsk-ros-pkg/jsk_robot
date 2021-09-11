@@ -160,8 +160,11 @@ class BehaviorManagerNode(object):
         # Exception from behavior will be caught in handler
         success_initial = behavior.run_initial(
             node_from, node_to, edge, self.pre_edge)
-        success_main = behavior.run_main(
-            node_from, node_to, edge, self.pre_edge)
-        behavior.run_final(node_from, node_to, edge, self.pre_edge)
-
-        return success_main
+        if success_initial is False:
+            behavior.run_final(node_from, node_to, edge, self.pre_edge)
+            return False
+        else:
+            success_main = behavior.run_main(
+                node_from, node_to, edge, self.pre_edge)
+            behavior.run_final(node_from, node_to, edge, self.pre_edge)
+            return success_main

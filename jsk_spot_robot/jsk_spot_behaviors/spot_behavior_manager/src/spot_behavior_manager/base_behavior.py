@@ -33,6 +33,7 @@ class SimpleBehavior(BaseBehavior):
     def run_initial(self, start_node, end_node, edge, pre_edge):
 
         rospy.loginfo('__run_initial() called')
+        return True
 
     def run_main(self, start_node, end_node, edge, pre_edge):
 
