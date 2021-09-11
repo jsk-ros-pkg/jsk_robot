@@ -76,6 +76,18 @@ rosrun spot_autowalk_data view_map.py <map_directory.walk> --draw-id
 
 ![eng2_MainEntrance_to_HongoMainGate_Daylight](https://user-images.githubusercontent.com/9410362/129997430-620ee1dc-6659-4028-acd7-f80b7539364a.png)
 
+### eng2_2FElevator_to_subway.walk
+
+![eng2_2FElevator_to_subway](https://user-images.githubusercontent.com/9410362/132933793-63c627bc-e210-4922-9fa2-4c1538b6f45e.png)
+
+### eng2_subway_tablenavigation.walk
+
+![eng2_subway_tablenavigation](https://user-images.githubusercontent.com/9410362/132933800-6f68566e-8471-4ac4-a030-94414f4a1b83.png)
+
+### eng2_subway_tablenavigation_02.walk
+
+![eng2_subway_tablenavigation_02](https://user-images.githubusercontent.com/9410362/132933805-f3c10dc3-01da-429c-96b8-74225401d703.png)
+
 ## How to add autowalk data in this package
 
 1. record a new autowalk data
