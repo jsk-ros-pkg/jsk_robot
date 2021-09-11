@@ -28,9 +28,10 @@
    version: kinetic-devel
 - git:
    # https://github.com/RethinkRobotics/baxter_simulator/pull/130
-   uri: https://github.com/EmaroLab/baxter_simulator.git
+   # https://github.com/RethinkRobotics/baxter_simulator/pull/132
+   uri: https://github.com/k-okada/baxter_simulator.git
    local-name: RethinkRobotics/baxter_simulator
-   version: master
+   version: fix_noetic
 # need to support Python3 / https://github.com/RethinkRobotics/baxter_interface/pull/86
 - git:
    uri: https://github.com/k-okada/baxter_interface.git
