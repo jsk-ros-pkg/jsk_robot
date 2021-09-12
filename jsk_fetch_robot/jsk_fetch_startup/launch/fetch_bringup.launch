@@ -7,6 +7,8 @@
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
+  <arg name="use_build_map" default="false" />
+  <arg name="use_keepout" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -14,23 +16,32 @@
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
   <!-- add jsk startups -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
-
   <node pkg="jsk_fetch_startup" name="battery_warning" type="battery_warning.py"
         respawn="true" output="screen">
     <rosparam>
       duration: 180
       charge_level_threshold: 40.0
       charge_level_step: 10.0
+      volume: 1.0
     </rosparam>
   </node>
 
-  <node pkg="jsk_fetch_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
+  <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
+      volume: 0.5
     </rosparam>
   </node>
-  <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" name="boot_sound" type="boot_sound.py" />
+  <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
+    <param name="wav_file" value="$(find jsk_fetch_startup)/data/boot_sound.wav" />
+    <param name="preferred_interface" value="wlan0" />
+  </node>
+
+  <!-- look at human for Fetch -->
+  <node name="look_at_human"
+        pkg="jsk_fetch_startup" type="fetch-look-at-human.l" output="screen">
+    <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
+  </node>
 
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
@@ -76,9 +87,10 @@
 
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
-    <arg name="use_applist" value="true" />
-    <arg name="applist" value="$(find jsk_fetch_startup)/apps"/>
+    <arg name="use_applist" value="false" /> <!-- use plugin -->
     <arg name="respawn" value="false" />
+    <arg name="basic" value="true" />
+    <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
   </include>
 
   <!-- downsample / throttle sensor data -->
@@ -89,10 +101,25 @@
   <!-- include fetch moveit -->
   <include file="$(find fetch_moveit_config)/launch/move_group.launch"
            if="$(arg launch_moveit)" />
+  <!-- overwrite fetch.srdf -->
+  <!-- The semantic description that corresponds to the URDF -->
+  <param name="robot_description_semantic"
+         command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
 
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
-           if="$(arg launch_teleop)" />
+           if="$(arg launch_teleop)" >
+      <arg name="odom_topic" value="/odom_combined" />
+  </include>
+
+  <!-- network status -->
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" />
+  <!-- network detector -->
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector">
+    <rosparam>
+      interface_name: wlan0
+    </rosparam>
+  </node>
 
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
@@ -121,24 +148,44 @@
          - robotsound_jp
     </rosparam>
   </group>
+  <!-- select mux for selecting speech_to_text service -->
+  <!-- the mux node is in jsk_3rdparty/dialogflow_task_executive -->
+  <!-- https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive -->
+  <node name="speech_to_text_selector" pkg="jsk_robot_startup" type="mux_selector.py"
+        respawn="true"
+        args="/network/connected 'm.data==False' /speech_to_text_julius">
+    <remap from="mux" to="speech_to_text_mux" />
+    <rosparam>
+      default_select: speech_to_text_google
+      patient: 6
+    </rosparam>
+  </node>
 
   <group if="$(arg launch_move_base)">
     <!-- jsk_maps -->
     <include file="$(find jsk_maps)/launch/start_map_$(arg map_frame).launch">
       <arg name="launch_map_server" value="true" />
+      <arg name="keepout" value="$(arg use_keepout)" />
     </include>
 
     <!-- dock localization -->
     <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
 
     <!-- include fetch_navigation -->
-    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
+    <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
       <arg name="map_file" value="$(arg map_file)" />
       <arg name="map_keepout_file" value="$(arg keepout_map_file)" />
-      <arg name="use_keepout" value="false" />
+      <arg name="use_keepout" value="$(arg use_keepout)" />
       <arg name="use_map_topic" value="true" />
       <arg name="launch_map_server" value="false" />
+      <arg name="odom_topic" value="/odom_combined" />
     </include>
+
+    <!-- slam for build a map -->
+    <node pkg="slam_karto" type="slam_karto" name="slam_karto"
+          output="screen" if="$(arg use_build_map)" >
+      <remap from="scan" to="base_scan"/>
+    </node>
 
     <!-- robot localization ukf -->
     <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
@@ -233,6 +280,8 @@
         limited_distance: 0.3
         limited_rot_speed: 0.45
         limited_trans_speed: 0.25
+        max_trans_param_name: max_vel_x
+        max_rot_param_name: max_vel_theta
     </rosparam>
   </group>
 
@@ -248,4 +297,13 @@
     <remap from="~input" to="/odom" />
     <remap from="~output" to="/odom_corrected" />
   </node>
+
+  <!-- robot_pose_publisher for rwt_nav -->
+  <node name="robot_pose_publisher" pkg="robot_pose_publisher" type="robot_pose_publisher">
+    <rosparam>
+      map_frame: /map
+      base_frame: /base_link
+    </rosparam>
+  </node>
+
 </launch>

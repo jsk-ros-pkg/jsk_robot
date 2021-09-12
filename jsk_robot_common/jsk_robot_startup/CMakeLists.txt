@@ -21,13 +21,21 @@ else()
   endif()
 endif()
 
-find_package(catkin REQUIRED COMPONENTS
+find_package(catkin COMPONENTS # remove REQUIRED for mongodb
   dynamic_reconfigure
   jsk_topic_tools
   mongodb_store
   sensor_msgs
   urdf
 )
+if(NOT(dynamic_reconfigure_FOUND AND jsk_topic_tools_FOUND AND sensor_msgs_FOUND AND urdf_FOUND))
+  message(FATAL_ERROR "requried package is not found
+dynamic_reconfigure_FOUND : ${dynamic_reconfigure_FOUND}
+jsk_topic_tools_FOUND : ${jsk_topic_tools_FOUND}
+sensor_msgs_FOUND : ${sensor_msgs_FOUND}
+urdf_FOUND : ${urdf_FOUND}")
+endif()
+
 
 find_package(Boost REQUIRED COMPONENTS program_options thread system)
 if ("${BOOST_MAJOR_VERSION}" VERSION_EQUAL "1" AND "${Boost_MINOR_VERSION}" VERSION_GREATER "46")
@@ -65,6 +73,7 @@ endmacro()
 # jsk_topic_tools >= 2.2.27 only available from indigo
 # mongodb_store >= 0.4.4 required in kinetic
 # mongodb_store >= 0.5.2 required in melodic
+if(mongodb_store_FOUND)
 if($ENV{ROS_DISTRO} STRGREATER "hydro")
   if (("${mongodb_store_VERSION}" VERSION_GREATER "0.4.3" AND "${mongodb_store_VERSION}" VERSION_LESS "0.5.0")
       OR "${mongodb_store_VERSION}" VERSION_GREATER "0.5.1")
@@ -81,6 +90,10 @@ target_link_libraries(jsk_robot_lifelog
   ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES})
 add_dependencies(jsk_robot_lifelog ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+
+else(mongodb_store_FOUND)
+  message(AUTHOR_WARNING "===\nros-$ENV{ROS_DISTRO}-mongodb-store package is not found, may be it is not releaed yet\n===")
+endif(mongodb_store_FOUND)
 
 find_package(PkgConfig)
 pkg_check_modules(URDFDOM REQUIRED urdfdom)
@@ -99,7 +112,14 @@ install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(TARGETS jsk_robot_lifelog joint_states_throttle ${${PROJET_NAME}_LIFELOG_NODELET_EXECUTABLES}
+if(mongodb_store_FOUND)
+install(TARGETS jsk_robot_lifelog
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+endif(mongodb_store_FOUND)
+install(TARGETS joint_states_throttle ${${PROJET_NAME}_LIFELOG_NODELET_EXECUTABLES}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -110,4 +130,5 @@ if(CATKIN_ENABLE_TESTING)
   # Disabled since cannot set environment variables for rostest for now.
   # see https://github.com/PR2/pr2_simulator/pull/126
   # add_rostest(lifelog/test/logger_pr2.test)
+  add_rostest(lifelog/test/test_common_logger.test)
 endif()
