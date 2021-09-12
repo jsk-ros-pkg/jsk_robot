@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(roseus_remote)
 
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
+  set(ROSEUS_package roseus)
+endif()
 find_package(catkin REQUIRED COMPONENTS
   jsk_network_tools
   std_msgs
-  roseus
+  ${ROSEUS_package} # required in indigo
   message_generation
 )
 

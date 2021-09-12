@@ -4,8 +4,11 @@ project(baxtereus)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
+  set(ROSEUS_package roseus)
+endif()
 find_package(catkin REQUIRED COMPONENTS
-  roseus
+  ${ROSEUS_package} # required in indigo
   collada_urdf
   euscollada
 #  baxter_description
