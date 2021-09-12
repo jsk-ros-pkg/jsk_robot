@@ -22,12 +22,14 @@
       duration: 180
       charge_level_threshold: 40.0
       charge_level_step: 10.0
+      volume: 1.0
     </rosparam>
   </node>
 
   <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
+      volume: 0.5
     </rosparam>
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
