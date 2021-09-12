@@ -7,9 +7,12 @@ if($ENV{ROS_DISTRO} STREQUAL "hydro")
   return()
 endif()
 
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
+  set(ROSEUS_package roseus)
+endif()
 find_package(catkin REQUIRED
     fetch_description
-    roseus # required in indigo
+    ${ROSEUS_package} # required in indigo
 )
 
 catkin_package()
@@ -66,6 +69,11 @@ if(CATKIN_ENABLE_TESTING)
   find_package(fetch_gazebo QUIET)
   if(fetch_gazebo_FOUND)
     add_rostest(test/fetch-moveit.test)
+    # kinetic test fails because of gazebo7 error.
+    # if you want more information, please see https://github.com/uzh-rpg/rpg_quadrotor_control/issues/58.
+    if($ENV{ROS_DISTRO} STRGREATER "kinetic")
+      add_rostest(test/fetch-navigation.test)
+    endif()
   endif()
 endif()
 

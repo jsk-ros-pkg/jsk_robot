@@ -39,16 +39,16 @@ class NaoLaser (NaoNode):
             self.alurg.setOpeningAngle(-2.09439, 2.09439)
             self.alurg.setDetectingLength(20, 5600)
             self.alurg.laserON()
-        except Exception,e:
-            print "Error when creating ALLaser proxy:"
-            print str(e)
+        except Exception as e:
+            print("Error when creating ALLaser proxy:")
+            print(str(e))
             exit(1)
 
         try:
             self.almem = self.getProxy("ALMemory")
-        except Exception,e:
-            print "Error when creating ALMemory proxy:"
-            print str(e)
+        except Exception as e:
+            print("Error when creating ALMemory proxy:")
+            print(str(e))
             exit(1)
 
         self.pub_laser = rospy.Publisher('scan', LaserScan)
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     try:
         naolaser = NaoLaser()
         naolaser.main_loop()
-    except RuntimeError, e:
+    except RuntimeError as e:
         rospy.logerr('Something went wrong: %s' % (e) )
     rospy.loginfo('Laser stopped')
 

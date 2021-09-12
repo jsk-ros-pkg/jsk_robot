@@ -30,6 +30,31 @@ install(DIRECTORY config launch scripts data
 install(FILES jsk_fetch.machine
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
+# Create Rviz icon for fetch
+macro(configure_icon_files icol iname)
+  set(ICON_COLOR ${icol})
+  set(FETCH_NAME ${iname})
+  configure_file(config/RVizfetch.desktop.in
+    $ENV{HOME}/.local/share/applications/RViz${FETCH_NAME}.desktop)
+  # If HOSTNAME is "fetchxxx", create desktop icons
+  cmake_host_system_information(RESULT _host_name QUERY HOSTNAME)
+  if(${_host_name} MATCHES "^${FETCH_NAME}")
+    configure_file(config/RVizfetch.desktop.in
+      $ENV{HOME}/Desktop/RViz${FETCH_NAME}.desktop)
+    configure_file(config/Supervisorfetch.desktop.in
+      $ENV{HOME}/Desktop/Supervisor${FETCH_NAME}.desktop)
+    # Multitouch gesture program for touchscrenn on Fetch's back
+    configure_file(config/touchegg.conf
+      $ENV{HOME}/.config/touchegg/touchegg.conf)
+    configure_file(config/touchegg.desktop
+      $ENV{HOME}/.config/autostart/touchegg.desktop)
+  endif()
+endmacro(configure_icon_files)
+
+configure_icon_files(blue fetch15)
+configure_icon_files(red fetch1075)
+
+
 #############
 ## Testing ##
 #############
