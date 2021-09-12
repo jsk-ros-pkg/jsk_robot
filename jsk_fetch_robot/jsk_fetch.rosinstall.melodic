@@ -71,6 +71,7 @@
     local-name: mikeferguson/robot_calibration
     uri: https://github.com/mikeferguson/robot_calibration.git
     version: 0.5.5
+# https://github.com/ros-drivers/audio_common/pull/173
 - git:
     local-name: ros-drivers/audio_common
     uri: https://github.com/ros-drivers/audio_common.git

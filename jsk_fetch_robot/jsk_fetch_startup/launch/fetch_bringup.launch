@@ -34,6 +34,7 @@
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
     <param name="wav_file" value="$(find jsk_fetch_startup)/data/boot_sound.wav" />
+    <param name="preferred_interface" value="wlan0" />
   </node>
 
   <!-- look at human for Fetch -->
