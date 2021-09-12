@@ -39,6 +39,7 @@ def terminate_thread(thread):
 class DiagnosticsSpeakThread(threading.Thread):
     def __init__(self, error_status):
         threading.Thread.__init__(self)
+        self.volume = rospy.get_param("~volume", 1.0)
         self.error_status = error_status
         self.start()
 
@@ -46,7 +47,7 @@ class DiagnosticsSpeakThread(threading.Thread):
         global sound
         for status in  self.error_status:
             # ignore error status if the error already occured in the latest 10 minites
-            if error_status_in_10_min.has_key(status.message):
+            if status.message in error_status_in_10_min:
                 if rospy.Time.now().secs - error_status_in_10_min[status.message] < 600:
                     continue
                 else:
@@ -62,7 +63,7 @@ class DiagnosticsSpeakThread(threading.Thread):
             text = "Error on {}, {}".format(status.name, status.message)
             rospy.loginfo(text)
             text = text.replace('_', ', ')
-            sound.say(text, 'voice_kal_diphone')
+            sound.say(text, 'voice_kal_diphone', volume=self.volume)
             time.sleep(5)
 
     def stop(self):
@@ -110,9 +111,9 @@ class Warning:
         self.battery_state_msgs = msg
         #
         if msg.is_charging == False and msg.charge_level < 0.1:
-            sound.play(2)
+            sound.play(2, volume=self.volume)
             time.sleep(2)
-            sound.play(5)
+            sound.play(5, volume=self.volume)
             time.sleep(5)
 
     def cmd_vel_callback(self, msg):
@@ -130,7 +131,7 @@ class Warning:
            self.auto_undocking != True:
             rospy.logerr("Try to run while charging!")
             self.base_breaker(BreakerCommandRequest(enable=False))
-            sound.play(4) # play builtin sound Boom!
+            sound.play(4, volume=self.volume) # play builtin sound Boom!
             time.sleep(5)
             self.base_breaker(BreakerCommandRequest(enable=True))
         else:
@@ -144,7 +145,7 @@ class Warning:
         ##
         ## check if this comes from /robot_driver
         callerid = msg._connection_header['callerid']
-        if not self.diagnostics_speak_thread.has_key(callerid):
+        if callerid not in self.diagnostics_speak_thread:
             self.diagnostics_speak_thread[callerid] = None
         error_status = filter(lambda n: n.level in self.diagnostics_list, msg.status)
         # when RunStopped, ignore message from *_mcb and *_breaker

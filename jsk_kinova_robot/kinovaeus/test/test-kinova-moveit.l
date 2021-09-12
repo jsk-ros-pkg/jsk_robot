@@ -1,0 +1,80 @@
+#!/usr/bin/env roseus
+
+(require :unittest "lib/llib/unittest.l")
+(init-unit-test)
+
+;; This test is mainly copied from
+;; https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/fetcheus/test/test-fetch-moveit.l
+
+(load "package://kinovaeus/kinova-interface.l")
+
+(setq *ri* (instance kinova-interface :init :type :gen3_robotiq_2f_85))
+(setq *kinova* (kinova :type :gen3_robotiq_2f_85))
+
+(send *kinova* :reset-pose)
+
+(deftest test-kinova-moveit ()
+  (let (tm-0 tm-1)
+    (setq tm-0 (ros::time-now))
+    (while (null (send *ri* :angle-vector #f(0 0 0 0 0 0 0))))
+    (send *ri* :wait-interpolation)
+    (setq tm-1 (ros::time-now))
+    (ros::ros-info "time for duration ~A" (send (ros::time- tm-1 tm-0) :to-sec))
+    (assert (> (send (ros::time- tm-1 tm-0) :to-sec) 3) "collsion avoidance motion is too fast")
+
+    (setq tm-0 (ros::time-now))
+    (while (null (send *ri* :angle-vector (send *kinova* :reset-pose) 2000)))
+    (send *ri* :wait-interpolation)
+    (setq tm-1 (ros::time-now))
+    (ros::ros-info "time for duration ~A" (send (ros::time- tm-1 tm-0) :to-sec))
+    (assert (> (send (ros::time- tm-1 tm-0) :to-sec) 3) "collsion avoidance motion is too fast")
+
+    (setq tm-0 (ros::time-now))
+    (while (null (send *ri* :angle-vector #f(0 0 0 0 0 0 0))))
+    (send *ri* :wait-interpolation)
+    (setq tm-1 (ros::time-now))
+    (ros::ros-info "time for duration ~A" (send (ros::time- tm-1 tm-0) :to-sec))
+    (assert (> (send (ros::time- tm-1 tm-0) :to-sec) 3) "collsion avoidance motion is too fast")
+
+    (setq tm-0 (ros::time-now))
+    (while (null (send *ri* :angle-vector (send *kinova* :reset-pose) 2000)))
+    (send *ri* :wait-interpolation)
+    (setq tm-1 (ros::time-now))
+    (ros::ros-info "time for duration ~A" (send (ros::time- tm-1 tm-0) :to-sec))
+    (assert (> (send (ros::time- tm-1 tm-0) :to-sec) 3) "collsion avoidance motion is too fast")
+    ))
+
+(deftest test-kinova-moveit-angle-vector-start-time ()
+  (let (tm-0 tm-1 tm-diff)
+    (send *ri* :angle-vector (send *kinova* :reset-pose))
+    (send *ri* :wait-interpolation)
+    (send *kinova* :rarm :move-end-pos #f(50 0 0) :world)
+    (send *ri* :angle-vector (send *kinova* :angle-vector) 2000 nil 4)
+    (setq tm-0 (ros::time-now))
+    (send *ri* :wait-interpolation)
+    (setq tm-1 (ros::time-now))
+    (setq tm-diff (send (ros::time- tm-1 tm-0) :to-sec))
+    (ros::ros-info "time for duration ~A" tm-diff)
+    (assert (> tm-diff 4.5) (format nil "start-time is ignored. Traj finishes at ~A" tm-diff))
+    (assert (< tm-diff 8) (format nil "start-time is considered multiple times. Traj finishes at ~A" tm-diff))
+    ))
+
+(deftest test-kinova-moveit-angle-vector-sequence-start-time ()
+  (let (avs tm-0 tm-1 tm-diff)
+    (send *ri* :angle-vector (send *kinova* :reset-pose))
+    (send *ri* :wait-interpolation)
+    (push (send *kinova* :rarm :move-end-pos #f(50 0 0) :world) avs)
+    (push (send *kinova* :rarm :move-end-pos #f(50 0 0) :world) avs)
+    (setq avs (reverse avs))
+    (send *ri* :angle-vector-sequence avs 2000 nil 4)
+    (setq tm-0 (ros::time-now))
+    (send *ri* :wait-interpolation)
+    (setq tm-1 (ros::time-now))
+    (setq tm-diff (send (ros::time- tm-1 tm-0) :to-sec))
+    (ros::ros-info "time for duration ~A" tm-diff)
+    (assert (> tm-diff 4.5) (format nil "start-time is ignored. Traj finishes at ~A" tm-diff))
+    (assert (< tm-diff 8) (format nil "start-time is considered multiple times. Traj finishes at ~A" tm-diff))
+    ))
+
+(run-all-tests)
+(exit)
