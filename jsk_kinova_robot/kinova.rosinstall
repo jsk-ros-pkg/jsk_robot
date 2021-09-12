@@ -2,10 +2,13 @@
     local-name: jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: master
+# ros_kortex is updating to v2.3.0 in master branch
+# but the internal firmware in JSK kinova is still ver2.2.0
 - git:
     local-name: ros_kortex
     uri: https://github.com/Kinovarobotics/ros_kortex
-    version: kinetic-devel
+    version: 996ffaffd33c135c6888ae624271aa2742fd83d4
 - git:
     local-name: ros_kortex_vision
     uri: https://github.com/Kinovarobotics/ros_kortex_vision
+    version: 442dde78897560b947e9edf16955b1fb40435309
