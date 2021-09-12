@@ -22,16 +22,19 @@
       duration: 180
       charge_level_threshold: 40.0
       charge_level_step: 10.0
+      volume: 1.0
     </rosparam>
   </node>
 
   <node pkg="jsk_robot_startup" name="nav_speak" type="nav_speak.py" respawn="true" >
     <rosparam>
       lang: japanese
+      volume: 0.5
     </rosparam>
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
     <param name="wav_file" value="$(find jsk_fetch_startup)/data/boot_sound.wav" />
+    <param name="preferred_interface" value="wlan0" />
   </node>
 
   <!-- look at human for Fetch -->
@@ -294,4 +297,13 @@
     <remap from="~input" to="/odom" />
     <remap from="~output" to="/odom_corrected" />
   </node>
+
+  <!-- robot_pose_publisher for rwt_nav -->
+  <node name="robot_pose_publisher" pkg="robot_pose_publisher" type="robot_pose_publisher">
+    <rosparam>
+      map_frame: /map
+      base_frame: /base_link
+    </rosparam>
+  </node>
+
 </launch>
