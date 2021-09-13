@@ -1,4 +1,8 @@
 <launch>
+    <arg name="initial_node_id" default="eng2_73B2" />
+    <arg name="edges_file" default="$(find spot_behavior_manager_demo)/config/edges.yaml" />
+    <arg name="nodes_file" default="$(find spot_behavior_manager_demo)/config/nodes.yaml" />
+
     <node
         pkg="spot_behavior_manager_demo"
         type="demo.py"
@@ -8,12 +12,17 @@
 
         <rosparam
             ns="map"
-            file="$(find spot_behavior_manager_demo)/config/map.yaml"
+            file="$(find spot_behavior_manager_demo)/config/edges.yaml"
+            subst_value="true"
+            />
+        <rosparam
+            ns="map"
+            file="$(find spot_behavior_manager_demo)/config/nodes.yaml"
             subst_value="true"
             />
 
         <rosparam subst_value="true">
-            initial_node_id: 'eng2_73B2'
+            initial_node_id: '$(arg initial_node_id)'
         </rosparam>
     </node>
 </launch>
