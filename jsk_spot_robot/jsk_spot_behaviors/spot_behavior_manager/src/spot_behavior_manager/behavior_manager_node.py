@@ -96,6 +96,7 @@ class BehaviorManagerNode(object):
             else:
                 # navigation of edges in the path
                 self.sound_client.say('目的地に向かいます', blocking=True)
+                success_navigation = True
                 for edge in path:
                     rospy.loginfo('Navigating Edge {}...'.format(edge))
                     try:
@@ -109,7 +110,8 @@ class BehaviorManagerNode(object):
                                 '移動に失敗しました。経路を探索し直します。', blocking=True)
                             current_graph.remove_edge(
                                 edge.node_id_from, edge.node_id_to)
-                            continue
+                            success_navigation = False
+                            break
                     except Exception as e:
                         rospy.logerr(
                             'Got an error while navigating edge {}: {}'.format(edge, e))
@@ -121,7 +123,8 @@ class BehaviorManagerNode(object):
                         self.server_execute_behaviors.set_aborted(result)
                         return
 
-                break
+                if success_navigation:
+                    break
 
         rospy.loginfo('Goal Reached!')
         self.sound_client.say('目的地に到着しました.', blocking=True)
