@@ -72,7 +72,7 @@ def main():
 
 
     if args.output:
-        dg.render(output)
+        dg.render(args.output)
     else:
         window = MyDotwindow()
         window.set_dotcode(dg.source.encode('utf-8'))
