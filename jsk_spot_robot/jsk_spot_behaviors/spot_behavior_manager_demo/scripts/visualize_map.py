@@ -32,12 +32,11 @@ class MyDotwindow(xdot.DotWindow):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--filename',required=True)
-    #parser.add_argument('--output',required=True)
+    parser.add_argument('filename')
+    parser.add_argument('--output')
     args = parser.parse_args()
 
     filename = args.filename
-    #output = args.output
 
     with open(filename, 'r') as f:
         map_data = yaml.load(f)
@@ -71,12 +70,14 @@ def main():
         dg.attr('edge', color=list_color_for_bt[list_behavior_type.index(edge['behavior_type'])])
         dg.edge(edge['from'], edge['to'], label=edge['behavior_type'].split('.')[2])
 
-    #dg.render(output)
 
-    window = MyDotwindow()
-    window.set_dotcode(dg.source.encode('utf-8'))
-    window.connect('delete-event', Gtk.main_quit)
-    Gtk.main()
+    if args.output:
+        dg.render(output)
+    else:
+        window = MyDotwindow()
+        window.set_dotcode(dg.source.encode('utf-8'))
+        window.connect('delete-event', Gtk.main_quit)
+        Gtk.main()
 
 
 if __name__ == '__main__':
