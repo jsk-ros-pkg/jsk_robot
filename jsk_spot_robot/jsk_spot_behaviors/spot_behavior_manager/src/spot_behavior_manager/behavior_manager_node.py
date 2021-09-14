@@ -13,7 +13,7 @@ from spot_behavior_manager.support_behavior_graph import SupportBehaviorGraph
 from spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
 
 from std_msgs.msg import String
-from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonFeedback, LeadPersonResult
+from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonFeedback, LeadPersonResult, LeadPersonActionFeedback
 from spot_behavior_manager_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
 
 
@@ -58,7 +58,7 @@ class BehaviorManagerNode(object):
         self.list_behaviors_execution_actions = []
         for action_name in self.list_action_name_synchronizer:
             self.list_behaviors_execution_actions.append(
-                    rospy.Subscriber('{}/feedback'.format(action_name), LeadPersonFeedback, self.callback_synchronizer)
+                    rospy.Subscriber('{}/feedback'.format(action_name), LeadPersonActionFeedback, self.callback_synchronizer)
                     )
 
         # action server
@@ -74,8 +74,8 @@ class BehaviorManagerNode(object):
 
     def callback_synchronizer(self, msg):
 
-        rospy.loginfo('Current node is updated to {}'.format(msg.current_node_id))
-        self.current_node_id = msg.current_node_id
+        rospy.loginfo('Current node is updated to {}'.format(msg.feedback.current_node_id))
+        self.current_node_id = msg.feedback.current_node_id
         self.pre_edge = None
 
     def run(self):
