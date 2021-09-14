@@ -28,6 +28,10 @@ class BehaviorManagerNode(object):
         self.current_node_id = rospy.get_param('~initial_node_id')
         self.pre_edge = None
 
+        # get target action name list for synchronizer
+        self.list_action_name_synchronizer = rospy.get_param(
+            '~action_names_synchronizer')
+
         # action clients
         self.spot_client = SpotRosClient()
         self.sound_client = SoundClient(
@@ -50,6 +54,13 @@ class BehaviorManagerNode(object):
         #
         roslaunch.pmon._init_signal_handlers()
 
+        # subscribers
+        self.list_behaviors_execution_actions = []
+        for action_name in self.list_action_name_synchronizer:
+            self.list_behaviors_execution_actions.append(
+                    rospy.Subscriber('{}/feedback'.format(action_name), LeadPersonFeedback, self.callback_synchronizer)
+                    )
+
         # action server
         self.server_execute_behaviors = actionlib.SimpleActionServer(
             '~execute_behaviors',
@@ -60,6 +71,12 @@ class BehaviorManagerNode(object):
         self.server_execute_behaviors.start()
 
         rospy.loginfo('Initialized!')
+
+    def callback_synchronizer(self, msg):
+
+        rospy.loginfo('Current node is updated to {}'.format(msg.current_node_id))
+        self.current_node_id = msg.current_node_id
+        self.pre_edge = None
 
     def run(self):
 
@@ -103,11 +120,13 @@ class BehaviorManagerNode(object):
                         if self.navigate_edge(edge):
                             rospy.loginfo('Edge {} succeeded.'.format(edge))
                             self.current_node_id = edge.node_id_to
+                            self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
                             self.pre_edge = edge
                         else:
                             rospy.logwarn('Edge {} failed'.format(edge))
                             self.sound_client.say(
                                 '移動に失敗しました。経路を探索し直します。', blocking=True)
+                            self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
                             current_graph.remove_edge(
                                 edge.node_id_from, edge.node_id_to)
                             success_navigation = False
