@@ -1,7 +1,5 @@
 <launch>
     <arg name="initial_node_id" default="eng2_73B2" />
-    <arg name="edges_file" default="$(find spot_behavior_manager_demo)/config/edges.yaml" />
-    <arg name="nodes_file" default="$(find spot_behavior_manager_demo)/config/nodes.yaml" />
 
     <node
         pkg="spot_behavior_manager_demo"
