@@ -360,13 +360,21 @@ Args:
   (send *ri* :wait-interpolation)
   (if tweet
       (progn
-	(tweet-string "I took a photo of 73B2 trash cans." :warning-time 3
-		      :with-image "/edgetpu_object_detector/output/image" :speak t)
-	(notify-recognition :location "trash cans"))
+        (tweet-string "I took a photo of 73B2 trash cans." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (notify-recognition :location "trash cans")
+        (send *ri* :go-pos-unsafe 0.2 0 0)
+        (send *fetch* :head :neck-p :joint-angle 50)
+        (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+        (send *ri* :wait-interpolation)
+        (tweet-string "I took a photo of 73B2 trash can inside." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (notify-recognition :location "trash cans inside")
+        (send *ri* :go-pos-unsafe -0.2 0 0))
     (progn
       (notify-recognition :location "trash cans"))))
 
-(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(-300 -300 0)))
+(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(-400 -300 0)))
   (let ((success-move-to-trashcan-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-trashcan-front
