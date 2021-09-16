@@ -80,17 +80,17 @@ class OdometryTransformer(object):
     def cb_odometry(self, msg):
 
         # Nan check
-        if math.isnan( msg.pose.pose.position.x ) or
-           math.isnan( msg.pose.pose.position.y ) or
-           math.isnan( msg.pose.pose.position.z ) or
-           math.isnan( msg.pose.pose.orientation.x ) or
-           math.isnan( msg.pose.pose.orientation.y ) or
-           math.isnan( msg.pose.pose.orientation.z ) or
-           math.isnan( msg.twist.twist.linear.x ) or
-           math.isnan( msg.twist.twist.linear.y ) or
-           math.isnan( msg.twist.twist.linear.z ) or
-           math.isnan( msg.twist.twist.angular.x ) or
-           math.isnan( msg.twist.twist.angular.y ) or
+        if math.isnan( msg.pose.pose.position.x ) or \
+           math.isnan( msg.pose.pose.position.y ) or \
+           math.isnan( msg.pose.pose.position.z ) or \
+           math.isnan( msg.pose.pose.orientation.x ) or \
+           math.isnan( msg.pose.pose.orientation.y ) or \
+           math.isnan( msg.pose.pose.orientation.z ) or \
+           math.isnan( msg.twist.twist.linear.x ) or \
+           math.isnan( msg.twist.twist.linear.y ) or \
+           math.isnan( msg.twist.twist.linear.z ) or \
+           math.isnan( msg.twist.twist.angular.x ) or \
+           math.isnan( msg.twist.twist.angular.y ) or \
            math.isnan( msg.twist.twist.angular.z ):
             rospy.logwarn('Recieved an odom message with nan values')
             return
