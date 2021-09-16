@@ -41,15 +41,17 @@ mkdir $HOME/spot_ws/src -p
 cd $HOME/spot_ws/src
 wstool init .
 wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git --git
 wstool update
 wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot.rosinstall
+wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
 wstool update
 rosdep update
 rosdep install -y -r --from-paths . --ignore-src
 pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
 cd $HOME/spot_ws
 catkin init
-catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release
+catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
 catkin build -j4 -c
 ```
 
@@ -65,43 +67,11 @@ roscd spot_basic_behaviors
 git update-index --skip-worktree config/switchbot_ros/token.yaml
 ```
 
-#### setup a catkin workspace for coral usb
-
-Please see [this page](https://github.com/knorth55/coral_usb_ros) for details.
-
-First, install requirements.
-
-```bash
-sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
-sudo apt-get install python3-opencv
-sudo apt-get install ros-melodic-catkin
-```
-
-And create a workspace for coral_usb_ros
-
-```bash
-source /opt/ros/$ROS_DISTRO/setup.bash
-mkdir $HOME/coral_ws/src -p
-cd $HOME/coral_ws/src
-wstool init .
-wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git --git
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
-wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall
-wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
-wstool update
-rosdep install -y -r --from-paths . --ignore-src
-cd $HOME/coral_ws
-catkin init
-catkin config -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
-catkin build jsk_spot_startup coral_usb -j4 -c
-```
-
 After that, please download models for coral_usb_ros.
 
 ```
 source /opt/ros/$ROS_DISTRO/setup.bash
-source $HOME/coral_ws/devel/setup.bash
+source $HOME/spot_ws/devel/setup.bash
 rosrun coral_usb download_models.py
 ```
 

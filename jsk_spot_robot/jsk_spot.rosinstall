@@ -52,7 +52,7 @@
 - git:
     local-name: spot-ros
     uri: https://github.com/sktometometo/spot_ros.git
-    version: develop/spot
+    version: rebased-develop
 # app_manager and utilities are requied
 - git:
     local-name: PR2/app_manager
@@ -81,3 +81,8 @@
     local-name: aerial_robot
     uri: https://github.com/sktometometo/aerial_robot.git
     version: develop/spot
+# geometry2 have to be built for python3
+- git:
+    local-name: geometry2
+    uri: https://github.com/ros/geometry2.git
+    version: 0.6.5
