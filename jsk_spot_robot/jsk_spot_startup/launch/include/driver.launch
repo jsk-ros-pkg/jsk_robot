@@ -6,11 +6,9 @@
     <include file="$(find spot_description)/launch/description.launch" />
   </group>
 
-  <include file="$(find spot_driver)/launch/control.launch" />
-
   <node
       pkg="spot_driver"
-      type="spot_ros.py"
+      type="spot_ros"
       name="spot_ros"
       ns="spot"
       output="screen"
