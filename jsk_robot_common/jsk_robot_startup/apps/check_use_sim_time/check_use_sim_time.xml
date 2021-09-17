@@ -1,0 +1,3 @@
+<launch>
+  <node name="check_use_sim_time" pkg="jsk_robot_startup" type="check_use_sim_time.py" output="screen"/>
+</launch>
