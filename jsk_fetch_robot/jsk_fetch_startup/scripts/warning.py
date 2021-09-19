@@ -39,6 +39,7 @@ def terminate_thread(thread):
 class DiagnosticsSpeakThread(threading.Thread):
     def __init__(self, error_status):
         threading.Thread.__init__(self)
+        self.volume = rospy.get_param("~volume", 1.0)
         self.error_status = error_status
         self.start()
 
@@ -62,7 +63,7 @@ class DiagnosticsSpeakThread(threading.Thread):
             text = "Error on {}, {}".format(status.name, status.message)
             rospy.loginfo(text)
             text = text.replace('_', ', ')
-            sound.say(text, 'voice_kal_diphone')
+            sound.say(text, 'voice_kal_diphone', volume=self.volume)
             time.sleep(5)
 
     def stop(self):
@@ -110,9 +111,9 @@ class Warning:
         self.battery_state_msgs = msg
         #
         if msg.is_charging == False and msg.charge_level < 0.1:
-            sound.play(2)
+            sound.play(2, volume=self.volume)
             time.sleep(2)
-            sound.play(5)
+            sound.play(5, volume=self.volume)
             time.sleep(5)
 
     def cmd_vel_callback(self, msg):
@@ -130,7 +131,7 @@ class Warning:
            self.auto_undocking != True:
             rospy.logerr("Try to run while charging!")
             self.base_breaker(BreakerCommandRequest(enable=False))
-            sound.play(4) # play builtin sound Boom!
+            sound.play(4, volume=self.volume) # play builtin sound Boom!
             time.sleep(5)
             self.base_breaker(BreakerCommandRequest(enable=True))
         else:

@@ -15,7 +15,7 @@
       <remap from="joy" to="joy_ds3" />
     </node>
 
-    <node name="joy_remap" pkg="joy" type="joy_remap.py" output="screen" >
+    <node name="joy_remap" pkg="joy" type="joy_remap.py" output="screen" respawn="true">
       <remap from="joy_in" to="joy_ds3" />
       <remap from="joy_out" to="joy" />
       <rosparam command="load" file="$(find jsk_fetch_startup)/config/ds3joy_$(env ROS_DISTRO).yaml" />
@@ -71,7 +71,11 @@
   </group>
 
   <!-- Do not publish /base_controller/command if fetch is docking -->
-  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true" />
+  <node pkg="jsk_fetch_startup" name="warning" type="warning.py" respawn="true">
+    <rosparam>
+      volume: 0.3
+    </rosparam>
+  </node>
 
   <!-- copied for button mapping is changed to standardize with PR2 joy. -->
   <node name="controller_reset" pkg="fetch_bringup" type="controller_reset.py">
@@ -90,6 +94,6 @@
   <node pkg="jsk_robot_startup" type="unsafe_warning.l" name="unsafe_warning" respawn="true" />
 
   <!-- auto dock -->
-  <include file="$(find fetch_auto_dock)/launch/auto_dock.launch"
+  <include file="$(find fetch_open_auto_dock)/launch/auto_dock.launch"
 	   if="$(arg enable_auto_dock)"/>
 </launch>

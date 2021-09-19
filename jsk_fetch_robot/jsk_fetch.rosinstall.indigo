@@ -1,7 +1,6 @@
-# This file is for work space in fetch PC.
+# This is rosinstall file for indigo PC inside fetch.
+# $ ln -s $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $HOME/ros/$ROS_DISTRO/src/.rosinstall
 
-# To install app_manager.launch
-# remove after 1.1.0 (https://github.com/PR2/app_manager/commit/7fa0929b6608246073a0fb89eed013edd6b934ca) is released
 - git:
     local-name: PR2/app_manager
     uri: https://github.com/PR2/app_manager.git
@@ -66,6 +65,44 @@
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
     version: 82e897dcbdcd6aa0cbd126fa122d4dbdc9df67c9
+# Use joy/joy_remap.py
+- git:
+    local-name: ros-drivers/joystick_drivers
+    uri: https://github.com/ros-drivers/joystick_drivers.git
+    version: 1.14.0
+# indigo is already EOL and fetch_ros is never released.
+# We cannot use version 0.8.x (for melodic) because some packages of fetch_ros cannot be built in indigo PC. This is because indigo PC uses OpenCV 2.4.8 while fetch_ros of 0.8.x requires OpenCV 3.2.
+# See https://github.com/jsk-ros-pkg/jsk_robot/pull/1148 and https://github.com/jsk-ros-pkg/jsk_robot/pull/1153
+- git:
+    local-name: fetchrobotics/fetch_ros
+    uri: https://github.com/fetchrobotics/fetch_ros.git
+    version: 4680118106ba8ffa99a803122bf1a9e383edf3df
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: 0.4.4
+- git:
+    local-name: tork-a/roswww
+    uri: https://github.com/knorth55/roswww.git
+    version: fetch15
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/knorth55/visualization_rwt.git
+    version: fetch15
+- git:
+    local-name: ros-planning/navigation
+    uri: https://github.com/708yamaguchi/navigation.git
+    version: fetch15
+# Visualize visualization_msgs/MarkerArray >= 1.12.7 in RViz
+- git:
+    local-name: ros-visualization/rviz
+    uri: https://github.com/ros-visualization/rviz.git
+    version: indigo-devel
+# fetch_open_auto_dock is not released in indigo
+- git:
+    local-name: fetchrobotics/fetch_open_auto_dock
+    uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
+    version: 0.1.2
 # Use joy/joy_remap.py
 - git:
     local-name: ros-drivers/joystick_drivers
