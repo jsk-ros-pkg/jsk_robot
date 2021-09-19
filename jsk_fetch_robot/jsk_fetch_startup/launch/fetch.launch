@@ -27,6 +27,19 @@
       <arg name="respawn" value="true" />
   </include>
 
+  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
+  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
+  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
+    <remap from="~input" to="/imu" />
+    <remap from="~output" to="/imu_corrected" />
+  </node>
+
+  <!-- /odom has no covariance value. -->
+  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
+    <remap from="~input" to="/odom" />
+    <remap from="~output" to="/odom_corrected" />
+  </node>
+
   <!-- Odometry -->
   <param name="base_controller/publish_tf" value="false"/>
   <!-- stop using graft: s-kitagawa (2019/10/17) -->

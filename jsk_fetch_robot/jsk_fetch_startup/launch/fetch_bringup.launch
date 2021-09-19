@@ -210,19 +210,6 @@
               file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
   </group>
 
-  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
-  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
-  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
-    <remap from="~input" to="/imu" />
-    <remap from="~output" to="/imu_corrected" />
-  </node>
-
-  <!-- /odom has no covariance value. -->
-  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
-    <remap from="~input" to="/odom" />
-    <remap from="~output" to="/odom_corrected" />
-  </node>
-
   <!-- check if room light is on -->
   <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
     <remap from="~input" to="/head_camera/rgb/image_raw" />
