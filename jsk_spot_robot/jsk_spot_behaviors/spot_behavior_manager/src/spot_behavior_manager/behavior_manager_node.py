@@ -30,7 +30,7 @@ class BehaviorManagerNode(object):
 
         # get target action name list for synchronizer
         self.list_action_name_synchronizer = rospy.get_param(
-            '~action_names_synchronizer')
+            '~action_names_synchronizer', [])
 
         # action clients
         self.spot_client = SpotRosClient()
