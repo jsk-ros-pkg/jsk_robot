@@ -11,6 +11,16 @@
 (defparameter *tfl* (instance ros::transform-listener :init))
 
 
+(let ((robot-name (ros::get-param "/robot/name")))
+  (defparameter *dock-spot*
+    (cond
+      ((equal robot-name "fetch15")
+       "/eng2/7f/room73B2-fetch-dock-front")
+      ((equal robot-name "fetch1075")
+       "/eng2/7f/room73B2-fetch-dock-entrance")
+      (t nil))))
+
+
 (defun get-spot-coords (name)
   (unless *spots*
     (setq *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
