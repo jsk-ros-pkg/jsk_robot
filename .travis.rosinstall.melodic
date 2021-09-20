@@ -49,3 +49,9 @@
     local-name: jsk_control/jsk_ik_server
     uri: https://github.com/tork-a/jsk_control-release/archive/release/kinetic/jsk_ik_server/0.1.14-0.tar.gz
     version: jsk_control-release-release-kinetic-jsk_ik_server-0.1.14-0
+# for jsk_spot_teleop in jsk_robot
+# spot_msgs is not released
+- git:
+    local-name: clearpathrobotics/spot_ros
+    uri: https://github.com/clearpathrobotics/spot_ros.git
+    version: 8e1554b95cf2875a53f14fda8165957559b0ffb7
