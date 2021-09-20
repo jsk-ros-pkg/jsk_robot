@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <robot name="jsk_gen3_lite_gen3_lite_2f" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!--
+      This launch file is copied from ros_kortex https://github.com/Kinovarobotics/ros_kortex and then modified
+      And it is originally distributed under BSD 3-Clause License
+    -->
     <!-- Arguments -->
     <xacro:arg name="arm" default="gen3_lite" />
     <!-- Those arguments are ignored for now on Gen3 lite because there is only one supported configuration -->
