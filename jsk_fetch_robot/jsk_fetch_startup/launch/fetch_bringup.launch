@@ -298,6 +298,11 @@
     <remap from="~output" to="/odom_corrected" />
   </node>
 
+  <!-- check if room light is on -->
+  <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
+    <remap from="~input" to="/head_camera/rgb/image_raw" />
+  </node>
+
   <!-- robot_pose_publisher for rwt_nav -->
   <node name="robot_pose_publisher" pkg="robot_pose_publisher" type="robot_pose_publisher">
     <rosparam>
