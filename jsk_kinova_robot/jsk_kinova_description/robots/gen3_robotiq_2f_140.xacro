@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <robot name="jsk_gen3_robotiq_2f_140" xmlns:xacro="http://ros.org/wiki/xacro">
+    <!--
+      This launch file is copied from ros_kortex https://github.com/Kinovarobotics/ros_kortex and then modified
+      And it is originally distributed under BSD 3-Clause License
+    -->
     <!-- Arguments -->
     <xacro:arg name="arm" default="gen3" />
     <xacro:arg name="dof" default="7" />
