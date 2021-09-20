@@ -3,8 +3,14 @@
   <xacro:arg name="ros_distro" default="melodic" />
   <xacro:arg name="base_camera_mount" default="true" />
   <xacro:arg name="head_box" default="true" />
+  <xacro:arg name="use_fetch_description" default="false" />
 
-  <xacro:include filename="/etc/ros/$(arg ros_distro)/calibrated_latest.urdf" />
+  <xacro:if value="$(arg use_fetch_description)">
+    <xacro:include filename="$(find fetch_description)/robots/fetch.urdf" />
+  </xacro:if>
+  <xacro:unless value="$(arg use_fetch_description)">
+    <xacro:include filename="/etc/ros/$(arg ros_distro)/calibrated_latest.urdf" />
+  </xacro:unless>
   <xacro:if value="$(arg base_camera_mount)">
     <xacro:include filename="$(find jsk_fetch_startup)/robots/base_camera_mount.urdf.xacro" />
   </xacro:if>

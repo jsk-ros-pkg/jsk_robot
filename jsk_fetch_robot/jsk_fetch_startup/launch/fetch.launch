@@ -4,6 +4,7 @@
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
   <arg name="use_visual_odom" default="false" />
+  <arg name="use_fetch_description" default="false" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -72,7 +73,10 @@
   <!-- calibration: s-kitagawa (2019/12/11) -->
   <!-- testing urdf with head box by shinjo (2020/02/13) -->
   <!-- URDF -->
-  <param name="robot_description" command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro ros_distro:=$(env ROS_DISTRO) base_camera_mount:=$(arg base_camera_mount) head_box:=$(arg head_box)" />
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
+                  ros_distro:=$(env ROS_DISTRO) use_fetch_description:=$(arg use_fetch_description)
+                  base_camera_mount:=$(arg base_camera_mount) head_box:=$(arg head_box)" />
 
   <!-- Drivers for Base -->
   <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
