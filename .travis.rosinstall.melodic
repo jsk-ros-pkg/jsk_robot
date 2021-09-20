@@ -53,3 +53,9 @@
 - git:
     local-name: UbiquityRobotics/magni_robot
     uri: https://github.com/UbiquityRobotics/magni_robot
+# for jsk_spot_teleop in jsk_robot
+# spot_msgs is not released
+- git:
+    local-name: clearpathrobotics/spot_ros
+    uri: https://github.com/clearpathrobotics/spot_ros.git
+    version: 8e1554b95cf2875a53f14fda8165957559b0ffb7
