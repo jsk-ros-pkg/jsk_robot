@@ -2,7 +2,9 @@
 <package format="2">
   <name>jsk_kinova_description</name>
   <version>1.1.0</version>
-  <description>The jsk_kinova_description package</description>
+  <description>
+      Robot model data package for jsk version of Kinova arms
+  </description>
 
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
   <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
