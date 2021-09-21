@@ -103,8 +103,3 @@
     local-name: fetchrobotics/fetch_open_auto_dock
     uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
     version: 0.1.2
-# Use joy/joy_remap.py
-- git:
-    local-name: ros-drivers/joystick_drivers
-    uri: https://github.com/ros-drivers/joystick_drivers.git
-    version: 1.14.0
