@@ -187,38 +187,6 @@
       <remap from="scan" to="base_scan"/>
     </node>
 
-    <!-- robot localization ukf -->
-    <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
-      <remap from="odometry/filtered" to="/odom_combined" />
-      <rosparam>
-        frequency: 50
-        sensor_timeout: 1.0
-        two_d_mode: true
-        publish_tf: true
-        publish_acceleration: false
-        map_frame: map
-        odom_frame: odom
-        base_link_frame: base_link
-        odom0: /odom_corrected
-        odom0_config: [true, true, false,
-                       false, false, true,
-                       true, true, false,
-                       false, false, true,
-                       false, false, false]
-        odom0_nodelay: true
-        odom0_differential: true
-        imu0: /imu_corrected
-        imu0_config: [false, false, false,
-                      false, false, false,
-                      false, false, false,
-                      false, false, true,
-                      true, true, false]
-        imu0_nodelay: true
-        imu0_differential: true
-        imu0_remove_gravitational_acceleration: true
-      </rosparam>
-    </node>
-
     <rosparam ns="amcl">
       update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
       update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
