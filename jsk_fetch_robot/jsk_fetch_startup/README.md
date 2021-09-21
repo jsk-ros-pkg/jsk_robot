@@ -18,13 +18,76 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 
 
 ### supervisor
+Important jobs for fetch operation are managed by supervisor.
+
+Here is a list of jobs that are managed by supervisor.
+
+  - roscore
+
+    Start roscore
+
+  - robot
+
+    Launch Minimum ROS programs to run fetch
+
+  - jsk-fetch-startup
+
+    Launch ROS programs extended by JSK
+
+  - jsk-network-monitor
+
+    Restart the network manager automatically if ping does not work.
+
+  - jsk-log-wifi
+
+    Monitor network condition
+
+  - jsk-app-scheduler
+
+    Scheduler to launch [app](https://github.com/knorth55/app_manager_utils/tree/master/app_scheduler) at a fixed time
+
+  - jsk-object-detector
+
+    Object detection using fetch's head camera and [coral_usb_ros](https://github.com/knorth55/coral_usb_ros)
+
+  - jsk-panorama-object-detector:
+
+    Object detection using fetch's 360 camera and [coral_usb_ros](https://github.com/knorth55/coral_usb_ros)
+
+  - jsk-human-pose-estimator
+
+    Human pose estimation using fetch's head camera and [coral_usb_ros](https://github.com/knorth55/coral_usb_ros)
+
+  - jsk-panorama-human-pose-estimator
+
+    Human pose estimation using fetch's 360 camera and [coral_usb_ros](https://github.com/knorth55/coral_usb_ros)
+
+  - jsk-dialog
+
+    Launch [dialogflow_task_exective](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive)
+
+  - jsk-gdrive
+
+    Launch [app](https://github.com/knorth55/app_manager_utils/tree/master/app_uploader) to upload data to Goole Drive
+
+  - jsk-dstat
+
+    Monitor fetch's resource using dstat command
+
+  - jsk-lifelog
+
+    Launch program to save fetch's [lifelog](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup/lifelog)
+
+
 Install supervisor config files. e.g. `robot.conf`, `jsk_fetch_startup.conf` ...
 
 ```
 su -c 'rosrun jsk_fetch_startup install_supervisor.sh'
 ```
 
-To show supervisor job status, access `FETCH_IP_ADDRESS:9001` by web browser.
+To show or change supervisor job status, access `FETCH_IP_ADDRESS:9001` by web browser.
+
+Previously, upstart was used, but it has been moved to supervisor. This is because of the convenience of job management via a web browser.
 
 ![supervisor_status](https://user-images.githubusercontent.com/19769486/119499716-f142c000-bda1-11eb-9b96-0cfa7e04a1b2.png)
 
@@ -67,13 +130,12 @@ The numbers assigned to the joystick are as follows.
 
 ### re-roslaunch jsk_fetch_startup fetch_bringup.launch
 ```
-sudo service jsk-fetch-startup restart
+sudo supervisorctl restart jsk-fetch-startup
 ```
-as of 2016/10/26, it uses launch files under `~k-okada/catkin_ws`
 
 ### re-roslaunch fetch_bringup fetch.launch
 ```
-sudo service robot restart
+sudo supervisorctl restart robot
 ```
 
 ### [Clock Synchronization](https://github.com/fetchrobotics/docs/blob/0c1c63ab47952063bf60280e74b4ff3ae07fd914/source/computer.rst)
@@ -124,25 +186,18 @@ Please connect display, open a window of network manager, and check that wired c
 ### Access point
 Define access point setting, such as ssid:
 ```
-/etc/wpa_supplicant/wpa_supplicant.conf
+cd /etc/NetworkManager/system-connections
 ```
 
-### Network status log
-You can see network status log, such as radio field intensity or data signaling rate:
-```
-/var/log/wifi.log
-```
+### Log
 
-Logging script is initialized at:
-```
-/etc/init/jsk-log-wifi.conf
-```
+tmuxinator makes it easy to check the important logs of fetch from command line. Currently, it shows the logs of the supervisor jobs.
 
-### Show all logs
 Install tmuxinator config.
 ```bash
 rosrun jsk_fetch_startup install_tmuxinator.sh
 ```
+
 Show logs
 ```bash
 tmuxinator log
