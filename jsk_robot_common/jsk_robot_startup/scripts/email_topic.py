@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# automatically reset slam as robot put on the ground
-
 from jsk_robot_startup.msg import Email
 import os
 import rospy
@@ -10,6 +8,10 @@ import yaml
 
 
 class EmailTopic(object):
+    """
+    This node sends email based on received ros topic.
+    Default email address can be set by using `~address_yaml`
+    """
     def __init__(self):
         address_yaml = rospy.get_param(
             '~address_yaml', "/var/lib/robot/email_topic.yaml")
