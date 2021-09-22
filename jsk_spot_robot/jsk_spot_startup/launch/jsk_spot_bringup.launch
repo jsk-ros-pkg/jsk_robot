@@ -2,7 +2,10 @@
   <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
 
+  <arg name="use_driver" default="true" />
   <arg name="use_peripheral" default="true" />
+  <arg name="use_object_detection" default="true" />
+  <arg name="use_multi_object_tracking" default="false" />
   <arg name="use_image_processing" default="true" />
   <arg name="use_interaction" default="true" />
   <arg name="use_app_manager" default="true" />
@@ -20,6 +23,18 @@
   <include
       file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
       if="$(arg use_peripheral)"
+      />
+
+  <!-- object detction -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/object_detection.launch"
+      if="$(arg use_object_detection)"
+      />
+
+  <!-- multi object tracking -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/multi_object_tracking.launch"
+      if="$(arg use_multi_object_tracking)"
       />
 
   <!-- image processing -->
