@@ -50,7 +50,7 @@ if(CATKIN_ENABLE_TESTING)
     roslaunch_add_file_check(${LAUNCH_FILE})
   endforeach()
 
-  set(ROSLINT_PYTHON_OPTS --max-line-length=180 --ignore=E221,E222,E241) # skip multiple spaces before/after operator
-  roslint_python()
-  roslint_add_test()
+  # set(ROSLINT_PYTHON_OPTS --max-line-length=180 --ignore=E221,E222,E241) # skip multiple spaces before/after operator
+  # roslint_python()
+  # roslint_add_test()
 endif()
