@@ -3,7 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="base_camera_mount" default="true" />
   <arg name="head_box" default="true" />
-  <arg name="use_visual_odom" default="false" />
+  <arg name="use_realsense" default="true" />
   <arg name="use_fetch_description" default="false" />
 
   <!-- GDB Debug Option -->
@@ -21,15 +21,59 @@
   <arg name="rgb_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
   <arg name="depth_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
 
+
+  <!-- Launch realsense cameras -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
+      <arg name="respawn" value="true" />
+  </include>
+
   <!-- Odometry -->
   <param name="base_controller/publish_tf" value="false"/>
   <!-- stop using graft: s-kitagawa (2019/10/17) -->
   <!-- <include file="$(find fetch_bringup)/launch/include/graft.launch.xml"/> -->
 
-  <!-- Odometry without visual odom -->
-  <!-- use robot localization ukf -->
-  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true" unless="$(arg use_visual_odom)">
-    <remap from="odometry/filtered" to="/odom_combined" />
+  <!-- odometry topic mux -->
+  <node
+      pkg="topic_tools"
+      type="mux"
+      name="odom_topic_mux"
+      args="odom_combined odom_robot_localization odom_visual"
+      >
+      <remap from="/mux" to="/odom_topic_mux" />
+      <param name="~initial_topic" value="odom_visual" />
+  </node>
+  <!-- odometry tf mux -->
+  <node
+      pkg="topic_tools"
+      type="mux"
+      name="odom_tf_mux"
+      args="tf tf_odom_robot_localization tf_odom_visual"
+      >
+      <remap from="/mux" to="/odom_tf_mux" />
+      <param name="~initial_topic" value="tf_odom_visual" />
+  </node>
+  <!-- odometry mux selector -->
+  <node
+      pkg="jsk_fetch_startup"
+      type="odometry_mux_selector.py"
+      name="odometry_mux_selector"
+      >
+      <param name="~topic_odom_primary" value="odom_visual" />
+      <param name="~topic_odom_secondary" value="odom_robot_localization" />
+      <param name="~topic_tf_primary" value="tf_odom_visual" />
+      <param name="~topic_tf_secondary" value="tf_odom_robot_localization" />
+      <param name="~duration_timeout_topic" value="10.0" />
+
+      <remap from="~select_service_topic" to="/odom_topic_mux/select" />
+      <remap from="~select_service_tf" to="/odom_tf_mux/select" />
+
+      <remap from="~sound_play" to="sound_play" />
+  </node>
+
+  <!-- Odometry with robot localization ukf using wheel and imu -->
+  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+    <remap from="odometry/filtered" to="/odom_robot_localization" />
+    <remap from="/tf" to="/tf_odom_robot_localization"/>
     <rosparam>
       frequency: 50
       sensor_timeout: 1.0
@@ -50,11 +94,11 @@
     </rosparam>
   </node>
 
-  <!-- Use Visual Odom -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_t265.launch" if="$(arg use_visual_odom)">
+  <!-- Visual Odom -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch">
       <arg name="topic_odom_out" value="/odom_visual" />
       <arg name="odom_frame_id" value="odom" />
-      <arg name="base_link_frame_id" value="base_link" />
+      <arg name="topic_tf" value="tf_odom_visual" />
   </include>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
