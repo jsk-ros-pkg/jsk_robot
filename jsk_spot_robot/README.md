@@ -15,7 +15,7 @@ Create a workspace
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
 sudo apt-get install ros-melodic-catkin
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/melodic/setup.bash
 mkdir $HOME/spot_ws/src -p
 cd $HOME/spot_ws/src
 wstool init .
@@ -54,7 +54,7 @@ Create a workspace for spot_driver.
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
 sudo apt-get install ros-melodic-catkin
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/melodic/setup.bash
 mkdir $HOME/spot_driver_ws/src -p
 cd $HOME/spot_driver_ws/src
 wstool init .
@@ -88,7 +88,7 @@ Create a workspace for coral_usb.
 ```bash
 sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
 sudo apt-get install ros-melodic-catkin
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/melodic/setup.bash
 mkdir $HOME/spot_coral_ws/src -p
 cd $HOME/spot_coral_ws/src
 wstool init .
@@ -109,7 +109,7 @@ catkin build -j4 -c
 After that, please download models for coral_usb_ros.
 
 ```
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/melodic/setup.bash
 source $HOME/spot_coral_ws/devel/setup.bash
 rosrun coral_usb download_models.py
 ```
@@ -119,7 +119,7 @@ rosrun coral_usb download_models.py
 Create `spot_ws`
 
 ```bash
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/melodic/setup.bash
 mkdir $HOME/spot_ws/src -p
 cd $HOME/spot_ws/src
 wstool init .
@@ -143,6 +143,16 @@ roscd spot_basic_behaviors
 git update-index --skip-worktree config/switchbot_ros/token.yaml
 ```
 
+#### Install scripts and systemd services
+
+Install scripts and systemd services
+
+```
+source /opt/ros/melodic/setup.bash
+source ~/spot_ws/devel/setup.bash
+rosrun jsk_spot_startup deploy-scripts-and-services.sh
+```
+
 #### Set environmental variables
 
 Set your ROS_IP to WiFi AP address.
@@ -162,17 +172,20 @@ export DIALOGFLOW_PROJECT_ID=<your dialogflow project id>
 export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml" >> ~/.bashrc
 ```
 
+And please add the same settings to /var/lib/robot/config.bash
+
 #### Setting up udev file and add the user to groups
 
-Create udev rule for spot spinal if your pc doesn't have it.
+Create udev rule for insta360air, spot spinal and joys.
 
 ```bash
-sudo sh -c 'echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"0403\", ATTRS{idProduct}==\"6001\", ATTRS{serial}==\"A7044PJ7\", SYMLINK+=\"spot-spinal\", GROUP=\"dialout\"" > /etc/udev/rules.d/99-spot-spinal.rules'
+roscd jsk_spot_startup
+sudo cp udev_rules/* /etc/udev/rules.d/
 ```
 
-Create udev rule for joy.
+Please modify each udev file according to your configuration.
 
-TODO
+#### Add the user to groups
 
 Add spot user to groups
 
