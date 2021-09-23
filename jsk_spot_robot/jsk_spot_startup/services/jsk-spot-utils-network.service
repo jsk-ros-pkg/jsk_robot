@@ -5,6 +5,7 @@ Description=JSK Spot Network Service
 Type=simple
 ExecStart=/var/lib/robot/update-network-connection.sh
 ExecStop=/bin/kill -WINCH ${MAINPID}
+KillMode=control-group
 KillSignal=SIGTERM
 
 [Install]

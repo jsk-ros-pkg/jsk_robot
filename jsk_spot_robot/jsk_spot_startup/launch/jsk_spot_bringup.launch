@@ -49,39 +49,16 @@
       if="$(arg use_interaction)"
       />
 
-  <!-- app manager and dialogflow -->
-  <group
+  <!-- app manager -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/app_manager.launch"
       if="$(arg use_app_manager)"
-      >
-      <rosparam>
-        robot:
-            type: spot
-      </rosparam>
-      <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
-        <arg name="use_applist" value="false" /> <!-- use plugin -->
-        <arg name="respawn" value="false" />
-        <arg name="basic" value="true" />
-        <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
-      </include>
-      <include file="$(find jsk_spot_startup)/launch/include/dialogflow.launch" />
-      <include file="$(find app_scheduler)/launch/app_scheduler.launch" >
-        <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
-      </include>
-  </group>
+      />
 
   <!-- teleop node -->
-  <group
+  <include
+      file="$(find jsk_spot_startup)/launch/include/teleop.launch"
       if="$(arg use_teleop)"
-      >
-      <include
-          file="$(find jsk_spot_teleop)/launch/teleop.launch"
-          >
-          <arg name="pad_type" value="R1" />
-      </include>
-      <include
-          file="$(find jsk_spot_teleop)/launch/teleop.launch"
-          >
-          <arg name="pad_type" value="dualshock3" />
-      </include>
-  </group>
+      />
+
 </launch>
