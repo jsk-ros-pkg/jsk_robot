@@ -6,7 +6,7 @@ jsk_spot_robot
 - [Supported Documents of Boston Dynamics](https://www.bostondynamics.com/spot/training/documentation)
 - [Spot ROS User Documentation](http://www.clearpathrobotics.com/assets/guides/melodic/spot-ros/ros_usage.html#taking-control-of-the-robot)
 
-## How to run
+## Installation
 
 ### How to set up catkin workspace (for a user)
 
@@ -182,6 +182,8 @@ sudo gpasswd -a <your user> audio
 sudo gpasswd -a <your user> plugdev
 sudo gpasswd -a <your user> video
 ```
+
+## How to run
 
 ### Bringup spot
 
