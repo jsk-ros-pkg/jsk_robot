@@ -1,0 +1,12 @@
+[Unit]
+Description=JSK Spot ROS Driver Service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c ". /opt/ros/roscore_poststart.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && roslaunch jsk_spot_startup jsk_spot_bringup.launch use_driver:=false use_peripheral:=false use_object_detection:=false use_multi_object_tracking:=false use_image_processing:=false use_interaction:=true use_app_manager:=false use_teleop:=false --wait --screen"
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillMode=control-group
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
