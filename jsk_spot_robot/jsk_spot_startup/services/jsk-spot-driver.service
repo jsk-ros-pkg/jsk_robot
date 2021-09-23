@@ -1,5 +1,5 @@
 [Unit]
-Description=JSK Spot Network Service
+Description=JSK Spot Driver Service
 
 [Service]
 Type=simple
