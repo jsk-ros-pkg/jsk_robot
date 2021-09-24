@@ -4,9 +4,6 @@ PACKAGE_PATH=$(rospack find jsk_spot_startup)
 SERVICE_SOURCE_PATH=$PACKAGE_PATH/services
 SERVICE_DESTINATION_PATH=/etc/systemd/system
 
-# install utility scripts
-sudo cp $PACKAGE_PATH/scripts/update-network-connection.sh /var/lib/robot/update-network-connection.sh
-
 # install bash scripts
 sudo cp $PACKAGE_PATH/scripts/roscore_poststart.bash /opt/ros/roscore_poststart.bash
 sudo cp $PACKAGE_PATH/scripts/roscore_prestart.bash /opt/ros/roscore_prestart.bash
