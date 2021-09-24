@@ -1,0 +1,12 @@
+[Unit]
+Description=JSK Spot ROS Behavior Manager Service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c ". /opt/ros/roscore_poststart.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && roslaunch spot_behavior_manager_demo demo.launch --wait --screen"
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillMode=control-group
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
