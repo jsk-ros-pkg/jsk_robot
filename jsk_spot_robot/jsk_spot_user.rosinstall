@@ -1,9 +1,7 @@
-# Until PRs below are merged, we need to use develop/spot branch in sktometometo/jsk_recognition.git
-#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/sktometometo/jsk_recognition.git
-    version: develop/spot
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: master
 # spot-jsk will use packages below.
 #  - dialogflow-executive
 #  - webrtcvad_ros
@@ -12,10 +10,6 @@
 #  - ros_speech_recognition
 #  - aques_talk
 # Until PRs below are merged, we need to use develop/spot branch
-#  - webrtcvad_ros
-#    + https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/282
-#  - switchbot_ros update
-#    + https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/278
 #  - dialogflow_ros update
 #    + https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/242
 - git:
