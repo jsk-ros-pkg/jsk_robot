@@ -2,7 +2,7 @@
 
   <!-- joy pad -->
   <include file="$(find jsk_spot_teleop)/launch/teleop.launch">
-    <arg name="pad_type" value="dualshock3" />
+    <arg name="pad_type" value="dualsense" />
   </include>
 
   <!-- R1 -->
