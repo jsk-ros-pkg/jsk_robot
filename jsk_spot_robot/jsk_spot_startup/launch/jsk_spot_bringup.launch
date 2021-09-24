@@ -14,6 +14,7 @@
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
+      if="$(arg use_driver)"
       >
       <arg name="credential_config" value="$(arg credential_config)" />
       <arg name="launch_robot_state_publisher" value="$(arg launch_robot_state_publisher)" />
