@@ -9,7 +9,7 @@
 - git:
     local-name: PR2/pr2_controllers
     uri: https://github.com/PR2/pr2_controllers.git
-    version: 8de51270e0361f10495de06f83ce85f43490af35
+    version: melodic-devel 
 - git:
     local-name: PR2/pr2_self_test
     uri: https://github.com/PR2/pr2_self_test.git
@@ -29,15 +29,15 @@
 - git:
     local-name: euslisp/Euslisp
     uri: https://github.com/euslisp/Euslisp.git
-    version: f70dd58cebcd7fe775dff303c1155858cd3750b9
+    version: master 
 - git:
     local-name: euslisp/jskeus
     uri: https://github.com/euslisp/jskeus.git
-    version: ecfc50e528f04afadc4f79847e92ac26863fa8bf
+    version: master 
 - git:
     local-name: jsk-ros-pkg/geneus
     uri: https://github.com/jsk-ros-pkg/geneus.git
-    version: 5fd8ee51fc0b7fcfdaabf458bd9b44428499c4a2
+    version: master 
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
@@ -53,7 +53,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_planning
     uri: https://github.com/jsk-ros-pkg/jsk_planning.git
-    version: 65ba806c276a3558cb2df9d45494f26bd01dad0d
+    version: master 
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
@@ -69,7 +69,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_roseus
     uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
-    version: 0d17efcc43504037a9ba8b3facfc3195be3aaa39
+    version: master 
 - git:
     local-name: jsk-ros-pkg/jsk_smart_apps
     uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
