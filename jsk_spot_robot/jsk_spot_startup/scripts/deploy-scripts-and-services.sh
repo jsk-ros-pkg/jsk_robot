@@ -12,10 +12,10 @@ if [ ! -e /var/lib/robot/config.bash  ]; then
 fi
 
 # install systemd unit files
-service_files=`find $SERVICE_SOURCE_PATH -maxdepth 1 -type f -name *.service`
-for service_file in $service_files;
+cd $SERVICE_SOURCE_PATH
+for service_file in $(ls ./*.service);
 do
-    sudo cp $PACKAGE_PATH/services/$service_file $SERVICE_DESTINATION_PATH/$service_file
+    sudo cp $service_file $SERVICE_DESTINATION_PATH/$service_file
     sudo chmod 644 $SERVICE_DESTINATION_PATH/$service_file
     sudo chown root:root $SERVICE_DESTINATION_PATH/$service_file
 done
