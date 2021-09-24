@@ -1,3 +1,9 @@
+# This is a develop branch for jsk version.
+# We need to use it until it is merged to master
+- git:
+    local-name: spot-ros
+    uri: https://github.com/sktometometo/spot_ros.git
+    version: develop/spot-rebased
 # Until PRs below are merged, we need to use develop/spot branch in sktometometo/jsk_recognition.git
 #  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596
 - git:
