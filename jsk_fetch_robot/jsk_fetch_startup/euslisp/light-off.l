@@ -3,8 +3,7 @@
 (require :fetch-interface "package://fetcheus/fetch-interface.l")
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
 
-(ros::roseus "fetch_go_dock")
+(ros::roseus "light_off")
 (fetch-init)
-(send *ri* :clear-costmap)
-(auto-dock)
+(room-light-off :control-switchbot :api)
 (sys::exit 0)
