@@ -3,7 +3,7 @@ Description=JSK Spot Network Service
 
 [Service]
 Type=simple
-ExecStart=/var/lib/robot/update-network-connection.sh
+ExecStart=/bin/bach -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosrun jsk_spot_startup update-network-connection.sh"
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
 KillSignal=SIGTERM

@@ -1,11 +1,5 @@
 #!/bin/bash
 
-IF_ETH="enx70886b8f1b38"
-IF_WIFI="wlxd037458e7f3c"
-IF_LTE="enxf8b7975c750a"
-
-CURRENT_CONNECTION_TYPE="none"
-
 function existIF() {
     interface_name=$1
     for DEV in `find /sys/devices -name net | grep -v virtual`
@@ -44,7 +38,7 @@ function connectLTE() {
 
 function updateConnection() {
 
-    echo "Connection update"
+    echo "Connection updating."
 
     # Reconnect WIFI
     if [ $(existIF $IF_WIFI) = 0 ]; then
@@ -64,43 +58,45 @@ function updateConnection() {
     if [ $? = 0 ]; then
         echo "Network connected"
         return 0
+    else
+        echo "Network disconnected. Trying to reconnect."
     fi
 
     # connect with Ethernet if available
     if [ $(existIF $IF_ETH) = 0 ]; then
         ping -c 1 -W 1 1.1.1.1 -I $IF_ETH
         if [ $? = 0 ]; then
-            echo "ethernet is online. switched to ethernet"
+            echo "Ethernet is online. switched to ethernet."
             connectETH
             return 0
         else
-            echo "ethernet is not online"
+            echo "Ethernet is offline."
         fi
     else
-        echo "ethernet device is not found"
+        echo "No ethernet device is found."
     fi
 
     # connect with Wi-Fi if available
     if [ $(existIF $IF_WIFI) = 0 ]; then
         ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI
         if [ $? = 0 ]; then
-            echo "wifi is online. switched to wifi"
+            echo "Wifi is online. switched to wifi."
             connectWIFI
             return 0
         else
-            echo "wifi is not online now"
+            echo "Wifi is offline."
         fi
     else
-        echo "wifi device is not found"
+        echo "No wifi device is found."
     fi
 
     # connect with LTE if available
     if [ $(existIF $IF_LTE) = 0 ]; then
-        echo "connection type switched to lte"
+        echo "Connection type switched to lte"
         connectLTE
         return 1
     else
-        echo "lte device is not found"
+        echo "No lte device is found"
     fi
 
     echo "No network device found."
