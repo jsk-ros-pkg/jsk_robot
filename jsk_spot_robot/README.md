@@ -167,9 +167,11 @@ Please see them for more details.
 
 ```
 echo "# Credentials
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_json_file
-export DIALOGFLOW_PROJECT_ID=<your dialogflow project id>
-export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml" >> ~/.bashrc
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_json_file # for dialogflow
+export DIALOGFLOW_PROJECT_ID=<your dialogflow project id> # for dialogflow
+export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml # for pydrive
+" >> ~/.bashrc
+
 ```
 
 And please add the same settings to /var/lib/robot/config.bash
