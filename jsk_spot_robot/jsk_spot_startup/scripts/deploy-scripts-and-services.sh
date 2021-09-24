@@ -19,3 +19,4 @@ do
     sudo chmod 644 $SERVICE_DESTINATION_PATH/$service_file
     sudo chown root:root $SERVICE_DESTINATION_PATH/$service_file
 done
+sudo systemctl daemon-reload

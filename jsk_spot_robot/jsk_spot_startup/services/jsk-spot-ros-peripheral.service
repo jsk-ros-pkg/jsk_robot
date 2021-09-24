@@ -1,5 +1,5 @@
 [Unit]
-Description=JSK Spot ROS Driver Service
+Description=JSK Spot ROS Peripheral Service
 
 [Service]
 Type=simple
