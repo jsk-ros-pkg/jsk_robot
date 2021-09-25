@@ -14,6 +14,8 @@
   <run_depend>jsk_maps</run_depend>
   <run_depend>raspicam_node</run_depend>
   <run_depend>magni_nav</run_depend>
+  <run_depend>pr2_computer_monitor</run_depend>
+  <run_depend>sound_play</run_depend>
 
   <test_depend>rostest</test_depend>
 
