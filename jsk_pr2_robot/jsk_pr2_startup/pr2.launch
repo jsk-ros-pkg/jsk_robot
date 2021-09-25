@@ -26,6 +26,8 @@
   <arg name="launch_c3_startup" default="false" />
   <arg name="use_map_keepout" default="true"
        doc="whether to use keepout map or not for navigation (default: true)"/>
+  <arg name="launch_dialogflow_task_executive" default="true"
+       doc="whether launch dialogflow_task_executive or not."/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -160,6 +162,11 @@
       watch_duration: 30
     </rosparam>
   </node>
+
+  <include if="$(arg launch_dialogflow_task_executive)"
+           file="$(find dialogflow_task_executive)/launch/dialogflow_task_executive.launch">
+    <arg name="run_app_manager" value="false" />
+  </include>
 
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
