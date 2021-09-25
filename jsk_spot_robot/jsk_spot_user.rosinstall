@@ -46,7 +46,7 @@
 - git:
     local-name: spot-ros
     uri: https://github.com/sktometometo/spot_ros.git
-    version: develop/spot-rebased
+    version: develop/spot
 # app_manager and utilities are requied
 - git:
     local-name: PR2/app_manager
