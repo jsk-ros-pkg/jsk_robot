@@ -1,4 +1,6 @@
 <launch>
+  <arg name="start_camera" default="false" />
+
   <!-- start sound_play -->
   <include file="$(find sound_play)/soundplay_node.launch">
     <arg name="device" value="hw:1,0" />
@@ -22,5 +24,6 @@
   </node>
   
   <!-- start camera -->
-  <ainclude file="$(find raspicam_node)/launch/camerav2_410x308_30fps.launch" />
+  <include file="$(find raspicam_node)/launch/camerav2_410x308_30fps.launch"
+           if="$(arg start_camera)"/>
 </launch>
