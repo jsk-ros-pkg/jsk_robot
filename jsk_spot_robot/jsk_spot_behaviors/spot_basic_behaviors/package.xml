@@ -13,6 +13,13 @@
 
   <depend>spot_behavior_manager</depend>
 
+  <exec_depend>apriltag_ros</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
+  <exec_depend>tf_relay</exec_depend>
+  <exec_depend>jsk_pcl_ros</exec_depend>
+  <exec_depend>switchbot_ros</exec_depend>
+  <exec_depend>pcl</exec_depend>
+
   <export>
   </export>
 </package>
