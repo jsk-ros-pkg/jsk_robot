@@ -14,7 +14,7 @@
 ## NETWORK_MONITOR_ENABLED : Set to 'false' to disable script
 
 desc = ("Monitors network status and restart network manager when needed. "
-        "Script is expected to be run as an upstart job. If run manually, ">>>>>>> master
+        "Script is expected to be run as an upstart job. If run manually, "
         "you must either pass a hostname, or have NETWORK_MONITOR_HOSTNAMES defined.")
 
 # Standard library
