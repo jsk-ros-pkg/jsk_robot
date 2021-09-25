@@ -14,7 +14,7 @@
 ## NETWORK_MONITOR_ENABLED : Set to 'false' to disable script
 
 desc = ("Monitors network status and restart network manager when needed. "
-        "Script is expected to be run as an upstart job. If run manually, "
+        "Script is expected to be run as an upstart job. If run manually, ">>>>>>> master
         "you must either pass a hostname, or have NETWORK_MONITOR_HOSTNAMES defined.")
 
 # Standard library
@@ -120,12 +120,15 @@ def get_avail_networks_by_strength(wifi_signal_output=None):
     for line in wifi_signal_output:
         if 'SIGNAL' in line or line == '':
             continue
-        splitline = line.split("'")
 
-        ssid = splitline[1]
-        if not ssid:
+        splitline = [x for x in line.split(" ") if x != ""]
+        if len(splitline) < 2:
             continue
-        signal = int(splitline[2]) # get signal strength as int
+
+        ssid = splitline[0]
+        if len(ssid) > 0 and ssid[0] == "'":
+           ssid = ssid[1:-1]
+        signal = int(splitline[1]) # get signal strength as int
 
         if ssid not in wifi_signals:
             wifi_signals[ssid] = signal

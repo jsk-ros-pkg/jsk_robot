@@ -1,0 +1,14 @@
+<launch>
+  <!-- Insta360 images -->
+  <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
+    <arg name="gui" value="false" />
+    <!-- Reduce CPU load -->
+    <!-- To check the valid formats, -->
+    <!-- $ sudo apt-get install v4l-utils -->
+    <!-- $ v4l2-ctl -d /dev/insta360 -\-list-formats-ext -->
+    <arg name="height" value="736" />
+    <arg name="width" value="1472" />
+    <!-- for indigo -->
+    <arg name="use_usb_cam" value="true" />
+  </include>
+</launch>
