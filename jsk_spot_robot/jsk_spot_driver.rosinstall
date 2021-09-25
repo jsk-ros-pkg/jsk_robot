@@ -4,7 +4,7 @@
 - git:
     local-name: spot-ros
     uri: https://github.com/sktometometo/spot_ros.git
-    version: develop/spot-rebased
+    version: develop/spot
 # geometry2 have to be built for python3
 - git:
     local-name: geometry2

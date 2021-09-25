@@ -3,7 +3,7 @@
 - git:
     local-name: spot-ros
     uri: https://github.com/sktometometo/spot_ros.git
-    version: develop/spot-rebased
+    version: develop/spot
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
