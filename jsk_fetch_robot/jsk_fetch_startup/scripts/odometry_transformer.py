@@ -21,56 +21,31 @@ class OdometryTransformer(object):
 
         self._frame_id_base_link = str(
             rospy.get_param('~frame_id_base_link', 'base_link'))
-        self._frame_id_base_link_virtual = str(rospy.get_param(
-            '~frame_id_base_link_virtual', 'base_link_virtual'))
-        self._frame_id_pose_frame = str(rospy.get_param(
-            '~frame_id_pose_frame', 't265_pose_frame'))
         self._frame_id_odom = str(rospy.get_param('~frame_id_odom', 'odom'))
+        self._translation_base_link_to_pose_frame_x = float(rospy.get_param('~translation_base_link_to_pose_frame_x'))
+        self._translation_base_link_to_pose_frame_y = float(rospy.get_param('~translation_base_link_to_pose_frame_y'))
+        self._translation_base_link_to_pose_frame_z = float(rospy.get_param('~translation_base_link_to_pose_frame_z'))
+        self._rotation_base_link_to_pose_frame_x = float(rospy.get_param('~rotation_base_link_to_pose_frame_x'))
+        self._rotation_base_link_to_pose_frame_y = float(rospy.get_param('~rotation_base_link_to_pose_frame_y'))
+        self._rotation_base_link_to_pose_frame_z = float(rospy.get_param('~rotation_base_link_to_pose_frame_z'))
+        self._rotation_base_link_to_pose_frame_w = float(rospy.get_param('~rotation_base_link_to_pose_frame_w'))
 
         self._publish_tf = bool(rospy.get_param('~publish_tf', True))
         self._2d_mode = bool(rospy.get_param('~2d_mode', True))
 
-        self._tfBuffer = tf2_ros.Buffer()
-        self._tfListener = tf2_ros.TransformListener(self._tfBuffer)
-
-        try:
-            transform_base2t265 = self._tfBuffer.lookup_transform(
-                self._frame_id_base_link_virtual,
-                self._frame_id_pose_frame,
-                rospy.Time(),
-                timeout=rospy.Duration.from_sec(self._timeout)
-            )
-            transform_t2652base = self._tfBuffer.lookup_transform(
-                self._frame_id_pose_frame,
-                self._frame_id_base_link_virtual,
-                rospy.Time(),
-                timeout=rospy.Duration.from_sec(self._timeout)
-            )
-        except Exception as e:
-            rospy.logerr('{}'.format(e))
-
-        self._pos_t265_basebased = np.array([
-            transform_base2t265.transform.translation.x,
-            transform_base2t265.transform.translation.y,
-            transform_base2t265.transform.translation.z
-        ])
         self._quat_t265_basebased = Quaternion(
-            transform_base2t265.transform.rotation.w,
-            transform_base2t265.transform.rotation.x,
-            transform_base2t265.transform.rotation.y,
-            transform_base2t265.transform.rotation.z
-        )
-        self._pos_base_t265based = np.array([
-            transform_t2652base.transform.translation.x,
-            transform_t2652base.transform.translation.y,
-            transform_t2652base.transform.translation.z
+            self._rotation_base_link_to_pose_frame_w,
+            self._rotation_base_link_to_pose_frame_x,
+            self._rotation_base_link_to_pose_frame_y,
+            self._rotation_base_link_to_pose_frame_z
+        ).normalised
+        self._pos_t265_basebased = np.array([
+            self._translation_base_link_to_pose_frame_x,
+            self._translation_base_link_to_pose_frame_y,
+            self._translation_base_link_to_pose_frame_z
         ])
-        self._quat_base_t265based = Quaternion(
-            transform_t2652base.transform.rotation.w,
-            transform_t2652base.transform.rotation.x,
-            transform_t2652base.transform.rotation.y,
-            transform_t2652base.transform.rotation.z
-        )
+        self._quat_base_t265based = self._quat_t265_basebased.inverse
+        self._pos_base_t265based = self._quat_base_t265based.rotate(-self._pos_t265_basebased)
 
         self._tf_br = tf2_ros.TransformBroadcaster()
         self._pub_odom = rospy.Publisher('~odom_out', Odometry, queue_size=1)
@@ -105,7 +80,7 @@ class OdometryTransformer(object):
             msg.pose.pose.orientation.x,
             msg.pose.pose.orientation.y,
             msg.pose.pose.orientation.z
-        )
+        ).normalised
 
         pos_base_odombased = pos_t265_odombased + \
             quat_t265_odombased.rotate(self._pos_base_t265based)
@@ -138,7 +113,7 @@ class OdometryTransformer(object):
                 0,
                 0,
                 quat_base_odombased.z
-            )
+            ).normalised
             pub_msg.pose.pose.position.x = pos_base_odombased[0]
             pub_msg.pose.pose.position.y = pos_base_odombased[1]
             pub_msg.pose.pose.position.z = 0
