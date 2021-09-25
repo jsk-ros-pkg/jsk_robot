@@ -115,6 +115,13 @@ Logging script is initialized at:
 /etc/init/jsk-log-wifi.conf
 ```
 
+### Show all logs
+
+
+```bash
+tmuxinator log
+```
+
 ## Administration
 - 2016/10/26 add `allow 133.11.216/8` to /etc/chrony/chrony.conf
 - 2018/08/26 add `0 10 * * 1-5 /home/fetch/ros/indigo_robot/devel/env.sh rosservice call /fetch15/start_app "name: 'jsk_fetch_startup/go_to_kitchen'"` to crontab
