@@ -8,13 +8,13 @@ jsk_spot_robot
 
 ## Installation
 
+To setup a new internal PC and spot user, Please see [this page](./SetupInternalPCAndSpotUser.md).
+
 ### How to set up catkin workspace (for a user)
 
 Create a workspace
 
 ```bash
-sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
-sudo apt-get install ros-melodic-catkin
 source /opt/ros/melodic/setup.bash
 mkdir $HOME/spot_ws/src -p
 cd $HOME/spot_ws/src
@@ -37,203 +37,39 @@ If you want to use switchbot_ros with spot_basic_behaviors, please add switch_bo
 roscd spot_basic_behaviors
 # modify config/switchbot_ros/token.yaml
 git update-index --skip-worktree config/switchbot_ros/token.yaml
-```
-
-### How to set up spot user in the internal pc.
-
-Spot user have 3 workspaces
-
-- `spot_driver_ws`: a workspace to run driver.launch. which requires python3 build version of geometry3
-- `spot_coral_ws`: a workspace to run object_detection.launch ( which includes coral_usb_ros node ) which requires python3 build version of opencv_brindge
-- `spot_ws`: a workspace to run other launch ( python2 )
-
-#### setting up `spot_driver_ws`
-
-Create a workspace for spot_driver.
-
-```bash
-sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
-sudo apt-get install ros-melodic-catkin
-source /opt/ros/melodic/setup.bash
-mkdir $HOME/spot_driver_ws/src -p
-cd $HOME/spot_driver_ws/src
-wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
-wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall
-wstool update
-rosdep update
-rosdep install -y -r --from-paths . --ignore-src
-pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
-cd $HOME/spot_driver_ws
-catkin init
-catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
-catkin build -j4 -c
-```
-
-After this, please modify the credential files for spot_driver.
-
-```bash
-roscd jsk_spot_startup
-# modify auth/credential_config.yaml
-git update-index --skip-worktree auth/spot_credential.yaml
-```
-
-#### setting up `spot_coral_ws`
-
-First, follow [Edge TPU dependencies installation section of coral_usb_ros](https://github.com/knorth55/coral_usb_ros#edge-tpu-dependencies-installation)
-
-Create a workspace for coral_usb.
-
-```bash
-sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
-sudo apt-get install ros-melodic-catkin
-source /opt/ros/melodic/setup.bash
-mkdir $HOME/spot_coral_ws/src -p
-cd $HOME/spot_coral_ws/src
-wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
-wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git --git
-wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall
-wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
-wstool update
-rosdep update
-rosdep install -y -r --from-paths . --ignore-src
-cd $HOME/spot_coral_ws
-catkin init
-catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
-catkin build -j4 -c
-```
-
-After that, please download models for coral_usb_ros.
-
-```
-source /opt/ros/melodic/setup.bash
-source $HOME/spot_coral_ws/devel/setup.bash
-rosrun coral_usb download_models.py
-```
-
-#### setting up `spot_ws`
-
-Create `spot_ws`
-
-```bash
-source /opt/ros/melodic/setup.bash
-mkdir $HOME/spot_ws/src -p
-cd $HOME/spot_ws/src
-wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
-wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall
-wstool update
-rosdep update
-rosdep install -y -r --from-paths . --ignore-src
-pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
-cd $HOME/spot_ws
-catkin init
-catkin build -j4 -c
-```
-
-If you want to use switchbot_ros with spot_basic_behaviors, please add switch_bot token.
-
-```
-roscd spot_basic_behaviors
-# modify config/switchbot_ros/token.yaml
-git update-index --skip-worktree config/switchbot_ros/token.yaml
-```
-
-#### Install scripts and systemd services
-
-Install scripts and systemd services
-
-```
-source /opt/ros/melodic/setup.bash
-source ~/spot_ws/devel/setup.bash
-rosrun jsk_spot_startup deploy-scripts-and-services.sh
-```
-
-#### Set environmental variables
-
-Set your ROS_IP to WiFi AP address.
-
-```
-echo "# ROS_IP
-rossetip 10.42.0.1 # change IP address if your wifi AP address is not this." >> ~/.bashrc
-```
-
-Add environmental variables for [dialogflow_task_executive](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive) and [gdrive_ros](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/gdrive_ros)
-Please see them for more details.
-
-```
-echo "# Credentials
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_json_file # for dialogflow
-export DIALOGFLOW_PROJECT_ID=<your dialogflow project id> # for dialogflow
-export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml # for pydrive
-" >> ~/.bashrc
-
-```
-
-And please add the same settings to /var/lib/robot/config.bash
-
-#### Setting up udev file and add the user to groups
-
-Create udev rule for insta360air, spot spinal.
-
-```bash
-roscd jsk_spot_startup
-sudo cp udev_rules/* /etc/udev/rules.d/
-```
-
-Create udev rules for joy pads
-
-```bash
-roscd jsk_spot_teleop
-sudo cp config/udev/* /etc/udev/rules.d/
-```
-
-And reload
-
-```bash
-sudo udevadm control --reload-rules
-```
-
-Please modify each udev file according to your configuration.
-
-#### Add the user to groups
-
-Add spot user to groups
-
-```bash
-sudo gpasswd -a <your user> dialout
-sudo gpasswd -a <your user> audio
-sudo gpasswd -a <your user> plugdev
-sudo gpasswd -a <your user> video
 ```
 
 ## How to run
 
 ### Bringup spot
 
-First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf)
+First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf) and power on the internal PC.
 
-After that, login with spot user and run the driver, object_detection and other basic programs.
+Basically, ros systemd services will start automatically. So you can use spot now.
 
-#### for spot_driver
+#### Teleoperation
+
+You can control spot with DualSense controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
+
+#### Start basic roslaunch manually
+
+If you want to launch basic ROS launches manually for some reason, please login `spot` user and follow this instruction.
+
+##### for spot_driver
 
 ```bash
 source $HOME/spot_driver_ws/devel/setup.bash
 roslaunch jsk_spot_startup driver.launch
 ```
 
-#### for object detection
+##### for object detection
 
 ```bash
 source $HOME/spot_coral_ws/devel/setup.bash
 roslaunch jsk_spot_startup object_detection.launch
 ```
 
-#### for other programs
+##### for other programs
 
 ```
 source $HOME/spot_ws/deve/setup.bash
@@ -246,7 +82,7 @@ This launch includes
 - interaction launch with Speech-To-Text and Text-To-Speech
 - so on.
 
-### Development with remote PC
+### Development with a remote PC
 
 Please create `spot_ws` to your PC.
 
@@ -256,7 +92,7 @@ And for every terminals in this section, Set your ROS_IP and ROS_MASTER_URI and 
 
 ```
 rossetip
-rossetmaster spot-jsk.local
+rossetmaster <robot ip address or robot_name.local>
 source ~/spot_ws/devel/setup.bash
 ```
 
@@ -268,10 +104,6 @@ For visualization, you can run RViz with jsk configuration.
 source $HOME/spot_ws/devel/setup.bash
 roslaunch jsk_spot_startup rviz.launch
 ```
-
-#### Teleoperation
-
-You can control spot with DualShock3 controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
 
 #### rosbag record and play
 
