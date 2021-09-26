@@ -1,9 +1,14 @@
 <launch>
-  <arg name="webhook_server" default="false" />
-  <arg name="credential" default="$(env GOOGLE_APPLICATION_CREDENTIALS)"/>
-  <arg name="project_id" default="$(env DIALOGFLOW_PROJECT_ID)"/>
-  <arg name="basic_yaml_file" default="/var/lib/robot/roswww_basic_keys.yaml"/>
-  <arg name="schedule_yaml_file" default="/var/lib/robot/app_schedule.yaml"/>
+  <arg name="use_roswww_basic" default="false" />
+  <arg name="use_app_scheduler" default="false" />
+  <arg name="use_dialogflow" default="false" />
+  <arg name="use_webhook_server" default="false" />
+
+  <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS)"/>
+  <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
+  <arg name="basic_yaml_file" default="$(optenv ROSWWW_BASIC_KEYS_YAML)"/>
+  <arg name="schedule_yaml_file" default="$(optenv APP_SCHEDULE_YAML)"/>
+
   <arg name="robot_type" default="spot"/>
 
   <rosparam subst_value="true">
@@ -15,12 +20,12 @@
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
     <arg name="use_applist" value="false" />
     <arg name="respawn" value="false" />
-    <arg name="basic" value="true" />
+    <arg name="basic" value="$(arg use_roswww_basic)" />
     <arg name="basic_yaml" value="$(arg basic_yaml_file)" />
   </include>
 
   <!-- app scheduler -->
-  <include file="$(find app_scheduler)/launch/app_scheduler.launch">
+  <include file="$(find app_scheduler)/launch/app_scheduler.launch" if="$(arg use_app_scheduler)">
     <arg name="yaml_path" value="$(arg schedule_yaml_file)" />
   </include>
 
@@ -29,7 +34,8 @@
       pkg="dialogflow_task_executive"
       type="dialogflow_client.py"
       name="dialogflow_client"
-      output="screen">
+      output="screen"
+      if="$(arg use_dialogflow)">
     <remap from="speech_to_text" to="/speech_to_text_jp"/>
     <rosparam subst_value="true">
       use_audio: false
@@ -45,14 +51,15 @@
       pkg="dialogflow_task_executive"
       type="task_executive.py"
       name="task_executive"
-      output="screen">
+      output="screen"
+      if="$(arg use_dialogflow)">
     <rosparam subst_value="true">
     </rosparam>
   </node>
 
   <!-- webhook server -->
   <include
-      if="$(arg webhook_server)"
+      if="$(arg use_webhook_server)"
       file="$(find dialogflow_task_executive)/launch/webhook_server.launch"
       />
 </launch>
