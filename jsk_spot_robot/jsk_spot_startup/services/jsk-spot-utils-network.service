@@ -7,8 +7,6 @@ ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/de
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
 KillSignal=SIGTERM
-User=spot
-Group=spot
 
 [Install]
 WantedBy=multi-user.target
