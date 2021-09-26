@@ -1,0 +1,4 @@
+- name: sing_thriller_midnight
+  app_name: jsk_spot_apps/sing_thriller
+  app_schedule:
+    start: every().day.at("00:00")
