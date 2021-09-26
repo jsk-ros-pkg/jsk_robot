@@ -82,7 +82,7 @@ plugins:
   - name: mail_notifier_plugin
     type: app_notifier/mail_notifier_plugin
     plugin_args:
-      mail_title: Result of Mech Office Demo
+      mail_title: Result of Go Back 73B2 Demo
       sender_address: spot-jsk@jsk.imi.i.u-tokyo.ac.jp
       receiver_address: spot@jsk.imi.i.u-tokyo.ac.jp
       use_timestamp_title: true
