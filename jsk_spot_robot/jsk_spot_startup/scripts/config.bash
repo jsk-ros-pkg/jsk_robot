@@ -14,7 +14,11 @@ rossetip $WIFI_AP_IP
 # ROS CONSOLE
 export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
 
+# Config files
+# export APP_SCHEDULE_YAML=/path/to/app_schedule.yaml
+
 # Credentials
 # export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_json_file
 # export DIALOGFLOW_PROJECT_ID=<your dialogflow project id>
 # export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml
+# export ROSWWW_BASIC_KEYS_YAML=/path/to/roswww_basic_keys.yaml
