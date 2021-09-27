@@ -241,3 +241,7 @@ sudo systemctl start cockpit.socket
 ```
 
 Then you can access cockpit by `https://<robot ip>:21443`
+
+#### Setup postfix with gmail
+
+TODO
