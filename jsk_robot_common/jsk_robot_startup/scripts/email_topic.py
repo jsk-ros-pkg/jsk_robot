@@ -1,57 +1,99 @@
 #!/usr/bin/env python
 
+from email.mime.application import MIMEApplication
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import errno
 from jsk_robot_startup.msg import Email
 import os
 import rospy
-import subprocess
+import smtplib
+from socket import error as socket_error
 import yaml
 
 
 class EmailTopic(object):
     """
-    This node sends email based on received ros topic.
-    Default email address can be set by using `~address_yaml`
+    This node sends email based on received rostopic (jsk_robot_startup/Email).
+    Default values can be set by using `~email_info`
+
+    The yaml file is like the following:
+    subject: hello
+    body: world
+    sender_address: hoge@test.com
+    receiver_address: fuga@test.com
+    smtp_server: test.com
+    smtp_port: 25
+    attached_file: /home/user/Pictures/test.png
     """
     def __init__(self):
-        address_yaml = rospy.get_param(
-            '~address_yaml', "/var/lib/robot/email_topic.yaml")
-        if os.path.exists(address_yaml):
-            with open(address_yaml) as yaml_f:
-                yaml_addresses = yaml.load(yaml_f)
-                self.sender_address = yaml_addresses['sender_address']
-                self.receiver_address = yaml_addresses['receiver_address']
+        yaml_path = rospy.get_param(
+            '~email_info', "/var/lib/robot/email_info.yaml")
+        if os.path.exists(yaml_path):
+            with open(yaml_path) as yaml_f:
+                self.email_info = yaml.load(yaml_f)
         self.subscriber = rospy.Subscriber(
             'email', Email, self._cb, queue_size=1)
 
     def _cb(self, msg):
-        # If sender_address or receiver_address is empty, use address in yaml
-        if msg.sender_address == '':
-            sender_address = self.sender_address
-        else:
-            sender_address = msg.sender_address
-        if msg.receiver_address == '':
-            receiver_address = self.receiver_address
-        else:
-            receiver_address = msg.receiver_address
+        send_mail_args = {}
+        # Set default value for self._send_mail arguments
+        send_mail_args['subject'] = ''
+        send_mail_args['body'] = ''
+        send_mail_args['smtp_server'] = 'localhost'
+        send_mail_args['smtp_port'] = 25
+        send_mail_args['attached_file'] = None
+        # Set args from topic field. If the field is empty, use value in yaml
+        for field in ['subject', 'body', 'sender_address', 'receiver_address',
+                      'smtp_server', 'smtp_port', 'attached_file']:
+            if getattr(msg, field) != '':
+                send_mail_args[field] = getattr(msg, field)
+            else:
+                if field in self.email_info:
+                    send_mail_args[field] = self.email_info[field]
         # Send email
-        self._send_mail(
-            msg.subject, msg.body, sender_address, receiver_address)
+        self._send_mail(**send_mail_args)
 
-    def _send_mail(self, subject, body, sender_address, receiver_address):
-        cmd = "LC_CTYPE=en_US.UTF-8 /bin/echo -e \"{}\"".format(body)
-        cmd += " | /usr/bin/mail -s \"{}\" -r {} {}".format(
-            subject, sender_address, receiver_address)
-        exit_code = subprocess.call(cmd, shell=True)
-        rospy.loginfo('Title: {}'.format(subject))
-        if exit_code > 0:
+    def _send_mail(
+            self, subject, body, sender_address, receiver_address,
+            smtp_server, smtp_port, attached_file):
+        # Create MIME
+        msg = MIMEMultipart()
+        msg["Subject"] = subject
+        msg["From"] = sender_address
+        msg["To"] = receiver_address
+        msg.attach(MIMEText(body, 'plain', 'utf-8'))
+        # Attach file
+        if attached_file is not None:
+            if not os.path.exists(attached_file):
+                rospy.logerr('File {} is not found.'.format(attached_file))
+                return
+            with open(attached_file, "rb") as f:
+                part = MIMEApplication(
+                    f.read(),
+                    Name=os.path.basename(attached_file))
+            part['Content-Disposition'] = 'attachment; filename="{}"'.format(
+                os.path.basename(attached_file))
+            msg.attach(part)
+        # SMTP Server
+        try:
+            server = smtplib.SMTP(smtp_server, smtp_port)
+        except socket_error as serr:
+            if serr.errno != errno.ECONNREFUSED:
+                raise serr
+            rospy.logerr('Failed to send email. {}'.format(serr.args))
             rospy.logerr(
-                'Failed to send e-mail:  {} -> {}'.format(
-                    sender_address, receiver_address))
-            rospy.logerr("You may need to do '$ sudo apt install mailutils'")
-        else:
-            rospy.loginfo(
-                'Succeeded to send e-mail: {} -> {}'.format(
-                    sender_address, receiver_address))
+                'Please check your smtp_server and smtp_port are correct')
+            rospy.logerr(
+                'If you use local smtp server, try $ sudo apt install postfix')
+            return
+        if server.has_extn('STARTTLS'):
+            server.starttls()
+        # Send Email
+        server.sendmail(sender_address, receiver_address, msg.as_string())
+        server.quit()
+        rospy.loginfo(
+            'Send mail from {} to {}'.format(sender_address, receiver_address))
 
 
 if __name__ == "__main__":
