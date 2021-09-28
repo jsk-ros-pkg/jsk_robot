@@ -159,7 +159,7 @@ for example, when you want to move spot 1m forward, type.
 send *ri* :go-pose 1 0
 ```
 
-And there are some examples in spoteus_demo.
+And there are some examples in `spoteus/demo`.
 
 - `sample_basics.l`
   + example of basic usage of Spot
