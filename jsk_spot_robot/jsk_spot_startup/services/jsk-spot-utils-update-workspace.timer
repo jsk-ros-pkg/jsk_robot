@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer for JSK Spot Update Workspace Service
+
+[Timer]
+OnCalendar = *-*-* 06:00:00
+
+[Install]
+WantedBy=timers.target

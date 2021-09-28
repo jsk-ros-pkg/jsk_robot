@@ -8,7 +8,7 @@ function update_workspace() {
     workspace=$1
     if [ -e $workspace ]; then
         cd $workspace/src
-        wstool update -t . -j . -m 60 --delete-changed-uris --continue-on-error
+        wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
         catkin build -j4 --continue-on-failure
     else
         echo "Workspace $workspace not found."
