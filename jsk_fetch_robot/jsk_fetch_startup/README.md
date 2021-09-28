@@ -16,7 +16,6 @@ sudo mv 99-realsense-libusb.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 ```
 
-
 ### supervisor
 Important jobs for fetch operation are managed by supervisor.
 
@@ -199,6 +198,13 @@ rosrun jsk_fetch_startup install_tmuxinator.sh
 ```
 
 Show logs
+```bash
+tmuxinator log
+```
+
+### Show all logs
+
+
 ```bash
 tmuxinator log
 ```

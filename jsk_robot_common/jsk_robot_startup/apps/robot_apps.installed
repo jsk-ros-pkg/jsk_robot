@@ -1,3 +1,5 @@
 apps:
   - app: jsk_robot_startup/personal_use
     display: Personal use 
+  - app: jsk_robot_startup/check_use_sim_time
+    display: Check /use_sim_time param

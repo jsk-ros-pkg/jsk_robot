@@ -56,3 +56,4 @@
   (auto-dock))
 
 (go-to-kitchen)
+(sys::exit 0)
