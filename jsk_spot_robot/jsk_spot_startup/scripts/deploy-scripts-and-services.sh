@@ -13,7 +13,7 @@ fi
 
 # install systemd unit files
 cd $SERVICE_SOURCE_PATH
-for service_file in $(ls ./*.service);
+for service_file in $(ls ./*);
 do
     sudo cp $service_file $SERVICE_DESTINATION_PATH/$service_file
     sudo chmod 644 $SERVICE_DESTINATION_PATH/$service_file
