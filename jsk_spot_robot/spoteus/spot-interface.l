@@ -6,6 +6,7 @@
 (ros::roseus-add-srvs "std_srvs")
 (ros::roseus-add-msgs "spot_msgs")
 (ros::roseus-add-srvs "spot_msgs")
+(ros::roseus-add-msgs "spot_behavior_manager_msgs")
 
 (defun call-trigger-service (srvname &key (wait nil))
   "Call std_srv/Trigger service"
@@ -33,12 +34,12 @@
 
 (defclass spot-interface
   :super robot-move-base-interface
-  :slots (trajectory-cmd-action)
+  :slots (trajectory-cmd-action execute-behavior-action)
   )
 
 (defmethod spot-interface
   (:init
-   (&rest args &key (trajectory-cmd-action-name "/spot/trajectory"))
+   (&rest args &key (trajectory-cmd-action-name "/spot/trajectory") (execute-behavior-action-name "/spot_behavior_manager_demo/execute_behaviors"))
    (prog1
        (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      ;; check if spot_ros/driver.launch started
@@ -59,6 +60,9 @@
      (setq trajectory-cmd-action (instance ros::simple-action-client :init
                                         trajectory-cmd-action-name spot_msgs::TrajectoryAction
                                         :groupname groupname))
+     (setq execute-behavior-action (instance ros::simple-action-client :init
+                                             execute-behavior-action-name spot_behavior_manager_msgs::LeadPersonAction
+                                             :groupname groupname))
      ))
   (:default-controller () ) ;; spot does not provide any JTA controllers
   (:spot-status-metrics-callback
@@ -276,6 +280,16 @@
     (x y &optional (d 0) (timeout 10)) ;; [m] [m] [degree]
     "move robot toward (x, y, d) (units are m, m and degrees respectively)."
     (send self :go-pos x y d :timeout timeout :wait nil)
+    )
+  (:go-to-spot (name &key (wait t))
+    "move robot to a specified place with spot_behavior_manager"
+    (setq execute-behavior-goal-msg (instance spot_behavior_manager_msgs::LeadPersonGoal :init))
+    (send execute-behavior-goal-msg :target-node-id name)
+    ;;
+    (send execute-behavior-action :send-goal execute-behavior-goal-msg)
+    (if wait
+      (send execute-behavior-action :wait-for-result)
+      )
     )
   (:body-pose
     (r p y
