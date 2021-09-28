@@ -17,6 +17,7 @@ from spot_msgs.srv import UploadGraph, UploadGraphRequest
 # actions
 from spot_msgs.msg import NavigateToAction, NavigateToGoal
 from spot_msgs.msg import TrajectoryAction, TrajectoryGoal
+from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonGoal
 
 class SpotRosClient:
 
@@ -41,6 +42,7 @@ class SpotRosClient:
                 servicename_set_localization_waypoint='/spot/set_localization_waypoint',
                 actionname_navigate_to='/spot/navigate_to',
                 actionname_trajectory='/spot/trajectory',
+                actionname_execute_behaviors='/spot_behavior_manager_demo/execute_behaviors',
                 duration_timeout=0.05):
 
         # Publishers
@@ -129,6 +131,10 @@ class SpotRosClient:
         self._actionclient_trajectory = actionlib.SimpleActionClient(
                                                 actionname_trajectory,
                                                 TrajectoryAction
+                                                )
+        self._actionclient_execute_behaviors = actionlib.SimpleActionClient(
+                                                actionname_execute_behaviors,
+                                                LeadPersonAction
                                                 )
 
     def pubCmdVel(self, vx, vy, vtheta):
@@ -224,6 +230,23 @@ class SpotRosClient:
 
     def cancel_navigate_to(self):
         self._actionclient_navigate_to.cancel_all_goals()
+
+    def execute_behaviors(self, target_node_id, blocking=True):
+        goal = LeadPersonGoal()
+        goal.target_node_id = target_node_id
+        self._actionclient_execute_behaviors.send_goal(goal)
+        if blocking:
+            self._actionclient_execute_behaviors.wait_for_result()
+            return self._actionclient_execute_behaviors.get_result()
+
+    def wait_execute_behaviors_result(self, duration=None):
+        if duration is None:
+            return self._actionclient_execute_behaviors.wait_for_result()
+        else:
+            return self._actionclient_execute_behaviors.wait_for_result(duration=duration)
+
+    def get_execute_behaviors_result(self):
+        return self._actionclient_execute_behaviors.get_result()
 
  ## \brief call trajectory service
  ##
