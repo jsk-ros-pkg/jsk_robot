@@ -1,0 +1,167 @@
+<launch>
+  <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
+  <arg name="launch_teleop" default="true" />
+  <arg name="use_base_camera_mount" default="true" />
+  <arg name="use_head_box" default="true" />
+  <arg name="use_realsense" default="true" />
+  <arg name="use_fetch_description" default="false" />
+
+  <!-- GDB Debug Option -->
+  <arg name="debug" default="false"/>
+  <arg unless="$(arg debug)" name="launch_prefix" value=""/>
+  <arg if="$(arg debug)" name="launch_prefix" value="gdb -x $(find fetch_bringup)/launch/gdb_settings.gdb --ex run --args"/>
+
+  <!-- calibration: s-kitagawa (2019/12/11) -->
+  <!-- Calibration -->
+  <param name="calibration_date" value="2020-12-04 02:08:50"/>
+  <param name="base_controller/track_width" value="0.37476"/>
+  <param name="head_camera/driver/z_offset_mm" value="4"/>
+  <param name="head_camera/driver/z_scaling" value="1.0202112"/>
+  <!-- use symbolic link: s-kitagawa (2020/09/18) -->
+  <arg name="rgb_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
+  <arg name="depth_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
+
+
+  <!-- Launch realsense cameras -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
+      <arg name="respawn" value="true" />
+  </include>
+
+  <!-- Odometry -->
+  <param name="base_controller/publish_tf" value="false"/>
+  <!-- stop using graft: s-kitagawa (2019/10/17) -->
+  <!-- <include file="$(find fetch_bringup)/launch/include/graft.launch.xml"/> -->
+
+  <!-- odometry topic mux -->
+  <node
+      pkg="topic_tools"
+      type="mux"
+      name="odom_topic_mux"
+      args="odom_combined odom_robot_localization odom_visual"
+      >
+      <remap from="/mux" to="/odom_topic_mux" />
+      <param name="~initial_topic" value="odom_visual" />
+  </node>
+  <!-- odometry tf mux -->
+  <node
+      pkg="topic_tools"
+      type="mux"
+      name="odom_tf_mux"
+      args="tf tf_odom_robot_localization tf_odom_visual"
+      >
+      <remap from="/mux" to="/odom_tf_mux" />
+      <param name="~initial_topic" value="tf_odom_visual" />
+  </node>
+  <!-- odometry mux selector -->
+  <node
+      pkg="jsk_fetch_startup"
+      type="odometry_mux_selector.py"
+      name="odometry_mux_selector"
+      >
+      <param name="~topic_odom_primary" value="odom_visual" />
+      <param name="~topic_odom_secondary" value="odom_robot_localization" />
+      <param name="~topic_tf_primary" value="tf_odom_visual" />
+      <param name="~topic_tf_secondary" value="tf_odom_robot_localization" />
+      <param name="~duration_timeout_topic" value="10.0" />
+
+      <remap from="~select_service_topic" to="/odom_topic_mux/select" />
+      <remap from="~select_service_tf" to="/odom_tf_mux/select" />
+
+      <remap from="~sound_play" to="sound_play" />
+  </node>
+
+  <!-- Odometry with robot localization ukf using wheel and imu -->
+  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+    <remap from="odometry/filtered" to="/odom_robot_localization" />
+    <remap from="/tf" to="/tf_odom_robot_localization"/>
+    <rosparam>
+      frequency: 50
+      sensor_timeout: 1.0
+      two_d_mode: true
+      publish_tf: true
+      publish_acceleration: false
+      map_frame: map
+      odom_frame: odom
+      base_link_frame: base_link
+      odom0: /odom_corrected
+      odom0_config: [true, true, false,
+                     false, false, true,
+                     true, true, false,
+                     false, false, true,
+                     false, false, false]
+      odom0_nodelay: true
+      odom0_differential: true
+    </rosparam>
+  </node>
+
+  <!-- Visual Odom -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_visual_odom.launch">
+      <arg name="topic_odom_out" value="/odom_visual" />
+      <arg name="odom_frame_id" value="odom" />
+      <arg name="topic_tf" value="tf_odom_visual" />
+  </include>
+
+  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
+  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
+  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
+    <remap from="~input" to="/imu" />
+    <remap from="~output" to="/imu_corrected" />
+  </node>
+
+  <!-- /odom has no covariance value. -->
+  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
+    <remap from="~input" to="/odom" />
+    <remap from="~output" to="/odom_corrected" />
+  </node>
+
+  <!-- calibration: s-kitagawa (2019/12/11) -->
+  <!-- testing urdf with head box by shinjo (2020/02/13) -->
+  <!-- URDF -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
+                  ros_distro:=$(env ROS_DISTRO) use_fetch_description:=$(arg use_fetch_description)
+                  base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)" />
+
+  <!-- Drivers for Base -->
+  <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
+    <param name="firmware_tar_gz" value="$(find fetch_drivers)/firmware.tar.gz"/>
+    <param name="has_base" value="true"/>
+    <param name="has_torso" value="true"/>
+    <param name="has_head" value="true"/>
+    <param name="has_arm" value="true"/>
+  </node>
+
+  <!-- Drivers for Gripper -->
+  <node name="gripper_driver" pkg="fetch_drivers" type="gripper_driver" output="screen">
+    <param name="firmware_tar_gz" value="$(find fetch_drivers)/firmware.tar.gz"/>
+  </node>
+
+  <!-- Controllers -->
+  <rosparam file="$(find fetch_bringup)/config/default_controllers.yaml" command="load"/>
+
+  <!-- Joint State -> TF -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+  <!-- Head Camera -->
+  <include file="$(find fetch_bringup)/launch/include/head_camera.launch.xml">
+    <arg name="rgb_camera_info_url" value="$(arg rgb_camera_info_url)"/>
+    <arg name="depth_camera_info_url" value="$(arg depth_camera_info_url)"/>
+  </include>
+
+  <!-- Laser -->
+  <include file="$(find fetch_bringup)/launch/include/laser.launch.xml"/>
+
+  <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
+  <!-- Teleop -->
+  <include file="$(find fetch_bringup)/launch/include/teleop.launch.xml" if="$(arg launch_teleop)"/>
+
+  <!-- enable software runstop from joy: s-kitagawa (2019/11/09) -->
+  <!-- Software Runstop -->
+  <include file="$(find fetch_bringup)/launch/include/runstop.launch.xml">
+    <arg name="flags" value="-a -b -g -t"/>
+  </include>
+
+  <!-- Diagnostics Aggregator -->
+  <include file="$(find fetch_bringup)/launch/include/aggregator.launch.xml"/>
+
+</launch>

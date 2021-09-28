@@ -14,13 +14,16 @@
   <build_depend version_gte="0.7.11">fetch_teleop</build_depend>
 
   <run_depend>image_proc</run_depend>
+  <run_depend>jsk_fetch_accessories</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>jsk_maps</run_depend>
   <run_depend>fetcheus</run_depend>
   <run_depend>fetch_navigation</run_depend>
   <run_depend>fetch_moveit_config</run_depend>
+  <run_depend>fetch_open_auto_dock</run_depend>
   <run_depend>fetch_driver_msgs</run_depend>
   <run_depend>pr2_computer_monitor</run_depend>
+  <run_depend>robot_pose_publisher</run_depend>
   <run_depend>rviz</run_depend>
   <run_depend>touchegg</run_depend>
   <run_depend>tf2_ros</run_depend>
@@ -28,9 +31,15 @@
 
   <!-- for fetch_naviation -->
   <run_depend>amcl</run_depend>
+  <run_depend>global_planner</run_depend>
   <run_depend>map_server</run_depend>
   <run_depend>move_base</run_depend>
+  <run_depend>move_slow_and_clear</run_depend>
   <run_depend>robot_localization</run_depend>
+  <run_depend>pyquaternion</run_depend>
+  <run_depend>librealsense2</run_depend>
+  <run_depend>realsense2_camera</run_depend>
+  <run_depend>realsense2_description</run_depend>
 
   <!-- for fetch teleop -->
   <run_depend>app_manager</run_depend>

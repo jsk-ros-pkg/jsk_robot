@@ -26,6 +26,8 @@
   <arg name="launch_c3_startup" default="false" />
   <arg name="use_map_keepout" default="true"
        doc="whether to use keepout map or not for navigation (default: true)"/>
+  <arg name="launch_dialogflow_task_executive" default="true"
+       doc="whether launch dialogflow_task_executive or not."/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -161,7 +163,18 @@
     </rosparam>
   </node>
 
+  <include if="$(arg launch_dialogflow_task_executive)"
+           file="$(find dialogflow_task_executive)/launch/dialogflow_task_executive.launch">
+    <arg name="run_app_manager" value="false" />
+  </include>
+
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"
         machine="c2"
         name="finish_launch_sound" />
+
+  <!-- check if room light is on -->
+  <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
+    <remap from="~input" to="/kinect_head/rgb/image_raw" />
+  </node>
+
 </launch>
