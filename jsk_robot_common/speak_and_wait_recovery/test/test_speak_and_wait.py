@@ -22,7 +22,8 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
     def test_speak_and_wait_recovery(self):
 
         self.msg = None
-        self.action_server = actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=True)
+        self.action_server = actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
+        self.action_server.start()
         while not rospy.is_shutdown():
             if self.msg is not None:
                 msg = self.msg
