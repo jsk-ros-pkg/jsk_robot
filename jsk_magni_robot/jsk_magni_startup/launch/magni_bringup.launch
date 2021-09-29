@@ -1,0 +1,29 @@
+<launch>
+  <arg name="start_camera" default="false" />
+
+  <!-- start sound_play -->
+  <include file="$(find sound_play)/soundplay_node.launch">
+    <arg name="device" value="hw:1,0" />
+  </include>
+  <!-- start bootsound -->
+  <node pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
+    <param name="wav_file" value="$(find jsk_magni_startup)/data/2001.wav" />
+  </node>
+
+  <!-- start move_basic -->
+  <include file="$(find magni_nav)/launch/move_basic.launch" />
+
+  <!-- publish CPU status to diagnostics -->
+  <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
+  	args="--diag-hostname=my_machine" >
+    <param name="check_ipmi_tool" value="false" type="bool" />
+    <param name="enforce_clock_speed" value="false" type="bool" />
+    <param name="num_cores" value="-1" type="int" />
+    <param name="load1_threshold" value="2.0"/>
+    <param name="load5_threshold" value="1.0"/>
+  </node>
+  
+  <!-- start camera -->
+  <include file="$(find raspicam_node)/launch/camerav2_410x308_30fps.launch"
+           if="$(arg start_camera)"/>
+</launch>

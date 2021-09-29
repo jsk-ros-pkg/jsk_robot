@@ -101,6 +101,11 @@ roslaunch fetch_gazebo simulation.launch
 roslaunch fetch_moveit_config move_group.launch
 ```
 
+Roseus script can be executed on Gazebo. The whole demo is in `jsk_fetch_gazebo_demo/launch/demo.launch`
+```bash
+roslaunch jsk_fetch_gazebo_demo demo.launch
+```
+
 ## Fetcheus APIs
 
 ### Common
