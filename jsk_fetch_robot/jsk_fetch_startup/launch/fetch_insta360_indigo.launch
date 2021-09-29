@@ -11,4 +11,20 @@
     <!-- for indigo -->
     <arg name="use_usb_cam" value="true" />
   </include>
+
+  <group ns="dual_fisheye_to_panorama">
+    <node name="panorama_downsample_quater"
+          pkg="nodelet" type="nodelet"
+          args="standalone image_proc/resize"
+          respawn="true">
+      <remap from="image" to="output" />
+      <remap from="~image" to="quater/output" />
+      <remap from="~camera_info" to="quater/camera_info" />
+      <rosparam>
+        scale_width: 0.25
+        scale_height: 0.25
+      </rosparam>
+    </node>
+  </group>
+
 </launch>

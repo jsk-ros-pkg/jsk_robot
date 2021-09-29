@@ -49,3 +49,7 @@
     local-name: jsk_control/jsk_ik_server
     uri: https://github.com/tork-a/jsk_control-release/archive/release/kinetic/jsk_ik_server/0.1.14-0.tar.gz
     version: jsk_control-release-release-kinetic-jsk_ik_server-0.1.14-0
+# magni_robot is not released on meldoic (https://github.com/UbiquityRobotics-release/magni_robot-release)
+- git:
+    local-name: UbiquityRobotics/magni_robot
+    uri: https://github.com/UbiquityRobotics/magni_robot
