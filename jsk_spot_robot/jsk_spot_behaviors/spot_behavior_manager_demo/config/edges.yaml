@@ -241,3 +241,27 @@ edges:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
       rest_waypoint_id: 'snubbed-puma-5v8XtjdA17XhPNLhsH2WEg=='
       goal_waypoint_id: 'meager-fox-bT4DU3uCHBJFWuYILkopVg=='
+  - from: 'eng2_1FElevator'
+    to: 'eng2_GarbageCollectionArea_east'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk'
+  - from: 'eng2_1FElevator'
+    to: 'eng2_GarbageCollectionArea_south'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk'
+  - from: 'eng2_GarbageCollectionArea_east'
+    to: 'eng2_1FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk'
+  - from: 'eng2_GarbageCollectionArea_south'
+    to: 'eng2_1FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk'
