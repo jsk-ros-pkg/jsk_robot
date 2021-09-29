@@ -1,0 +1,9 @@
+<launch>
+  <group ns="grasp_objects_test" >
+    <node pkg="rosbag" type="play" name="play_grasping_objects_msg"
+          args="-l $(find jsk_fetch_gazebo_demo)/test/grasping_objects.bag" />
+  </group>
+
+  <test test-name="demo_test" pkg="roseus" type="roseus" name="demo_test" args="$(find jsk_fetch_gazebo_demo)/test/test-grasping-objects.l" />
+</launch>
+

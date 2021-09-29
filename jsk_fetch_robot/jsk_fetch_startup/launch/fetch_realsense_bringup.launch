@@ -1,0 +1,82 @@
+<launch>
+
+  <arg name="respawn" default="true" />
+
+  <!-- t265 -->
+  <group ns="t265">
+    <rosparam>
+      /tracking_module/enable_mapping: false
+      /tracking_module/enable_relocalization: false
+      /tracking_module/enable_pose_jumping: false
+      /tracking_module/enable_dynamic_calibration: true
+      /tracking_module/enable_map_preservation: false
+    </rosparam>
+    <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
+      <arg name="tf_prefix"                value="t265"/>
+      <arg name="serial_no"                value=""/>
+      <arg name="usb_port_id"              value=""/>
+      <arg name="device_type"              value="t265"/>
+      <arg name="json_file_path"           value=""/>
+
+      <arg name="enable_sync"              value="false"/>
+
+      <arg name="fisheye_width"            value="848"/>
+      <arg name="fisheye_height"           value="800"/>
+      <arg name="enable_fisheye1"          value="false"/>
+      <arg name="enable_fisheye2"          value="false"/>
+
+      <arg name="fisheye_fps"              value="30"/>
+      <arg name="gyro_fps"                 value="200"/>
+      <arg name="accel_fps"                value="62"/>
+      <arg name="enable_gyro"              value="true"/>
+      <arg name="enable_accel"             value="true"/>
+      <arg name="enable_pose"              value="true"/>
+
+      <arg name="linear_accel_cov"         value="0.01"/>
+      <arg name="initial_reset"            value="true"/>
+      <arg name="unite_imu_method"         value=""/>
+
+      <arg name="publish_odom_tf"          value="false"/>
+      <arg name="publish_tf"               value="false"/>
+
+      <arg name="respawn"                 value="$(arg respawn)"/>
+    </include>
+  </group>
+
+  <!-- d435 -->
+  <group ns="d435_front_right">
+    <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
+      <arg name="device_type"           value="d435"/>
+      <arg name="serial_no"             value=""/>
+      <arg name="tf_prefix"             value="d435_front_right"/>
+      <arg name="initial_reset"         value="true"/>
+      <arg name="align_depth"           value="true"/>
+      <arg name="filters"               value="pointcloud"/>
+      <arg name="color_width"           value="640"/>
+      <arg name="color_height"          value="480"/>
+      <arg name="depth_width"           value="640"/>
+      <arg name="depth_height"          value="480"/>
+      <arg name="clip_distance"         value="-2"/>
+      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="respawn"              value="$(arg respawn)"/>
+    </include>
+  </group>
+  <group ns="d435_front_left">
+    <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
+      <arg name="device_type"           value="d435"/>
+      <arg name="serial_no"             value=""/>
+      <arg name="tf_prefix"             value="d435_front_left"/>
+      <arg name="initial_reset"         value="true"/>
+      <arg name="align_depth"           value="true"/>
+      <arg name="filters"               value="pointcloud"/>
+      <arg name="color_width"           value="640"/>
+      <arg name="color_height"          value="480"/>
+      <arg name="depth_width"           value="640"/>
+      <arg name="depth_height"          value="480"/>
+      <arg name="clip_distance"         value="-2"/>
+      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="respawn"              value="$(arg respawn)"/>
+    </include>
+  </group>
+
+</launch>

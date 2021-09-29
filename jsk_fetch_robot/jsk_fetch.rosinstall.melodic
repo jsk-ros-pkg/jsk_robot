@@ -1,11 +1,10 @@
 # This is rosinstall file for melodic PC inside fetch.
 # $ ln -s $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $HOME/ros/$ROS_DISTRO/src/.rosinstall
 
-# we need https://github.com/PR2/app_manager/pull/31 to handle timeout
 - git:
     local-name: PR2/app_manager
-    uri: https://github.com/knorth55/app_manager.git
-    version: fetch15
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel
 - git:
     local-name: RobotWebTools/rosbridge_suite
     uri: https://github.com/RobotWebTools/rosbridge_suite.git
@@ -111,7 +110,8 @@
     local-name: fetchrobotics/fetch_open_auto_dock
     uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
     version: melodic-devel
+# Use https://github.com/ros-planning/navigation/pull/839 based on 7f22997e6804d9d7249b8a1d789bf27343b26f75
 - git:
     local-name: ros-planning/navigation
-    uri: https://github.com/ros-planning/navigation.git
-    version: 7f22997e6804d9d7249b8a1d789bf27343b26f75
+    uri: https://github.com/708yamaguchi/navigation.git
+    version: fetch15

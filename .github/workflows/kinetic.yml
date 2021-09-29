@@ -41,5 +41,5 @@ jobs:
           NOT_TEST_INSTALL : true
           ROS_DISTRO : kinetic
           USE_DEB : false
-          BEFORE_SCRIPT : "wstool merge jsk_robot/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic; wstool update; apt-get download ros-kinetic-julius; wget -O stripdeb.sh https://gist.githubusercontent.com/jordansissel/748313/raw/8aebce360bc082e33af7bba3c90f755eb655783b/stripdeb.sh; bash stripdeb.sh ros-kinetic-julius*.deb; sudo dpkg --force-all -i ros-kinetic-julius*.deb; sudo apt-get -y -f install; sudo apt-mark hold ros-kinetic-julius"
+          BEFORE_SCRIPT : "wstool merge jsk_robot/jsk_fetch_robot/jsk_fetch_user.rosinstall.kinetic; wstool update; apt-get download ros-kinetic-julius; wget -O stripdeb.sh https://gist.githubusercontent.com/jordansissel/748313/raw/8aebce360bc082e33af7bba3c90f755eb655783b/stripdeb.sh; bash stripdeb.sh ros-kinetic-julius*.deb; sudo dpkg --force-all -i ros-kinetic-julius*.deb; sudo apt-get -y -f install; sudo apt-mark hold ros-kinetic-julius; git clone https://github.com/k-okada/denso_robot_ros.git; (cd ..; git clone https://github.com/k-okada/cobotta_descriptions.git); (cd denso_robot_ros/denso_robot_descriptions; cp -r ../../../cobotta_descriptions/cobotta_description . )"
           EXTRA_DEB : "ros-kinetic-convex-decomposition ros-kinetic-ivcon"

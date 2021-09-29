@@ -1,0 +1,30 @@
+<launch>
+  <!-- Insta360 images -->
+  <include file="$(find jsk_perception)/sample/sample_insta360_air.launch">
+    <arg name="gui" value="false" />
+    <!-- Reduce CPU load -->
+    <!-- To check the valid formats, -->
+    <!-- $ sudo apt-get install v4l-utils -->
+    <!-- $ v4l2-ctl -d /dev/insta360 -\-list-formats-ext -->
+    <arg name="height" value="736" />
+    <arg name="width" value="1472" />
+    <!-- for indigo -->
+    <arg name="use_usb_cam" value="true" />
+  </include>
+
+  <group ns="dual_fisheye_to_panorama">
+    <node name="panorama_downsample_quater"
+          pkg="nodelet" type="nodelet"
+          args="standalone image_proc/resize"
+          respawn="true">
+      <remap from="image" to="output" />
+      <remap from="~image" to="quater/output" />
+      <remap from="~camera_info" to="quater/camera_info" />
+      <rosparam>
+        scale_width: 0.25
+        scale_height: 0.25
+      </rosparam>
+    </node>
+  </group>
+
+</launch>
