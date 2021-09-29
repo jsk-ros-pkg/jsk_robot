@@ -1,0 +1,83 @@
+<launch>
+  <param name="/use_sim_time" value="true"/>
+
+  <node
+      pkg="map_server"
+      type="map_server"
+      name="map_server"
+      args="$(find navigation_stage)/stage_config/maps/willow-full-0.05.pgm 0.05"
+      respawn="false"
+      />
+
+  <node
+      pkg="stage_ros"
+      type="stageros"
+      name="stageros"
+      args="$(find navigation_stage)/stage_config/worlds/willow-pr2-5cm.world"
+      respawn="false"
+      >
+    <param name="base_watchdog_timeout" value="0.2"/>
+  </node>
+
+  <node
+      pkg="sound_play"
+      type="soundplay_node.py"
+      name="sound_play"
+      >
+  </node>
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <param name="footprint_padding" value="0.01" />
+    <param name="controller_frequency" value="10.0" />
+    <param name="controller_patience" value="3.0" />
+    <param name="oscillation_timeout" value="30.0" />
+    <param name="oscillation_distance" value="0.5" />
+
+    <rosparam file="$(find navigation_stage)/move_base_config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navigation_stage)/move_base_config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find navigation_stage)/move_base_config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation_stage)/move_base_config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation_stage)/move_base_config/base_local_planner_params.yaml" command="load" />
+
+    <rosparam>
+      recovery_behavior_enabled: true
+      recovery_behaviors:
+        - name: "conservative_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+        - name: "speak_and_wait0"
+          type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+        - name: "aggressive_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+        - name: "speak_and_wait1"
+          type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
+        - name: "all_reset"
+          type: "clear_costmap_recovery/ClearCostmapRecovery"
+      conservative_reset:
+        reset_distance: 2.0
+      speak_and_wait0:
+        speak_text: "Make way, Please"
+        duration_wait: 5.0
+        duration_timeout: 1.0
+        sound_action: /sound_play
+      aggressive_reset:
+        reset_distance: 1.0 # 0.5
+      speak_and_wait1:
+        speak_text: "Make way, Please"
+        duration_wait: 5.0
+        duration_timeout: 1.0
+        sound_action: /sound_play
+      all_reset:
+        reset_distance: 0.0
+    </rosparam>
+  </node>
+
+  <include file="$(find navigation_stage)/move_base_config/amcl_node.xml"/>  
+
+  <node
+      name="rviz"
+      pkg="rviz"
+      type="rviz"
+      args="-d $(find navigation_stage)/single_robot.rviz"
+      />
+
+</launch>
