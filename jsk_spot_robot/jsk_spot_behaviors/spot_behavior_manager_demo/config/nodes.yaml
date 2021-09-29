@@ -86,7 +86,16 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
         id: 'brag-eagle-Of.kPg1gvRBhSWzrP+G3Yw=='
         localization_method: 'fiducial'
-    switchbot_device: '/eng2/1f/elevator/down/button'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk'
+        id: 'sunlit-iguana-cXGwqooA99O95Hzqas19dw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk'
+        id: 'gilled-bee-ve3JJ8B2sMTnRL3s8p.SZA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk'
+        id: 'oafish-vervet-w.bCe7FjEILCP8oBQg6Miw=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/1f/elevator/up/button'
     floor: 1
     floor_height: -4.5
   'eng2_Mech_Office':
@@ -224,6 +233,23 @@ nodes:
         localization_method: 'waypoint'
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
         id: 'sown-pincer-NcgfKhWf9H+B3yWIKA8W7A=='
+        localization_method: 'waypoint'
+  'eng2_GarbageCollectionArea_east':
+    name_en: 'Garbage collection area'
+    name_jp: 'ゴミ捨て場'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk'
+        id: 'podgy-oxen-t+KIiX.QiVaFGcphBsrekA=='
+        localization_method: 'waypoint'
+  'eng2_GarbageCollectionArea_south':
+    name_en: 'Garbage collection area'
+    name_jp: 'ゴミ捨て場'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk'
+        id: 'atonic-frog-uCPybjcZAN3fQZHNx71GRw=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk'
+        id: 'boxy-hound-2E2IbEf63lXIM91zP.P2Ww=='
         localization_method: 'waypoint'
   'HongoMainGate':
     name_en: 'Maingate'
