@@ -2,17 +2,16 @@
 
 jsk_fetch_startup=$(builtin cd "`dirname "${BASH_SOURCE[0]}"`"/.. > /dev/null && pwd)
 
-IFS=':' read -r -a prefix_paths <<< "$CMAKE_PREFIX_PATH"
-current_prefix_path="${prefix_paths[0]}"
-
-set -x
-
 cd $jsk_fetch_startup/udev_rules
-for file in $(ls ./*.rules); do
+for file in $(ls *.rules); do
+    if [ -e /etc/udev/rules.d/$file ]; then
+        file_bk=$file.$(date "+%Y%m%d_%H%M%S")
+        sudo cp /etc/udev/rules.d/$file /etc/udev/rules.d/$file_bk
+        echo "backup /etc/udev/rules.d/$file to /etc/udev/rules.d/$file_bk"
+    fi
+
     sudo cp $file /etc/udev/rules.d/
     sudo chown root:root /etc/udev/rules.d/$file
     sudo chmod 644 /etc/udev/rules.d/$file
-    echo "copied $file to /etc/udev/rules.d/"
+    echo -e "copied jsk_fetch_startup/udev_rules/$file to /etc/udev/rules.d/$file\n"
 done
-
-set +x

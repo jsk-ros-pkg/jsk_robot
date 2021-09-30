@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>speak_and_wait_recovery</name>
+  <version>1.1.0</version>
+  <description>The speak_and_wait_recovery package for speak_and_wait_plugin</description>
+
+  <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
+
+  <license>BSD</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>costmap_2d</depend>
+  <depend>nav_core</depend>
+  <depend>pluginlib</depend>
+  <depend>roscpp</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>sound_play</test_depend>
+
+  <export>
+      <nav_core plugin="${prefix}/speak_and_wait_plugin.xml" />
+  </export>
+</package>
