@@ -35,7 +35,7 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
         id: 'meager-fox-bT4DU3uCHBJFWuYILkopVg=='
         localization_method: 'fiducial'
-    switchbot_device: '/eng2/7f/elevator/down/button'
+    switchbot_device: '/eng2/7f/elevator_bot_down'
     floor: 7
     floor_height: 24
   'eng2_2FElevator':
@@ -66,7 +66,7 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
         id: 'brumal-gerbil-NLVgQc0oBXbc8BCZev57LQ=='
         localization_method: 'fiducial'
-    switchbot_device: '/eng2/2f/elevator/up/button'
+    switchbot_device: '/eng2/2f/elevator_bot_up'
     floor: 2
     floor_height: 0
   'eng2_3FElevator':
@@ -79,7 +79,7 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
         id: 'doughy-vulture-kMie2F0bAno9STnKFjNadA=='
         localization_method: 'fiducial'
-    switchbot_device: '/eng2/3f/elevator/up/button'
+    switchbot_device: '/eng2/3f/elevator_bot_up'
     floor: 3
     floor_height: 4.5
   'eng2_1FElevator':
@@ -98,7 +98,7 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk'
         id: 'oafish-vervet-w.bCe7FjEILCP8oBQg6Miw=='
         localization_method: 'fiducial'
-    switchbot_device: '/eng2/1f/elevator/up/button'
+    switchbot_device: '/eng2/1f/elevator_bot_up'
     floor: 1
     floor_height: -4.5
   'eng2_Mech_Office':
