@@ -32,6 +32,9 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
         id: 'sly-chetah-IZ4pVY7vrqO36OoKCYk9Zg=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
+        id: 'meager-fox-bT4DU3uCHBJFWuYILkopVg=='
+        localization_method: 'fiducial'
     switchbot_device: '/eng2/7f/elevator/down/button'
     floor: 7
     floor_height: 24
