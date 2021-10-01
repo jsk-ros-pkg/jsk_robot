@@ -45,8 +45,13 @@ Each service will load `/var/lib/robot/config.bash` for robot-specific settings 
     - A service to run [`jsk_spot_startup update-network-connection.sh`](./jsk_spot_startup/scripts/update-network-connection.sh)
     - Update network connection so that internet connection will be maintained with ethernet, wifi or LTE.
     - automatically start when booting
-  - [jsk-spot-utils-update-workspace.service](./jsk_spot_startup/services/jsk-spot-utils-update-workspace.service)
-    - A service to run [`jsk_spot_startup update-workspaces.sh`](./jsk_spot_startup/scripts/update-workspaces.sh)
+  - [jsk-spot-utils-auto-power-off.service](./jsk_spot_startup/services/jsk-spot-utils-auto-power-off.service)
+    - A service to run [`jsk_spot_startup update-workspaces.sh`](./jsk_spot_startup/scripts/update-workspaces.sh) and [`jsk_spot_startup auto-power-off.sh`](./jsk_spot_startup/scripts/auto-power-off.sh) and reboot
     - Update `/home/spot/spot_driver_ws`, `/home/spot/spot_coral_ws` and `/home/spot/spot_ws`.
-    - start at 6:00 am
+    - Make robot sit, power-off and release
+    - start at 1:00 am with [jsk-spot-utils-auto-power-off.timer](./jsk_spot_startup/services/jsk-spot-utils-auto-power-off.timer)
+  - [jsk-spot-utils-auto-power-on.service](./jsk_spot_startup/services/jsk-spot-utils-auto-power-on.service)
+    - A service to run [`jsk_spot_startup update-workspaces.sh`](./jsk_spot_startup/scripts/update-workspaces.sh) and [`jsk_spot_startup auto-power-on.sh`](./jsk_spot_startup/scripts/auto-power-on.sh)
+    - Make robot claim, power-on and claim
+    - start at 7:00 am with [jsk-spot-utils-auto-power-on.timer](./jsk_spot_startup/services/jsk-spot-utils-auto-power-on.timer)
 
