@@ -45,6 +45,7 @@ git update-index --skip-worktree config/switchbot_ros/token.yaml
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf) and power on the internal PC.
 
 Basically, ros systemd services will start automatically. So you can use spot now.
+Details about ros systemd services of JSK Spot, Please see [System Overview page](./SystemOverview.md).
 
 #### Start basic roslaunch manually
 
@@ -80,7 +81,6 @@ This launch includes
 ### Teleoperation
 
 You can control spot with DualSense controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
-
 
 ### Web UI
 
