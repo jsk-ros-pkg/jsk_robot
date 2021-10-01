@@ -15,8 +15,8 @@ class CalbeConnectionDetector:
         self.msg_battery_laptop = None
 
         self.sub_battery_spot = rospy.Subscriber(
-                                    '/spot/status/battery_states',
-                                    spot_msgs.msg.BatteryStateArray,
+                                    '/spot/status/power_state',
+                                    spot_msgs.msg.PowerState,
                                     self.callback_battery_spot)
         self.sub_battery_laptop = rospy.Subscriber(
                                     '/laptop_charge',
@@ -26,7 +26,7 @@ class CalbeConnectionDetector:
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
             rate.sleep()
-            if self.msg_battery_spot == None or self.msg_battery_laptop == None:
+            if self.msg_battery_spot == None and self.msg_battery_laptop == None:
                 continue
             self.pub.publish(Bool(self.check_connection()))
 
@@ -34,7 +34,7 @@ class CalbeConnectionDetector:
 
         connected = False
 
-        if self.msg_battery_spot.battery_states[0].status == spot_msgs.msg.BatteryState.STATUS_CHARGING or\
+        if self.msg_battery_spot.shore_power_state == spot_msgs.msg.PowerState.STATE_ON_SHORE_POWER or\
                self.msg_battery_laptop.power_supply_status == sensor_msgs.msg.BatteryState.POWER_SUPPLY_STATUS_CHARGING or\
                self.msg_battery_laptop.power_supply_status == sensor_msgs.msg.BatteryState.POWER_SUPPLY_STATUS_NOT_CHARGING: #?
             return True
