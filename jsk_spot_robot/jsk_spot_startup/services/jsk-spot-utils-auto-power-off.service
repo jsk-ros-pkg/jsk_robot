@@ -1,9 +1,9 @@
 [Unit]
-Description=JSK Spot Update Update Workspace and Auto Power Off Service
+Description=JSK Spot Auto Power Off Service
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosrun jsk_spot_startup update-workspaces.sh && rosrun jsk_spot_startup auto-power-off.sh && sudo reboot"
+ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosrun jsk_spot_startup auto-power-off.sh && sudo reboot"
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
 KillSignal=SIGTERM
