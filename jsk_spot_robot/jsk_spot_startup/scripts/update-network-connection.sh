@@ -21,6 +21,8 @@ function connectETH() {
 
 function restartWIFI() {
     sudo nmcli connection down sanshiro
+    sudo ip l set $IF_WIFI down
+    sudo ip l set $IF_WIFI up
     sudo nmcli connection up sanshiro
 }
 
