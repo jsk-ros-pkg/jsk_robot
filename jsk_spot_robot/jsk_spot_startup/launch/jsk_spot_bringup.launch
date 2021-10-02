@@ -1,5 +1,5 @@
 <launch>
-  <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
 
   <arg name="use_driver" default="true" />
