@@ -1,7 +1,6 @@
 <launch>
-  <arg name="username" default="dummyusername" />
-  <arg name="password" default="dummypassword" />
-  <arg name="hostname" default="192.168.50.3" />
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
+  <arg name="launch_robot_state_publisher" default="true" />
 
   <arg name="use_driver" default="true" />
 
