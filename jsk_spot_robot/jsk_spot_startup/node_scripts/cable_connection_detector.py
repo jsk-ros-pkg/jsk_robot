@@ -32,14 +32,15 @@ class CalbeConnectionDetector:
 
     def check_connection(self):
 
-        connected = False
-
-        if self.msg_battery_spot.shore_power_state == spot_msgs.msg.PowerState.STATE_ON_SHORE_POWER or\
-               self.msg_battery_laptop.power_supply_status == sensor_msgs.msg.BatteryState.POWER_SUPPLY_STATUS_CHARGING or\
-               self.msg_battery_laptop.power_supply_status == sensor_msgs.msg.BatteryState.POWER_SUPPLY_STATUS_NOT_CHARGING: #?
+        if self.msg_battery_spot is not None and\
+             self.msg_battery_spot.shore_power_state == spot_msgs.msg.PowerState.STATE_ON_SHORE_POWER:
             return True
-
-        return connected
+        elif self.msg_battery_laptop is not None and\
+             (self.msg_battery_laptop.power_supply_status == sensor_msgs.msg.BatteryState.POWER_SUPPLY_STATUS_CHARGING or\
+              self.msg_battery_laptop.power_supply_status == sensor_msgs.msg.BatteryState.POWER_SUPPLY_STATUS_NOT_CHARGING):
+            return True
+        else:
+            return False
 
     def callback_battery_spot(self,msg):
 
