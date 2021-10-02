@@ -4,7 +4,7 @@ nodes:
     name_jp: 'ダミー'
   'eng2_73B2':
     name_en: '73B2'
-    name_jp: '7 3 B 2'
+    name_jp: '73 B 2'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
         id: 'dyed-bat-t00VKo5XixLihCvpsZPRqw=='
@@ -14,14 +14,14 @@ nodes:
         localization_method: 'fiducial'
   'eng2_73A2':
     name_en: '73A2'
-    name_jp: '7 3 A 2'
+    name_jp: '73 A 2'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
         id: 'affine-drake-Jfb0ZPtNcqcrq9yhnEl2DA=='
         localization_method: 'fiducial'
   'eng2_7FElevator':
     name_en: 'Elevator'
-    name_jp: 'エレベーター'
+    name_jp: '7階 エレベーター'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
         id: 'looted-cougar-RWT2C0zLJXG.ezYnCuLUeQ=='
@@ -40,7 +40,7 @@ nodes:
     floor_height: 24
   'eng2_2FElevator':
     name_en: 'Elevator'
-    name_jp: 'エレベーター'
+    name_jp: '2階 エレベーター'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_2FElevator.walk'
         id: 'rainy-collie-uwFW2KVYg2YCUi8FF6N00g=='
@@ -71,7 +71,7 @@ nodes:
     floor_height: 0
   'eng2_3FElevator':
     name_en: 'Elevator'
-    name_jp: 'エレベーター'
+    name_jp: '3階 エレベーター'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
         id: 'eighth-ant-0Ot3VoMm0uiJNBHnbJOF9w=='
@@ -84,7 +84,7 @@ nodes:
     floor_height: 4.5
   'eng2_1FElevator':
     name_en: 'Elevator'
-    name_jp: 'エレベーター'
+    name_jp: '1階 エレベーター'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
         id: 'brag-eagle-Of.kPg1gvRBhSWzrP+G3Yw=='
@@ -130,12 +130,14 @@ nodes:
         localization_method: 'fiducial'
   'eng8_Piloti_Center':
     name_en: 'Piloti'
-    name_jp: 'ピロティ'
+    name_jp: '8号館 ピロティ'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
         id: 'azoic-lion-Iapbto7rzlzuFF0MvXdyPA=='
         localization_method: 'fiducial'
   'eng2_subway_pillar':
+    name_en: 'Piloti'
+    name_jp: 'サブウェイ'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
         id: 'quack-snail-Zm7LgLSyql.xcoqi9OeCQA=='
@@ -205,8 +207,6 @@ nodes:
         id: 'terse-crest-Toj82ugJt2Y029d7Afhq0A=='
         localization_method: 'waypoint'
   'eng2_MainEntrance_upper':
-    name_en: 'Entrance'
-    name_jp: '入り口'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
         id: 'violet-ibis-HtCPm39SIDSzoJFVX88S+A=='
@@ -219,7 +219,7 @@ nodes:
         localization_method: 'fiducial'
   'eng2_MainEntrance_lower':
     name_en: 'Entrance'
-    name_jp: '入り口'
+    name_jp: '2号館 正面入口'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
         id: 'aft-tick-clWAq8obxtWm64bTthYwMQ=='
@@ -228,8 +228,6 @@ nodes:
         id: 'rested-grouse-GzVp6htKyt6kdIcS+Tu6aA=='
         localization_method: 'waypoint'
   'eng2_MainEntrance_outer':
-    name_en: 'Entrance'
-    name_jp: '入り口'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
         id: 'tilled-weevil-slAZLtX3U2NcqaINkGY0Sw=='
