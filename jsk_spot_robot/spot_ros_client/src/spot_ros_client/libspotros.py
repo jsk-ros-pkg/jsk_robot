@@ -57,6 +57,27 @@ class SpotRosClient:
                                     queue_size=1
                                     )
 
+        # wait for services
+        try:
+            rospy.wait_for_service(servicename_claim, rospy.Duration(5))
+            rospy.wait_for_service(servicename_release, rospy.Duration(5))
+            rospy.wait_for_service(servicename_stop, rospy.Duration(5))
+            rospy.wait_for_service(servicename_self_right, rospy.Duration(5))
+            rospy.wait_for_service(servicename_sit, rospy.Duration(5))
+            rospy.wait_for_service(servicename_stand, rospy.Duration(5))
+            rospy.wait_for_service(servicename_power_on, rospy.Duration(5))
+            rospy.wait_for_service(servicename_power_off, rospy.Duration(5))
+            rospy.wait_for_service(servicename_estop_hard, rospy.Duration(5))
+            rospy.wait_for_service(servicename_estop_gentle, rospy.Duration(5))
+            rospy.wait_for_service(servicename_stair_mode, rospy.Duration(5))
+            rospy.wait_for_service(servicename_locomotion_mode, rospy.Duration(5))
+            rospy.wait_for_service(servicename_upload_graph, rospy.Duration(5))
+            rospy.wait_for_service(servicename_list_graph, rospy.Duration(5))
+            rospy.wait_for_service(servicename_set_localization_fiducial, rospy.Duration(5))
+            rospy.wait_for_service(servicename_set_localization_waypoint, rospy.Duration(5))
+        except rospy.ROSException as e:
+            rospy.logerr('Service unavaliable: {}'.format(e))
+
         # Service Clients
         self._srv_client_claim = rospy.ServiceProxy(
                                     servicename_claim,
@@ -123,6 +144,7 @@ class SpotRosClient:
                                     SetLocalizationWaypoint
                                     )
 
+
         # Action Clients
         self._actionclient_navigate_to = actionlib.SimpleActionClient(
                                                 actionname_navigate_to,
@@ -136,6 +158,15 @@ class SpotRosClient:
                                                 actionname_execute_behaviors,
                                                 LeadPersonAction
                                                 )
+
+        # wait for action
+        try:
+            self._actionclient_navigate_to.wait_for_server(rospy.Duration(5))
+            self._actionclient_trajectory.wait_for_server(rospy.Duration(5))
+            self._actionclient_execute_behaviors.wait_for_server(rospy.Duration(5))
+        except rospy.ROSException as e:
+            rospy.logerr('Action unavaliable: {}'.format(e))
+
 
     def pubCmdVel(self, vx, vy, vtheta):
         msg = Twist()
