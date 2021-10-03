@@ -11,6 +11,8 @@
     <arg name="TOPIC_CAMERA_LEFT" default="/spot/camera/left"/>
     <arg name="TOPIC_CAMERA_BACK" default="/spot/camera/back"/>
 
+    <arg name="switchbot_token_yaml" default="/var/lib/robot/credentials/switchbot_token.yaml"/>
+
     <!-- depth_image_proc -->
     <!-- front right -->
     <node
@@ -206,7 +208,7 @@
         output="screen">
         <rosparam
             command="load"
-            file="$(find spot_basic_behaviors)/config/switchbot_ros/token.yaml"
+            file="$(arg switchbot_token_yaml)"
             />
     </node>
 
