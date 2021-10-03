@@ -40,9 +40,9 @@ rosrun spot_autowalk_data view_map.py <map_directory.walk> --draw-id
 
 ![eng2_2FElevator_to_eng8_2FElevator](https://user-images.githubusercontent.com/9410362/124134033-600beb00-dabd-11eb-823c-483e75318f8b.png)
 
-### eng2_7FElevator_to_2FElevator
+### eng2_73B2_to_2FElevator
 
-![eng2_73B2_to_2FElevator](https://user-images.githubusercontent.com/9410362/124134079-6f8b3400-dabd-11eb-8c99-4fe616f84eee.png)
+![eng2_73B2_to_7FElevator](https://user-images.githubusercontent.com/9410362/135750882-3d72e538-316c-40a4-b209-cffd06a774a4.png)
 
 ### eng2_73B2_to_81C1
 
