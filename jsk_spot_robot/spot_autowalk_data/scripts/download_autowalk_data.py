@@ -18,7 +18,7 @@ def main():
         pkg_name=PKG,
         path='autowalk/eng2_73B2_to_7FElevator.walk.tar.gz',
         url='https://drive.google.com/uc?id=1O8o6voq2v8WenfaUYcmpSU-IwJSsXW5_',
-        md5='ecd4d8dc043995f7675a59fce950676b',
+        md5='b75ff21caf475a044e7ea197ffe9e378',
         extract=True
     )
 
