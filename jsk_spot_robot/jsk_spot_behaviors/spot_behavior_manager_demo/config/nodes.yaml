@@ -2,6 +2,13 @@ nodes:
   'dummy':
     name_en: 'dummy'
     name_jp: 'ダミー'
+  'eng2_73B1':
+    name_en: '73B1'
+    name_jp: '73 B 1'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'unkept-scarab-pfr5U1CBRCXx9EOt6eQDCw=='
+        localization_method: 'waypoint'
   'eng2_73B2':
     name_en: '73B2'
     name_jp: '73 B 2'
@@ -17,8 +24,22 @@ nodes:
     name_jp: '73 A 2'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
-        id: 'affine-drake-Jfb0ZPtNcqcrq9yhnEl2DA=='
-        localization_method: 'fiducial'
+        id: 'enough-python-pqYBEhDZHuCEapcDxLK32w=='
+        localization_method: 'waypoint'
+  'eng2_73A4':
+    name_en: '73A4'
+    name_jp: '73 A 4'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'dashed-kodiak-bKNHSR3S7fXE11UeXeeekA=='
+        localization_method: 'waypoint'
+  'eng2_81C1':
+    name_en: '81C1'
+    name_jp: '81 C 1'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
+        id: 'sable-narwal-o7qEo7543BUTj4sNKWcQ6g=='
+        localization_method: 'waypoint'
   'eng2_7FElevator':
     name_en: 'Elevator'
     name_jp: '7階 エレベーター'
