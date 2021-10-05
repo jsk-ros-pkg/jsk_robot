@@ -46,6 +46,18 @@ edges:
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
   - from: 'eng2_73B2'
+    to: 'eng2_81C1'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
+  - from: 'eng2_81C1'
+    to: 'eng2_73B2'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
+  - from: 'eng2_73B2'
     to: 'eng2_7FElevator'
     behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
     cost: 10
