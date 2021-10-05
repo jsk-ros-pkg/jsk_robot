@@ -29,6 +29,7 @@ class EmailTopic(object):
     attached_file: /home/user/Pictures/test.png
     """
     def __init__(self):
+        self.email_info = {}
         yaml_path = rospy.get_param(
             '~email_info', "/var/lib/robot/email_info.yaml")
         if os.path.exists(yaml_path):
