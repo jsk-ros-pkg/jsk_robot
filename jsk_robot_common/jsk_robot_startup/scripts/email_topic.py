@@ -4,10 +4,12 @@ from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import errno
+import getpass
 from jsk_robot_startup.msg import Email
 import os
 import rospy
 import smtplib
+import socket
 from socket import error as socket_error
 import yaml
 
@@ -40,6 +42,7 @@ class EmailTopic(object):
         # Set default value for self._send_mail arguments
         send_mail_args['subject'] = ''
         send_mail_args['body'] = ''
+        send_mail_args['sender_address'] = '{}@{}'.format(getpass.getuser(), socket.gethostname())
         send_mail_args['smtp_server'] = 'localhost'
         send_mail_args['smtp_port'] = 25
         send_mail_args['attached_file'] = None
