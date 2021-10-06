@@ -1,0 +1,295 @@
+edges:
+  - from: 'eng2_73B2'
+    to: 'eng2_7FElevator'
+    behavior_type: 'spot_person_lead_behaviors.narrow_behavior.NarrowBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+  - from: 'eng2_7FElevator'
+    to: 'eng2_73B2'
+    behavior_type: 'spot_person_lead_behaviors.narrow_behavior.NarrowBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+  - from: 'eng2_7FElevator'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_person_lead_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+      goal_waypoint_id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
+  - from: 'eng2_2FElevator'
+    to: 'eng2_7FElevator'
+    behavior_type: 'spot_person_lead_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+      goal_waypoint_id: 'sly-chetah-IZ4pVY7vrqO36OoKCYk9Zg=='
+  - from: 'eng2_2FElevator'
+    to: 'eng2_MainEntrance_upper'
+    behavior_type: 'spot_person_lead_behaviors.narrow_behavior.NarrowBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
+  - from: 'eng2_MainEntrance_upper'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_person_lead_behaviors.narrow_behavior.NarrowBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
+  - from: 'eng2_MainEntrance_upper'
+    to: 'eng2_MainEntrance_lower'
+    behavior_type: 'spot_person_lead_behaviors.stair_behavior.StairBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+      stair_nums:
+        - -4
+        - -8
+  - from: 'eng2_MainEntrance_lower'
+    to: 'eng2_MainEntrance_upper'
+    behavior_type: 'spot_person_lead_behaviors.stair_behavior.StairBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+      stair_nums:
+        - 8
+        - 4
+  - from: 'eng2_MainEntrance_lower'
+    to: 'eng2_MainEntrance_outer'
+    behavior_type: 'spot_person_lead_behaviors.crosswalk_behavior.CrosswalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+  - from: 'eng2_MainEntrance_outer'
+    to: 'eng2_MainEntrance_lower'
+    behavior_type: 'spot_person_lead_behaviors.crosswalk_behavior.CrosswalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+  - from: 'eng2_MainEntrance_outer'
+    to: 'HongoMainGate'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+  - from: 'HongoMainGate'
+    to: 'eng2_MainEntrance_outer'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+  - from: 'eng2_3FElevator'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_person_lead_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+      goal_waypoint_id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
+  - from: 'eng2_2FElevator'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_person_lead_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+      goal_waypoint_id: 'eighth-ant-0Ot3VoMm0uiJNBHnbJOF9w=='
+  - from: 'eng2_3FElevator'
+    to: 'eng2_3F_door_inside'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_inside'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_inside'
+    to: 'eng2_3F_door_outside'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_outside'
+    to: 'eng2_3F_door_inside'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3F_door_outside'
+    to: 'eng2_Mech_Office'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_Mech_Office'
+    to: 'eng2_3F_door_outside'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_3FElevator'
+    to: 'eng2_7FElevator'
+    behavior_type: 'spot_person_lead_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'akimbo-scarab-RoO1pzYYARw+EquQk1IIbg=='
+      goal_waypoint_id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
+  - from: 'eng2_7FElevator'
+    to: 'eng2_3FElevator'
+    behavior_type: 'spot_person_lead_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+      goal_waypoint_id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
+  - from: 'eng2_2FElevator'
+    to: 'eng2_subway_pillar'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+  - from: 'eng2_subway_pillar'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+  - from: 'eng2_subway_pillar'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_pillar'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_00'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_table_00'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_01'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_table_01'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_02'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_table_02'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_03'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_table_03'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_04'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_table_04'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_10'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_table_10'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_11'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_table_11'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_12'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_table_12'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_13'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_table_13'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_initial'
+    to: 'eng2_subway_table_14'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+  - from: 'eng2_subway_table_14'
+    to: 'eng2_subway_initial'
+    behavior_type: 'spot_person_lead_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
