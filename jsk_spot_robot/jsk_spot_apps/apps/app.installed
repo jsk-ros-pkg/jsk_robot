@@ -5,16 +5,8 @@ apps:
   display: Take Envelop To Mech Office
 - app: jsk_spot_apps/sing_and_dance
   display: Sing And Dance
-- app: jsk_spot_apps/sing_hotaru_no_hikari
-  display: Sing Hotaru No Hikari
-- app: jsk_spot_apps/sing_radio_exercise_no1
-  display: Sing Radio Exercise No1
-- app: jsk_spot_apps/sing_iitomo_kibun
-  display: Sing Iitomo Kibun
 - app: jsk_spot_apps/sing_thriller
   display: Sing Thriller
-- app: jsk_spot_apps/sing_yoru_ni_kakeru
-  display: Sing Yoru Ni Kakeru
 - app: jsk_spot_apps/go_to_elevator
   display: Go To Elevator
 - app: jsk_spot_apps/go_to_73b2
