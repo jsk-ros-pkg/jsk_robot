@@ -15,6 +15,14 @@
         <arg name="sound_play_respawn" value="true" />
     </include>
 
+    <!-- ros speech recognition -->
+    <include file="$(find ros_speech_recognition)/launch/speech_recognition.launch">
+        <arg name="launch_sound_play" value="false" />
+        <arg name="launch_audio_capture" value="false" />
+        <arg name="audio_topic" value="/audio" />
+        <arg name="language" default="ja-JP" />
+    </include>
+
     <!-- speech_recognition (english, offline) -->
     <node
         pkg="ros_speech_recognition"
