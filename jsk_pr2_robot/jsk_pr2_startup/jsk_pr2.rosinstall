@@ -45,7 +45,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
-    version: pr1040
+    version: master
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
