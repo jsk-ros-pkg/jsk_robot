@@ -174,5 +174,37 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_1FElevator_to_GarbageCollectionArea_inside_clockwise.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1Ur6pZZKxZQsP_3zsbikWFkOWOB1KsKlb',
+        md5='da542fc9b4376378dc2a644454175e06',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_GarbageCollectionArea_inside_clockwise.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1ipkw696vWe_DeO87ZcoQmTgFUE7adpL7',
+        md5='71d5555f4f6772a9022768fe5dabf813',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_GarbageCollectionArea_inside_counterclockwise.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1pIrpc_q9GVCtH4YO2-E2rXSEf1yTfP4U',
+        md5='d0f279bc94b194600bccf3a1c5d98c35',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_GarbageCollectionArea_to_1FElevator.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1rUCVbhbSmUd4OEA6W35quKs-6CJIJW7b',
+        md5='2fdfc99d640bc9c796c36e3127078fcf',
+        extract=True
+    )
+
 if __name__ == '__main__':
     main()
