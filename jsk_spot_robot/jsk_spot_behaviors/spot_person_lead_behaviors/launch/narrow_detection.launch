@@ -1,0 +1,96 @@
+<launch>
+    <arg name="TOPIC_DEPTH_FRONT_RIGHT" default="/spot/depth/frontright"/>
+    <arg name="TOPIC_DEPTH_FRONT_LEFT" default="/spot/depth/frontleft"/>
+
+    <!-- person tracker -->
+    <node
+        pkg="spot_person_lead_behaviors"
+        type="person_tracker.py"
+        name="narrow_detection_person_tracker"
+        output="screen"
+        >
+        <remap from="~bbox_array" to="/spot_recognition/bbox_array" />
+        <!-- remap from="~visible" to="" / -->
+
+        <rosparam subst_value="true">
+            frame_id_robot: 'body'
+            label_person: 0
+            dist_visible: 5.0
+            timeout_observation: 5.0
+        </rosparam>
+    </node>
+
+    <!-- left obstacle -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="obstacle_detector_front_right_depth_image_proc"
+        args="standalone depth_image_proc/point_cloud_xyz"
+        >
+        <remap from="camera_info" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/camera_info"/>
+        <remap from="image_rect" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/image"/>
+        <remap from="points" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/points"/>
+    </node>
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="narrow_detection_front_right_attention_clipper"
+        args="standalone jsk_pcl/AttentionClipper"
+        >
+        <remap from="~input/points" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/points"/>
+        <rosparam subst_value="true">
+            initial_pos: [1.0, 0, 0]
+            initial_rot: [0, 0, 0]
+            dimension_x: 1.0
+            dimension_y: 1.5
+            dimension_z: 0.5
+            frame_id: "body"
+        </rosparam>
+    </node>
+    <node
+        pkg="jsk_pcl_ros"
+        type="extract_indices"
+        name="narrow_detection_front_right_extract_indices"
+        >
+        <remap from="~input" to="$(arg TOPIC_DEPTH_FRONT_RIGHT)/points"/>
+        <remap from="~indices" to="narrow_detection_front_right_attention_clipper/output/point_indices"/>
+        <remap from="~output" to="/spot_recognition/left_obstacle"/>
+    </node>
+
+    <!-- right obstacle -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="obstacle_detector_front_left_depth_image_proc"
+        args="standalone depth_image_proc/point_cloud_xyz"
+        >
+        <remap from="camera_info" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/camera_info"/>
+        <remap from="image_rect" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/image"/>
+        <remap from="points" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/points"/>
+    </node>
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="narrow_detection_front_left_attention_clipper"
+        args="standalone jsk_pcl/AttentionClipper"
+        >
+        <remap from="~input/points" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/points"/>
+        <rosparam subst_value="true">
+            initial_pos: [1.0, 0, 0]
+            initial_rot: [0, 0, 0]
+            dimension_x: 1.0
+            dimension_y: 1.5
+            dimension_z: 0.5
+            frame_id: "body"
+        </rosparam>
+    </node>
+    <node
+        pkg="jsk_pcl_ros"
+        type="extract_indices"
+        name="narrow_detection_front_left_extract_indices"
+        >
+        <remap from="~input" to="$(arg TOPIC_DEPTH_FRONT_LEFT)/points"/>
+        <remap from="~indices" to="narrow_detection_front_left_attention_clipper/output/point_indices"/>
+        <remap from="~output" to="/spot_recognition/right_obstacle"/>
+    </node>
+</launch>
