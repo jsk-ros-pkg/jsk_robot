@@ -88,6 +88,14 @@ rosrun spot_autowalk_data view_map.py <map_directory.walk> --draw-id
 
 ![eng2_subway_tablenavigation_02](https://user-images.githubusercontent.com/9410362/132933805-f3c10dc3-01da-429c-96b8-74225401d703.png)
 
+### eng2_73b2kitchen.walk
+
+![eng2_73b2kitchen.walk](https://user-images.githubusercontent.com/67531577/136342909-7979a058-538e-4f76-a705-0186439c478a.png)
+
+### eng2_73b2trashcans.walk
+
+![eng2_73b2trashcans.walk](https://user-images.githubusercontent.com/67531577/136343017-74229050-1b36-41e3-bba1-fcad53e92df7.png)
+
 ## How to add autowalk data in this package
 
 1. record a new autowalk data
