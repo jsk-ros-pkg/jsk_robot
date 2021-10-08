@@ -99,8 +99,8 @@ class EmailTopic(object):
         # Send Email
         server.sendmail(sender_address, receiver_address, msg.as_string())
         server.quit()
-        rospy.loginfo(
-            'Send mail from {} to {}'.format(sender_address, receiver_address))
+        rospy.loginfo('Send mail from {} to {} using {}:{}'.format(
+            sender_address, receiver_address, smtp_server, smtp_port))
 
 
 if __name__ == "__main__":
