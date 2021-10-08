@@ -11,53 +11,53 @@
 
     <!-- behahvior_executor_server for autonomous walking -->
     <node
-        pkg="spot_behavior_manager_demo"
-        type="demo.py"
-        name="spot_behavior_manager_demo"
+        pkg="spot_behavior_manager_server"
+        type="behavior_manager_server.py"
+        name="spot_behavior_manager_server"
         output="screen"
         >
 
         <rosparam
             ns="map"
-            file="$(find spot_behavior_manager_demo)/config/edges.yaml"
+            file="$(find spot_behavior_graph)/config/edges.yaml"
             subst_value="true"
             />
         <rosparam
             ns="map"
-            file="$(find spot_behavior_manager_demo)/config/nodes.yaml"
+            file="$(find spot_behavior_graph)/config/nodes.yaml"
             subst_value="true"
             />
 
         <rosparam subst_value="true">
             initial_node_id: '$(arg initial_node_id)'
             action_names_synchronizer:
-                - '/spot_person_lead_demo/execute_behaviors'
+                - '/spot_person_lead_server/execute_behaviors'
         </rosparam>
     </node>
 
     <!-- behahvior_executor_server for person leading -->
     <node
-        pkg="spot_behavior_manager_demo"
-        type="demo.py"
-        name="spot_person_lead_demo"
+        pkg="spot_behavior_manager_server"
+        type="behavior_manager_server.py"
+        name="spot_person_lead_server"
         output="screen"
         >
 
         <rosparam
             ns="map"
-            file="$(find spot_behavior_manager_demo)/config/edges_person_lead.yaml"
+            file="$(find spot_behavior_graph)/config/edges_person_lead.yaml"
             subst_value="true"
             />
         <rosparam
             ns="map"
-            file="$(find spot_behavior_manager_demo)/config/nodes.yaml"
+            file="$(find spot_behavior_graph)/config/nodes.yaml"
             subst_value="true"
             />
 
         <rosparam subst_value="true">
             initial_node_id: '$(arg initial_node_id)'
             action_names_synchronizer:
-                - '/spot_behavior_manager_demo/execute_behaviors'
+                - '/spot_behavior_manager_server/execute_behaviors'
         </rosparam>
     </node>
 </launch>
