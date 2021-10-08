@@ -82,6 +82,7 @@ class EmailTopic(object):
             part['Content-Disposition'] = 'attachment; filename="{}"'.format(
                 os.path.basename(attached_file))
             msg.attach(part)
+            rospy.loginfo('File {} is attached.'.format(attached_file))
         # SMTP Server
         try:
             server = smtplib.SMTP(smtp_server, smtp_port)
