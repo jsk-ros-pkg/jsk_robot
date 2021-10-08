@@ -1,30 +1,16 @@
-# spot_behavior_manager_demo
+# spot_behavior_manager_server
 
-This package is a demo package of spot_behavior_manager, which includes
+This package provides ros nodes for spot_behavior_manager.
 
-- A demo node of spot_behavior_manager node
-- Sample config map file for spot_behavior_manager
-- A demo launch
-- Utility scripts
+## ROS Node
 
-## scripts
+### behavior_manager_server.py
 
-### visualize_map.py
+ROS Node script for spot_behavior_manager.
 
-Visualizer script of map file of spot_behavior_manager
+See [the source of behavior_manager_node](../spot_behavior_manager/src/spot_behavior_manager/behavior_manager_node.py).
 
-Befor using this script, you need to install
+### interactive_behavior_executor.py
 
-```
-pip3 install graphviz xdot
-```
+ROS Node script to execute action of spot_behavior_manager by language.
 
-#### Usage
-
-```
-rosrun spot_behavior_manager_demo visualize_map.py --filename <config map yaml>
-```
-
-#### Example Output
-
-![map](https://user-images.githubusercontent.com/9410362/132942120-4a4e652b-3d25-43df-a678-fd3c09782284.png)

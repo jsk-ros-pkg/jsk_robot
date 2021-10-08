@@ -12,7 +12,7 @@ from ros_speech_recognition import SpeechRecognitionClient
 
 def main():
 
-    rospy.init_node('person_lead_demo')
+    rospy.init_node('interactive_behavior_executor')
 
     speech_recognition_client = SpeechRecognitionClient()
     sound_client = SoundClient(sound_action='/robotsound_jp', sound_topic='/robotsound_jp')
@@ -44,6 +44,8 @@ def main():
 
         target_node_id = target_node_candidates.keys()[0]
         target_node_name_jp = node_list[target_node_id]['name_jp'].encode('utf-8')
+
+        sound_client.say('{} へ移動します'.format(target_node_name_jp))
 
         rospy.loginfo('executing behaviors to {}'.format(target_node_name_jp))
         action_server_lead_to.send_goal_and_wait(LeadPersonGoal(target_node_id=target_node_id))
