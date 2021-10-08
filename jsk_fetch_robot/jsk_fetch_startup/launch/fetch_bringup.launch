@@ -3,6 +3,8 @@
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
+  <arg name="launch_insta360" default="true" />
+  <arg name="use_voice_text" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
@@ -43,6 +45,10 @@
     <remap from="~input/people_pose_array" to="/edgetpu_human_pose_estimator/output/poses"/>
   </node>
 
+  <!-- insta360 air images -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_insta360_$(env ROS_DISTRO).launch"
+           if="$(arg launch_insta360)" />
+
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
@@ -50,7 +56,11 @@
         respawn="true" if="$(arg launch_sound_play)" />
 
   <!-- japanese speech node -->
-  <include file="$(find voice_text)/launch/voice_text.launch">
+  <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
+  <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
   </include>
@@ -99,12 +109,13 @@
   </include>
 
   <!-- include fetch moveit -->
-  <include file="$(find fetch_moveit_config)/launch/move_group.launch"
-           if="$(arg launch_moveit)" />
-  <!-- overwrite fetch.srdf -->
-  <!-- The semantic description that corresponds to the URDF -->
-  <param name="robot_description_semantic"
-         command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
+  <group if="$(arg launch_moveit)">
+    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+    <!-- overwrite fetch.srdf -->
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="robot_description_semantic"
+           command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
+  </group>
 
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
@@ -187,70 +198,16 @@
       <remap from="scan" to="base_scan"/>
     </node>
 
-    <rosparam ns="amcl">
-      update_min_a: 0.01 <!-- update filter every 0.01[m] translation -->
-      update_min_d: 0.01 <!-- update filter every 0.01[rad] rotation -->
-      odom_alpha1: 0.2  # rotation noise per rotation
-      odom_alpha2: 0.2  # rotation noise per translation
-      odom_alpha3: 0.2  # translation noise per translation
-      odom_alpha4: 0.2  # translation noise per rotation
-    </rosparam>
-
-    <rosparam ns="move_base">
-      controller_frequency: 10.0
-    </rosparam>
-
-    <rosparam ns="move_base/global_costmap">
-      inflater:
-        inflation_radius: 0.7 # 0.7
-        cost_scaling_factor: 5.0 # 10.0
-      obstacles:
-        min_obstacle_height: 0.05
-      footprint_padding: 0.05
-    </rosparam>
-    <rosparam ns="move_base/local_costmap">
-      inflater:
-        inflation_radius: 0.7 # 0.7
-        cost_scaling_factor: 5.0 # 25.0 default 10, increasing factor decrease the cost value
-      obstacles:
-        min_obstacle_height: 0.05
-      # default 5 (http://wiki.ros.org/navigation/Tutorials/Navigation%20Tuning%20Guide)
-      update_frequency: 10.0
-      footprint_padding: 0.05
-    </rosparam>
-    <rosparam ns="move_base">
-      base_local_planner: base_local_planner/TrajectoryPlannerROS
-      TrajectoryPlannerROS:
-        min_in_place_vel_theta: 1.0
-        escape_vel: -0.1 # -0.1
-        vx_samples: 10
-        meter_scoring: true
-        pdist_scale: 5.0
-        gdist_scale: 3.2
-        occdist_scale: 0.1
-        dwa: true
-      recovery_behavior_enabled: true
-      recovery_behaviors:
-        - name: "conservative_reset"
-          type: "clear_costmap_recovery/ClearCostmapRecovery"
-        - name: "rotate_recovery"
-          type: "rotate_recovery/RotateRecovery"
-          frequency: 20.0
-          sim_granularity: 0.017
-        - name: "aggressive_reset"
-          type: "clear_costmap_recovery/ClearCostmapRecovery"
-      conservative_reset:
-        reset_distance: 1.0 # 3.0
-      aggressive_reset:
-        reset_distance: 0.2 # 0.5
-      move_slow_and_clear:
-        clearing_distance: 0.5
-        limited_distance: 0.3
-        limited_rot_speed: 0.45
-        limited_trans_speed: 0.25
-        max_trans_param_name: max_vel_x
-        max_rot_param_name: max_vel_theta
-    </rosparam>
+    <!-- load amcl params -->
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/fetch_amcl_common_params.yaml" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/fetch_amcl_$(env ROS_DISTRO)_params.yaml" />
+    <!-- load move_base params -->
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_common_params.yaml" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
   </group>
 
   <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->

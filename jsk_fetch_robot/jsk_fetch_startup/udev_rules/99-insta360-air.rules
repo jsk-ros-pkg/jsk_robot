@@ -1,0 +1,9 @@
+# For /dev/video*
+# This device file is used by usb_cam
+# In jsk_perception/sample/sample_insta360_air.launch, usb_cam is used for kinetic or older distribution.
+KERNEL=="video[0-9]*", SUBSYSTEM=="video4linux", ATTR{index}=="0", ATTRS{idVendor}=="2e1a", ATTRS{idProduct}=="1000", MODE="0666", SYMLINK+="insta360"
+
+# For /dev/bus/usb/*
+# This device file is used by libuvc_camera
+# In jsk_perception/sample/sample_insta360_air.launch, libuvc_camera is used for melodic or newer distribution.
+SUBSYSTEMS=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="2e1a", ATTRS{idProduct}=="1000", MODE="0666"

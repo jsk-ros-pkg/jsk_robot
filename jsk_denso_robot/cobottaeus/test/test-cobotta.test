@@ -1,0 +1,3 @@
+<launch>
+  <test pkg="cobottaeus" type="test-cobotta.l" test-name="cobotta_lisp" time-limit="300" />
+</launch>
