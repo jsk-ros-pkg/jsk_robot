@@ -35,6 +35,9 @@ class EmailTopic(object):
         if os.path.exists(yaml_path):
             with open(yaml_path) as yaml_f:
                 self.email_info = yaml.load(yaml_f)
+            rospy.loginfo(
+                "{} is loaded as email config file.".format(yaml_path))
+            rospy.loginfo(self.email_info)
         self.subscriber = rospy.Subscriber(
             'email', Email, self._cb, queue_size=1)
 
