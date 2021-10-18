@@ -19,7 +19,7 @@ Each service will load `/var/lib/robot/config.bash` for robot-specific settings 
     - A service to run [`jsk_spot_startup app_manager.launch`](./jsk_spot_startup/launch/include/app_manager.launch)
     - automatically start when booting
   - [jsk-spot-ros-behavior-manager.service](./jsk_spot_startup/services/jsk-spot-ros-behavior-manager.service)
-    - A service to run [`spot_behavior_manager_demo demo.launch`](./jsk_spot_behaviors/spot_behavior_manager_demo/launch/demo.launch)
+    - A service to run [`spot_behavior_manager_server demo.launch`](./jsk_spot_behaviors/spot_behavior_manager_server/launch/demo.launch)
     - automatically start when booting
   - [jsk-spot-ros-driver.service](./jsk_spot_startup/services/jsk-spot-ros-driver.service)
     - A service to run [`jsk_spot_startup driver.launch`](./jsk_spot_startup/launch/include/driver.launch)
