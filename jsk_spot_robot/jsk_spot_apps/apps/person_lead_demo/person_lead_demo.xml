@@ -8,7 +8,7 @@
         >
         <remap from="~execute_behaviors" to="/spot_person_lead_demo/execute_behaviors" />
         <rosparam
-            file="$(find spot_behavior_manager_demo)/config/nodes.yaml"
+            file="$(find spot_behavior_graph)/config/nodes.yaml"
             subst_value="true"
             />
     </node>
