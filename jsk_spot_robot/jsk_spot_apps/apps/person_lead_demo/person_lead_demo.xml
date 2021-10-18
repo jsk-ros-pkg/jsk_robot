@@ -1,9 +1,9 @@
 <launch>
 
     <node
-        pkg="spot_behavior_manager_demo"
-        type="interaction_behavior_manager_executor.py"
-        name="interaction_person_lead_executor"
+        pkg="spot_behavior_manager_server"
+        type="interactive_behavior_executor.py"
+        name="interactive_person_lead_executor"
         output="screen"
         >
         <remap from="~execute_behaviors" to="/spot_person_lead_demo/execute_behaviors" />
