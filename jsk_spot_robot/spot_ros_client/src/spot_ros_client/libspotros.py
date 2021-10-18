@@ -42,7 +42,7 @@ class SpotRosClient:
                 servicename_set_localization_waypoint='/spot/set_localization_waypoint',
                 actionname_navigate_to='/spot/navigate_to',
                 actionname_trajectory='/spot/trajectory',
-                actionname_execute_behaviors='/spot_behavior_manager_demo/execute_behaviors',
+                actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
                 duration_timeout=0.05):
 
         # Publishers
