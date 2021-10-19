@@ -1,0 +1,14 @@
+<launch>
+  <!--
+    Mainly copied from auto_dock.launch in fetch_open_auto_dock
+    https://github.com/fetchrobotics/fetch_open_auto_dock/blob/melodic-devel/launch/auto_dock.launch
+  -->
+  <node name="auto_dock" pkg="fetch_open_auto_dock" type="auto_dock" output="screen" >
+      <rosparam>
+          duration_timeout_undock: 10.0
+          duration_timeout_preorientation: 20.0
+      </rosparam>
+  </node>
+  <node name="dock_on_button" pkg="fetch_open_auto_dock" type="dock_on_button.py" />
+  <node name="undock_on_button" pkg="fetch_open_auto_dock" type="undock_on_button.py" />
+</launch>
