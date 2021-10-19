@@ -2,6 +2,7 @@ display: Plug Spot Power Connector
 platform: fetch
 launch: jsk_fetch_startup/plug_spot_power_connector.xml
 interface: jsk_fetch_startup/plug_spot_power_connector.interface
+icon: jsk_fetch_startup/plug_spot_power_connector.png
 plugins:
   - name: service_notification_saver_plugin
     type: app_notification_saver/service_notification_saver
