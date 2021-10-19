@@ -122,10 +122,13 @@
     local-name: IntelRealSense/realsense-ros
     uri: https://github.com/IntelRealSense/realsense-ros.git
     version: 2.3.0
+# Until PRs below merged, we need to use develop branch
+#   - https://github.com/fetchrobotics/fetch_open_auto_dock/pull/9
+#   - https://github.com/fetchrobotics/fetch_open_auto_dock/pull/8
 - git:
     local-name: fetchrobotics/fetch_open_auto_dock
-    uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
-    version: melodic-devel
+    uri: https://github.com/sktometometo/fetch_open_auto_dock.git
+    version: fetchdev
 # Use https://github.com/ros-planning/navigation/pull/839 based on 7f22997e6804d9d7249b8a1d789bf27343b26f75
 - git:
     local-name: ros-planning/navigation
