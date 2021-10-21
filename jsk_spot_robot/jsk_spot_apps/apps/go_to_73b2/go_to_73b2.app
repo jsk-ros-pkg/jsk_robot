@@ -57,7 +57,7 @@ plugins:
         - /spot/depth/left/image/compressed
         - /spot/depth/right/camera_info
         - /spot/depth/right/image/compressed
-        - /spot_behavior_manager_demo/current_node_id
+        - /spot_behavior_manager_server/current_node_id
         - /spot_kinova/joint_states
         - /spot_recognition/object_detection_image/compressed
         - /spot_recognition/elevator_door_points

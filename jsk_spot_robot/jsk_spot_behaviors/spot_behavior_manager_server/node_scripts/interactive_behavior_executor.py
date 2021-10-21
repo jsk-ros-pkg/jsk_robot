@@ -12,7 +12,7 @@ from ros_speech_recognition import SpeechRecognitionClient
 
 def main():
 
-    rospy.init_node('person_lead_demo')
+    rospy.init_node('interactive_behavior_executor')
 
     speech_recognition_client = SpeechRecognitionClient()
     sound_client = SoundClient(sound_action='/robotsound_jp', sound_topic='/robotsound_jp')
@@ -33,8 +33,19 @@ def main():
             recognized_destination = recogntion_result.transcript[0]
             target_node_candidates = {}
             for node_id, value in node_list.items():
-                if value.has_key('name_jp') and value['name_jp'].encode('utf-8') == recognized_destination:
-                    target_node_candidates[node_id] = value
+                try:
+                    if not value.has_key('name_jp'):
+                        continue
+                    if type(value['name_jp']) is list:
+                        # DO HOGE
+                        for name in value['name_jp']:
+                            if name.encode('utf-8') == recognized_destination:
+                                target_node_candidates[node_id] = value
+                    else:
+                        if value['name_jp'].encode('utf-8') == recognized_destination:
+                            target_node_candidates[node_id] = value
+                except Exception as e:
+                    rospy.logerr('Error: {}'.format(e))
             if len(target_node_candidates) == 0:
                 rospy.logerr('No matching node found from spoken \'{}\''.format(recogntion_result))
                 sound_client.say('行き先がわかりませんでした', blocking=True)
@@ -44,6 +55,8 @@ def main():
 
         target_node_id = target_node_candidates.keys()[0]
         target_node_name_jp = node_list[target_node_id]['name_jp'].encode('utf-8')
+
+        sound_client.say('{} へ移動します'.format(target_node_name_jp))
 
         rospy.loginfo('executing behaviors to {}'.format(target_node_name_jp))
         action_server_lead_to.send_goal_and_wait(LeadPersonGoal(target_node_id=target_node_id))
