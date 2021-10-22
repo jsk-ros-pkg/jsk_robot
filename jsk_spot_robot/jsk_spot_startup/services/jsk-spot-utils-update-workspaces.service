@@ -3,7 +3,7 @@ Description=JSK Spot Update Update Workspace
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosrun jsk_spot_startup update-workspaces.sh && sudo reboot"
+ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosrun jsk_spot_startup update-workspaces.sh"
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
 KillSignal=SIGTERM
