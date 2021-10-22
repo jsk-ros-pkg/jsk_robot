@@ -9,6 +9,3 @@ KillMode=control-group
 KillSignal=SIGTERM
 User=spot
 Group=spot
-
-[Install]
-WantedBy=multi-user.target
