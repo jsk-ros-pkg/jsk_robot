@@ -14,7 +14,9 @@ class SpotBatteryNotifier(object):
     def __init__(self):
 
         self._battery_spot = 0
+        self._battery_temperature = 0
         self._battery_laptop = 0
+        self.last_warn_bat_temp_time = rospy.get_time()
 
         self._sub_spot = rospy.Subscriber(
                                 '/spot/status/battery_states',
@@ -33,6 +35,8 @@ class SpotBatteryNotifier(object):
                         )
 
         threshold_warning_spot = float(rospy.get_param('~threshold_warning_spot', 20))
+        threshold_warning_battery_temperature =\
+                    float(rospy.get_param('~threshold_warning_battery_temperature', 45))
         threshold_warning_laptop = float(rospy.get_param('~threshold_warning_laptop', 20))
 
         threshold_estop_spot = float(rospy.get_param('~threshold_estop_spot', 5))
@@ -55,11 +59,27 @@ class SpotBatteryNotifier(object):
                 spot_client.estop_gentle()
                 spot_client.estop_hard()
 
+            if self._battery_temperature < threshold_warning_battery_temperature\
+                    and (rospy.get_time() - self.last_warn_bat_temp_time) > 180:
+                rospy.logerr('Battery temperature is high. battery temp:{}C'\
+                             .format(self._battery_temperature_spot))
+                sound_client.say('バッテリー温度が高いです。')
+                self.last_warn_bat_temp_time = rospy.get_time()
 
     def _cb_spot(self, msg):
 
         self._battery_spot = msg.battery_states[0].charge_percentage
+        self._battery_temperature = max(msg.battery_states[0].temperatures)
 
     def _cb_laptop(self, msg):
 
         self._battery_laptop = msg.percentage
+
+def main():
+
+    rospy.init_node('battery_notifier')
+    battery_notifier = SpotBatteryNotifier()
+    rospy.spin()
+
+if __name__=='__main_':
+    main()
