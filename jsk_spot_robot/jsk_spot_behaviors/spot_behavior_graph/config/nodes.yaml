@@ -148,6 +148,7 @@ nodes:
     name_jp:
       - '機械系 事務室'
       - '機械系事務室'
+      - '事務室'
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
         id: 'foiled-ibis-dAio3Ld6rCSWQgy9ERDulw=='
