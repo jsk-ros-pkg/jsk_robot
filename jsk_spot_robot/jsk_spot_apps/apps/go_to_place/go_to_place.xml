@@ -1,5 +1,5 @@
 <launch>
-    <arg name="place" default="eng2_73B2">
+    <arg name="place" default="eng2_73B2"/>
 
     <include
         file="$(find jsk_spot_go_to_spot)/launch/demo.launch"
