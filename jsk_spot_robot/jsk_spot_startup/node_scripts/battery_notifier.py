@@ -59,10 +59,10 @@ class SpotBatteryNotifier(object):
                 spot_client.estop_gentle()
                 spot_client.estop_hard()
 
-            if self._battery_temperature < threshold_warning_battery_temperature\
+            if self._battery_temperature > threshold_warning_battery_temperature\
                     and (rospy.get_time() - self.last_warn_bat_temp_time) > 180:
-                rospy.logerr('Battery temperature is high. battery temp:{}C'\
-                             .format(self._battery_temperature_spot))
+                rospy.logerr('Battery temperature is high. Battery temp:{:.2f} > threshold:{}'\
+                             .format(self._battery_temperature, threshold_warning_battery_temperature))
                 sound_client.say('バッテリー温度が高いです。')
                 self.last_warn_bat_temp_time = rospy.get_time()
 
@@ -81,5 +81,5 @@ def main():
     battery_notifier = SpotBatteryNotifier()
     rospy.spin()
 
-if __name__=='__main_':
+if __name__=='__main__':
     main()
