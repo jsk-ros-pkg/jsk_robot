@@ -5,10 +5,8 @@ apps:
   display: Take Envelop To Mech Office
 - app: jsk_spot_apps/sing_and_dance
   display: Sing And Dance
-- app: jsk_spot_apps/sing_thriller
-  display: Sing Thriller
-- app: jsk_spot_apps/go_to_elevator
-  display: Go To Elevator
+- app: jsk_spot_apps/go_to_place
+  display: Go To Place
 - app: jsk_spot_apps/go_to_73b2
   display: Go To 73B2
 - app: jsk_spot_apps/person_lead_demo
