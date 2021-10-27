@@ -13,9 +13,9 @@ class SpotBatteryNotifier(object):
 
     def __init__(self):
 
-        self._battery_spot = 0
+        self._battery_spot = None
+        self._battery_laptop = None
         self._battery_temperature = 0
-        self._battery_laptop = 0
         self.last_warn_bat_temp_time = rospy.get_time()
 
         self._sub_spot = rospy.Subscriber(
@@ -47,17 +47,16 @@ class SpotBatteryNotifier(object):
 
             rate.sleep()
 
-            if self._battery_spot < threshold_warning_spot or\
-                    self._battery_laptop < threshold_warning_laptop:
-                rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(self._battery_spot,self._battery_laptop))
-                sound_client.say('バッテリー残量が少ないです。')
-
-            if self._battery_spot < threshold_estop_spot or\
-                    self._battery_laptop < threshold_estop_laptop:
+            if ((self._battery_spot is not None and self._battery_spot < threshold_estop_spot)
+                    or (self._battery_laptop is not None and self._battery_laptop < threshold_estop_laptop)):
                 rospy.logerr('Battery is low. Estop.')
                 sound_client.say('バッテリー残量が少ないため、動作を停止します')
                 spot_client.estop_gentle()
                 spot_client.estop_hard()
+            elif ((self._battery_spot is not None and self._battery_spot < threshold_warning_spot)
+                    or (self._battery_laptop is not None and self._battery_laptop < threshold_warning_laptop)):
+                rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(self._battery_spot,self._battery_laptop))
+                sound_client.say('バッテリー残量が少ないです。')
 
             if self._battery_temperature > threshold_warning_battery_temperature\
                     and (rospy.get_time() - self.last_warn_bat_temp_time) > 180:
