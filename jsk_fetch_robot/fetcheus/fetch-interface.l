@@ -4,10 +4,11 @@
 
 (ros::load-ros-package "fetcheus")
 (ros::load-ros-package "fetch_driver_msgs")
+(ros::load-ros-package "robot_controllers_msgs")
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action moveit-robot)
+  :slots (gripper-action moveit-robot controller-action)
   )
 
 (defmethod fetch-interface
@@ -32,6 +33,10 @@
        (send self :delete-ground-collision-object)
        (send self :add-keepout-collision-object)
        (send self :add-ground-collision-object))
+     (setq controller-action
+           (instance ros::simple-action-client :init
+                     "/query_controller_states"
+                     robot_controllers_msgs::QueryControllerStatesAction))
      ))
   (:state (&rest args)
    "We do not have :wait-until-update option for :state :worldcoords.
@@ -252,6 +257,7 @@ Example: (send self :gripper :position) => 0.00"
     (send *co* :delete-attached-object-by-id "keepout")
     (send *co* :delete-object-by-id "keepout"))
   (:add-ground-collision-object ()
+
     (let ((cube (make-cube 500 500 50))
           (ground (make-cylinder 1000 50)))
       (send cube :translate #f(-20 0 0))
@@ -265,7 +271,49 @@ Example: (send self :gripper :position) => 0.00"
             :touch-links nil)))
   (:delete-ground-collision-object ()
     (send *co* :delete-attached-object-by-id "ground")
-    (send *co* :delete-object-by-id "ground")))
+    (send *co* :delete-object-by-id "ground"))
+  (:servo-off (&key (arm t) (gripper t) (head t))
+    (let ((goal-servo-off nil) (state nil) (update-list nil)
+          (gravity_comp (list "arm_controller/gravity_compensation"))
+          (arm-controller (list "arm_controller/follow_joint_trajectory"
+                                "arm_with_torso_controller/follow_joint_trajectory"
+                                "torso_controller/follow_joint_trajectory"))
+          (head-controller (list "head_controller/follow_joint_trajectory"
+                                 "head_controller/point_head")))
+      (when (or arm head)
+        (setq goal-servo-off
+              (instance robot_controllers_msgs::QueryControllerStatesGoal :init))
+        (setq update-list (send goal-servo-off :updates))
+        (when arm
+          (ros::ros-info "arm servo off")
+          ;; start gravity compensation
+          (dolist (controller gravity_comp)
+            (setq state (instance robot_controllers_msgs::ControllerState :init))
+            (send state :name controller)
+            (send state :state 1) ;; running
+            (push state update-list))
+          ;; stop arm controllers
+          (dolist (controller arm-controller)
+            (setq state (instance robot_controllers_msgs::ControllerState :init))
+            (send state :name controller)
+            (send state :state 0) ;; stopping
+            (push state update-list)))
+        (when head
+          ;; stop head controllers
+          (ros::ros-info "head servo off")
+          (dolist (controller head-controller)
+            (setq state (instance robot_controllers_msgs::ControllerState :init))
+            (send state :name controller)
+            (send state :state 0) ;; stopping
+            (push state update-list)))
+        (send goal-servo-off :updates update-list)
+        (send controller-action :send-goal goal-servo-off))
+      (when gripper
+        ;; disable gripper torque
+        (let ((goal-gripper-servo-off (instance control_msgs::GripperCommandGoal :init)))
+          (ros::ros-info "gripper servo off")
+          (send (send goal-gripper-servo-off :command) :max_effort -1.0)
+          (send gripper-action :send-goal goal-gripper-servo-off))))))
 
 ;; interface for simple base actions
 (defmethod fetch-interface
