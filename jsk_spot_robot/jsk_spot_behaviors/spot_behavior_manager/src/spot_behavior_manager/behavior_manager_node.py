@@ -88,8 +88,8 @@ class BehaviorManagerNode(object):
         try:
             frame_odom_to_base = tf2_geometry_msgs.transform_to_kdl(
                     self.tf_buffer.lookup_transform(
-                        'base_link',
                         'odom',
+                        'base_link',
                         rospy.Time()
                         )
                     )
