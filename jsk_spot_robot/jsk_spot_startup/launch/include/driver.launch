@@ -82,4 +82,11 @@
       >
   </node>
 
+  <node
+      pkg="jsk_spot_plug_server"
+      type="plug_server.py"
+      name="plug_server"
+      >
+  </node>
+
 </launch>
