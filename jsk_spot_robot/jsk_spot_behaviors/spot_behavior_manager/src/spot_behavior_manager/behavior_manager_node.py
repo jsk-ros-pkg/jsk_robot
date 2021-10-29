@@ -5,6 +5,9 @@ import copy
 import actionlib
 import rospy
 import roslaunch
+import tf2_ros
+import tf2_geometry_msgs
+import PyKDL
 
 from sound_play.libsoundplay import SoundClient
 from spot_ros_client.libspotros import SpotRosClient
@@ -27,6 +30,11 @@ class BehaviorManagerNode(object):
         self.graph = SupportBehaviorGraph(raw_edges, raw_nodes)
         self.current_node_id = rospy.get_param('~initial_node_id')
         self.pre_edge = None
+        self.anchor_pose = None
+
+        #
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
         # get target action name list for synchronizer
         self.list_action_name_synchronizer = rospy.get_param(
@@ -72,6 +80,36 @@ class BehaviorManagerNode(object):
 
         rospy.loginfo('Initialized!')
 
+    def get_robot_pose(self):
+
+        try:
+            frame_odom_to_base = tf2_geometry_msgs.transform_to_kdl(
+                    self.tf_buffer.lookup_transform(
+                        'base_link',
+                        'odom',
+                        rospy.Time()
+                        )
+                    )
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+            return None
+        return frame_odom_to_base
+
+    def set_anchor_pose(self):
+        self.anchor_pose = self.get_robot_pose()
+
+    def go_back_to_anchor_pose(self):
+        current_pose = self.get_robot_pose()
+        if current_pose is None or self.anchor_pose is None:
+            return False
+        frame_current_to_anchor = current_pose.Inverse() * self.anchor_pose
+        self.spot_client.trajectory(
+                frame_current_to_anchor.p[0],
+                frame_current_to_anchor.p[1],
+                frame_current_to_anchor.M.GetRPY()[2],
+                10,
+                blocking=True
+                )
+
     def callback_synchronizer(self, msg):
 
         rospy.loginfo('Current node is updated to {}'.format(msg.feedback.current_node_id))
@@ -113,6 +151,7 @@ class BehaviorManagerNode(object):
             else:
                 # navigation of edges in the path
                 self.sound_client.say('目的地に向かいます', blocking=True)
+                self.go_back_to_anchor_pose()
                 success_navigation = True
                 for edge in path:
                     rospy.loginfo('Navigating Edge {}...'.format(edge))
@@ -140,6 +179,7 @@ class BehaviorManagerNode(object):
                             success=False,
                             message='Got an error while navigating edge {}: {}'.format(edge, e))
                         self.server_execute_behaviors.set_aborted(result)
+                        self.anchor_pose = None
                         return
 
                 if success_navigation:
@@ -149,6 +189,7 @@ class BehaviorManagerNode(object):
         self.sound_client.say('目的地に到着しました.', blocking=True)
         result = LeadPersonResult(success=True, message='Goal Reached.')
         self.server_execute_behaviors.set_succeeded(result)
+        self.set_anchor_pose()
         return
 
     def navigate_edge(self, edge):
