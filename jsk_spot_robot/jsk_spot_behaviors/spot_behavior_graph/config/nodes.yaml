@@ -28,7 +28,7 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
         id: 'dyed-bat-t00VKo5XixLihCvpsZPRqw=='
         localization_method: 'fiducial'
-      - graph: '$(find spot_autowalk_data)/autowalk/73B2_inside.walk'
+      - graph: '$(find spot_autowalk_data)/autowalk/73b2_inside.walk'
         id: 'goodly-hogg-cEjt+0aMeZdksVRXrP7.uw=='
         localization_method: 'fiducial'
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
@@ -56,7 +56,7 @@ nodes:
       - '新城'
       - '新城の席'
     waypoints_on_graph:
-      - graph: '$(find spot_autowalk_data)/autowalk/73B2_inside.walk'
+      - graph: '$(find spot_autowalk_data)/autowalk/73b2_inside.walk'
         id: 'cogent-vole-wTZdgPPyjZIObFh2dr7EqA=='
         localization_method: 'waypoint'
   'eng2_73A2':
