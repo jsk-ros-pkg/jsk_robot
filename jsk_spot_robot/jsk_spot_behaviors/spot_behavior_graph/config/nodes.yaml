@@ -34,8 +34,24 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
         id: 'fuzzed-medusa-wyXWCEjmWas1kMo8EJW8Bw=='
         localization_method: 'fiducial'
-  'eng2_73B2_shinjo_desk'
-    name_en: '73B2'
+  'eng2_73B2_belka_home':
+    name_en: 'belka'
+    name_jp:
+      - 'ベルカ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'uppity-cayman-rm8aTrilycp7soPeorOdUw=='
+        localization_method: 'waypoint'
+  'eng2_73B2_strelka_home':
+    name_en: 'strelka'
+    name_jp:
+      - 'ストレルカ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'proof-llama-9slE0zml9BYcNFbpQkmNcg=='
+        localization_method: 'waypoint'
+  'eng2_73B2_shinjo_desk':
+    name_en: 'shinjo'
     name_jp:
       - '新城'
       - '新城の席'
