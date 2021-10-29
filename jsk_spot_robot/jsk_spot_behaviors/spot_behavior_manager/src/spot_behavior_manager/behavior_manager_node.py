@@ -60,6 +60,9 @@ class BehaviorManagerNode(object):
         )
 
         #
+        self.set_anchor_pose()
+
+        #
         roslaunch.pmon._init_signal_handlers()
 
         # subscribers
@@ -129,6 +132,7 @@ class BehaviorManagerNode(object):
             req.current_node_id))
         self.current_node_id = req.current_node_id
         self.pre_edge = None
+        self.set_anchor_pose()
         return ResetCurrentNodeResponse(success=True)
 
     def handler_execute_behaviors(self, goal):
