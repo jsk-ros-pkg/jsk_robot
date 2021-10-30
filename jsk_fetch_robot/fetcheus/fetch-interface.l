@@ -257,7 +257,6 @@ Example: (send self :gripper :position) => 0.00"
     (send *co* :delete-attached-object-by-id "keepout")
     (send *co* :delete-object-by-id "keepout"))
   (:add-ground-collision-object ()
-
     (let ((cube (make-cube 500 500 50))
           (ground (make-cylinder 1000 50)))
       (send cube :translate #f(-20 0 0))
@@ -273,21 +272,21 @@ Example: (send self :gripper :position) => 0.00"
     (send *co* :delete-attached-object-by-id "ground")
     (send *co* :delete-object-by-id "ground"))
   (:servo-off (&key (arm t) (gripper t) (head t))
-    (let ((goal-servo-off nil) (state nil) (update-list nil)
-          (gravity_comp (list "arm_controller/gravity_compensation"))
+    (let ((goal-servo-off (instance robot_controllers_msgs::QueryControllerStatesGoal :init))
+          (goal-gripper-servo-off (instance control_msgs::GripperCommandGoal :init))
+          (state nil) (update-list nil)
+          (gravity-comp (list "arm_controller/gravity_compensation"))
           (arm-controller (list "arm_controller/follow_joint_trajectory"
                                 "arm_with_torso_controller/follow_joint_trajectory"
                                 "torso_controller/follow_joint_trajectory"))
           (head-controller (list "head_controller/follow_joint_trajectory"
                                  "head_controller/point_head")))
       (when (or arm head)
-        (setq goal-servo-off
-              (instance robot_controllers_msgs::QueryControllerStatesGoal :init))
         (setq update-list (send goal-servo-off :updates))
         (when arm
           (ros::ros-info "arm servo off")
           ;; start gravity compensation
-          (dolist (controller gravity_comp)
+          (dolist (controller gravity-comp)
             (setq state (instance robot_controllers_msgs::ControllerState :init))
             (send state :name controller)
             (send state :state 1) ;; running
@@ -310,10 +309,9 @@ Example: (send self :gripper :position) => 0.00"
         (send controller-action :send-goal goal-servo-off))
       (when gripper
         ;; disable gripper torque
-        (let ((goal-gripper-servo-off (instance control_msgs::GripperCommandGoal :init)))
-          (ros::ros-info "gripper servo off")
-          (send (send goal-gripper-servo-off :command) :max_effort -1.0)
-          (send gripper-action :send-goal goal-gripper-servo-off))))))
+        (ros::ros-info "gripper servo off")
+        (send (send goal-gripper-servo-off :command) :max_effort -1.0)
+        (send gripper-action :send-goal goal-gripper-servo-off)))))
 
 ;; interface for simple base actions
 (defmethod fetch-interface
