@@ -98,9 +98,11 @@ class BehaviorManagerNode(object):
         return frame_odom_to_base
 
     def set_anchor_pose(self):
+        rospy.loginfo('Set new anchor pose')
         self.anchor_pose = self.get_robot_pose()
 
     def go_back_to_anchor_pose(self):
+        rospy.loginfo('Going back to an anchor pose')
         current_pose = self.get_robot_pose()
         if current_pose is None or self.anchor_pose is None:
             return False
@@ -165,6 +167,7 @@ class BehaviorManagerNode(object):
                             self.current_node_id = edge.node_id_to
                             self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
                             self.pre_edge = edge
+                            self.set_anchor_pose()
                         else:
                             rospy.logwarn('Edge {} failed'.format(edge))
                             self.sound_client.say(
