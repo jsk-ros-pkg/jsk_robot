@@ -42,6 +42,7 @@
   <run_depend>tf2_py</run_depend>
   <run_depend>tf2_geometry_msgs</run_depend>
   <run_depend>urdf</run_depend>
+  <run_depend>viso2_ros</run_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>pr2_gazebo</test_depend>
