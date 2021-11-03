@@ -8,7 +8,7 @@
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action moveit-robot controller-action)
+  :slots (gripper-action moveit-robot fetch-controller-action)
   )
 
 (defmethod fetch-interface
@@ -33,7 +33,7 @@
        (send self :delete-ground-collision-object)
        (send self :add-keepout-collision-object)
        (send self :add-ground-collision-object))
-     (setq controller-action
+     (setq fetch-controller-action
            (instance ros::simple-action-client :init
                      "/query_controller_states"
                      robot_controllers_msgs::QueryControllerStatesAction))
@@ -306,7 +306,7 @@ Example: (send self :gripper :position) => 0.00"
             (send state :state 0) ;; stopping
             (push state update-list)))
         (send goal-servo-off :updates update-list)
-        (send controller-action :send-goal goal-servo-off))
+        (send fetch-controller-action :send-goal goal-servo-off))
       (when gripper
         ;; disable gripper torque
         (ros::ros-info "gripper servo off")
