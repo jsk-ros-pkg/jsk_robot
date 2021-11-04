@@ -315,15 +315,13 @@ Example: (send self :gripper :position) => 0.00"
   (:servo-on (&key (arm t) (gripper t) (head t))
     (when arm
       (ros::ros-info "arm servo on")
-      (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
-      (send *ri* :angle-vector (send *fetch* :angle-vector) 3000 :arm-controller))
+      (send self :angle-vector (send self :state :potentio-vector) 3000 :arm-controller))
     (when head
       (ros::ros-info "head servo on")
-      (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
-      (send *ri* :angle-vector (send *fetch* :angle-vector) 3000 :head-controller))
+      (send self :angle-vector (send self :state :potentio-vector) 3000 :head-controller))
     (when gripper
       (ros::ros-info "gripper servo on")
-      (send *ri* :go-grasp :pos (send *ri* :gripper :position)))))
+      (send self :go-grasp :pos (send self :gripper :position)))))
 
 ;; interface for simple base actions
 (defmethod fetch-interface
