@@ -18,7 +18,7 @@
         pkg="topic_tools"
         type="throttle"
         name="panorama_quater_image_throttle"
-        args="messages /dual_fisheye_to_panorama/output/quater 2.0 /dual_fisheye_to_panorama/output/quater/throttled"
+        args="messages /dual_fisheye_to_panorama/output/quater 1.0 /dual_fisheye_to_panorama/output/quater/throttled"
         >
     </node>
 
