@@ -1,3 +1,5 @@
+;; roslaunch jsk_nao_startup jsk_nao_startup.launch network_interface:=wlp5s0
+
 (load "package://naoeus/nao.l") ;; simの場合
 (setq *nao* (NaoH25V50))
 (objects (list *nao*))
@@ -35,3 +37,8 @@
       :rotation-axis nil
       :debug-view t
       )
+
+#|
+(send *ri* :state)
+(send *ri* :potentio-vector) ;; ロボットの姿勢を入手
+|#
