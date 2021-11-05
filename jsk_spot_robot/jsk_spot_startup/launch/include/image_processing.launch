@@ -13,6 +13,15 @@
         <remap from="~image" to="/dual_fisheye_to_panorama/output/quater" />
     </node>
 
+    <!-- throttle quatered insta 360 air camera -->
+    <node
+        pkg="topic_tools"
+        type="throttle"
+        name="panorama_quater_image_throttle"
+        args="messages /dual_fisheye_to_panorama/output/quater 2.0 /dual_fisheye_to_panorama/output/quater/throttled"
+        >
+    </node>
+
     <!-- Create object detection visuzaliation image and comress it -->
     <node
         pkg="jsk_perception"
