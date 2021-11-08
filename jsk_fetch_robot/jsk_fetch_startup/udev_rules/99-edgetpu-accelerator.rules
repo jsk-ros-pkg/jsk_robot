@@ -1,8 +1,0 @@
-# Coral TPU USB changes it's ID during runtime.
-# When we connect the device to the computer. It says
-#   Bus 002 Device 002: ID 1a6e:089a Global Unichip Corp.
-# But after the first run, the device is recognized as following.
-#   Bus 002 Device 003: ID 18d1:9302 Google Inc.
-
-SUBSYSTEM=="usb",ATTRS{idVendor}=="1a6e",GROUP="plugdev"
-SUBSYSTEM=="usb",ATTRS{idVendor}=="18d1",GROUP="plugdev"

@@ -65,8 +65,11 @@ Example usage:
        (let* (avs (minjerk (instance minjerk-interpolator :init))
                   (scale-av (send self :sub-angle-vector av prev-av))
                   dist div)
+         (setq tm (float tm))
          (setq dist (abs (geo::find-extream (coerce diff-av cons) #'abs #'>=)))
-         (setq div (round (/ dist 120.0)))
+         ;; Use small interpolation time
+         ;; https://github.com/euslisp/jskeus/pull/596#issuecomment-765213357
+         (setq div (* 10 (round (/ dist 120.0))))
          (send minjerk :reset
                :position-list (list prev-av (v+ prev-av scale-av))
                :time-list (list tm))
