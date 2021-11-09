@@ -374,13 +374,15 @@ Args:
     (progn
       (notify-recognition :location "trash cans"))))
 
-(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(-400 -300 0)))
+(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(400 -500 0)))
   (let ((success-move-to-trashcan-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-trashcan-front
-            (go-to-spot "/eng2/7f/room73B2-microwave-front"
+            (go-to-spot "/eng2/7f/room73B2-sink-front0"
                         :relative-pos offset :relative-rot -pi/2))
       (when success-move-to-trashcan-front (return)))
+    (send *ri* :go-pos-unsafe 1.3 0 0)
+    (send *ri* :go-pos-unsafe 0 0 -80) ;; face the front against the trash can
     success-move-to-trashcan-front))
 
 
