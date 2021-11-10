@@ -57,3 +57,16 @@
   (:angle-to-speed (v) "Returns radian of given input in degree" (deg2rad v))
   (:calc-jacobian (&rest args) (apply #'calc-jacobian-rotational args))
   )
+
+(defmethod rotational-dependent-joint
+  (:calc-inertia-matrix
+    (mat row column ;; output matrix
+	 paxis m-til c-til I-til axis-for-angular world-default-coords
+	 translation-axis rotation-axis
+	 tmp-v0 tmp-v1 tmp-v2 tmp-va tmp-vb tmp-vc tmp-vd tmp-m)
+    (calc-inertia-matrix-rotational
+     mat row column
+     paxis m-til c-til I-til axis-for-angular child-link world-default-coords
+     translation-axis rotation-axis
+     tmp-v0 tmp-v1 tmp-v2 tmp-va tmp-vb tmp-vc tmp-vd tmp-m))
+  )
