@@ -1,6 +1,5 @@
 ;; rotational-dependent-joint
 
-
 (defclass rotational-dependent-joint
   :super joint
   :slots (axis dependent-joint))
