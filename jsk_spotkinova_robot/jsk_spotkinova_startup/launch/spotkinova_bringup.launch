@@ -1,5 +1,6 @@
 <launch>
-  <arg name="credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
+  <arg name="launch_spot_driver" default="true" />
   <arg name="ip_address" default="192.168.1.10" doc="IP adress of the Kinova robot" />
   <arg name="robot_name" default="arm_gen3" doc="Kinova robot name. Basically, this name should not be changed." />
   <arg name="arm" default="gen3_lite" doc="Use 'gen3' for gen3 robot, 'gen3_lite' for gen3 lite robot." />
@@ -13,6 +14,7 @@
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/jsk_spot_bringup.launch"
+      if="$(arg launch_spot_driver)"
       >
       <arg name="credential_config" value="$(arg credential_config)" />
       <arg name="launch_robot_state_publisher" value="false" />
