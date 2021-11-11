@@ -98,12 +98,11 @@
     local-name: strands-project/mongodb_store
     uri: https://github.com/708yamaguchi/mongodb_store.git
     version: fetch15
-# we need to use the development branch (fetch15 branch in knorth55's fork)
-# until it is merged to master
+# we need to use the develop branch for basic authentication
 - git:
     local-name: tork-a/roswww
-    uri: https://github.com/knorth55/roswww.git
-    version: fetch15
+    uri: https://github.com/tork-a/roswww.git
+    version: develop
 - git:
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
