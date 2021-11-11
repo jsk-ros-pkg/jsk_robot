@@ -1,5 +1,6 @@
 <launch>
     <arg name="receiver_address" />
+    <arg name="attached_file" default="$(find jsk_robot_startup)/images/jsk_safe_teleop_system.png" />
     <arg name="email_info_yaml" default="/var/lib/robot/email_info.yaml" />
 
     <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen">
@@ -12,6 +13,8 @@
         output="screen">
         <rosparam subst_value="true">
             receiver_address: "$(arg receiver_address)"
+            attached_files:
+                - $(arg attached_file)
         </rosparam>
     </node>
 </launch>

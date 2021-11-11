@@ -13,7 +13,7 @@
                   sender-address
                   smtp-server
                   smtp-port
-                  attached-file)
+                  attached-files)
   (setq msg (instance jsk_robot_startup::Email :init))
   (send msg :header :stamp (ros::time-now))
   (if subject (send msg :subject subject) nil)
@@ -22,7 +22,7 @@
   (if receiver-address (send msg :receiver_address receiver-address) nil)
   (if smtp-server (send msg :smtp_server smtp-server) nil)
   (if smtp-port (send msg :smtp_port smtp-port) nil)
-  (if attached-file (send msg :attached_file attached-file) nil)
+  (if attached-files (send msg :attached_files attached-files) nil)
   (ros::publish "email" msg)
   (ros::spin-once)
   )
