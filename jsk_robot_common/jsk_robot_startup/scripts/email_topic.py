@@ -43,6 +43,7 @@ class EmailTopic(object):
             'email', Email, self._cb, queue_size=1)
 
     def _cb(self, msg):
+        rospy.loginfo('Received an msg: {}'.format(msg))
         send_mail_args = {}
         # Set default value for self._send_mail arguments
         send_mail_args['subject'] = ''

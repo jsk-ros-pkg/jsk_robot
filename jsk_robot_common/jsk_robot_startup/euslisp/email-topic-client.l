@@ -1,5 +1,10 @@
 (ros::load-ros-manifest "jsk_robot_startup")
 
+(defun init-mail ()
+  (ros::advertise "email" jsk_robot_startup::Email 1)
+  (ros::spin-once)
+  )
+
 (defun send-mail (subject
                   receiver-address
                   body
@@ -9,7 +14,6 @@
                   smtp-server
                   smtp-port
                   attached-file)
-  (ros::advertise "email" jsk_robot_startup::Email 1)
   (setq msg (instance jsk_robot_startup::Email :init))
   (send msg :header :stamp (ros::time-now))
   (if subject (send msg :subject subject) nil)

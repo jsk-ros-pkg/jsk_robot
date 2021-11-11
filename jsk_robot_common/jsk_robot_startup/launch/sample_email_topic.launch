@@ -9,7 +9,7 @@
     </node>
 
     <node pkg="jsk_robot_startup" type="sample-email-topic-client.l" name="sample_email_topic_client"
-        required="true" output="screen">
+        output="screen">
         <rosparam subst_value="true">
             receiver_address: "$(arg receiver_address)"
         </rosparam>
