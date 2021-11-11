@@ -26,7 +26,8 @@ class EmailTopic(object):
     receiver_address: fuga@test.com
     smtp_server: test.com
     smtp_port: 25
-    attached_file: /home/user/Pictures/test.png
+    attached_files:
+      - /home/user/Pictures/test.png
     """
     def __init__(self):
         self.email_info = {}
@@ -49,10 +50,10 @@ class EmailTopic(object):
         send_mail_args['sender_address'] = '{}@{}'.format(getpass.getuser(), socket.gethostname())
         send_mail_args['smtp_server'] = 'localhost'
         send_mail_args['smtp_port'] = 25
-        send_mail_args['attached_file'] = None
+        send_mail_args['attached_files'] = None
         # Set args from topic field. If the field is empty, use value in yaml
         for field in ['subject', 'body', 'sender_address', 'receiver_address',
-                      'smtp_server', 'smtp_port', 'attached_file']:
+                      'smtp_server', 'smtp_port', 'attached_files']:
             if getattr(msg, field) != '':
                 send_mail_args[field] = getattr(msg, field)
             else:
@@ -63,7 +64,7 @@ class EmailTopic(object):
 
     def _send_mail(
             self, subject, body, sender_address, receiver_address,
-            smtp_server, smtp_port, attached_file):
+            smtp_server, smtp_port, attached_files):
         # Create MIME
         msg = MIMEMultipart()
         msg["Subject"] = subject
@@ -71,7 +72,7 @@ class EmailTopic(object):
         msg["To"] = receiver_address
         msg.attach(MIMEText(body, 'plain', 'utf-8'))
         # Attach file
-        if attached_file is not None:
+        for attached_file in attached_files:
             if not os.path.exists(attached_file):
                 rospy.logerr('File {} is not found.'.format(attached_file))
                 return
