@@ -117,7 +117,7 @@
 - git:
     local-name: tork-a/roswww
     uri: https://github.com/tork-a/roswww.git
-    version: pr1040
+    version: develop
 - git:
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
