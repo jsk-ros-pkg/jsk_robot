@@ -57,7 +57,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    version: 2ed81c579507b9dcddd4c33f5a8474482fd0c5d7
+    version: knorth55/pr1040
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
