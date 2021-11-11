@@ -89,4 +89,7 @@
       >
   </node>
 
+    <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen">
+    </node>
+
 </launch>
