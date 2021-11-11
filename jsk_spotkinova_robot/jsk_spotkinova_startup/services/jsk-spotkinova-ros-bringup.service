@@ -1,5 +1,5 @@
 [Unit]
-Description=JSK SpotKinova ROS Spot Driver Service
+Description=JSK SpotKinova ROS bringup Service
 
 [Service]
 Type=simple
