@@ -292,16 +292,14 @@
       )
     )
   (:body-pose
-    (r p y
+    (coords
        &key (topic-name "/spot/body_pose"))
     (when (send self :simulation-modep)
       (return-from :body-pose t))
     (unless (ros::get-topic-publisher topic-name)
       (ros::advertise topic-name geometry_msgs::Pose 1)
       (unix:sleep 1))
-    (let ((pose-msg (instance geometry_msgs::Pose :init))
-          (quaternion-msg (send self :create-quaternion-msg-from-rpy r p y)))
-      (send pose-msg :orientation quaternion-msg)
+    (let ((pose-msg (ros::coords->tf-pose coords)))
       (ros::publish topic-name pose-msg))
     (send self :stand))
   (:find-waypoint-position-from-id
