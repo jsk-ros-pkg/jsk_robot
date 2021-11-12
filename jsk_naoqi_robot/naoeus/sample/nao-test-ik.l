@@ -4,7 +4,7 @@
 (send *nao* :reset-pose)
 
 ;; fullbody-ik
-(setq rleg-coords (make-coords :pos (float-vector 120 -150 -250)))
+(setq rleg-coords (make-coords :pos (float-vector 120 -170 -250)))
 (setq lleg-coords (send *nao* :lleg :end-coords :copy-worldcoords))
 (send *nao* :fullbody-inverse-kinematics
       (list rleg-coords
@@ -24,3 +24,5 @@
       )
 
 (objects (list *nao* lleg-coords rleg-coords))
+
+(format t "crotch-y angles must be the same: ~A~%"(send *nao* :legs :crotch-y :joint-angle))
