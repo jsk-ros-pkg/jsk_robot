@@ -292,15 +292,23 @@
       )
     )
   (:body-pose
-    (coords
-       &key (topic-name "/spot/body_pose"))
+    (&optional (r p y coords)
+     &key (topic-name "/spot/body_pose"))
     (when (send self :simulation-modep)
       (return-from :body-pose t))
     (unless (ros::get-topic-publisher topic-name)
       (ros::advertise topic-name geometry_msgs::Pose 1)
       (unix:sleep 1))
-    (let ((pose-msg (ros::coords->tf-pose coords)))
-      (ros::publish topic-name pose-msg))
+    (if (boundp 'coords)
+        (progn
+          (ros::ros-info "Got coords variable as optional args. r p y args would be ignored.")
+          (let ((pose-msg (ros::coords->tf-pose coords)))
+            (ros::publish topic-name pose-msg)))
+        (progn
+          (let ((pose-msg (instance geometry_msgs::Pose :init))
+                (quaternion-msg (send self :create-quaternion-msg-from-rpy r p y)))
+            (send pose-msg :orientation quaternion-msg)
+            (ros::publish topic-name pose-msg))))
     (send self :stand))
   (:find-waypoint-position-from-id
    (id ids)
