@@ -315,7 +315,8 @@ Example: (send self :gripper :position) => 0.00"
   (:servo-on (&key (arm t) (gripper t) (head t))
     (when arm
       (ros::ros-info "arm servo on")
-      (send self :angle-vector (send self :state :potentio-vector) 3000 :arm-controller))
+      (send self :angle-vector (send self :state :potentio-vector) 3000 :arm-controller)
+      (send self :angle-vector (send self :state :potentio-vector) 3000 :torso-controller))
     (when head
       (ros::ros-info "head servo on")
       (send self :angle-vector (send self :state :potentio-vector) 3000 :head-controller))
