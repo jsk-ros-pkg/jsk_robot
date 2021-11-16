@@ -55,19 +55,19 @@
 
 ;; body-pose
 (format t "Testing body-pose~%")
-(send *ri* :body-pose 0 0.2 0)
+(send *ri* :body-pose '(0 0.2 0))
 (ros::duration-sleep 1)
-(send *ri* :body-pose 0 -0.2 0)
+(send *ri* :body-pose '(0 -0.2 0))
 (ros::duration-sleep 1)
-(send *ri* :body-pose 0 0 0.2)
+(send *ri* :body-pose '(0 0 0.2))
 (ros::duration-sleep 1)
-(send *ri* :body-pose 0 0 -0.2)
+(send *ri* :body-pose '(0 0 -0.2))
 (ros::duration-sleep 1)
-(send *ri* :body-pose 0.1 0 0)
+(send *ri* :body-pose '(0.1 0 0))
 (ros::duration-sleep 1)
-(send *ri* :body-pose -0.1 0 0)
+(send *ri* :body-pose '(-0.1 0 0))
 (ros::duration-sleep 1)
-(send *ri* :body-pose 0 0 0)
+(send *ri* :body-pose '(0 0 0))
 (ros::duration-sleep 1)
 
 ;; go pos
