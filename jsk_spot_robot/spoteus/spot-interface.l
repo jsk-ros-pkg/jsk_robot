@@ -301,13 +301,13 @@
       (unix:sleep 1))
     (if (vectorp pose)
         (progn
-          (ros::ros-info "Got r p y float-vector as args.")
+          (ros::ros-debug "Got r p y float-vector as args.")
           (let ((pose-msg (instance geometry_msgs::Pose :init))
                 (quaternion-msg (send self :create-quaternion-msg-from-rpy (aref pose 0) (aref pose 1) (aref pose 2))))
             (send pose-msg :orientation quaternion-msg)
             (ros::publish topic-name pose-msg)))
         (progn
-          (ros::ros-info "Got coords variable as args.")
+          (ros::ros-debug "Got coords variable as args.")
           (let ((pose-msg (ros::coords->tf-pose pose)))
             (ros::publish topic-name pose-msg))))
     (send self :stand))
