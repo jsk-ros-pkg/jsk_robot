@@ -299,11 +299,11 @@
     (unless (ros::get-topic-publisher topic-name)
       (ros::advertise topic-name geometry_msgs::Pose 1)
       (unix:sleep 1))
-    (if (vectorp pose)
+    (if (or (vectorp pose) (listp pose))
         (progn
-          (ros::ros-debug "Got r p y float-vector as args.")
+          (ros::ros-debug "Got r p y float-vector or list as args.")
           (let ((pose-msg (instance geometry_msgs::Pose :init))
-                (quaternion-msg (send self :create-quaternion-msg-from-rpy (aref pose 0) (aref pose 1) (aref pose 2))))
+                (quaternion-msg (send self :create-quaternion-msg-from-rpy (elt pose 0) (elt pose 1) (elt pose 2))))
             (send pose-msg :orientation quaternion-msg)
             (ros::publish topic-name pose-msg)))
         (progn
