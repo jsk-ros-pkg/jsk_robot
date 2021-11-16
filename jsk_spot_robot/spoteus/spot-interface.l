@@ -292,22 +292,23 @@
       )
     )
   (:body-pose
-    (&optional (r p y coords)
-     &key (topic-name "/spot/body_pose"))
+   ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
+    (pose &key (topic-name "/spot/body_pose"))
     (when (send self :simulation-modep)
       (return-from :body-pose t))
     (unless (ros::get-topic-publisher topic-name)
       (ros::advertise topic-name geometry_msgs::Pose 1)
       (unix:sleep 1))
-    (if (boundp 'coords)
+    (if (vectorp pose)
         (progn
-          (ros::ros-info "Got coords variable as optional args. r p y args would be ignored.")
-          (let ((pose-msg (ros::coords->tf-pose coords)))
+          (ros::ros-info "Got r p y float-vector as args.")
+          (let ((pose-msg (instance geometry_msgs::Pose :init))
+                (quaternion-msg (send self :create-quaternion-msg-from-rpy (aref pose 0) (aref pose 1) (aref pose 2))))
+            (send pose-msg :orientation quaternion-msg)
             (ros::publish topic-name pose-msg)))
         (progn
-          (let ((pose-msg (instance geometry_msgs::Pose :init))
-                (quaternion-msg (send self :create-quaternion-msg-from-rpy r p y)))
-            (send pose-msg :orientation quaternion-msg)
+          (ros::ros-info "Got coords variable as args.")
+          (let ((pose-msg (ros::coords->tf-pose pose)))
             (ros::publish topic-name pose-msg))))
     (send self :stand))
   (:find-waypoint-position-from-id
