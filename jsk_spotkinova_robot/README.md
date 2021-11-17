@@ -110,6 +110,15 @@ You can use `inverse-kinematics` to move arm.
 ```
 (send *spotkinova* :head :inverse-kinematics (make-coords :pos #f(700 0 500) :rotation-axis nil))
 ```
+You can use `body-inverse-kinematics` to move body.
+```
+(dotimes (i 100)
+  (send *spot* :body-inverse-kinematics
+        (make-coords :pos (float-vector 0 0 (* 20 (sin (* pi i 0.02))))
+                     :rpy (float-vector (* 0.2 (sin (* pi i 0.02))) (* 0.2 (sin (* pi i 0.02))) (* 0.2 (sin (* pi i 0.02))))
+  (send *ri* :body-pose (send *spot* :copy-worldcoords)) ;; when sending to real robot
+  )
+```
 You can use `fullbody-inverse-kinematics` to move arm and body.
 ```
 (let ((arm-pose (send *spotkinova* :head :end-coords :copy-worldcoords)))
