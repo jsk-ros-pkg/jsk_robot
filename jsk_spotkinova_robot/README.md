@@ -5,7 +5,7 @@
 For more details about Spot and KINOVA arm,
 please see [jsk_spot_robot](../jsk_spot_robot) and [jsk_kinova_robot](../jsk_kinova_robot)
 
-### Setup a workspace for spot and kinova
+### Setup a workspace for spot and kinova (for a user)
 
 You need to install `conan` (Decentralized, open-source (MIT), C/C++ package manager) to build kinova packages.
 If you have not installed `conan`, please see [Conan Setup](../jsk_kinova_robot#conan-setup) and install `conan`
@@ -17,7 +17,30 @@ wstool init .
 wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
 wstool update
 wstool merge jsk-ros-pkg/jsk_robot/jsk_kinova_robot/jsk_kinova.rosinstall
-wstool merge jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot.rosinstall
+wstool merge jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall
+wstool update
+rosdep update
+rosdep install --from-paths . --ignore-src -y -r
+pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
+cd ~/spotkinova_ws
+source /opt/ros/$ROS_DISTRO/setup.bash
+catkin init
+catkin build jsk_spotkinova_startup
+```
+
+### Setup a workspace for spot and kinova (for an internal PC)
+
+You need to install `conan` (Decentralized, open-source (MIT), C/C++ package manager) to build kinova packages.
+If you have not installed `conan`, please see [Conan Setup](../jsk_kinova_robot#conan-setup) and install `conan`
+
+```bash
+mkdir ~/spotkinova_ws/src -p
+cd spotkinova_ws/src
+wstool init .
+wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool update
+wstool merge jsk-ros-pkg/jsk_robot/jsk_kinova_robot/jsk_kinova.rosinstall
+wstool merge jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall
 wstool update
 rosdep update
 rosdep install --from-paths . --ignore-src -y -r
@@ -26,7 +49,7 @@ cd ~/spotkinova_ws
 source /opt/ros/$ROS_DISTRO/setup.bash
 catkin init
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release
-catkin build jsk_spotkinova_startup
+catkin build -j4 -c jsk_spotkinova_startup
 ```
 
 Please see additional config ( e.g. authentification config for Spot ) for [jsk_spot_robot](../jsk_spot_robot#How-to-run)
