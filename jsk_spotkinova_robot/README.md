@@ -58,8 +58,9 @@ Please see additional config ( e.g. authentification config for Spot ) for [jsk_
 
 ### Bringup robot
 
-First, please 1.turn on spot and turn on motors according to [Bringup spot](../jsk_spot_robot#bringup-spot) and 2.switch on kinova.
-After that, please run the ros driver and other basic programs with `spotkinova_bringup.launch`.
+1. Turn on spot and turn on motors according to [Bringup spot](../jsk_spot_robot#bringup-spot) 
+2. Switch on kinova.
+3. Please run the ros driver and other basic programs with `spotkinova_bringup.launch`.
 
 ```bash
 source ~/spotkinova_ws/devel/setup.bash
@@ -108,4 +109,20 @@ You can also use `move-end-rot` method to turn the gripper.
 You can use `inverse-kinematics` to move arm.
 ```
 (send *spotkinova* :head :inverse-kinematics (make-coords :pos #f(700 0 500) :rotation-axis nil))
+```
+You can use `fullbody-inverse-kinematics` to move arm and body.
+```
+(let ((arm-pose (send *spotkinova* :head :end-coords :copy-worldcoords)))
+  (send *spotkinova* :fullbody-inverse-kinematics
+        (send arm-pose :translate
+              (float-vector 0 600 -200)
+              :world)
+      :root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5)))
+```
+You can send trajectory to real robots.  
+When you move both arm and body, you have to move body first.  
+Arm servo turns off because of large joint torque error.  
+```
+(send *ri* :body-pose (send *spotkinova* :copy-worldcoords)) ;; for spot posture
+(send *ri* :angle-vector (send *spotkinova* :angle-vector) 5000) ;; for kinova
 ```
