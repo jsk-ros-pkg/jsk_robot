@@ -284,7 +284,7 @@
   (:go-to-spot (name &key (wait t))
     "move robot to a specified place with spot_behavior_manager"
     (setq execute-behavior-goal-msg (instance spot_behavior_manager_msgs::LeadPersonGoal :init))
-    (send execute-behavior-goal-msg :target-node-id name)
+    (send execute-behavior-goal-msg :target_node_id name)
     ;;
     (send execute-behavior-action :send-goal execute-behavior-goal-msg)
     (if wait
