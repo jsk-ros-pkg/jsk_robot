@@ -100,7 +100,7 @@ rosrun spot_autowalk_data view_map.py <map_directory.walk> --draw-id
 
 1. record a new autowalk data
 2. archive and compress an autowalk data directory (e.g. `autowalk.walk`) to `autowalk.walk.tar.gz` by `tar -zcvf autowalk.walk.tar.gz autowalk.walk`
-3. upload `autowalk.walk.tar.gz` to [jsk_data public google drive folger](https://drive.google.com/drive/u/0/folders/0B9P1L--7Wd2vUGplQkVLTFBWcFE?resourcekey=0-qlPyB_oRQm887pgRGiPhgg)
+3. upload `autowalk.walk.tar.gz` to [jsk_data public google drive folger](https://drive.google.com/drive/folders/1PPOZDoWbJnxM7XkPMPP3iKQqrji56Vgq?usp=sharing)
 4. add new entry to download_autowalk_data.py like
 
 ```
