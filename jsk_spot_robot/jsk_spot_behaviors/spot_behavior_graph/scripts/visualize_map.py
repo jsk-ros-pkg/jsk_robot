@@ -39,7 +39,7 @@ def main():
     filename = args.filename
 
     with open(filename, 'r') as f:
-        map_data = yaml.load(f)
+        map_data = yaml.load(f, Loader=yaml.FullLoader)
 
     edges = map_data['edges']
 
