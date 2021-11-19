@@ -1,0 +1,82 @@
+<launch>
+  <arg name="INPUT" default="points"/>
+  <arg name="CENTROID_FRAME" default="target"/>
+  <arg name="DEFAULT_NAMESPACE" default="/head_camera/depth_registered"/>
+  <arg name="FILTER_NAME_SUFFIX" default=""/>
+  <arg name="OUTPUT" default="trashbin_handle/hsi_output$(arg FILTER_NAME_SUFFIX)"/>
+
+  <!-- NODELET PARAMS -->
+  <arg name="create_manager" default="true" />
+  <arg name="manager" default="trashbin_handle_detect_manager$(arg FILTER_NAME_SUFFIX)" />
+  <!-- END NODELET PARAMS -->
+  
+  <!-- HSI COLOR FILTER PARAMS -->
+  <!-- detecting the green handle of trashbin -->
+  <arg name="h_max" default="100" />
+  <arg name="h_min" default="60" />
+  <arg name="s_max" default="255" />
+  <arg name="s_min" default="16" />
+  <arg name="i_max" default="255" />
+  <arg name="i_min" default="36" />
+  <!-- END HSI COLOR FILTER PARAMS -->
+  
+  <!-- GET TRASHBIN HANDLE BY HSI COLOR FILTER -->
+  <group ns="$(arg DEFAULT_NAMESPACE)">
+    <node if="$(arg create_manager)"
+          pkg="nodelet" type="nodelet" name="$(arg manager)"
+          args="manager" output="screen"/>
+
+    <node pkg="nodelet" type="nodelet" name="hsi_filter$(arg FILTER_NAME_SUFFIX)"
+          args="load jsk_pcl/HSIColorFilter $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg INPUT)" />
+      <remap from="~output" to="$(arg OUTPUT)" />
+      <rosparam>
+        use_indices: false
+      </rosparam>
+      <param name="h_limit_max" value="$(arg h_max)" />
+      <param name="h_limit_min" value="$(arg h_min)" />
+      <param name="s_limit_max" value="$(arg s_max)" />
+      <param name="s_limit_min" value="$(arg s_min)" />
+      <param name="i_limit_max" value="$(arg i_max)" />
+      <param name="i_limit_min" value="$(arg i_min)" />
+    </node>
+    <node pkg="nodelet" type="nodelet" name="euclidean_clustering$(arg FILTER_NAME_SUFFIX)"
+          args="load jsk_pcl/EuclideanClustering $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg OUTPUT)" />
+      <rosparam>
+        tolerance: 0.02
+        min_size: 100
+      </rosparam>
+    </node>
+    <node pkg="nodelet" type="nodelet"
+          name="cluster_decomposer$(arg FILTER_NAME_SUFFIX)"
+          args="load jsk_pcl/ClusterPointIndicesDecomposer $(arg manager)"
+          output="screen" clear_params="true">
+      <remap from="~input" to="$(arg OUTPUT)" />
+      <remap from="~target" to="euclidean_clustering$(arg FILTER_NAME_SUFFIX)/output" />
+      <!-- <remap from="~debug_output" to="debug_output$(arg FILTER_NAME_SUFFIX)" /> -->
+      <remap from="~boxes" to="trashbin_handle/boxes$(arg FILTER_NAME_SUFFIX)" />
+      <rosparam>
+        align_boxes: true
+        align_boxes_with_plane: false
+        target_frame_id: base_link
+        use_pca: true
+        force_to_flip_z_axis: false
+      </rosparam>
+    </node>
+    <!-- END GET TRASHBIN HANDLE BY HSI COLOR FILTER -->
+  </group>
+  <!-- START OCCUPANCY DETECTOR -->
+  <node pkg="jsk_fetch_startup" type="trashbin_occupancy_detector"
+        name="trashbin_occupancy_detector"
+        output="screen">
+    <remap from="~trashbin_handle/boxes" to=""/>
+    <rosparam>
+      trashbin_l: 0.38
+      trashbin_w: 0.27
+      trashbin_h: 0.51
+    </rosparam>
+  </node>
+  
+  
+</launch>
