@@ -230,5 +230,21 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_MechOffice_to_MainEntrance.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1aepZnkxV8SLo9a8DdCEU9KnNoyjG7sZF',
+        md5='4aba2398e8eae87509820180b2e89cb0',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_MechOffice_to_3felevator_subwayside.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1twc6Ui5z7nqqZHMHPeynNAyE19PKyihN',
+        md5='6d720c0c6f5692a205b386c9248d69f6',
+        extract=True
+    )
+
 if __name__ == '__main__':
     main()
