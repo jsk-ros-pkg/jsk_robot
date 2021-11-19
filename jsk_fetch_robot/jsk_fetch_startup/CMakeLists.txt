@@ -10,7 +10,10 @@ endif()
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+)
+find_package(Boost REQUIRED COMPONENTS)
 
 ###################################
 ## catkin specific configuration ##
@@ -19,6 +22,17 @@ catkin_package()
 
 catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
+#############
+## Install ##
+#############
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
+add_executable(trashbin_occupancy_detector src/trashbin_occupancy_detector.cpp)
+target_link_libraries(trashbin_occupancy_detector
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -53,7 +67,6 @@ endmacro(configure_icon_files)
 
 configure_icon_files(blue fetch15)
 configure_icon_files(red fetch1075)
-
 
 #############
 ## Testing ##
