@@ -188,6 +188,9 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
         id: 'foiled-ibis-dAio3Ld6rCSWQgy9ERDulw=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
+        id: 'askant-beef-JQLXogu60cJgJiSXcyjKUQ=='
+        localization_method: 'fiducial'
   'eng2_Mailbox':
     name_en: 'Mailbox'
     name_jp:
