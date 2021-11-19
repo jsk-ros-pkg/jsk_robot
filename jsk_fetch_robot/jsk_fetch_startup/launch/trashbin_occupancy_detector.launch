@@ -1,7 +1,7 @@
 <launch>
-  <arg name="INPUT" default="points"/>
+  <arg name="INPUT" default="/head_camera/depth_registered/points"/>
   <arg name="CENTROID_FRAME" default="target"/>
-  <arg name="DEFAULT_NAMESPACE" default="/head_camera/depth_registered"/>
+  <arg name="DEFAULT_NAMESPACE" default="/trashbin_occupancy_detector"/>
   <arg name="FILTER_NAME_SUFFIX" default=""/>
   <arg name="OUTPUT" default="trashbin_handle/hsi_output$(arg FILTER_NAME_SUFFIX)"/>
 
@@ -21,25 +21,24 @@
   <!-- END HSI COLOR FILTER PARAMS -->
   
   <!-- GET TRASHBIN HANDLE BY HSI COLOR FILTER -->
+  <node pkg="nodelet" type="nodelet" name="trashbin_handle_hsi_filter$(arg FILTER_NAME_SUFFIX)"
+        args="load jsk_pcl/HSIColorFilter $(arg DEFAULT_NAMESPACE)/$(arg manager)" output="screen">
+    <remap from="~input" to="$(arg INPUT)" />
+    <remap from="~output" to="$(arg DEFAULT_NAMESPACE)/$(arg OUTPUT)" />
+    <rosparam>
+      use_indices: false
+    </rosparam>
+    <param name="h_limit_max" value="$(arg h_max)" />
+    <param name="h_limit_min" value="$(arg h_min)" />
+    <param name="s_limit_max" value="$(arg s_max)" />
+    <param name="s_limit_min" value="$(arg s_min)" />
+    <param name="i_limit_max" value="$(arg i_max)" />
+    <param name="i_limit_min" value="$(arg i_min)" />
+  </node>
   <group ns="$(arg DEFAULT_NAMESPACE)">
     <node if="$(arg create_manager)"
           pkg="nodelet" type="nodelet" name="$(arg manager)"
           args="manager" output="screen"/>
-
-    <node pkg="nodelet" type="nodelet" name="hsi_filter$(arg FILTER_NAME_SUFFIX)"
-          args="load jsk_pcl/HSIColorFilter $(arg manager)" output="screen">
-      <remap from="~input" to="$(arg INPUT)" />
-      <remap from="~output" to="$(arg OUTPUT)" />
-      <rosparam>
-        use_indices: false
-      </rosparam>
-      <param name="h_limit_max" value="$(arg h_max)" />
-      <param name="h_limit_min" value="$(arg h_min)" />
-      <param name="s_limit_max" value="$(arg s_max)" />
-      <param name="s_limit_min" value="$(arg s_min)" />
-      <param name="i_limit_max" value="$(arg i_max)" />
-      <param name="i_limit_min" value="$(arg i_min)" />
-    </node>
     <node pkg="nodelet" type="nodelet" name="euclidean_clustering$(arg FILTER_NAME_SUFFIX)"
           args="load jsk_pcl/EuclideanClustering $(arg manager)" output="screen">
       <remap from="~input" to="$(arg OUTPUT)" />
@@ -54,7 +53,6 @@
           output="screen" clear_params="true">
       <remap from="~input" to="$(arg OUTPUT)" />
       <remap from="~target" to="euclidean_clustering$(arg FILTER_NAME_SUFFIX)/output" />
-      <!-- <remap from="~debug_output" to="debug_output$(arg FILTER_NAME_SUFFIX)" /> -->
       <remap from="~boxes" to="trashbin_handle/boxes$(arg FILTER_NAME_SUFFIX)" />
       <rosparam>
         align_boxes: true
@@ -65,18 +63,16 @@
       </rosparam>
     </node>
     <!-- END GET TRASHBIN HANDLE BY HSI COLOR FILTER -->
-  </group>
-  <!-- START OCCUPANCY DETECTOR -->
-  <node pkg="jsk_fetch_startup" type="trashbin_occupancy_detector"
-        name="trashbin_occupancy_detector"
+    <!-- START OCCUPANCY DETECTOR -->
+    <node pkg="jsk_fetch_startup" type="trashbin_occupancy_detector"
+        name="trashbin_occupancy_detector_server"
         output="screen">
-    <remap from="~trashbin_handle/boxes" to=""/>
-    <rosparam>
-      trashbin_l: 0.38
-      trashbin_w: 0.27
-      trashbin_h: 0.51
-    </rosparam>
-  </node>
-  
-  
+      <rosparam>
+        trashbin_l: 0.34
+        trashbin_w: 0.24
+        trashbin_h: 0.49
+      </rosparam>
+    </node>
+    <!-- END OCCUPANCY DETECTOR -->
+  </group>
 </launch>
