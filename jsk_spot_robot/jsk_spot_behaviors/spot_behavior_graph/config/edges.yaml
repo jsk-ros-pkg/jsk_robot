@@ -199,6 +199,18 @@ edges:
     cost: 10
     args:
       graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+  - from: 'eng2_Mech_Office'
+    to: 'eng2_Mailbox'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
+  - from: 'eng2_Mailbox'
+    to: 'eng2_Mech_Office'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
   - from: 'eng2_3FElevator'
     to: 'eng2_7FElevator'
     behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
