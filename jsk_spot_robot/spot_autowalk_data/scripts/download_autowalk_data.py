@@ -222,5 +222,13 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_MechOffice_inside.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1dSbU0tADrxwGLEBywMt312NXUgFHtsCy',
+        md5='5460bc55c34824ce75722881a4e0b77d',
+        extract=True
+    )
+
 if __name__ == '__main__':
     main()
