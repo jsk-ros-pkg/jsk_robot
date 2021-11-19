@@ -20,12 +20,12 @@ private:
   
 public:
   // constructor
-  TrashbinOccupancyDetector(ros::NodeHandle &_nh){
-    _nh.getParam("trashbin_l", this->_trashbinL);
-    _nh.getParam("trashbin_w", this->_trashbinW);
-    _nh.getParam("trashbin_h", this->_trashbinH);
+  TrashbinOccupancyDetector(ros::NodeHandle &_nh, ros::NodeHandle &_pnh){
+    _pnh.getParam("trashbin_l", this->_trashbinL);
+    _pnh.getParam("trashbin_w", this->_trashbinW);
+    _pnh.getParam("trashbin_h", this->_trashbinH);
     this->_trashbinHandleSub = _nh.subscribe("trashbin_handle/boxes", 10, &TrashbinOccupancyDetector::CheckOccupancyCB, this);
-    this->_virtualTrashbinContainerPub = _nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("trashbin_handle/trashbin", 10);
+    this->_virtualTrashbinContainerPub = _nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("trashbin/boxes", 10);
     // init default orientation const
     this->defaultOrientation.w = 1.0;
     this->defaultOrientation.x = 0.0;
@@ -39,9 +39,9 @@ public:
   // draw virtual trashbin container and publish for debugging
   void DrawVirtualTrashbinContainer(const jsk_recognition_msgs::BoundingBoxArray& handleCandidates){
     // Expected get non empty array
-    boost::shared_ptr<jsk_recognition_msgs::BoundingBoxArray> handles, trashbins;
-    boost::shared_ptr<jsk_recognition_msgs::BoundingBox> handle, trashbin;
-    boost::shared_ptr<geometry_msgs::Point> handleCenterPosition, trashbinCenterPosition;
+    boost::shared_ptr<jsk_recognition_msgs::BoundingBoxArray> handles(new jsk_recognition_msgs::BoundingBoxArray), trashbins(new jsk_recognition_msgs::BoundingBoxArray);
+    boost::shared_ptr<jsk_recognition_msgs::BoundingBox> handle(new jsk_recognition_msgs::BoundingBox), trashbin(new jsk_recognition_msgs::BoundingBox);
+    boost::shared_ptr<geometry_msgs::Point> handleCenterPosition(new geometry_msgs::Point), trashbinCenterPosition(new geometry_msgs::Point);
 
     *handles = handleCandidates; // TODO: Do not use all boundingboxes, use most likely trashbins
 
@@ -80,7 +80,8 @@ public:
 
 int main(int argc, char **argv){
   ros::init(argc, argv, "trashbin_occupancy_detector");
+  ros::NodeHandle nh;
   ros::NodeHandle pnh("~");
-  TrashbinOccupancyDetector node = TrashbinOccupancyDetector(pnh);
-  return 0;
+  TrashbinOccupancyDetector node = TrashbinOccupancyDetector(nh, pnh);
+  ros::spin();
 }
