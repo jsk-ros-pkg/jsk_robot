@@ -5,6 +5,40 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## scripts/email_topic.py
+
+This node sends email based on received rostopic (jsk_robot_startup/Email).
+Default values can be set by using `~email_info`
+There is [a client library](./euslisp/email-topic-client.l) and [sample program](./euslisp/sample-email-topic-client.l).
+If you want to see a demo. Please configure a smtp server and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
+
+```bash
+roslaunch jsk_robot_startup sample_email_topic.launch receiver_address:=<a mail address to send a mail to>
+```
+
+### Parameters
+
+- `~email_info` (type: `String`, default: `/var/lib/robot/email_info.yaml`)
+
+Default values of email configuration. Example of a yaml file is below.
+
+```yaml
+subject: hello
+body: world
+sender_address: hoge@test.com
+receiver_address: fuga@test.com
+smtp_server: test.com
+smtp_port: 25
+attached_files:
+  - /home/user/Pictures/test.png
+```
+
+### Subscriber
+
+- `email` (type: `jsk_robot_startup/Email`)
+
+Subscriber of email command.
+
 ## scripts/ConstantHeightFramePublisher.py
 ![pointcloud_to_scan_base_tf_squat.png](images/pointcloud_to_scan_base_tf_squat.png)
 ![pointcloud_to_scan_base_tf_stand.png](images/pointcloud_to_scan_base_tf_stand.png)
