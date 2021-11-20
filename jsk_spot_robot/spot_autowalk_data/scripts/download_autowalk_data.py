@@ -246,5 +246,53 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_1fentrance_to_1FElevator.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1Q7gX8Cg58dUtV0he7R8fxYciinYnAmd9',
+        md5='b82831bd317014367af5f28614368bd9',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_2fentrance_to_1fentrance.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1eKdUYOyWEO2lz07uUlpayb6StFC_hCco',
+        md5='0b7c8e960825014a3d3b4637265e966c',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_73B2_to_83A2.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1GwOD53C7I8dpi3YcrrMcHlHbN3k_Auj1',
+        md5='aa063402ab604b012ae7c7a4123fb5ac',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_7FElevator_to_73B2_trash.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1gmkQa5oTSIJAKST8SBLev_nui_XN40dE',
+        md5='d8b0711270fb2ae67159d28d50bb5231',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_7f_around.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1lKELjOiUU02RnrK2V7AWos8GkJqylEKu',
+        md5='daae9c4c7555780b148baad7906b6710',
+        extract=True
+    )
+
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_outside.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1E9QJJYz7Puk72KL2lFRTKfPtRiCHZYYw',
+        md5='f44de8d70da1bd1a512b5e1002335c81',
+        extract=True
+    )
+
 if __name__ == '__main__':
     main()
