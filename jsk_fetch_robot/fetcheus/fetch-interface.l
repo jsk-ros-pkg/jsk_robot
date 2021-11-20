@@ -312,16 +312,16 @@ Example: (send self :gripper :position) => 0.00"
         (ros::ros-info "gripper servo off")
         (send (send goal-gripper-servo-off :command) :max_effort -1.0)
         (send gripper-action :send-goal goal-gripper-servo-off))))
-  (:servo-on (&key (arm t) (gripper t) (head t))
+  (:servo-on (&key (arm t) (gripper t) (head t) (time 500))
     ;; the reason why :servo-off and :servo-on has different implementation is in the following issue
     ;; https://github.com/fetchrobotics/robot_controllers/issues/72
     (when arm
       (ros::ros-info "arm servo on")
-      (send self :angle-vector (send self :state :potentio-vector) 3000 :arm-controller)
-      (send self :angle-vector (send self :state :potentio-vector) 3000 :torso-controller))
+      (send self :angle-vector (send self :state :potentio-vector) time :arm-controller)
+      (send self :angle-vector (send self :state :potentio-vector) time :torso-controller))
     (when head
       (ros::ros-info "head servo on")
-      (send self :angle-vector (send self :state :potentio-vector) 3000 :head-controller))
+      (send self :angle-vector (send self :state :potentio-vector) time :head-controller))
     (when gripper
       (ros::ros-info "gripper servo on")
       (send self :go-grasp :pos (send self :gripper :position)))))
