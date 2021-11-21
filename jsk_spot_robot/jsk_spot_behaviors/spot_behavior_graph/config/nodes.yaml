@@ -34,6 +34,9 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
         id: 'fuzzed-medusa-wyXWCEjmWas1kMo8EJW8Bw=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_83A2.walk'
+        id: 'dyed-viper-HVQRLVeklEUaE2aXJW+d6Q=='
+        localization_method: 'fiducial'
   'eng2_73B2_belka_home':
     name_en: 'belka'
     name_jp:
@@ -88,6 +91,16 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
         id: 'sable-narwal-o7qEo7543BUTj4sNKWcQ6g=='
         localization_method: 'waypoint'
+  'eng2_83A2':
+    name_en: '83A2'
+    name_jp:
+      - '83 A 2'
+      - '83A2'
+      - '工作室'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_83A2.walk'
+        id: 'shaved-koala-aLy+bUIQpAHBQbi5DxeKJA=='
+        localization_method: 'waypoint'
   'eng2_7FElevator':
     name_en: 'Elevator'
     name_jp:
@@ -139,6 +152,9 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
         id: 'brumal-gerbil-NLVgQc0oBXbc8BCZev57LQ=='
         localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2fentrance_to_1fentrance.walk'
+        id: 'felted-weasel-kFVXZpw1.DvEm6FCSgC5XQ=='
+        localization_method: 'fiducial'
     switchbot_device: '/eng2/2f/elevator_bot_up'
     floor: 2
     floor_height: 0
@@ -174,6 +190,9 @@ nodes:
         localization_method: 'fiducial'
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk'
         id: 'oafish-vervet-w.bCe7FjEILCP8oBQg6Miw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1fentrance_to_1FElevator.walk'
+        id: 'anemic-spider-TimPFBe0OMBdd+kWxYBW2Q=='
         localization_method: 'fiducial'
     switchbot_device: '/eng2/1f/elevator_bot_up'
     floor: 1
@@ -328,6 +347,18 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
         id: 'sown-pincer-NcgfKhWf9H+B3yWIKA8W7A=='
         localization_method: 'waypoint'
+  'eng2_1FEntrance_outer':
+    name_en: '1F Entrance'
+    name_jp:
+      - '2号館1階入口'
+      - '2号館 1階入口'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1fentrance_to_1FElevator.walk'
+        id: 'madcap-racoon-WmDiG93hDjlU6eDOUX2Jbg=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2fentrance_to_1fentrance.walk'
+        id: 'jammed-deer-L6mHZb2lmu+iQwGexsoAvw=='
+        localization_method: 'fiducial'
   'eng2_GarbageCollectionArea_east':
     name_en: 'Garbage collection area'
     name_jp: 'ゴミ捨て場'
