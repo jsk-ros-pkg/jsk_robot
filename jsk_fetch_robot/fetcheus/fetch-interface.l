@@ -272,6 +272,17 @@ Example: (send self :gripper :position) => 0.00"
     (send *co* :delete-attached-object-by-id "ground")
     (send *co* :delete-object-by-id "ground"))
   (:servo-off (&key (arm t) (gripper t) (head t))
+    "
+    Turn servo off for arm/gripper/head motors
+    Args:
+      - key
+        - arm: If you do not want to servo off the arm, set nil (default: t)
+        - gripper: If you do not want to servo off the grippper, set nil (default: t)
+        - head: If you do not want to servo off the head, set nil (default: t)
+    Examples:
+      (send self :servo-off) ;; arm, gripper and  head servos off
+      (send self :servo-off :arm t :gripper nil :head nil) ;; arm servo off
+    "
     (let ((goal-servo-off (instance robot_controllers_msgs::QueryControllerStatesGoal :init))
           (goal-gripper-servo-off (instance control_msgs::GripperCommandGoal :init))
           (state nil) (update-list nil)
@@ -313,6 +324,19 @@ Example: (send self :gripper :position) => 0.00"
         (send (send goal-gripper-servo-off :command) :max_effort -1.0)
         (send gripper-action :send-goal goal-gripper-servo-off))))
   (:servo-on (&key (arm t) (gripper t) (head t) (time 200))
+    "
+    Turn servo on for arm/gripper/head motors
+    Args:
+      - key:
+        - arm: If you do not want to servo on the arm, set nil (default: t)
+        - gripper: If you do not want to servo on the grippper, set nil (default: t)
+        - head: If you do not want to servo on the head, set nil (default: t)
+        - time: [msec] duration to turn servo on,
+                experimentally the minimal duration is about 60[msec] (default: 200)
+    Examples:
+      (send self :servo-on) ;; arm, gripper and  head servos on
+      (send self :servo-on :arm nil :gripper nil :head t :time 80) ;; head servo on in 80[msec]
+    "
     ;; the reason why :servo-off and :servo-on has different implementation is in the following issue
     ;; https://github.com/fetchrobotics/robot_controllers/issues/72
     (when arm
