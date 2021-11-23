@@ -168,13 +168,13 @@
     (when (send self :simulation-modep)
       ;; mimic joint
       ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/gen3_lite_2f/urdf/gen3_lite_2f_macro.xacro
-      (send robot :right_finger_bottom_joint :joint-angle
+      (send robot :kinova_right_finger_bottom_joint :joint-angle
             (rad2deg pos))
-      (send robot :right_finger_tip_joint :joint-angle
+      (send robot :kinova_right_finger_tip_joint :joint-angle
             (rad2deg (+ (* -0.676 pos) 0.149)))
-      (send robot :left_finger_bottom_joint :joint-angle
+      (send robot :kinova_left_finger_bottom_joint :joint-angle
             (rad2deg (* -1 pos)))
-      (send robot :left_finger_tip_joint :joint-angle
+      (send robot :kinova_left_finger_tip_joint :joint-angle
             (rad2deg (+ (* -0.676 pos) 0.149)))
       (return-from :go-grasp-lite t))
     (let ((pos-max 0.95) (pos-min -0.05))
