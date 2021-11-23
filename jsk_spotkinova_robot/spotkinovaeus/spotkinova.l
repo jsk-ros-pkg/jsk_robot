@@ -45,6 +45,7 @@
           (max (float-vector  500  500   500  20  20  10))
           (target-centroid-pos)
           (rotation-axis)
+          (root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5))
      &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying :head :end-coords target-coords.
 Example:
@@ -78,6 +79,7 @@ Example:
           :max max
           :target-centroid-pos target-centroid-pos
           :rotation-axis rotation-axis
+          :root-link-virtual-joint-weight root-link-virtual-joint-weight
           args))
   (:body-inverse-kinematics
     (target-coords
@@ -87,6 +89,7 @@ Example:
           (max (float-vector  500  500   500  200  200  100))
           (target-centroid-pos)
           (rotation-axis)
+          (root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5))
      &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying body target-coords.
 Example:
@@ -121,6 +124,7 @@ Example:
             :max max
             :target-centroid-pos target-centroid-pos
             :rotation-axis rotation-axis
+            :root-link-virtual-joint-weight root-link-virtual-joint-weight
             args)
         (send body_lk :dissoc body-coords))))
   )
@@ -152,6 +156,7 @@ Example:
           (max (float-vector  500  500   500  20  20  10))
           (target-centroid-pos)
           (rotation-axis)
+          (root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5))
       &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying :head :end-coords target-coords.
 Example:
@@ -185,6 +190,7 @@ Example:
           :max max
           :target-centroid-pos target-centroid-pos
           :rotation-axis rotation-axis
+          :root-link-virtual-joint-weight root-link-virtual-joint-weight
           args))
   (:body-inverse-kinematics
     (target-coords
@@ -194,6 +200,7 @@ Example:
           (max (float-vector  500  500   500  200  200  100))
           (target-centroid-pos)
           (rotation-axis)
+          (root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5))
      &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying body target-coords.
 Example:
@@ -228,6 +235,7 @@ Example:
             :max max
             :target-centroid-pos target-centroid-pos
             :rotation-axis rotation-axis
+            :root-link-virtual-joint-weight root-link-virtual-joint-weight
             args)
         (send body_lk :dissoc body-coords))))
   )
@@ -260,6 +268,7 @@ Example:
           (max (float-vector  500  500   500  20  20  10))
           (target-centroid-pos)
           (rotation-axis)
+          (root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5))
       &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying :head :end-coords target-coords.
 Example:
@@ -293,6 +302,7 @@ Example:
           :max max
           :target-centroid-pos target-centroid-pos
           :rotation-axis rotation-axis
+          :root-link-virtual-joint-weight root-link-virtual-joint-weight
           args))
   (:body-inverse-kinematics
     (target-coords
@@ -302,6 +312,7 @@ Example:
           (max (float-vector  500  500   500  200  200  100))
           (target-centroid-pos)
           (rotation-axis)
+          (root-link-virtual-joint-weight #f(0.0 0.0 0.1 0.1 0.5 0.5))
      &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying body target-coords.
 Example:
@@ -336,6 +347,7 @@ Example:
             :max max
             :target-centroid-pos target-centroid-pos
             :rotation-axis rotation-axis
+            :root-link-virtual-joint-weight root-link-virtual-joint-weight
             args)
         (send body_lk :dissoc body-coords))))
   )
