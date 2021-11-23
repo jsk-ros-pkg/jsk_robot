@@ -244,13 +244,13 @@ Example:
   (:go-grasp (&key (pos 0))
     ;; mimic joint
     ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/gen3_lite_2f/urdf/gen3_lite_2f_macro.xacro
-    (send self :right_finger_bottom_joint :joint-angle
+    (send self :kinova_right_finger_bottom_joint :joint-angle
           (rad2deg pos))
-    (send self :right_finger_tip_joint :joint-angle
+    (send self :kinova_right_finger_tip_joint :joint-angle
           (rad2deg (+ (* -0.676 pos) 0.149)))
-    (send self :left_finger_bottom_joint :joint-angle
+    (send self :kinova_left_finger_bottom_joint :joint-angle
           (rad2deg (* -1 pos)))
-    (send self :left_finger_tip_joint :joint-angle
+    (send self :kinova_left_finger_tip_joint :joint-angle
           (rad2deg (+ (* -0.676 pos) 0.149))))
   (:start-grasp ()
     (send self :go-grasp :pos -0.05))
