@@ -11,11 +11,13 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>spoteus</build_depend>
-  <build_depend>kinovaeus</build_depend>
-  <build_depend>spot_description</build_depend>
-  <build_depend>kortex_description</build_depend>
+  <build_depend>jsk_kinova_description</build_depend>
+  <build_depend>jsk_spot_description</build_depend>
   <build_depend>jsk_spotkinova_description</build_depend>
+  <build_depend>kinovaeus</build_depend>
+  <build_depend>kortex_description</build_depend>
+  <build_depend>spot_description</build_depend>
+  <build_depend>spoteus</build_depend>
 
   <export>
   </export>
