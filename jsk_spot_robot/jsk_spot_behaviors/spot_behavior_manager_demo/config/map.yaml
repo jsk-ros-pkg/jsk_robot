@@ -1,0 +1,147 @@
+edges:
+  - from: 'eng2_73B2'
+    to: 'dummy'
+    behavior_type: 'spot_behavior_manager.base_behavior.SimpleBehavior'
+    cost: 10
+    args: {}
+  - from: 'dummy'
+    to: 'eng2_73B2'
+    behavior_type: 'spot_behavior_manager.base_behavior.SimpleBehavior'
+    cost: 10
+    args: {}
+  - from: 'eng2_73B2'
+    to: 'eng2_73A2'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+  - from: 'eng2_73A2'
+    to: 'eng2_73B2'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+  - from: 'eng2_73B2'
+    to: 'eng2_7FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+  - from: 'eng2_7FElevator'
+    to: 'eng2_73B2'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+  - from: 'eng2_7FElevator'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+  - from: 'eng2_2FElevator'
+    to: 'eng2_7FElevator'
+    behavior_type: 'spot_basic_behaviors.elevator_behavior.ElevatorBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+      rest_waypoint_id: 'unsaid-collie-jvatvS.7KX9jpzQz61GL4A=='
+  - from: 'eng2_2FElevator'
+    to: 'eng_TelephoneBox'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng_TelephoneBox'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng8_Piloti_Center'
+    to: 'eng2_2FElevator'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+  - from: 'eng8_Piloti_Center'
+    to: 'eng_TelephoneBox'
+    behavior_type: 'spot_basic_behaviors.walk_behavior.WalkBehavior'
+    cost: 10
+    args:
+      graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+nodes:
+  'dummy':
+    name_en: 'dummy'
+    name_jp: 'ダミー'
+  'eng2_73B2':
+    name_en: '73B2'
+    name_jp: '7 3 B 2'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'dyed-bat-t00VKo5XixLihCvpsZPRqw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
+        id: 'fuzzed-medusa-wyXWCEjmWas1kMo8EJW8Bw=='
+        localization_method: 'fiducial'
+  'eng2_73A2':
+    name_en: '73A2'
+    name_jp: '7 3 A 2'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'affine-drake-Jfb0ZPtNcqcrq9yhnEl2DA=='
+        localization_method: 'fiducial'
+  'eng2_7FElevator':
+    name_en: 'Elevator'
+    name_jp: 'エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'looted-cougar-RWT2C0zLJXG.ezYnCuLUeQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_2FElevator.walk'
+        id: 'larger-mudcat-0x3bt3Dif.1QU9JfXpyQPw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+        id: 'sly-chetah-IZ4pVY7vrqO36OoKCYk9Zg=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/7f/elevator/down/button'
+    floor: 7
+  'eng2_2FElevator':
+    name_en: 'Elevator'
+    name_jp: 'エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_2FElevator.walk'
+        id: 'rainy-collie-uwFW2KVYg2YCUi8FF6N00g=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_2FEntrance.walk'
+        id: 'snaky-beagle-.fmRm2JflzlV6Dv5fTdnIQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainGate.walk'
+        id: 'banner-oxen-UrEwTUbZYL0IQnY5TCFwrA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+        id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'inland-remora-FqtX8ScP+.inEd4xFYKq4A=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/2f/elevator/up/button'
+    floor: 2
+  'eng_TelephoneBox':
+    name_en: 'telephone box'
+    name_jp: '電話ボックス'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'slain-pika-VdtPz3lWcp5T+pEArUB3PA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng_TelephoneBox_to_HongoMainGate.walk'
+        id: 'aired-hyrax-BF+hXHaUufi.DLd3pEWm5Q=='
+        localization_method: 'fiducial'
+  'eng8_Piloti_Center':
+    name_en: 'Piloti'
+    name_jp: 'ピロティ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'azoic-lion-Iapbto7rzlzuFF0MvXdyPA=='
+        localization_method: 'fiducial'
