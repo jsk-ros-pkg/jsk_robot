@@ -12,6 +12,8 @@
 # Until PRs below are merged, we need to use develop/spot branch
 #  - dialogflow_ros update
 #    + https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/242
+#  - gdrive_ros update
+#    + https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/287
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/sktometometo/jsk_3rdparty.git
