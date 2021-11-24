@@ -79,7 +79,7 @@ rospy.sleep(5)
 ## assuming spot is at initial place of example.walk
 rospy.loginfo('sending navigate to command')
 import rospkg
-upload_filepath = rospkg.RosPack().get_path('spoteus_demo')+'/autowalk/eng2_73b2_to_81c1_night.walk'
+upload_filepath = rospkg.RosPack().get_path('spot_autowalk_data')+'/autowalk/eng2_73b2_to_81c1_night.walk'
 rospy.loginfo('upload map')
 client.upload_graph(upload_filepath)
 rospy.sleep(1)
