@@ -40,7 +40,7 @@
     pkg="robot_state_publisher"
     type="robot_state_publisher"
     >
-    <remap from="/joint_states" to="/spot_kinova/joint_states" />
+    <remap from="/joint_states" to="/spotkinova/joint_states" />
   </node>
 
   <!-- Rviz for kinova-->
@@ -48,9 +48,9 @@
 
   <!-- Topic relay for joint_states  -->
   <node name="joint_states_relay_spot" pkg="topic_tools" type="relay"
-        args="/joint_states /spot_kinova/joint_states" />
+        args="/joint_states /spotkinova/joint_states" />
   <node name="joint_states_relay_kinova" pkg="topic_tools" type="relay"
-        args="/arm_gen3/joint_states /spot_kinova/joint_states" />
+        args="/arm_gen3/joint_states /spotkinova/joint_states" />
 
   <!-- Publish and Subscribe dummy follow_joint_trajectry topics -->
   <!-- Not to start Kinematics Simulator in spotkinova-interface -->
