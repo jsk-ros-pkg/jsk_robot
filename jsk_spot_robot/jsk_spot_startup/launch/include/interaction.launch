@@ -10,7 +10,7 @@
     </node>
 
     <!-- sound_play for japanese (aques_talk) -->
-    <include file="$(find aques_talk)/launch/aques_talk.launch">
+    <include file="$(find voice_text)/launch/voice_text.launch">
         <arg name="launch_sound_play" value="true" />
         <arg name="sound_play_respawn" value="true" />
     </include>
