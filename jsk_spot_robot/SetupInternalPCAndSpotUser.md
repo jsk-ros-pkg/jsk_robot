@@ -119,7 +119,7 @@ cd ~/spot_ws/src
 wstool init .
 wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
 wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall
+wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_dev.rosinstall
 wstool update
 rosdep update
 rosdep install -y -r --from-paths . --ignore-src
