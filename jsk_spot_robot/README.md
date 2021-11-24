@@ -16,8 +16,8 @@ Create a workspace
 
 ```bash
 source /opt/ros/melodic/setup.bash
-mkdir $HOME/spot_ws/src -p
-cd $HOME/spot_ws/src
+mkdir ~/spot_ws/src -p
+cd ~/spot_ws/src
 wstool init .
 wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
 wstool update
@@ -25,7 +25,6 @@ wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall
 wstool update
 rosdep update
 rosdep install -y -r --from-paths . --ignore-src
-pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
 cd $HOME/spot_ws
 catkin init
 catkin build -j4 -c
@@ -46,10 +45,6 @@ git update-index --skip-worktree config/switchbot_ros/token.yaml
 First, please turn on spot and turn on motors according to [the OPERATION section of spot user guide](https://www.bostondynamics.com/sites/default/files/inline-files/spot-user-guide.pdf) and power on the internal PC.
 
 Basically, ros systemd services will start automatically. So you can use spot now.
-
-#### Teleoperation
-
-You can control spot with DualSense controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
 
 #### Start basic roslaunch manually
 
@@ -81,6 +76,25 @@ This launch includes
 - teleoperation launch
 - interaction launch with Speech-To-Text and Text-To-Speech
 - so on.
+
+### Teleoperation
+
+You can control spot with DualSense controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
+
+
+### Web UI
+
+Spot have some web UI.
+
+#### cockpit
+
+URI: https://<robot_ip>:21443
+
+TODO
+
+#### rwt_app_chooser
+
+TODO
 
 ### Development with a remote PC
 
