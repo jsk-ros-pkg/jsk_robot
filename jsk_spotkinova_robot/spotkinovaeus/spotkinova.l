@@ -4,13 +4,13 @@
 (require :spot_gen3_robotiq_2f_140 "package://spotkinovaeus/spot_gen3_robotiq_2f_140.l")
 (require :spot_gen3_lite_gen3_lite_2f "package://spotkinovaeus/spot_gen3_lite_gen3_lite_2f.l")
 
-(defun spot-kinova (&key (type :spot_gen3_robotiq_2f_140) &rest args &allow-other-keys)
+(defun spot-kinova (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
   (setq *spot-kinova* (case type
-                       (:spot_gen3_robotiq_2f_85
+                       (:gen3_robotiq_2f_85
                         (instance* spot_gen3_robotiq_2f_85-robot :init args))
-                       (:spot_gen3_robotiq_2f_140
+                       (:gen3_robotiq_2f_140
                         (instance* spot_gen3_robotiq_2f_140-robot :init args))
-                       (:spot_gen3_lite_gen3_lite_2f
+                       (:gen3_lite_gen3_lite_2f
                         (instance* spot_gen3_lite_gen3_lite_2f-robot :init args))
                        (t
                         (warning-message 1 "unknown kinova robot type ~A~%" type)
