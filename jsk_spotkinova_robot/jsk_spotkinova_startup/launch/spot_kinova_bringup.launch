@@ -89,5 +89,7 @@
 
   <param name="robot_description"
          command="$(find xacro)/xacro --inorder $(find spotkinovaeus)/robots/spot_kinova.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
+  <param name="robot_description_semantic"
+         command="$(find xacro)/xacro --inorder $(find spotkinovaeus)/robots/spot_kinova.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
 
 </launch>
