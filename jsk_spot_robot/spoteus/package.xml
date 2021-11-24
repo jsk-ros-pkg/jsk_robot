@@ -2,7 +2,7 @@
 <package>
   <name>spoteus</name>
   <version>1.1.0</version>
-  <description>The spots package</description>
+  <description>The spoteus package</description>
 
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
   <maintainer email="obinata@jsk.imi.i.u-tokyo.ac.jp">Yoshiki Obinata</maintainer>
@@ -19,8 +19,11 @@
   <build_depend>pr2eus</build_depend>
   <build_depend>spot_description</build_depend>
 
-  <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
+  <run_depend>roseus</run_depend>
+  <run_depend>spot_behavior_manager_msgs</run_depend>
+  <run_depend>spot_msgs</run_depend>
+  <run_depend>std_srvs</run_depend>
 
   <export>
   </export>
