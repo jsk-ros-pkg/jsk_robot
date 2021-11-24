@@ -1,1 +1,1 @@
-(require :spot-kinova "package://spotkinovaeus/spotkinova.l")
+(require :spotkinova "package://spotkinovaeus/spotkinova.l")
