@@ -224,3 +224,20 @@ sudo gpasswd -a <your user> audio
 sudo gpasswd -a <your user> plugdev
 sudo gpasswd -a <your user> video
 ```
+
+#### Setup cockpit
+
+Cockpit is server management tool. If you use Spot CORE cockpit is already setup.
+
+```
+sudo apt install cockpit
+```
+
+```
+roscd jsk_spot_startup
+sudo cp -r config/cockpit.socket.d /etc/systemd/system/cockpit.socket.d
+sudo systemctl daemon-reload
+sudo systemctl start cockpit.socket
+```
+
+Then you can access cockpit by `https://<robot ip>:21443`
