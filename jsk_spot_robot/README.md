@@ -10,7 +10,7 @@ jsk_spot_robot
 
 To setup a new internal PC and spot user, Please see [this page](./SetupInternalPCAndSpotUser.md).
 
-### How to set up catkin workspace (for a user)
+### How to set up a catkin workspace for a remove PC
 
 Create a workspace
 
@@ -28,14 +28,6 @@ rosdep install -y -r --from-paths . --ignore-src
 cd $HOME/spot_ws
 catkin init
 catkin build -j4 -c
-```
-
-If you want to use switchbot_ros with spot_basic_behaviors, please add switch_bot token.
-
-```
-roscd spot_basic_behaviors
-# modify config/switchbot_ros/token.yaml
-git update-index --skip-worktree config/switchbot_ros/token.yaml
 ```
 
 ## How to run
