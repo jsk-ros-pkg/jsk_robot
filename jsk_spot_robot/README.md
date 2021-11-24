@@ -176,11 +176,24 @@ And please add the same settings to /var/lib/robot/config.bash
 
 #### Setting up udev file and add the user to groups
 
-Create udev rule for insta360air, spot spinal and joys.
+Create udev rule for insta360air, spot spinal.
 
 ```bash
 roscd jsk_spot_startup
 sudo cp udev_rules/* /etc/udev/rules.d/
+```
+
+Create udev rules for joy pads
+
+```bash
+roscd jsk_spot_teleop
+sudo cp config/udev/* /etc/udev/rules.d/
+```
+
+And reload
+
+```bash
+sudo udevadm control --reload-rules
 ```
 
 Please modify each udev file according to your configuration.
