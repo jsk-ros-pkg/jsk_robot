@@ -4,8 +4,8 @@
 (require :spot_gen3_robotiq_2f_140 "package://spotkinovaeus/spot_gen3_robotiq_2f_140.l")
 (require :spot_gen3_lite_gen3_lite_2f "package://spotkinovaeus/spot_gen3_lite_gen3_lite_2f.l")
 
-(defun spot-kinova (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
-  (setq *spot-kinova* (case type
+(defun spotkinova (&key (type :gen3_robotiq_2f_140) &rest args &allow-other-keys)
+  (setq *spotkinova* (case type
                        (:gen3_robotiq_2f_85
                         (instance* spot_gen3_robotiq_2f_85-robot :init args))
                        (:gen3_robotiq_2f_140
@@ -15,7 +15,7 @@
                        (t
                         (warning-message 1 "unknown kinova robot type ~A~%" type)
                         )))
-  *spot-kinova*)
+  *spotkinova*)
 
 (defmethod spot_gen3_robotiq_2f_85-robot
   (:arm (&rest args) (send* self :head args))      ;; enable to call send *kinova* :arm :angle-vector
@@ -48,7 +48,7 @@
      &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying :head :end-coords target-coords.
 Example:
-(send *spot-kinova* :fullbody-inverse-kinematics (make-coords :pos #f(1200 0 800)))
+(send *spotkinova* :fullbody-inverse-kinematics (make-coords :pos #f(1200 0 800)))
 "
     ;; If target-coords is coordinate class, it is passed to :head
     (unless (listp target-coords)
@@ -111,7 +111,7 @@ Example:
       &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying :head :end-coords target-coords.
 Example:
-(send *spot-kinova* :fullbody-inverse-kinematics (make-coords :pos #f(1200 0 800)))
+(send *spotkinova* :fullbody-inverse-kinematics (make-coords :pos #f(1200 0 800)))
 "
     ;; If target-coords is coordinate class, it is passed to :head
     (unless (listp target-coords)
@@ -175,7 +175,7 @@ Example:
       &allow-other-keys)
     "The purpose of this function is to use :fullbody-inverse-kinematics by only specifying :head :end-coords target-coords.
 Example:
-(send *spot-kinova* :fullbody-inverse-kinematics (make-coords :pos #f(1200 0 800)))
+(send *spotkinova* :fullbody-inverse-kinematics (make-coords :pos #f(1200 0 800)))
 "
     ;; If target-coords is coordinate class, it is passed to :head
     (unless (listp target-coords)
