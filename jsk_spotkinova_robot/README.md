@@ -2,7 +2,7 @@
 ## How to setup develop environment
 For more details about Spot and KINOVA arm,
 please see [jsk_spot_robot](https://github.com/sktometometo/jsk_robot/tree/develop/spot/jsk_spot_robot#setup-a-catkin-workspace-for-spot-driver) and
-[jsk_kinova_robot](https://github.com/708yamaguchi/jsk_robot/tree/spot-kinova/jsk_kinova_robot#how-to-setup-development-environment)
+[jsk_kinova_robot](https://github.com/708yamaguchi/jsk_robot/tree/spotkinova/jsk_kinova_robot#how-to-setup-development-environment)
 
 ### Setup a workspace for spot and kinova
 You need to install `conan` (Decentralized, open-source (MIT), C/C++ package manager) to build kinova packages  
@@ -28,27 +28,27 @@ catkin build jsk_spotkinova_startup
 ## How to run
 ### Bringup robot
 First, please 1.turn on spot and turn on motors according to [Bringup spot](https://github.com/sktometometo/jsk_robot/tree/develop/spot/jsk_spot_robot#bringup-spot) and 2.switch on kinova.
-After that, please run the ros driver and other basic programs with `spot_kinova_bringup.launch`.
+After that, please run the ros driver and other basic programs with `spotkinova_bringup.launch`.
 ```bash
 source ~/spotkinova_ws/devel/setup.bash
-roslaunch jsk_spotkinova_startup spot_kinova_bringup.launch
+roslaunch jsk_spotkinova_startup spotkinova_bringup.launch
 ```
 
-### How to control spot-kinova from roseus
-For more details, please see [jsk_kinova_robot](https://github.com/708yamaguchi/jsk_robot/tree/spot-kinova/jsk_kinova_robot#use-euslisp-model) and [jsk_spot_robot](https://github.com/sktometometo/jsk_robot/tree/develop/spot/jsk_spot_robot).  
+### How to control spotkinova from roseus
+For more details, please see [jsk_kinova_robot](https://github.com/708yamaguchi/jsk_robot/tree/spotkinova/jsk_kinova_robot#use-euslisp-model) and [jsk_spot_robot](https://github.com/sktometometo/jsk_robot/tree/develop/spot/jsk_spot_robot).  
 Please start roseus and type as follows.
 ```
 (load "package://spotkinovaeus/spotkinova-interface.l")
-(spot-kinova-init)
+(spotkinova-init)
 ```
 
 Below is a list of typical posture commands for kinova.
 `:kinova-rest-pose` is a good posture for Spot to adopt when moving or resting.  
 You should use `:kinova-rest-pose` when moving.
 ```
-(send *spot-kinova* :reset-pose)
-(send *spot-kinova* :init-pose)
-(send *spot-kinova* :kinova-rest-pose)
+(send *spotkinova* :reset-pose)
+(send *spotkinova* :init-pose)
+(send *spotkinova* :kinova-rest-pose)
 ```
 
 To obtain current robot pose, use `:state :potentio-vector` method.
@@ -65,13 +65,13 @@ The first 12 dimensions are for spot, but they will be ignored and the last 6 di
 ```
 To move the gripper 50 [mm] up, you can use `move-end-pos` method.
 ```
-(send *spot-kinova* :head :move-end-pos #f(0 0 -50))
+(send *spotkinova* :head :move-end-pos #f(0 0 -50))
 ```
 You can also use `move-end-rot` method to turn the gripper.
 ```
-(send *spot-kinova* :head :move-end-rot -90 :z)
+(send *spotkinova* :head :move-end-rot -90 :z)
 ```
 You can use `inverse-kinematics` to move arm.
 ```
-(send *spot-kinova* :head :inverse-kinematics (make-coords :pos #f(700 0 500) :rotation-axis nil))
+(send *spotkinova* :head :inverse-kinematics (make-coords :pos #f(700 0 500) :rotation-axis nil))
 ```
