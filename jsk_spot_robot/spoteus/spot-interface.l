@@ -298,14 +298,19 @@
     )
   (:go-to-spot (name &key (wait t))
     "move robot to a specified place with spot_behavior_manager"
-    (setq execute-behavior-goal-msg (instance spot_behavior_manager_msgs::LeadPersonGoal :init))
-    (send execute-behavior-goal-msg :target_node_id name)
-    ;;
-    (send execute-behavior-action :send-goal execute-behavior-goal-msg)
-    (if wait
-      (send execute-behavior-action :wait-for-result)
-      )
-    )
+    (let (result)
+      (setq execute-behavior-goal-msg (instance spot_behavior_manager_msgs::LeadPersonGoal :init))
+      (send execute-behavior-goal-msg :target_node_id name)
+      ;;
+      (send execute-behavior-action :send-goal execute-behavior-goal-msg)
+      (if wait
+        (progn
+          (send execute-behavior-action :wait-for-result)
+          (setq result (send execute-behavior-action :get-result))
+          (send result :success)
+          )
+        nil)
+      ))
   (:body-pose
    ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
     (pose &key (topic-name "/spot/body_pose"))
