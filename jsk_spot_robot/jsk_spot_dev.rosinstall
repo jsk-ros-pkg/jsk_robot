@@ -1,7 +1,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/sktometometo/jsk_recognition.git
-    version: PR/add-frame-id-arg-to-camera-launch
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: master
 # spot-jsk will use packages below.
 #  - dialogflow-executive
 #  - webrtcvad_ros
