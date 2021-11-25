@@ -55,6 +55,7 @@
       file="$(find jsk_spot_startup)/launch/include/app_manager.launch"
       if="$(arg use_app_manager)"
       >
+      <arg name="use_app_scheduler" value="true"/>
       <arg name="use_dialogflow" value="true"/>
       <arg name="use_gdrive_ros" value="true"/>
   </include>
