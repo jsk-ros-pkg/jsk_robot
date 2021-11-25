@@ -1,0 +1,6 @@
+<launch>
+    <include
+        file="$(find jsk_spot_patrol_and_greeting)/launch/demo.launch"
+        >
+    </include>
+</launch>

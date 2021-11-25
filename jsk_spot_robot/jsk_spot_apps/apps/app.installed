@@ -13,3 +13,5 @@ apps:
   display: Go To 73B2
 - app: jsk_spot_apps/person_lead_demo
   display: Person Lead Demo
+- app: jsk_spot_apps/patrol_and_greeting
+  display: Patrol And Greeting
