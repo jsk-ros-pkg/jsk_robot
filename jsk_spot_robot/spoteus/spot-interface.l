@@ -32,6 +32,14 @@
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
 
+(defun call-dock-service (srvname dock_id &key (wait nil))
+  "Call spot_msgs/Dock service"
+  (let (r)
+    (if wait (ros::wait-for-service srvname))
+    (setq r (ros::service-call srvname (instance spot_msgs::DockRequest :init :dock_id dock_id)))
+    (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
+    (send r :success)))
+
 (defclass spot-interface
   :super robot-move-base-interface
   :slots (trajectory-cmd-action execute-behavior-action)
@@ -221,6 +229,13 @@
   (:stop () "Stop the robot in place with minimal motion" (call-trigger-service "/spot/stop"))
   (:set-locomotion-mode (locomotion-hint) "Set locomotion mode" (call-set-locomotion-service "/spot/locomotion_mode" locomotion-hint))
   (:set-stair-mode (is-stair-mode) "Set stair mode" (call-set-bool-service "/spot/stair_mode" is-stair-mode))
+  ;;
+  (:dock (dock-id) "Dock the robot" (call-dock-service "/spot/dock" dock-id))
+  (:undock
+   ()
+   "Undock the robot"
+   (send self :power-on)
+   (call-trigger-service "/spot/undock"))
   ;;
   (:send-cmd-vel-raw
    (x y d &key (topic-name "/spot/cmd_vel"))
