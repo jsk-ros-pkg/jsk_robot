@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 2.8.3)
 project(spot_behavior_manager_msgs)
 
 find_package(catkin REQUIRED COMPONENTS genmsg actionlib actionlib_msgs)
-
 
 add_action_files(
     DIRECTORY action
