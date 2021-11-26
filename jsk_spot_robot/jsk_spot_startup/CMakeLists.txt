@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 2.8.3)
 project(jsk_spot_startup)
 
 find_package(catkin REQUIRED)
@@ -13,9 +13,18 @@ catkin_package()
 #############
 ## Install ##
 #############
-install(DIRECTORY config launch
+install(DIRECTORY auth config launch scripts services udev_rules template
    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
    USE_SOURCE_PERMISSIONS
+)
+
+catkin_install_python(PROGRAMS
+    node_scripts/battery_notifier.py
+    node_scripts/battery_visualizer.py
+    node_scripts/cable_connection_detector.py
+    node_scripts/laptop_battery_visualizer.py
+    node_scripts/static_tf_republisher.py
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 ###################################
