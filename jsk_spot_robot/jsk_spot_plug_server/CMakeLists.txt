@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 2.8.3)
 project(jsk_spot_plug_server)
 
 find_package(catkin REQUIRED
@@ -18,4 +18,8 @@ generate_messages(
 )
 
 catkin_package(
+)
+
+catkin_install_python(PROGRAMS node_scripts/plug_server.py
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

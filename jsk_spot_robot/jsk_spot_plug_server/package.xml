@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>jsk_spot_plug_server</name>
-  <version>0.0.0</version>
+  <version>1.1.0</version>
   <description>The jsk_spot_plug_server package</description>
 
   <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
@@ -11,8 +11,12 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <depend>rospy</depend>
   <depend>actionlib</depend>
   <depend>actionlib_msgs</depend>
+  <depend>std_msgs</depend>
+
+  <exec_depend>roslibpy</exec_depend>
 
   <export>
   </export>
