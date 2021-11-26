@@ -2,7 +2,7 @@
 
 (defclass kinova-arm-rest-server
   :slots ())
-(defmethod kinova-arm-rest-server ()
+(defmethod kinova-arm-rest-server
   (:init ()
    (ros::roseus "kinova_rest")
    (ros::roseus-add-srvs "std_srvs")
@@ -18,8 +18,8 @@
               (send *ri* :wait-interpolation)))
       r)))
 
-;; (setq a (instance kinova-arm-rest-server :init))
-;; (ros::rate 1)
-;; (while (ros::ok)
-;;   (ros::spin-once)
-;;   (ros::sleep))
+(setq a (instance kinova-arm-rest-server :init))
+(ros::rate 1)
+(while (ros::ok)
+  (ros::spin-once)
+  (ros::sleep))
