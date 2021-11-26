@@ -68,7 +68,9 @@ Use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 mkdir -p ~/kinova_ws/src
 cd ~/kinova_ws/src
 wstool init
-wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_kinova_robot/kinova.rosinstall
+wstool set jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git --git
+wstool update
+wstool merge jsk-ros-pkg/jsk_robot/jsk_kinova_robot/jsk_kinova.rosinstall
 wstool update
 cd ../
 source /opt/ros/melodic/setup.bash
@@ -97,7 +99,9 @@ roslaunch jsk_kinova_startup rviz.launch
 ```
 
 ## Use EusLisp model
+
 To control the robot form EusLisp. Please start `roseus` and type as follows.
+(Make sure that kinova brings up with `kinova_` prefix, Euslisp model and roseus interface assume that all joint, link and action interface have `kinova_` prefix.)
 ```
 
 (load "package://kinovaeus/kinova-interface.l")
@@ -163,7 +167,7 @@ To open and close the gripper, You can use `:start-grasp` and `:stop-grasp`.
 Kinova Gen3 robot with robotiq 2f 85 gripper.
 ```bash
 # Terminal 1
-roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3 gripper:=robotiq_2f_85 robot_name:=arm_gen3
+roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3 gripper:=robotiq_2f_85 robot_name:=arm_gen3 prefix:=kinova_
 # Terminal 2
 roscd kinovaeus
 roseus kinova-interface.l
@@ -173,7 +177,7 @@ roseus kinova-interface.l
 Kinova Gen3 Lite robot with lite 2f gripper.
 ```bash
 # Terminal 1
-roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3_lite gripper:=gen3_lite_2f robot_name:=arm_gen3
+roslaunch kortex_gazebo spawn_kortex_robot.launch arm:=gen3_lite gripper:=gen3_lite_2f robot_name:=arm_gen3 prefix:=kinova_
 # Terminal 2
 roscd kinovaeus
 roseus kinova-interface.l

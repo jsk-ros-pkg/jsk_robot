@@ -8,13 +8,14 @@
 
 (defclass kinova-interface
   :super robot-interface
-  :slots (controller-handle robot-handle move-robot)
+  :slots (controller-handle robot-handle move-robot prefix waypoint-length)
   )
 
 (defmethod kinova-interface
   (:init
-   (&key type &rest args)
+   (&key type (prefix-arg "kinova_") &rest args)
    (let ()
+     (setq prefix prefix-arg)
      (prog1
          (send-super* :init
                       :robot
@@ -34,11 +35,11 @@
        (setq gripper-action
              (instance ros::simple-action-client :init
                        (cond ((derivedp robot gen3_robotiq_2f_140-robot)
-                              "/arm_gen3/robotiq_2f_140_gripper_controller/gripper_cmd")
+                              (format nil "/arm_gen3/~Arobotiq_2f_140_gripper_controller/gripper_cmd" prefix))
                              ((derivedp robot gen3_robotiq_2f_85-robot)
-                              "/arm_gen3/robotiq_2f_85_gripper_controller/gripper_cmd")
+                              (format nil "/arm_gen3/~Arobotiq_2f_85_gripper_controller/gripper_cmd" prefix))
                              ((derivedp robot gen3_lite_gen3_lite_2f-robot)
-                              "/arm_gen3/gen3_lite_2f_gripper_controller/gripper_cmd")
+                              (format nil "/arm_gen3/~Agen3_lite_2f_gripper_controller/gripper_cmd" prefix))
                              (t
                               (warning-message 1 "unknown kinova robot type ~A~%" robot)
                               ))
@@ -51,6 +52,7 @@
        (ros::advertise "/arm_gen3/in/clear_faults" std_msgs::Empty)
        (ros::advertise "/arm_gen3/in/stop" std_msgs::Empty)
        (ros::advertise "/arm_gen3/in/emergency_stop" std_msgs::Empty)
+       (setq waypoint-length 2) ;; In kinova firmware >= 2.3.0, waypoint list size should be between 2 and 1000.
        self)))
   ;; default robot-interface methods
   (:default-controller () (send self :arm-controller))
@@ -60,13 +62,15 @@
       (cond ((or (derivedp robot gen3_robotiq_2f_140-robot) (derivedp robot gen3_robotiq_2f_85-robot))
              (list
               (cons :controller-action
-                    "arm_gen3/gen3_joint_trajectory_controller/follow_joint_trajectory")
-              (cons :controller-state "arm_gen3/gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
+                    (format nil "arm_gen3/~Agen3_joint_trajectory_controller/follow_joint_trajectory" prefix))
+              (cons :controller-state
+		    (format nil "arm_gen3/~Agen3_joint_trajectory_controller/state" prefix)))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
             ((derivedp robot gen3_lite_gen3_lite_2f-robot)
              (list
               (cons :controller-action
-                    "arm_gen3/gen3_lite_joint_trajectory_controller/follow_joint_trajectory")
-              (cons :controller-state "arm_gen3/gen3_lite_joint_trajectory_controller/state")))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
+                    (format nil "arm_gen3/~Agen3_lite_joint_trajectory_controller/follow_joint_trajectory" prefix))
+              (cons :controller-state
+		    (format nil "arm_gen3/~Agen3_lite_joint_trajectory_controller/state" prefix))))) ;; @TODO: This is dummy topoic name. The kinova_driver did not publish JointTrajectoryControllerState
       (list (cons :action-type control_msgs::FollowJointTrajectoryAction)
             (cons :joint-names (send-all (send robot :joint-list) :name))))))
   (:go-grasp
@@ -164,13 +168,13 @@
     (when (send self :simulation-modep)
       ;; mimic joint
       ;; https://github.com/Kinovarobotics/ros_kortex/blob/kinetic-devel/kortex_description/grippers/gen3_lite_2f/urdf/gen3_lite_2f_macro.xacro
-      (send robot :right_finger_bottom_joint :joint-angle
+      (send robot :kinova_right_finger_bottom_joint :joint-angle
             (rad2deg pos))
-      (send robot :right_finger_tip_joint :joint-angle
+      (send robot :kinova_right_finger_tip_joint :joint-angle
             (rad2deg (+ (* -0.676 pos) 0.149)))
-      (send robot :left_finger_bottom_joint :joint-angle
+      (send robot :kinova_left_finger_bottom_joint :joint-angle
             (rad2deg (* -1 pos)))
-      (send robot :left_finger_tip_joint :joint-angle
+      (send robot :kinova_left_finger_tip_joint :joint-angle
             (rad2deg (+ (* -0.676 pos) 0.149)))
       (return-from :go-grasp-lite t))
     (let ((pos-max 0.95) (pos-min -0.05))
@@ -250,10 +254,13 @@
    ;;
    (when (not (numberp tm))
      (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+   ;; kinova firmware < 2.3.0,  :minjerk-interpolation t because we need 1ms interpolated trajectory.
+   ;; kinova firmware >= 2.3.0, :minjerk-interpolation nil because we can use the trajectory generated by moveit and stretched by roseus.
+   ;; kinova firmware >= 2.3.0 requires waypoint list size between 2 and 1000.
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities
-               :minjerk-interpolation t args)))
+               :minjerk-interpolation nil args)))
   (:angle-vector-sequence
    (avs &optional tms &rest args) ;; (ctype controller-type) (start-time 0) &rest args
                                   ;; &key (clear-velocities t) &allow-other-keys)
@@ -281,10 +288,13 @@
    (if tms
      (setq tms (apply #'+ tms))
      (setq tms 3000))
+   ;; kinova firmware < 2.3.0,  :minjerk-interpolation t because we need 1ms interpolated trajectory.
+   ;; kinova firmware >= 2.3.0, :minjerk-interpolation nil because we can use the trajectory generated by moveit and stretched by roseus.
+   ;; kinova firmware >= 2.3.0 requires waypoint list size between 2 and 1000.
    (send* self :angle-vector-motion-plan avs :ctype ctype :move-arm :rarm :total-time tms
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities
-               :minjerk-interpolation t args)))
+               :minjerk-interpolation nil args)))
   (:joint-velocity (joint-vel)
    "Send cartesian joint velocity command.
 joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
@@ -351,7 +361,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
   )
 
 
-(defun kinova-init (&key (type nil) &rest args &alow-other-keys)
+(defun kinova-init (&key (type nil) (prefix-arg "kinova_") &rest args &alow-other-keys)
   (unless (boundp '*kinova*) (apply #'kinova (if type (list :type type) nil)) (send *kinova* :reset-pose))
   (unless (ros::ok) (ros::roseus "kinova_eus_interface"))
   (unless (boundp '*co*)
@@ -362,7 +372,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
                            :service-name "arm_gen3/apply_planning_scene"
                            :scene-service "arm_gen3/get_planning_scene"))
       (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
-  (unless (boundp '*ri*) (setq *ri* (instance kinova-interface :init :type type)))
+  (unless (boundp '*ri*) (setq *ri* (instance kinova-interface :init :type type :prefix-arg prefix-arg)))
 
   (ros::spin-once)
   (send *ri* :spin-once)
@@ -423,7 +433,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
        (progn
          (setq r (pos-list-interpolation (list (send robot :angle-vector) av)
                                          (list (/ tm 1000.0))
-                                         0.001))
+                                         (/ (/ tm 1000.0) waypoint-length)))
          ;; TODO: Set vel and acc
          ;; https://github.com/jsk-ros-pkg/jsk_robot/pull/1313#issuecomment-771768492
          (setq trajpoints
@@ -561,7 +571,7 @@ joint-vel : joint velocity [rad/s]. length must equal to the number of joint.
          (let (r)
            (setq r (pos-list-interpolation (append (list (send robot :angle-vector)) avs)
                                            (mapcar #'(lambda (x) (/ x 1000.0)) tms)
-                                           0.001))
+                                           (/ (/ (apply #'+ tms) 1000.0) (max (length avs) waypoint-length))))
            ;; TODO: Set vel and acc
            (setq traj-points
                  (mapcar #'(lambda (pos vel tim acc)
