@@ -24,4 +24,4 @@ export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
 # export ROSWWW_BASIC_KEYS_YAML=/path/to/roswww_basic_keys.yaml
 
 # With or without docking station
-# export DOCK="<boolean>"
+# export IS_DOCK="<boolean>"
