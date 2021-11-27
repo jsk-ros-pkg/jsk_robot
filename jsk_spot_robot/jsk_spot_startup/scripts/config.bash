@@ -22,3 +22,6 @@ export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
 # export DIALOGFLOW_PROJECT_ID=<your dialogflow project id>
 # export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml
 # export ROSWWW_BASIC_KEYS_YAML=/path/to/roswww_basic_keys.yaml
+
+# With or without docking station
+# export DOCK="<boolean>"
