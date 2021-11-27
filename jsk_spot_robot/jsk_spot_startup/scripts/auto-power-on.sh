@@ -4,6 +4,8 @@
 rosservice call /spot/claim "{}"
 rosservice call /spot/power_on "{}"
 # depend on docking station
-if "${DOCK}"; then
+if ! "${IS_DOCK}"; then
   rosservice call /spot/stand "{}"
+else
+  echo "not standing because of dock" 1>&2
 fi
