@@ -8,7 +8,7 @@ rosservice call /spot/power_on "{}"
 if [[ -z ${STAND_AFTER_AUTO_POWER_ON} ]]; then
   echo "please set STAND_AFTER_AUTO_POWER_ON variable"
   exit 1
-elif ! "${STAND_AFTER_AUTO_POWER_ON}"; then
+elif "${STAND_AFTER_AUTO_POWER_ON}"; then
   rosservice call /spot/stand "{}"
 else
   echo "Do not stand because STAND_AFTER_AUTO_POWER_ON is set to false" 1>&2
