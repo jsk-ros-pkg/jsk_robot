@@ -10,6 +10,6 @@ install(DIRECTORY config
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-catkin_install_python(PROGRAM scripts/visualize_map.py
-    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATIN}
+catkin_install_python(PROGRAMS scripts/visualize_map.py
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
