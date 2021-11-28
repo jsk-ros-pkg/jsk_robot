@@ -3,7 +3,6 @@
   <arg name="use_app_scheduler" default="false" />
   <arg name="use_dialogflow" default="false" />
   <arg name="use_webhook_server" default="false" />
-  <arg name="use_gdrive_ros" default="false" />
 
   <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS)"/>
   <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
@@ -29,9 +28,6 @@
   <include file="$(find app_scheduler)/launch/app_scheduler.launch" if="$(arg use_app_scheduler)">
     <arg name="yaml_path" value="$(arg schedule_yaml_file)" />
   </include>
-
-  <!-- gdrive_ros -->
-  <include file="$(find gdrive_ros)/launch/gdrive_server.launch" if="$(arg use_gdrive_ros)" />
 
   <!-- dialogflow client -->
   <node
