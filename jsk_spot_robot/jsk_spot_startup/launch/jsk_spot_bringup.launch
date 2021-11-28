@@ -8,6 +8,7 @@
   <arg name="use_multi_object_tracking" default="false" />
   <arg name="use_image_processing" default="true" />
   <arg name="use_interaction" default="true" />
+  <arg name="use_recorder" default="true" />
   <arg name="use_app_manager" default="true" />
   <arg name="use_teleop" default="true" />
 
@@ -50,6 +51,14 @@
       if="$(arg use_interaction)"
       />
 
+  <!-- recorder nodes -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/recorder.launch"
+      if="$(arg use_recorder)"
+      >
+      <arg name="use_gdrive_ros" value="true"/>
+  </include>
+
   <!-- app manager -->
   <include
       file="$(find jsk_spot_startup)/launch/include/app_manager.launch"
@@ -57,7 +66,6 @@
       >
       <arg name="use_app_scheduler" value="true"/>
       <arg name="use_dialogflow" value="true"/>
-      <arg name="use_gdrive_ros" value="true"/>
   </include>
 
   <!-- teleop node -->
