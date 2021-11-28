@@ -18,11 +18,13 @@
   <exec_depend>app_scheduler</exec_depend>
   <exec_depend>aques_talk</exec_depend>
   <exec_depend>audio_capture</exec_depend>
+  <exec_depend>audio_video_recorder</exec_depend>
   <exec_depend>cmd_vel_smoother</exec_depend>
   <exec_depend>coral_usb</exec_depend>
   <exec_depend>dialogflow_task_executive</exec_depend>
   <exec_depend>gdrive_ros</exec_depend>
   <exec_depend>image_transport</exec_depend>
+  <exec_depend>image_view2</exec_depend>
   <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>jsk_perception</exec_depend>
   <exec_depend>jsk_robot_startup</exec_depend>
