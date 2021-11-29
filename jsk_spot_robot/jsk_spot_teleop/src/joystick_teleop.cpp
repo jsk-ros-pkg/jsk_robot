@@ -4,6 +4,7 @@
 #include <std_srvs/Trigger.h>
 #include <std_srvs/SetBool.h>
 #include <spot_msgs/SetLocomotion.h>
+#include <spot_msgs/Dock.h>
 #include <sound_play/SoundRequest.h>
 
 class TeleopManager
@@ -23,6 +24,7 @@ public:
         ros::param::param<int>("~button_claim", button_claim_, -1);
         ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
         ros::param::param<int>("~button_locomotion_mode", button_locomotion_mode_, -1);
+        ros::param::param<int>("~button_dock", button_dock_, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
         num_buttons_ = num_buttons_ < 0 ? 0 : num_buttons_;
@@ -45,11 +47,14 @@ public:
         client_claim_ = nh.serviceClient<std_srvs::Trigger>("/spot/claim");
         client_stair_mode_ = nh.serviceClient<std_srvs::SetBool>("/spot/stair_mode");
         client_locomotion_mode_ = nh.serviceClient<spot_msgs::SetLocomotion>("/spot/locomotion_mode");
+        client_dock_ = nh.serviceClient<spot_msgs::Dock>("/spot/dock");
+        client_undock_ = nh.serviceClient<std_srvs::Trigger>("/spot/undock");
 
         sub_joy_ = nh.subscribe<sensor_msgs::Joy, TeleopManager>("joy", 1, &TeleopManager::callbackJoy, this);
 
         req_next_stair_mode_.data = true;
         req_next_locomotion_mode_.locomotion_mode = 4;
+        req_dock_id_.dock_id = 520; // TODO support multiple dock_id
     }
 
     void say(std::string message)
@@ -363,6 +368,30 @@ public:
         } else {
             ROS_DEBUG("Button 'locomotion_mode' is disabled.");
         }
+
+        // dock
+        if ( button_dock_ >= 0
+                and button_dock_ < msg->buttons.size()
+                and button_dock_ < num_buttons_ ) {
+            if ( msg->buttons[button_dock_] == 1 ) {
+                if ( not pressed_[button_dock_] ) {
+                    this->say("dock calling");
+                    spot_msgs::Dock::Response res;
+                    if ( client_dock_.call(req_dock_id_,res) && res.success ) {
+                        ROS_INFO("Service 'dock' succeeded.");
+                    } else {
+                        ROS_ERROR("Service 'dock' failed.");
+                    }
+                    pressed_[button_dock_] = true;
+                }
+            } else {
+                if ( pressed_[button_dock_] ) {
+                    pressed_[button_dock_] = false;
+                 }
+            }
+        } else {
+            ROS_DEBUG("Axe 'dock' is disabled.");
+        }
     }
 
 private:
@@ -378,6 +407,7 @@ private:
     int button_claim_;
     int button_stair_mode_;
     int button_locomotion_mode_;
+    int button_dock_;
 
     ros::ServiceClient client_estop_hard_;
     ros::ServiceClient client_estop_gentle_;
@@ -391,6 +421,8 @@ private:
     ros::ServiceClient client_claim_;
     ros::ServiceClient client_stair_mode_;
     ros::ServiceClient client_locomotion_mode_;
+    ros::ServiceClient client_dock_;
+    ros::ServiceClient client_undock_;
 
     ros::Publisher pub_sound_play_;
 
@@ -402,6 +434,7 @@ private:
     //
     std_srvs::SetBool::Request req_next_stair_mode_;
     spot_msgs::SetLocomotion::Request req_next_locomotion_mode_;
+    spot_msgs::Dock::Request req_dock_id_;
 };
 
 
