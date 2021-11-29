@@ -75,5 +75,7 @@
                 status: {goal_id: {stamp: {secs: 0, nsecs: 0}, id: ''}, status: 0, text: ''},
                 result: {error_code: 0, error_string: ''}}'" />
 
-  <node pkg="jsk_spotkinova_startup" type="kinova-rest.l" name="kinova-rest-server"/>
+  <!-- Teleop for kinova-rest -->
+  <node pkg="jsk_spotkinova_startup" type="kinova-rest-server.l" name="kinova-rest-server"/>
+  <node pkg="jsk_spotkinova_startup" type="kinova-rest-teleop.l" name="kinova-rest-teleop"/>
 </launch>
