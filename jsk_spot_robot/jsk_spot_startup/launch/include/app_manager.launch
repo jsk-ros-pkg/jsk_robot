@@ -1,8 +1,8 @@
 <launch>
   <arg name="use_roswww_basic" default="false" />
   <arg name="use_app_scheduler" default="false" />
-  <arg name="use_dialogflow" default="false" />
-  <arg name="use_webhook_server" default="false" />
+  <arg name="use_dialogflow" default="true" />
+  <arg name="use_webhook_server" default="true" />
 
   <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS)"/>
   <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
