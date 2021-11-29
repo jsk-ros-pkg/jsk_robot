@@ -11,6 +11,7 @@
             (res nil)))
 (defmethod kinova-arm-rest-teleop
   (:init ()
+   "create class for kinova-arm-teleop"
    (ros::roseus "kinova-rest-teleop")
    (ros::roseus-add-msgs "sensor_msgs")
    (ros::roseus-add-srvs "std_srvs")
