@@ -5,11 +5,11 @@ rosservice call /spot/claim "{}"
 rosservice call /spot/power_on "{}"
 
 # stand when not connected to a docking station
-if [[ -z ${STAND_AFTER_AUTO_POWER_ON} ]]; then
-  echo "please set STAND_AFTER_AUTO_POWER_ON variable"
+if [[ -z ${USE_DOCKING_STATION} ]]; then
+  echo "please set USE_DOCKING_STATION variable"
   exit 1
-elif "${STAND_AFTER_AUTO_POWER_ON}"; then
-  rosservice call /spot/stand "{}"
+elif "${USE_DOCKING_STATION}"; then
+  echo "Do not stand because USE_DOCKING_STATION is set to true" 1>&2
 else
-  echo "Do not stand because STAND_AFTER_AUTO_POWER_ON is set to false" 1>&2
+  rosservice call /spot/stand "{}"
 fi
