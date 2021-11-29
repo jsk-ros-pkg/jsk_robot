@@ -1,9 +1,13 @@
 #!/usr/bin/env roseus
 
 (defclass kinova-arm-rest-server
-  :slots ())
+  :slots ()
+  :documentation "kinova-arm-rest-server is a service for making a rest for kinova on Spot
+                  Examples:
+                    $ rosservice call /arm_gen3/rest \"{}\" ")
 (defmethod kinova-arm-rest-server
   (:init ()
+   "Create service for spotkinova-rest-arm"
    (ros::roseus "kinova_rest")
    (ros::roseus-add-srvs "std_srvs")
    (load "package://spotkinovaeus/spotkinova-interface.l")
