@@ -16,7 +16,7 @@ plugins:
       video_topic_name: /dual_fisheye_to_panorama/output/quater
       video_height: 885
       video_width: 1772
-      video_framerate: 5
+      video_framerate: 2
       video_encoding: RGB
   - name: rosbag_recorder_plugin
     type: app_recorder/rosbag_recorder_plugin
