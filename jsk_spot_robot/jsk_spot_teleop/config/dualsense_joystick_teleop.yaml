@@ -10,3 +10,4 @@ button_claim: 9
 button_stair_mode: 3
 button_locomotion_mode: -1
 num_buttons: 14
+button_dock: 7
