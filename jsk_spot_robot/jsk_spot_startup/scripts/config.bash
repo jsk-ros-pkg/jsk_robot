@@ -23,5 +23,7 @@ export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
 # export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml
 # export ROSWWW_BASIC_KEYS_YAML=/path/to/roswww_basic_keys.yaml
 
-# With or without docking station
-# export STAND_AFTER_AUTO_POWER_ON="<boolean>"
+# Home configuration
+# export USE_DOCKING_STATION="<boolean>"
+# export DOCKING_STATION_ID=520
+# export SPOT_HOME_ID=eng2_73b2
