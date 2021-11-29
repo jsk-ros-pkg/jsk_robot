@@ -9,8 +9,8 @@ apps:
   display: Sing And Dance
 - app: jsk_spot_apps/go_to_place
   display: Go To Place
-- app: jsk_spot_apps/go_to_73b2
-  display: Go To 73B2
+- app: jsk_spot_apps/go_back_home
+  display: Go Back Home
 - app: jsk_spot_apps/person_lead_demo
   display: Person Lead Demo
 - app: jsk_spot_apps/patrol_and_greeting
