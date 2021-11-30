@@ -31,6 +31,10 @@
         command="load"
         file="$(find jsk_spot_teleop)/config/$(arg pad_type)_teleop_twist_joy.yaml"
         />
+    <rosparam
+        command="load"
+        file="/var/lib/robot/home_dock_id.yaml"
+        />
   </node>
 
   <node

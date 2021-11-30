@@ -25,6 +25,7 @@ public:
         ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
         ros::param::param<int>("~button_locomotion_mode", button_locomotion_mode_, -1);
         ros::param::param<int>("~button_dock", button_dock_, -1);
+        ros::param::param<int>("~dock_id", req_dock_id_.dock_id, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
         num_buttons_ = num_buttons_ < 0 ? 0 : num_buttons_;
@@ -54,7 +55,6 @@ public:
 
         req_next_stair_mode_.data = true;
         req_next_locomotion_mode_.locomotion_mode = 4;
-        req_dock_id_.dock_id = 520; // TODO support multiple dock_id
     }
 
     void say(std::string message)
@@ -372,7 +372,8 @@ public:
         // dock
         if ( button_dock_ >= 0
                 and button_dock_ < msg->buttons.size()
-                and button_dock_ < num_buttons_ ) {
+                and button_dock_ < num_buttons_
+                and req_dock_id_.dock_id >= 0) {
             if ( msg->buttons[button_dock_] == 1 ) {
                 if ( not pressed_[button_dock_] ) {
                     this->say("dock calling");
