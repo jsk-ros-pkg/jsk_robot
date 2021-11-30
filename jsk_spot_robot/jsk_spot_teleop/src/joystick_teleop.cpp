@@ -25,7 +25,8 @@ public:
         ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
         ros::param::param<int>("~button_locomotion_mode", button_locomotion_mode_, -1);
         ros::param::param<int>("~button_dock", button_dock_, -1);
-        ros::param::param<int>("~dock_id", req_dock_id_.dock_id, -1);
+        ros::param::param<int>("~button_enable", button_enable_, -1);
+        ros::param::param<int>("~dock_id", dock_id_, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
         num_buttons_ = num_buttons_ < 0 ? 0 : num_buttons_;
@@ -55,6 +56,7 @@ public:
 
         req_next_stair_mode_.data = true;
         req_next_locomotion_mode_.locomotion_mode = 4;
+        req_dock_id_.dock_id = dock_id_;
     }
 
     void say(std::string message)
@@ -373,8 +375,12 @@ public:
         if ( button_dock_ >= 0
                 and button_dock_ < msg->buttons.size()
                 and button_dock_ < num_buttons_
-                and req_dock_id_.dock_id >= 0) {
-            if ( msg->buttons[button_dock_] == 1 ) {
+                and req_dock_id_.dock_id >= 0
+                and button_enable_ >= 0
+                and button_enable_ < msg->buttons.size()
+                and button_enable_ < num_buttons_) {
+            if ( msg->buttons[button_dock_] == 1
+                     and msg->buttons[button_enable_] == 1) {
                 if ( not pressed_[button_dock_] ) {
                     this->say("dock calling");
                     spot_msgs::Dock::Response res;
@@ -409,6 +415,8 @@ private:
     int button_stair_mode_;
     int button_locomotion_mode_;
     int button_dock_;
+    int button_enable_;
+    int dock_id_;
 
     ros::ServiceClient client_estop_hard_;
     ros::ServiceClient client_estop_gentle_;
