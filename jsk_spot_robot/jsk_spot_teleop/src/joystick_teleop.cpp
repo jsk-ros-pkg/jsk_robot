@@ -390,7 +390,7 @@ public:
                  }
             }
         } else {
-            ROS_DEBUG("Axe 'dock' is disabled.");
+            ROS_DEBUG("Button 'dock' is disabled.");
         }
     }
 
