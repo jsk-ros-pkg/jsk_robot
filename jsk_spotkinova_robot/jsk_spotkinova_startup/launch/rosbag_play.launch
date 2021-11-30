@@ -1,0 +1,170 @@
+<launch>
+    <arg name="rosbag" doc="rosbag file path" />
+    <arg name="use_decompress" default="true" />
+    <arg name="loop" default="true" />
+    <arg name="gui" default="true" />
+    <arg name="loop_flag" value="--loop" if="$(arg loop)" />
+    <arg name="loop_flag" value="" unless="$(arg loop)" />
+    <arg name="start_time" default="0" />
+    <arg name="duration_time" default="0" />
+    <arg name="duration" default="--duration $(arg duration_time)" if="$(eval duration_time != 0)" />
+    <arg name="duration" default="" if="$(eval duration_time == 0)" />
+    <arg name="robot_name" default="arm_gen3" doc="Kinova robot name. Basically, this name should not be changed." />
+  <arg name="arm" default="gen3_lite" doc="Use 'gen3' for gen3 robot, 'gen3_lite' for gen3 lite robot." />
+  <arg name="gripper" default="robotiq_2f_140" if="$(eval arg('arm') == 'gen3')" doc="For gen3 robot" />
+  <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')" doc="For gen3 lite robot"/>
+
+    <include
+        file="$(find jsk_spotkinova_startup)/launch/rviz.launch"
+        if="$(arg gui)"
+        />
+
+    <param name="/use_sim_time" value="true" />
+
+    <param
+        name="robot_description"
+        command="$(find xacro)/xacro $(find jsk_spotkinova_description)/robots/jsk_spotkinova.urdf.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_ --inorder"
+        />
+    <node
+        name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        />
+
+    <node
+        pkg="rosbag"
+        type="play"
+        name="$(anon rosbag)"
+        args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)"
+        launch-prefix="xterm -e"
+        />
+    <node
+        pkg="jsk_spot_startup"
+        type="static_tf_republisher.py"
+        name="static_tf_republisher"
+        args="$(arg rosbag)"
+        />
+
+    <!-- image proc -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="panorama_image_resize"
+        args="standalone image_proc/resize">
+        <param name="scale_height" value="0.5" />
+        <param name="scale_width" value="0.5" />
+        <remap from="image" to="/dual_fisheye_to_panorama/output" />
+        <remap from="~image" to="/dual_fisheye_to_panorama/output/quater" />
+    </node>
+
+    <!-- image decompression -->
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="panorama_decompress"
+        args="compressed in:=/dual_fisheye_to_panorama/output raw out:=/dual_fisheye_to_panorama/output"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="back_camera_decompress"
+        args="compressed in:=/spot/camera/back/image raw out:=/spot/camera/back/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontleft_camera_decompress"
+        args="compressed in:=/spot/camera/frontleft/image raw out:=/spot/camera/frontleft/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontright_camera_decompress"
+        args="compressed in:=/spot/camera/frontright/image raw out:=/spot/camera/frontright/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="left_camera_decompress"
+        args="compressed in:=/spot/camera/left/image raw out:=/spot/camera/left/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="right_camera_decompress"
+        args="compressed in:=/spot/camera/right/image raw out:=/spot/camera/right/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="back_depth_decompress"
+        args="compressedDepth in:=/spot/depth/back/image raw out:=/spot/depth/back/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontleft_depth_decompress"
+        args="compressedDepth in:=/spot/depth/frontleft/image raw out:=/spot/depth/frontleft/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="frontright_depth_decompress"
+        args="compressedDepth in:=/spot/depth/frontright/image raw out:=/spot/depth/frontright/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="left_depth_decompress"
+        args="compressedDepth in:=/spot/depth/left/image raw out:=/spot/depth/left/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="right_depth_decompress"
+        args="compressedDepth in:=/spot/depth/right/image raw out:=/spot/depth/right/image"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="kinova_wrist_camera_decompress"
+        args="compressed in:=/kinova_wrist_camera/color/image_raw/compressed raw out:=/kinova_wrist_camera/color/image_raw"
+        if="$(arg use_decompress)"
+        />
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="kinova_wrist_camera_depth_decompress"
+        args="compressed in:=/kinova_wrist_camera/aligned_depth_to_color/image_raw/compressedDepth raw out:=/kinova_wrist_camera/aligned_depth_to_color/image_raw"
+        if="$(arg use_decompress)"
+        />
+
+    <!-- Create object detection visuzaliation image and comress it -->
+    <node
+        pkg="jsk_perception"
+        type="draw_rects"
+        name="object_detection_visualizer"
+        >
+        <remap from="~input" to="/dual_fisheye_to_panorama/output/quater" />
+        <remap from="~input/rects" to="/spot_recognition/rects" />
+        <remap from="~input/class" to="/spot_recognition/class" />
+        <remap from="~output" to="/spot_recognition/object_detection_image" />
+    </node>
+    <node
+        pkg="image_transport"
+        type="republish"
+        name="detection_visualization_compress"
+        args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
+        />
+</launch>
