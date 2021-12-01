@@ -311,6 +311,13 @@
           )
         nil)
       ))
+  (:get-current-spot ()
+    (let (msg)
+      (setq msg (one-shot-subscribe "/spot_behavior_manager_server/current_node_id" std_msgs::String :timeout 5000))
+      (if (not msg)
+          nil
+        (send msg :data))
+      ))
   (:body-pose
    ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
     (pose &key (topic-name "/spot/body_pose"))
