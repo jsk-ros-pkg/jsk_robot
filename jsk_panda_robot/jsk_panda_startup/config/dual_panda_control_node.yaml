@@ -25,14 +25,22 @@ rarm:
   realtime_config: enforce
   # Configure the initial defaults for the collision behavior reflexes.
   collision_config:
-    lower_torque_thresholds_acceleration: [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
-    upper_torque_thresholds_acceleration: [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
-    lower_torque_thresholds_nominal:      [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
-    upper_torque_thresholds_nominal:      [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
-    lower_force_thresholds_acceleration:  [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
-    upper_force_thresholds_acceleration:  [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
-    lower_force_thresholds_nominal:       [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
-    upper_force_thresholds_nominal:       [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
+    # lower_torque_thresholds_acceleration: [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
+    # upper_torque_thresholds_acceleration: [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
+    # lower_torque_thresholds_nominal:      [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
+    # upper_torque_thresholds_nominal:      [20.0, 20.0, 18.0, 18.0, 16.0, 14.0, 12.0]  # [Nm]
+    # lower_force_thresholds_acceleration:  [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
+    # upper_force_thresholds_acceleration:  [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
+    # lower_force_thresholds_nominal:       [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
+    # upper_force_thresholds_nominal:       [20.0, 20.0, 20.0, 25.0, 25.0, 25.0]  # [N, N, N, Nm, Nm, Nm]
+    lower_torque_thresholds_acceleration: [40.0, 40.0, 36.0, 36.0, 32.0, 28.0, 24.0]  # [Nm] (* 2.0)
+    upper_torque_thresholds_acceleration: [40.0, 40.0, 36.0, 36.0, 32.0, 28.0, 24.0]  # [Nm] (* 2.0)
+    lower_torque_thresholds_nominal:      [40.0, 40.0, 36.0, 36.0, 32.0, 28.0, 24.0]  # [Nm] (* 2.0)
+    upper_torque_thresholds_nominal:      [40.0, 40.0, 36.0, 36.0, 32.0, 28.0, 24.0]  # [Nm] (* 2.0)
+    lower_force_thresholds_acceleration:  [40.0, 40.0, 40.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm] (* 2.0)
+    upper_force_thresholds_acceleration:  [40.0, 40.0, 40.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm] (* 2.0)
+    lower_force_thresholds_nominal:       [40.0, 40.0, 40.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm] (* 2.0)
+    upper_force_thresholds_nominal:       [40.0, 40.0, 40.0, 50.0, 50.0, 50.0]  # [N, N, N, Nm, Nm, Nm] (* 2.0)
 
 larm:
   type: franka_hw/FrankaCombinableHW
