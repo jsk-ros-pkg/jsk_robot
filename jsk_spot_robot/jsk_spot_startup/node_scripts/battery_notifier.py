@@ -56,7 +56,7 @@ class SpotBatteryNotifier(object):
             elif ((self._battery_spot is not None and self._battery_spot < threshold_warning_spot)
                     or (self._battery_laptop is not None and self._battery_laptop < threshold_warning_laptop)):
                 rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(self._battery_spot,self._battery_laptop))
-                sound_client.say('バッテリー残量が少ないです。')
+                sound_client.say('バッテリー残量が少ないです。本体が{}パーセント、ラップトップが{}パーセントです。'.format(self._battery_spot,self._battery_laptop))
 
             if self._battery_temperature > threshold_warning_battery_temperature\
                     and (rospy.get_time() - self.last_warn_bat_temp_time) > 180:
