@@ -139,14 +139,14 @@
         pkg="image_transport"
         type="republish"
         name="kinova_wrist_camera_decompress"
-        args="compressed in:=/kinova_wrist_camera/color/image_raw/compressed raw out:=/kinova_wrist_camera/color/image_raw"
+        args="compressed in:=/kinova_wrist_camera/color/image_raw raw out:=/kinova_wrist_camera/color/image_raw"
         if="$(arg use_decompress)"
         />
     <node
         pkg="image_transport"
         type="republish"
         name="kinova_wrist_camera_depth_decompress"
-        args="compressed in:=/kinova_wrist_camera/aligned_depth_to_color/image_raw/compressedDepth raw out:=/kinova_wrist_camera/aligned_depth_to_color/image_raw"
+        args="compressedDepth in:=/kinova_wrist_camera/aligned_depth_to_color/image_raw raw out:=/kinova_wrist_camera/aligned_depth_to_color/image_raw"
         if="$(arg use_decompress)"
         />
 
