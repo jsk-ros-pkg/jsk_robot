@@ -19,28 +19,32 @@ class SpotBatteryNotifier(object):
         self.last_warn_bat_temp_time = rospy.get_time()
 
         self._sub_spot = rospy.Subscriber(
-                                '/spot/status/battery_states',
-                                BatteryStateArray,
-                                self._cb_spot )
+            '/spot/status/battery_states',
+            BatteryStateArray,
+            self._cb_spot)
         self._sub_laptop = rospy.Subscriber(
-                                '/laptop_charge',
-                                BatteryState,
-                                self._cb_laptop )
+            '/laptop_charge',
+            BatteryState,
+            self._cb_laptop)
 
         spot_client = SpotRosClient()
         sound_client = SoundClient(
-                        blocking=False,
-                        sound_action='/robotsound_jp',
-                        sound_topic='/robotsound_jp'
-                        )
+            blocking=False,
+            sound_action='/robotsound_jp',
+            sound_topic='/robotsound_jp'
+        )
 
-        threshold_warning_spot = float(rospy.get_param('~threshold_warning_spot', 20))
+        threshold_warning_spot = float(
+            rospy.get_param('~threshold_warning_spot', 20))
         threshold_warning_battery_temperature =\
-                    float(rospy.get_param('~threshold_warning_battery_temperature', 45))
-        threshold_warning_laptop = float(rospy.get_param('~threshold_warning_laptop', 20))
+            float(rospy.get_param('~threshold_warning_battery_temperature', 45))
+        threshold_warning_laptop = float(
+            rospy.get_param('~threshold_warning_laptop', 20))
 
-        threshold_estop_spot = float(rospy.get_param('~threshold_estop_spot', 5))
-        threshold_estop_laptop = float(rospy.get_param('~threshold_estop_laptop', 5))
+        threshold_estop_spot = float(
+            rospy.get_param('~threshold_estop_spot', 5))
+        threshold_estop_laptop = float(
+            rospy.get_param('~threshold_estop_laptop', 5))
 
         rate = rospy.Rate(0.1)
         while not rospy.is_shutdown():
@@ -55,12 +59,14 @@ class SpotBatteryNotifier(object):
                 spot_client.estop_hard()
             elif ((self._battery_spot is not None and self._battery_spot < threshold_warning_spot)
                     or (self._battery_laptop is not None and self._battery_laptop < threshold_warning_laptop)):
-                rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(self._battery_spot,self._battery_laptop))
-                sound_client.say('バッテリー残量が少ないです。本体が{}パーセント、ラップトップが{}パーセントです。'.format(self._battery_spot,self._battery_laptop))
+                rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(
+                    self._battery_spot, self._battery_laptop))
+                sound_client.say('バッテリー残量が少ないです。本体が{}パーセント、ラップトップが{}パーセントです。'.format(
+                    self._battery_spot, self._battery_laptop))
 
             if self._battery_temperature > threshold_warning_battery_temperature\
                     and (rospy.get_time() - self.last_warn_bat_temp_time) > 180:
-                rospy.logerr('Battery temperature is high. Battery temp:{:.2f} > threshold:{}'\
+                rospy.logerr('Battery temperature is high. Battery temp:{:.2f} > threshold:{}'
                              .format(self._battery_temperature, threshold_warning_battery_temperature))
                 sound_client.say('バッテリー温度が高いです。')
                 self.last_warn_bat_temp_time = rospy.get_time()
@@ -74,11 +80,13 @@ class SpotBatteryNotifier(object):
 
         self._battery_laptop = msg.percentage
 
+
 def main():
 
     rospy.init_node('battery_notifier')
     battery_notifier = SpotBatteryNotifier()
     rospy.spin()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()
