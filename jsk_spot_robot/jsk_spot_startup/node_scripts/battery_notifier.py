@@ -4,6 +4,8 @@
 import rospy
 from spot_msgs.msg import BatteryStateArray
 from sensor_msgs.msg import BatteryState
+from app_manager.srv import StartApp
+from app_manager.srv import StartAppRequest
 
 from spot_ros_client.libspotros import SpotRosClient
 from sound_play.libsoundplay import SoundClient
@@ -17,6 +19,8 @@ class SpotBatteryNotifier(object):
         self._battery_laptop = None
         self._battery_temperature = 0
         self.last_warn_bat_temp_time = rospy.get_time()
+
+        self._srvclient_start_app = rospy.ServiceProxy('~start_app', StartApp)
 
         self._sub_spot = rospy.Subscriber(
             '/spot/status/battery_states',
@@ -34,12 +38,18 @@ class SpotBatteryNotifier(object):
             sound_topic='/robotsound_jp'
         )
 
-        threshold_warning_spot = float(
-            rospy.get_param('~threshold_warning_spot', 20))
         threshold_warning_battery_temperature =\
             float(rospy.get_param('~threshold_warning_battery_temperature', 45))
+
+        threshold_warning_spot = float(
+            rospy.get_param('~threshold_warning_spot', 20))
         threshold_warning_laptop = float(
             rospy.get_param('~threshold_warning_laptop', 20))
+
+        threshold_return_spot = float(
+            rospy.get_param('~threshold_return_spot', 15))
+        threshold_return_laptop = float(
+            rospy.get_param('~threshold_return_laptop', 15))
 
         threshold_estop_spot = float(
             rospy.get_param('~threshold_estop_spot', 5))
@@ -57,6 +67,13 @@ class SpotBatteryNotifier(object):
                 sound_client.say('バッテリー残量が少ないため、動作を停止します')
                 spot_client.estop_gentle()
                 spot_client.estop_hard()
+
+            elif ((self._battery_spot is not None and self._battery_spot < threshold_return_spot)
+                    or (self._battery_laptop is not None and self._battery_laptop < threshold_return_laptop)):
+                rospy.logerr('Battery is low. Returning to home.')
+                sound_client.say('バッテリー残量が少ないため、ドックに戻ります')
+                self._call_go_back_home()
+
             elif ((self._battery_spot is not None and self._battery_spot < threshold_warning_spot)
                     or (self._battery_laptop is not None and self._battery_laptop < threshold_warning_laptop)):
                 rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(
@@ -79,6 +96,25 @@ class SpotBatteryNotifier(object):
     def _cb_laptop(self, msg):
 
         self._battery_laptop = msg.percentage
+
+    def _call_go_back_home(self):
+
+        try:
+            rospy.wait_for_service('~start_app', timeout=rospy.Duration(1))
+        except rospy.exceptions.ROSException as e:
+            rospy.logerr(
+                'Could not call \'go_back_home\' demo. : {}'.format(e))
+            return False
+
+        req = StartAppRequest()
+        req.name = 'jsk_spot_apps/go_back_home'
+        res = self._srvclient_start_app(req)
+        if not res.started:
+            rospy.logerr('Could not start \'go_back_home\' demo.')
+            return False
+        else:
+            rospy.loginfo('Successfully start \'go_back_home\' demo.')
+            return True
 
 
 def main():
