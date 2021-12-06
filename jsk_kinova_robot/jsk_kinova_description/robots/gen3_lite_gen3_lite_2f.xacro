@@ -25,8 +25,8 @@
       </inertial>
     </link>
     <joint name="kinova_wrist_camera_joint" type="fixed" >
-        <origin rpy="0 0 3.14159265" xyz="-0.0891 0 0.0712" />
-        <parent link="$(arg prefix)upper_wrist_link" />
+        <origin rpy="3.14159265 -1.57079632 0" xyz="0.05 0.018 0.015" />
+        <parent link="$(arg prefix)gripper_base_link" />
         <child link="kinova_wrist_camera_link" />
     </joint>
 
