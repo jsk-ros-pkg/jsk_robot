@@ -1,5 +1,7 @@
 <launch>
-  <arg name="INPUT" default="/head_camera/depth_registered/points"/>
+  <arg name="POINTCLOUD_INPUT" default="/head_camera/depth_registered/points"/>
+  <arg name="IMAGE_INPUT" default="/head_camera/rgb/image_rect_color"/>
+  <arg name="IMAGE_CAMERAINFO" default="/head_camera/rgb/camera_info"/>
   <arg name="CENTROID_FRAME" default="target"/>
   <arg name="DEFAULT_NAMESPACE" default="/trashbin_occupancy_detector"/>
   <arg name="FILTER_NAME_SUFFIX" default=""/>
@@ -20,10 +22,10 @@
   <arg name="i_min" default="36" />
   <!-- END HSI COLOR FILTER PARAMS -->
   
-  <!-- GET TRASHBIN HANDLE BY HSI COLOR FILTER -->
+  <!-- EXTRACT TRASHBIN HANDLE POINTCLOUDS BY HSI COLOR FILTER -->
   <node pkg="nodelet" type="nodelet" name="trashbin_handle_hsi_filter$(arg FILTER_NAME_SUFFIX)"
         args="load jsk_pcl/HSIColorFilter $(arg DEFAULT_NAMESPACE)/$(arg manager)" output="screen">
-    <remap from="~input" to="$(arg INPUT)" />
+    <remap from="~input" to="$(arg POINTCLOUD_INPUT)" />
     <remap from="~output" to="$(arg DEFAULT_NAMESPACE)/$(arg OUTPUT)" />
     <rosparam>
       use_indices: false
@@ -35,7 +37,17 @@
     <param name="i_limit_max" value="$(arg i_max)" />
     <param name="i_limit_min" value="$(arg i_min)" />
   </node>
+
+  <!-- EXTRACT TRASHBIN LABEL BY IMAGESIFT -->
+  <node name="image_siftnode" pkg="imagesift" type="imagesift" output="screen">
+    <remap from="image" to="$(arg IMAGE_INPUT)" />
+    <remap from="camera_info" to="$(arg IMAGE_CAMERAINFO)" />
+    <remap from="Feature0D" to="$(arg DEFAULT_NAMESPACE)/Feature0D" />
+    <remap from="ImageFeature0D" to="$(arg DEFAULT_NAMESPACE)/ImageFeature0D" />
+  </node>
+
   <group ns="$(arg DEFAULT_NAMESPACE)">
+    <!-- DETECT TRASHBIN HANDLE -->
     <node if="$(arg create_manager)"
           pkg="nodelet" type="nodelet" name="$(arg manager)"
           args="manager" output="screen"/>
@@ -62,10 +74,54 @@
         force_to_flip_z_axis: false
       </rosparam>
     </node>
-    <!-- END GET TRASHBIN HANDLE BY HSI COLOR FILTER -->
-    <!-- START OCCUPANCY DETECTOR -->
-    <node pkg="jsk_fetch_startup" type="trashbin_occupancy_detector"
-        name="trashbin_occupancy_detector_server"
+    
+    <!-- DETECT TRASHBIN POSITION -->
+    <!-- burnable -->
+    <!-- <node name="burnable_trashbin_label_extractor" pkg="jsk_perception" -->
+	  <!--       type="point_pose_extractor" output="screen" > -->
+    <!--   <!-\- params -\-> -->
+    <!--   <param name="child_frame_name" value="burnable_logo"/> -->
+    <!--   <param name="template_filename" value="$(find jsk_fetch_startup)/data/burnable.png"/> -->
+    <!--   <param name="object_width" value="0.210" /> -->
+    <!--   <param name="object_height" value="0.297" /> -->
+    <!--   <param name="reprojection_threshold" value="10.0" /> -->
+    <!--   <param name="distanceratio_threshold" value="0.60" /> -->
+    <!--   <param name="relative_pose" value="0 0 0 0 0 0 1" /> -->
+    <!--   <param name="error_threshold" value="50.0" /> -->
+    <!--   <param name="publish_tf" value="true" /> -->
+    <!--   <!-\- remap topic names -\-> -->
+    <!--   <remap from="ObjectDetection" to="~ObjectDetection" /> -->
+    <!--   <remap from="ObjectDetection_agg" to="~ObjectDetection_agg" /> -->
+    <!--   <remap from="object_pose" to="~object_pose" /> -->
+    <!--   <remap from="tf" to="~tf" /> -->
+    <!--   <!-\- remap service names -\-> -->
+    <!--   <!-\- <remap from="SetTemplate" to="~SetTemplate" /> -\-> -->
+    <!-- </node> -->
+    <!-- plastic -->
+    <!-- <node name="plastic_trashbin_label_extractor" pkg="jsk_perception" -->
+	  <!--       type="point_pose_extractor" output="screen" > -->
+    <!--   <!-\- params -\-> -->
+    <!--   <param name="child_frame_name" value="plastic_logo"/> -->
+    <!--   <param name="template_filename" value="$(find jsk_fetch_startup)/data/plastic.png"/> -->
+    <!--   <param name="object_width" value="0.210" /> -->
+    <!--   <param name="object_height" value="0.297" /> -->
+    <!--   <param name="reprojection_threshold" value="10.0" /> -->
+    <!--   <param name="distanceratio_threshold" value="0.60" /> -->
+    <!--   <param name="relative_pose" value="0 0 0 0 0 0 1" /> -->
+    <!--   <param name="error_threshold" value="50.0" /> -->
+    <!--   <param name="publish_tf" value="true" /> -->
+    <!--   <!-\- remap topic names -\-> -->
+    <!--   <remap from="ObjectDetection" to="~ObjectDetection" /> -->
+    <!--   <remap from="ObjectDetection_agg" to="~ObjectDetection_agg" /> -->
+    <!--   <remap from="object_pose" to="~object_pose" /> -->
+    <!--   <remap from="tf" to="~tf" /> -->
+    <!--   <!-\- remap service names -\-> -->
+    <!--   <remap from="SetTemplate" to="~SetTemplate" /> -->
+    <!-- </node> -->
+
+    <!-- DETECT TRASHBINS (candidates) WITH TRASHBIN HANDLE INFORMATION -->
+    <node pkg="jsk_fetch_startup" type="trashbins_pose_estimator"
+        name="trashbins_pose_estimation_server"
         output="screen">
       <rosparam>
         trashbin_l: 0.34
@@ -73,6 +129,34 @@
         trashbin_h: 0.49
       </rosparam>
     </node>
-    <!-- END OCCUPANCY DETECTOR -->
   </group>
+
+  <node pkg="jsk_fetch_startup" type="container_occupancy_detector"
+        name="container_occupancy_detector"
+        output="screen" respawn="true">
+  </node>
+
+  <!-- CURRENTLY IT DOESN'T WORK WELL... -->
+  <node name="burnable_trashbin_label_extractor" pkg="jsk_perception"
+	      type="point_pose_extractor" output="screen" >
+    <!-- params -->
+    <param name="child_frame_name" value="burnable_logo"/>
+    <param name="template_filename" value="$(find jsk_fetch_startup)/data/burnable.png"/>
+    <param name="object_width" value="0.210" />
+    <param name="object_height" value="0.297" />
+    <param name="reprojection_threshold" value="10.0" />
+    <param name="distanceratio_threshold" value="0.60" />
+    <param name="relative_pose" value="0 0 0 0 0 0 1" />
+    <param name="error_threshold" value="50.0" />
+    <param name="publish_tf" value="true" />
+    <!-- remap topic names -->
+    <remap from="ImageFeature0D" to="$(arg DEFAULT_NAMESPACE)/ImageFeature0D" />
+    <remap from="ObjectDetection" to="~ObjectDetection" />
+    <remap from="ObjectDetection_agg" to="~ObjectDetection_agg" />
+    <remap from="object_pose" to="~object_pose" />
+    <remap from="tf" to="~tf" />
+    <!-- remap service names -->
+    <remap from="SetTemplate" to="~SetTemplate" />
+  </node>
+  
 </launch>

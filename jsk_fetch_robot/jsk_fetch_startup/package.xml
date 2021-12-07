@@ -36,6 +36,8 @@
   <run_depend>switchbot_ros</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>voice_text</run_depend>
+  <run_depend>tf2</run_depend>
+  <run_depend>tf2_geometry_msgs</run_depend>
 
   <!-- for fetch_naviation -->
   <run_depend>amcl</run_depend>
