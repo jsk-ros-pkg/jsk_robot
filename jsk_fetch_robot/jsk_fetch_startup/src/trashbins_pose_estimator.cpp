@@ -23,9 +23,8 @@ public:
     _pnh.getParam("trashbin_l", this->_trashbinL);
     _pnh.getParam("trashbin_w", this->_trashbinW);
     _pnh.getParam("trashbin_h", this->_trashbinH);
-    this->_trashbinHandleSub = _nh.subscribe("trashbin_handle/boxes", 10, &TrashbinsPoseEstimator::DrawVirtualTrashbinContainerCB, this);
-    // this->_pointCloud = _nh.subscribe("points", 10, &TrashbinOccupancyDetector::CalculateOccupancyCB, this);
-    this->_virtualTrashbinContainerPub = _nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("trashbin/boxes", 10);
+    this->_trashbinHandleSub = _nh.subscribe("input", 10, &TrashbinsPoseEstimator::DrawVirtualTrashbinContainerCB, this);
+    this->_virtualTrashbinContainerPub = _nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("output", 10);
     // init default orientation const
     this->defaultOrientation.w = 1.0;
     this->defaultOrientation.x = 0.0;
