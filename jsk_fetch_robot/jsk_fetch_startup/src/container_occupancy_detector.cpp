@@ -26,25 +26,23 @@ const float FLOAT_MAX = std::numeric_limits<float>::max();
 
 class ContainerOccupancyDetector{
 private:
-  ros::Subscriber _containerBoxesSub;
-  ros::Subscriber _pointCloudSub;
-  ros::Publisher _debugPointPub;
-  ros::Publisher _occupancyPub;
+  std::string _inputBoxes, _inputCloud, _debugCloud, _outputBoxes;
+  ros::Subscriber _containerBoxesSub, _pointCloudSub;
+  ros::Publisher _debugPointPub, _occupancyPub;
   geometry_msgs::Quaternion defaultOrientation;
   jsk_recognition_msgs::BoundingBoxArray _containerBoxes;
   sensor_msgs::PointCloud2 _transformedCloudMsg;
   tf2_ros::Buffer _tfBuffer;
   tf2_ros::TransformListener* _tfListener;
-  // geometry_msgs::TransformStamped _transformStamped;
 
 public:
   // constructor
   ContainerOccupancyDetector(ros::NodeHandle &_nh, ros::NodeHandle &_pnh){
     this->_tfListener = new tf2_ros::TransformListener(_tfBuffer);
-    this->_containerBoxesSub = _nh.subscribe("trashbin_occupancy_detector/trashbin/boxes", 10, &ContainerOccupancyDetector::CalculateOccupancyCB, this);
-    this->_pointCloudSub = _nh.subscribe("head_camera/depth_registered/points", 10, &ContainerOccupancyDetector::PointCloudTransformCB, this); // TODO: rename topic name
-    this->_debugPointPub = _nh.advertise<sensor_msgs::PointCloud2>("debug_pointcloud", 10);
-    this->_occupancyPub = _nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("container_occupancy", 10);
+    this->_containerBoxesSub = _nh.subscribe("input_boxes", 10, &ContainerOccupancyDetector::CalculateOccupancyCB, this);
+    this->_pointCloudSub = _nh.subscribe("input_cloud", 10, &ContainerOccupancyDetector::PointCloudTransformCB, this);
+    this->_debugPointPub = _nh.advertise<sensor_msgs::PointCloud2>("debug_cloud", 10);
+    this->_occupancyPub = _nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("output_boxes", 10);
     // init default orientation const
     this->defaultOrientation.w = 1.0;
     this->defaultOrientation.x = 0.0;
@@ -99,12 +97,12 @@ public:
         boxFilter.setInputCloud(pclCloud);
         boxFilter.filter(*boxFilteredCloud);
         pcl::getMinMax3D(*boxFilteredCloud, minPt, maxPt);
-        ROS_INFO_STREAM(
+        ROS_DEBUG_STREAM(
             "box_id: " << i << " box_pos: " << msg.boxes.at(i).pose.position
                        << " box_height: "
                        << msg.boxes.at(i).pose.position.z +
                               msg.boxes.at(i).dimensions.z / 2.0
-                       << " maxPt.z: " << maxPt.z); // TODO Move to debug stream
+                       << " maxPt.z: " << maxPt.z);
         occupancy = maxPt.z / (msg.boxes.at(i).pose.position.z +
                                msg.boxes.at(i).dimensions.z / 2.0);
         // if some point clouds in boundingbox over bounding height
