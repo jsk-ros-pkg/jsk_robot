@@ -128,12 +128,18 @@
         trashbin_w: 0.24
         trashbin_h: 0.49
       </rosparam>
+      <remap from="input" to="trashbin_handle/boxes" />
+      <remap from="output" to="trashbin/boxes" />
     </node>
   </group>
 
   <node pkg="jsk_fetch_startup" type="container_occupancy_detector"
         name="container_occupancy_detector"
         output="screen" respawn="true">
+    <remap from="input_boxes" to="$(arg DEFAULT_NAMESPACE)/trashbin/boxes" />
+    <remap from="input_cloud" to="$(arg POINTCLOUD_INPUT)" />
+    <remap from="debug_cloud" to="$(arg POINTCLOUD_INPUT)/debug/points" />
+    <remap from="output_boxes" to="$(arg DEFAULT_NAMESPACE)/trashbin/occupancy" />
   </node>
 
   <!-- CURRENTLY IT DOESN'T WORK WELL... -->
