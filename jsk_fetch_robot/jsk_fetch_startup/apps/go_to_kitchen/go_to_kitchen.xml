@@ -10,6 +10,15 @@
     <param name="score_thresh" type="double" value="0.60" /> <!-- default: 0.6 -->
   </node>
 
+  <!-- Use m5stack_ros -->
+  <!-- See https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/289 -->
+  <node name="rosserial_m5stack" pkg="rosserial_python" type="serial_node.py">
+    <rosparam>
+      port: /dev/rfcomm0 <!-- See /var/lib/robot/rfcomm_devices.yaml -->
+      baud: 115200
+    </rosparam>
+  </node>
+
   <node name="$(anon rviz)" pkg="rviz" type="rviz"
         args="-d $(find jsk_fetch_startup)/config/jsk_startup_record.rviz">
     <env name="DISPLAY" value=":0" />
