@@ -19,7 +19,7 @@
 (defun call-set-bool-service (srvname data &key (wait nil))
   "Call std_srv/Trigger service"
   (let (r)
-    (if wait (ros::wait-for-service srvname))
+nn    (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance std_srvs::SetBoolRequest :init :data data)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
@@ -37,6 +37,14 @@
   (let (r)
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance spot_msgs::DockRequest :init :dock_id dock_id)))
+    (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
+    (send r :success)))
+
+(defun call-reset-current-node-service (srvname current_node_id &key (wait nil))
+  "Call spot_behavior_manager_msgs/ResetCurrentNode service"
+  (let (r)
+    (if wait (ros::wait-for-service srvname))
+    (setq r (ros::service-call srvname (instance spot_behavior_manager_msgs::ResetCurrentNodeRequest :init :current_node_id current_node_id)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
 
@@ -318,6 +326,9 @@
           nil
         (send msg :data))
       ))
+  (:set-current-spot (node_id)
+    "set current node id"
+    (call-set-current-spot-service "/spot_behavior_manager_server/reset_current_node_id" node_id))
   (:body-pose
    ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
     (pose &key (topic-name "/spot/body_pose"))
