@@ -8,13 +8,14 @@
 (defmethod kinova-arm-rest-server
   (:init ()
    "Create service for spotkinova-rest-arm"
-   (let* ((msg ((one-shot-subscribe "/arm_gen3/joint_states" sensor_msgs/JointState
-                                    :timeout 5000))))
+   (ros::roseus "kinova_rest")
+   (ros::roseus-add-srvs "std_srvs")
+   (load "package://spotkinovaeus/spotkinova-interface.l")
+   (let* ((msg (one-shot-subscribe "/arm_gen3/joint_states" sensor_msgs::JointState
+                                    :timeout 5000)))
      (when msg
-       (ros::roseus "kinova_rest")
-       (ros::roseus-add-srvs "std_srvs")
-       (load "package://spotkinovaeus/spotkinova-interface.l")
        (spotkinova-init)
+       (ros::ros-info "kinova arm rest server started")
        (ros::advertise-service "/arm_gen3/rest" std_srvs::Trigger
                                #'send self :rest-arm))))
   (:rest-arm (req)
