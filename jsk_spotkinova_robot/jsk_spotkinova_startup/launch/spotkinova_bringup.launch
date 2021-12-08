@@ -76,6 +76,6 @@
                 result: {error_code: 0, error_string: ''}}'" />
 
   <!-- Teleop for kinova-rest -->
-  <node pkg="jsk_spotkinova_startup" type="kinova-rest-server.l" name="kinova-rest-server"/>
-  <node pkg="jsk_spotkinova_startup" type="kinova-rest-teleop.l" name="kinova-rest-teleop"/>
+  <node pkg="jsk_spotkinova_startup" type="kinova-rest-server.l" name="kinova_rest_server"/>
+  <node pkg="jsk_spotkinova_startup" type="kinova-rest-teleop.l" name="kinova_rest_teleop"/>
 </launch>
