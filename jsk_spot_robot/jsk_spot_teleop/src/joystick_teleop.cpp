@@ -24,7 +24,7 @@ public:
         ros::param::param<int>("~button_claim", button_claim_, -1);
         ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
         ros::param::param<int>("~button_locomotion_mode", button_locomotion_mode_, -1);
-	ros::param::param<int>("~axe_dock", axe_dock_, -1);
+        ros::param::param<int>("~axe_dock", axe_dock_, -1);
         ros::param::param<int>("~dock_id", dock_id_, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
@@ -33,8 +33,8 @@ public:
         for ( auto index: pressed_ ) {
             index = false;
         }
-	ros::param::param<int>("~num_axes", num_axes_, 0);
-	num_axes_ = num_axes_ < 0 ? 0 : num_buttons_;
+        ros::param::param<int>("~num_axes", num_axes_, 0);
+        num_axes_ = num_axes_ < 0 ? 0 : num_buttons_;
         pressed_axes_.resize(num_axes_);
         for ( auto index: pressed_axes_ ) {
             index = false;
@@ -97,7 +97,7 @@ public:
                     }
                     pressed_[button_estop_hard_] = true;
                 }
-           } else {
+            } else {
                 if ( pressed_[button_estop_hard_] ) {
                     pressed_[button_estop_hard_] = false;
                 }
@@ -375,39 +375,39 @@ public:
         } else {
             ROS_DEBUG("Button 'locomotion_mode' is disabled.");
         }
-	//dock
-	if ( axe_dock_ >= 0
-	        and axe_dock_ < num_buttons_
-	        and req_dock_id_.dock_id >= 0 ){
-	    if ( msg->axes[axe_dock_]==-1 ) {
+        //dock
+        if ( axe_dock_ >= 0
+             and axe_dock_ < num_buttons_
+             and req_dock_id_.dock_id >= 0 ){
+          if ( msg->axes[axe_dock_]==-1 ) {
                 if ( not pressed_axes_[axe_dock_] ) {
-	           this->say("dock calling");
-		   spot_msgs::Dock::Response res;
-		   if (client_dock_.call(req_dock_id_, res) && res.success ){
-		     ROS_INFO("Service 'dock' succeeded.");
-		   } else {
-		     ROS_ERROR("Service 'dock' failed.");
-		   }
-		   pressed_axes_[axe_dock_] = true;
-		}
-	    } else if (msg->axes[axe_dock_]==1) {
-    	        if (not pressed_axes_[axe_dock_]){
-		  this->say("undock calling");
-		  if (client_undock_.call(srv) && srv.response.success ){
-		    ROS_INFO("Service 'undock' succeeded.");
-		  } else {
-		    ROS_ERROR("Service 'undock' failed.");
-		  }
-		  pressed_axes_[axe_dock_] = true;
-		}
-	    } else {
-	        if ( pressed_axes_[axe_dock_] ) {
-		  pressed_axes_[axe_dock_] = false;
-		}
-	    }
-	} else {
-	  ROS_DEBUG("Axe 'dock' is disabled.");
-	}
+                  this->say("dock calling");
+                  spot_msgs::Dock::Response res;
+                  if (client_dock_.call(req_dock_id_, res) && res.success ){
+                    ROS_INFO("Service 'dock' succeeded.");
+                  } else {
+                    ROS_ERROR("Service 'dock' failed.");
+                  }
+                  pressed_axes_[axe_dock_] = true;
+                }
+          } else if (msg->axes[axe_dock_]==1) {
+            if (not pressed_axes_[axe_dock_]){
+              this->say("undock calling");
+              if (client_undock_.call(srv) && srv.response.success ){
+                ROS_INFO("Service 'undock' succeeded.");
+              } else {
+                ROS_ERROR("Service 'undock' failed.");
+              }
+              pressed_axes_[axe_dock_] = true;
+            }
+          } else {
+            if ( pressed_axes_[axe_dock_] ) {
+              pressed_axes_[axe_dock_] = false;
+            }
+          }
+        } else {
+          ROS_DEBUG("Axe 'dock' is disabled.");
+        }
     }
 
 private:
