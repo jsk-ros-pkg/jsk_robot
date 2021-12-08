@@ -31,9 +31,6 @@
         command="load"
         file="$(find jsk_spot_teleop)/config/$(arg pad_type)_teleop_twist_joy.yaml"
         />
-    <rosparam subst_value="True">
-        dock_id: $(optenv DOCKING_STATION_ID -1)
-    </rosparam>
   </node>
 
   <node
@@ -48,5 +45,8 @@
           command="load"
           file="$(find jsk_spot_teleop)/config/$(arg pad_type)_joystick_teleop.yaml"
           />
+      <rosparam subst_value="True">
+        dock_id: $(optenv DOCKING_STATION_ID -1)
+      </rosparam>
   </node>
 </launch>
