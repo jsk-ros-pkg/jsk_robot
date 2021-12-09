@@ -6,5 +6,5 @@
     version: develop/spot
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
-    version: master
+    uri: https://github.com/sktometometo/jsk_recognition.git
+    version: develop/spot
