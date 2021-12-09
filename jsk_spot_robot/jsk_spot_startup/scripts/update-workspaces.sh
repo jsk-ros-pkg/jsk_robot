@@ -6,7 +6,7 @@ WORKSPACE_SPOT=/home/spot/spot_ws
 
 if [ -e $WORKSPACE_SPOT_DRIVER ]; then
     cd $WORKSPACE_SPOT_DRIVER/src
-    wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall -y -r
+    wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall --merge-replace --confirm-all
     wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
     catkin build -j4 --continue-on-failure
 else
@@ -15,7 +15,7 @@ fi
 
 if [ -e $WORKSPACE_SPOT_CORAL ]; then
     cd $WORKSPACE_SPOT_CORAL/src
-    wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall -y -r
+    wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall --merge-replace --confirm-all
     wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
     catkin build -j4 --continue-on-failure
 else
@@ -24,7 +24,7 @@ fi
 
 if [ -e $WORKSPACE_SPOT ]; then
     cd $WORKSPACE_SPOT/src
-    wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall -y -r
+    wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_dev.rosinstall --merge-replace --confirm-all
     wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
     catkin build -j4 --continue-on-failure
 else
