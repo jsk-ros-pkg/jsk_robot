@@ -123,9 +123,15 @@
     <node pkg="jsk_fetch_startup" type="trashbins_pose_estimator"
         name="trashbins_pose_estimation_server"
         output="screen">
+      <!-- TODO adjust to trashbin in 73B2 -->
+      <!-- <rosparam> -->
+      <!--   trashbin_l: 0.34 -->
+      <!--   trashbin_w: 0.24 -->
+      <!--   trashbin_h: 0.49 -->
+      <!-- </rosparam> -->
       <rosparam>
-        trashbin_l: 0.34
-        trashbin_w: 0.24
+        trashbin_l: 0.3
+        trashbin_w: 0.2
         trashbin_h: 0.49
       </rosparam>
       <remap from="input" to="trashbin_handle/boxes" />
