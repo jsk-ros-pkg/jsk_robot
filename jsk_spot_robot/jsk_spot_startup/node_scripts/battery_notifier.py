@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 import rospy
+from std_msgs.msg import Bool
 from spot_msgs.msg import BatteryStateArray
 from sensor_msgs.msg import BatteryState
 from app_manager.srv import StartApp
@@ -18,6 +19,7 @@ class SpotBatteryNotifier(object):
         self._battery_spot = None
         self._battery_laptop = None
         self._battery_temperature = 0
+        self._is_connected = False
         self.last_warn_bat_temp_time = rospy.get_time()
 
         self._srvclient_start_app = rospy.ServiceProxy('~start_app', StartApp)
@@ -30,6 +32,10 @@ class SpotBatteryNotifier(object):
             '/laptop_charge',
             BatteryState,
             self._cb_laptop)
+        self._sub_connected = rospy.Subscriber(
+            '/spot/status/cable_connected',
+            Bool,
+            self._cb_connected)
 
         spot_client = SpotRosClient()
         sound_client = SoundClient(
@@ -61,25 +67,27 @@ class SpotBatteryNotifier(object):
 
             rate.sleep()
 
-            if ((self._battery_spot is not None and self._battery_spot < threshold_estop_spot)
-                    or (self._battery_laptop is not None and self._battery_laptop < threshold_estop_laptop)):
-                rospy.logerr('Battery is low. Estop.')
-                sound_client.say('バッテリー残量が少ないため、動作を停止します')
-                spot_client.estop_gentle()
-                spot_client.estop_hard()
+            if not self._is_connected:
 
-            elif ((self._battery_spot is not None and self._battery_spot < threshold_return_spot)
-                    or (self._battery_laptop is not None and self._battery_laptop < threshold_return_laptop)):
-                rospy.logerr('Battery is low. Returning to home.')
-                sound_client.say('バッテリー残量が少ないため、ドックに戻ります')
-                self._call_go_back_home()
+                if ((self._battery_spot is not None and self._battery_spot < threshold_estop_spot)
+                        or (self._battery_laptop is not None and self._battery_laptop < threshold_estop_laptop)):
+                    rospy.logerr('Battery is low. Estop.')
+                    sound_client.say('バッテリー残量が少ないため、動作を停止します')
+                    spot_client.estop_gentle()
+                    spot_client.estop_hard()
 
-            elif ((self._battery_spot is not None and self._battery_spot < threshold_warning_spot)
-                    or (self._battery_laptop is not None and self._battery_laptop < threshold_warning_laptop)):
-                rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(
-                    self._battery_spot, self._battery_laptop))
-                sound_client.say('バッテリー残量が少ないです。本体が{}パーセント、ラップトップが{}パーセントです。'.format(
-                    self._battery_spot, self._battery_laptop))
+                elif ((self._battery_spot is not None and self._battery_spot < threshold_return_spot)
+                        or (self._battery_laptop is not None and self._battery_laptop < threshold_return_laptop)):
+                    rospy.logerr('Battery is low. Returning to home.')
+                    sound_client.say('バッテリー残量が少ないため、ドックに戻ります')
+                    self._call_go_back_home()
+
+                elif ((self._battery_spot is not None and self._battery_spot < threshold_warning_spot)
+                        or (self._battery_laptop is not None and self._battery_laptop < threshold_warning_laptop)):
+                    rospy.logwarn('Battery is low. Spot: {}, Laptop: {}'.format(
+                        self._battery_spot, self._battery_laptop))
+                    sound_client.say('バッテリー残量が少ないです。本体が{}パーセント、ラップトップが{}パーセントです。'.format(
+                        self._battery_spot, self._battery_laptop))
 
             if self._battery_temperature > threshold_warning_battery_temperature\
                     and (rospy.get_time() - self.last_warn_bat_temp_time) > 180:
@@ -96,6 +104,10 @@ class SpotBatteryNotifier(object):
     def _cb_laptop(self, msg):
 
         self._battery_laptop = msg.percentage
+
+    def _cb_connected(self, msg):
+
+        self._is_connected = msg.data
 
     def _call_go_back_home(self):
 
