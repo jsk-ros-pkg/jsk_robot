@@ -294,5 +294,13 @@ def main():
         extract=True
     )
 
+    download_data(
+        pkg_name=PKG,
+        path='autowalk/eng2_8F.walk.tar.gz',
+        url='https://drive.google.com/uc?id=1LPluVprB4FCZ8L7ePpeQM8qFzijHQ3Ic',
+        md5='1032a79f9ac5201caddcefcb867637a5',
+        extract=True
+    )
+
 if __name__ == '__main__':
     main()
