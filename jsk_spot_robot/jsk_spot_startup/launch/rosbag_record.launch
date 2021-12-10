@@ -158,12 +158,6 @@
             name="panorama_compress"
             args="raw in:=/dual_fisheye_to_panorama/output compressed out:=/dual_fisheye_to_panorama/output"
             />
-        <node
-            pkg="image_transport"
-            type="republish"
-            name="panorama_quater_compress"
-            args="raw in:=/dual_fisheye_to_panorama/output/quater compressed out:=/dual_fisheye_to_panorama/output/quater"
-            />
         <!-- Compression node for object detection visuzaliation image -->
         <node
             pkg="image_transport"

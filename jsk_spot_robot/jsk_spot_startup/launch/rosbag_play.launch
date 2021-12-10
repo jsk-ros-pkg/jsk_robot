@@ -41,18 +41,6 @@
         args="$(arg rosbag)"
         />
 
-    <!-- image proc -->
-    <node
-        pkg="nodelet"
-        type="nodelet"
-        name="panorama_image_resize"
-        args="standalone image_proc/resize">
-        <param name="scale_height" value="0.5" />
-        <param name="scale_width" value="0.5" />
-        <remap from="image" to="/dual_fisheye_to_panorama/output" />
-        <remap from="~image" to="/dual_fisheye_to_panorama/output/quater" />
-    </node>
-
     <!-- image decompression -->
     <node
         pkg="image_transport"
@@ -138,7 +126,7 @@
         type="draw_rects"
         name="object_detection_visualizer"
         >
-        <remap from="~input" to="/dual_fisheye_to_panorama/output/quater" />
+        <remap from="~input" to="/dual_fisheye_to_panorama/output" />
         <remap from="~input/rects" to="/spot_recognition/rects" />
         <remap from="~input/class" to="/spot_recognition/class" />
         <remap from="~output" to="/spot_recognition/object_detection_image" />
