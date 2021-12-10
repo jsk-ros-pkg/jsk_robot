@@ -354,7 +354,7 @@ Visualization Manager:
     - Class: jsk_rviz_plugin/OverlayImage
       Enabled: true
       Name: PanoramaImage
-      Topic: /dual_fisheye_to_panorama/output/quater
+      Topic: /dual_fisheye_to_panorama/output
       Value: true
       alpha: 0.800000011920929
       height: 128
