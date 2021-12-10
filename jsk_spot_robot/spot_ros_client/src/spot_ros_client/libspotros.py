@@ -14,10 +14,12 @@ from spot_msgs.srv import SetLocalizationFiducial, SetLocalizationFiducialReques
 from spot_msgs.srv import SetLocalizationWaypoint, SetLocalizationWaypointRequest
 from spot_msgs.srv import SetLocomotion, SetLocomotionRequest
 from spot_msgs.srv import UploadGraph, UploadGraphRequest
+from spot_msgs.srv import Dock, DockRequest
 # actions
 from spot_msgs.msg import NavigateToAction, NavigateToGoal
 from spot_msgs.msg import TrajectoryAction, TrajectoryGoal
 from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonGoal
+
 
 class SpotRosClient:
 
@@ -40,6 +42,8 @@ class SpotRosClient:
                 servicename_list_graph='/spot/list_graph',
                 servicename_set_localization_fiducial='/spot/set_localization_fiducial',
                 servicename_set_localization_waypoint='/spot/set_localization_waypoint',
+                servicename_dock='/spot/dock',
+                servicename_undock='/spot/undock',
                 actionname_navigate_to='/spot/navigate_to',
                 actionname_trajectory='/spot/trajectory',
                 actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
@@ -75,6 +79,8 @@ class SpotRosClient:
             rospy.wait_for_service(servicename_list_graph, rospy.Duration(5))
             rospy.wait_for_service(servicename_set_localization_fiducial, rospy.Duration(5))
             rospy.wait_for_service(servicename_set_localization_waypoint, rospy.Duration(5))
+            rospy.wait_for_service(servicename_dock, rospy.Duration(5))
+            rospy.wait_for_service(servicename_undock, rospy.Duration(5))
         except rospy.ROSException as e:
             rospy.logerr('Service unavaliable: {}'.format(e))
 
@@ -142,6 +148,14 @@ class SpotRosClient:
         self._srv_client_set_localization_waypoint = rospy.ServiceProxy(
                                     servicename_set_localization_waypoint,
                                     SetLocalizationWaypoint
+                                    )
+        self._srv_client_dock = rospy.ServiceProxy(
+                                    servicename_dock,
+                                    Dock
+                                    )
+        self._srv_client_undock = rospy.ServiceProxy(
+                                    servicename_undock,
+                                    Trigger
                                     )
 
 
@@ -243,6 +257,16 @@ class SpotRosClient:
 
     def set_localization_waypoint(self, waypoint_id):
         res = self._srv_client_set_localization_waypoint(SetLocalizationWaypointRequest(waypoint_id=waypoint_id))
+        return res.success, res.message
+
+    def dock(self, dock_id):
+        req = TriggerRequest()
+        req.dock_id = dock_id
+        res = self._srv_client_dock(req)
+        return res.success, res.message
+
+    def undock(self):
+        res = self._srv_client_undock(TriggerRequest())
         return res.success, res.message
 
     def navigate_to(self, id_navigate_to, blocking=False):
