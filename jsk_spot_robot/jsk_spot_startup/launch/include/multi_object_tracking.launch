@@ -1,5 +1,5 @@
 <launch>
-  <arg name="INPUT_PANORAMA_IMAGE" default="/dual_fisheye_to_panorama/output/quater" />
+  <arg name="INPUT_PANORAMA_IMAGE" default="/dual_fisheye_to_panorama/output" />
   <arg name="TOPIC_OBJ_CLASS" default="/spot_recognition/class" />
   <arg name="TOPIC_OBJ_RECTS" default="/spot_recognition/rects" />
   <arg name="gpu" default="0"/>
