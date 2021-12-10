@@ -13,10 +13,10 @@ plugins:
       audio_sample_rate: 16000
       audio_format: wave
       audio_sample_format: S16LE
-      video_topic_name: /dual_fisheye_to_panorama/output/quater
-      video_height: 885
-      video_width: 1772
-      video_framerate: 2
+      video_topic_name: /dual_fisheye_to_panorama/output
+      video_height: 921
+      video_width: 1846
+      video_framerate: 8
       video_encoding: RGB
   - name: rosbag_recorder_plugin
     type: app_recorder/rosbag_recorder_plugin
@@ -77,7 +77,7 @@ plugins:
         - patrol_and_greeting.yaml
         - patrol_and_greeting.bag
         - patrol_and_greeting_insta_360_video.avi
-      upload_parents_path: /patrol_and_greeting/whole_record
+      upload_parents_path: patrol_and_greeting
       upload_server_name: /gdrive_server
   - name: mail_notifier_plugin
     type: app_notifier/mail_notifier_plugin
