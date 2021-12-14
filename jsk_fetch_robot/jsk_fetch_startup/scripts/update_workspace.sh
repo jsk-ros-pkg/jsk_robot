@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 . $HOME/ros/melodic/devel/setup.bash
+# Filename should end with .txt to preview the contents in a web browser
+LOGFILE=$HOME/ros/melodic/update_workspace.txt
 
+{
 set -x
 # Update workspace
 cd $HOME/ros/melodic/src
@@ -18,11 +21,21 @@ CATKIN_BUILD_RESULT=$?
 # Send mail
 MAIL_BODY=""
 if [ $WSTOOL_UPDATE_RESULT -ne 0 ]; then
-    MAIL_BODY=$MAIL_BODY"Please wstool update workspace manually\n"
+    MAIL_BODY=$MAIL_BODY"Please wstool update workspace manually. "
 fi
 if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
-    MAIL_BODY=$MAIL_BODY"Please catkin build workspace manually\n"
+    MAIL_BODY=$MAIL_BODY"Please catkin build workspace manually."
 fi
-LC_CTYPE=en_US.UTF-8 /bin/echo -e $MAIL_BODY | /usr/bin/mail -s "Daily workspace update fails" -r $(hostname)@jsk.imi.i.u-tokyo.ac.jp fetch@jsk.imi.i.u-tokyo.ac.jp
-
 set +x
+} > $LOGFILE 2>&1
+rostopic pub -1 /email jsk_robot_startup/Email "header:
+  seq: 0
+  stamp: {secs: 0, nsecs: 0}
+  frame_id: ''
+subject: 'Daily workspace update fails'
+body: '$MAIL_BODY'
+sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
+receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
+smtp_server: ''
+smtp_port: ''
+attached_files: ['$LOGFILE']"

@@ -236,4 +236,7 @@
     </rosparam>
   </node>
 
+  <!-- send email -->
+  <node name="send_mail" pkg="jsk_robot_startup" type="email_topic.py" output="screen" />
+
 </launch>
