@@ -16,7 +16,7 @@ cd $HOME/ros/melodic
 catkin clean aques_talk collada_urdf_jsk_patch -y
 catkin init
 catkin config -DCMAKE_BUILD_TYPE=Release
-catkin build -v
+catkin build
 CATKIN_BUILD_RESULT=$?
 # Send mail
 MAIL_BODY=""
