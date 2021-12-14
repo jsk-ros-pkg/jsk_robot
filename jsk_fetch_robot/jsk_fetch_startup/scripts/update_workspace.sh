@@ -27,15 +27,17 @@ if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
     MAIL_BODY=$MAIL_BODY"Please catkin build workspace manually."
 fi
 set +x
-} > $LOGFILE 2>&1
-rostopic pub -1 /email jsk_robot_startup/Email "header:
-  seq: 0
-  stamp: {secs: 0, nsecs: 0}
-  frame_id: ''
-subject: 'Daily workspace update fails'
-body: '$MAIL_BODY'
-sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
-receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
-smtp_server: ''
-smtp_port: ''
-attached_files: ['$LOGFILE']"
+} 2>&1 | tee $LOGFILE
+if [ -n "$MAIL_BODY" ]; then
+    rostopic pub -1 /email jsk_robot_startup/Email "header:
+      seq: 0
+      stamp: {secs: 0, nsecs: 0}
+      frame_id: ''
+    subject: 'Daily workspace update fails'
+    body: '$MAIL_BODY'
+    sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
+    receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
+    smtp_server: ''
+    smtp_port: ''
+    attached_files: ['$LOGFILE']"
+fi
