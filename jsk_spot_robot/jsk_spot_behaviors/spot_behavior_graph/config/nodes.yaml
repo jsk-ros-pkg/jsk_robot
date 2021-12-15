@@ -224,6 +224,14 @@ nodes:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
         id: 'sacked-tomcat-wpzX0UCSooUeKol.CShTqQ=='
         localization_method: 'waypoint'
+  'eng2_CampusMail':
+    name_en: 'CampusMail'
+    name_jp:
+      - '学内便'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
+        id: 'jovial-civet-OPcK4EyGMTkxjZg04nuO.Q=='
+        localization_method: 'waypoint'
   'eng2_3F_door_inside':
     waypoints_on_graph:
       - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
