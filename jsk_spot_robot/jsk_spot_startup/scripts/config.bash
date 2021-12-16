@@ -11,6 +11,10 @@ WIFI_AP_IP=10.42.0.1
 rossetmaster $WIFI_AP_IP
 rossetip $WIFI_AP_IP
 
+# Speaker and Microphone device settings
+# export DEVICE_SPEAKER='hw:1,0'
+# export DEVICE_MICROPHONE='hw:1,0'
+
 # ROS CONSOLE
 export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
 
