@@ -26,6 +26,8 @@ class CrosswalkBehavior(BaseBehavior):
 
         rospy.logdebug('run_initial() called')
 
+        self.silent_mode = rospy.get_param('~silent_mode', True)
+
         # launch recognition launch
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch_path = rospkg.RosPack().get_path('spot_basic_behaviors') +\
@@ -102,7 +104,8 @@ class CrosswalkBehavior(BaseBehavior):
                 return False
 
         # checking if there is a moving car visible or not
-        self.sound_client.say('車が通るかみています', blocking=True)
+        if not self.silent_mode:
+            self.sound_client.say('車が通るかみています', blocking=True)
         safety_count = 0
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
@@ -114,7 +117,8 @@ class CrosswalkBehavior(BaseBehavior):
                 rospy.loginfo('car visible: {}'.format(self.car_state_visible))
                 if self.car_state_visible == True:
                     safety_count = 0
-                    self.sound_client.say('車が通ります', blocking=True)
+                    if not self.silent_mode:
+                        self.sound_client.say('車が通ります', blocking=True)
                 else:
                     safety_count += 1
             except Exception as e:
@@ -124,7 +128,8 @@ class CrosswalkBehavior(BaseBehavior):
         # start leading
         success = False
         rate = rospy.Rate(10)
-        self.sound_client.say('移動します', blocking=True)
+        if not self.silent_mode:
+            self.sound_client.say('移動します', blocking=True)
         self.spot_client.navigate_to(end_id, blocking=False)
         while not rospy.is_shutdown():
             rate.sleep()
@@ -136,7 +141,8 @@ class CrosswalkBehavior(BaseBehavior):
 
         # recovery on failure
         if not success:
-            self.sound_client.say('失敗したので元に戻ります', blocking=True)
+            if not self.silent_mode:
+                self.sound_client.say('失敗したので元に戻ります', blocking=True)
             self.spot_client.navigate_to(start_id, blocking=True)
             self.spot_client.wait_for_navigate_to_result()
 

@@ -43,6 +43,8 @@ class ElevatorBehavior(BaseBehavior):
 
         rospy.logdebug('run_initial() called')
 
+        self.silent_mode = rospy.get_param('~silent_mode', True)
+
         # launch recognition launch
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch_path = rospkg.RosPack().get_path('spot_basic_behaviors') +\
@@ -202,7 +204,8 @@ class ElevatorBehavior(BaseBehavior):
 
         # start navigation to rest point
         rate = rospy.Rate(10)
-        self.sound_client.say('エレベータに乗り込みます。ご注意ください。', blocking=False)
+        if not self.silent_mode:
+            self.sound_client.say('エレベータに乗り込みます。ご注意ください。', blocking=False)
         self.spot_client.navigate_to(rest_waypoint_id, blocking=False)
         # call elevator from destination floor while
         rospy.loginfo('calling elevator when getting off...')
@@ -230,7 +233,8 @@ class ElevatorBehavior(BaseBehavior):
         else:
             rospy.loginfo('Riding on succeded.')
 
-        self.sound_client.say('{}階に行きます'.format(end_floor), blocking=False)
+        if not self.silent_mode:
+            self.sound_client.say('{}階に行きます'.format(end_floor), blocking=False)
 
         # start door openning check from inside
         self.subscriber_door_check = rospy.Subscriber(

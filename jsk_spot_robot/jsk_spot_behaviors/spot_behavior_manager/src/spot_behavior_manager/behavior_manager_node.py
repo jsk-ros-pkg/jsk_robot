@@ -32,6 +32,9 @@ class BehaviorManagerNode(object):
         self.pre_edge = None
         self.anchor_pose = None
 
+        # silent mode
+        self.silent_mode = rospy.get_param('~silent_mode', False)
+
         #
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
@@ -149,14 +152,16 @@ class BehaviorManagerNode(object):
             if path is None:
                 rospy.logerr('No path from {} to {}'.format(
                     self.current_node_id, goal.target_node_id))
-                self.sound_client.say('パスが見つかりませんでした')
+                if not self.silent_mode:
+                    self.sound_client.say('パスが見つかりませんでした')
                 result = LeadPersonResult(
                     success=False, message='No path found')
                 self.server_execute_behaviors.set_aborted(result)
                 return
             else:
                 # navigation of edges in the path
-                self.sound_client.say('目的地に向かいます', blocking=True)
+                if not self.silent_mode:
+                    self.sound_client.say('目的地に向かいます', blocking=True)
                 self.go_back_to_anchor_pose()
                 success_navigation = True
                 for edge in path:
@@ -170,8 +175,9 @@ class BehaviorManagerNode(object):
                             self.set_anchor_pose()
                         else:
                             rospy.logwarn('Edge {} failed'.format(edge))
-                            self.sound_client.say(
-                                '移動に失敗しました。経路を探索し直します。', blocking=True)
+                            if not self.silent_mode:
+                                self.sound_client.say(
+                                    '移動に失敗しました。経路を探索し直します。', blocking=True)
                             self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
                             current_graph.remove_edge(
                                 edge.node_id_from, edge.node_id_to)
@@ -180,7 +186,8 @@ class BehaviorManagerNode(object):
                     except Exception as e:
                         rospy.logerr(
                             'Got an error while navigating edge {}: {}'.format(edge, e))
-                        self.sound_client.say('エラーが発生しました', blocking=True)
+                        if not self.silent_mode:
+                            self.sound_client.say('エラーが発生しました', blocking=True)
                         self.pre_edge = None
                         result = LeadPersonResult(
                             success=False,
@@ -193,7 +200,8 @@ class BehaviorManagerNode(object):
                     break
 
         rospy.loginfo('Goal Reached!')
-        self.sound_client.say('目的地に到着しました.', blocking=True)
+        if not self.silent_mode:
+            self.sound_client.say('目的地に到着しました.', blocking=True)
         result = LeadPersonResult(success=True, message='Goal Reached.')
         self.server_execute_behaviors.set_succeeded(result)
         self.set_anchor_pose()
@@ -220,7 +228,8 @@ class BehaviorManagerNode(object):
         except Exception as e:
             rospy.logerr(
                 'Failed to load and initialize behavior class: {}'.format(e))
-            self.sound_client.say('行動クラスを読み込めませんでした', blocking=True)
+            if not self.silent_mode:
+                self.sound_client.say('行動クラスを読み込めませんでした', blocking=True)
             self.pre_edge = None
             return False
 
