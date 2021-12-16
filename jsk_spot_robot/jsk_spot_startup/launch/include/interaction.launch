@@ -6,12 +6,24 @@
 
     <!-- sound_play for english -->
     <node pkg="sound_play" type="soundplay_node.py" name="sound_play" respawn="true">
+        <rosparam subst_value="true">
+            device: $(optenv DEVICE_SPEAKER default)
+        </rosparam>
         <remap from="sound_play" to="robotsound" />
+    </node>
+
+    <node pkg="sound_play" type="soundplay_node.py" name="sound_play_jp" respawn="true">
+        <rosparam subst_value="true">
+            device: $(optenv DEVICE_SPEAKER default)
+        </rosparam>
+        <remap from="robotsound" to="robotsound_jp"/>
+        <remap from="sound_play" to="robotsound_jp"/>
+        <env name="PATH" value="$(find voice_text)/bin:$(env PATH)" />
     </node>
 
     <!-- sound_play for japanese (aques_talk) -->
     <include file="$(find voice_text)/launch/voice_text.launch">
-        <arg name="launch_sound_play" value="true" />
+        <arg name="launch_sound_play" value="false" />
         <arg name="sound_play_respawn" value="true" />
     </include>
 
