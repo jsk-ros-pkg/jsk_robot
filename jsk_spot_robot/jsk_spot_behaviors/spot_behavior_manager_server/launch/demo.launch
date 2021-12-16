@@ -32,6 +32,7 @@
             initial_node_id: '$(arg initial_node_id)'
             action_names_synchronizer:
                 - '/spot_person_lead_server/execute_behaviors'
+            silent_mode: true
         </rosparam>
     </node>
 
@@ -58,6 +59,7 @@
             initial_node_id: '$(arg initial_node_id)'
             action_names_synchronizer:
                 - '/spot_behavior_manager_server/execute_behaviors'
+            silent_mode: true
         </rosparam>
     </node>
 </launch>

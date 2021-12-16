@@ -10,6 +10,7 @@ class WalkBehavior(BaseBehavior):
     def run_initial(self, start_node, end_node, edge, pre_edge):
 
         rospy.logdebug('run_initial() called')
+        self.silent_mode = rospy.get_param('~silent_mode', True)
         return True
 
     def run_main(self, start_node, end_node, edge, pre_edge):
@@ -58,7 +59,8 @@ class WalkBehavior(BaseBehavior):
         # start navigation
         success = False
         rate = rospy.Rate(10)
-        self.sound_client.say('移動します', blocking=True)
+        if not self.silent_mode:
+            self.sound_client.say('移動します', blocking=True)
         self.spot_client.navigate_to(end_id, blocking=False)
         while not rospy.is_shutdown():
             rate.sleep()
@@ -70,7 +72,8 @@ class WalkBehavior(BaseBehavior):
 
         # recovery on failure
         if not success:
-            self.sound_client.say('失敗したので元に戻ります', blocking=True)
+            if not self.silent_mode:
+                self.sound_client.say('失敗したので元に戻ります', blocking=True)
             self.spot_client.navigate_to(start_id, blocking=True)
             self.spot_client.wait_for_navigate_to_result()
 
