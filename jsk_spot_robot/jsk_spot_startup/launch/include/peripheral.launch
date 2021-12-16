@@ -22,7 +22,7 @@
         >
         <rosparam subst_value="true">
             bitrate: 128
-            device: default
+            device: $(optenv DEVICE_MICROPHONE default)
             channels: 1
             sample_rate: 16000
             sample_format: S16LE
