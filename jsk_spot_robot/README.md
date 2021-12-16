@@ -88,6 +88,14 @@ TODO
 
 TODO
 
+### VNC Server
+
+You can access VNC Server of Spot PC.
+Ports are below.
+
+- Belka: 5100
+- Strelka: 21000
+
 ### Development with a remote PC
 
 Please create `spot_ws` to your PC.
