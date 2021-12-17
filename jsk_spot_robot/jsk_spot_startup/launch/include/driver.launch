@@ -80,6 +80,7 @@
       type="battery_notifier.py"
       name="battery_notifier"
       >
+      <remap from="~start_app" to="/robot/start_app" />
   </node>
 
   <node
