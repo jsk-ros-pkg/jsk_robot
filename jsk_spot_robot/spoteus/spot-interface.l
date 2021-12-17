@@ -332,7 +332,19 @@
         (send msg :data))
       ))
   (:set-current-spot (node_id)
-    "set current node id"
+    "
+    Set current node id
+    Args:
+      node_id (string): set current node name written
+                        in spot_behavior_graph/config/nodes.yaml
+    Returns:
+      bool: Return t if \'rosservice call\' succeed.
+            Note that this return does not mean that
+            Spot was able to recognize the correct position.
+    Examples:
+      (send self :set-current-spot \"eng2_73B2\")
+      (send self :set-current-spot \"eng2_JSKEntrance\")
+    "
     (call-reset-current-node-service
      "/spot_behavior_manager_server/reset_current_node_id" node_id))
   (:body-pose
