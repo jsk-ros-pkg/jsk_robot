@@ -7,6 +7,7 @@
 (ros::roseus-add-msgs "spot_msgs")
 (ros::roseus-add-srvs "spot_msgs")
 (ros::roseus-add-msgs "spot_behavior_manager_msgs")
+(ros::roseus-add-srvs "spot_behavior_manager_msgs")
 
 (defun call-trigger-service (srvname &key (wait nil))
   "Call std_srv/Trigger service"
