@@ -46,7 +46,7 @@ nn    (if wait (ros::wait-for-service srvname))
   (let (r)
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance spot_behavior_manager_msgs::ResetCurrentNodeRequest :init :current_node_id current_node_id)))
-    (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
+    (ros::ros-info "Call \"~A\" Set current spot: ~A" srvname current_node_id)
     (send r :success)))
 
 (defclass spot-interface
