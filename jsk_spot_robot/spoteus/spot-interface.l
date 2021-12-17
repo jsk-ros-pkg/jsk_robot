@@ -45,7 +45,11 @@ nn    (if wait (ros::wait-for-service srvname))
   "Call spot_behavior_manager_msgs/ResetCurrentNode service"
   (let (r)
     (if wait (ros::wait-for-service srvname))
-    (setq r (ros::service-call srvname (instance spot_behavior_manager_msgs::ResetCurrentNodeRequest :init :current_node_id current_node_id)))
+    (setq r (ros::service-call
+             srvname
+             (instance spot_behavior_manager_msgs::ResetCurrentNodeRequest
+                       :init
+                       :current_node_id current_node_id)))
     (ros::ros-info "Call \"~A\" Set current spot: ~A" srvname current_node_id)
     (send r :success)))
 
@@ -329,7 +333,8 @@ nn    (if wait (ros::wait-for-service srvname))
       ))
   (:set-current-spot (node_id)
     "set current node id"
-    (call-set-current-spot-service "/spot_behavior_manager_server/reset_current_node_id" node_id))
+    (call-reset-current-node-service
+     "/spot_behavior_manager_server/reset_current_node_id" node_id))
   (:body-pose
    ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
     (pose &key (topic-name "/spot/body_pose"))
