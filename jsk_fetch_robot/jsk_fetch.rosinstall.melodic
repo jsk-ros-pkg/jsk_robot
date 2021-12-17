@@ -41,16 +41,17 @@
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
     version: master
-# we need to use the development branch (throttle-insta360 branch in 708yamaguchi's fork)
-# Restore jsk-ros-pkg/jsk_recognition master branch if https://github.com/jsk-ros-pkg/jsk_recognition/pull/2596 is merged.
+# we need to use the development branch until PR below are merged.
+#  - https://github.com/jsk-ros-pkg/jsk_recognition/pull/2642
+# Restore jsk-ros-pkg/jsk_recognition master branch when the PRs are merged.
 # - git:
 #     local-name: jsk-ros-pkg/jsk_recognition
 #     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
 #     version: master
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
-    uri: https://github.com/708yamaguchi/jsk_recognition.git
-    version: throttle-insta360
+    uri: https://github.com/sktometometo/jsk_recognition.git
+    version: develop/fetch
 # we need to use the development branch (fetch15 branch in knorth55's fork)
 # until it is merged to master
 - git:
