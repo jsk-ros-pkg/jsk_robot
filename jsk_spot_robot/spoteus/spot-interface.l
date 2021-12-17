@@ -20,7 +20,7 @@
 (defun call-set-bool-service (srvname data &key (wait nil))
   "Call std_srv/Trigger service"
   (let (r)
-nn    (if wait (ros::wait-for-service srvname))
+    (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance std_srvs::SetBoolRequest :init :data data)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
     (send r :success)))
