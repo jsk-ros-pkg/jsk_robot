@@ -11,12 +11,15 @@ WIFI_AP_IP=10.42.0.1
 rossetmaster $WIFI_AP_IP
 rossetip $WIFI_AP_IP
 
+# Robot Name
+# export ROBOT_NAME=
+
 # Speaker and Microphone device settings
 # export DEVICE_SPEAKER='hw:1,0'
 # export DEVICE_MICROPHONE='hw:1,0'
 
 # ROS CONSOLE
-export ROSCONSOLE_FORMAT='[${severity}] [${time}] [${node}]: ${message}'
+export ROSCONSOLE_FORMAT='[${severity}] [WallTime: ${time}] [node:${node}] [func:${function}]: ${message}'
 
 # Config files
 # export APP_SCHEDULE_YAML=/path/to/app_schedule.yaml
