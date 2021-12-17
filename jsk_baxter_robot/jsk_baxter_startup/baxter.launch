@@ -29,6 +29,9 @@
   <arg name="arm_control_mode" default="position_w_id"
        doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
   <arg name="USER_NAME" default="false"/>
+
+  <param name="/robot/name" value="baxter" />
+  <param name="/robot/type" value="baxter" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- custom baxter params -->
