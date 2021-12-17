@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer for JSK SpotKinova Utils Kinova Rest Service
+
+[Timer]
+OnCalendar = *-*-* 07:10:00
+
+[Install]
+WantedBy=timers.target
