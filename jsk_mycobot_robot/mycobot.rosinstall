@@ -1,0 +1,8 @@
+- git:
+    local-name: jsk_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
+- git:
+    local-name: mycobot_ros
+    uri: https://github.com/tongtybj/mycobot_ros.git
+    version: interface

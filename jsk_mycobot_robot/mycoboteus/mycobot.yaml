@@ -1,0 +1,15 @@
+rarm:
+  - joint1 : joint1 # special kinemtic model, I can't mapping to general arm skeleton model
+  - joint2 : joint2
+  - joint3 : joint3
+  - joint4 : joint4
+  - joint5 : joint5
+  - joint6 : joint6
+
+angle-vector:
+  reset-pose: [0, 0, 0, 0, 0, 0]
+
+rarm-end-coords:
+  parent: link7
+  translate: [0, 0, 0.05]
+  rotate: [0.5, -0.5, 0.5, 120]
