@@ -2,6 +2,10 @@
     local-name: jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
     version: master
+# the repository of mycobot driver
+# this repositoy is under construction now
+# so we need to use the pathed branch instead of the master branch
+# PR: https://github.com/elephantrobotics/mycobot_ros/pull/48
 - git:
     local-name: mycobot_ros
     uri: https://github.com/tongtybj/mycobot_ros.git
