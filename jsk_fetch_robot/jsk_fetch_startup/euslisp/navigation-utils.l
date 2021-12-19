@@ -9,6 +9,7 @@
 (ros::load-ros-manifest "jsk_robot_startup")
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "power_msgs")
+(ros::load-ros-manifest "sensor_msgs")
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
@@ -314,6 +315,18 @@ Args:
   (ros::ros-info "room light is off.")
   (send *ri* :speak-jp "電気が消えています。" :wait t))
 
+(defun take-photo (file-name
+                   &optional (image-topic "/edgetpu_object_detector/output/image"))
+  (let ((img nil))
+    (unix::system (format nil "rm -f /tmp/~A" file-name))
+    (setq img (one-shot-subscribe image-topic sensor_msgs::Image :timeout 1000))
+    (if img
+        (progn
+          (write-image-file (format nil "/tmp/~A" file-name)
+                            (ros::sensor_msgs/Image->image img))
+          (ros::ros-info "taking a photo ~A" file-name))
+        (ros::ros-error "fail saving image"))))
+
 (defun notify-recognition (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/edgetpu_object_detector/output/class"
                                   jsk_recognition_msgs::ClassificationResult))
@@ -379,6 +392,7 @@ Args:
         (send *ri* :wait-interpolation)
         (tweet-string "I took a photo of 73B2 trash can inside." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (take-photo "trashcan_inside.jpg")
         (notify-recognition :location "trash cans inside")
         (send *ri* :go-pos-unsafe -0.2 0 0))
     (progn
