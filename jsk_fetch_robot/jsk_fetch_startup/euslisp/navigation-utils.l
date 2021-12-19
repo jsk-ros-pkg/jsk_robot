@@ -10,6 +10,7 @@
 (ros::load-ros-manifest "jsk_robot_startup")
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "power_msgs")
+(ros::load-ros-manifest "sensor_msgs")
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
