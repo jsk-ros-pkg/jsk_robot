@@ -3,10 +3,7 @@
 import rospy
 from diagnostic_msgs.msg import DiagnosticArray
 
-hoge = None
-
 def callback(data):
-    global hoge
     flag = False
     for e in data.status:
         #EtherCAT Device
