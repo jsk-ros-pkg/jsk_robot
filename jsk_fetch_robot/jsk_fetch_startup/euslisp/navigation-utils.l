@@ -402,6 +402,25 @@ Args:
                   location
                   (format nil "CO2 concentration is ~A ppm" (send msg :data))))))
 
+(defun notify-trashcan-occupancy (&key (location "kitchen"))
+  (let* ((msg (one-shot-subscribe "/trashbin_occupancy_detect/trashbin/occupancy"
+                                  jsk_recognition_msgs::BoundingBoxArray
+                                  :timeout 3000))
+         (occupancy (send msg :boxes :value))
+         (notify-text nil))
+    (when occupancy
+      (ros::ros-info
+       (format nil "Notify app that the occupancy of trash can is measured."))
+      (if (> occupancy 1.0)
+        (setq notify-text "Trashcan occupancy is full.")
+        (setq notify-text "Trashcan occupancy is not full."))
+      (notify-app "trashcan occupancy"
+                  (ros::time-now)
+                  location
+                  (format nil "~A Trashcan occupancy is ~A%."
+                              notify-text
+                              (* 100 occupancy))))))
+
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
   (if tweet
@@ -572,6 +591,7 @@ Args:
           (ros::publish "/photo_taken" img))
         (take-photo "trashcan_inside.jpg")
         (notify-recognition :location "trash cans inside")
+        (notify-trashcan-occupancy :location "trash can")
         (send *ri* :go-pos-unsafe -0.2 0 0))
     (progn
       (notify-recognition :location "trash cans"))))
