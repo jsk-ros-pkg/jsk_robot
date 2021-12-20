@@ -29,7 +29,7 @@ Use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 mkdir -p ~/mycobot_ws/src
 cd ~/mycobot_ws/src
 wstool init
-wstool merge https://raw.githubusercontent.com/tongtybj/jsk_robot/PR/mycobot/eus/jsk_mycobot_robot/mycobot.rosinstall
+wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_mycobot_robot/mycobot.rosinstall
 wstool update
 cd ../
 source /opt/ros/melodic/setup.bash
