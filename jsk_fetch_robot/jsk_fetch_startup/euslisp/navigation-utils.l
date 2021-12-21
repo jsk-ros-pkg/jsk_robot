@@ -350,10 +350,10 @@ Args:
                   (format nil "CO2 concentration is ~A ppm" (send msg :data))))))
 
 (defun notify-trashcan-occupancy (&key (location "kitchen"))
-  (let* ((msg (one-shot-subscribe "/trashbin_occupancy_detect/trashbin/occupancy"
+  (let* ((msg (one-shot-subscribe "/trashbin_occupancy_detector/trashbin/occupancy"
                                   jsk_recognition_msgs::BoundingBoxArray
                                   :timeout 3000))
-         (occupancy (send msg :boxes :value))
+         (occupancy (send (elt (send msg :boxes) 0) :value))
          (notify-text nil))
     (when occupancy
       (ros::ros-info
