@@ -161,6 +161,7 @@
     <param name="relative_pose" value="0 0 0 0 0 0 1" />
     <param name="error_threshold" value="50.0" />
     <param name="publish_tf" value="true" />
+    <param name="viewer_window" value="false" />
     <!-- remap topic names -->
     <remap from="ImageFeature0D" to="$(arg DEFAULT_NAMESPACE)/ImageFeature0D" />
     <remap from="ObjectDetection" to="~ObjectDetection" />
