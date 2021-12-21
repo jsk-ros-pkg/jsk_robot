@@ -359,14 +359,14 @@ Args:
       (ros::ros-info
        (format nil "Notify app that the occupancy of trash can is measured."))
       (if (> occupancy 1.0)
-        (setq notify-text "Trashcan occupancy is full.")
-        (setq notify-text "Trashcan occupancy is not full."))
+        (setq notify-text "Trashcan is full.")
+        (setq notify-text "Trashcan is not full."))
       (notify-app "trashcan occupancy"
                   (ros::time-now)
                   location
-                  (format nil "~A Trashcan occupancy is ~A%."
+                  (format nil "~A Trashcan occupancy is ~A"
                               notify-text
-                              (* 100 occupancy))))))
+                              occupancy)))))
 
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
