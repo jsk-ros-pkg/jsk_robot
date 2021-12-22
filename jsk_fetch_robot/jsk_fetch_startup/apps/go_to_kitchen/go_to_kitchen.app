@@ -112,6 +112,14 @@ plugins:
         - name: "/move_base/cancel"
           pkg: actionlib_msgs
           type: GoalID
+  - name: shutdown_plugin
+    type: app_publisher/rostopic_publisher_plugin
+    plugin_args:
+      stop_topics:
+        - name: "/shutdown"
+          pkg: std_msgs
+          type: Empty
+          cond: fail
 plugin_order:
   start_plugin_order:
     - move_base_cancel_plugin
@@ -124,6 +132,7 @@ plugin_order:
     - gdrive_uploader_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
+    - shutdown_plugin
   stop_plugin_order:
     - move_base_cancel_plugin
     - head_camera_video_recorder_plugin
@@ -135,3 +144,4 @@ plugin_order:
     - gdrive_uploader_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
+    - shutdown_plugin
