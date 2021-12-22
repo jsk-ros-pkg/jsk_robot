@@ -488,7 +488,7 @@ Args:
             (:move-to-sink-front -> :inspect-kitchen)
             (:move-to-sink-front !-> :report-move-to-sink-front-failure)
             ;;(:inspect-kitchen -> :auto-dock)
-            ;;(:report-move-to-sink-front-failure -> :auto-dock)
+            (:report-move-to-sink-front-failure -> :auto-dock)
             (:inspect-kitchen -> :move-to-trashcan-front)
             (:move-to-trashcan-front -> :inspect-trashcan)
             (:move-to-trashcan-front !-> :report-move-to-trashcan-front-failure)
