@@ -315,6 +315,12 @@ Args:
   (ros::ros-info "room light is off.")
   (send *ri* :speak-jp "電気が消えています。" :wait t))
 
+
+(defun report-auto-dock-failure ()
+  (ros::ros-error "failed auto-docking")
+  (send *ri* :speak-jp "ドックに失敗しました。" :wait t))
+
+
 (defun take-photo (file-name
                    &optional (image-topic "/edgetpu_object_detector/output/image"))
   (let ((img nil))
@@ -495,6 +501,8 @@ Args:
             (:inspect-trashcan -> :auto-dock)
             (:report-move-to-trashcan-front-failure -> :auto-dock)
             (:auto-dock -> :room-light-off)
+            (:auto-dock !-> :auto-dock-failure)
+            (:auto-dock-failure -> :room-light-off)
             (:room-light-off -> :finish)
             (:finish -> t)
             (:finish !-> nil))
@@ -560,6 +568,10 @@ Args:
                         (success (auto-dock :n-trial n-trial :clear-costmap nil)))
                    (setf (cdr (assoc 'success-auto-dock userdata)) success)
                    success)))
+            (:auto-dock-failure
+              '(lambda (userdata)
+                 (report-auto-dock-failure)
+                 t))
             (:room-light-off
               '(lambda (userdata)
                  (let ((success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
