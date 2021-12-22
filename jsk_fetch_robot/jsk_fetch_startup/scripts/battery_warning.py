@@ -13,7 +13,7 @@ class BatteryWarning(object):
         self.client_en = SoundClient(sound_action='/sound_play', blocking=True)
         self.client_jp = SoundClient(sound_action='/robotsound_jp', blocking=True)
         self.duration = rospy.get_param('~duration', 180.0)
-        self.threshold = rospy.get_param('~charge_level_threshold', 40.0)
+        self.threshold = rospy.get_param('~charge_level_threshold', 80.0)
         self.step = rospy.get_param('~charge_level_step', 10.0)
         self.volume = rospy.get_param('~volume', 1.0)
         self.subscriber = rospy.Subscriber(
