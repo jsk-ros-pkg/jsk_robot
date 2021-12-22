@@ -119,7 +119,7 @@ plugins:
         - name: "/shutdown"
           pkg: std_msgs
           type: Empty
-          cond: timeout
+          cond: fail
 plugin_order:
   start_plugin_order:
     - move_base_cancel_plugin
