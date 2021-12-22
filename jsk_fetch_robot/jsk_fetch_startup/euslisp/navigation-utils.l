@@ -707,6 +707,8 @@ Args:
             (:inspect-trashcan -> :auto-dock)
             (:report-move-to-trashcan-front-failure -> :auto-dock)
             (:auto-dock -> :room-light-off)
+            (:auto-dock !-> :auto-dock-failure)
+            (:auto-dock-failure -> :room-light-off)
             (:room-light-off -> :finish)
             (:finish -> t)
             (:finish !-> nil))
