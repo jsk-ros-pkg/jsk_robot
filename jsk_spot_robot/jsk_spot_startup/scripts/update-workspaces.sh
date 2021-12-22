@@ -4,6 +4,8 @@ WORKSPACE_SPOT_DRIVER=/home/spot/spot_driver_ws
 WORKSPACE_SPOT_CORAL=/home/spot/spot_coral_ws
 WORKSPACE_SPOT=/home/spot/spot_ws
 
+sudo apt-get update -y && sudo apt-get upgrade -y
+
 if [ -e $WORKSPACE_SPOT_DRIVER ]; then
     cd $WORKSPACE_SPOT_DRIVER/src
     wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall --merge-replace --confirm-all
