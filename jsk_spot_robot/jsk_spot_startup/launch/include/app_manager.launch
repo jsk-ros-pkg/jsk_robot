@@ -8,6 +8,7 @@
   <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
   <arg name="basic_yaml_file" default="$(optenv ROSWWW_BASIC_KEYS_YAML)"/>
   <arg name="schedule_yaml_file" default="$(optenv APP_SCHEDULE_YAML)"/>
+  <arg name="dialogflow_hotword_yaml_file" default="$(optenv DIALOGFLOW_HOTWORD_YAML)"/>
 
   <arg name="robot_type" default="spot"/>
 
@@ -43,8 +44,8 @@
       use_tts: true
       project_id: $(arg project_id)
       timeout: 30.0
-      hotword: $(optenv DIALOGFLOW_HOTWORD ['ねえねえ','こんにちは'])
     </rosparam>
+    <rosparam command="load" ns="~hotword" file="$(arg dlalogflow_hotword_yaml_file)" />
   </node>
 
   <!-- task executive -->
