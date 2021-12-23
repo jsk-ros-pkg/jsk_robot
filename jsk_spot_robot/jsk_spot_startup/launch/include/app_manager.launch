@@ -45,7 +45,7 @@
       project_id: $(arg project_id)
       timeout: 30.0
     </rosparam>
-    <rosparam command="load" ns="~hotword" file="$(arg dialogflow_hotword_yaml_file)" />
+    <rosparam command="load" ns="/dialogflow_client/hotword" file="$(arg dialogflow_hotword_yaml_file)" />
   </node>
 
   <!-- task executive -->
