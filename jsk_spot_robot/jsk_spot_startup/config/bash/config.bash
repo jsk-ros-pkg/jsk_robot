@@ -13,6 +13,7 @@ rossetip $WIFI_AP_IP
 
 # Robot Name
 # export ROBOT_NAME=
+# export DIALOGFLOW_HOTWORD="['belca','ストレルカ','ねえねえ']"
 
 # Speaker and Microphone device settings
 # export DEVICE_SPEAKER='hw:1,0'
