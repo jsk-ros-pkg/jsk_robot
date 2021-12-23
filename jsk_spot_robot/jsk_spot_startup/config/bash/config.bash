@@ -13,7 +13,9 @@ rossetip $WIFI_AP_IP
 
 # Robot Name
 # export ROBOT_NAME=
+
 # export DIALOGFLOW_HOTWORD_YAML=/path/to/dialogflow_hotword.yaml
+# export DIALOGFLOW_WEBHOOK_CONFIG=/path/to/webhook.json
 
 # Speaker and Microphone device settings
 # export DEVICE_SPEAKER='hw:1,0'

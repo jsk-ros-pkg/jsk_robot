@@ -9,6 +9,7 @@
   <arg name="basic_yaml_file" default="$(optenv ROSWWW_BASIC_KEYS_YAML)"/>
   <arg name="schedule_yaml_file" default="$(optenv APP_SCHEDULE_YAML)"/>
   <arg name="dialogflow_hotword_yaml_file" default="$(optenv DIALOGFLOW_HOTWORD_YAML)"/>
+  <arg name="dialogflow_webhook_config" default="$(optenv DIALOGFLOW_WEBHOOK_CONFIG)"/>
 
   <arg name="robot_type" default="spot"/>
 
@@ -63,5 +64,7 @@
   <include
       if="$(arg use_webhook_server)"
       file="$(find dialogflow_task_executive)/launch/webhook_server.launch"
-      />
+      >
+      <arg name="webhook_config" value="$(arg dialogflow_webhook_config)"/>
+  </include>
 </launch>
