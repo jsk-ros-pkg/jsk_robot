@@ -4,26 +4,28 @@ Description=JSK Spot Auto Update Workspace
 [Service]
 Type=simple
 ExecStart=/bin/bash -c "\
-systemctl stop jsk-spot-ros-app-manager.service && \
-systemctl stop jsk-spot-ros-behavior-manager.service && \
-systemctl stop jsk-spot-ros-driver.service && \
-systemctl stop jsk-spot-ros-image-processing.service && \
-systemctl stop jsk-spot-ros-interaction.service && \
-systemctl stop jsk-spot-ros-object-detection.service && \
-systemctl stop jsk-spot-ros-peripheral.service && \
-systemctl stop jsk-spot-ros-recorder.service && \
-systemctl stop jsk-spot-ros-teleop.service && \
-systemctl stop roscore.service && \
+sudo systemctl stop jsk-spot-ros-app-manager.service && \
+sudo systemctl stop jsk-spot-ros-behavior-manager.service && \
+sudo systemctl stop jsk-spot-ros-driver.service && \
+sudo systemctl stop jsk-spot-ros-image-processing.service && \
+sudo systemctl stop jsk-spot-ros-interaction.service && \
+sudo systemctl stop jsk-spot-ros-object-detection.service && \
+sudo systemctl stop jsk-spot-ros-peripheral.service && \
+sudo systemctl stop jsk-spot-ros-recorder.service && \
+sudo systemctl stop jsk-spot-ros-teleop.service && \
+sudo systemctl stop roscore.service && \
 sleep 60 && \
-systemctl start jsk-spot-ros-app-manager.service && \
-systemctl start jsk-spot-ros-behavior-manager.service && \
-systemctl start jsk-spot-ros-driver.service && \
-systemctl start jsk-spot-ros-image-processing.service && \
-systemctl start jsk-spot-ros-interaction.service && \
-systemctl start jsk-spot-ros-object-detection.service && \
-systemctl start jsk-spot-ros-peripheral.service && \
-systemctl start jsk-spot-ros-recorder.service && \
-systemctl start jsk-spot-ros-teleop.service && \
-systemctl start roscore.service"
+sudo systemctl start jsk-spot-ros-app-manager.service && \
+sudo systemctl start jsk-spot-ros-behavior-manager.service && \
+sudo systemctl start jsk-spot-ros-driver.service && \
+sudo systemctl start jsk-spot-ros-image-processing.service && \
+sudo systemctl start jsk-spot-ros-interaction.service && \
+sudo systemctl start jsk-spot-ros-object-detection.service && \
+sudo systemctl start jsk-spot-ros-peripheral.service && \
+sudo systemctl start jsk-spot-ros-recorder.service && \
+sudo systemctl start jsk-spot-ros-teleop.service && \
+sudo systemctl start roscore.service"
 KillMode=control-group
 KillSignal=SIGTERM
+User=spot
+Group=spot
