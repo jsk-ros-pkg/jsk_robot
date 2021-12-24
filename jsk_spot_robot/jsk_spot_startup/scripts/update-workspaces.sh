@@ -23,6 +23,7 @@ function update_and_build () {
         else
             echo "Updating of $WORKSPACE failed.\n" >> $MAIL_BODY_FILE
             echo "Updating of $WORKSPACE failed.\n"
+        fi
         catkin build --no-status -j4 --continue-on-failure 2>&1 | tee $BUILD_LOG
         if [ $? -eq 0 ]; then
             echo "Building of $WORKSPACE succeeded.\n" >> $MAIL_BODY_FILE
