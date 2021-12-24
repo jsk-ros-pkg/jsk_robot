@@ -13,7 +13,7 @@ if [ -e $WORKSPACE_SPOT_DRIVER ]; then
     cd $WORKSPACE_SPOT_DRIVER/src
     wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall --merge-replace --confirm-all
     wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
-    catkin build --no-status -j4 --continue-on-failure > /tmp/build_spot_driver.log 2>&1
+    catkin build --no-status -j4 --continue-on-failure 2>&1 | tee /tmp/build_spot_driver.log
     if [ $? -eq 0 ]; then
         echo "Updating and building of $WORKSPACE_SPOT_DRIVER succeeded.\n" >> $MAIL_BODY_FILE
         echo "Updating and building of $WORKSPACE_SPOT_DRIVER succeeded.\n"
@@ -31,7 +31,7 @@ if [ -e $WORKSPACE_SPOT_CORAL ]; then
     cd $WORKSPACE_SPOT_CORAL/src
     wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall --merge-replace --confirm-all
     wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
-    catkin build --no-status -j4 --continue-on-failure > /tmp/build_spot_coral.log 2>&1
+    catkin build --no-status -j4 --continue-on-failure 2>&1 | tee /tmp/build_spot_coral.log
     if [ $? -eq 0 ]; then
         echo "Updating and building of $WORKSPACE_SPOT_CORAL succeeded.\n" >> $MAIL_BODY_FILE
         echo "Updating and building of $WORKSPACE_SPOT_CORAL succeeded.\n"
@@ -49,8 +49,7 @@ if [ -e $WORKSPACE_SPOT ]; then
     cd $WORKSPACE_SPOT/src
     wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_dev.rosinstall --merge-replace --confirm-all
     wstool update -t . -j 4 -m 60 --delete-changed-uris --continue-on-error
-    catkin build --no-status -j4 --continue-on-failure > /tmp/build_spot.log 2>&1
-    cat /tmp/bulid_spot.log
+    catkin build --no-status -j4 --continue-on-failure 2>&1 | tee /tmp/build_spot.log
     if [ $? -eq 0 ]; then
         echo "Updating and building of $WORKSPACE_SPOT succeeded.\n" >> $MAIL_BODY_FILE
         echo "Updating and building of $WORKSPACE_SPOT succeeded.\n"
