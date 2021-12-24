@@ -1,5 +1,5 @@
 [Unit]
-Description=JSK Spot Auto Update Workspace
+Description=JSK Spot Auto Service Restart
 
 [Service]
 Type=simple
