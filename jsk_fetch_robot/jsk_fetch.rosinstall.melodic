@@ -60,12 +60,10 @@
     local-name: jsk-ros-pkg/jsk_robot
     uri: https://github.com/knorth55/jsk_robot.git
     version: fetch15
-# Use https://github.com/knorth55/app_manager_utils master branch
-# after https://github.com/knorth55/app_manager_utils/pull/40 is merged
 - git:
     local-name: knorth55/app_manager_utils
-    uri: https://github.com/708yamaguchi/app_manager_utils
-    version: fetch15
+    uri: https://github.com/knorth55/app_manager_utils
+    version: master
 - git:
     local-name: locusrobotics/catkin_virtualenv
     uri: https://github.com/locusrobotics/catkin_virtualenv.git
