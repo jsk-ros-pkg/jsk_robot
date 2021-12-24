@@ -27,6 +27,11 @@
   <arg name="machine" default="localhost"/>
   <arg name="respawn" default="true"/>
 
+  <arg name="enable_app_replacement" default="false"
+       doc="Enable app replacement by running another app, or not" />
+  <arg name="skip_topic_remapping" default="false"
+       doc="Skip name remapping of topic written in interface to app_manager namespace , or not" />
+
   <!--
   Even if you don't want to use machine tag, machine name still need to be set.
   If remote is false, machine named 'localhost' is added to be run on local machine.
@@ -66,8 +71,7 @@
     <arg name="use_applist" value="$(arg use_applist)"/>
     <arg name="applist" value="$(arg applist)"/>
     <arg name="respawn" value="$(arg respawn)"/>
+    <arg name="enable_app_replacement" value="$(arg enable_app_replacement)"/>
+    <arg name="skip_topic_remapping" value="$(arg skip_topic_remapping)"/>
   </include>
-  <rosparam ns="app_manager">
-    enable_app_replacement: false
-  </rosparam>
 </launch>
