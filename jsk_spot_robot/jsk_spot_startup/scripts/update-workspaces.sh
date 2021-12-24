@@ -44,14 +44,13 @@ update_and_build $WORKSPACE_SPOT_DRIVER /tmp/update_spot_driver.log /tmp/build_s
 update_and_build $WORKSPACE_SPOT_CORAL /tmp/update_spot_coral.log /tmp/build_spot_coral.log
 update_and_build $WORKSPACE_SPOT /tmp/update_spot.log /tmp/build_spot.log
 
-(uuencode \
-    /tmp/update_spot_driver.log \
-    /tmp/update_spot_coral.log \
-    /tmp/update_spot.log \
-    /tmp/build_spot_driver.log \
-    /tmp/build_spot_coral.log \
-    /tmp/build_spot.log ; \
-    cat $MAIL_BODY_FILE ) | \
+(uuencode /tmp/update_spot_driver.log /tmp/update_spot_driver.log;\
+ uuencode /tmp/update_spot_coral.log /tmp/update_spot_coral.log;\
+ uuencode /tmp/update_spot.log /tmp/update_spot.log;\
+ uuencode /tmp/build_spot_driver.log /tmp/build_spot_driver.log;\
+ uuencode /tmp/build_spot_coral.log /tmp/build_spot_coral.log;\
+ uuencode /tmp/build_spot.log /tmp/build_spot.log;\
+ cat $MAIL_BODY_FILE ) | \
         mailx \
         -s "Workspace Updating Notification from $ROBOT_NAME" \
         -r spot-jsk@jsk.imi.i.u-tokyo.ac.jp \
