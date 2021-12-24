@@ -4,7 +4,6 @@ Description=JSK Spot Auto Update Workspace
 [Service]
 Type=simple
 ExecStart=/bin/bash -c "\
-if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && \
 systemctl stop jsk-spot-ros-app-manager.service && \
 systemctl stop jsk-spot-ros-behavior-manager.service && \
 systemctl stop jsk-spot-ros-driver.service && \
