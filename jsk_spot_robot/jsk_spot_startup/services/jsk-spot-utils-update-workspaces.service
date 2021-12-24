@@ -7,8 +7,7 @@ ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && \
 . /home/spot/spot_ws/devel/setup.bash && \
 if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && \
 rosrun jsk_spot_startup auto-power-off.sh && \
-rosrun jsk_spot_startup update-workspaces.sh && \
-sudo reboot"
+rosrun jsk_spot_startup update-workspaces.sh"
 KillMode=control-group
 KillSignal=SIGTERM
 User=spot

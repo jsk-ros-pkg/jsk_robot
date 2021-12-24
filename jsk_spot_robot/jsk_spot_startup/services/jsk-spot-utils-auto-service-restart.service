@@ -1,0 +1,30 @@
+[Unit]
+Description=JSK Spot Auto Update Workspace
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "\
+if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && \
+systemctl stop jsk-spot-ros-app-manager.service && \
+systemctl stop jsk-spot-ros-behavior-manager.service && \
+systemctl stop jsk-spot-ros-driver.service && \
+systemctl stop jsk-spot-ros-image-processing.service && \
+systemctl stop jsk-spot-ros-interaction.service && \
+systemctl stop jsk-spot-ros-object-detection.service && \
+systemctl stop jsk-spot-ros-peripheral.service && \
+systemctl stop jsk-spot-ros-recorder.service && \
+systemctl stop jsk-spot-ros-teleop.service && \
+systemctl stop roscore.service && \
+sleep 60 && \
+systemctl start jsk-spot-ros-app-manager.service && \
+systemctl start jsk-spot-ros-behavior-manager.service && \
+systemctl start jsk-spot-ros-driver.service && \
+systemctl start jsk-spot-ros-image-processing.service && \
+systemctl start jsk-spot-ros-interaction.service && \
+systemctl start jsk-spot-ros-object-detection.service && \
+systemctl start jsk-spot-ros-peripheral.service && \
+systemctl start jsk-spot-ros-recorder.service && \
+systemctl start jsk-spot-ros-teleop.service && \
+systemctl start roscore.service"
+KillMode=control-group
+KillSignal=SIGTERM
