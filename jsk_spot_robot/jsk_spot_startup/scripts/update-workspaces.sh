@@ -63,4 +63,4 @@ else
     echo "Workspace $WORKSPACE_SPOT not found.\n" > /tmp/build_spot.log
 fi
 
-cat $MAIL_BODY_FILE | mail -A /tmp/build_spot_driver.log -A /tmp/build_spot_coral.log -A /tmp/build_spot.log -s "Workspace Updating Notification" -r spot-jsk@jsk.imi.i.u-tokyo.ac.jp spot@jsk.imi.i.u-tokyo.ac.jp
+cat $MAIL_BODY_FILE | mail -A /tmp/build_spot_driver.log -A /tmp/build_spot_coral.log -A /tmp/build_spot.log -s "Workspace Updating Notification from $ROBOT_NAME" -r spot-jsk@jsk.imi.i.u-tokyo.ac.jp spot@jsk.imi.i.u-tokyo.ac.jp
