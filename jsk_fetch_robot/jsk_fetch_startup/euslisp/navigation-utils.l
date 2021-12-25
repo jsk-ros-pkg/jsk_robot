@@ -359,15 +359,13 @@ Args:
   (let* ((msg (one-shot-subscribe "/trashbin_occupancy_detector/trashbin/occupancy"
                                   jsk_recognition_msgs::BoundingBoxArray
                                   :timeout 3000))
-         (occupancy nil)
-         (notify-text nil))
-    (when msg
-      (setq occcupancy (send (elt (send msg :boxes) 0) :value))
+         (occupancy (if msg (send (elt (send msg :boxes) 0) :value)))
+         (notify-text (if occupancy (if (> occupancy 1.0)
+                                      "Trashcan is full."
+                                      "Trashcan is not full."))))
+    (when occupancy
       (ros::ros-info
        (format nil "Notify app that the occupancy of trash can is measured."))
-      (if (> occupancy 1.0)
-        (setq notify-text "Trashcan is full.")
-        (setq notify-text "Trashcan is not full."))
       (notify-app "trashcan occupancy"
                   (ros::time-now)
                   location
