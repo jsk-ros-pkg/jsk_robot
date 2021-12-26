@@ -26,22 +26,24 @@ class Shutdown(object):
         rospy.loginfo('Start shutdown node.')
         rospy.Subscriber('shutdown', Empty, self.shutdown)
         rospy.Subscriber('reboot', Empty, self.reboot)
+        self.shutdown_command = rospy.get_param(
+            '~shutdown_command', '/sbin/shutdown -h now')
+        self.reboot_command = rospy.get_param(
+            '~reboot_command', '/sbin/shutdown -r now')
 
     def shutdown(self, msg):
         rospy.loginfo('Shut down robot.')
-        shutdown_command = '/sbin/shutdown -h now'
-        ret = os.system(shutdown_command)
+        ret = os.system(self.shutdown_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(
-                shutdown_command))
+                self.shutdown_command))
 
     def reboot(self, msg):
         rospy.loginfo('Reboot robot.')
-        reboot_command = '/sbin/shutdown -r now'
-        ret = os.system(reboot_command)
+        ret = os.system(self.reboot_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(
-                reboot_command))
+                self.reboot_command))
 
 
 if __name__ == '__main__':
