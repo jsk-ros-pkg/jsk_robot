@@ -1,0 +1,16 @@
+<launch>
+
+  <arg name="email_info_yaml" default="/var/lib/robot/email_info.yaml" doc="Default email settings can be saved as yaml file. (e.g. subject, body, receiver address, ...)" />
+
+  <!-- Send email before shutdown/reboot to notify users -->
+  <node name="power_management" pkg="jsk_robot_startup" type="power_management.py"
+        output="screen" />
+
+  <!-- Send email via rostopic -->
+  <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic">
+    <rosparam subst_value="true">
+      email_info: $(arg email_info_yaml)
+    </rosparam>
+  </node>
+
+</launch>
