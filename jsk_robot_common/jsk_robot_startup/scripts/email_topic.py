@@ -74,6 +74,9 @@ class EmailTopic(object):
         msg.attach(MIMEText(body, 'plain', 'utf-8'))
         # Attach file
         for attached_file in attached_files:
+            if attached_file == '':
+                rospy.logwarn('File name is empty. Skipped.')
+                continue
             if not os.path.exists(attached_file):
                 rospy.logerr('File {} is not found.'.format(attached_file))
                 return
