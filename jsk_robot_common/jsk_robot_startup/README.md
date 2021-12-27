@@ -208,6 +208,58 @@ rostopic pub /shutdown std_msgs/Empty
 rostopic pub /reboot std_msgs/Empty
 ```
 
+## scripts/power_management.py
+
+This node manages the power system of the robot. Currently, you can shutdown/reboot robot after notifying with email.
+
+### Subscribing Topics
+
+* `~shutdown` (`jsk_robot_startup/Email`)
+
+  Input topic indicating the mail content to be sent before shutting down the robot
+
+* `~reboot` (`jsk_robot_startup/Email`)
+
+  Input topic indicating the mail content to be sent before rebooting the robot
+
+### Publishing Topics
+
+* `shutdown` (`std_msgs/Empty`)
+
+  Topic to shutdown the robot
+
+* `reboot` (`std_msgs/Empty`)
+
+  Topic to reboot the robot
+
+* `email` (`jsk_robot_startup/Email`)
+
+  Content of the email
+
+
+### Usage
+
+```
+# Launch shutdown node
+$ su [sudo user] -c ". [setup.bash]; rosrun jsk_robot_startup shutdown.py"
+
+# Launch power management node and email node
+$ roslaunch jsk_robot_startup power_management.launch
+
+# Shutdown robot after notifying with email
+$ rostopic pub /power_management/shutdown jsk_robot_startup/Email "header:
+  seq: 0
+  stamp: {secs: 0, nsecs: 0}
+  frame_id: ''
+subject: ''
+body: ''
+sender_address: ''
+receiver_address: ''
+smtp_server: ''
+smtp_port: ''
+attached_files: []"
+```
+
 
 ## launch/safe_teleop.launch
 
