@@ -61,7 +61,11 @@ class EmailTopic(object):
                 if field in self.email_info:
                     send_mail_args[field] = self.email_info[field]
         # Send email
-        self._send_mail(**send_mail_args)
+        try:
+            self._send_mail(**send_mail_args)
+        except TypeError as e:
+            rospy.logerr(e)
+            rospy.logerr("'receiver_address' may not be specified.")
 
     def _send_mail(
             self, subject, body, sender_address, receiver_address,
