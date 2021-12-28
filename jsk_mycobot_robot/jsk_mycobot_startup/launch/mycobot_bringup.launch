@@ -2,11 +2,17 @@
   <arg name="port" default="/dev/ttyUSB0" doc ="the serial port for connection" />
   <arg name="baud" default="115200" doc ="the serial baudrate" />
   <arg name="rviz" default="false" doc="Set true if you want RViz." />
+  <arg name="moveit" default="false" doc="Set true if you want Moveit-based plan." />
 
   <!-- Driver -->
   <include file="$(find mycobot_communication)/launch/mycobot_interface.launch" >
     <arg name="port" value="$(arg port)" />
     <arg name="baud" value="$(arg baud)" />
+  </include>
+
+  <!-- Moveit -->
+  <include if="$(arg moveit)" file="$(find mycobot_280_moveit)/launch/move_group.launch" >
+    <arg name="info" value="true" />
   </include>
 
   <!-- Rviz -->

@@ -42,13 +42,7 @@ source devel/setup.bash
 
 ```bash
 # Mycobot280 without gripper
-roslaunch jsk_mycobot_startup mycobot_bringup.launch
-```
-
-Start rviz from different terminal
-
-```bash
-roslaunch jsk_mycobot_startup rviz.launch
+roslaunch jsk_mycobot_startup mycobot_bringup.launch # rviz:=true for visualize
 ```
 
 ## Use EusLisp model
@@ -70,7 +64,6 @@ You can also use `:inverse-kinematics` method to specify the arm pose from targe
 (send *ri* :angle-vector (send *robot* :rarm :inverse-kinematics (make-coords :pos #f(280 0 100)) :debug-view t) 3000)
 ```
 
-
 To control real robot. you can use *ri* object.
 ```
 (send *ri* :angle-vector (send *robot* :angle-vector) 2000)
@@ -83,6 +76,7 @@ To obtain current robot pose, use `:state :potentio-vector` method.
 ```
 
 ## Gazebo simulation
+
 Mycobot robot without gripper.
 ```bash
 # Terminal 1
@@ -95,6 +89,22 @@ roseus mycobot-interface.l
 (send *robot* :rarm :inverse-kinematics (make-coords :pos #f(280 0 100)))
 (send *ri* :angle-vector (send *robot* :angle-vector))
 ```
+
+## Try with moveit
+
+```bash
+# Terminal 1
+roslaunch jsk_mycobot_startup mycobot_bringup.launch moveit:=true # rviz:=true for visualize
+# Or in gazebo:
+roslaunch mycobot_280_moveit demo_gazebo.launch
+# Terminal 2
+roscd mycoboteus
+roseus mycobot-interface.l
+(mycobot-init)
+## try eusIK (goal point) + moveit plan (trajectory)
+(send *ri* :angle-vector-motion-plan #f(45 45 45 45 45 45) :move-arm :rarm :total-time 5000)
+```
+
 
 
 ## Trouble shooting

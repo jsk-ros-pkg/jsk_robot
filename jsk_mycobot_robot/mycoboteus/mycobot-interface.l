@@ -1,7 +1,23 @@
 #!/usr/bin/env roseus
 
 (require "package://pr2eus/robot-interface.l")
+(require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 (load "package://mycoboteus/mycobot-utils.l")
+
+
+(defclass mycobot-moveit-environment
+  :super moveit-environment)
+
+(defmethod mycobot-moveit-environment
+  (:init (&key args)
+         (send-super* :init :robot (instance mycobot-robot :init) :frame-id "link1" args))
+  (:default-configuration ()
+   (list (list :rarm
+               (cons :group-name "arm_group")
+               (cons :target-link
+                     (send self :search-link-from-name "link7"))
+               (cons :joint-list (send robot :rarm :joint-list)))))
+  )
 
 
 (defclass mycobot-interface
@@ -14,6 +30,7 @@
   (:init (&rest args)
     (prog1 (send-super* :init :robot mycobot-robot :joint-states-topic "joint_states" args)
       (send self :add-controller :rarm-controller)
+      (send self :set-moveit-environment (instance mycobot-moveit-environment :init))
     ))
   (:default-controller ()
     (append
