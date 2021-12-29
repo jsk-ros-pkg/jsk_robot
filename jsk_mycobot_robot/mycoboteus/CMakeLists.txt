@@ -69,4 +69,6 @@ if(CATKIN_ENABLE_TESTING)
   add_rostest(test/test-mycobot.test)
   # Test with Kinematic Simulator
   add_rostest(test/test-mycobot-kinematic-simulator.test)
+  # Test with Eus + Moveit
+  add_rostest(test/test-mycobot-eus-moveit.test ARGS headless:=true)
 endif()
