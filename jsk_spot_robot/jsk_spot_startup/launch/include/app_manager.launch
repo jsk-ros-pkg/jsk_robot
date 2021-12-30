@@ -45,8 +45,8 @@
       use_tts: true
       project_id: $(arg project_id)
       timeout: 30.0
+      hotword_file: $(arg dialogflow_hotword_yaml_file)
     </rosparam>
-    <rosparam command="load" ns="/dialogflow_client/hotword" file="$(arg dialogflow_hotword_yaml_file)" />
   </node>
 
   <!-- task executive -->
