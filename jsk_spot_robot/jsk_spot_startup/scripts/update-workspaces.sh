@@ -7,7 +7,7 @@ MAIL_BODY_FILE=/tmp/mail-body.txt
 
 sudo apt-get update -y && sudo apt-get upgrade -y
 
-echo "Result of workspace updating in $ROBOT_NAME\n" > $MAIL_BODY_FILE
+echo "Result of workspace updating  $(LANG=C; date) in $ROBOT_NAME\n" > $MAIL_BODY_FILE
 
 function update_and_build () {
     local WORKSPACE=$1
