@@ -14,14 +14,15 @@
 
     <!-- -->
     <node
-        pkg="topic_tools"
-        type="throttle"
+        pkg="nodelet"
+        type="nodelet"
         name="dual_fisheye_to_panorama_throttle"
-        args="messages /dual_fisheye_to_panorama/output 10 /dual_fisheye_to_panorama/output/throttled"
+        args="standalone jsk_topic_tools/LightweightThrottle"
         >
+        <remap from="~input" to="/dual_fisheye_to_panorama/output"/>
+        <remap from="~output" to="/dual_fisheye_to_panorama/output/throttled"/>
         <rosparam>
-            unreliable: True
-            lazy: True
+            update_rate: 10
         </rosparam>
     </node>
 
