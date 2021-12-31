@@ -12,4 +12,17 @@
         <remap from="~output" to="/spot_recognition/object_detection_image" />
     </node>
 
+    <!-- -->
+    <node
+        pkg="topic_tools"
+        type="throttle"
+        name="dual_fisheye_to_panorama_throttle"
+        args="messages /dual_fisheye_to_panorama/output 10 /dual_fisheye_to_panorama/output/throttled"
+        >
+        <rosparam>
+            unreliable: True
+            lazy: True
+        </rosparam>
+    </node>
+
 </launch>
