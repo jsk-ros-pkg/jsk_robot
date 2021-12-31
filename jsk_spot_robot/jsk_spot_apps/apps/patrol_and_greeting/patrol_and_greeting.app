@@ -42,10 +42,14 @@ plugins:
     plugin_args:
       upload_file_paths:
         - /tmp/patrol_and_greeting.yaml
-        - /tmp/patrol_and_greeting.avi
+        - /tmp/patrol_and_greeting_audio_video.avi
+        - /tmp/patrol_and_greeting_video.avi
+        - /tmp/patrol_and_greeting_audio.wav
       upload_file_titles:
         - patrol_and_greeting.yaml
-        - patrol_and_greeting.avi
+        - patrol_and_greeting_audio_video.avi
+        - patrol_and_greeting_video.avi
+        - patrol_and_greeting_audio.wav
       upload_parents_path: patrol_and_greeting
       upload_server_name: /gdrive_server
   - name: mail_notifier_plugin
