@@ -3,7 +3,7 @@
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 (load "package://mycoboteus/mycobot-utils.l")
-
+(ros::roseus-add-srvs "std_srvs")
 
 (defclass mycobot-moveit-environment
   :super moveit-environment)
@@ -68,6 +68,14 @@
   (:stop-grasp
    (&rest args &key &allow-other-keys)
    (send* self :go-grasp :pos 0 args)) ;; 0 denote to grasp
+  (:servo-on
+   "Servo On all joints."
+   (ros::service-call
+    "/set_servo" (instance std_srvs::SetBoolRequest :init :data t)))
+  (:servo-off
+   "Servo Off all joints."
+   (ros::service-call
+    "/set_servo" (instance std_srvs::SetBoolRequest :init :data nil)))
   )
 
 
