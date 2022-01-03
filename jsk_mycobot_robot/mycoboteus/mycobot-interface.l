@@ -30,6 +30,11 @@
   (:init (&rest args)
     (prog1 (send-super* :init :robot mycobot-robot :joint-states-topic "joint_states" args)
       (send self :add-controller :rarm-controller)
+      (setq gripper-action
+            (instance ros::simple-action-client :init
+                      "/gripper_controller/gripper_command"
+                      control_msgs::GripperCommandAction
+                      :groupname groupname))
       (send self :set-moveit-environment (instance mycobot-moveit-environment :init))
     ))
   (:default-controller ()
@@ -42,7 +47,28 @@
         (cons :controller-state "/arm_controller/follow_joint_trajectory/state")
         (cons :action-type control_msgs::FollowJointTrajectoryAction)
         (cons :joint-names
-              (list "joint1" "joint2" "joint3" "joint4" "joint5" "joint6"))))))
+              (list "joint1" "joint2" "joint3" "joint4" "joint5" "joint6")))))
+
+  (:go-grasp (&key (pos 0) (wait t))
+    (when (send self :simulation-modep)
+      ;; TODO: add mimic joint
+      (return-from :go-grasp t))
+    ;; we believe the low-level algorithm of mycobot can perform graspping with proper effort.
+    ;; so we do not need to assign a specific posiiton for gripper.
+    (let (goal result)
+      (setq goal (instance control_msgs::GripperCommandActionGoal :init))
+      (send goal :goal :command :position pos)
+      (send gripper-action :send-goal goal)
+      (when wait (send gripper-action :wait-for-result))
+      (setq result (send gripper-action :get-result))
+      result))
+  (:start-grasp
+   (&rest args &key &allow-other-keys)
+   (send* self :go-grasp :pos 1 args)) ;; 1 denote to grasp
+  (:stop-grasp
+   (&rest args &key &allow-other-keys)
+   (send* self :go-grasp :pos 0 args)) ;; 0 denote to grasp
+  )
 
 
 (defun mycobot-init ()
