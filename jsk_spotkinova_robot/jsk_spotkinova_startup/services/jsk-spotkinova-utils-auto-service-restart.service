@@ -1,0 +1,33 @@
+[Unit]
+Description=JSK SpotKinova Auto Service Restart
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "\
+sudo systemctl stop jsk-spotkinova-ros-bringup.service && \
+sudo systemctl stop jsk-spotkinova-ros-spot-driver.service && \
+sudo systemctl stop jsk-spot-ros-app-manager.service && \
+sudo systemctl stop jsk-spot-ros-behavior-manager.service && \
+sudo systemctl stop jsk-spot-ros-image-processing.service && \
+sudo systemctl stop jsk-spot-ros-interaction.service && \
+sudo systemctl stop jsk-spot-ros-object-detection.service && \
+sudo systemctl stop jsk-spot-ros-peripheral.service && \
+sudo systemctl stop jsk-spot-ros-recorder.service && \
+sudo systemctl stop jsk-spot-ros-teleop.service && \
+sudo systemctl stop roscore.service && \
+sleep 60 && \
+sudo systemctl start jsk-spotkinova-ros-bringup.service && \
+sudo systemctl start jsk-spotkinova-ros-spot-driver.service && \
+sudo systemctl start jsk-spot-ros-app-manager.service && \
+sudo systemctl start jsk-spot-ros-behavior-manager.service && \
+sudo systemctl start jsk-spot-ros-image-processing.service && \
+sudo systemctl start jsk-spot-ros-interaction.service && \
+sudo systemctl start jsk-spot-ros-object-detection.service && \
+sudo systemctl start jsk-spot-ros-peripheral.service && \
+sudo systemctl start jsk-spot-ros-recorder.service && \
+sudo systemctl start jsk-spot-ros-teleop.service && \
+sudo systemctl start roscore.service"
+KillMode=control-group
+KillSignal=SIGTERM
+User=spot
+Group=spot
