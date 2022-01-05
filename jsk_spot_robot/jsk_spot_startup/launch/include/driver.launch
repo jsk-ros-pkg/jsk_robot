@@ -95,11 +95,4 @@
       <remap from="~start_app" to="/robot/start_app" />
   </node>
 
-  <node
-      pkg="jsk_spot_plug_server"
-      type="plug_server.py"
-      name="plug_server"
-      >
-  </node>
-
 </launch>
