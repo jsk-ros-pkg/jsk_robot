@@ -262,10 +262,14 @@ class SpotRosClient:
     def dock(self, dock_id):
         req = TriggerRequest()
         req.dock_id = dock_id
+        self.pubBodyPose(0,Quaternion(0,0,0,1.0))
+        self.sit()
+        self.stand()
         res = self._srv_client_dock(req)
         return res.success, res.message
 
     def undock(self):
+        self.power_on()
         res = self._srv_client_undock(TriggerRequest())
         return res.success, res.message
 
