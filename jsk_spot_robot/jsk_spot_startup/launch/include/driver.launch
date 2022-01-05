@@ -23,6 +23,18 @@
       respawn="true"
       >
     <rosparam file="$(find spot_driver)/config/spot_ros.yaml" command="load" />
+    <rosparam>
+        rates:
+            robot_state: 20.0
+            metrics: 0.04
+            lease: 1.0
+            front_image: 10.0
+            side_image: 10.0
+            rear_image: 10.0
+        auto_claim: True
+        auto_power_on: False
+        auto_stand: False
+    </rosparam>
     <rosparam file="$(arg credential_config)" command="load" />
     <remap from="joint_states" to="/joint_states"/>
     <remap from="tf" to="/tf"/>
