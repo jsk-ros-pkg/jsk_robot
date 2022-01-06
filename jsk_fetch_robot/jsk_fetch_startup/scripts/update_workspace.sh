@@ -13,7 +13,7 @@ wstool foreach --git 'git stash'
 wstool update --delete-changed-uris
 WSTOOL_UPDATE_RESULT=$?
 cd $HOME/ros/melodic
-catkin clean aques_talk collada_urdf_jsk_patch -y
+catkin clean aques_talk collada_urdf_jsk_patch libcmt -y
 catkin init
 catkin config -DCMAKE_BUILD_TYPE=Release
 catkin build
