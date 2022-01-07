@@ -1,0 +1,7 @@
+[Unit]
+Description=JSK Spot Reboot Service
+RefuseManualStart = true
+RefuseManualStop = true
+
+[Service]
+ExecStart=/sbin/reboot

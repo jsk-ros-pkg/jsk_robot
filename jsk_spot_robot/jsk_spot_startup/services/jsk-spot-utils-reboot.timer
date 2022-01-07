@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer for JSK Spot Reboot Service
+
+[Timer]
+OnCalendar = *-*-* 04:00:00
+
+[Install]
+WantedBy=timers.target
