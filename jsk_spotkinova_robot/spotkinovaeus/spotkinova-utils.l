@@ -1,9 +1,11 @@
 (require :spotkinova "package://spotkinovaeus/spotkinova.l")
 
+;; Reference https://github.com/jsk-ros-pkg/jsk_robot/pull/1263
 (unless (assoc :init-orig (send spot_gen3_lite_gen3_lite_2f-robot :methods))
   (rplaca (assoc :init (send spot_gen3_lite_gen3_lite_2f-robot :methods)) :init-orig))
 
 (defmethod spot_gen3_lite_gen3_lite_2f-robot
+  ;; Reference https://github.com/jsk-ros-pkg/jsk_robot/pull/1263
   (:init
    (&rest args) ;; fix colors
    (dolist (b (list :_make_instance_body_geom0
