@@ -7,6 +7,7 @@ project(spotkinovaeus)
 find_package(catkin REQUIRED COMPONENTS
   roseus
   euscollada
+  collada_urdf_jsk_patch
   )
 # Just in case when description is not released. Avoid compile failing
 find_package(kortex_description)
@@ -30,12 +31,13 @@ endif()
 set(_spoteus ${spoteus_SOURCE_PREFIX})
 set(_kinovaeus ${kinovaeus_SOURCE_PREFIX})
 set(_spotkinova_urdf ${jsk_spotkinova_description_SOURCE_PREFIX}/robots)
+set(_urdf2collada ${collada_urdf_jsk_patch_PREFIX}/lib/collada_urdf_jsk_patch/urdf_to_collada)
 set(_collada2eus ${euscollada_PREFIX}/lib/euscollada/collada2eus)
 
 message("_spoteus: ${_spoteus}")
 message("_kinovaeus: ${_kinovaeus}")
 message("_spotkinova_urdf: ${_spotkinova_urdf}")
-message("collada2eus: ${_collada2eus}")
+message("_collada2eus: ${_collada2eus}")
 
 # Gen3 robot with robotiq gripper
 # Gen3 Lite robot
@@ -45,11 +47,15 @@ foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f gen3_robotiq_2f_85 gen3_robotiq_2f_140
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
     COMMAND xacro ${_spotkinova_urdf}/jsk_spotkinova.urdf.xacro robot_type:=${ROBOT_TYPE} prefix:=kinova_ > ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
     DEPENDS ${_spotkinova_urdf}/jsk_spotkinova.urdf.xacro)
+  # Create spot_${ROBOT_TYPE}.dae
+  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.dae
+    COMMAND ${_urdf2collada} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.dae
+    DEPENDS ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf)
   # Create spot_${ROBOT_TYPE}.l
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l
-    COMMAND echo "${_collada2eus} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf spot_${ROBOT_TYPE}.l"
-    COMMAND ${_collada2eus} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.yaml ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l
-    DEPENDS ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.yaml ${_collada2eus})
+    COMMAND echo "${_collada2eus} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.dae ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.yaml ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l"
+    COMMAND ${_collada2eus} ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.dae ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.yaml ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l
+    DEPENDS ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.dae ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.yaml ${_collada2eus})
   add_custom_target(compile_${ROBOT_TYPE} ALL DEPENDS ${PROJECT_SOURCE_DIR}/spot_${ROBOT_TYPE}.l)
 endforeach()
 
