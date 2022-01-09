@@ -76,4 +76,20 @@
             truck: [4.0, 4.0, 3.0]
     </rosparam>
   </node>
+
+  <!-- person tracker -->
+  <node
+      pkg="spot_person_lead_behaviors"
+      type="person_tracker.py"
+      name="spot_recognition_person_tracker"
+      output="screen">
+    <remap from="~bbox_array" to="/spot_recognition/bbox_array" />
+
+    <rosparam subst_value="true">
+        frame_id_robot: 'body'
+        label_person: 0
+        dist_visible: 2.0
+        timeout_observation: 5.0
+    </rosparam>
+  </node>
 </launch>
