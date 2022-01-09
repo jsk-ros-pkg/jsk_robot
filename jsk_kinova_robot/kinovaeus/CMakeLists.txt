@@ -20,17 +20,14 @@ if(NOT kortex_description_FOUND)
   return()
 endif()
 
-find_package(euscollada) # Just in case when euscollada not released. Avoid compile failing
-if(NOT euscollada_FOUND)
-  message(WARNING "euscollada is not found, so skip generating eus models.")
-  return()
-endif()
-
-find_package(collada_urdf_jsk_patch) # Just in case when collada_urdf_jsk_patch not released. Avoid compile failing
-if(NOT collada_urdf_jsk_patch_FOUND)
-  message(WARNING "collada_urdf_jsk_patch is not found, so skip generating eus models.")
-  return()
-endif()
+# Just in case when euscollada and collada_urdf_jsk_patch are not released. Avoid compile failing
+foreach(PACKAGE euscollada collada_urdf_jsk_patch)
+  find_package(${PACKAGE})
+  if(NOT ${PACKAGE}_FOUND)
+    message(WARNING "${PACKAGE} is not found, so skip generating eus models.")
+    return()
+  endif()
+endforeach()
 
 
 ###########
