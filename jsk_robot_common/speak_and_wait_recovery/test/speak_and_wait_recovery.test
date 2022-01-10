@@ -1,20 +1,23 @@
 <launch>
 
-    <node
-        pkg="speak_and_wait_recovery"
-        type="speak_and_wait_recovery_simple_node"
-        name="speak_and_wait_recovery_simple_node"
-        >
-        <rosparam>
-          recovery:
-            speak_text: 'test'
-        </rosparam>
-    </node>
-
     <test
         test-name="test_speak_and_wait_recovery"
         pkg="speak_and_wait_recovery"
         type="test_speak_and_wait.py"
+        time-limit="30"
         />
+
+    <node
+        pkg="speak_and_wait_recovery"
+        type="speak_and_wait_recovery_simple_node"
+        name="speak_and_wait_recovery_simple_node"
+        output="screen"
+        >
+        <rosparam>
+          recovery:
+            speak_text: 'test'
+            duration_wait: 1.0
+        </rosparam>
+    </node>
 
 </launch>

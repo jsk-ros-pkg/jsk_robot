@@ -58,9 +58,12 @@ void SpeakAndWaitRecovery::say(
     goal.sound_request.command = sound_play::SoundRequest::PLAY_ONCE;
     goal.sound_request.arg = text; // speeched text
     goal.sound_request.arg2 = ""; // voice
-    ptr_action_client_->waitForServer(ros::Duration(duration_timeout_));
-    ptr_action_client_->sendGoal(goal);
-    ptr_action_client_->waitForResult();
+    if ( ptr_action_client_->waitForServer(ros::Duration(duration_timeout_)) ) {
+        ptr_action_client_->sendGoal(goal);
+        ptr_action_client_->waitForResult();
+    } else {
+        ROS_ERROR("No sound_play server found.");
+    }
 }
 
 };
