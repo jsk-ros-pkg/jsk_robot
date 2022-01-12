@@ -156,7 +156,7 @@ You can now control spot from roseus.
 for example, when you want to move spot 1m forward, type.
 
 ```
-send *ri* :go-pose 1 0
+send *ri* :go-pos 1 0
 ```
 
 And there are some examples in `spoteus/demo`.
