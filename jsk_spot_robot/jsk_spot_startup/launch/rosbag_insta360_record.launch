@@ -1,0 +1,263 @@
+<launch>
+    <arg name="rosbag" doc="rosbag file path" />
+    <arg name="use_compress" default="true" />
+
+    <!-- rosbag recording with compressed images -->
+    <node name="rosbag_record" pkg="rosbag" type="record" if="$(arg use_compress)"
+        args="-O $(arg rosbag) -b 0
+            /rosout
+            /rosout_agg
+            /diagnostics
+            /tf
+            /tf_static
+            /insta360/image_raw/compressed
+            /insta360/panorama_info
+            /dual_fisheye_to_panorama/output/compressed
+            /dual_fisheye_to_panorama/panorama_info
+            /spot/body_pose
+            /spot/camera/back/camera_info
+            /spot/camera/back/image/compressed
+            /spot/camera/frontleft/camera_info
+            /spot/camera/frontleft/image/compressed
+            /spot/camera/frontright/camera_info
+            /spot/camera/frontright/image/compressed
+            /spot/camera/left/camera_info
+            /spot/camera/left/image/compressed
+            /spot/camera/right/camera_info
+            /spot/camera/right/image/compressed
+            /spot/cmd_vel
+            /spot/depth/back/camera_info
+            /spot/depth/back/image/compressedDepth
+            /spot/depth/frontleft/camera_info
+            /spot/depth/frontleft/image/compressedDepth
+            /spot/depth/frontright/camera_info
+            /spot/depth/frontright/image/compressedDepth
+            /spot/depth/left/camera_info
+            /spot/depth/left/image/compressedDepth
+            /spot/depth/right/camera_info
+            /spot/depth/right/image/compressedDepth
+            /spot/navigate_to/cancel
+            /spot/navigate_to/feedback
+            /spot/navigate_to/goal
+            /spot/navigate_to/result
+            /spot/navigate_to/status
+            /spot/odometry
+            /spot/odometry/twist
+            /spot/status/battery_states
+            /spot/status/behavior_faults
+            /spot/status/estop
+            /spot/status/feedback
+            /spot/status/feet
+            /spot/status/leases
+            /spot/status/metrics
+            /spot/status/power_state
+            /spot/status/system_faults
+            /spot/status/wifi
+            /spot/trajectory/cancel
+            /spot/trajectory/feedback
+            /spot/trajectory/goal
+            /spot/trajectory/result
+            /spot/trajectory/status
+            /audio
+            /bluetooth_teleop/cmd_vel
+            /develop_input/cmd_vel
+            /is_speeching
+            /joint_states
+            /joy_head/cmd_vel
+            /laptop_charge
+            /robotsound
+            /robotsound/cancel
+            /robotsound/feedback
+            /robotsound/goal
+            /robotsound/result
+            /robotsound/status
+            /robotsound_jp
+            /robotsound_jp/cancel
+            /robotsound_jp/feedback
+            /robotsound_jp/goal
+            /robotsound_jp/result
+            /robotsound_jp/status
+            /sound_direction
+            /sound_localization
+            /speech_audio
+            /speech_to_text_jp
+            /speech_to_text
+            /spot_teleop/joy
+            /spot_recognition/bbox_array
+            /spot_recognition/class
+            /spot_recognition/rects
+            /spot_recognition/object_detection_image/compressed
+            /spot_recognition/tracking_labels
+            "
+        output="screen" />
+
+    <group if="$(arg use_compress)">
+        <!-- Image compression nodes for spot cameras -->
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="back_camera_compress"
+            args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontleft_camera_compress"
+            args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontright_camera_compress"
+            args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="left_camera_compress"
+            args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="right_camera_compress"
+            args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="back_depth_compress"
+            args="raw in:=/spot/depth/back/image compressedDepth out:=/spot/depth/back/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontleft_depth_compress"
+            args="raw in:=/spot/depth/frontleft/image compressedDepth out:=/spot/depth/frontleft/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="frontright_depth_compress"
+            args="raw in:=/spot/depth/frontright/image compressedDepth out:=/spot/depth/frontright/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="left_depth_compress"
+            args="raw in:=/spot/depth/left/image compressedDepth out:=/spot/depth/left/image"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="right_depth_compress"
+            args="raw in:=/spot/depth/right/image compressedDepth out:=/spot/depth/right/image"
+            />
+        <!-- Image compression nodes for Insta 360 Air camera -->
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="panorama_compress"
+            args="raw in:=/insta360/image_raw compressed out:=/insta360/image_raw"
+            />
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="panorama_compress"
+            args="raw in:=/dual_fisheye_to_panorama/output compressed out:=/dual_fisheye_to_panorama/output"
+            />
+        <!-- Compression node for object detection visuzaliation image -->
+        <node
+            pkg="image_transport"
+            type="republish"
+            name="detection_visualization_compress"
+            args="raw in:=/spot_recognition/object_detection_image compressed out:=/spot_recognition/object_detection_image"
+            />
+    </group>
+
+    <!-- rosbag recording with raw images -->
+    <node name="rosbag_record" pkg="rosbag" type="record" unless="$(arg use_compress)"
+        args="-O $(arg rosbag) -b 0
+            /rosout
+            /rosout_agg
+            /diagnostics
+            /tf
+            /tf_static
+            /dual_fisheye_to_panorama/output
+            /dual_fisheye_to_panorama/panorama_info
+            /spot/body_pose
+            /spot/camera/back/camera_info
+            /spot/camera/back/image
+            /spot/camera/frontleft/camera_info
+            /spot/camera/frontleft/image
+            /spot/camera/frontright/camera_info
+            /spot/camera/frontright/image
+            /spot/camera/left/camera_info
+            /spot/camera/left/image
+            /spot/camera/right/camera_info
+            /spot/camera/right/image
+            /spot/cmd_vel
+            /spot/depth/back/camera_info
+            /spot/depth/back/image
+            /spot/depth/frontleft/camera_info
+            /spot/depth/frontleft/image
+            /spot/depth/frontright/camera_info
+            /spot/depth/frontright/image
+            /spot/depth/left/camera_info
+            /spot/depth/left/image
+            /spot/depth/right/camera_info
+            /spot/depth/right/image
+            /spot/navigate_to/cancel
+            /spot/navigate_to/feedback
+            /spot/navigate_to/goal
+            /spot/navigate_to/result
+            /spot/navigate_to/status
+            /spot/odometry
+            /spot/odometry/twist
+            /spot/status/battery_states
+            /spot/status/behavior_faults
+            /spot/status/estop
+            /spot/status/feedback
+            /spot/status/feet
+            /spot/status/leases
+            /spot/status/metrics
+            /spot/status/power_state
+            /spot/status/system_faults
+            /spot/status/wifi
+            /spot/trajectory/cancel
+            /spot/trajectory/feedback
+            /spot/trajectory/goal
+            /spot/trajectory/result
+            /spot/trajectory/status
+            /audio
+            /bluetooth_teleop/cmd_vel
+            /develop_input/cmd_vel
+            /is_speeching
+            /joint_states
+            /joy_head/cmd_vel
+            /robotsound
+            /robotsound/cancel
+            /robotsound/feedback
+            /robotsound/goal
+            /robotsound/result
+            /robotsound/status
+            /robotsound_jp
+            /robotsound_jp/cancel
+            /robotsound_jp/feedback
+            /robotsound_jp/goal
+            /robotsound_jp/result
+            /robotsound_jp/status
+            /sound_direction
+            /sound_localization
+            /speech_audio
+            /speech_to_text_jp
+            /speech_to_text
+            /spot_teleop/joy
+            /spot_recognition/bbox_array
+            /spot_recognition/class
+            /spot_recognition/rects
+            /spot_recognition/object_detection_image/compressed
+            /spot_recognition/tracking_labels
+            "
+        output="screen" />
+</launch>
