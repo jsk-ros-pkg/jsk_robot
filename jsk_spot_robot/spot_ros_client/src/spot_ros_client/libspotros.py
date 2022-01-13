@@ -5,24 +5,35 @@ import actionlib
 import math
 
 # msg
-from geometry_msgs.msg import Pose, Twist, Quaternion
-# services
-from std_srvs.srv import Trigger, TriggerRequest
-from std_srvs.srv import SetBool, SetBoolRequest
-from spot_msgs.srv import ListGraph, ListGraphRequest
-from spot_msgs.srv import SetLocalizationFiducial, SetLocalizationFiducialRequest
-from spot_msgs.srv import SetLocalizationWaypoint, SetLocalizationWaypointRequest
-from spot_msgs.srv import SetLocomotion, SetLocomotionRequest
-from spot_msgs.srv import UploadGraph, UploadGraphRequest
-from spot_msgs.srv import Dock
-from spot_msgs.srv import DockRequest
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PoseArray
 from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Twist
+# services
+from std_srvs.srv import Trigger
+from std_srvs.srv import TriggerRequest
+from std_srvs.srv import SetBool
+from std_srvs.srv import SetBoolRequest
+from spot_msgs.srv import ListGraph
+from spot_msgs.srv import ListGraphRequest
+from spot_msgs.srv import SetLocalizationFiducial
+from spot_msgs.srv import SetLocalizationFiducialRequest
+from spot_msgs.srv import SetLocalizationWaypoint
+from spot_msgs.srv import SetLocalizationWaypointRequest
+from spot_msgs.srv import SetLocomotion
+from spot_msgs.srv import SetLocomotionRequest
+from spot_msgs.srv import UploadGraph
+from spot_msgs.srv import UploadGraphRequest
+from spot_msgs.srv import Dock
+from spot_msgs.srv import DockRequest
 # actions
-from spot_msgs.msg import NavigateToAction, NavigateToGoal
-from spot_msgs.msg import TrajectoryAction, TrajectoryGoal
-from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonGoal
+from spot_behavior_manager_msgs.msg import LeadPersonAction
+from spot_behavior_manager_msgs.msg import LeadPersonGoal
+from spot_msgs.msg import NavigateToAction
+from spot_msgs.msg import NavigateToGoal
+from spot_msgs.msg import TrajectoryAction
+from spot_msgs.msg import TrajectoryGoal
 
 
 def calc_distance_to_pose(pose):
@@ -32,7 +43,8 @@ def calc_distance_to_pose(pose):
         pose = pose.pose
         return math.sqrt(pose.position.x ** 2 + pose.position.y ** 2 + pose.position.z ** 2)
     else:
-        raise TypeError('pose must be geometry_msgs.msg.Pose or geometry_msgs.msg.PoseStamped')
+        raise TypeError(
+            'pose must be geometry_msgs.msg.Pose or geometry_msgs.msg.PoseStamped')
 
 
 def convert_msg_point_to_kdl_vector(point):
@@ -42,9 +54,9 @@ def convert_msg_point_to_kdl_vector(point):
 def get_nearest_person_pose(topicname='/spot_recognition_person_tracker/people_pose_array'):
     try:
         msg = rospy.wait_for_message(
-                topicname,
-                PoseArray,
-                timeout=rospy.Duration(5))
+            topicname,
+            PoseArray,
+            timeout=rospy.Duration(5))
     except rospy.ROSException as e:
         rospy.logwarn('Timeout exceede: {}'.format(e))
         return None
@@ -78,7 +90,8 @@ def get_diff_for_person(pose):
         y = pose.pose.position.y
         z = pose.pose.position.z
     else:
-        raise TypeError('pose must be geometry_msgs.msg.Pose or geometry_msgs.msg.PoseStamped')
+        raise TypeError(
+            'pose must be geometry_msgs.msg.Pose or geometry_msgs.msg.PoseStamped')
 
     yaw = math.atan2(y, x)
     try:
@@ -91,42 +104,42 @@ def get_diff_for_person(pose):
 class SpotRosClient:
 
     def __init__(self,
-                topicname_cmd_vel='/spot/cmd_vel',
-                topicname_body_pose='/spot/body_pose',
-                servicename_claim='/spot/claim',
-                servicename_release='/spot/release',
-                servicename_stop='/spot/stop',
-                servicename_self_right='/spot/self_right',
-                servicename_sit='/spot/sit',
-                servicename_stand='/spot/stand',
-                servicename_power_on='/spot/power_on',
-                servicename_power_off='/spot/power_off',
-                servicename_estop_hard='/spot/estop/hard',
-                servicename_estop_gentle='/spot/estop/gentle',
-                servicename_stair_mode='/spot/stair_mode',
-                servicename_locomotion_mode='/spot/locomotion_mode',
-                servicename_upload_graph='/spot/upload_graph',
-                servicename_list_graph='/spot/list_graph',
-                servicename_set_localization_fiducial='/spot/set_localization_fiducial',
-                servicename_set_localization_waypoint='/spot/set_localization_waypoint',
-                servicename_dock='/spot/dock',
-                servicename_undock='/spot/undock',
-                actionname_navigate_to='/spot/navigate_to',
-                actionname_trajectory='/spot/trajectory',
-                actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
-                duration_timeout=0.05):
+                 topicname_cmd_vel='/spot/cmd_vel',
+                 topicname_body_pose='/spot/body_pose',
+                 servicename_claim='/spot/claim',
+                 servicename_release='/spot/release',
+                 servicename_stop='/spot/stop',
+                 servicename_self_right='/spot/self_right',
+                 servicename_sit='/spot/sit',
+                 servicename_stand='/spot/stand',
+                 servicename_power_on='/spot/power_on',
+                 servicename_power_off='/spot/power_off',
+                 servicename_estop_hard='/spot/estop/hard',
+                 servicename_estop_gentle='/spot/estop/gentle',
+                 servicename_stair_mode='/spot/stair_mode',
+                 servicename_locomotion_mode='/spot/locomotion_mode',
+                 servicename_upload_graph='/spot/upload_graph',
+                 servicename_list_graph='/spot/list_graph',
+                 servicename_set_localization_fiducial='/spot/set_localization_fiducial',
+                 servicename_set_localization_waypoint='/spot/set_localization_waypoint',
+                 servicename_dock='/spot/dock',
+                 servicename_undock='/spot/undock',
+                 actionname_navigate_to='/spot/navigate_to',
+                 actionname_trajectory='/spot/trajectory',
+                 actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
+                 duration_timeout=0.05):
 
         # Publishers
         self._pub_cmd_vel = rospy.Publisher(
-                                    topicname_cmd_vel,
-                                    Twist,
-                                    queue_size=1
-                                    )
+            topicname_cmd_vel,
+            Twist,
+            queue_size=1
+        )
         self._pub_body_pose = rospy.Publisher(
-                                    topicname_body_pose,
-                                    Pose,
-                                    queue_size=1
-                                    )
+            topicname_body_pose,
+            Pose,
+            queue_size=1
+        )
 
         # wait for services
         try:
@@ -141,11 +154,14 @@ class SpotRosClient:
             rospy.wait_for_service(servicename_estop_hard, rospy.Duration(5))
             rospy.wait_for_service(servicename_estop_gentle, rospy.Duration(5))
             rospy.wait_for_service(servicename_stair_mode, rospy.Duration(5))
-            rospy.wait_for_service(servicename_locomotion_mode, rospy.Duration(5))
+            rospy.wait_for_service(
+                servicename_locomotion_mode, rospy.Duration(5))
             rospy.wait_for_service(servicename_upload_graph, rospy.Duration(5))
             rospy.wait_for_service(servicename_list_graph, rospy.Duration(5))
-            rospy.wait_for_service(servicename_set_localization_fiducial, rospy.Duration(5))
-            rospy.wait_for_service(servicename_set_localization_waypoint, rospy.Duration(5))
+            rospy.wait_for_service(
+                servicename_set_localization_fiducial, rospy.Duration(5))
+            rospy.wait_for_service(
+                servicename_set_localization_waypoint, rospy.Duration(5))
             rospy.wait_for_service(servicename_dock, rospy.Duration(5))
             rospy.wait_for_service(servicename_undock, rospy.Duration(5))
         except rospy.ROSException as e:
@@ -153,101 +169,100 @@ class SpotRosClient:
 
         # Service Clients
         self._srv_client_claim = rospy.ServiceProxy(
-                                    servicename_claim,
-                                    Trigger
-                                    )
+            servicename_claim,
+            Trigger
+        )
         self._srv_client_release = rospy.ServiceProxy(
-                                    servicename_release,
-                                    Trigger
-                                    )
+            servicename_release,
+            Trigger
+        )
         self._srv_client_stop = rospy.ServiceProxy(
-                                    servicename_stop,
-                                    Trigger
-                                    )
+            servicename_stop,
+            Trigger
+        )
         self._srv_client_self_right = rospy.ServiceProxy(
-                                    servicename_self_right,
-                                    Trigger
-                                    )
+            servicename_self_right,
+            Trigger
+        )
         self._srv_client_sit = rospy.ServiceProxy(
-                                    servicename_sit,
-                                    Trigger
-                                    )
+            servicename_sit,
+            Trigger
+        )
         self._srv_client_stand = rospy.ServiceProxy(
-                                    servicename_stand,
-                                    Trigger
-                                    )
+            servicename_stand,
+            Trigger
+        )
         self._srv_client_power_on = rospy.ServiceProxy(
-                                    servicename_power_on,
-                                    Trigger
-                                    )
+            servicename_power_on,
+            Trigger
+        )
         self._srv_client_power_off = rospy.ServiceProxy(
-                                    servicename_power_off,
-                                    Trigger
-                                    )
+            servicename_power_off,
+            Trigger
+        )
         self._srv_client_estop_hard = rospy.ServiceProxy(
-                                    servicename_estop_hard,
-                                    Trigger
-                                    )
+            servicename_estop_hard,
+            Trigger
+        )
         self._srv_client_estop_gentle = rospy.ServiceProxy(
-                                    servicename_estop_gentle,
-                                    Trigger
-                                    )
+            servicename_estop_gentle,
+            Trigger
+        )
         self._srv_client_stair_mode = rospy.ServiceProxy(
-                                    servicename_stair_mode,
-                                    SetBool
-                                    )
+            servicename_stair_mode,
+            SetBool
+        )
         self._srv_client_locomotion_mode = rospy.ServiceProxy(
-                                    servicename_locomotion_mode,
-                                    SetLocomotion
-                                    )
+            servicename_locomotion_mode,
+            SetLocomotion
+        )
         self._srv_client_upload_graph = rospy.ServiceProxy(
-                                    servicename_upload_graph,
-                                    UploadGraph
-                                    )
+            servicename_upload_graph,
+            UploadGraph
+        )
         self._srv_client_list_graph = rospy.ServiceProxy(
-                                    servicename_list_graph,
-                                    ListGraph
-                                    )
+            servicename_list_graph,
+            ListGraph
+        )
         self._srv_client_set_localization_fiducial = rospy.ServiceProxy(
-                                    servicename_set_localization_fiducial,
-                                    SetLocalizationFiducial
-                                    )
+            servicename_set_localization_fiducial,
+            SetLocalizationFiducial
+        )
         self._srv_client_set_localization_waypoint = rospy.ServiceProxy(
-                                    servicename_set_localization_waypoint,
-                                    SetLocalizationWaypoint
-                                    )
+            servicename_set_localization_waypoint,
+            SetLocalizationWaypoint
+        )
         self._srv_client_dock = rospy.ServiceProxy(
-                                    servicename_dock,
-                                    Dock
-                                    )
+            servicename_dock,
+            Dock
+        )
         self._srv_client_undock = rospy.ServiceProxy(
-                                    servicename_undock,
-                                    Trigger
-                                    )
-
+            servicename_undock,
+            Trigger
+        )
 
         # Action Clients
         self._actionclient_navigate_to = actionlib.SimpleActionClient(
-                                                actionname_navigate_to,
-                                                NavigateToAction
-                                                )
+            actionname_navigate_to,
+            NavigateToAction
+        )
         self._actionclient_trajectory = actionlib.SimpleActionClient(
-                                                actionname_trajectory,
-                                                TrajectoryAction
-                                                )
+            actionname_trajectory,
+            TrajectoryAction
+        )
         self._actionclient_execute_behaviors = actionlib.SimpleActionClient(
-                                                actionname_execute_behaviors,
-                                                LeadPersonAction
-                                                )
+            actionname_execute_behaviors,
+            LeadPersonAction
+        )
 
         # wait for action
         try:
             self._actionclient_navigate_to.wait_for_server(rospy.Duration(5))
             self._actionclient_trajectory.wait_for_server(rospy.Duration(5))
-            self._actionclient_execute_behaviors.wait_for_server(rospy.Duration(5))
+            self._actionclient_execute_behaviors.wait_for_server(
+                rospy.Duration(5))
         except rospy.ROSException as e:
             rospy.logerr('Action unavaliable: {}'.format(e))
-
 
     def pubCmdVel(self, vx, vy, vtheta):
         msg = Twist()
@@ -307,11 +322,13 @@ class SpotRosClient:
         return res.success, res.message
 
     def locomotion_mode(self, locomotion_mode):
-        res = self._srv_client_locomotion_mode(SetLocomotionRequest(locomotion_mode=locomotion_mode))
+        res = self._srv_client_locomotion_mode(
+            SetLocomotionRequest(locomotion_mode=locomotion_mode))
         return res.success, res.message
 
     def upload_graph(self, upload_filepath):
-        res = self._srv_client_upload_graph(UploadGraphRequest(upload_filepath=upload_filepath))
+        res = self._srv_client_upload_graph(
+            UploadGraphRequest(upload_filepath=upload_filepath))
         return res.success, res.message
 
     def list_graph(self):
@@ -319,17 +336,19 @@ class SpotRosClient:
         return res.waypoint_ids
 
     def set_localization_fiducial(self):
-        res = self._srv_client_set_localization_fiducial(SetLocalizationFiducialRequest())
+        res = self._srv_client_set_localization_fiducial(
+            SetLocalizationFiducialRequest())
         return res.success, res.message
 
     def set_localization_waypoint(self, waypoint_id):
-        res = self._srv_client_set_localization_waypoint(SetLocalizationWaypointRequest(waypoint_id=waypoint_id))
+        res = self._srv_client_set_localization_waypoint(
+            SetLocalizationWaypointRequest(waypoint_id=waypoint_id))
         return res.success, res.message
 
     def dock(self, dock_id):
-        req = TriggerRequest()
+        req = DockRequest()
         req.dock_id = dock_id
-        self.pubBodyPose(0,Quaternion(0,0,0,1.0))
+        self.pubBodyPose(0, Quaternion(0, 0, 0, 1.0))
         self.sit()
         self.stand()
         res = self._srv_client_dock(req)
@@ -374,13 +393,11 @@ class SpotRosClient:
     def get_execute_behaviors_result(self):
         return self._actionclient_execute_behaviors.get_result()
 
- ## \brief call trajectory service
- ##
- ##
- ## \param x x value of the target position [m]
- ## \param x y value of the target position [m]
- ## \param theta theta value of the target position [rad]
- ## \param duration duration of trajectory command [secs]
+    # \brief call trajectory service
+    # \param x x value of the target position [m]
+    # \param x y value of the target position [m]
+    # \param theta theta value of the target position [rad]
+    # \param duration duration of trajectory command [secs]
     def trajectory(self, x, y, theta, duration, blocking=False):
         rotation = PyKDL.Rotation.RotZ(theta)
         goal = TrajectoryGoal()
