@@ -46,7 +46,7 @@ class ElevatorBehavior(BaseBehavior):
         self.silent_mode = rospy.get_param('~silent_mode', True)
 
         # launch recognition launch
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        uuid = roslaunch.rlutil.get_or_generate_uuid(None, True)
         roslaunch_path = rospkg.RosPack().get_path('spot_basic_behaviors') +\
             '/launch/elevator_detection.launch'
         roslaunch_cli_args = [roslaunch_path]
