@@ -1,6 +1,8 @@
 <launch>
+    <arg name="patrol_list" default="['eng2_JSKEntrance', 'eng2_7FElevator']" />
     <include
         file="$(find jsk_spot_patrol_and_greeting)/launch/demo.launch"
         >
+        <arg name="patrol_list" value="$(arg patrol_list)" />
     </include>
 </launch>
