@@ -28,7 +28,11 @@ roslaunch jsk_spot_teleop teleop.launch pad_type:=<your pad type (dualshock3, du
 
 ### DualSense
 
-![SpotTeleopDualSense](https://user-images.githubusercontent.com/9410362/135626869-e8b7ce7f-99d7-4f32-ac2c-1e357da1afe2.png)
+<div align="center">
+  
+<img src="https://user-images.githubusercontent.com/67531577/149292697-8e3ef78c-5095-45b7-b79d-5503a42b8c9c.png" title="SpotTeleopDualsense" width=80%>
+  
+</div>
 
 ### Dualshock 3
 
