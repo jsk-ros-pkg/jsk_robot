@@ -145,10 +145,6 @@ To control real robot. you can use *ri* object.
 ```
 2000 indicates we ask robot to move for 2000 [msec]
 
-To obtain current robot pose, use :state :potentio-vector method.
-```
-(send *kinova* :arm :move-end-pos #f(0 0 -50))
-```
 
 To obtain current robot pose, use `:state :potentio-vector` method.
 
