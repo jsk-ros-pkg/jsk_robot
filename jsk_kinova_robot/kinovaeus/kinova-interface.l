@@ -3,9 +3,6 @@
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 (ros::load-ros-manifest "kortex_driver")
 
-(if (not (find-package "kinova"))
-    (make-package "kinova"))
-
 (defclass kinova-interface
   :super robot-interface
   :slots (controller-handle robot-handle move-robot)
