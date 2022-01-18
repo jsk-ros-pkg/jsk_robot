@@ -384,7 +384,7 @@ class SpotRosClient:
     def dock(self, dock_id):
         req = DockRequest()
         req.dock_id = dock_id
-        self.pubBodyPose(0, Quaternion(0, 0, 0, 1.0))
+        self.pub_body_pose(0, Quaternion(0, 0, 0, 1.0))
         self.sit()
         self.stand()
         res = self._srv_client_dock(req)
@@ -394,6 +394,24 @@ class SpotRosClient:
         self.power_on()
         res = self._srv_client_undock(TriggerRequest())
         return res.success, res.message
+
+    def auto_dock(self, dock_id, home_node_id='eng2_73B2'):
+        res = self.execute_behaviors(home_node_id)
+        if not res.success:
+            return res.success, res.message
+        success, message = self.dock(dock_id)
+        return success, message
+
+    def auto_undock(self):
+        self.sit()
+        self.power_off()
+        self.release()
+        self.claim()
+        self.power_on()
+        if self.is_connected():
+            self.undock()
+        else:
+            self.stand()
 
     def navigate_to(self, id_navigate_to, blocking=False):
         goal = NavigateToGoal()
