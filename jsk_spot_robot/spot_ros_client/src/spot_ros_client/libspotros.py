@@ -5,6 +5,8 @@ import actionlib
 import math
 
 # msg
+from std_msgs.msg import Bool
+from std_msgs.msg import String
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PoseArray
 from geometry_msgs.msg import PoseStamped
@@ -106,6 +108,8 @@ class SpotRosClient:
     def __init__(self,
                  topicname_cmd_vel='/spot/cmd_vel',
                  topicname_body_pose='/spot/body_pose',
+                 topicname_cable_connected='/spot/status/cable_connected',
+                 topicname_current_node_id='/spot_behavior_manager_server/current_node_id',
                  servicename_claim='/spot/claim',
                  servicename_release='/spot/release',
                  servicename_stop='/spot/stop',
@@ -128,6 +132,9 @@ class SpotRosClient:
                  actionname_trajectory='/spot/trajectory',
                  actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
                  duration_timeout=0.05):
+
+        self.topicname_cable_connected = topicname_cable_connected
+        self.topicname_current_node_id = topicname_current_node_id
 
         # Publishers
         self._pub_cmd_vel = rospy.Publisher(
@@ -264,6 +271,14 @@ class SpotRosClient:
         except rospy.ROSException as e:
             rospy.logerr('Action unavaliable: {}'.format(e))
 
+    def isConnected(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_cable_connected, Bool, timeout=rospy.Duration(5))
+            return msg.data
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
+
     def pubCmdVel(self, vx, vy, vtheta):
         msg = Twist()
         msg.linear.x = vx
@@ -375,6 +390,14 @@ class SpotRosClient:
 
     def cancel_navigate_to(self):
         self._actionclient_navigate_to.cancel_all_goals()
+
+    def get_current_node(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_current_node_id, String, timeout=rospy.Duration(5))
+            return msg.data
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
 
     def execute_behaviors(self, target_node_id, blocking=True):
         goal = LeadPersonGoal()
