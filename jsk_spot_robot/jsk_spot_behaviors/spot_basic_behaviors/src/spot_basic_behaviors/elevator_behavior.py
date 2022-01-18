@@ -261,13 +261,13 @@ class ElevatorBehavior(BaseBehavior):
         rospy.loginfo('elevator door opened and at the target_floor')
 
         # dance before starting to move
-        self.spot_client.pubBodyPose(0.0, Quaternion(w=1))
+        self.spot_client.pub_body_pose(0.0, Quaternion(w=1))
         self.spot_client.stand()
         rospy.sleep(0.5)
-        self.spot_client.pubBodyPose(-0.2, Quaternion(w=1))
+        self.spot_client.pub_body_pose(-0.2, Quaternion(w=1))
         self.spot_client.stand()
         rospy.sleep(0.5)
-        self.spot_client.pubBodyPose(0.0, Quaternion(w=1))
+        self.spot_client.pub_body_pose(0.0, Quaternion(w=1))
         self.spot_client.stand()
 
         # get off the elevator
