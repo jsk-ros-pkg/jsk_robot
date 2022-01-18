@@ -66,8 +66,8 @@
 # visualization_rwt is not released for melodic
 - git:
     local-name: tork-a/visualization_rwt
-    uri: https://github.com/tork-a/visualization_rwt.git
-    version: kinetic-devel
+    uri: https://github.com/sktometometo/visualization_rwt.git
+    version: develop/spot
 # aerial_robot packages are requied for msgs for spot spinal
 - git:
     local-name: aerial_robot
