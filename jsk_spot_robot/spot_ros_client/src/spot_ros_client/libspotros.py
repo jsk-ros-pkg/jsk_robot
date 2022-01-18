@@ -6,6 +6,7 @@ import math
 
 # msg
 from std_msgs.msg import Bool
+from std_msgs.msg import Float32
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PoseArray
@@ -110,6 +111,8 @@ class SpotRosClient:
                  topicname_body_pose='/spot/body_pose',
                  topicname_cable_connected='/spot/status/cable_connected',
                  topicname_current_node_id='/spot_behavior_manager_server/current_node_id',
+                 topicname_laptop_percentage='/spot/status/laptop_battery_percentage',
+                 topicname_battery_percentage='/spot/status/battery_percentage',
                  servicename_claim='/spot/claim',
                  servicename_release='/spot/release',
                  servicename_stop='/spot/stop',
@@ -135,6 +138,8 @@ class SpotRosClient:
 
         self.topicname_cable_connected = topicname_cable_connected
         self.topicname_current_node_id = topicname_current_node_id
+        self.topicname_laptop_percentage = topicname_laptop_percentage
+        self.topicname_battery_percentage = topicname_battery_percentage
 
         # Publishers
         self._pub_cmd_vel = rospy.Publisher(
@@ -271,7 +276,23 @@ class SpotRosClient:
         except rospy.ROSException as e:
             rospy.logerr('Action unavaliable: {}'.format(e))
 
-    def isConnected(self):
+    def get_laptop_percepntage(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_laptop_percentage, Float32, timeout=rospy.Duration(5))
+            return msg.data
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
+
+    def get_battery_percepntage(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_battery_percentage, Float32, timeout=rospy.Duration(5))
+            return msg.data
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
+
+    def is_connected(self):
         try:
             msg = rospy.wait_for_message(self.topicname_cable_connected, Bool, timeout=rospy.Duration(5))
             return msg.data
@@ -279,14 +300,14 @@ class SpotRosClient:
             rospy.logwarn('{}'.format(e))
             return None
 
-    def pubCmdVel(self, vx, vy, vtheta):
+    def pub_cmd_vel(self, vx, vy, vtheta):
         msg = Twist()
         msg.linear.x = vx
         msg.linear.y = vy
         msg.angular.z = vtheta
         self._pub_cmd_vel.publish(msg)
 
-    def pubBodyPose(self, height, orientation):
+    def pub_body_pose(self, height, orientation):
         msg = Pose()
         msg.position.z = height
         msg.orientation = orientation

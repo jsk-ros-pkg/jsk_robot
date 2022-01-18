@@ -39,27 +39,27 @@ rate = rospy.Rate(10)
 start_time = rospy.Time.now()
 while not rospy.is_shutdown() and rospy.Time.now() < start_time + rospy.Duration(10):
     rate.sleep()
-    client.pubCmdVel(0, 0, 0.5)
+    client.pub_cmd_vel(0, 0, 0.5)
 
 # change body pose
 quaternion_rotated = Quaternion(x=0,y=0,z=math.sin(0.2),w=math.cos(0.2))
 quaternion_equal = Quaternion(x=0,y=0,z=0,w=1)
 
 rospy.loginfo('rotating body pose')
-client.pubBodyPose(0,quaternion_rotated)
+client.pub_body_pose(0,quaternion_rotated)
 client.stand()
 rospy.sleep(5)
 
-client.pubBodyPose(0,quaternion_equal)
+client.pub_body_pose(0,quaternion_equal)
 client.stand()
 rospy.sleep(5)
 
 rospy.loginfo('changing body height')
-client.pubBodyPose(0.2,quaternion_equal)
+client.pub_body_pose(0.2,quaternion_equal)
 client.stand()
 rospy.sleep(5)
 
-client.pubBodyPose(0,quaternion_equal)
+client.pub_body_pose(0,quaternion_equal)
 client.stand()
 rospy.sleep(5)
 
