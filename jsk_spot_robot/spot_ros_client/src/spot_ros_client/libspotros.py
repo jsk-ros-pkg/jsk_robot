@@ -8,6 +8,8 @@ import math
 from std_msgs.msg import Bool
 from std_msgs.msg import Float32
 from std_msgs.msg import String
+from spot_msgs.msg import Feedback
+from spot_msgs.msg import PowerState
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PoseArray
 from geometry_msgs.msg import PoseStamped
@@ -113,6 +115,8 @@ class SpotRosClient:
                  topicname_current_node_id='/spot_behavior_manager_server/current_node_id',
                  topicname_laptop_percentage='/spot/status/laptop_battery_percentage',
                  topicname_battery_percentage='/spot/status/battery_percentage',
+                 topicname_status_feedback='/spot/status/feedback',
+                 topicname_status_power_state='/spot/status/power_state',
                  servicename_claim='/spot/claim',
                  servicename_release='/spot/release',
                  servicename_stop='/spot/stop',
@@ -140,6 +144,8 @@ class SpotRosClient:
         self.topicname_current_node_id = topicname_current_node_id
         self.topicname_laptop_percentage = topicname_laptop_percentage
         self.topicname_battery_percentage = topicname_battery_percentage
+        self.topicname_status_feedback = topicname_status_feedback
+        self.topicname_status_power_state = topicname_status_power_state
 
         # Publishers
         self._pub_cmd_vel = rospy.Publisher(
@@ -300,6 +306,33 @@ class SpotRosClient:
             rospy.logwarn('{}'.format(e))
             return None
 
+    def is_sitting(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_status_feedback, Feedback, timeout=rospy.Duration(5))
+            return msg.sitting
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
+
+    def is_standing(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_status_feedback, Feedback, timeout=rospy.Duration(5))
+            return msg.standing
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
+
+    def is_powered_on(self):
+        try:
+            msg = rospy.wait_for_message(self.topicname_status_power_state, PowerState, timeout=rospy.Duration(5))
+            if msg.motor_power_state == PowerState.STATE_ON:
+                return True
+            else:
+                return False
+        except rospy.ROSException as e:
+            rospy.logwarn('{}'.format(e))
+            return None
+
     def pub_cmd_vel(self, vx, vy, vtheta):
         msg = Twist()
         msg.linear.x = vx
@@ -393,6 +426,10 @@ class SpotRosClient:
     def undock(self):
         self.power_on()
         res = self._srv_client_undock(TriggerRequest())
+        if not self.is_powered_on():
+            self.power_on()
+        if not self.is_standing():
+            self.stand()
         return res.success, res.message
 
     def auto_dock(self, dock_id, home_node_id='eng2_73B2'):
