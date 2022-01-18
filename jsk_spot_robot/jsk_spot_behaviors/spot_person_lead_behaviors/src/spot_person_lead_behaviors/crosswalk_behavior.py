@@ -166,7 +166,7 @@ class CrosswalkBehavior(BaseBehavior):
                 speech_thread.start()
                 while not self.person_state_visible and self.person_duration_visibility > rospy.Duration(0.5):
                     rate.sleep()
-                    self.spot_client.pubCmdVel(0,0,0)
+                    self.spot_client.pub_cmd_vel(0,0,0)
                     if not flag_speech:
                         flag_speech = True
                         speech_thread = threading.Thread(target=notify_visibility)
