@@ -1,0 +1,10 @@
+<launch>
+    <arg name="place" default="eng2_73B2"/>
+    <include
+        file="$(find jsk_spot_delivery_demo)/launch/demo_pickup.launch"
+        >
+        <arg name="TARGET_NODE" value="$(arg place)" />
+        <arg name="HOME_ID" value="$(optenv SPOT_HOME_ID eng2_73B2)" />
+        <arg name="DOCK_ID" value="$(optenv DOCKING_STATION_ID 520)" />
+    </include>
+</launch>

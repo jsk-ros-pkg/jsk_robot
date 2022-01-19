@@ -1,6 +1,0 @@
-<launch>
-    <include
-        file="$(find jsk_spot_delivery_demo)/launch/demo.launch"
-        >
-    </include>
-</launch>

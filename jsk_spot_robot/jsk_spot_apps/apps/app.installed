@@ -3,8 +3,10 @@ apps:
   display: Watch Dog
 - app: jsk_spot_apps/take_envelop_to_mech_office
   display: Take Envelop To Mech Office
-- app: jsk_spot_apps/delivery_demo
-  display: Delivery Demo
+- app: jsk_spot_apps/pickup_and_deliver
+  display: Pickup and Deliver Demo
+- app: jsk_spot_apps/go_and_pickup
+  display: Go and Pickup Demo
 - app: jsk_spot_apps/sing_and_dance
   display: Sing And Dance
 - app: jsk_spot_apps/go_to_place
