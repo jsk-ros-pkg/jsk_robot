@@ -6,12 +6,15 @@
     <!-- insta360 -->
     <include
         if="$(arg use_insta_360)"
-        file="$(find jsk_spot_startup)/launch/include/insta360_air.launch"
+        file="$(find jsk_perception)/sample/sample_insta360_air.launch"
         >
         <arg name="gui" value="false" />
         <arg name="brightness" value="128" />
         <arg name="throttle" value="false" />
         <arg name="throttled_rate" value="5" />
+        <arg name="width" value="2176" />
+        <arg name="height" value="1088" />
+        <arg name="panorama_resolution_mode" value="true" />
     </include>
 
     <!-- front microphone -->
