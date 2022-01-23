@@ -236,4 +236,8 @@
     </rosparam>
   </node>
 
+  <!-- Check fetch's boards in a constant period -->
+  <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
+  </node>
+
 </launch>
