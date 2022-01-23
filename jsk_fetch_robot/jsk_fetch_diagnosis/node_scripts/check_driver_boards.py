@@ -54,7 +54,7 @@ class CheckDriverBoardsNode:
                 msg.board_info = 'ERROR: command returned non-zero exit status'
                 rospy.logerr(
                     'command returned non-zero exit status while read board with id '\
-                    '{}: {}'.format(board_id, list_board_id[board_id]))
+                    '{:#04x}: {}'.format(board_id, list_board_id[board_id]))
 
             self.publisher.publish(msg)
 
