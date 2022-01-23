@@ -11,24 +11,25 @@ import rospy
 from jsk_fetch_diagnosis.msg import BoardInfo
 
 binary_str = '/opt/ros/' + os.environ['ROS_DISTRO'] + '/lib/fetch_drivers/read_board'
-list_board_id = [0,    # mainboard
-                 17,   # l_wheel
-                 18,   # r_wheel
-                 19,   # torso_lift
-                 20,   # head_pan
-                 21,   # heal_tilt
-                 # 35,   # ?? cart_dock_mcb
-                 38,   # shoulder_pan
-                 39,   # shoulder_lift
-                 40,   # upperarm_roll
-                 41,   # elbow_flex
-                 42,   # forearm_roll
-                 43,   # wrist_flex
-                 44,   # wrist_roll
-                 # 81,   # ?? mcb Base motor test stand
-                 # 82,   # ?? mcb Base motor test stand
-                 63,   # charger
-                 128]  # gripper
+list_board_id = {0:   'mainboard',
+                 17:  'l_wheel',
+                 18:  'r_wheel',
+                 19:  'torso_lift',
+                 20:  'head_pan',
+                 21:  'heal_tilt',
+                 # 35:  '?? cart_dock_mcb',
+                 38:  'shoulder_pan',
+                 39:  'shoulder_lift',
+                 40:  'upperarm_roll',
+                 41:  'elbow_flex',
+                 42:  'forearm_roll',
+                 43:  'wrist_flex',
+                 44:  'wrist_roll',
+                 # 81:  '?? mcb Base motor test stand',
+                 # 82:  '?? mcb Base motor test stand',
+                 63:  'charger',
+                 128: 'gripper',
+                 }
 
 
 class CheckDriverBoardsNode:
@@ -51,7 +52,9 @@ class CheckDriverBoardsNode:
                 rospy.logdebug('read_board command with id {} succeeded'.format(board_id))
             except subprocess.CalledProcessError:
                 msg.board_info = 'ERROR: command returned non-zero exit status'
-                rospy.logerr('command returned non-zero exit status while read board with id {}'.format(board_id))
+                rospy.logerr(
+                    'command returned non-zero exit status while read board with id '\
+                    '{}: {}'.format(board_id, list_board_id[board_id]))
 
             self.publisher.publish(msg)
 
