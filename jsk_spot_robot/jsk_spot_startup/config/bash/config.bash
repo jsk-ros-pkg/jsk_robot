@@ -37,3 +37,9 @@ export ROSCONSOLE_FORMAT='[${severity}] [WallTime: ${time}] [node:${node}] [func
 # export USE_DOCKING_STATION="<boolean>"
 # export DOCKING_STATION_ID=520
 # export SPOT_HOME_ID=eng2_73b2
+
+# JSK cache data directory
+export JSK_DATA_CACHE_DIR=/etc/ros/jsk_data
+if [ ! -d $JSK_DATA_CACHE_DIR ]; then
+    mkdir -p $JSK_DATA_CACHE_DIR && sudo chmod 0777 $JSK_DATA_CACHE_DIR
+fi
