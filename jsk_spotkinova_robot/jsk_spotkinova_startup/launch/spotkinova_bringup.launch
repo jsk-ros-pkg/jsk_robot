@@ -29,7 +29,6 @@
       >
     <arg name="ip_address" value="$(arg ip_address)" />
     <arg name="robot_name" value="$(arg robot_name)" />
-    <arg name="rviz" value="false" />
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
     <arg name="vision" value="$(arg vision)" />
