@@ -13,11 +13,6 @@
   <arg name="use_realsense" default="true" />
   <arg name="rviz" default="false" doc="Set true if you want RViz." />
 
-  <!-- launch description and robot state publisher for spotkinova -->
-  <include
-      file="$(find jsk_spotkinova_description)/launch/spotkinova_description.launch"
-      />
-
   <!-- launch for spot -->
   <include
       file="$(find jsk_spot_startup)/launch/jsk_spot_bringup.launch"
@@ -51,7 +46,7 @@
   </include>
 
   <!-- robot description and robot state publisher -->
-  <include file="$(find jsk_spotkinova_description/launch/spotkinova_description.launch">
+  <include file="$(find jsk_spotkinova_startup/launch/spotkinova_description.launch">
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
   </include>
