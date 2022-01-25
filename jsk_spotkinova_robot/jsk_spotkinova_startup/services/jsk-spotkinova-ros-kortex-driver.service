@@ -1,15 +1,12 @@
 [Unit]
-Description=JSK SpotKinova ROS bringup Service
+Description=JSK SpotKinova ROS Kortex Driver Service
 
 [Service]
 Type=simple
 ExecStart=/bin/bash -c ". /opt/ros/roscore_poststart.bash && \
 . /home/spot/spot_ws/devel/setup.bash && \
 if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && \
-roslaunch jsk_spotkinova_startup spotkinova_bringup.launch \
-    launch_spot_driver:=false \
-    launch_kortex_driver:=false \
-    use_realsense:=false \
+roslaunch jsk_spotkinova_startup spotkinova_kortex_bringup.launch \
     --wait --screen"
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
