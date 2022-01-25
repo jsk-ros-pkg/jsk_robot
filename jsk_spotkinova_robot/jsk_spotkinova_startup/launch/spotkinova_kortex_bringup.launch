@@ -14,4 +14,26 @@
     <arg name="use_realsense" value="false" />
     <arg name="rviz" value="false" />
   </include>
+
+  <!-- Publish and Subscribe dummy follow_joint_trajectry topics -->
+  <!-- Not to start Kinematics Simulator in spotkinova-interface -->
+  <node name="dummy_fjt_goal_subscriber" pkg="rostopic" type="rostopic"
+        args="echo /dummy/follow_joint_trajectory/goal" />
+  <node name="dummy_fjt_cancel_subscriber" pkg="rostopic" type="rostopic"
+        args="echo /dummy/follow_joint_trajectory/cancel" />
+  <node name="dummy_fjt_feedback_publisher" pkg="rostopic" type="rostopic"
+        args="pub /dummy/follow_joint_trajectory/feedback control_msgs/FollowJointTrajectoryActionFeedback
+              '{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+                status: {goal_id: {stamp: {secs: 0, nsecs: 0}, id: ''}, status: 0, text: ''},
+                feedback: {header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+                           joint_names: [''],
+                           desired: {positions: [0], velocities: [0], accelerations: [0], effort: [0], time_from_start: {secs: 0, nsecs: 0}},
+                           actual: {positions: [0], velocities: [0], accelerations: [0], effort: [0], time_from_start: {secs: 0, nsecs: 0}},
+                           error: {positions: [0], velocities: [0], accelerations: [0], effort: [0], time_from_start: {secs: 0, nsecs: 0}}}}'" />
+  <node name="dummy_fjt_result_publisher" pkg="rostopic" type="rostopic"
+        args="pub /dummy/follow_joint_trajectory/result control_msgs/FollowJointTrajectoryActionResult
+              '{header: {seq: 0, stamp: {secs: 0, nsecs: 0}, frame_id: ''},
+                status: {goal_id: {stamp: {secs: 0, nsecs: 0}, id: ''}, status: 0, text: ''},
+                result: {error_code: 0, error_string: ''}}'" />
+
 </launch>
