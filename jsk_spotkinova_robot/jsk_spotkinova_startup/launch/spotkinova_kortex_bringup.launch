@@ -1,0 +1,17 @@
+<launch>
+  <arg name="ip_address" default="192.168.1.10" doc="IP adress of the Kinova robot" />
+
+  <include
+      file="$(find jsk_kinova_startup)/launch/kinova_bringup.launch"
+      >
+    <arg name="ip_address" value="$(arg ip_address)" />
+    <arg name="robot_name" value="arm_gen3" />
+    <arg name="arm" value="gen3_lite" />
+    <arg name="gripper" value="gen3_lite_2f" />
+    <arg name="vision" value="false" />
+    <arg name="prefix" value="kinova_" />
+    <arg name="launch_robot_state_publisher" value="false" />
+    <arg name="use_realsense" value="false" />
+    <arg name="rviz" value="false" />
+  </include>
+</launch>
