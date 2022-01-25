@@ -1,0 +1,10 @@
+<launch>
+  <arg name="camera_prefix" default="kinova_wrist" />
+  <arg name="serial_no" default="$(optenv RS_SERIAL_NO_KINOVA_WRIST_D435)" />
+
+  <include file="$(find jsk_kinova_startup)/launch/includes/kinova_wrist_camera.launch">
+      <arg name="camera_prefix" value="$(arg camera_prefix)" />
+      <arg name="serial_no" value="$(arg serial_no)" />
+  </include>
+
+</launch>

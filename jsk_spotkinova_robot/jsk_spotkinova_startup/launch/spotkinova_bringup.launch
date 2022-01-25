@@ -1,17 +1,24 @@
 <launch>
+  <!-- Config for Spot -->
   <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
-  <arg name="launch_spot_driver" default="true" />
+  <!-- Config for Kinova -->
   <arg name="ip_address" default="192.168.1.10" doc="IP adress of the Kinova robot" />
   <arg name="robot_name" default="arm_gen3" doc="Kinova robot name. Basically, this name should not be changed." />
   <arg name="arm" default="gen3_lite" doc="Use 'gen3' for gen3 robot, 'gen3_lite' for gen3 lite robot." />
-  <arg name="gripper" default="robotiq_2f_140" if="$(eval arg('arm') == 'gen3')" doc="For gen3 robot" />
   <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')" doc="For gen3 lite robot"/>
-  <arg name="vision" default="true" if="$(eval arg('arm') == 'gen3')" doc="Set true if you use gen3 camera module." />
   <arg name="vision" default="false" if="$(eval arg('arm') == 'gen3_lite')" doc="gen3 lite robot does not have camera module." />
+  <!-- Options -->
+  <arg name="launch_spot_driver" default="true" />
+  <arg name="launch_kortex_driver" defautl="true" />
+  <arg name="use_realsense" default="true" />
   <arg name="rviz" default="false" doc="Set true if you want RViz." />
 
+  <!-- launch description and robot state publisher for spotkinova -->
+  <include
+      file="$(find jsk_spotkinova_description)/launch/spotkinova_description.launch"
+      />
+
   <!-- launch for spot -->
-  <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/jsk_spot_bringup.launch"
       if="$(arg launch_spot_driver)"
@@ -20,8 +27,11 @@
       <arg name="launch_robot_state_publisher" value="false" />
   </include>
 
-  <!-- launch for kinova -->
-  <include file="$(find jsk_kinova_startup)/launch/kinova_bringup.launch">
+  <!-- launch for kinova kortex driver -->
+  <include
+      file="$(find jsk_kinova_startup)/launch/kinova_bringup.launch"
+      if="$(arg launch_kortex_driver)"
+      >
     <arg name="ip_address" value="$(arg ip_address)" />
     <arg name="robot_name" value="$(arg robot_name)" />
     <arg name="rviz" value="false" />
@@ -30,29 +40,24 @@
     <arg name="vision" value="$(arg vision)" />
     <arg name="prefix" value="kinova_" />
     <arg name="launch_robot_state_publisher" value="false" />
+    <arg name="use_realsense" value="false" />
+    <arg name="rviz" value="false" />
   </include>
 
-  <!-- robot_description and robot_state_publisher -->
-  <param name="robot_description"
-         command="$(find xacro)/xacro --inorder $(find jsk_spotkinova_description)/robots/jsk_spotkinova.urdf.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
-  <param name="robot_description_semantic"
-         command="$(find xacro)/xacro --inorder $(find jsk_spotkinova_description)/robots/jsk_spotkinova.urdf.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
-  <node
-    name="robot_state_publisher"
-    pkg="robot_state_publisher"
-    type="robot_state_publisher"
-    >
-    <remap from="/joint_states" to="/spotkinova/joint_states" />
-  </node>
+  <!-- Kinova wrist realsense -->
+  <include file="$(find jsk_kinova_startup)/launch/kinova_wrist_camera.launch" if="$(arg use_realsense)">
+    <arg name="camera_prefix" value="kinova_wrist" />
+    <arg name="serial_no" value="$(optenv RS_SERIAL_NO_KINOVA_WRIST_D435)" />
+  </include>
+
+  <!-- robot description and robot state publisher -->
+  <include file="$(find jsk_spotkinova_description/launch/spotkinova_description.launch">
+    <arg name="arm" value="$(arg arm)" />
+    <arg name="gripper" value="$(arg gripper)" />
+  </include>
 
   <!-- Rviz for kinova-->
   <include if="$(arg rviz)" file="$(find jsk_spotkinova_startup)/launch/rviz.launch" />
-
-  <!-- Topic relay for joint_states  -->
-  <node name="joint_states_relay_spot" pkg="topic_tools" type="relay"
-        args="/joint_states /spotkinova/joint_states" />
-  <node name="joint_states_relay_kinova" pkg="topic_tools" type="relay"
-        args="/arm_gen3/joint_states /spotkinova/joint_states" />
 
   <!-- Publish and Subscribe dummy follow_joint_trajectry topics -->
   <!-- Not to start Kinematics Simulator in spotkinova-interface -->
