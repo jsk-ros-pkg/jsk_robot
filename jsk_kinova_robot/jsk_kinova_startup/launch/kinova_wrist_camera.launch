@@ -1,0 +1,35 @@
+<launch>
+  <arg name="camera_prefix" default="kinova_wrist" />
+  <arg name="serial_no" default="" />
+
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+      <arg name="serial_no" value="$(arg serial_no)" />
+      <arg name="device_type" value="d435" />
+      <arg name="camera" value="$(arg camera_prefix)_camera" />
+      <!-- resolution and framerate -->
+      <arg name="color_width" value="640" />
+      <arg name="color_height" value="480" />
+      <arg name="color_fps" value="30" />
+      <arg name="depth_width" value="640" />
+      <arg name="depth_height" value="480" />
+      <arg name="depth_fps" value="30" />
+      <!-- point cloud configuration -->
+      <arg name="enable_pointcloud" value="true" />
+      <arg name="allow_no_texture_points" value="true" />
+      <arg name="ordered_pc" value="true" />
+      <!-- other config -->
+      <arg name="align_depth" value="true" />
+  </include>
+
+  <node
+      pkg="nodelet"
+      type="nodelet"
+      name="$(arg camera_prefix)_point_proc"
+      args="standalone depth_image_proc/point_cloud_xyzrgb">
+      <remap from="rgb/camera_info" to="/$(arg camera_prefix)_camera/color/camera_info"/>
+      <remap from="rgb/image_rect_color" to="/$(arg camera_prefix)_camera/color/image_raw"/>
+      <remap from="depth_registered/image_rect" to="/$(arg camera_prefix)_camera/aligned_depth_to_color/image_raw"/>
+      <remap from="depth_registered/points" to="/$(arg camera_prefix)_camera/aligned_depth_to_color/points" />
+  </node>
+
+</launch>

@@ -23,34 +23,16 @@
     <arg name="launch_robot_state_publisher" value="$(arg launch_robot_state_publisher)" />
   </include>
 
-  <!-- Do not create too dense trajectory in MoveIt! -->
-  <!-- Decreasing the number of waypoint reduces minjerk interpolation calculation time by roseus-->
-  <group ns="$(arg robot_name)">
-    <group ns="move_group">
-    <param name="sample_duration" value="0.3" /> <!-- Default: 0.05 -->
-    </group>
-  </group>
-
   <!-- Vision -->
+  <!-- For Gen 3 Hand Camera-->
   <include if="$(arg vision)" file="$(find kinova_vision)/launch/kinova_vision_rgbd.launch">
     <arg name="device" value="$(arg ip_address)" />
   </include>
-  <include if="$(arg use_realsense)" file="$(find realsense2_camera)/launch/rs_camera.launch">
-    <arg name="device_type" value="d435" />
-    <arg name="camera" value="kinova_wrist_camera" />
-    <arg name="enable_pointcloud" value="true" />
-    <arg name="align_depth" value="true" />
+  <!-- For Gen 3 Lite Wrist Camera -->
+  <include if="$(arg use_realsense)" file="$(find jsk_kinova_startup)/launch/kinova_wrist_camera.launch">
+    <arg name="camera_prefix" value="kinova_wrist" />
+    <arg name="serial_no" value="" />
   </include>
-  <node
-      pkg="nodelet"
-      type="nodelet"
-      name="kinova_wrist_point_proc"
-      args="standalone depth_image_proc/point_cloud_xyzrgb">
-      <remap from="rgb/camera_info" to="/kinova_wrist_camera/color/camera_info"/>
-      <remap from="rgb/image_rect_color" to="/kinova_wrist_camera/color/image_raw"/>
-      <remap from="depth_registered/image_rect" to="/kinova_wrist_camera/aligned_depth_to_color/image_raw"/>
-      <remap from="depth_registered/points" to="/kinova_wrist_camera/aligned_depth_to_color/points" />
-  </node>
 
   <!-- Rviz -->
   <include if="$(arg rviz)" file="$(find jsk_kinova_startup)/launch/rviz.launch" />
