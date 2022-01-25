@@ -14,7 +14,7 @@
         <arg name="throttled_rate" value="5" />
         <arg name="width" value="2176" />
         <arg name="height" value="1088" />
-        <arg name="panorama_resolution_mode" value="true" />
+        <arg name="panorama_resolution_mode" value="low" />
     </include>
 
     <!-- front microphone -->
