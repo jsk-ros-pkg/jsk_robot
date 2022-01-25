@@ -45,7 +45,7 @@
   </include>
 
   <!-- robot description and robot state publisher -->
-  <include file="$(find jsk_spotkinova_startup/launch/spotkinova_description.launch">
+  <include file="$(find jsk_spotkinova_startup)/launch/spotkinova_description.launch">
     <arg name="arm" value="$(arg arm)" />
     <arg name="gripper" value="$(arg gripper)" />
   </include>
