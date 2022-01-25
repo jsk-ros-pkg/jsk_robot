@@ -1,26 +1,81 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="ip_address" default="133.11.216.53" doc="IP adress of the Kinova robot" />
-  <arg name="robot_name" default="arm_gen3" doc="Kinova robot name. Basically, this name should not be changed." />
-  <arg name="arm" default="gen3_lite" doc="Use 'gen3' for gen3 robot, 'gen3_lite' for gen3 lite robot." />
-  <arg name="gripper" default="robotiq_2f_140" if="$(eval arg('arm') == 'gen3')" doc="For gen3 robot" />
-  <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')" doc="For gen3 lite robot"/>
+  <!-- Arm configuration -->
+  <arg name="arm" default="gen3_lite"/>
+  <arg name="use_hard_limits" default="false"/> <!-- Set soft limits as hard limits (Gen3 only) -->
+
+  <!-- Configuration automatically set by arm argument -->
+  <!-- Arm configuration -->
+  <arg name="dof" default="7" if="$(eval arg('arm') == 'gen3')"/> <!-- Number of degrees of freedom of the arm -->
+  <arg name="dof" default="6" if="$(eval arg('arm') == 'gen3_lite')"/> <!-- Number of degrees of freedom of the arm -->
   <arg name="vision" default="true" if="$(eval arg('arm') == 'gen3')" doc="Set true if you use gen3 camera module." />
   <arg name="vision" default="false" if="$(eval arg('arm') == 'gen3_lite')" doc="gen3 lite robot does not have camera module." />
-  <arg name="prefix" default="kinova_" doc="Prefix for kinova joint names" />
-  <arg name="rviz" default="false" doc="Set true if you want RViz." />
-  <arg name="use_realsense" default="true" />
+  <!-- Gripper configuration -->
+  <!-- Default gripper for Gen3 is none, default gripper for Gen3 lite is gen3_lite_2f -->
+  <arg name="gripper" default="" if="$(eval arg('arm') == 'gen3')"/>
+  <arg name="gripper" default="gen3_lite_2f" if="$(eval arg('arm') == 'gen3_lite')"/>
+
+  <!-- Namespace -->
+  <arg name="robot_name" default="arm_gen3"/>
+  <arg name="prefix" default="kinova_"/>
+
+  <!-- Kortex API options -->
+  <arg name="ip_address" default="192.168.1.10"/>
+  <arg name="username" default="admin"/>
+  <arg name="password" default="admin"/>
+  <arg name="cyclic_data_publish_rate" default="40"/> <!--Hz-->
+  <arg name="api_rpc_timeout_ms" default="2000"/> <!--milliseconds-->
+  <arg name="api_session_inactivity_timeout_ms" default="35000"/> <!--milliseconds-->
+  <arg name="api_connection_inactivity_timeout_ms" default="20000"/> <!--milliseconds-->
+
+  <!-- Action server params -->
+  <arg name="default_goal_time_tolerance" default="0.5"/> <!--seconds-->
+  <arg name="default_goal_tolerance" default="0.005"/> <!--radians-->
+
+  <!-- Options -->
   <arg name="launch_robot_state_publisher" default="true" />
+  <arg name="use_realsense" default="true" />
+  <arg name="rviz" default="false" doc="Set true if you want RViz." />
+
+
+  <!-- robot description and robot_state_publisher -->
+  <include file="$(find jsk_kinova_startup)/launch/includes/kinova_state_publisher.launch"
+    if="$(arg launch_robot_state_publisher)">
+    <arg name="arm" value="$(arg arm)" />
+    <arg name="dof" value="$(arg dof)" />
+    <arg name="vision" value="$(arg vision)" />
+    <arg name="gripper" value="$(arg gripper)" />
+    <arg name="robot_name" value="$(arg robot_name)" />
+    <arg name="prefix" value="$(arg prefix)" />
+  </include>
 
   <!-- Driver -->
-  <include file="$(find jsk_kinova_startup)/launch/kortex_driver.launch">
-    <arg name="ip_address" value="$(arg ip_address)" />
-    <arg name="robot_name" value="$(arg robot_name)" />
+  <include file="$(find jsk_kinova_startup)/launch/includes/kortex_driver.launch">
     <arg name="arm" value="$(arg arm)" />
+    <arg name="dof" value="$(arg dof)" />
+    <arg name="use_hard_limits" value="$(arg use_hard_limits)" />
     <arg name="gripper" value="$(arg gripper)" />
-    <arg name="vision" value="$(arg vision)" />
+    <arg name="robot_name" value="$(arg robot_name)" />
     <arg name="prefix" value="$(arg prefix)" />
-    <arg name="launch_robot_state_publisher" value="$(arg launch_robot_state_publisher)" />
+    <arg name="ip_address" value="$(arg ip_address)" />
+    <arg name="username" value="$(arg username)" />
+    <arg name="password" value="$(arg password)" />
+    <arg name="cyclic_data_publish_rate" value="$(arg cyclic_data_publish_rate)" />
+    <arg name="api_rpc_timeout_ms" value="$(arg api_rpc_timeout_ms)" />
+    <arg name="api_session_inactivity_timeout_ms" value="$(arg api_session_inactivity_timeout_ms)" />
+    <arg name="api_connection_inactivity_timeout_ms" value="$(arg api_connection_inactivity_timeout_ms)" />
+    <arg name="default_goal_time_tolerance" value="$(arg default_goal_time_tolerance)" />
+    <arg name="default_goal_tolerance" value="$(arg default_goal_tolerance)" />
+  </include>
+
+  <!-- MoveIt -->
+  <include file="$(find jsk_kinova_startup)/launch/includes/moveit_group.launch">
+    <arg name="arm" value="$(arg arm)" />
+    <arg name="dof" value="$(arg dof)" />
+    <arg name="use_hard_limits" value="$(arg use_hard_limits)" />
+    <arg name="gripper" value="$(arg gripper)" />
+    <arg name="robot_name" value="$(arg robot_name)" />
+    <arg name="prefix" value="$(arg prefix)" />
   </include>
 
   <!-- Vision -->
@@ -29,11 +84,11 @@
     <arg name="device" value="$(arg ip_address)" />
   </include>
   <!-- For Gen 3 Lite Wrist Camera -->
-  <include if="$(arg use_realsense)" file="$(find jsk_kinova_startup)/launch/kinova_wrist_camera.launch">
+  <include if="$(arg use_realsense)" file="$(find jsk_kinova_startup)/launch/includes/kinova_wrist_camera.launch">
     <arg name="camera_prefix" value="kinova_wrist" />
     <arg name="serial_no" value="" />
   </include>
 
   <!-- Rviz -->
-  <include if="$(arg rviz)" file="$(find jsk_kinova_startup)/launch/rviz.launch" />
+  <include if="$(arg rviz)" file="$(find jsk_kinova_startup)/launch/includes/rviz.launch" />
 </launch>

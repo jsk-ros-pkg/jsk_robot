@@ -1,0 +1,22 @@
+<launch>
+    <arg name="arm" />
+    <arg name="dof" />
+    <arg name="use_hard_limits" />
+    <arg name="gripper" />
+    <arg name="robot_name" />
+    <arg name="prefix" />
+
+    <group ns="$(arg robot_name)">
+        <!-- Start MoveIt! main executable -->
+        <include file="$(find kortex_description)/../kortex_move_it_config/$(arg arm)_$(arg gripper)_move_it_config/launch/move_group.launch" unless="$(eval not arg('gripper'))"> 
+            <arg name="dof" value="$(arg dof)"/>
+            <arg name="use_hard_limits" value="$(arg use_hard_limits)"/>
+            <arg name="prefix" value="$(arg prefix)"/>
+        </include>
+        <!-- Do not create too dense trajectory in MoveIt! -->
+        <!-- Decreasing the number of waypoint reduces minjerk interpolation calculation time by roseus-->
+        <group ns="move_group">
+            <param name="sample_duration" value="0.3" /> <!-- Default: 0.05 -->
+        </group>
+    </group>
+</launch>
