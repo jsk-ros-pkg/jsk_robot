@@ -7,20 +7,6 @@
     <arg name="prefix"/>
 
     <group ns="$(arg robot_name)">
-        <!-- Load the description for the robot -->
-        <group if="$(eval not arg('prefix'))">
-            <param
-                name="robot_description"
-                command="$(find xacro)/xacro --inorder $(find jsk_kinova_description)/robots/$(arg arm)_$(arg gripper).xacro dof:=$(arg dof) vision:=$(arg vision) sim:=false"
-                />
-        </group>
-        <group unless="$(eval not arg('prefix'))">
-            <param
-                name="robot_description"
-                command="$(find xacro)/xacro --inorder $(find jsk_kinova_description)/robots/$(arg arm)_$(arg gripper).xacro dof:=$(arg dof) vision:=$(arg vision) sim:=false prefix:=$(arg prefix)"
-                />
-        </group>
-
         <!-- Start joint and robot state publisher -->
         <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     </group>

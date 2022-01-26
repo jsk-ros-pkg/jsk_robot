@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="arm" />
-    <arg name="dof" />
     <arg name="use_hard_limits" />
+    <arg name="dof" />
+    <arg name="vision" />
     <arg name="gripper" />
     <arg name="robot_name" />
     <arg name="prefix" />
@@ -17,6 +18,20 @@
     <arg name="default_goal_tolerance" />
 
     <group ns="$(arg robot_name)">
+        <!-- Load the description for the robot -->
+        <group if="$(eval not arg('prefix'))">
+            <param
+                name="robot_description"
+                command="$(find xacro)/xacro --inorder $(find jsk_kinova_description)/robots/$(arg arm)_$(arg gripper).xacro dof:=$(arg dof) vision:=$(arg vision) sim:=false"
+                />
+        </group>
+        <group unless="$(eval not arg('prefix'))">
+            <param
+                name="robot_description"
+                command="$(find xacro)/xacro --inorder $(find jsk_kinova_description)/robots/$(arg arm)_$(arg gripper).xacro dof:=$(arg dof) vision:=$(arg vision) sim:=false prefix:=$(arg prefix)"
+                />
+        </group>
+
         <!-- Start the kortex_driver node -->
         <node name="$(arg robot_name)_driver" pkg="kortex_driver" type="kortex_arm_driver" output="screen"> <!--launch-prefix="gdb -ex run args"-->
             <param name="sim" value="false"/>
@@ -39,6 +54,7 @@
             <!-- If there is a gripper, load the active joint names for it -->
             <rosparam command="load" file="$(find kortex_description)/grippers/$(arg gripper)/config/joint_limits.yaml" unless="$(eval not arg('gripper'))" subst_value="true"/>
         </node>
+
         <!-- joint_state_publisher -->
         <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
             <rosparam param="source_list">[base_feedback/joint_state]</rosparam>
