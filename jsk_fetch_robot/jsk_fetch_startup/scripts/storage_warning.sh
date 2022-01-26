@@ -34,4 +34,5 @@ receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
 smtp_server: ''
 smtp_port: ''
 attached_files: []"
+   echo -e "Storage percentage: $STORAGE_PERCENTAGE\n Root directory: $ROOTDIR_STORAGE\n Home directory: $HOMEDIR_STORAGE\n"
 fi
