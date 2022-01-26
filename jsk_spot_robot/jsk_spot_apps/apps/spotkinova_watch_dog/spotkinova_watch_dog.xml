@@ -1,0 +1,5 @@
+<launch>
+    <include
+        file="$(find jsk_spotkinova_watch_dog)/launch/demo.launch"
+        />
+</launch>

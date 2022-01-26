@@ -1,8 +1,10 @@
 <launch>
     <arg name="patrol_list" default="['eng2_JSKEntrance', 'eng2_7FElevator']" />
+    <arg name="with_kinova" default="true" />
     <include
         file="$(find jsk_spot_patrol_and_greeting)/launch/demo.launch"
         >
         <arg name="patrol_list" value="$(arg patrol_list)" />
+        <arg name="with_kinova" value="$(arg with_kinova)" />
     </include>
 </launch>
