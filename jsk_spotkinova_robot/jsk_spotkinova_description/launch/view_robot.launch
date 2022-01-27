@@ -1,0 +1,36 @@
+<launch>
+    <arg name="arm" default="gen3_lite" />
+    <arg name="gripper" default="gen3_lite_2f" />
+
+    <!-- robot_description -->
+    <param name="robot_description"
+           command="$(find xacro)/xacro --inorder $(find jsk_spotkinova_description)/robots/jsk_spotkinova.urdf.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
+    <param name="robot_description_semantic"
+           command="$(find xacro)/xacro --inorder $(find jsk_spotkinova_description)/robots/jsk_spotkinova.urdf.xacro robot_type:=$(arg arm)_$(arg gripper) prefix:=kinova_"/>
+
+    <!-- robot_state_publisher -->
+    <node
+      name="robot_state_publisher"
+      pkg="robot_state_publisher"
+      type="robot_state_publisher"
+      >
+    </node>
+
+    <!-- joint state publisher -->
+    <node
+      name="joint_state_publisher"
+      pkg="joint_state_publisher"
+      type="joint_state_publisher"
+      >
+      <rosparam>
+        use_gui: true
+      </rosparam>
+    </node>
+
+    <node
+        pkg="rviz"
+        type="rviz"
+        name="$(anon rviz)"
+        args="-d $(find jsk_spotkinova_description)/config/view_robot.rviz"
+        />
+</launch>
