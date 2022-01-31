@@ -44,7 +44,7 @@
       </inertial>
     </link>
     <joint name="jsk_payload_frame_to_insta_360_joint" type="fixed">
-        <origin rpy="0 0 0" xyz="0.1 0 0.5" />
+        <origin rpy="0 0 0" xyz="-0.2 0 0.5" />
         <parent link="jsk_payload_frame" />
         <child link="insta360_link" />
     </joint>
