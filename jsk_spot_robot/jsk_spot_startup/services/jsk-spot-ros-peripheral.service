@@ -20,8 +20,6 @@ roslaunch jsk_spot_startup jsk_spot_bringup.launch \
 ExecStop=/bin/kill -WINCH ${MAINPID}
 KillMode=control-group
 KillSignal=SIGTERM
-User=spot
-Group=spot
 
 [Install]
 WantedBy=multi-user.target
