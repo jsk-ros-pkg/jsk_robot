@@ -179,10 +179,6 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                            :scene-service "arm_gen3/get_planning_scene"))
       (ros::ros-warn ";; could not find \"arm_gen3/apply_planning_scene\" skip creating *co*~%")))
   (unix:usleep (* 100 1000))
-  (when (boundp '*co*)
-    (send *co* :wipe-all)
-    (send *ri* :add-pc-case-collision-object)
-    (send *ri* :add-insta360-collision-object))
 
   *ri*
   )
