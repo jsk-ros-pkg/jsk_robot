@@ -10,6 +10,9 @@ sudo cp $PACKAGE_PATH/scripts/roscore_prestart.bash /opt/ros/roscore_prestart.ba
 if [ ! -e /var/lib/robot/config.bash  ]; then
     sudo cp $PACKAGE_PATH/scripts/config.bash /var/lib/robot/config.bash
 fi
+if [ ! -e /etc/profile.d/jsk.sh  ]; then
+    sudo cp $PACKAGE_PATH/config/bash/jsk_profile.sh /etc/profile.d/jsk.sh
+fi
 
 # install systemd unit files
 cd $SERVICE_SOURCE_PATH

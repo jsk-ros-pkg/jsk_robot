@@ -116,12 +116,4 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# ROS Configuration
-export ROSCONSOLE_FORMAT='[${severity}] [WallTime: ${time}] [node:${node}] [func:${function}]: ${message}'
-
-#
-source /opt/ros/melodic/setup.bash
 source ~/spot_ws/devel/setup.bash
-
-#
-source /var/lib/robot/config.bash
