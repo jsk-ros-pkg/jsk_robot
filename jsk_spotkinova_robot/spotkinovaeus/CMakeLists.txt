@@ -42,7 +42,8 @@ message("_collada2eus: ${_collada2eus}")
 # Gen3 robot with robotiq gripper
 # Gen3 Lite robot
 # xacro command: https://github.com/Kinovarobotics/ros_kortex/tree/kinetic-devel/kortex_description
-foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f gen3_robotiq_2f_85 gen3_robotiq_2f_140)
+#foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f gen3_robotiq_2f_85 gen3_robotiq_2f_140)
+foreach(ROBOT_TYPE gen3_lite_gen3_lite_2f)
   # Create spot_${ROBOT_TYPE}.urdf
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
     COMMAND xacro ${_spotkinova_urdf}/jsk_spotkinova.urdf.xacro robot_type:=${ROBOT_TYPE} prefix:=kinova_ > ${PROJECT_BINARY_DIR}/spot_${ROBOT_TYPE}.urdf
