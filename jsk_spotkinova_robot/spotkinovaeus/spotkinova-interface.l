@@ -26,10 +26,10 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
                   :robot
                   ;; Create robot instance different from *kinova*
                   (case type
-                        (:gen3_robotiq_2f_85
-                         (instance spot_gen3_robotiq_2f_85-robot :init))
-                        (:gen3_robotiq_2f_140
-                         (instance spot_gen3_robotiq_2f_140-robot :init))
+;                        (:gen3_robotiq_2f_85
+;                         (instance spot_gen3_robotiq_2f_85-robot :init))
+;                        (:gen3_robotiq_2f_140
+;                         (instance spot_gen3_robotiq_2f_140-robot :init))
                         (:gen3_lite_gen3_lite_2f
                          (instance spot_gen3_lite_gen3_lite_2f-robot :init))
                         (t
@@ -43,11 +43,11 @@ Please see https://github.com/euslisp/EusLisp/issues/454#issuecomment-863136824
   (:head-controller ()
     (list
      (append
-      (cond ((or (derivedp robot spot_gen3_robotiq_2f_140-robot) (derivedp robot spot_gen3_robotiq_2f_85-robot))
-             (list
-              (cons :controller-action
-                    "dummy/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
-              (cons :controller-state "arm_gen3/kinova_gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name.
+      (cond ;((or (derivedp robot spot_gen3_robotiq_2f_140-robot) (derivedp robot spot_gen3_robotiq_2f_85-robot))
+            ; (list
+            ;  (cons :controller-action
+            ;        "dummy/follow_joint_trajectory") ;; @TODO: This is dummy topoic name.
+            ;  (cons :controller-state "arm_gen3/kinova_gen3_joint_trajectory_controller/state"))) ;; @TODO: This is dummy topoic name.
             ((derivedp robot spot_gen3_lite_gen3_lite_2f-robot)
              (list
               (cons :controller-action
