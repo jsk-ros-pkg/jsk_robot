@@ -10,6 +10,8 @@ if [ $STORAGE_PERCENTAGE -gt 80 ]; then
     ROOTDIR_STORAGE=`du -h -d 0 /* 2>/dev/null | sort -hr | awk '{print $2 " " $1}'`
     # In home directory
     HOMEDIR_STORAGE=`du -h -d 0 /home/* 2>/dev/null | sort -hr | awk '{print $2 " " $1}'`
+else
+    echo -e "No problem with the storace capacity. Storage percentage: $STORAGE_PERCENTAGE"
 fi
 
 if [ -n "$SEND_EMAIL" ]; then
