@@ -118,3 +118,4 @@ fi
 
 source /opt/ros/melodic/setup.bash
 source ~/spot_ws/devel/setup.bash
+source /var/lib/robot/config.bash
