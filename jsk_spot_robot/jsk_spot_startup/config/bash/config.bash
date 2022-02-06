@@ -1,10 +1,6 @@
 # This file is robot-specific bash configuration used by robot systemd servies
 # This file must be at /var/lib/robot/config.bash
 
-if [ $SHELL = "/bin/bash" ]; then
-    source /opt/ros/melodic/setup.bash
-fi
-
 # Network interfaces
 export IF_ETH="noethernetdevice"
 export IF_WIFI="nowifidevice"
