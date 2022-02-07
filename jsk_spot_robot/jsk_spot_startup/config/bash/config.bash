@@ -8,8 +8,9 @@ export IF_LTE="noltedevice"
 
 # ROS_IP and ROS_MASTER_URI
 WIFI_AP_IP=10.42.0.1
-rossetmaster $WIFI_AP_IP
-rossetip $WIFI_AP_IP
+export ROS_MASTER_URI=http://$WIFI_AP_IP:11311/
+export ROS_IP=$WIFI_AP_IP
+export ROS_HOSTNAME=$WIFI_AP_IP
 
 # Robot Name
 # export ROBOT_NAME=
