@@ -59,4 +59,17 @@
     <param name="sample_format" value="$(arg sample_format)"/>
   </node>
 
+  <!-- record topic syncronizer -->
+  <node pkg="jsk_panda_teleop" type="record_topic_syncronizer.py" name="record_topic_syncronizer" output="screen"/>
+
+  <node pkg="image_view" type="image_view" name="spectrogram_view"  >
+    <remap from="image" to="/preprocess_gray_image/output_normalized" />
+    <rosparam>
+      <!-- set all pixels between 0 and 255 -->
+      do_dynamic_scaling: true
+      <!-- use jet colormap -->
+      colormap: 2
+    </rosparam>
+  </node>
+  
 </launch>
