@@ -12,3 +12,6 @@ install(DIRECTORY launch config scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
+
+catkin_add_env_hooks(99.jsk_panda_startup SHELLS bash zsh sh
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
