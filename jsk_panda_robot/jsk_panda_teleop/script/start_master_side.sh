@@ -1,3 +1,4 @@
+#!/bin/bash
 
 function init_ros_ip () {
     export ROS_MASTER_URI=http://133.11.216.227:11311
@@ -18,7 +19,5 @@ function start_master_launch () {
 }
 
 init_ros_ip
-
 init_device
-
 start_master_launch

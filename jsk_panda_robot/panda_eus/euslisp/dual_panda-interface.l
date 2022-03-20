@@ -7,10 +7,10 @@
 (defclass dual_panda-robot-interface
   :super robot-interface
   :slots (gripper-action l-gripper-action gazebop
-          error-recovery-act r-error l-error
-          r-gripper-grasp-action r-gripper-move-action r-gripper-homing-action r-gripper-stop-action
-          l-gripper-grasp-action l-gripper-move-action l-gripper-homing-action l-gripper-stop-action
-          )
+                         error-recovery-act r-error l-error
+                         r-gripper-grasp-action r-gripper-move-action r-gripper-homing-action r-gripper-stop-action
+                         l-gripper-grasp-action l-gripper-move-action l-gripper-homing-action l-gripper-stop-action
+                         )
   )
 (defmethod dual_panda-robot-interface
   (:init
@@ -61,34 +61,34 @@
                      "/dual_panda/rarm/franka_gripper/grasp"
                      franka_gripper::GraspAction))
      (setq r-gripper-homing-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/rarm/franka_gripper/homing"
-             franka_gripper::HomingAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/rarm/franka_gripper/homing"
+                     franka_gripper::HomingAction))
      (setq r-gripper-move-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/rarm/franka_gripper/move"
-             franka_gripper::MoveAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/rarm/franka_gripper/move"
+                     franka_gripper::MoveAction))
      (setq r-gripper-stop-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/rarm/franka_gripper/stop"
-             franka_gripper::StopAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/rarm/franka_gripper/stop"
+                     franka_gripper::StopAction))
 
      (setq l-gripper-grasp-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/larm/franka_gripper/grasp"
-             franka_gripper::GraspAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/larm/franka_gripper/grasp"
+                     franka_gripper::GraspAction))
      (setq l-gripper-homing-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/larm/franka_gripper/homing"
-             franka_gripper::HomingAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/larm/franka_gripper/homing"
+                     franka_gripper::HomingAction))
      (setq l-gripper-move-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/larm/franka_gripper/move"
-             franka_gripper::MoveAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/larm/franka_gripper/move"
+                     franka_gripper::MoveAction))
      (setq l-gripper-stop-action
-       (instance ros::simple-action-client :init
-             "/dual_panda/larm/franka_gripper/stop"
-             franka_gripper::StopAction))
+           (instance ros::simple-action-client :init
+                     "/dual_panda/larm/franka_gripper/stop"
+                     franka_gripper::StopAction))
      ))
   (:default-controller
    ()
@@ -101,12 +101,12 @@
      )))
   #|
   (:default-controller ;; for gazebo
-   ()
-   (list
-    (car (send self :larm-controller))
-    ;; (car (send self :rarm-controller))
-    ;; (car (send self :head-controller))
-    ))
+  ()
+  (list
+  (car (send self :larm-controller))
+  ;; (car (send self :rarm-controller))
+  ;; (car (send self :head-controller))
+  ))
   |#
   (:larm-controller
    ()
@@ -302,11 +302,11 @@
    (arm &key (wait nil))
    (let (acts)
      (case
-         arm
-       (:rarm (setq acts (list r-gripper-stop-action)))
-       (:larm (setq acts (list l-gripper-stop-action)))
-       (:arms (setq acts (list r-gripper-stop-action l-gripper-stop-action)))
-       )
+      arm
+      (:rarm (setq acts (list r-gripper-stop-action)))
+      (:larm (setq acts (list l-gripper-stop-action)))
+      (:arms (setq acts (list r-gripper-stop-action l-gripper-stop-action)))
+      )
      (when acts
        (dolist (act acts)
          (send self :send-gripper-stop-action act
@@ -317,11 +317,11 @@
    (arm &key (wait nil))
    (let (acts)
      (case
-         arm
-       (:rarm (setq acts (list r-gripper-homing-action)))
-       (:larm (setq acts (list l-gripper-homing-action)))
-       (:arms (setq acts (list r-gripper-homing-action l-gripper-homing-action)))
-       )
+      arm
+      (:rarm (setq acts (list r-gripper-homing-action)))
+      (:larm (setq acts (list l-gripper-homing-action)))
+      (:arms (setq acts (list r-gripper-homing-action l-gripper-homing-action)))
+      )
      (when acts
        (dolist (act acts)
          (send self :send-gripper-homing-action act
@@ -332,11 +332,11 @@
    (arm &key (width 0.0)(effort 80.0) (tm 500) (wait nil) (inner 0.005) (outer 0.06)) ;; TODO :arms is not implemented
    (let (acts)
      (case
-         arm
-       (:rarm (setq acts (list r-gripper-grasp-action)))
-       (:larm (setq acts (list l-gripper-grasp-action)))
-       (:arms (setq acts (list r-gripper-grasp-action l-gripper-grasp-action)))
-       )
+      arm
+      (:rarm (setq acts (list r-gripper-grasp-action)))
+      (:larm (setq acts (list l-gripper-grasp-action)))
+      (:arms (setq acts (list r-gripper-grasp-action l-gripper-grasp-action)))
+      )
      (when acts
        (dolist (act acts)
          (send self :send-gripper-grasp-action act
@@ -354,11 +354,11 @@
    (arm pos &key (effort 25) (tm 500) (timeout 5000) (wait nil))  ;; TODO :arms is not implemented
    (let (acts)
      (case
-         arm
-       (:rarm (setq acts (list r-gripper-move-action)))
-       (:larm (setq acts (list l-gripper-move-action)))
-       (:arms (setq acts (list r-gripper-move-action l-gripper-move-action)))
-       )
+      arm
+      (:rarm (setq acts (list r-gripper-move-action)))
+      (:larm (setq acts (list l-gripper-move-action)))
+      (:arms (setq acts (list r-gripper-move-action l-gripper-move-action)))
+      )
      (when acts
        (dolist (act acts)
          (send self :send-gripper-move-action act
