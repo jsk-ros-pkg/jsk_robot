@@ -47,12 +47,25 @@ source devel/setup.bash
       (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
       ```
 ### Teleop
+#### Start program
 1. Start controller on controller PC;
    1.  `$ ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp`
    2.  `$ roslaunch jsk_panda_teleop start_panda_rt_controller.launch start_bilateral:=true`
         `start_bilateral:=true` connects haptic device and dual_panda from the beginning, i.e. it moves the robot immediately after running leader (user) side.
-2.  Start user PC: `$ rosrun  jsk_panda_teleop start_master_side.sh`
+        If you start with `start_bilateral:=false`, you would need to call following service call:
+        ```
+        $ rosservice call /dual_panda/control_bilateral "pose_connecting: true
+            force_connecting: true
+            reset_phantom: true
+            wait: 3.0" 
+        ```
+2.  Start user PC: `$ rosrun  jsk_panda_teleop start_master_side.sh`, then you should see rviz popup like this: 
+![image](https://user-images.githubusercontent.com/43567489/159150327-5e4d246b-2311-4eb4-814a-7f6fd11b6f29.png)
 
+#### Move robot
+1. Press connection mode switch (white button) to change connect or not-connect status between the haptic devices and the robot.
+2. Press gripper switch to close / open gripper.
+![image](https://user-images.githubusercontent.com/43567489/159150507-75122802-121e-4a22-abd1-b9540890950b.png)
 
 #### Trouble Shooting
 1.  `Failed to initialize haptic device`  -> Please give access to haptic devices, i.e `sudo chmod 777 /dev/ttyACM[0-1]`
