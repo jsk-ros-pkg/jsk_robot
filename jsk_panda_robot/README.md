@@ -30,6 +30,8 @@ source devel/setup.bash
 
 
 ## Running Dual-Panda
+### Boot robot
+1. Please turn on the controller box and unlock joints by accessing desk.
 ### Via roseus
 1. Start controller on controller PC;
    1.  `ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp`
