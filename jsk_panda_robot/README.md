@@ -1,0 +1,59 @@
+# JSK Panda Robot
+## Installation
+- Following pages provide informative resources.
+- Official manual page: : https://frankaemika.github.io/docs/installation_linux.html
+- Franka Community: https://www.franka-community.de/
+
+
+### Installation for User PC
+1. Install OpenHaptics from here; https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
+
+2. Install ROS packages.
+```
+mkdir -p ~/franka_ws/src
+cd ~/franka_ws/src
+wstool init
+wstool merge https://raw.githubusercontent.com/ykawamura96/jsk_robot/add_panda_robot/jsk_panda_robot/jsk_panda.rosinstall
+wstool update
+cd ../
+source /opt/ros/melodic/setup.bash
+rosdep install -y -r --from-paths src --ignore-src
+catkin build
+source devel/setup.bash
+```
+### Installation for Panda Controller PC
+1. Please see and follow installation written in: https://frankaemika.github.io/docs/installation_linux.html
+   * Note that you need to install real-time kernel (`PREEMPT-PR` kernel) for real-time control.
+   * Ref: Current controller PC uses following kernel:
+2. Please do the same ROS environment setup as `Installation for User PC` section above.
+
+
+
+## Running Dual-Panda
+### Via roseus
+1. Start controller on controller PC;
+   1.  `ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp`
+   2.  `roslaunch jsk_panda_startup dual_panda.launch`
+
+2. Controlling Dual-Panda via roseus
+   1. `$ rossetpanda`
+   2. execute following script in roseus;
+      ```
+      (load "package://panda_eus/euslisp/dual_panda-interface.l")
+      (dual_panda-init)
+      (send *robot* :angle-vector (send *robot* :reset-pose)
+      (when (send *ri* :check-error
+        (send *ri* :recover-error))
+      (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
+      ```
+### Teleop
+1. Start controller on controller PC;
+   1.  `$ ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp`
+   2.  `$ roslaunch jsk_panda_teleop start_panda_rt_controller.launch start_bilateral:=true`
+        `start_bilateral:=true` connects haptic device and dual_panda from the beginning, i.e. it moves the robot immediately after running leader (user) side.
+2.  Start user PC: `$ rosrun  jsk_panda_teleop start_master_side.sh`
+
+
+#### Trouble Shooting
+1.  `Failed to initialize haptic device`  -> Please give access to haptic devices, i.e `sudo chmod 777 /dev/ttyACM[0-1]`
+
