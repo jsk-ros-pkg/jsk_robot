@@ -5,7 +5,7 @@
 
   <arg name="robot_id" default="dual_panda" />
 
-  <include file="$(find franka_control)/launch/franka_combined_control.launch" >
+  <include file="$(find franka_control)/launch/franka_combined_control.launch">
     <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
     <arg name="robot_id"  value="$(arg robot_id)" />
     <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
@@ -17,14 +17,14 @@
 
   <group ns="$(arg robot_id)">
     <group ns="rarm">
-      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
+      <include file="$(find franka_gripper)/launch/franka_gripper.launch">
         <arg name="robot_ip" value="$(arg rarm_ip)" />
         <arg name="stop_at_shutdown" value="true" />
         <arg name="arm_id" value="rarm" />
       </include>
     </group>
     <group ns="larm">
-      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
+      <include file="$(find franka_gripper)/launch/franka_gripper.launch">
         <arg name="robot_ip" value="$(arg larm_ip)" />
         <arg name="stop_at_shutdown" value="true" />
         <arg name="arm_id" value="larm" />

@@ -57,6 +57,16 @@
                                     /dual_panda/rarm_state_controller/joint_states_desired
                                     /tf
                                     /tf_static
+                                    /audio
+                                    /synced/dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
+                                    /synced/camera/rgb/image_raw/compressed
+                                    /synced/dual_panda/dual_arm_cartesian_pose_controller/left_frame
+                                    /synced/dual_panda/dual_arm_cartesian_pose_controller/right_frame
+                                    /synced/dual_panda/joint_states
+                                    /synced/dual_panda/larm_state_controller/F_ext
+                                    /synced/dual_panda/rarm_state_controller/F_ext
+                                    /synced/right_camera/image_raw/compressed
+                                    /synced/audio
                                     " />
     <arg name="save_dir" value="$(arg save_dir)" />
     <arg name="bagfile_prefix" value="$(arg bagfile_prefix)" />
