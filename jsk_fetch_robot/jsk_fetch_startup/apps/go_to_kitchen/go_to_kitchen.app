@@ -1,6 +1,6 @@
 display: Go to kitchen
 platform: fetch
-launch: jsk_fetch_startup/go_to_kitchen.xml
+run: jsk_fetch_startup/go-to-kitchen.l
 interface: jsk_fetch_startup/go_to_kitchen.interface
 icon: jsk_fetch_startup/go_to_kitchen.png
 timeout: 1200
