@@ -1,6 +1,6 @@
 display: Speak battery
 platform: fetch
-launch: jsk_fetch_startup/speak_battery.xml
+run: jsk_fetch_startup/speak-battery.l
 interface: jsk_fetch_startup/speak_battery.interface
 icon: jsk_fetch_startup/speak_battery.png
 plugins:
