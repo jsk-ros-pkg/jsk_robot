@@ -1,6 +1,6 @@
 display: Fetch light on
 platform: fetch
-launch: jsk_fetch_startup/light_on.xml
+run: jsk_fetch_startup/light-on.l
 interface: jsk_fetch_startup/light_on.interface
 icon: jsk_fetch_startup/light_on.png
 plugins:
