@@ -1,6 +1,6 @@
 display: Fetch tweet
 platform: fetch
-launch: jsk_fetch_startup/tweet.xml
+run: jsk_fetch_startup/tweet.l
 interface: jsk_fetch_startup/tweet.interface
 icon: jsk_fetch_startup/tweet.png
 plugins:
