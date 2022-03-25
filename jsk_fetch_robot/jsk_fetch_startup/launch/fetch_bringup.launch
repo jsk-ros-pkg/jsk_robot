@@ -254,7 +254,7 @@
   <!-- check if room light is on -->
   <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
     <rosparam>
-      luminance_threshold: 40
+      luminance_threshold: 70
     </rosparam>
     <remap from="~input" to="/head_camera/rgb/image_raw" />
   </node>
