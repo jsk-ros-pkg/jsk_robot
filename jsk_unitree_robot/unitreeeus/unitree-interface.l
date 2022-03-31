@@ -29,7 +29,7 @@
 
 (defclass go1-interface
   :super robot-move-base-interface
-  :slots (body-pose-topic cmd-vel-topic high-cmd-topic)
+  :slots (body-pose-topic high-cmd-topic)
   )
 
 (defmethod go1-interface
