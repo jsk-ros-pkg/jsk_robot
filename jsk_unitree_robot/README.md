@@ -2,6 +2,47 @@
 
 ROS package for Unitree Go1 robot.
 
+## How to Run
+
+
+### Setup Environment
+
+First, you need to install ros. For ros melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation/Ubuntu)
+
+```bash
+mkdir -p catkin_ws/src
+cd  catkin_ws/src
+wstool init .
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
+wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_unitree_robot/unitree.rosinstall
+wstool update -t .
+source /opt/ros/$ROS_DISTRO/setup.bash
+rosdep install -y -r --from-paths . --ignore-src
+cd ../
+catkin build go1_description
+catkin build unitreeeus jsk_unitree_startup
+source devel/setup.bash
+```
+
+### Connecting to the Go1
+
+
+1. Connect to the robot wifi (`Unitree_Go***`)
+1. Launch the following
+
+```bash
+source ~/catkin_ws/devel/setup.bash
+roslaunch jsk_unitree_startup unitree_bringup.launch
+```
+
+### Control Go1 via roseus
+
+
+```lisp
+(load "package://unitreeeus/unitree-interface.l") ;; load modules
+(go1-init)
+```
+
 ## topics
 
 List of topics obtained by following command:

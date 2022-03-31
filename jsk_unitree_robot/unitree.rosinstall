@@ -1,14 +1,14 @@
 - git:
     # add pacakge.xml to unitree_legged_sdk
-    local-name: src/unitree_legged_sdk
+    local-name: unitree_legged_sdk
     uri: https://github.com/k-okada/unitree_legged_sdk.git
     version: develop
 - git:
-    local-name: src/unitree_ros
+    local-name: unitree_ros
     uri: https://github.com/unitreerobotics/unitree_ros.git
     version: master
 - git:
     # waiting for https://github.com/unitreerobotics/unitree_ros_to_real/pull/22 - 25
-    local-name: src/unitree_ros_to_real
+    local-name: unitree_ros_to_real
     uri: https://github.com/k-okada/unitree_ros_to_real.git
     version: develop
