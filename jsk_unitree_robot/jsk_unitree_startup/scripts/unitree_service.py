@@ -82,7 +82,7 @@ class UnitreeService(object):
         self.sit_service = rospy.Service("sit", Trigger, self.sit)
         self.bodypose_sub = rospy.Subscriber("body_pose", Pose, self.body_pose);
 
-        self.highlevel_pub = rospy.Publisher("/high_cmd", HighCmd);
+        self.highlevel_pub = rospy.Publisher("/high_cmd", HighCmd, queue_size=1000);
 
     def stand(self, req):
         msg = HighCmd()
