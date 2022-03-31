@@ -1,0 +1,19 @@
+<launch>
+  <arg name="joy_name_space" default="/go1/" />
+
+  <!-- node to convert ROS to Unitree's internal udp services -->
+  <node pkg="unitree_legged_real" type="ros_server" name="node_ros_server"
+        respawn="false" output="screen" >
+    <remap from="/cmd_vel" to="$(arg joy_name_space)/cmd_vel" />
+  </node>
+
+  <!-- node to convert quadruped_joystick_teleop service to ros_server HighCmd topics -->
+  <node pkg="jsk_unitree_startup" type="unitree_service.py"
+        name="unitree_service" output="screen"
+        ns="$(arg joy_name_space)" />
+
+  <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
+    <arg name="joy_name_space" default="$(arg joy_name_space)" />
+  </include>
+
+</launch>

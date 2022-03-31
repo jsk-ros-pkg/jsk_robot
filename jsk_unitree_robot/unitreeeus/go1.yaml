@@ -1,0 +1,40 @@
+##
+## - collada_joint_name : euslisp_joint_name (start with :)
+##
+
+larm:
+  - FL_hip_joint   : larm-shoulder-r
+  - FL_thigh_joint : larm-shoulder-p
+  - FL_calf_joint  : larm-elbow-p
+rarm:
+  - FR_hip_joint   : rarm-shoulder-r
+  - FR_thigh_joint : rarm-shoulder-p
+  - FR_calf_joint  : rarm-elbow-p
+lleg:
+  - RL_hip_joint   : lleg-shoulder-r
+  - RL_thigh_joint : lleg-shoulder-p
+  - RL_calf_joint  : lleg-elbow-p
+rleg:
+  - RR_hip_joint   : rleg-shoulder-r
+  - RR_thigh_joint : rleg-shoulder-p
+  - RR_calf_joint  : rleg-elbow-p
+
+angle-vector:
+  reset-pose : [0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0, 0.0, 45.0, -90.0]
+
+larm-end-coords:
+  parent : FL_foot
+  translate : [0, 0, -0.0]
+  rotate : [0, 1, 0, 0]
+rarm-end-coords:
+  parent : FR_foot
+  translate : [0, 0, -0.0]
+  rotate : [0, 1, 0, 0]
+lleg-end-coords:
+  parent : RL_foot
+  translate : [0, 0, -0.0]
+  rotate : [0, 1, 0, 0]
+rleg-end-coords:
+  parent : RR_foot
+  translate : [0, 0, -0.0]
+  rotate : [0.0, -0.382683, 0.0, 0.92388]
