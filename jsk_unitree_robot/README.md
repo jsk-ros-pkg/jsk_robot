@@ -4,6 +4,7 @@ ROS package for Unitree Go1 robot.
 
 ## How to Run
 
+See [manual](https://drive.google.com/drive/folders/1PZDOo8WUcqwU8mNek2qAaTwW9WjJVVRL?usp=sharing) before you use Go 1. (jsk.imi.i.u-tokyo.ac.jp account is required.)
 
 ### Setup Environment
 
@@ -26,13 +27,12 @@ source devel/setup.bash
 
 ### Connecting to the Go1
 
-
-1. Connect to the robot wifi (`Unitree_Go***`)
+1. Connect to the robot via Ethernet or wifi (AP:`Unitree_Go***`)
 1. Launch the following
 
 ```bash
 source ~/catkin_ws/devel/setup.bash
-roslaunch jsk_unitree_startup unitree_bringup.launch
+roslaunch jsk_unitree_startup unitree_bringup.launch network:=<ethernet or wifi>
 ```
 
 ### Control Go1 via roseus
