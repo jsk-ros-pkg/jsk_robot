@@ -1,10 +1,17 @@
 <launch>
   <arg name="joy_name_space" default="/go1/" />
+  <arg name="network" default="wifi" /> <!-- wifi or ethernet -->
 
   <!-- node to convert ROS to Unitree's internal udp services -->
   <node pkg="unitree_legged_real" type="ros_server" name="node_ros_server"
         respawn="false" output="screen" >
     <remap from="/cmd_vel" to="$(arg joy_name_space)/cmd_vel" />
+    <rosparam subst_value="true" if="$(eval arg('network') == 'wifi')">
+        target_ip: 192.168.12.1
+    </rosparam>
+    <rosparam subst_value="true" if="$(eval arg('network') == 'ethernet')">
+        target_ip: 192.168.123.161
+    </rosparam>
   </node>
 
   <!-- node to convert quadruped_joystick_teleop service to ros_server HighCmd topics -->
