@@ -117,8 +117,8 @@ Example usage:
                             (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
    ;;
-   (when (not (numberp tm))
-     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+   (when (and (not (numberp tm)) (not (eql tm :fast)))
+     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args~%"))
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities :use-torso use-torso args)))
