@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>stretcheus</name>
+  <version>1.1.0</version>
+  <description>The stretcheus package</description>
+
+  <maintainer email="s-kitagawa@jsk.imi.i.u-tokyo.ac.jp">Shingo Kitagawa</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

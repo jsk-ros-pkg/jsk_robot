@@ -30,11 +30,13 @@
   <run_depend>jsk_pr2_startup</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>jsk_robot_utils</run_depend>
+  <run_depend>jsk_stretch_startup</run_depend>
   <run_depend>naoeus</run_depend>
   <run_depend>naoqieus</run_depend>
   <run_depend>peppereus</run_depend>
   <run_depend>pr2_base_trajectory_action</run_depend>
   <run_depend>roseus_remote</run_depend>
+  <run_depend>stretcheus</run_depend>
 
   <export>
     <metapackage/>
