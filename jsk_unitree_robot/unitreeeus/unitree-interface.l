@@ -78,6 +78,29 @@
       (send self :send-cmd-vel-raw 0 0 0))
     (ros::rate 10)
     t)
+  (:go-pos-unsafe-no-wait
+    (x y &optional (d 0)) ;; [m] [m] [degree]
+    (let ((msg (instance unitree_legged_msgs::HighCmd :init)))
+      (send msg :mode 3)
+      (send msg :position (float-vector x y))
+      (send msg :euler (float-vector (deg2rad d) 0 0))
+      (ros::publish high-cmd-topic msg)
+      ))
+  (:go-pos-unsafe
+   (&rest args)
+   ;; Need to support wait
+    (send self :go-pos-unsafe-no-wait args)
+    )
+  (:go-pos-no-wait
+    (&rest args)
+    ;; Need to support safe movement
+    (send self :go-pos-unsafe-no-wait args)
+    )
+  (:go-pos
+    (&rest args)
+    ;; Need to support safe movement and wait
+    (send self :go-pos-unsafe-no-wait args)
+    )
   (:body-pose
    ;; pose expected to get 3 elements float-vector (r p y), or eus coords.
     (pose)
