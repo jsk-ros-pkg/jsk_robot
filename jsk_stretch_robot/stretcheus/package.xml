@@ -10,6 +10,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>roseus</build_depend>
+  <build_depend>stretch_description</build_depend>
+
   <export>
   </export>
 </package>
