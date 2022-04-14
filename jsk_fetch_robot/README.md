@@ -33,26 +33,39 @@
 
 ## How to Run
 
+### Setup Environment (For Remote PC)
 
-### Setup Environment
-
-First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
+First, you need to install ROS. For ROS melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation/Ubuntu).
+Please make sure your ROS Distribution is indigo, kinetic or melodic.
 
 ```bash
 mkdir -p catkin_ws/src
 cd  catkin_ws/src
 wstool init .
 wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
-if [[ $ROS_DISTRO =~ ^(indigo|kinetic|melodic)$ ]]; then
-  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
-else
-  echo "Your ROS distribution $ROS_DISTRO is not supported."
-fi
+wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
 wstool update -t .
 source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep install -y -r --from-paths . --ignore-src
 cd ../
 catkin build fetcheus jsk_fetch_startup
+source devel/setup.bash
+```
+
+#### Setup Environment (For Robot Internal PC, only for advanced developer)
+
+```bash
+mkdir -p catkin_ws/src
+cd  catkin_ws/src
+wstool init .
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/knorth55/jsk_robot.git -v fetch15 -y
+wstool update -t .
+wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_fetch_robot/jsk_fetch.rosinstall.$ROS_DISTRO
+wstool update -t .
+source /opt/ros/$ROS_DISTRO/setup.bash
+rosdep install -y -r --from-paths . --ignore-src
+cd ../
+catkin build
 source devel/setup.bash
 ```
 
