@@ -106,10 +106,18 @@
     local-name: tork-a/roswww
     uri: https://github.com/tork-a/roswww.git
     version: develop
+# we need to use the development branch until PR below are merged.
+#  - https://github.com/tork-a/visualization_rwt/pull/117
+#  - https://github.com/tork-a/visualization_rwt/pull/124
+# Restore original repository when the PRs are merged.
+# - git:
+#     local-name: tork-a/visualization_rwt
+#      uri: https://github.com/tork-a/visualization_rwt.git
+#    version: kinetic-devel
 - git:
     local-name: tork-a/visualization_rwt
-    uri: https://github.com/tork-a/visualization_rwt.git
-    version: kinetic-devel
+    uri: https://github.com/knorth55/visualization_rwt.git
+    version: fetch15
 # robot_pose_publisher is not released on melodic
 - git:
     local-name: GT-RAIL/robot_pose_publisher
