@@ -84,7 +84,7 @@ Install supervisor config files. e.g. `robot.conf`, `jsk_fetch_startup.conf` ...
 su -c 'rosrun jsk_fetch_startup install_supervisor.sh'
 ```
 
-To show or change supervisor job status, access `FETCH_IP_ADDRESS:9001` by web browser.
+To show or change supervisor job status, access `supervisor.FETCH_FQDN` by web browser.
 
 Previously, upstart was used, but it has been moved to supervisor. This is because of the convenience of job management via a web browser.
 
