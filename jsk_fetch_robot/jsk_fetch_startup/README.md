@@ -8,12 +8,22 @@ rosrun jsk_fetch_startup install_udev.sh
 ```
 
 #### For realsense
-udev rule have to be manually installed according to [this issue](https://github.com/IntelRealSense/realsense-ros/issues/1426) when using realsense-ros from ROS repository.
+
+Before start this, remove `librealsense2` and `realsense2-ros` from ROS repository and set not to be installed.
 
 ```bash
-wget https://github.com/IntelRealSense/librealsense/raw/master/config/99-realsense-libusb.rules
-sudo mv 99-realsense-libusb.rules /etc/udev/rules.d/
-sudo udevadm control --reload-rules && sudo udevadm trigger
+sudo apt purge ros-melodic-librealsense2* ros-melodic-realsense*
+sudo apt-mark hold ros-melodic-librealsense2 ros-melodic-realsense2-camera
+```
+
+After that, please add Intel repository and install `librealsense2` packages. (see [this page](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages))
+
+```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+sudo apt install librealsense2=2.45.0-0~realsense0.4551
+sudo apt install librealsense2-dev=2.45.0-0~realsense0.4551
+sudo apt-mark hold librealsense2 librealsense2-dev
 ```
 
 ### supervisor
