@@ -8,10 +8,14 @@ LOGFILE=$HOME/ros/melodic/update_workspace.txt
 set -x
 # Update workspace
 cd $HOME/ros/melodic/src
+if [ -e $HOME/ros/melodic/src/.rosinstall]; then
+    rm $HOME/ros/melodic/src/.rosinstall
+fi
 ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $HOME/ros/melodic/src/.rosinstall
 wstool foreach --git 'git stash'
 wstool update --delete-changed-uris
 WSTOOL_UPDATE_RESULT=$?
+# Build workspace
 cd $HOME/ros/melodic
 catkin clean aques_talk collada_urdf_jsk_patch libcmt -y
 catkin init
