@@ -8,10 +8,16 @@ LOGFILE=$HOME/ros/melodic/update_workspace.txt
 set -x
 # Update workspace
 cd $HOME/ros/melodic/src
+if [ -e $HOME/ros/melodic/src/.rosinstall]; then
+    rm $HOME/ros/melodic/src/.rosinstall
+fi
 ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $HOME/ros/melodic/src/.rosinstall
 wstool foreach --git 'git stash'
 wstool update --delete-changed-uris
+wstool foreach --git 'branch-name=$(git rev-parse --abbrev-ref HEAD) && git reset --hard HEAD && git checkout origin/$branch-name && git branch -D $branch-name && git checkout $branch-name' # Forcefully checkout specified branch
+wstool update
 WSTOOL_UPDATE_RESULT=$?
+# Build workspace
 cd $HOME/ros/melodic
 catkin clean aques_talk collada_urdf_jsk_patch libcmt -y
 catkin init
