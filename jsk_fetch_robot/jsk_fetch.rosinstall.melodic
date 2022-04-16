@@ -65,10 +65,6 @@
     uri: https://github.com/knorth55/app_manager_utils
     version: master
 - git:
-    local-name: locusrobotics/catkin_virtualenv
-    uri: https://github.com/locusrobotics/catkin_virtualenv.git
-    version: 0.5.0
-- git:
     local-name: mikeferguson/robot_calibration
     uri: https://github.com/mikeferguson/robot_calibration.git
     version: 0.5.5
