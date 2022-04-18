@@ -19,7 +19,7 @@ plugins:
       audio_sample_rate: 16000
       audio_format: wave
       audio_sample_format: S16LE
-      video_topic_name: /head_camera/rgb/image_rect_color
+      video_topic_name: /head_camera/rgb/image_rect_color/hz_converted
       video_height: 480
       video_width: 640
       video_framerate: 30
@@ -34,10 +34,10 @@ plugins:
       audio_sample_rate: 16000
       audio_format: wave
       audio_sample_format: S16LE
-      video_topic_name: /edgetpu_object_detector/output/image
+      video_topic_name: /edgetpu_object_detector/output/image/hz_converted
       video_height: 480
       video_width: 640
-      video_framerate: 10
+      video_framerate: 30
       video_encoding: RGB
   - name: panorama_video_recorder_plugin
     type: app_recorder/video_recorder_plugin
