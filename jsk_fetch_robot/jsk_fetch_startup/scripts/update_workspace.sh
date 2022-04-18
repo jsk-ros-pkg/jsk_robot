@@ -32,12 +32,12 @@ LOGFILE=$WORKSPACE/update_workspace.txt
 {
 set -x
 # Update workspace
-cd $WORKSPACE/src
+wstool -t $WORKSPACE/src foreach --git 'git stash'
+wstool -t $WORKSPACE/src update jsk-ros-pkg/jsk_robot
 ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $WORKSPACE/src/.rosinstall
-wstool foreach --git 'git stash'
-wstool update --delete-changed-uris
-wstool foreach --git 'branch-name=$(git rev-parse --abbrev-ref HEAD) && git reset --hard HEAD && git checkout origin/$branch-name && git branch -D $branch-name && git checkout $branch-name' # Forcefully checkout specified branch
-wstool update
+wstool -t $WORKSPACE/src update --delete-changed-uris
+wstool -t $WORKSPACE/src foreach --git 'branch-name=$(git rev-parse --abbrev-ref HEAD) && git reset --hard HEAD && git checkout origin/$branch-name && git branch -D $branch-name && git checkout $branch-name' # Forcefully checkout specified branch
+wstool -t $WORKSPACE/src update
 WSTOOL_UPDATE_RESULT=$?
 # Build workspace
 cd $WORKSPACE
