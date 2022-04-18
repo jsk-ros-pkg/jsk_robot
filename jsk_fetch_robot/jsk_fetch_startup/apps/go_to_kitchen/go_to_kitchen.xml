@@ -10,6 +10,27 @@
     <param name="score_thresh" type="double" value="0.60" /> <!-- default: 0.6 -->
   </node>
 
+  <!-- Image topic hz converter for better synchronization betweeen audio and video-->
+  <node name="head_camera_image_hz_converter"
+        pkg="jsk_topic_tools"
+        type="topic_hz_converter.py">
+    <remap from="~input" to="/head_camera/rgb/image_rect_color" />
+    <remap from="~output" to="/head_camera/rgb/image_rect_color/hz_converted" />
+    <rosparam>
+      desired_topic_hz: 30
+    </rosparam>
+  </node>
+
+  <node name="object_detect_image_hz_converter"
+        pkg="jsk_topic_tools"
+        type="topic_hz_converter.py">
+    <remap from="~input" to="/edgetpu_object_detector/output/image" />
+    <remap from="~output" to="/edgetpu_object_detector/output/image/hz_converted" />
+    <rosparam>
+      desired_topic_hz: 30
+    </rosparam>
+  </node>
+
   <!-- Use m5stack_ros -->
   <!-- See https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/289 -->
   <node name="rosserial_m5stack" pkg="rosserial_python" type="serial_node.py">
