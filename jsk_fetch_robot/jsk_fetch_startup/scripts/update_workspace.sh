@@ -5,16 +5,16 @@ function usage()
     echo "Usage: $0 [-w workspace_directory] [-h] [-l]
 
 optional arguments:
-    -h                show this help
-    -w WORKSPACE_PATH specify target workspace
-    -l                do not send a mail
+    -h                  show this help
+    -w WORKSPACE_PATH   specify target workspace
+    -l                  do not send a mail
 "
 }
 
 SEND_MAIL=true
 WORKSPACE=$HOME/ros/melodic/
 
-while getopts hl:w: OPT
+while getopts hlw: OPT
 do
     case $OPT in
         w)
@@ -56,43 +56,25 @@ WSTOOL_UPDATE_RESULT=$?
 # Rosdep Install
 sudo apt-get update -y
 rosdep update
-rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r \
-    --skip-keys="\
-    baxter_core_msgs
-    baxter_description
-    baxter_moveit_config
-    baxter_tools
-    cobotta_teleop
-    denso_cobotta_descriptions
-    dynamixel_controllers
-    face_recognition
-    gen3_lite_gen3_lite_2f_moveit_config
-    json_prolog
-    kinova_teleop
-    librealsense2
-    linux_hardware
-    magni_nav
-    mjpeg_server
-    nao_bringup
-    nao_description
-    nao_interaction_launchers
-    naoqi_msgs
-    pepper_bringup
-    pepper_description
-    pr2eus_openrave
-    ps4eye
-    python3-pykdl
-    realsense2-camera
-    rqt_pr2_dashboard
-    snap_map_icp
-    "
+# jsk_footstep_planner is not released for melodic
+# jsk_footstep_controller is not released for melodic
+# librealsense2 should not be installed from ROS repository
+# realsense-ros should not be installed from ROS repository
+rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys \
+"\
+jsk_footstep_controller \
+jsk_footstep_planner \
+librealsense2 \
+realsense2_camera \
+realsense2_description \
+"
 ROSDEP_INSTALL_RESULT=$?
 # Build workspace
 cd $WORKSPACE
 catkin clean aques_talk collada_urdf_jsk_patch libcmt -y
 catkin init
 catkin config -DCMAKE_BUILD_TYPE=Release
-catkin build
+catkin build --continue-on-failure
 CATKIN_BUILD_RESULT=$?
 # Send mail
 MAIL_BODY=""
