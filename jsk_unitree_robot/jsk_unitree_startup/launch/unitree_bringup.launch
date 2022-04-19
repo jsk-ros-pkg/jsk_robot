@@ -4,7 +4,7 @@
 
   <!-- node to convert ROS to Unitree's internal udp services -->
   <node pkg="unitree_legged_real" type="ros_server" name="node_ros_server"
-        respawn="false" output="screen" >
+        respawn="false" output="log" >
     <remap from="/cmd_vel" to="$(arg joy_name_space)/cmd_vel" />
     <rosparam subst_value="true" if="$(eval arg('network') == 'wifi')">
         target_ip: 192.168.12.1
@@ -16,11 +16,13 @@
 
   <!-- node to convert quadruped_joystick_teleop service to ros_server HighCmd topics -->
   <node pkg="jsk_unitree_startup" type="unitree_service.py"
-        name="unitree_service" output="screen"
+        name="unitree_service" output="log"
         ns="$(arg joy_name_space)" />
+  <node pkg="jsk_unitree_startup" type="human_pose_publisher.py"
+        name="human_pose_publisher" output="log" />
 
-  <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
-    <arg name="joy_name_space" default="$(arg joy_name_space)" />
-  </include>
+  <!-- <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" > -->
+  <!--   <arg name="joy_name_space" default="$(arg joy_name_space)" /> -->
+  <!-- </include> -->
 
 </launch>
