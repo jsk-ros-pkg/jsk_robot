@@ -1,4 +1,5 @@
 <launch>
+  <arg name="launch_joy_node" default="true" />
   <arg name="pad_type" default="dualshock3" />
   <arg name="joy_name_space" default="/" />
 
@@ -6,20 +7,24 @@
   <arg name="joy_dev" default="/dev/input/js0" />
   <arg name="joy_topic" default="/joy_$(arg pad_type)" />
   <arg name="cmd_vel_topic" default="$(arg joy_name_space)cmd_vel" />
+  <arg name="teleop_twist_joy_param_file" default="$(find jsk_robot_startup)/config/$(arg pad_type)_teleop_twist_joy.yaml" />
+  <arg name="joystick_teleop_param_file" default="$(find jsk_robot_startup)/config/$(arg pad_type)_joystick_teleop.yaml" />
 
-  <node
-      pkg="joy"
-      type="joy_node"
-      name="joy_node_$(arg pad_type)"
-      >
-    <remap from="joy" to="$(arg joy_topic)" />
+  <group if="$(arg launch_joy_node)" >
+    <node
+        pkg="joy"
+        type="joy_node"
+        name="joy_node_$(arg pad_type)"
+        >
+      <remap from="joy" to="$(arg joy_topic)" />
 
-    <rosparam subst_value="true">
+      <rosparam subst_value="true">
         dev: $(arg joy_dev)
         deadzone: 0.5
         autorepeat_rate: 20
-    </rosparam>
-  </node>
+      </rosparam>
+    </node>
+  </group>
 
   <node
       pkg="teleop_twist_joy"
@@ -31,7 +36,7 @@
 
     <rosparam
         command="load"
-        file="$(find jsk_robot_startup)/config/$(arg pad_type)_teleop_twist_joy.yaml"
+        file="$(arg teleop_twist_joy_param_file)"
         />
   </node>
 
@@ -43,11 +48,10 @@
       ns="$(arg joy_name_space)"
       >
       <remap from="joy" to="$(arg joy_topic)" />
-      <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
 
       <rosparam
           command="load"
-          file="$(find jsk_robot_startup)/config/$(arg pad_type)_joystick_teleop.yaml"
+          file="$(arg joystick_teleop_param_file)"
           />
   </node>
 </launch>
