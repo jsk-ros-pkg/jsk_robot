@@ -89,7 +89,7 @@ if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
 fi
 set +x
 } 2>&1 | tee $LOGFILE
-if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" = "true" ]; then
+if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
     echo "Sent a mail"
     rostopic pub -1 /email jsk_robot_startup/Email "header:
   seq: 0
