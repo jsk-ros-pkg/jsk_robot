@@ -1,10 +1,11 @@
 <?xml version="1.0" ?>
 <robot name="fetch" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:arg name="ros_distro" default="melodic" />
-  <xacro:arg name="base_camera_mount" default="true" />
-  <xacro:arg name="head_box" default="true" />
-  <xacro:arg name="head_l515" default="true" />
   <xacro:arg name="use_fetch_description" default="false" />
+  <xacro:arg name="base_camera_mount" default="true" />
+  <xacro:arg name="head_box" default="false" />
+  <xacro:arg name="head_l515" default="true" />
+  <xacro:arg name="insta360_stand" default="true" />
 
   <xacro:if value="$(arg use_fetch_description)">
     <xacro:include filename="$(find fetch_description)/robots/fetch.urdf" />
@@ -20,5 +21,8 @@
   </xacro:if>
   <xacro:if value="$(arg head_l515)">
     <xacro:include filename="$(find jsk_fetch_startup)/robots/head_l515.urdf.xacro" />
+  </xacro:if>
+  <xacro:if value="$(arg insta360_stand)">
+    <xacro:include filename="$(find jsk_fetch_startup)/robots/insta360_stand.urdf.xacro" />
   </xacro:if>
 </robot>
