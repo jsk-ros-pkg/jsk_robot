@@ -5,14 +5,17 @@ function usage()
     echo "Usage: $0 [-w workspace_directory] [-h]"
 }
 
+SEND_MAIL=true
 WORKSPACE=$HOME/ros/melodic/
 
-while getopts hw: OPT
+while getopts hl:w: OPT
 do
     case $OPT in
         w)
             WORKSPACE=$(cd $(dirname $OPTARG) && pwd)/$(basename $OPTARG)
             ;;
+        l)
+            SEND_MAIL=false
         h)
             usage
             exit 1
@@ -55,8 +58,8 @@ if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
     MAIL_BODY=$MAIL_BODY"Please catkin build workspace manually."
 fi
 set +x
-} > $LOGFILE 2>&1
-if [ -n "$MAIL_BODY" ]; then
+} 2>&1 | tee $LOGFILE
+if [ -n "$MAIL_BODY" ] && "${SEND_MAIL}"; then
    rostopic pub -1 /email jsk_robot_startup/Email "header:
   seq: 0
   stamp: {secs: 0, nsecs: 0}
