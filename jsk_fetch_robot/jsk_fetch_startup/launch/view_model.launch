@@ -1,0 +1,17 @@
+<launch>
+    <arg name="use_fetch_description" default="true" />
+    <arg name="use_base_camera_mount" default="true" />
+    <arg name="use_head_box" default="false" />
+    <arg name="use_head_l515" default="true" />
+
+    <param name="robot_description" command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
+                  ros_distro:=$(env ROS_DISTRO)
+                  use_fetch_description:=$(arg use_fetch_description)
+                  base_camera_mount:=$(arg use_base_camera_mount)
+                  head_box:=$(arg use_head_box)
+                  head_l515:=$(arg use_head_l515)" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" args="-d $(find jsk_fetch_startup)/config/view_model.rviz" required="true"/>
+</launch>
