@@ -22,10 +22,16 @@
       </geometry>
     </collision>
   </link>
-  <joint name="head_l515_mount_virtual_joint" type="fixed">
+  <joint name="head_l515_mount_link_virtual_joint" type="fixed">
+    <origin rpy="1.57 0 -1.57" xyz="0.02 0.05 0.0" />
+    <parent link="head_l515_virtual_mount_link" />
+    <child link="head_l515_mount_link" />
+  </joint>
+  <link name="head_l515_virtual_mount_link" />
+  <joint name="head_l515_virtual_mount_link_virtual_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.0255 0 0.055" />
     <parent link="head_tilt_link" />
-    <child link="head_l515_mount_link" />
+    <child link="head_l515_virtual_mount_link" />
   </joint>
 
   <link name="l515_head_link"/>
