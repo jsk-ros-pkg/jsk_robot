@@ -86,8 +86,25 @@ macro(configure_icon_files icol iname)
   endif()
 endmacro(configure_icon_files)
 
+macro(configure_dialogflow_hotword_yaml dname)
+  set(FETCH_NAME ${dname})
+  if (${FETCH_NAME} STREQUAL "fetch15")
+    set(ROBOT_NICKNAME_KANA "ヘンゼル")
+    set(ROBOT_NICKNAME_HIRA "へんぜる")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/dialogflow_hotword.yaml.in
+                   ${CMAKE_CURRENT_SOURCE_DIR}/config/${FETCH_NAME}_dialogflow_hotword.yaml)
+  elseif (${FETCH_NAME} STREQUAL "fetch1075")
+    set(ROBOT_NICKNAME_KANA "グレーテル")
+    set(ROBOT_NICKNAME_HIRA "ぐれーてる")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/dialogflow_hotword.yaml.in
+                   ${CMAKE_CURRENT_SOURCE_DIR}/config/${FETCH_NAME}_dialogflow_hotword.yaml)
+  endif()
+endmacro(configure_dialogflow_hotword_yaml)
+
 configure_icon_files(blue fetch15)
 configure_icon_files(red fetch1075)
+configure_dialogflow_hotword_yaml(fetch15)
+configure_dialogflow_hotword_yaml(fetch1075)
 
 #############
 ## Testing ##
