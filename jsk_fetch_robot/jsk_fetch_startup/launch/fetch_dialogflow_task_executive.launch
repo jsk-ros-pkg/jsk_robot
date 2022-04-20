@@ -1,0 +1,32 @@
+<launch>
+  <arg name="hostname" default="fetch15" />
+  <arg name="run_app_manager" default="false" />
+  <arg name="applist" default="" />
+  <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS)"/>
+  <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
+  <arg name="enable_hotword" default="true" />
+
+  <!-- options for dialogflow_client -->
+  <arg name="use_audio" default="false" />
+  <arg name="use_tts" default="true" />
+  <arg name="language" default="ja-JP" />
+  <arg name="soundplay_action_name" default="robotsound_jp" />
+  <arg name="volume" default="1.0" />
+
+
+  <include file="$(find dialogflow_task_executive)/launch/dialogflow_task_executive.launch">
+    <arg name="run_app_manager" value="$(arg run_app_manager)" />
+    <arg name="applist" value="$(arg applist)" />
+    <arg name="credential" value="$(arg credential)" />
+    <arg name="project_id" value="$(arg project_id)" />
+    <arg name="enable_hotword" value="$(arg enable_hotword)" />
+    <arg name="use_audio" value="$(arg use_audio)" />
+    <arg name="use_tts" value="$(arg use_tts)" />
+    <arg name="language" value="$(arg language)" />
+    <arg name="soundplay_action_name" value="$(arg soundplay_action_name)" />
+    <arg name="volume" value="$(arg volume)" />
+  </include>
+
+  <rosparam command="load" ns="/dialogflow_client/hotword"
+            file="$(find jsk_fetch_startup)/config/$(arg hostname)_dialogflow_hotword.yaml"/>
+</launch>
