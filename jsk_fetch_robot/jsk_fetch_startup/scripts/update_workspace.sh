@@ -11,14 +11,19 @@ optional arguments:
 "
 }
 
+function get_full_path()
+{
+    echo "$(cd $(dirname $1) && pwd)/$(basename $1)"
+}
+
 SEND_MAIL=true
-WORKSPACE=$HOME/ros/melodic/
+WORKSPACE=$(get_full_path $HOME/ros/melodic)
 
 while getopts hlw: OPT
 do
     case $OPT in
         w)
-            WORKSPACE=$(cd $(dirname $OPTARG) && pwd)/$(basename $OPTARG)
+            WORKSPACE=$(get_full_path $OPTARG)
             ;;
         l)
             SEND_MAIL=false
