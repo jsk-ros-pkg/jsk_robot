@@ -140,3 +140,8 @@
     local-name: ros-planning/navigation
     uri: https://github.com/708yamaguchi/navigation.git
     version: fetch15
+# Use coral_usb_ros + cv_bridge_python3
+- git:
+    local-name: jsk-ros-pkg/coral_usb_ros
+    uri: https://github.com/jsk-ros-pkg/coral_usb_ros.git
+    version: master
