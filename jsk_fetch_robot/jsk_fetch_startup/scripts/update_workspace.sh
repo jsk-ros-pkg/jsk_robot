@@ -51,19 +51,14 @@ LOGFILE=$WORKSPACE/update_workspace.txt
 {
 set -x
 # Update workspace
+
 wstool foreach -t $WORKSPACE/src --git 'git stash'
+wstool foreach -t $WORKSPACE/src --git 'git fetch --all --prune'
 wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot
 ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $WORKSPACE/src/.rosinstall
 wstool update -t $WORKSPACE/src --delete-changed-uris
 # Forcefully checkout specified branch
-wstool foreach -t $WORKSPACE/src --git --shell \
-'\
-branchname=$(git rev-parse --abbrev-ref HEAD);
-git fetch --all --prune;
-git reset --hard HEAD;
-git checkout origin/$branchname;
-git branch -D $branchname;
-git checkout -b $branchname origin/$branchname'
+wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
 wstool update -t $WORKSPACE/src
 WSTOOL_UPDATE_RESULT=$?
 # Rosdep Install
