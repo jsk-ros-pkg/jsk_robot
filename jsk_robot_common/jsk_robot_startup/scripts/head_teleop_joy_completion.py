@@ -48,10 +48,10 @@ class JoyTopicCompletion:
                 yy = 0
 
             if v > 0:
+                self.last_publish_time = rospy.Time.now()
                 rr = r
             else:
                 rr = 0
-                return ## do not publish when cmd is null
 
             rospy.loginfo("raw: x={:5.2f}, y={:5.2f}, v={:5.2f}, r={:5.2f} -> cmd: x={:5.2f}, y={:5.2f}, r={:5.2f}".format(x, y, v, r, xx, yy, rr))
 
@@ -69,6 +69,9 @@ class JoyTopicCompletion:
         self.axis_linear_x = int(rospy.get_param('~axis_linear', {'x': 1})['x'])
         self.axis_linear_y = int(rospy.get_param('~axis_linear', {'y': 2})['y'])
         self.axis_angular = int(rospy.get_param('~axis_angular', {'yaw': 0})['yaw'])
+
+        self.last_publish_time = rospy.Time.now()
+
         # set attribute before start subscriber
         # queue_size=1 is important beacuse we want take only latest data
         self.sub = rospy.Subscriber("~joy_input", Joy, self.callback, queue_size=1)
