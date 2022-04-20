@@ -11,14 +11,19 @@ optional arguments:
 "
 }
 
+function get_full_path()
+{
+    echo "$(cd $(dirname $1) && pwd)/$(basename $1)"
+}
+
 SEND_MAIL=true
-WORKSPACE=$HOME/ros/melodic/
+WORKSPACE=$(get_full_path $HOME/ros/melodic)
 
 while getopts hlw: OPT
 do
     case $OPT in
         w)
-            WORKSPACE=$(cd $(dirname $OPTARG) && pwd)/$(basename $OPTARG)
+            WORKSPACE=$(get_full_path $OPTARG)
             ;;
         l)
             SEND_MAIL=false
@@ -46,11 +51,14 @@ LOGFILE=$WORKSPACE/update_workspace.txt
 {
 set -x
 # Update workspace
+
 wstool foreach -t $WORKSPACE/src --git 'git stash'
+wstool foreach -t $WORKSPACE/src --git 'git fetch --all --prune'
 wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot
 ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $WORKSPACE/src/.rosinstall
 wstool update -t $WORKSPACE/src --delete-changed-uris
-wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout $branchname' # Forcefully checkout specified branch
+# Forcefully checkout specified branch
+wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
 wstool update -t $WORKSPACE/src
 WSTOOL_UPDATE_RESULT=$?
 # Rosdep Install
