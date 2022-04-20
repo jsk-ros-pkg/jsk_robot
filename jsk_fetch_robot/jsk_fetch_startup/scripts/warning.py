@@ -96,6 +96,7 @@ class Warning:
         self.undock_sub = rospy.Subscriber("/undock/status", GoalStatusArray, self.undock_status_callback)
         #
         self.cmd_vel_pub = rospy.Publisher("base_controller/command", Twist, queue_size=1)
+        self.volume = rospy.get_param("~volume", 1.0)
 
     def undock_status_callback(self, msg):
         for status in msg.status_list:
