@@ -64,6 +64,8 @@ int b0;
 int counter = 0;
 void loop()
 {
+    static unsigned long last_valid_input = millis();
+    
     // Pixels
     pixels.clear();
     pixels.setPixelColor(0, pixels.ColorHSV((counter*4000)%65535, 255, 64));
@@ -74,6 +76,8 @@ void loop()
     float a1 = (analogRead(A1)-512)/256.0;
     if ( (a0*a0 + a1*a1) < DeadZone*DeadZone ) {
       a0 = a1 = 0;
+    } else {
+      last_valid_input = millis();
     }
 
     joy_msg.header.stamp = nh.now();
@@ -86,7 +90,7 @@ void loop()
     
     static int button_pressed = 0;
     if ( button_pressed == 0 ) {
-      int b0 = chkButton(BUTTON_PIN, 250);
+      int b0 = chkButton(BUTTON_PIN, 400);
       if ( b0 == SingleClick ) {
         joy_msg.buttons[1] = 1;
         joy_msg.buttons[2] = 0;
@@ -105,11 +109,14 @@ void loop()
     }
     if ( button_pressed > 0 ) {
       button_pressed = button_pressed - 1;
+      last_valid_input = millis();
     }
     strip.show();
 
     // publish
-    pub.publish(&joy_msg);
+    if ( (millis() - last_valid_input) < 1000) {
+      pub.publish(&joy_msg);
+    }
     nh.spinOnce();
     delay(100);
 
