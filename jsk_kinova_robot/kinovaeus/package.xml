@@ -12,6 +12,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>collada_urdf</build_depend>
+  <build_depend>collada_urdf_jsk_patch</build_depend>
   <build_depend>euscollada</build_depend>
   <build_depend>rostest</build_depend>
   <build_depend>roseus</build_depend>

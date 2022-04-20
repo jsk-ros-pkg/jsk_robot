@@ -7,6 +7,7 @@
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>angles</build_depend>
   <build_depend>jsk_topic_tools</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>mongodb_store</build_depend>
@@ -42,6 +43,7 @@
   <run_depend>tf2_py</run_depend>
   <run_depend>tf2_geometry_msgs</run_depend>
   <run_depend>urdf</run_depend>
+  <run_depend>jsk_tilt_laser</run_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>pr2_gazebo</test_depend>

@@ -40,3 +40,4 @@ windows:
   - jsk-coral: tail -f -n 1000 /var/log/ros/jsk-coral.log
   - jsk-dialog: tail -f -n 1000 /var/log/ros/jsk-dialog.log
   - jsk-gdrive: tail -f -n 1000 /var/log/ros/jsk-gdrive.log
+  - jsk-shutdown: tail -f -n 1000 /var/log/ros/jsk-shutdown.log
