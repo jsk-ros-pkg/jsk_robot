@@ -5,7 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded: ~
       Splitter Ratio: 0.4187380373477936
-    Tree Height: 479
+    Tree Height: 477
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -450,32 +450,6 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Class: jsk_rviz_plugin/OverlayImage
-      Enabled: true
-      Name: XtionRGB
-      Topic: /head_camera/rgb/quater/image_rect_color
-      Value: true
-      alpha: 0.800000011920929
-      height: 128
-      keep aspect ratio: true
-      left: 10
-      overwrite alpha value: false
-      top: 10
-      transport hint: raw
-      width: 320
-    - Class: jsk_rviz_plugin/OverlayImage
-      Enabled: true
-      Name: PanoramaImage
-      Topic: /dual_fisheye_to_panorama/quater/output
-      Value: true
-      alpha: 0.800000011920929
-      height: 128
-      keep aspect ratio: true
-      left: 340
-      overwrite alpha value: false
-      top: 10
-      transport hint: raw
-      width: 480
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -488,7 +462,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: RGB8
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -503,7 +477,93 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
+    - Class: rviz/Group
+      Displays:
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: true
+          Name: XtionRGB
+          Topic: /head_camera/rgb/quater/image_rect_color
+          Value: true
+          alpha: 0.800000011920929
+          height: 128
+          keep aspect ratio: true
+          left: 10
+          overwrite alpha value: false
+          top: 10
+          transport hint: raw
+          width: 320
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: false
+          Name: XtionRGBHumanPoseEstimator
+          Topic: /edgetpu_human_pose_estimator/output/image
+          Value: false
+          alpha: 0.800000011920929
+          height: 128
+          keep aspect ratio: true
+          left: 10
+          overwrite alpha value: false
+          top: 10
+          transport hint: raw
+          width: 320
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: false
+          Name: XtionRGBObjectDetector
+          Topic: /edgetpu_human_pose_estimator/output/image
+          Value: false
+          alpha: 0.800000011920929
+          height: 128
+          keep aspect ratio: true
+          left: 10
+          overwrite alpha value: false
+          top: 10
+          transport hint: raw
+          width: 320
+      Enabled: true
+      Name: XtionRGB
+    - Class: rviz/Group
+      Displays:
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: true
+          Name: PanoramaImage
+          Topic: /dual_fisheye_to_panorama/quater/output
+          Value: true
+          alpha: 0.800000011920929
+          height: 128
+          keep aspect ratio: true
+          left: 340
+          overwrite alpha value: false
+          top: 10
+          transport hint: raw
+          width: 480
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: false
+          Name: PanoramaHumanPoseEstimator
+          Topic: /edgetpu_panorama_human_pose_estimator/output/image
+          Value: false
+          alpha: 0.800000011920929
+          height: 128
+          keep aspect ratio: true
+          left: 340
+          overwrite alpha value: false
+          top: 10
+          transport hint: raw
+          width: 480
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: false
+          Name: PanoramaObjectDetector
+          Topic: /edgetpu_panorama_object_detector/output/image
+          Value: false
+          alpha: 0.800000011920929
+          height: 128
+          keep aspect ratio: true
+          left: 340
+          overwrite alpha value: false
+          top: 10
+          transport hint: raw
+          width: 480
+      Enabled: true
+      Name: PanoramaImage
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -534,25 +594,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10.471776962280273
+      Distance: 10
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.00829183217138052
-        Y: 0.022624600678682327
-        Z: -0.003759089857339859
-      Focal Shape Fixed Size: true
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5747973322868347
+      Pitch: 0.7853981852531433
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 1.745403528213501
+      Yaw: 0.7853981852531433
     Saved: ~
 Window Geometry:
   CancelAction:
@@ -562,7 +622,7 @@ Window Geometry:
   Height: 1025
   Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd0000000400000000000001f800000363fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f0070006500720074006900650073020000019b000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d0000026a000000c900fffffffb00000018004b0069006e00650063007400430061006d0065007200610000000373000000160000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000018004e006100720072006f007700430061006d0065007200610000000244000001460000000000000000fb0000001800430061006e00630065006c0041006300740069006f006e01000002ad000000f30000007f00ffffff000000010000010f00000463fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000002800000463000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000780000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d0065010000000000000780000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000005820000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001f800000361fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f0070006500720074006900650073020000019b000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003e00000269000000ca00fffffffb00000018004b0069006e00650063007400430061006d0065007200610000000373000000160000000000000000fb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb00000018004e006100720072006f007700430061006d0065007200610000000244000001460000000000000000fb0000001800430061006e00630065006c0041006300740069006f006e01000002ad000000f20000008200ffffff000000010000010f00000463fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000002800000463000000a600fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000780000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d00650100000000000007800000026200fffffffb0000000800540069006d00650100000000000004500000000000000000000005820000036100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
