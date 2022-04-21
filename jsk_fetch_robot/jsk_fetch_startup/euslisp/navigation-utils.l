@@ -234,8 +234,8 @@
     (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
     (send *ri* :wait-interpolation))
    ((eq control-switchbot :api)
-    (control-device "/eng2/7f/73b2/light/upper/switch" "turnOn" :wait t)
-    (control-device "/eng2/7f/73b2/light/lower/switch" "turnOn" :wait t)
+    (control-device "/eng2/7f/73b2_bot_kitchen" "turnOn" :wait t)
+    (control-device "/eng2/7f/73b2_bot_window" "turnOn" :wait t)
     (send *ri* :speak-jp "電気をつけました" :wait t))))
 
 
@@ -259,8 +259,8 @@
     (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
     (send *ri* :wait-interpolation))
    ((eq control-switchbot :api)
-    (control-device "/eng2/7f/73b2/light/upper/switch" "turnOff" :wait t)
-    (control-device "/eng2/7f/73b2/light/lower/switch" "turnOff" :wait t)
+    (control-device "/eng2/7f/73b2_bot_kitchen" "turnOff" :wait t)
+    (control-device "/eng2/7f/73b2_bot_window" "turnOff" :wait t)
     (send *ri* :speak-jp "電気を消しました" :wait t))))
 
 

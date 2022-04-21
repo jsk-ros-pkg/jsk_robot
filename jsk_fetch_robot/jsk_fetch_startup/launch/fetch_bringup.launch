@@ -241,4 +241,11 @@
   <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
   </node>
 
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
 </launch>
