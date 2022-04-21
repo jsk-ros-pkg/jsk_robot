@@ -1,7 +1,9 @@
 #!/usr/bin/env roseus
 
-;; copied from https://github.com/jsk-ros-pkg/jsk_demos/blob/0a82540da013b8e21307354bb1c6a552185e36a2/jsk_spot_watch_dog/scripts/watch-dog.l
+;; load simple model for fast-boot
+(require :go1 "package://unitreeeus/go1-simple.l")
 
+;; copied from https://github.com/jsk-ros-pkg/jsk_demos/blob/0a82540da013b8e21307354bb1c6a552185e36a2/jsk_spot_watch_dog/scripts/watch-dog.l
 (load "package://unitreeeus/unitree-interface.l")
 
 (ros::roseus-add-msgs "sensor_msgs")
