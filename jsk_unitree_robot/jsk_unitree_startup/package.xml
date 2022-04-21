@@ -11,6 +11,7 @@
 
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>unitree_legged_real</run_depend>
+  <run_depend>app_manager</run_depend>
 
   <!-- for diagnostic aggregator -->
   <run_depend>diagnostic_aggregator</run_depend>

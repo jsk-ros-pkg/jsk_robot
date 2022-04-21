@@ -1,4 +1,7 @@
 <launch>
+  <param name="robot/type" value="go1" />
+  <param name="robot/name" value="robot" />
+
   <arg name="joy_name_space" default="/go1/" />
   <arg name="network" default="wifi" /> <!-- wifi or ethernet -->
 
@@ -25,4 +28,5 @@
   <!--   <arg name="joy_name_space" default="$(arg joy_name_space)" /> -->
   <!-- </include> -->
 
+  <include file="$(find app_manager)/launch/app_manager.launch" />
 </launch>
