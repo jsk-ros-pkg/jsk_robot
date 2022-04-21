@@ -45,7 +45,7 @@
      (setq luminance 0)
      (setq battery-temp 0)
 |#
-     (setq ypr-euler '(0 0 0))
+     (setq ypr-euler '(0 -0.3 0))
      ))
 #|
   (:spot-status-battery-states-callback  (msg)   ;; overwrite
@@ -113,6 +113,9 @@
 
   (ros::spin-once)
   (when create-viewer (objects (list *robot*)))
+  (send *robot* :body-pose (send *wi* :get-val 'ypr-euler))
+  (send *ri* :body-pose (send *robot* :worldcoords))
+  (send *ri* :play-sound (send *wi* :get-val 'bark-sound))
   )
 
 
