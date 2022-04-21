@@ -48,6 +48,8 @@
   (:default-controller () ) ;; go1 does not provide any JTA controllers
   (:stand () "Stand the robot up" (call-trigger-service "/go1/stand"))
   (:sit () "Sit the robot down" (call-trigger-service "/go1/sit"))
+  (:power-on () (ros::ros-warn "power-on is not impremented"))
+  (:power-off () (ros::ros-warn "power-off is not impremented"))
   (:send-cmd-vel-raw
    (x y d)
    (when (send self :simulation-modep)
