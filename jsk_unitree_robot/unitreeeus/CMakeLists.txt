@@ -45,7 +45,11 @@ foreach(ROBOT_TYPE go1)
     COMMAND echo "${_collada2eus} ${_unitree_urdf}/${ROBOT_TYPE}.urdf ${ROBOT_TYPE}.l"
     COMMAND ${_collada2eus} ${_unitree_urdf}/${ROBOT_TYPE}.urdf ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.yaml ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.l
     DEPENDS ${_unitree_urdf}/${ROBOT_TYPE}.urdf ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.yaml ${_collada2eus})
-  add_custom_target(compile_${ROBOT_TYPE} ALL DEPENDS ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.l)
+  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}-simple.l
+    COMMAND echo "${_collada2eus} --simple_geometry ${_unitree_urdf}/${ROBOT_TYPE}.urdf ${ROBOT_TYPE}-simple.l"
+    COMMAND ${_collada2eus} --simple_geometry ${_unitree_urdf}/${ROBOT_TYPE}.urdf ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.yaml ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}-simple.l
+    DEPENDS ${_unitree_urdf}/${ROBOT_TYPE}.urdf ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.yaml ${_collada2eus})
+  add_custom_target(compile_${ROBOT_TYPE} ALL DEPENDS ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.l ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}-simple.l)
 endforeach()
 
 
