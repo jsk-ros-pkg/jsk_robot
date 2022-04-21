@@ -36,6 +36,7 @@
   <run_depend>move_base</run_depend>
   <run_depend>move_slow_and_clear</run_depend>
   <run_depend>robot_localization</run_depend>
+  <run_depend>teb_local_planner</run_depend>
   <run_depend>pyquaternion</run_depend>
   <run_depend>librealsense2</run_depend>
   <run_depend>realsense2_camera</run_depend>
