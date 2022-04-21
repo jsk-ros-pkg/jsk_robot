@@ -26,6 +26,13 @@ plugins:
       video_title: go_to_kitchen_object_detection.avi
       video_topic_name: /edgetpu_object_detector_visualization/output
       video_fps: 5.0
+  - name: panorama_video_recorder_plugin
+    type: app_recorder/video_recorder_plugin
+    launch_args:
+      video_path: /tmp
+      video_title: go_to_kitchen_panorama.avi
+      video_topic_name: /dual_fisheye_to_panorama/output
+      video_fps: 1.0
   - name: respeaker_audio_recorder_plugin
     type: app_recorder/audio_recorder_plugin
     launch_args:
@@ -76,12 +83,14 @@ plugins:
         - /tmp/go_to_kitchen_result.yaml
         - /tmp/go_to_kitchen_head_camera.avi
         - /tmp/go_to_kitchen_object_detection.avi
+        - /tmp/go_to_kitchen_panorama.avi
         - /tmp/go_to_kitchen_audio.wav
         - /tmp/go_to_kitchen_rosbag.bag
       upload_file_titles:
         - go_to_kitchen_result.yaml
         - go_to_kitchen_head_camera.avi
         - go_to_kitchen_object_detection.avi
+        - go_to_kitchen_panorama.avi
         - go_to_kitchen_audio.wav
         - go_to_kitchen_rosbag.bag
       upload_parents_path: fetch_go_to_kitchen
@@ -96,10 +105,19 @@ plugins:
       mail_title: Fetch kitchen patrol demo
       use_timestamp_title: true
     plugin_arg_yaml: /var/lib/robot/fetch_mail_notifier_plugin.yaml
+  - name: move_base_cancel_plugin
+    type: app_publisher/rostopic_publisher_plugin
+    plugin_args:
+      stop_topics:
+        - name: "/move_base/cancel"
+          pkg: actionlib_msgs
+          type: GoalID
 plugin_order:
   start_plugin_order:
+    - move_base_cancel_plugin
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
+    - panorama_video_recorder_plugin
     - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - result_recorder_plugin
@@ -107,8 +125,10 @@ plugin_order:
     - speech_notifier_plugin
     - mail_notifier_plugin
   stop_plugin_order:
+    - move_base_cancel_plugin
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
+    - panorama_video_recorder_plugin
     - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - result_recorder_plugin
