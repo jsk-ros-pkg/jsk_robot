@@ -1,4 +1,4 @@
-(require :kinova "package://unitreeeus/go1.l")
+(require :go1 "package://unitreeeus/go1.l")
 
 (defun go1 () (setq *go1* (instance go1_description-robot :init)))
 
