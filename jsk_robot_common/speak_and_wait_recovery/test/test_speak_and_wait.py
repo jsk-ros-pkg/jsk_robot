@@ -9,7 +9,9 @@ import sys
 
 import actionlib
 import rospy
-from sound_play.msg import SoundRequestAction, SoundRequestResult
+from sound_play.msg import SoundRequestAction
+from sound_play.msg import SoundRequestResult
+from sound_play.msg import SoundRequest
 
 
 class TestSpeakAndWaitRecovery(unittest.TestCase):
@@ -24,11 +26,13 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
         self.msg = None
         self.action_server = actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
         self.action_server.start()
+        msg = SoundRequest()
         while not rospy.is_shutdown():
             if self.msg is not None:
                 msg = self.msg
                 break
 
+        rospy.logwarn('msg: {}'.format(msg))
         self.assertEqual(msg.sound, -3)
         self.assertEqual(msg.command, 1)
         self.assertEqual(msg.volume, 1.0)
