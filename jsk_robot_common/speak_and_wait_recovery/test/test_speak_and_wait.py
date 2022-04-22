@@ -33,9 +33,6 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
                 break
 
         rospy.logwarn('msg: {}'.format(msg))
-        self.assertEqual(msg.sound, -3)
-        self.assertEqual(msg.command, 1)
-        self.assertEqual(msg.volume, 1.0)
         self.assertEqual(msg.arg, 'test')
 
 
