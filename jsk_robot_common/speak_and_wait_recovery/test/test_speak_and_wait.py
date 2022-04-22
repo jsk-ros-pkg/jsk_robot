@@ -16,6 +16,14 @@ from sound_play.msg import SoundRequest
 
 class TestSpeakAndWaitRecovery(unittest.TestCase):
 
+    def __init__(self, *args):
+        super(self.__class__, self).__init__(*args)
+        rospy.init_node(NAME)
+        self.msg = SoundRequest()
+        self.action_server = \
+                actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
+        self.action_server.start()
+
     def handler(self, goal):
 
         self.msg = goal.sound_request
@@ -23,19 +31,19 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
 
     def test_speak_and_wait_recovery(self):
 
-        self.msg = None
-        self.action_server = actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
-        self.action_server.start()
+        rospy.init_node(NAME)
         msg = SoundRequest()
         while not rospy.is_shutdown():
-            if self.msg is not None:
+            if self.msg.arg == 'test':
                 msg = self.msg
                 break
 
         rospy.logwarn('msg: {}'.format(msg))
+        self.assertEqual(msg.sound, -3)
+        self.assertEqual(msg.command, 1)
+        self.assertEqual(msg.volume, 1.0)
         self.assertEqual(msg.arg, 'test')
 
 
 if __name__ == '__main__':
-    rospy.init_node(NAME)
     rostest.rosrun(PKG, NAME, TestSpeakAndWaitRecovery, sys.argv)
