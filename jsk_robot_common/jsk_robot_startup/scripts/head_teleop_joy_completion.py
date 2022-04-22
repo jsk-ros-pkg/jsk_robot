@@ -40,12 +40,8 @@ class JoyTopicCompletion:
             v = math.sqrt(x*x + y*y)
             r = math.atan2(y, x)
 
-            if math.fabs(r) < math.pi * 135 / 180 :
-                xx = v
-                yy = 0
-            else:
-                xx = -v/2.0
-                yy = 0
+            yy = 0
+            xx = v * math.cos(r)
 
             if v > 0:
                 self.last_publish_time = rospy.Time.now()
