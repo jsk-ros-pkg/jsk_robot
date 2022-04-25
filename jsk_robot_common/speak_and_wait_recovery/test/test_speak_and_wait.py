@@ -35,7 +35,6 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
 
     def test_speak_and_wait_recovery(self):
 
-        rospy.init_node(NAME)
         msg = SoundRequest()
         rate = rospy.Rate(1)
         while not rospy.is_shutdown():
