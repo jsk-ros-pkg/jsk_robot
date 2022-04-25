@@ -8,6 +8,9 @@
         <rosparam>
           recovery:
             speak_text: 'test'
+            duration_wait: 2.0
+            duration_timeout: 2.0
+            result_timeout: 1.0
         </rosparam>
     </node>
 

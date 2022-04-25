@@ -17,6 +17,7 @@
        doc="launch twitter" />
   <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
+  <arg name="launch_app_manager" default="true"/>
   <arg name="sanity_check_joint_trajectory" default="true" />
   <arg name="start_openni" default="false"/>
   <arg name="load_robot_description" default="false"/>
@@ -28,6 +29,9 @@
   <arg name="arm_control_mode" default="position_w_id"
        doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
   <arg name="USER_NAME" default="false"/>
+
+  <param name="/robot/name" value="baxter" />
+  <param name="/robot/type" value="baxter" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- custom baxter params -->
@@ -120,5 +124,14 @@
   <node if="$(arg launch_time_signal)"
 	pkg="roseus" type="roseus" name="time_signal" output="screen"
 	args="$(find jsk_robot_startup)/lifelog/time-signal.l" />
+
+  <!-- App manager -->
+  <include if="$(arg launch_app_manager)"
+           file="$(find jsk_robot_startup)/lifelog/app_manager.launch" >
+    <!-- use plugin -->
+    <arg name="use_applist" value="false" />
+    <arg name="respawn" value="false" />
+    <arg name="basic" value="false" />
+  </include>
 
 </launch>
