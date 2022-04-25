@@ -19,7 +19,8 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
     def __init__(self, *args):
         super(self.__class__, self).__init__(*args)
         rospy.init_node(NAME)
-        self.msg = SoundRequest()
+        #self.msg = SoundRequest()
+        self.msg = None
         self.action_server = \
                 actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
         self.action_server.start()
@@ -34,7 +35,8 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
         rospy.init_node(NAME)
         msg = SoundRequest()
         while not rospy.is_shutdown():
-            if self.msg.arg == 'test':
+            #if self.msg.arg == 'test':
+            if self.msg is not None:
                 msg = self.msg
                 break
 
