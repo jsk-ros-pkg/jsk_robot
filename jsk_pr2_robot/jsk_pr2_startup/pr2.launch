@@ -28,6 +28,10 @@
        doc="whether to use keepout map or not for navigation (default: true)"/>
   <arg name="launch_dialogflow_task_executive" default="true"
        doc="whether launch dialogflow_task_executive or not."/>
+  <arg name="launch_gdrive_server_c1" default="true"
+       doc="whether launch gdrive_server on c1 or not."/>
+  <arg name="launch_gdrive_server_c2" default="true"
+       doc="whether launch gdrive_server on c2 or not."/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -166,6 +170,20 @@
   <include if="$(arg launch_dialogflow_task_executive)"
            file="$(find dialogflow_task_executive)/launch/dialogflow_task_executive.launch">
     <arg name="run_app_manager" value="false" />
+  </include>
+
+  <include if="$(arg launch_gdrive_server_c1)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_gdrive_server.launch">
+    <arg name="respawn" value="true" />
+    <arg name="machine" value="localhost" />
+    <arg name="node_name" value="gdrive_server" />
+  </include>
+
+  <include if="$(arg launch_gdrive_server_c2)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_gdrive_server.launch">
+    <arg name="respawn" value="true" />
+    <arg name="machine" value="c2" />
+    <arg name="node_name" value="gdrive_server_c2" />
   </include>
 
   <node pkg="jsk_robot_startup" type="finish_launch_sound.py"

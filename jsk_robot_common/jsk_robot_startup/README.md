@@ -5,6 +5,40 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## scripts/email_topic.py
+
+This node sends email based on received rostopic (jsk_robot_startup/Email).
+Default values can be set by using `~email_info`
+There is [a client library](./euslisp/email-topic-client.l) and [sample program](./euslisp/sample-email-topic-client.l).
+If you want to see a demo. Please configure a smtp server and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
+
+```bash
+roslaunch jsk_robot_startup sample_email_topic.launch receiver_address:=<a mail address to send a mail to>
+```
+
+### Parameters
+
+- `~email_info` (type: `String`, default: `/var/lib/robot/email_info.yaml`)
+
+Default values of email configuration. Example of a yaml file is below.
+
+```yaml
+subject: hello
+body: world
+sender_address: hoge@test.com
+receiver_address: fuga@test.com
+smtp_server: test.com
+smtp_port: 25
+attached_files:
+  - /home/user/Pictures/test.png
+```
+
+### Subscriber
+
+- `email` (type: `jsk_robot_startup/Email`)
+
+Subscriber of email command.
+
 ## scripts/ConstantHeightFramePublisher.py
 ![pointcloud_to_scan_base_tf_squat.png](images/pointcloud_to_scan_base_tf_squat.png)
 ![pointcloud_to_scan_base_tf_stand.png](images/pointcloud_to_scan_base_tf_stand.png)
@@ -138,6 +172,42 @@ This node publish the luminance calculated from input image and room light statu
 * `~image_transport` (String, default: raw)
 
   Image transport hint.
+
+## scripts/shutdown.py
+
+This node shuts down or reboots the robot itself according to the rostopic. Note that this node needs to be run with sudo privileges.
+
+### Subscribing Topics
+
+* `shutdown` (`std_msgs/Empty`)
+
+  Input topic that trigger shutdown
+
+* `reboot` (`std_msgs/Empty`)
+
+  Input topic that trigger reboot
+
+### Parameters
+
+* `~shutdown_command` (String, default: "/sbin/shutdown -h now")
+
+  Command to shutdown the system. You can specify the shutdown command according to your system.
+
+* `~reboot_command` (String, default: "/sbin/shutdown -r now")
+
+  Command to reboot the system. You can specify the reboot command according to your system.
+
+### Usage
+
+```
+# Launch node
+$ su [sudo user] -c ". [setup.bash]; rosrun jsk_robot_startup shutdown.py"
+# To shutdown robot
+rostopic pub /shutdown std_msgs/Empty
+# To restart robot
+rostopic pub /reboot std_msgs/Empty
+```
+
 
 ## launch/safe_teleop.launch
 
