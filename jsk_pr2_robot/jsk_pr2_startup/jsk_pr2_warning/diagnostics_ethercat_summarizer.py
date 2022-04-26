@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
+
 from diagnostic_msgs.msg import DiagnosticArray
+
 
 def callback(data):
     flag = False
