@@ -22,7 +22,8 @@
         respawn="true" output="screen">
     <rosparam>
       duration: 180
-      charge_level_threshold: 40.0
+      charge_level_threshold: 80.0
+      shutdown_level_threshold: 60.0
       charge_level_step: 10.0
       volume: 1.0
     </rosparam>
@@ -192,12 +193,6 @@
       <arg name="odom_topic" value="/odom_combined" />
     </include>
 
-    <!-- slam for build a map -->
-    <node pkg="slam_karto" type="slam_karto" name="slam_karto"
-          output="screen" if="$(arg use_build_map)" >
-      <remap from="scan" to="base_scan"/>
-    </node>
-
     <!-- load amcl params -->
     <rosparam command="load"
               file="$(find jsk_fetch_startup)/launch/navigation/fetch_amcl_common_params.yaml" />
@@ -210,17 +205,10 @@
               file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
   </group>
 
-  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
-  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
-  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
-    <remap from="~input" to="/imu" />
-    <remap from="~output" to="/imu_corrected" />
-  </node>
-
-  <!-- /odom has no covariance value. -->
-  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
-    <remap from="~input" to="/odom" />
-    <remap from="~output" to="/odom_corrected" />
+  <!-- slam for build a map -->
+  <node pkg="slam_karto" type="slam_karto" name="slam_karto"
+        output="screen" if="$(arg use_build_map)" >
+    <remap from="scan" to="base_scan"/>
   </node>
 
   <!-- check if room light is on -->
@@ -233,6 +221,17 @@
     <rosparam>
       map_frame: /map
       base_frame: /base_link
+    </rosparam>
+  </node>
+
+  <!-- Check fetch's boards in a constant period -->
+  <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
+  </node>
+
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
     </rosparam>
   </node>
 

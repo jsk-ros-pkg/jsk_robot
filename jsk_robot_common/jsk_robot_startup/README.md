@@ -173,6 +173,42 @@ This node publish the luminance calculated from input image and room light statu
 
   Image transport hint.
 
+## scripts/shutdown.py
+
+This node shuts down or reboots the robot itself according to the rostopic. Note that this node needs to be run with sudo privileges.
+
+### Subscribing Topics
+
+* `shutdown` (`std_msgs/Empty`)
+
+  Input topic that trigger shutdown
+
+* `reboot` (`std_msgs/Empty`)
+
+  Input topic that trigger reboot
+
+### Parameters
+
+* `~shutdown_command` (String, default: "/sbin/shutdown -h now")
+
+  Command to shutdown the system. You can specify the shutdown command according to your system.
+
+* `~reboot_command` (String, default: "/sbin/shutdown -r now")
+
+  Command to reboot the system. You can specify the reboot command according to your system.
+
+### Usage
+
+```
+# Launch node
+$ su [sudo user] -c ". [setup.bash]; rosrun jsk_robot_startup shutdown.py"
+# To shutdown robot
+rostopic pub /shutdown std_msgs/Empty
+# To restart robot
+rostopic pub /reboot std_msgs/Empty
+```
+
+
 ## launch/safe_teleop.launch
 
 This launch file provides a set of nodes for safe teleoperation common to mobile robots. Robot-specific nodes such as `/joy`, `/teleop` or `/cable_warning` must be included in the teleop launch file for each robot, such as [safe_teleop.xml for PR2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_move_base/safe_teleop.xml) or [safe_teleop.xml for fetch](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml).
