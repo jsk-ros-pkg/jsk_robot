@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>jsk_fetch_gazebo_demo</name>
+  <version>0.0.1</version>
+  <description>Fetch gazebo demo for roseus implementation</description>
+
+  <maintainer email="yamaguchi@jsk.imi.i.u-tokyo.ac.jp">Naoya Yamaguchi</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>fetch_gazebo_demo</exec_depend>
+  <exec_depend>fetcheus</exec_depend>
+
+  <!-- to avoid roslaunch-check, this should be include in fetch_gazebo -->
+  <!-- The following two packages can be removed when fetch_gazebo 0.9.3 is released -->
+  <!-- See https://github.com/fetchrobotics/fetch_gazebo/pull/108 -->
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+
+  <exec_depend>simple_grasping</exec_depend>
+  <exec_depend>fetch_gazebo</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>fetch_moveit_config</exec_depend>
+
+  <test_depend>rostest</test_depend>
+  <test_depend>roslaunch</test_depend>
+
+</package>

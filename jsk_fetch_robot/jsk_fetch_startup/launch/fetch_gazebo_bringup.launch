@@ -38,5 +38,6 @@
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="boot_sound" value="false" />
     <arg name="launch_teleop" value="false" /> <!-- duplicates cmd_vel_mux nodes -->
+    <arg name="launch_insta360" value="false" />
   </include>
 </launch>

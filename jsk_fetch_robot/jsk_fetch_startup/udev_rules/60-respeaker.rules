@@ -1,0 +1,3 @@
+# Copied from respeaker_ros package
+# https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/respeaker_ros/config/60-respeaker.rules
+SUBSYSTEM=="usb", ATTR{idProduct}=="0018", ATTR{idVendor}=="2886", MODE:="0666"
