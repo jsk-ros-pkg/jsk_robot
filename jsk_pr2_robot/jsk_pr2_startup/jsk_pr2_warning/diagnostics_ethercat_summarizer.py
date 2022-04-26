@@ -19,12 +19,12 @@ def callback(data):
                 if v.key =='Dropped Packets':
                     print(e.name + " Dropped Packets: {}".format(v.value))
                 if v.key =='RX Late Packet':
-                    print(e.name + " RX Late Packet: {}".format(v.value))                    
+                    print(e.name + " RX Late Packet: {}".format(v.value))
 
     if flag:
         print("--------------------------------------------")
-        
-    
+
+
 def listener():
     rospy.init_node('diagnostics_ethercat_summarizer', anonymous=True)
     rospy.Subscriber('/diagnostics', DiagnosticArray, callback)
