@@ -26,7 +26,7 @@ def callback(data):
         
     
 def listener():
-    rospy.init_node('diagnostics_listener', anonymous=True)
+    rospy.init_node('diagnostics_ethercat_summarizer', anonymous=True)
     rospy.Subscriber('/diagnostics', DiagnosticArray, callback)
     rospy.spin()
 
