@@ -18,6 +18,7 @@
         test-name="test_speak_and_wait_recovery"
         pkg="speak_and_wait_recovery"
         type="test_speak_and_wait.py"
+        time-limit="30"
         />
 
 </launch>
