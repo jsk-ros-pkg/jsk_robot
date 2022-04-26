@@ -182,6 +182,15 @@ roslaunch jsk_fetch_gazebo_demo demo.launch
 (send *fetch* :rarm :shoulder-y :joint-angle 75)
 ```
 
+- Servo on and off. Able to choose servo on and off part respectively.
+
+```lisp
+(send *ri* :servo-off) ;; arm, gripper and head servos off
+(send *ri* :servo-off :arm t :gripper nil :head nil) ;; arm servo off
+(send *ri* :servo-on) ;; arm, gripper and head servos on
+(send *ri* :servo-on :arm t :gripper nil :head nil :time 80) ;; arm servo on in 80[msec]
+```
+
 ### Gripper Control
 
 - Grasp object
