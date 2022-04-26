@@ -295,6 +295,13 @@ rosrun ps3joy ps3joy.py  # with pushing the center button of the joystick
 
   You might be forget to `source setup.bash` before you run `roseus`
 
+- Can't control Fetch from joystick
+
+Sometimes, we can't control the robot from joystick even though the joystick seems to be connected via Bluetooth (a red light is illuminated).
+  1. Check to see if there is `/dev/ps3joy`.
+  2. If not, press and hold the center button to disconnect Bluetooth connection.
+  3. Connect joystick to Fetch via USB and press the center button.
+
 Administration
 --------------
 
