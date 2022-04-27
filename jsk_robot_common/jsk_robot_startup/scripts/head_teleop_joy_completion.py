@@ -8,8 +8,10 @@ from sensor_msgs.msg import Joy
 
 class JoyTopicCompletion:
 
-    def callback(self,msg):
+    def sigmoid(self, x):
+        return 1 / (1 + math.exp(-x))
 
+    def callback(self,msg):
         # check if there is a change
         for axesdata in msg.axes:
             if axesdata != 0.0:
@@ -37,7 +39,7 @@ class JoyTopicCompletion:
             #         (d/omega)/dr sin(a)  |a| >= a_thr
             x = msg.axes[self.axis_linear_x]
             y = msg.axes[self.axis_linear_y]
-            v = math.sqrt(x*x + y*y)
+            v = math.exp(math.sqrt(x*x + y*y)) - 1
             r = math.atan2(y, x)
 
             yy = 0
@@ -45,7 +47,7 @@ class JoyTopicCompletion:
 
             if v > 0:
                 self.last_publish_time = rospy.Time.now()
-                rr = r
+                rr = (self.sigmoid(r) - 0.5) * 2 * math.pi
             else:
                 rr = 0
 
