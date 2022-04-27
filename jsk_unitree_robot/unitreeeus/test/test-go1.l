@@ -36,4 +36,5 @@
 
 
 (run-all-tests)
-;; (exit) ;; comment when debugging
+(exit)
+

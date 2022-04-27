@@ -4,10 +4,10 @@
   <version>1.1.0</version>
   <description>The unitreeeus package</description>
 
-  <maintainer email="708yamaguchi@gmail.com">Naoya Yamaguchi</maintainer>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
 
   <license>BSD</license>
-  <author email="708yamaguchi@gmail.com">Naoya Yamaguchi</author>
+  <author email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
@@ -17,21 +17,9 @@
   <build_depend>roseus</build_depend>
   <build_depend>pr2eus</build_depend>
   <build_depend>go1_description</build_depend>
-  <build_depend>unitree_legged_real</build_depend>
 
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
-  <run_depend>pr2eus_moveit</run_depend>
-
-  <test_depend>kortex_gazebo</test_depend>
-  <!-- TODO: Remove this dependency after unitree's internal firmware >= v2.3.0 and below commit is included by kinova.rosinstall -->
-  <!-- See https://github.com/Kinovarobotics/ros_kortex/pull/140 -->
-  <test_depend>kortex_control</test_depend>
-  <!-- TODO: Remove this dependency after unitree's internal firmware >= v2.3.0 and below commit is included by kinova.rosinstall -->
-  <!-- See https://github.com/Kinovarobotics/ros_kortex/pull/142 -->
-  <test_depend>gen3_robotiq_2f_85_move_it_config</test_depend>
-  <test_depend>gen3_robotiq_2f_140_move_it_config</test_depend>
-  <test_depend>gen3_lite_gen3_lite_2f_move_it_config</test_depend>
 
   <export>
   </export>

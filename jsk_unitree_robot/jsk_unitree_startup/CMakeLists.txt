@@ -26,7 +26,6 @@ if(CATKIN_ENABLE_TESTING)
 
   file(GLOB LAUNCH_FILES launch/*.launch)
   # TODO: Do not do roslaunch_add_file_check()
-  # because upstream package (kortex_driver and unitree_vision) tests do not pass
   # foreach(LAUNCH_FILE ${LAUNCH_FILES})
   #   roslaunch_add_file_check(${LAUNCH_FILE})
   # endforeach()

@@ -1,19 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(unitreeeus)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-if($ENV{ROS_DISTRO} STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
-  set(ROSEUS_package roseus)
-endif()
-find_package(catkin REQUIRED COMPONENTS
-  ${ROSEUS_package} # required in indigo
-)
-find_package(go1_description) # Just in case when description is not released. Avoid compile failing
+find_package(catkin REQUIRED COMPONENTS)
 
 catkin_package()
 
+find_package(go1_description) # Just in case when description is not released. Avoid compile failing
 if(NOT go1_description_FOUND)
   message(WARNING "go1_description is not found, so skip generating eus models.")
   return()
@@ -62,8 +54,5 @@ install(FILES go1.l unitree-interface.l go1-utils.l DESTINATION ${CATKIN_PACKAGE
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   # Test only roseus
-  #add_rostest(test/test-unitree.test)
-  # Test with Gazebo and MoveIt!
-  # TODO: We can use this test after https://github.com/Kinovarobotics/ros_go1/pull/141 is merged
-  # add_rostest(test/test-unitree-moveit.test)
+  add_rostest(test/test-unitree.test)
 endif()
