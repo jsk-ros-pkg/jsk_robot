@@ -7,8 +7,8 @@
   <arg name="use_fetch_description" default="false" />
   <arg name="use_base_camera_mount" default="$(optenv USE_BASE_CAMERA_MOUNT true)" />
   <arg name="use_head_box" default="$(optenv USE_HEAD_BOX true)" />
-  <arg name="use_head_l515" default="(opt USE_HEAD_L515 true)" />
-  <arg name="insta360_stand" default="(opt USE_INSTA360_STAND true)" />
+  <arg name="use_head_l515" default="$(optenv USE_HEAD_L515 true)" />
+  <arg name="insta360_stand" default="$(optenv USE_INSTA360_STAND true)" />
 
   <!-- realsense option and serial numbers -->
   <arg name="use_realsense" default="true" />
