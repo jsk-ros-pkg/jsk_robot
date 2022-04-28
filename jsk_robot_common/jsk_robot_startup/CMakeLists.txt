@@ -122,12 +122,19 @@ target_link_libraries(joint_states_throttle
   ${catkin_LIBRARIES})
 add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
-add_executable(quadruped_joystick_teleop
-  src/quadruped_joystick_teleop.cpp)
-target_link_libraries(quadruped_joystick_teleop
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES})
-add_dependencies(quadruped_joystick_teleop ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+if($ENV{ROS_DISTRO} STRGREATER "indigo") # quadruped_joystick_teleop.cpp uses c++11 and also msg.volume
+  add_executable(quadruped_joystick_teleop
+    src/quadruped_joystick_teleop.cpp)
+  target_link_libraries(quadruped_joystick_teleop
+    ${Boost_LIBRARIES}
+    ${catkin_LIBRARIES})
+  add_dependencies(quadruped_joystick_teleop ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+  install(TARGETS quadruped_joystick_teleop
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    )
+endif()
 
 install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
