@@ -3,14 +3,15 @@
   <arg name="launch_teleop" default="true" />
   <arg name="launch_moveit" default="true" />
 
-  <arg name="use_base_camera_mount" default="true" />
-  <arg name="use_head_box" default="true" />
-  <arg name="launch_diagnostics_agg" default="false" />
-  <arg name="use_head_l515" default="true" />
-  <arg name="use_realsense" default="true" />
+  <!-- options for robot_description -->
   <arg name="use_fetch_description" default="false" />
+  <arg name="use_base_camera_mount" default="$(optenv USE_BASE_CAMERA_MOUNT true)" />
+  <arg name="use_head_box" default="$(optenv USE_HEAD_BOX true)" />
+  <arg name="use_head_l515" default="(opt USE_HEAD_L515 true)" />
+  <arg name="insta360_stand" default="(opt USE_INSTA360_STAND true)" />
 
-  <!-- realsense serial numbers -->
+  <!-- realsense option and serial numbers -->
+  <arg name="use_realsense" default="true" />
   <arg name="RS_SERIAL_NO_T265" default="$(optenv RS_SERIAL_NO_T265)" />
   <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="$(optenv RS_SERIAL_NO_D435_FRONTRIGHT)" />
   <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="$(optenv RS_SERIAL_NO_D435_FRONTLEFT)" />
@@ -136,7 +137,7 @@
          command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
                   ros_distro:=$(env ROS_DISTRO) use_fetch_description:=$(arg use_fetch_description)
                   base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)
-                  head_l515:=$(arg use_head_l515)" />
+                  head_l515:=$(arg use_head_l515) insta360_stand:=$(arg insta360_stand)" />
 
   <!-- Drivers for Base -->
   <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
