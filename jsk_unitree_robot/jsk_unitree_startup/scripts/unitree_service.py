@@ -76,13 +76,14 @@ uint32 reserve                  # Old version Aliengo does not have
 PKG = 'jsk_unitree_startup'
 NAME = 'unitree_service'
 
+
 class UnitreeService(object):
     def __init__(self):
         self.stand_service = rospy.Service("stand", Trigger, self.stand)
         self.sit_service = rospy.Service("sit", Trigger, self.sit)
-        self.bodypose_sub = rospy.Subscriber("body_pose", Pose, self.body_pose);
+        self.bodypose_sub = rospy.Subscriber("body_pose", Pose, self.body_pose)
 
-        self.highlevel_pub = rospy.Publisher("/high_cmd", HighCmd, queue_size=1000);
+        self.highlevel_pub = rospy.Publisher("/high_cmd", HighCmd, queue_size=1000)
 
     def stand(self, req):
         msg = HighCmd()
@@ -100,7 +101,7 @@ class UnitreeService(object):
         q = pose.orientation
         msg = HighCmd()
         msg.mode = 1
-        msg.euler = tf.transformations.euler_from_quaternion([q.x, q.y, q.z, q.w]) # RPY
+        msg.euler = tf.transformations.euler_from_quaternion([q.x, q.y, q.z, q.w])  # RPY
         self.highlevel_pub.publish(msg)
         return
 

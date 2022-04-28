@@ -44,16 +44,16 @@ from geometry_msgs.msg import Point
 
 from paho.mqtt import client as mqtt_client
 
+
 class HumanPosePublisher(object):
     broker = '192.168.123.161'
     port = 1883
     topic = "vision/human_pose"
     last_received = None
 
-
     def __init__(self):
         rospy.init_node("human_pose_publisher")
-        self.pub = rospy.Publisher("/people_pose", PeoplePoseArray, queue_size=10);
+        self.pub = rospy.Publisher("/people_pose", PeoplePoseArray, queue_size=10)
         self.connect_mqtt()
         self.subscribe()
         self.client.loop_start()
@@ -76,7 +76,6 @@ class HumanPosePublisher(object):
         self.client.on_connect = on_connect
         self.client.connect(self.broker, self.port)
         return
-
 
     def subscribe(self):
         def on_message(client, userdata, msg):
