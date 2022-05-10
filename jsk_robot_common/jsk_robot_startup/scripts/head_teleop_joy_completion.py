@@ -37,6 +37,10 @@ class JoyTopicCompletion:
             # dw/dr : angular velocity
             #         K_dw/dr a            |a| <  a_thr
             #         (d/omega)/dr sin(a)  |a| >= a_thr
+
+            # Increase the influence of joystick tilt
+            # Inprove tracking in rope pulling direction
+            # See https://github.com/k-okada/jsk_robot/pull/22
             x = msg.axes[self.axis_linear_x]
             y = msg.axes[self.axis_linear_y]
             v = math.exp(math.sqrt(x*x + y*y)) - 1
