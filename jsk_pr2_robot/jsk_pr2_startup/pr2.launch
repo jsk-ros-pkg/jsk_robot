@@ -67,7 +67,9 @@
 
   <!-- kinect node -->
   <include if="$(arg launch_kinect)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
+    <arg name="monitor_driver" value="true" />  <!-- iory 2022/05/11-->
+  </include>
 
   <!-- logging node for PR2  -->
   <include if="$(arg launch_db)"
