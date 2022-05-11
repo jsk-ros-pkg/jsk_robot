@@ -232,9 +232,9 @@
   <group if="$(arg respawn)">
     <node pkg="jsk_pr2_startup" name="check_openni_node" type="check_openni_node.py"
           output="screen" machine="c1" if="$(arg monitor_driver)">
+      <remap from="image" to="/$(arg camera)/rgb/image_raw" />
       <param name="camera" value="$(arg camera)" />
       <param name="sleep_cycle" value="60" />
-      <remap from="image" to="/$(arg camera)/rgb/image_rect_color" />
     </node>
   </group>
 
