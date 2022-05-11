@@ -89,7 +89,7 @@ class CheckOpenNINode:
 
     def run(self):
         while not rospy.is_shutdown():
-            if self.image_sub == None or self.image_sub.impl == None:
+            if self.image_sub is None or self.image_sub.impl is None:
                 self.image_sub = rospy.Subscriber("image", Image, self.image_callback, None, 1)
             rospy.sleep(self.sleep_cycle)
 
