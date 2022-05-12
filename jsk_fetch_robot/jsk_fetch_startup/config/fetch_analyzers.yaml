@@ -119,7 +119,7 @@ analyzers:
       joy:
         type: diagnostic_aggregator/GenericAnalyzer
         path: PS3 Controller
-        find_and_remove_prefix: "joy:"
+        find_and_remove_prefix: "jsk_joy_node:"
   system:
     type: diagnostic_aggregator/AnalyzerGroup
     path: System
