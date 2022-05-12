@@ -1,0 +1,7 @@
+topics:
+  - /audio
+  - /head_camera/depth/image_raw
+  - /head_camera/rgb/image_raw
+
+nodes:
+  - /head_camera/head_camera_nodelet_manager

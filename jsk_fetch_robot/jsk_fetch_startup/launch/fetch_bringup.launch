@@ -270,4 +270,12 @@
     <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
   </group>
 
+  <!-- Publish /diagnostics based on topics and nodes sanity check -->
+  <node name="sanity_diagnostics" pkg="jsk_tools" type="sanity_diagnostics.py">
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/sanity_targets.yaml" />
+    <rosparam subst_value="true">
+      duration: 60
+    </rosparam>
+  </node>
+
 </launch>
