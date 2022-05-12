@@ -15,7 +15,9 @@ find_package(nao_interaction_msgs QUIET)
 find_package(naoqi_bridge_msgs QUIET)
 if(nao_interaction_msgs_FOUND AND naoqi_bridge_msgs_FOUND)
 
+if(CATKIN_ENABLE_TESTING)
   add_rostest(test/naoqieus.test)
+endif()
 
 install(DIRECTORY test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
