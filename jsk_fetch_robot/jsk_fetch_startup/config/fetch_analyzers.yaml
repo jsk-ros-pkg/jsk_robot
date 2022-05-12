@@ -144,3 +144,35 @@ analyzers:
         type: diagnostic_aggregator/GenericAnalyzer
         path: CPU Usage
         startswith: 'my_machine CPU Usage'
+  topics:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Topics
+    analyzers:
+      audio:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Audio
+        contains: '/audio'
+        timeout: 100
+        discard_stale: true
+      head_depth_image:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: HeadDepthImage
+        contains: '/head_camera/depth/image_raw'
+        timeout: 100
+        discard_stale: true
+      head_rgb_image:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: HeadRGBImage
+        contains: '/head_camera/rgb/image_raw'
+        timeout: 100
+        discard_stale: true
+  nodes:
+    type: diagnostic_aggregator/AnalyzerGroup
+    path: Nodes
+    analyzers:
+      head_camera_manager:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: HeadCameraManager
+        contains: '/head_camera/head_camera_nodelet_manager'
+        timeout: 100
+        discard_stale: true
