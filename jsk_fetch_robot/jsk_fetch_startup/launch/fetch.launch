@@ -2,6 +2,7 @@
   <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
   <arg name="launch_teleop" default="true" />
   <arg name="launch_moveit" default="true" />
+  <arg name="launch_diagnostics_agg" default="false" />
 
   <!-- options for robot_description -->
   <arg name="use_fetch_description" default="false" />
