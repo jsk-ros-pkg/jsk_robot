@@ -9,7 +9,6 @@ import re
 from sound_play.libsoundplay import SoundClient
 
 from actionlib_msgs.msg import GoalStatus, GoalStatusArray
-from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus
 from fetch_driver_msgs.msg import RobotState
 from geometry_msgs.msg import Twist
 from power_msgs.msg import BatteryState, BreakerState
@@ -36,40 +35,6 @@ def terminate_thread(thread):
         ctypes.pythonapi.PyThreadState_SetAsyncExc(thread.ident, None)
         raise SystemError("PyThreadState_SetAsyncExc failed")
 
-class DiagnosticsSpeakThread(threading.Thread):
-    def __init__(self, error_status):
-        threading.Thread.__init__(self)
-        self.volume = rospy.get_param("~volume", 1.0)
-        self.error_status = error_status
-        self.start()
-
-    def run(self):
-        global sound
-        for status in  self.error_status:
-            # ignore error status if the error already occured in the latest 10 minites
-            if status.message in error_status_in_10_min:
-                if rospy.Time.now().secs - error_status_in_10_min[status.message] < 600:
-                    continue
-                else:
-                    error_status_in_10_min[status.message] = rospy.Time.now().secs
-            else:
-                error_status_in_10_min[status.message] = rospy.Time.now().secs
-            # we can ignore "Joystick not open."
-            if status.message == "Joystick not open." :
-                continue
-            if status.name == "supply_breaker" and status.message == "Disabled." :
-                continue
-            #
-            text = "Error on {}, {}".format(status.name, status.message)
-            rospy.loginfo(text)
-            text = text.replace('_', ', ')
-            sound.say(text, 'voice_kal_diphone', volume=self.volume)
-            time.sleep(5)
-
-    def stop(self):
-        terminate_thread(self)
-        self.join()
-
 class Warning:
     def __init__(self):
         time.sleep(1)
@@ -77,22 +42,13 @@ class Warning:
         self.battery_state_msgs = BatteryState()
         self.twist_msgs = Twist()
         #
-        self.diagnostics_speak_thread = {}
         self.auto_undocking = False
-        self.diagnostics_list = []
-        if rospy.get_param("~speak_warn", True):
-            self.diagnostics_list.append(DiagnosticStatus.WARN)
-        if rospy.get_param("~speak_error", True):
-            self.diagnostics_list.append(DiagnosticStatus.ERROR)
-        if rospy.get_param("~speak_stale", True):
-            self.diagnostics_list.append(DiagnosticStatus.STALE)
         #
         self.base_breaker = rospy.ServiceProxy('base_breaker', BreakerCommand)
         #
         self.battery_sub = rospy.Subscriber("battery_state", BatteryState, self.battery_callback, queue_size = 1)
         self.cmd_vel_sub = rospy.Subscriber("base_controller/command_unchecked", Twist, self.cmd_vel_callback, queue_size = 1)
         self.robot_state_sub = rospy.Subscriber("robot_state", RobotState, self.robot_state_callback, queue_size = 1)
-        self.diagnostics_status_sub = rospy.Subscriber("diagnostics", DiagnosticArray, self.diagnostics_status_callback, queue_size = 1)
         self.undock_sub = rospy.Subscriber("/undock/status", GoalStatusArray, self.undock_status_callback)
         #
         self.cmd_vel_pub = rospy.Publisher("base_controller/command", Twist, queue_size=1)
@@ -139,29 +95,6 @@ class Warning:
             self.cmd_vel_pub.publish(msg)
         ##
         self.twist_msgs = msg
-
-    def diagnostics_status_callback(self, msg):
-        ##
-        self.diagnostic_status_msgs = msg.status
-        ##
-        ## check if this comes from /robot_driver
-        callerid = msg._connection_header['callerid']
-        if callerid not in self.diagnostics_speak_thread:
-            self.diagnostics_speak_thread[callerid] = None
-        error_status = filter(lambda n: n.level in self.diagnostics_list, msg.status)
-        # when RunStopped, ignore message from *_mcb and *_breaker
-        if self.robot_state_msgs.runstopped:
-            error_status = filter(lambda n: not (re.match("\w*_(mcb|breaker)",n.name) or (n.name == "Mainboard" and n.message == "Runstop pressed")), error_status)
-        if not error_status : # error_status is not []
-            if self.diagnostics_speak_thread[callerid] and self.diagnostics_speak_thread[callerid].is_alive():
-                self.diagnostics_speak_thread[callerid].stop()
-            return
-        # make sure that diagnostics_speak_thread is None, when the thread is terminated
-        if self.diagnostics_speak_thread[callerid] and not self.diagnostics_speak_thread[callerid].is_alive():
-            self.diagnostics_speak_thread[callerid] = None
-        # run new thread
-        if self.diagnostics_speak_thread[callerid] is None:
-            self.diagnostics_speak_thread[callerid] = DiagnosticsSpeakThread(error_status)
 
 if __name__ == "__main__":
     global sound
