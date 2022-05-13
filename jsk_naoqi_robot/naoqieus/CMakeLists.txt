@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(naoqieus)
 
-if($ENV{ROS_DISTRO} STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
+if("$ENV{ROS_DISTRO}" STREQUAL "indigo") # indigo requres to add find_pacakge(roseus) to compile roseus message
   set(ROSEUS_package roseus)
 endif()
 find_package(catkin REQUIRED
