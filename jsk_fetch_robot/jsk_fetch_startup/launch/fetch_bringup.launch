@@ -6,6 +6,7 @@
   <arg name="launch_insta360" default="true" />
   <arg name="use_voice_text" default="false" />
   <arg name="default_speaker" default="2" />
+  <arg name="default_english_speaker" default="voice_kal_diphone" />
   <arg name="fetch_lifelog" default="true" />
   <arg name="boot_sound" default="false" />
   <arg name="map_frame" default="eng2" />
@@ -67,7 +68,9 @@
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
-        respawn="true" if="$(arg launch_sound_play)" />
+        respawn="true" if="$(arg launch_sound_play)">
+    <param name="default_voice" value="$(arg default_english_speaker)" />
+  </node>
 
   <!-- japanese speech node -->
   <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
