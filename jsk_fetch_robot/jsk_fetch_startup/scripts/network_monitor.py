@@ -47,21 +47,21 @@ VERSION = "0.5.2"
 TOUCH_FILE = "/home/fetch/.Network_Monitor_Restarted_Robot"
 
 
-def ping(use_arping, hosts):
+def ping(use_arping, hosts, network_interface='wlan0'):
     for host in hosts:
         for _ in xrange(5):
             print(datetime.now(),"Sending ping request")
             if use_arping:
-                response = os.system("arping -I wlan0 -c 1 " + host)
+                response = os.system("arping -I {} -c 1 {}".format(network_interface, host))
             else:
-                response = os.system("ping -c 1 -q " + host)
+                response = os.system("ping -c 1 -q {}".format(host))
             if response == 0:
                 return True
             sleep(5)
     return False
 
-def get_sanshiro():
-    return [['sanshiro', 'sanshiro']]
+def get_sanshiro(network_profile_id):
+    return [[network_profile_id, 'sanshiro']]
 
 def get_saved_networks(filepaths=None):
     # NetworkManager has its own ID for networks, often multiple for the same
@@ -90,19 +90,19 @@ def get_saved_networks(filepaths=None):
 
 
 # for reconnecting to 'sanshiro'
-def reconnect_to_wlan():
-    if call(["nmcli", "d", "disconnect", "iface", "wlan0"]) == 0:
+def reconnect_to_wlan(network_interface='wlan0', network_profile_id='sanshiro'):
+    if call(["nmcli", "d", "disconnect", "iface", network_interface]) == 0:
         sleep(0.3)
-        print("disconnect from wlan0")
+        print("Network disconnected with interface \"{}\"".format(network_interface))
     else:
-        print("'nmcli d disconnect iface wlan0' do not work correctly!")
+        print("'nmcli d disconnect iface {}' do not work correctly!".format(network_interface))
 
-    if call(["nmcli", "c", "up", "id", "sanshiro"]) == 0:
+    if call(["nmcli", "c", "up", "id", network_profile_id]) == 0:
         sleep(0.3)
-        print("connect to sanshiro")
+        print("Network connected with profile \"{}\"".format(network_profile_id))
         return True
     else:
-        print("'nmcli c up id sanshiro' do not work correctly!")
+        print("'nmcli c up id {}' do not work correctly!".format(network_profile_id))
         return False
 
 
@@ -150,13 +150,13 @@ def connect_by_nmcli_id(nid, ssid="SSID not given"):
         return False
 
 
-def attempt_reconnect_to_network():
+def attempt_reconnect_to_network(network_interface, network_profile_id):
     # First, try to connect to sanshiro
-    if connect_by_nmcli_id('sanshiro', 'sanshiro'):
+    if connect_by_nmcli_id(network_profile_id, 'sanshiro'):
         return True
 
     # Get list of stored 'wireless' connections; [id, ssid]
-    known = get_saved_networks() # alternative : known = get_sanshiro()
+    known = get_saved_networks() # alternative : known = get_sanshiro(network_profile_id)
 
     # Get list of unique available wifi network ssids and their strongest signal
     avail = get_avail_networks_by_strength()
@@ -170,7 +170,7 @@ def attempt_reconnect_to_network():
     for ntwk in to_try:
         if connect_by_nmcli_id(*ntwk):
             return True
-    if reconnect_to_wlan():
+    if reconnect_to_wlan(network_interface, network_profile_id):
         return True
     return False
 
@@ -249,12 +249,12 @@ def main(args):
     while True:
         try:
             # Check if we can ping the access point
-            if not ping(args.arping, hostnames):
+            if not ping(args.arping, hostnames, args.interface):
                 print(datetime.now(), "Cannot connect to", ', '.join(hostnames))
                 sound_goal.goal.sound_request.arg = "ピングが通りません"
                 pub.publish(sound_goal)
                 # Try to connect to any known network
-                if not attempt_reconnect_to_network():
+                if not attempt_reconnect_to_network(args.interface, args.profile):
                     # TODO use check_output instead of Popen and handle truly
                     # bad issues with computer restarts or notification.
                     print(datetime.now(), "Restarting network-manager")
@@ -302,6 +302,10 @@ if __name__ == "__main__":
                         help="One or more comma delimited hostname(s) to ping. Hostnames will "
                         "be tried in order supplied until one is successfully contacted. Default: "
                         "Looks for NETWORK_MONITOR_HOSTNAMES in environment.")
+    parser.add_argument('-I', '--interface', default='wlan0',
+                        help='Network interface to be used.')
+    parser.add_argument('--profile', default='sanshiro',
+                        help='Network profile to be used.')
     parser.add_argument("-a", "--arping", action='store_true',
                         help="Use arping instead of ping.")
     parser.add_argument("--enable-reboot-option", action='store_true',
