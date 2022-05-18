@@ -31,7 +31,7 @@ function restart_jobs() {
     sudo supervisorctl restart jsk-log-wifi
     sudo supervisorctl restart jsk-human-pose-estimator
     sudo supervisorctl restart jsk-gdrive
-    sudo supervisorctl restart jsk-fetch-restartup
+    sudo supervisorctl restart jsk-fetch-startup
     sudo supervisorctl restart jsk-dstat
     sudo supervisorctl restart jsk-dialog
     sudo supervisorctl restart jsk-app-scheduler
@@ -47,7 +47,7 @@ function stop_jobs() {
     sudo supervisorctl stop jsk-log-wifi
     sudo supervisorctl stop jsk-human-pose-estimator
     sudo supervisorctl stop jsk-gdrive
-    sudo supervisorctl stop jsk-fetch-stopup
+    sudo supervisorctl stop jsk-fetch-startup
     sudo supervisorctl stop jsk-dstat
     sudo supervisorctl stop jsk-dialog
     sudo supervisorctl stop jsk-app-scheduler
