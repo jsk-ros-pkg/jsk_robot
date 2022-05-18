@@ -100,6 +100,11 @@
       <arg name="enable_infra"          value="true"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
+    <rosparam>
+      /motion_module/global_time_enabled: true
+      /l500_depth_sensor/global_time_enabled: true
+      /rgb_camera/global_time_enabled: true
+    </rosparam>
   </group>
 
 </launch>
