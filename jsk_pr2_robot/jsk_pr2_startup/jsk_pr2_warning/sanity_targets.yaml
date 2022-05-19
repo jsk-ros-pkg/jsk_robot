@@ -1,0 +1,4 @@
+topics:
+  - /kinect_head/rgb/image_raw
+  - /kinect_head/depth_registered/image_raw
+
