@@ -1,0 +1,12 @@
+blacklist:
+  - name: "/CPU/CPU Usage/my_machine CPU Usage"
+  - name: "/Other/amcl: Standard deviation"
+  - name: "/Other/jsk_joy_node: Joystick Driver Status"
+  - name: "/Other/l515_head l515_head_realsense2_camera_.*: Frequency Status"
+  - name: "/Peripherals/PS3 Controller"
+  - name: "/Sensors/IMU/IMU.*"
+  - name: "/SoundPlay/sound_play.*"
+run_stop_blacklist:
+  - name: "\\w*_(mcb|breaker)"
+  - name: "Mainboard"
+    message: "Runstop pressed"
