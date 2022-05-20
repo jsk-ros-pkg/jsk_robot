@@ -262,12 +262,54 @@ Address: 133.11.216.145
 If two or more IP addresses apper, something is wrong.
 Please connect display, open a window of network manager.
 
-### Access point
+### Network configuration
 
-Define access point setting, such as ssid:
+Ubuntu 18.04 uses [NetworkManager](https://wiki.archlinux.jp/index.php/NetworkManager) for network configuration.
+Network manager's profiles are in `/etc/NetworkManager/system-connections`.
 
 ```bash
 cd /etc/NetworkManager/system-connections
+```
+
+You can also see profiles with `nmcli`, `nmtui` or `nm-connection-editor` (GUI) command.
+
+To see available connection profiles.
+
+```bash
+fetch@fetch1075:~$ nmcli connection
+NAME                UUID                                  TYPE      DEVICE
+netplan-eth1        433e484b-3493-3640-9368-395c0c752304  ethernet  eth1
+sanshiro-73B2       1f0f9db6-e448-41ef-9d27-e1ed4e48a4f5  wifi      wlan1
+Wired connection 1  eb557bda-e1bf-3ab7-89e9-1f839cd6b88a  ethernet  --
+fetch1075-hotspot   b85c6a8f-9d28-4cf3-95a0-6dc37229863d  wifi      --
+sanshiro-outside    d7ee2165-c93a-4050-862d-d0c381a546ab  wifi      --
+fetch@fetch1075:~$ nmcli c show sanshiro-73B2
+```
+
+To activate some connection.
+
+```bash
+fetch@fetch1075:~$ sudo nmcli c up sanshiro-outside
+[sudo] password for fetch:
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/5)
+fetch@fetch1075:~$ sudo nmcli c up sanshiro-73B2
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/6)
+```
+
+To edit connection profiles, use `nmtui` or `nm-connection-editor`
+
+### Default connection profiles
+
+fetch15 and fetch1075 has `sanshiro-73B2` and `sanshiro-outside` connections by default. (If not, please make them)
+
+- `sanshiro-73B2` (Connect `sanshiro` with fixed BSSID)
+- `sanshiro-outside` (Connect `sanshiro` without fixed BSSID)
+
+By default, `sanshiro-73B2` is activated for stable connection in 73B2.
+If you want to use fetch outside of 73B2, it is recommended to activate `sanshiro-outside`.
+
+```bash
+sudo nmcli c up sanshiro-outside
 ```
 
 ## Log
