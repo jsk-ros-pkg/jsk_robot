@@ -49,6 +49,53 @@ sudo apt install librealsense2-dev=2.45.0-0~realsense0.4551
 sudo apt-mark hold librealsense2 librealsense2-dev
 ```
 
+### Install config.bash
+
+JSK fetch system uses some enviroment variables. To set them, copy `config.bash` to `/var/lib/robot/config.bash` and modify it.
+
+```bash
+roscd jsk_fetch_startup
+sudo cp config/config.bash /var/lib/robot/config.bash
+```
+
+descriptions of each variable are below.
+
+- `USE_BASE_CAMERA_MOUNT`
+  + Flag for robot model
+- `USE_HEAD_BOX`
+  + Flag for robot model
+- `USE_HEAD_L515`
+  + Flag for robot model
+- `USE_INSTA360_STAND`
+  + Flag for robot model
+- `RS_SERIAL_NO_T265`
+  + Serial number of Realsense T265 for visual odometry.
+  + realsense will not be launched when this is blank.
+- `RS_SERIAL_NO_D435_FRONTRIGHT`
+  + Serial number of Realsense D435 on the base
+  + realsense will not be launched when this is blank.
+- `RS_SERIAL_NO_D435_FRONTLEFT`
+  + Serial number of Realsense D435 on the base
+  + realsense will not be launched when this is blank.
+- `RS_SERIAL_NO_L515_HEAD`
+  + Serial number of Realsense L515 on the head
+  + realsense will not be launched when this is blank.
+- `NETWORK_DEFAULT_WIFI_INTERFACE`
+  + Wi-Fi network interface for network management scripts (e.g. `network_monitor.py` and `network-log-wifi.sh`)
+- `NETWORK_DEFAULT_PROFILE_ID`
+  + Network manager profile ID for network management scripts (`network_monitor.py`)
++ `NETWORK_DEFAULT_ROS_INTERFACE`
+  + Network interface which is used for ROS connection.
+  + `ROS_IP` is set to the IP address of this interface in supervisor jobs.
+
+It is also recommended to add lines below to each users's bashrc in the robot PC.
+
+```bash
+source /var/lib/robot/config.bash
+rossetmaster localhost
+rossetip $NETWORK_DEFAULT_ROS_INTERFACE
+```
+
 ### supervisor
 
 Important jobs for fetch operation are managed by supervisor.
