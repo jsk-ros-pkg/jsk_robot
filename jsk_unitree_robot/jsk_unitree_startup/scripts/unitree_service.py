@@ -101,6 +101,7 @@ class UnitreeService(object):
         q = pose.orientation
         msg = HighCmd()
         msg.mode = 1
+        msg.bodyHeight = pose.position.z
         msg.euler = tf.transformations.euler_from_quaternion([q.x, q.y, q.z, q.w])  # RPY
         self.highlevel_pub.publish(msg)
         return
