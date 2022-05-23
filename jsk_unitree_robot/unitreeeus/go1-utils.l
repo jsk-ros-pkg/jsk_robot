@@ -52,22 +52,23 @@
                 ))
   ;;
   (:body-pose
-   (pose &rest args)
-   (let (target-coords)
-     (setq target-coords (send self :copy-worldcoords))
-     (if (or (vectorp pose) (listp pose))
-         (progn
-           (ros::ros-debug "Got r p y float-vector or list as args.")
-           (setq pose (instance coordinates :init :rpy (list (elt pose 2) (elt pose 1) (elt pose 0)))))
-       (ros::ros-debug "Got coords variable as args."))
-     (send target-coords :transform pose)
-     (send* self :fullbody-inverse-kinematics
-            target-coords (send self :base_lk)
-            :rotation-axis t
-            :translation-axis t
-            :debug-view nil
-            args)
-     ))
+   (&optional pose &rest args)
+   (when pose
+     (let (target-coords)
+       (setq target-coords (send self :copy-worldcoords))
+       (if (or (vectorp pose) (listp pose))
+           (progn
+             (ros::ros-debug "Got r p y float-vector or list as args.")
+             (setq pose (instance coordinates :init :rpy (list (elt pose 2) (elt pose 1) (elt pose 0)))))
+           (ros::ros-debug "Got coords variable as args."))
+       (send target-coords :transform pose)
+       (send* self :fullbody-inverse-kinematics
+              target-coords (send self :base_lk)
+              :rotation-axis t
+              :translation-axis t
+              :debug-view nil
+              args)))
+     (send self :coords))
   ;;
   (:look-at
    (pos &rest args)
