@@ -34,6 +34,7 @@
     <arg name="repl_set" value="rs0"
          if="$(arg repl_set_mode)" />
     <arg name="replicator_dump_path" value="$(arg replicator_dump_path)" />
+    <arg name="logerr_period" default="3600" />
     <arg name="test_mode" value="$(arg test_mode)" />
   </include>
 
