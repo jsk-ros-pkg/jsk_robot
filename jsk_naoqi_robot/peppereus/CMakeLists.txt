@@ -16,7 +16,7 @@ catkin_package()
 ### pepper.l generation
 ###
 compile_naoqi_model(pepper pepper1.0_generated_urdf)
-if(pepper_meshes_FOUND)
+if(pepper_meshes_FOUND AND CATKIN_ENABLE_TESTING)
   add_rostest(test/peppereus.test)
 endif()
 

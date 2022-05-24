@@ -15,9 +15,9 @@
           /odom
           /odom_combined
           /cmd_vel
-          /move_base/NavFnROS/plan
-          /move_base/TrajectoryPlannerROS/global_plan
-          /move_base/TrajectoryPlannerROS/local_plan
+          /move_base/navigation_plan_viz
+          /move_base/global_plan_viz
+          /move_base/local_plan_viz
           /move_base/global_costmap/footprint
           /spots_marker_array
           /spots_pictogram

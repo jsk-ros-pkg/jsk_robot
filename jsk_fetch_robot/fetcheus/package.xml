@@ -11,6 +11,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>collada_urdf</build_depend>
+  <build_depend>euscollada</build_depend>
   <build_depend>pr2eus</build_depend> <!-- for robot interface -->
   <build_depend>pr2eus_moveit</build_depend> <!-- for robot interface -->
   <build_depend>fetch_description</build_depend>
