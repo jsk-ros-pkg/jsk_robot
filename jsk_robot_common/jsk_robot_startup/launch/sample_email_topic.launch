@@ -1,0 +1,30 @@
+<launch>
+    <arg name="receiver_address" />
+    <arg name="attached_file" default="$(find jsk_robot_startup)/images/jsk_safe_teleop_system.png" />
+    <arg name="email_info_yaml" default="/var/lib/robot/email_info.yaml" />
+    <arg name="use_eus" default="true" />
+
+    <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen">
+        <rosparam subst_value="true">
+            email_info: $(arg email_info_yaml)
+        </rosparam>
+    </node>
+
+    <node pkg="jsk_robot_startup" type="sample-email-topic-client.l" name="sample_email_topic_client"
+        output="screen" if="$(arg use_eus)">
+        <rosparam subst_value="true">
+            receiver_address: "$(arg receiver_address)"
+            attached_files:
+                - $(arg attached_file)
+        </rosparam>
+    </node>
+
+    <node pkg="jsk_robot_startup" type="sample_email_topic_client.py" name="sample_email_topic_client"
+        output="screen" unless="$(arg use_eus)">
+        <rosparam subst_value="true">
+            receiver_address: "$(arg receiver_address)"
+            attached_files:
+                - $(arg attached_file)
+        </rosparam>
+    </node>
+</launch>

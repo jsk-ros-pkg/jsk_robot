@@ -1,0 +1,15 @@
+<launch>
+  <arg name="machine" default="localhost"/>
+  <arg name="settings_yaml" default="$(optenv GOOGLE_DRIVE_SETTINGS_YAML /var/lib/robot/pydrive_settings.yaml)" />
+  <arg name="respawn" default="false" />
+  <arg name="node_name" default="gdrive_server" />
+
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
+  <include file="$(find gdrive_ros)/launch/gdrive_server.launch">
+    <arg name="machine" value="$(arg machine)" />
+    <arg name="settings_yaml" value="$(arg settings_yaml)" />
+    <arg name="respawn" value="$(arg respawn)" />
+    <arg name="node_name" value="$(arg node_name)" />
+  </include>
+</launch>

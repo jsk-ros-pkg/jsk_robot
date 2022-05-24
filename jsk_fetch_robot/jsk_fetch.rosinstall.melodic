@@ -102,10 +102,15 @@
     local-name: GT-RAIL/robot_pose_publisher
     uri: https://github.com/GT-RAIL/robot_pose_publisher.git
     version: 0.2.4
+# Avoid "An error has occurred during frame callback: map::at"
+# https://github.com/IntelRealSense/realsense-ros/issues/1872
+# If you upgrade realsense-ros version, please upgrade librealsense packages.
+# Currently, realsense-ros 2.3.0 (source) and librealsense 2.45.0 (apt) works
+# https://github.com/IntelRealSense/librealsense/issues/10304#issuecomment-1067354378
 - git:
     local-name: IntelRealSense/realsense-ros
     uri: https://github.com/IntelRealSense/realsense-ros.git
-    version: 2.2.21
+    version: 2.3.0
 - git:
     local-name: fetchrobotics/fetch_open_auto_dock
     uri: https://github.com/fetchrobotics/fetch_open_auto_dock.git
