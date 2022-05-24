@@ -1,6 +1,7 @@
 #!/bin/bash
 
 IFACE=wlan0
+OUTPATH=/var/log/wifi.log
 INTERVAL=10
 
 wifi_status(){
@@ -13,7 +14,12 @@ wifi_status(){
     echo "$(date -Iseconds),$ssid,$freq,$signal,$level,$noise,$bitrate"
 }
 
+OUTDIR=$(dirname $OUTPATH)
+if [ ! -d $OUTDIR ]; then
+    mkdir -p $OUTDIR
+fi
+
 while true; do
-    wifi_status >&1
+    wifi_status >> $OUTPATH
     sleep $INTERVAL
 done
