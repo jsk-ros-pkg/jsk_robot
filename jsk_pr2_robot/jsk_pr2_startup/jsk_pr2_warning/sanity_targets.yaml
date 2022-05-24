@@ -1,4 +1,5 @@
 topics:
-  - /kinect_head/rgb/image_raw
-  - /kinect_head/depth_registered/image_raw
-
+  - /kinect_head/rgb/image_raw/compressed
+  - /kinect_head/depth_registered/image_raw/compressedDepth
+  - /edgetpu_human_pose_estimator/output/image/compressed
+  - /edgetpu_object_detector/output/image/compressed
