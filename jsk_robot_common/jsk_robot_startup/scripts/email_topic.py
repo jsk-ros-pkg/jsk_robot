@@ -76,6 +76,36 @@ class EmailTopic(object):
         msg["From"] = sender_address
         msg["To"] = receiver_address
         msg.attach(MIMEText(body, 'plain', 'utf-8'))
+        # Support embed image
+        for content in body:
+            if content.type == 'text':
+                msg.attach(MIMEText(content.message, 'plain', 'utf-8'))
+            elif content.type == 'html':
+                msg.attach(MIMEText(content.message, 'html'))
+            elif content.type == 'img':
+                if content.file_path == '':
+                    rospy.logwarn('File name is empty. Skipped.')
+                    continue
+                if not os.path.exists(content.file_path):
+                    rospy.logerr(
+                        'File {} is not found.'.format(content.file_path))
+                    return
+                with open(content.file_path, 'rb') as img:
+                    embed_img = MIMEImage(img.read())
+                    embed_img.add_header(
+                        'Content-ID', '<{}>'.format(content.file_path))
+                    msg.attach(embed_img)  # This line is necessary to embed
+                if content.img_size:
+                    image_size = content.img_size
+                else:
+                    image_size = 100
+                text = '<img src="cid:{}" width={}%>'.format(
+                    content.file_path, image_size)
+                bodytext = MIMEText(text, 'html')
+                msg.attach(bodytext)
+            else:
+                rospy.logwarn('Unknown content type {}'.format(content.type))
+                continue
         # Attach file
         for attached_file in attached_files:
             if attached_file == '':
