@@ -382,10 +382,12 @@ Args:
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
       (notify-recognition :location "kitchen stove")
       (notify-co2 :location "kitchen stove")
+      (take-photo "kitchen_stove.jpg")
       (send *ri* :go-pos-unsafe 0 0 -45)
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (take-photo "kitchen_sink.jpg")
       (notify-recognition :location "kitchen sink"))
     (progn
       (notify-recognition :location "kitchen"))))
@@ -434,6 +436,51 @@ Args:
     (send *ri* :go-pos-unsafe 0 0 -80) ;; face the front against the trash can
     success-move-to-trashcan-front))
 
+(defun send-kitchen-mail ()
+  (let ((msg (instance jsk_robot_startup::Email :init))
+        (stove-text (instance jsk_robot_startup::EmailBody :init))
+        (sink-text (instance jsk_robot_startup::EmailBody :init))
+        (trashcan-text (instance jsk_robot_startup::EmailBody :init))
+        (change-line (instance jsk_robot_startup::EmailBody :init))
+        (kitchen-stove-img (instance jsk_robot_startup::EmailBody :init))
+        (kitchen-sink-img (instance jsk_robot_startup::EmailBody :init))
+        (trashcan-inside-img (instance jsk_robot_startup::EmailBody :init)))
+    (ros::advertise "email" jsk_robot_startup::Email 1)
+    (send stove-text :type "text")
+    (send stove-text :message "コンロを見に行ったよ．")
+    (send sink-text :type "text")
+    (send sink-text :message "シンクを見に行ったよ．")
+    (send trashcan-text :type "text")
+    (send trashcan-text :message "ゴミ箱を見に行ったよ．")
+    (send kitchen-stove-img :type "img")
+    (send kitchen-stove-img :file_path "/tmp/kitchen_stove.jpg")
+    (send kitchen-stove-img :img_size 50)
+    (send kitchen-sink-img :type "img")
+    (send kitchen-sink-img :file_path "/tmp/kitchen_sink.jpg")
+    (send kitchen-sink-img :img_size 50)
+    (send trashcan-inside-img :type "img")
+    (send trashcan-inside-img :file_path "/tmp/trashcan_inside.jpg")
+    (send trashcan-inside-img :img_size 50)
+    (send change-line :type "html")
+    (send change-line :message "<br>")
+    (send msg :receiver_address "fetch@jsk.imi.i.u-tokyo.ac.jp")
+    (send msg :subject "キッチンを巡回したよ")
+    (send msg :body (list stove-text
+                          change-line
+                          kitchen-stove-img
+                          change-line
+                          sink-text
+                          change-line
+                          kitchen-sink-img
+                          change-line
+                          trashcan-text
+                          change-line
+                          trashcan-inside-img))
+    (unix::sleep 1)
+    (ros::ros-info "send-kitchen-mail")
+    (ros::publish "email" msg)
+    ))
+
 
 (defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1)
                            (control-switchbot :api))
@@ -477,6 +524,7 @@ Args:
       (room-light-off :control-switchbot control-switchbot))
     ;; change the inflation_radius
     (restore-params)
+    (send-kitchen-mail)
     (setq success-battery-charging (equal (get-battery-charging-state) :charging))
     (and success-go-to-kitchen success-auto-dock success-battery-charging)))
 
@@ -587,6 +635,7 @@ Args:
                        (success-go-to-kitchen
                          (cdr (assoc 'success-go-to-kitchen userdata))))
                    (restore-params)
+		   (send-kitchen-mail)
                    (and success-go-to-kitchen success-auto-dock success-battery-charging)))))
           '(:init)
           '(t nil))))
