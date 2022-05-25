@@ -95,7 +95,12 @@ class EmailTopic(object):
                     embed_img.add_header(
                         'Content-ID', '<{}>'.format(content.file_path))
                     msg.attach(embed_img)  # This line is necessary to embed
-                text = '<img src="cid:{}">'.format(content.file_path)
+                if content.img_size:
+                    image_size = content.img_size
+                else:
+                    image_size = 100
+                text = '<img src="cid:{}" width={}%>'.format(
+                    content.file_path, image_size)
                 bodytext = MIMEText(text, 'html')
                 msg.attach(bodytext)
             else:
