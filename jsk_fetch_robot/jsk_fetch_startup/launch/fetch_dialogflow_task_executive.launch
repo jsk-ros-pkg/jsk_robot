@@ -2,8 +2,8 @@
   <arg name="hostname" default="fetch15" />
   <arg name="run_app_manager" default="false" />
   <arg name="applist" default="" />
-  <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS)"/>
-  <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
+  <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS /var/lib/robot/dialogflow/fetch-credential.json)"/>
+  <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID fetch)"/>
   <arg name="enable_hotword" default="true" />
 
   <!-- options for dialogflow_client -->
