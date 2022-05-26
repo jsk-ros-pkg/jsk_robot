@@ -1,0 +1,142 @@
+repositories:
+  urdfdom-headers:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/u/urdfdom-headers/urdfdom-headers_1.0.0.orig.tar.gz
+  urdfdom-headers/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/u/urdfdom-headers/urdfdom-headers_1.0.0-1.debian.tar.xz
+  urdfdom:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/u/urdfdom/urdfdom_1.0.0.orig.tar.gz
+  urdfdom/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/u/urdfdom/urdfdom_1.0.0-2build2.debian.tar.xz
+  assimp:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/a/assimp/assimp_4.1.0~dfsg.orig.tar.gz
+  assimp/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/a/assimp/assimp_4.1.0~dfsg-3.debian.tar.xz
+  collada-dom:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/c/collada-dom/collada-dom_2.4.4+ds1.orig.tar.xz
+  collada-dom/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/c/collada-dom/collada-dom_2.4.4+ds1-2build3.debian.tar.xz
+  yaml-cpp:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/y/yaml-cpp/yaml-cpp_0.5.2.orig.tar.gz
+  yaml-cpp/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/y/yaml-cpp/yaml-cpp_0.5.2-4ubuntu1.debian.tar.xz
+  snappy:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/s/snappy/snappy_1.1.7.orig.tar.gz
+  snappy/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/s/snappy/snappy_1.1.7-1.debian.tar.xz
+  opencv:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/o/opencv/opencv_3.2.0+dfsg.orig.tar.gz
+  opencv/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/o/opencv/opencv_3.2.0+dfsg-4ubuntu0.1.debian.tar.xz
+  python-sip:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/s/sip4/sip4_4.19.7+dfsg.orig.tar.gz
+  tinyxml:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2.orig.tar.gz
+  tinyxml/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/t/tinyxml/tinyxml_2.6.2-4.debian.tar.xz
+  python-twisted:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/t/twisted/twisted_17.9.0.orig.tar.bz2
+  python-twisted/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/t/twisted/twisted_17.9.0-2ubuntu0.3.debian.tar.xz
+  python-incremental:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/i/incremental/incremental_16.10.1.orig.tar.gz
+  python-incremental/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/i/incremental/incremental_16.10.1-3.debian.tar.xz
+  python-zope.interface:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/z/zope.interface/zope.interface_4.3.2.orig.tar.gz
+  python-zope.interface/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/z/zope.interface/zope.interface_4.3.2-1build2.debian.tar.xz
+  python-constantly:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/c/constantly/constantly_15.1.0.orig.tar.gz
+  python-constantly/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/c/constantly/constantly_15.1.0-1.debian.tar.xz
+  python-concurrent.futures:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/python-concurrent.futures/python-concurrent.futures_3.2.0.orig.tar.gz
+  python-concurrent.futures/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/python-concurrent.futures/python-concurrent.futures_3.2.0-1.debian.tar.xz
+  python-trollius:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-trollius/python-trollius_2.1~b1.orig.tar.xz
+  python-trollius/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-trollius/python-trollius_2.1~b1-5.debian.tar.xz
+  python-txaio:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-txaio/python-txaio_2.8.1.orig.tar.xz
+  python-txaio/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-txaio/python-txaio_2.8.1-1.debian.tar.xz
+  python-backports-abc:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-backports-abc/python-backports-abc_0.5.orig.tar.gz
+  python-backports-abc/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-backports-abc/python-backports-abc_0.5-2.debian.tar.xz
+  python-singledispatch:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/s/singledispatch/singledispatch_3.4.0.3.orig.tar.gz
+  python-singledispatch/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/s/singledispatch/singledispatch_3.4.0.3-2.debian.tar.xz
+  python-tornado:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-tornado/python-tornado_4.5.3.orig.tar.gz
+  python-tornado/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-tornado/python-tornado_4.5.3-1.debian.tar.xz
+  python-autobahn:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-autobahn/python-autobahn_17.10.1+dfsg1.orig.tar.xz
+  python-autobahn/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-autobahn/python-autobahn_17.10.1+dfsg1-2.debian.tar.xz
+  python-future:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/python-future/python-future_0.15.2.orig.tar.gz
+  python-future/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/python-future/python-future_0.15.2-4ubuntu2.debian.tar.xz
+  python-pymongo:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/pymongo/pymongo_3.6.1+dfsg1.orig.tar.gz
+  python-pymongo/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/pymongo/pymongo_3.6.1+dfsg1-1.debian.tar.xz
+  python-websocket:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/w/websocket-client/websocket-client_0.44.0.orig.tar.gz
+  python-websocket/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/w/websocket-client/websocket-client_0.44.0-0ubuntu2.debian.tar.xz
+  liblcm:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/l/lcm/lcm_1.3.1+repack1.orig.tar.gz
+  liblcm/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/l/lcm/lcm_1.3.1+repack1-1.debian.tar.xz

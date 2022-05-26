@@ -1,0 +1,16 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+# compile gstreamer takes too long time, so download apt and extract
+
+mkdir -p /home/user/ros1_dependencies_sources/build/gstreamer
+cd /home/user/ros1_dependencies_sources/build/gstreamer
+
+apt download gir1.2-gstreamer-1.0
+ls -al
+ar vx *.deb
+tar -xvf data.tar.xz
+
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/girepository-1.0/
+cp ./usr/lib/$(gcc -dumpmachine)/girepository-1.0/* /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/girepository-1.0/
+ls -al /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/girepository-1.0/

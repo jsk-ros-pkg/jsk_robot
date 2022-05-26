@@ -25,625 +25,122 @@ catkin build unitreeeus jsk_unitree_startup
 source devel/setup.bash
 ```
 
-### Connecting to the Go1
+### Program Go1 robot
 
-1. Connect to the robot via Ethernet or wifi (AP:`Unitree_Go***`)
-1. Launch the following
+1. Connect to the robot via Ethernet
 
-```bash
-source ~/catkin_ws/devel/setup.bash
-roslaunch jsk_unitree_startup unitree_bringup.launch network:=<ethernet or wifi>
-```
+2. Set your PC'S IP address to `192.168.96.162`
 
-### Control Go1 via roseus
+3. Setup ROS_IP and ROS_MASTER_URI
 
+   ```
+   rossetmaster 192.168.96.161
+   rossetip
+   ```
 
-```lisp
-(load "package://unitreeeus/unitree-interface.l") ;; load modules
-(go1-init)
-```
+4. Run roseus
 
-## topics
+   ```lisp
+   (load "package://unitreeeus/unitree-interface.l") ;; load modules
+   (go1-init)
+   ```
 
-List of topics obtained by following command:
-```
-pi@raspberrypi:~ $ for topic in $(rostopic list); do echo -e "\n\n\n-\n- $topic\n-"; echo "-- info"; rostopic info $topic; echo "-- hz"; timeout 3 rostopic hz $topic 2> /dev/null; done
-```
+   See `https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/unitreeeus/test/test-go1.l` for example.
 
-```
--
-- /camera1/point_cloud_face
--
--- info
-Type: sensor_msgs/PointCloud2
+5. Deployment
 
-Publishers:
- * /camera1 (http://192.168.123.13:38961/)
+   Once you have completed your development, put your code into [apps](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/jsk_unitree_startup/apps/) directory and build on cross environment and copy to onboard computer.
+   ```
+   roscd jsk_unitree_startup/../cross
+   make user
+   ./install -p 123
+   ```
 
-Subscribers: None
+   Then, reboot the robot and go to [app_chooser](http://192.168.123.161:8000/rwt_app_chooser) and start your application
 
+## Topics
 
--- hz
-subscribed to [/camera1/point_cloud_face]
-average rate: 16.388
-        min: 0.051s max: 0.071s std dev: 0.01025s window: 3
+See [List of Topics](Go1_Topics.md) for list of topics used in Go1 robot.
 
+## Tips
 
+### Check boot process
 
--
-- /camera1/range_visual_face
--
--- info
-Type: sensor_msgs/Range
+#### 192.168.123.161
 
-Publishers:
- * /camera1 (http://192.168.123.13:38961/)
-
-Subscribers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-
--- hz
-subscribed to [/camera1/range_visual_face]
-average rate: 15.438
-        min: 0.062s max: 0.069s std dev: 0.00302s window: 4
-
-
-
--
-- /camera2/point_cloud_chin
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:None
-
-Subscribers:
- * /node_obstacle_traverse (http://raspberrypi:35301/)
-
-
--- hz
-subscribed to [/camera2/point_cloud_chin]
-
-
-
--
-- /camera3/point_cloud_left
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:
- * /camera3 (http://192.168.123.14:34775/)
-
-Subscribers: None
-
-
--- hz
-
-
-
--
-- /camera3/range_visual_left
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /camera3 (http://192.168.123.14:34775/)
-
-Subscribers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-
--- hz
-subscribed to [/camera3/range_visual_left]
-
-
-
--
-- /camera4/point_cloud_right
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:
- * /camera4 (http://192.168.123.14:33937/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/camera4/point_cloud_right]
-average rate: 22.556
-        min: 0.034s max: 0.054s std dev: 0.01008s window: 3
-
-
-
--
-- /camera4/range_visual_right
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /camera4 (http://192.168.123.14:33937/)
-
-Subscribers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-
--- hz
-subscribed to [/camera4/range_visual_right]
-average rate: 19.485
-        min: 0.022s max: 0.080s std dev: 0.02914s window: 3
-
-
-
--
-- /camera5/point_cloud_rearDown
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:
- * /camera5 (http://192.168.123.15
-192.168.11.110:39391/)
-
-Subscribers:
- * /node_obstacle_traverse (http://raspberrypi:35301/)
-
-
--- hz
-subscribed to [/camera5/point_cloud_rearDown]
-no new messages
-
-
-
--
-- /cmd_odom
--
--- info
-Type: nav_msgs/Odometry
-
-Publishers:
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
-
-Subscribers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
-
-
--- hz
-subscribed to [/cmd_odom]
-
-
-
--
-- /cmd_vel
--
--- info
-Type: geometry_msgs/Twist
-
-Publishers:None
-
-Subscribers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
-
-
--- hz
-subscribed to [/cmd_vel]
-no new messages
-
-
-
--
-- /cmd_vel_2
--
--- info
-Type: geometry_msgs/Twist
-
-Publishers:None
-
-Subscribers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
-
-
--- hz
-
-
-
--
-- /joint_states
--
--- info
-Type: sensor_msgs/JointState
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/joint_states]
-no new messages
-
-
-
--
-- /lcm_node/obs_env
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/lcm_node/obs_env]
-no new messages
-
-
-
--
-- /lcm_node/ultrasonic_env
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/lcm_node/ultrasonic_env]
-no new messages
-
-
-
--
-- /move_base_simple/goal
--
--- info
-Type: geometry_msgs/PoseStamped
-
-Publishers:None
-
-Subscribers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
-
-
--- hz
-subscribed to [/move_base_simple/goal]
-no new messages
-
-
-
--
-- /pointcloud_process/ground_pointcloud
--
--- info
-Type: sensor_msgs/PointCloud2
-
-Publishers:
- * /node_obstacle_traverse (http://raspberrypi:35301/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/pointcloud_process/ground_pointcloud]
-no new messages
-
-
-
--
-- /range_front
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/range_front]
-average rate: 49.984
-        min: 0.019s max: 0.021s std dev: 0.00024s window: 34
-
-
-
--
-- /range_left
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/range_left]
-average rate: 49.993
-        min: 0.020s max: 0.020s std dev: 0.00023s window: 5
-
-
-
--
-- /range_right
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/range_right]
-average rate: 50.111
-        min: 0.019s max: 0.021s std dev: 0.00034s window: 25
-
-
-
--
-- /range_ultrasonic_face
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
-
-Subscribers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-
--- hz
-subscribed to [/range_ultrasonic_face]
-average rate: 31.546
-        min: 0.012s max: 0.048s std dev: 0.00742s window: 17
-
-
-
--
-- /range_ultrasonic_left
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
-
-Subscribers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-
--- hz
-subscribed to [/range_ultrasonic_left]
-average rate: 43.196
-        min: 0.011s max: 0.033s std dev: 0.00803s window: 7
-
-
-
--
-- /range_ultrasonic_right
--
--- info
-Type: sensor_msgs/Range
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
-
-Subscribers:
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
-
-
--- hz
-subscribed to [/range_ultrasonic_right]
-no new messages
-
-
-
--
-- /ros2udp/odom
--
--- info
-Type: nav_msgs/Odometry
-
-Publishers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
-
-Subscribers:
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
-
-
--- hz
-subscribed to [/ros2udp/odom]
-average rate: 196.643
-        min: 0.000s max: 0.041s std dev: 0.01091s window: 25
-
-
-
--
-- /ros2udp_motion_mode_adv/joystick
--
--- info
-Type: a2_msgs/JoystickA2
-
-Publishers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
-
-Subscribers: None
-
-
--- hz
-
-
-
--
-- /rosout
--
--- info
-Type: rosgraph_msgs/Log
-
-Publishers:
- * /camera4 (http://192.168.123.14:33937/)
- * /camera3 (http://192.168.123.14:34775/)
- * /camera5 (http://192.168.123.15
-192.168.11.110:39391/)
- * /camera1 (http://192.168.123.13:38961/)
- * /node_obstacle_traverse (http://raspberrypi:35301/)
- * /node_lcm (http://raspberrypi:34677/)
- * /node_obstacle_avoidance (http://raspberrypi:33969/)
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
- * /ukd_triple_udp_node (http://raspberrypi:45789/)
-
-Subscribers:
- * /rosout (http://raspberrypi:45223/)
-
-
--- hz
-subscribed to [/rosout]
-average rate: 125.469
-        min: 0.008s max: 0.008s std dev: 0.00000s window: 2
-
-
-
--
-- /rosout_agg
--
--- info
-Type: rosgraph_msgs/Log
-
-Publishers:
- * /rosout (http://raspberrypi:45223/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/rosout_agg]
-no new messages
-
-
-
--
-- /tf
--
--- info
-Type: tf2_msgs/TFMessage
-
-Publishers:
- * /node_lcm (http://raspberrypi:34677/)
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
- * /ukd_triple_udp_node (http://raspberrypi:45789/)
-
-Subscribers:
- * /node_obstacle_traverse (http://raspberrypi:35301/)
- * /node_lcm (http://raspberrypi:34677/)
-
-
--- hz
-
-
-
--
-- /tf_static
--
--- info
-Type: tf2_msgs/TFMessage
-
-Publishers:None
-
-Subscribers:
- * /node_obstacle_traverse (http://raspberrypi:35301/)
- * /node_lcm (http://raspberrypi:34677/)
-
-
--- hz
-subscribed to [/tf_static]
-no new messages
-
-
-
--
-- /ukd_triple/pose
--
--- info
-Type: geometry_msgs/PoseStamped
-
-Publishers:
- * /ukd_triple_udp_node (http://raspberrypi:45789/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/ukd_triple/pose]
-no new messages
-
-
-
--
-- /ukd_triple/state
--
--- info
-Type: a2_msgs/UKDState
-
-Publishers:
- * /ukd_triple_udp_node (http://raspberrypi:45789/)
-
-Subscribers:
- * /ros2udp_motion_mode_adv (http://raspberrypi:43047/)
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
-
-
--- hz
-
-
-
--
-- /ukd_triple_2_goal/path_tag_line
--
--- info
-Type: nav_msgs/Path
-
-Publishers:
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
-
-Subscribers: None
-
-
--- hz
-subscribed to [/ukd_triple_2_goal/path_tag_line]
-
-
-
--
-- /ukd_triple_2_goal/path_tag_window
--
--- info
-Type: nav_msgs/Path
-
-Publishers:
- * /ukd_triple_2_goal (http://raspberrypi:44995/)
-
-Subscribers: None
+Auto start services list
 
 ```
+$ cat ~/Unitree/autostart/.startlist.sh
+updateDependencies
+ipconfig
+gencamparams
+camerarosnode
+03persontrack
+imageai
+jsk_startup
+faceLightServer
+slamDetector
+wsaudio
+faceLightMqtt
+```
+
+Monitor boot process
+
+```
+sshpass -p 123 ssh pi@192.168.123.161 tail -f Unitree/autostart/.startlog
+```
+
+#### 192.168.123.14
+
+Auto start services list
+
+```
+$ cat ~/Unitree/autostart/.startlist.sh
+updateDependencies
+ipconfig
+gencamparams
+camerarosnode
+03persontrack
+imageai
+jsk_startup
+faceLightServer
+slamDetector
+wsaudio
+faceLightMqtt
+```
+
+Monitor boot process
+
+```
+sshpass -p 123 ssh unitree@192.168.123.14 tail -f Unitree/autostart/.startlog
+```
+
+### Check roslaunch output
+
+```
+sshpass -p 123 ssh unitree@192.168.123.14 ls .ros/log/latest/
+sshpass -p 123 ssh unitree@192.168.123.14 tail -f .ros/log/latest/app_manager-5.log
+```
+
+### Check AI Camera's output
+
+```
+mosquitto_sub -h 192.168.123.161 -t 'vision/human_pose' -d
+```
+
+### Stop auto started launch process
+
+run `ps -auxwww` to find roslauch process and send `HUP`.
+
+```
+unitree@unitree-desktop:~$ ps -auxwww | grep roslaunch
+unitree   7997  0.3  1.5 298308 62056 ?        Sl   16:24   0:05 /usr/bin/python /opt/ros/melodic/bin/roslaunch jsk_unitree_startup unitree_bringup.launch network:=ethernet
+unitree   8553  0.0  0.0   7420   648 pts/2    S+   16:51   0:00 grep --color=auto roslaunch
+unitree@unitree-desktop:~$ kill -HUP 7997
+```
+
+### Run ROS command on Go1 Comptuer
+
+ROS system are installed under `/opt/jsk` direcotry. To enable ROS debugging onboard, type `source /opt/jsk/User/user_setup.bash`.
+
