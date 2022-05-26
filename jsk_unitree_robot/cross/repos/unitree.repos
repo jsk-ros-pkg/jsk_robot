@@ -1,0 +1,19 @@
+repositories:
+  unitree_legged_sdk:
+    type: git
+    url: https://github.com/k-okada/unitree_legged_sdk.git
+    version: develop
+    # version `develop` add package.xml for catkinbuild
+    # it dow not include https://github.com/unitreerobotics/unitree_legged_sdk/pull/31
+    # to utilize it, we may need to update onbody SDK that has updated message type
+  unitree_ros:
+    type: git
+    url: https://github.com/unitreerobotics/unitree_ros.git
+    veresion: master
+  unitree_ros_to_real:
+    type: git
+    url: https://github.com/k-okada/unitree_ros_to_real.git
+    # because we uses unitree_legged_sdk without message update,
+    # we do not include https://github.com/unitreerobotics/unitree_ros_to_real/pull/27 in
+    #   k-okada/unitree_ros_to_real:develop
+    version: develop
