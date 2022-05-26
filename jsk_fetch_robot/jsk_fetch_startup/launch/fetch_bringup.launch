@@ -7,7 +7,6 @@
   <arg name="launch_app_scheduler" default="true" />
   <arg name="launch_dialogflow" default="true" />
   <arg name="launch_gdrive_server" default="true" />
-  <arg name="launch_network_monitor" default="true" />
   <arg name="launch_rfcomm_bind" default="true" />
   <arg name="launch_shutdown" default="true" />
   <arg name="launch_edgetpu_human_pose_estimator" default="true" />
@@ -28,7 +27,6 @@
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
   <arg name="network_interface" default="wlan0" />
-  <arg name="network_profile_id" default="sanshiro" />
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
@@ -378,11 +376,6 @@
       duration: 60
     </rosparam>
   </node>
-
-  <!-- network_monitor -->
-  <node if="$(arg launch_network_monitor)"
-        name="network_monitor" pkg="jsk_fetch_startup" type="network_monitor.py"
-        args="--interface $(arg network_interface) --profile $(arg network_profile_id)"/>
 
   <!-- rfcomm_bind -->
   <include if="$(arg launch_rfcomm_bind)"
