@@ -4,6 +4,17 @@
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_insta360" default="true" />
+  <arg name="launch_app_scheduler" default="true" />
+  <arg name="launch_dialogflow" default="true" />
+  <arg name="launch_gdrive_server" default="true" />
+  <arg name="launch_network_monitor" default="true" />
+  <arg name="launch_rfcomm_bind" default="true" />
+  <arg name="launch_shutdown" default="true" />
+  <arg name="launch_edgetpu_human_pose_estimator" default="true" />
+  <arg name="launch_edgetpu_object_detector" default="true" />
+  <arg name="launch_edgetpu_panorama_human_pose_estimator" default="false" />
+  <arg name="launch_edgetpu_panorama_object_detector" default="false" />
+
   <arg name="use_voice_text" default="false" />
   <arg name="default_speaker" default="2" />
   <arg name="default_english_speaker" default="kal" />
@@ -17,6 +28,7 @@
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
   <arg name="network_interface" default="wlan0" />
+  <arg name="network_profile_id" default="sanshiro" />
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
@@ -127,6 +139,58 @@
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
     <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+  </include>
+
+  <!-- app scheduler -->
+  <include if="$(arg launch_app_scheduler)"
+           file="$(find app_scheduler)/launch/app_scheduler.launch">
+    <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
+  </include>
+
+  <!-- dialogflow task executive -->
+  <include if="$(arg launch_dialogflow)"
+           file="$(find jsk_fetch_startup)/launch/fetch_dialogflow_task_executive.launch">
+    <arg name="run_app_manager" value="false" />
+    <arg name="webhook_server" value="true" />
+    <arg name="hostname" value="$(arg hostname)" />
+  </include>
+
+  <!-- gdrive_ros -->
+  <include if="$(arg launch_gdrive_server)"
+           file="$(find gdrive_ros)/launch/gdrive_server.launch">
+    <arg name="respawn" value="true" />
+  </include>
+
+  <!-- edgetpu human pose estimator -->
+  <include if="$(arg launch_edgetpu_human_pose_estimator)"
+           file="$(find coral_usb)/launch/edgetpu_human_pose_estimator.launch">
+    <arg name="INPUT_IMAGE" value="/head_camera/rgb/image_rect_color" />
+    <arg name="device_id" value="0" />
+  </include>
+
+  <!-- edgetpu panorama human pose estimator -->
+  <include if="$(arg launch_edgetpu_panorama_human_pose_estimator)"
+           file="$(find coral_usb)/launch/edgetpu_panorama_human_pose_estimator.launch">
+    <arg name="INPUT_IMAGE" value="/dual_fisheye_to_panorama/quarter/output" />
+    <arg name="device_id" value="0" />
+  </include>
+
+  <!-- edgetpu object detector -->
+  <include if="$(arg launch_edgetpu_object_detector)"
+           file="$(find coral_usb)/launch/edgetpu_object_detector.launch">
+    <arg name="INPUT_IMAGE" value="/head_camera/rgb/image_rect_color" />
+    <arg name="device_id" value="1" />
+    <arg name="model_file" value="$(env HOME)/.ros/data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite" />
+    <arg name="label_file" value="$(env HOME)/.ros/data/coral_usb/73b2_kitchen_labels.txt" />
+  </include>
+
+  <!-- edgetpu panorama object detector -->
+  <include if="$(arg launch_edgetpu_panorama_object_detector)"
+           file="$(find coral_usb)/launch/edgetpu_panorama_object_detector.launch">
+    <arg name="INPUT_IMAGE" value="/dual_fisheye_to_panorama/quarter/output" />
+    <arg name="device_id" value="1" />
+    <arg name="model_file" value="$(env HOME)/.ros/data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite" />
+    <arg name="label_file" value="$(env HOME)/.ros/data/coral_usb/73b2_kitchen_labels.txt" />
   </include>
 
   <!-- rwt_image_view -->
@@ -313,5 +377,18 @@
       duration: 60
     </rosparam>
   </node>
+
+  <!-- network_monitor -->
+  <node if="$(arg launch_network_monitor)"
+        name="network_monitor" pkg="jsk_fetch_startup" type="network_monitor.py"
+        args="--interface $(arg network_interface) --profile $(arg network_profile_id)"/>
+
+  <!-- rfcomm_bind -->
+  <include if="$(arg launch_rfcomm_bind)"
+           file="$(find jsk_robot_startup)/launch/rfcomm_bind.launch"/>
+
+  <!-- shutdown node -->
+  <node if="$(arg launch_shutdown)"
+        name="shutdown" pkg="jsk_robot_startup" type="shutdown.py" />
 
 </launch>
