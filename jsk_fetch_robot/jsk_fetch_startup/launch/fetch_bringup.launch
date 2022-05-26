@@ -69,7 +69,10 @@
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
         respawn="true" if="$(arg launch_sound_play)">
-    <param name="default_voice" value="$(arg default_english_speaker)" />
+    <rosparam subst_value="true" >
+      default_voice: $(arg default_english_speaker)
+      plugin: sound_play/flite_plugin
+    </rosparam>
   </node>
 
   <!-- japanese speech node -->
@@ -297,6 +300,7 @@
       run_stop_condition: "m.runstopped is True"
       seconds_to_start_speaking: 60
       speak_interval: 600
+      language: cmu_us_slt.flitevox
     </rosparam>
   </node>
 
