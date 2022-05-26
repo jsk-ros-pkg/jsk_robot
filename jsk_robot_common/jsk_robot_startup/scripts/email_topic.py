@@ -94,6 +94,9 @@ class EmailTopic(object):
                     embed_img = MIMEImage(img.read())
                     embed_img.add_header(
                         'Content-ID', '<{}>'.format(content.file_path))
+                    embed_img.add_header(
+                        'Content-Disposition', 'inline; filename="{}"'.format(
+                            os.path.basename(content.file_path)))
                     msg.attach(embed_img)  # This line is necessary to embed
                 if content.img_size:
                     image_size = content.img_size
