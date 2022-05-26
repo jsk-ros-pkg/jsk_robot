@@ -158,6 +158,7 @@
   <!-- gdrive_ros -->
   <include if="$(arg launch_gdrive_server)"
            file="$(find gdrive_ros)/launch/gdrive_server.launch">
+    <arg name="settings_yaml" value="/var/lib/robot/gdrive/fetch_pydrive_settings.yaml" />
     <arg name="respawn" value="true" />
   </include>
 
