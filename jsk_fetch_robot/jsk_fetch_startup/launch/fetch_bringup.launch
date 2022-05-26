@@ -16,6 +16,7 @@
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
+  <arg name="network_interface" default="wlan0" />
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
@@ -52,7 +53,7 @@
   </node>
   <node if="$(arg boot_sound)" pkg="jsk_robot_startup" name="boot_sound" type="boot_sound.py" >
     <param name="wav_file" value="$(find jsk_fetch_startup)/data/boot_sound.wav" />
-    <param name="preferred_interface" value="wlan0" />
+    <param name="preferred_interface" value="$(arg network_interface)" />
   </node>
 
   <!-- look at human for Fetch -->
