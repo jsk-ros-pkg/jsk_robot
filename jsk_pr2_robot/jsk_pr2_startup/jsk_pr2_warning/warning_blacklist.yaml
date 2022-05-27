@@ -16,6 +16,7 @@ blacklist:
   - name: "/Motors/EtherCAT.*"
     message: "Safety Lockout.*"
   - name: "/Realtime Controllers/Controller.*"
+  - name: "/Realtime Controllers/Calibration stuck"
   - name: "/Computers/CPU/c\\d CPU Temperature"
 run_stop_blacklist:
   - "/Motors.*"
