@@ -44,6 +44,7 @@
     <remap from="camera_info" to="$(arg IMAGE_CAMERAINFO)" />
     <remap from="Feature0D" to="$(arg DEFAULT_NAMESPACE)/Feature0D" />
     <remap from="ImageFeature0D" to="$(arg DEFAULT_NAMESPACE)/ImageFeature0D" />
+    <param name="vital_rate" value="0.1" />
   </node>
 
   <group ns="$(arg DEFAULT_NAMESPACE)">
@@ -57,6 +58,7 @@
       <rosparam>
         tolerance: 0.02
         min_size: 100
+        vital_rate: 0.1
       </rosparam>
     </node>
     <node pkg="nodelet" type="nodelet"
@@ -72,6 +74,7 @@
         target_frame_id: base_link
         use_pca: true
         force_to_flip_z_axis: false
+        vital_rate: 0.1
       </rosparam>
     </node>
     
