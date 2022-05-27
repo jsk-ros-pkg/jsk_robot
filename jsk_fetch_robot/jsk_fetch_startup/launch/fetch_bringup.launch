@@ -163,7 +163,7 @@
     <arg name="launch_edgetpu_human_pose_estimator" value="$(arg launch_edgetpu_human_pose_estimator)" />
     <arg name="launch_edgetpu_object_detector" value="$(arg launch_edgetpu_object_detector)" />
     <arg name="input_image" value="/head_camera/rgb/image_rect_color" />
-    <arg name="input_panorama_image" value="/dual_fisheye_to_panorama/quarter/output" />
+    <arg name="input_panorama_image" value="/dual_fisheye_to_panorama/quater/output" />
   </include>
 
   <!-- rwt_image_view -->
