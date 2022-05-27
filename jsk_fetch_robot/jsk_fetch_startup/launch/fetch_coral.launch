@@ -3,54 +3,54 @@
   <arg name="launch_edgetpu_object_detector" default="true" />
 
   <arg name="input_image" default="/head_camera/rgb/image_rect_color" />
-  <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/quarter/output" />
+  <arg name="input_panorama_image" default="/dual_fisheye_to_panorama/quater/output" />
 
   <!-- edgetpu human pose estimator -->
   <node if="$(arg launch_edgetpu_human_pose_estimator)"
         name="edgetpu_human_node_manager" pkg="coral_usb" type="edgetpu_node_manager.py">
-    <rosparam subst_value="true">
-      edgetpu_node_manager:
-        nodes:
-          - name: edgetpu_human_pose_estimator
-            type: human_pose_estimator
-          - name: edgetpu_panorama_human_pose_estimator
-            type: panorama_human_pose_estimator
-        default: edgetpu_human_pose_estimator
-      edgetpu_human_pose_estimator:
-        input_image: $(arg input_image)
-        image_transport: raw
-        device_id: 0
-      edgetpu_panorama_human_pose_estimator:
-        input_image: $(arg input_panorama_image)
-        image_transport: raw
-        device_id: 0
-    </rosparam>
   </node>
+  <rosparam subst_value="true">
+    edgetpu_human_node_manager:
+      nodes:
+        - name: edgetpu_human_pose_estimator
+          type: human_pose_estimator
+        - name: edgetpu_panorama_human_pose_estimator
+          type: panorama_human_pose_estimator
+      default: edgetpu_human_pose_estimator
+    edgetpu_human_pose_estimator:
+      input_topic: $(arg input_image)
+      image_transport: raw
+      device_id: 0
+    edgetpu_panorama_human_pose_estimator:
+      input_topic: $(arg input_panorama_image)
+      image_transport: raw
+      device_id: 0
+  </rosparam>
 
   <!-- edgetpu object detector -->
   <node if="$(arg launch_edgetpu_object_detector)"
         name="edgetpu_object_node_manager" pkg="coral_usb" type="edgetpu_node_manager.py">
-    <rosparam subst_value="true">
-      edgetpu_node_manager:
-        nodes:
-          - name: edgetpu_object_detector
-            type: object_detector
-          - name: edgetpu_panorama_object_detector
-            type: panorama_object_detector
-        default: edgetpu_object_detector
-      edgetpu_object_detector:
-        input_image: $(arg input_image)
-        image_transport: raw
-        device_id: 0
-        model_file: /etc/ros/jsk_data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite
-        label_file: /etc/ros/jsk_data/coral_usb/73b2_kitchen_labels.txt
-      edgetpu_panorama_object_detector:
-        input_image: $(arg input_panorama_image)
-        image_transport: raw
-        device_id: 0
-        model_file: /etc/ros/jsk_data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite
-        label_file: /etc/ros/jsk_data/coral_usb/73b2_kitchen_labels.txt
-    </rosparam>
   </node>
+  <rosparam subst_value="true">
+    edgetpu_object_node_manager:
+      nodes:
+        - name: edgetpu_object_detector
+          type: object_detector
+        - name: edgetpu_panorama_object_detector
+          type: panorama_object_detector
+      default: edgetpu_object_detector
+    edgetpu_object_detector:
+      input_topic: $(arg input_image)
+      image_transport: raw
+      device_id: 1
+      model_file: /etc/ros/jsk_data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite
+      label_file: /etc/ros/jsk_data/coral_usb/73b2_kitchen_labels.txt
+    edgetpu_panorama_object_detector:
+      input_topic: $(arg input_panorama_image)
+      image_transport: raw
+      device_id: 1
+      model_file: /etc/ros/jsk_data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite
+      label_file: /etc/ros/jsk_data/coral_usb/73b2_kitchen_labels.txt
+  </rosparam>
 
 </launch>
