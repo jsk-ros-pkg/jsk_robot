@@ -11,8 +11,6 @@
   <arg name="launch_shutdown" default="true" />
   <arg name="launch_edgetpu_human_pose_estimator" default="true" />
   <arg name="launch_edgetpu_object_detector" default="true" />
-  <arg name="launch_edgetpu_panorama_human_pose_estimator" default="false" />
-  <arg name="launch_edgetpu_panorama_object_detector" default="false" />
 
   <arg name="use_voice_text" default="false" />
   <arg name="default_speaker" default="2" />
@@ -160,36 +158,12 @@
     <arg name="respawn" value="true" />
   </include>
 
-  <!-- edgetpu human pose estimator -->
-  <include if="$(arg launch_edgetpu_human_pose_estimator)"
-           file="$(find coral_usb)/launch/edgetpu_human_pose_estimator.launch">
-    <arg name="INPUT_IMAGE" value="/head_camera/rgb/image_rect_color" />
-    <arg name="device_id" value="0" />
-  </include>
-
-  <!-- edgetpu panorama human pose estimator -->
-  <include if="$(arg launch_edgetpu_panorama_human_pose_estimator)"
-           file="$(find coral_usb)/launch/edgetpu_panorama_human_pose_estimator.launch">
-    <arg name="INPUT_IMAGE" value="/dual_fisheye_to_panorama/quarter/output" />
-    <arg name="device_id" value="0" />
-  </include>
-
-  <!-- edgetpu object detector -->
-  <include if="$(arg launch_edgetpu_object_detector)"
-           file="$(find coral_usb)/launch/edgetpu_object_detector.launch">
-    <arg name="INPUT_IMAGE" value="/head_camera/rgb/image_rect_color" />
-    <arg name="device_id" value="1" />
-    <arg name="model_file" value="/etc/ros/jsk_data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite" />
-    <arg name="label_file" value="/etc/ros/jsk_data/coral_usb/73b2_kitchen_labels.txt" />
-  </include>
-
-  <!-- edgetpu panorama object detector -->
-  <include if="$(arg launch_edgetpu_panorama_object_detector)"
-           file="$(find coral_usb)/launch/edgetpu_panorama_object_detector.launch">
-    <arg name="INPUT_IMAGE" value="/dual_fisheye_to_panorama/quarter/output" />
-    <arg name="device_id" value="1" />
-    <arg name="model_file" value="/etc/ros/jsk_data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite" />
-    <arg name="label_file" value="/etc/ros/jsk_data/coral_usb/73b2_kitchen_labels.txt" />
+  <!-- coral edgetpu -->
+  <include file="$(find jsk_fetch_startup)/launch/fetch_coral.launch">
+    <arg name="launch_edgetpu_human_pose_estimator" value="$(arg launch_edgetpu_human_pose_estimator)" />
+    <arg name="launch_edgetpu_object_detector" value="$(arg launch_edgetpu_object_detector)" />
+    <arg name="input_image" value="/head_camera/rgb/image_rect_color" />
+    <arg name="input_panorama_image" value="/dual_fisheye_to_panorama/quarter/output" />
   </include>
 
   <!-- rwt_image_view -->
