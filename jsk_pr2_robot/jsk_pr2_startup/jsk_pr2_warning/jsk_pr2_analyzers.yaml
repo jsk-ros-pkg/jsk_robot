@@ -6,9 +6,9 @@ analyzers:
       joystick:
         type: diagnostic_aggregator/GenericAnalyzer
         path: Joystick
-        expected: 'joy: Joystick Driver Status'
+        expected: 'joy_node: Joystick Driver Status'
         num_items: 1
-        remove_prefix: 'joy'
+        remove_prefix: 'joy_node'
       sound:
         type: diagnostic_aggregator/GenericAnalyzer
         path: Sound
