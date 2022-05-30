@@ -21,27 +21,32 @@ head_camera:
     image:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
     image_raw:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
     image_rect:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
     image_rect_raw:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
   depth_downsample:
     image_raw:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
   depth_registered:
@@ -49,21 +54,25 @@ head_camera:
       image_rect:
         disable_pub_plugins:
           - 'image_transport/compressed'
+          - 'image_transport/theora'
         compressedDepth:
           png_level: 5
       image_rect_raw:
         disable_pub_plugins:
           - 'image_transport/compressed'
+          - 'image_transport/theora'
         compressedDepth:
           png_level: 5
     image:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
     image_raw:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
   ir:
@@ -71,6 +80,7 @@ head_camera:
       disable_pub_plugins:
         - 'image_transport/compressed'
         - 'image_transport/compressedDepth'
+        - 'image_transport/theora'
   rgb:
     half:
       image_rect_color:
@@ -97,6 +107,7 @@ l515_head:
     image_raw:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
   color:
@@ -111,6 +122,7 @@ l515_head:
     image_rect_raw:
       disable_pub_plugins:
         - 'image_transport/compressed'
+        - 'image_transport/theora'
       compressedDepth:
         png_level: 5
   infra:
