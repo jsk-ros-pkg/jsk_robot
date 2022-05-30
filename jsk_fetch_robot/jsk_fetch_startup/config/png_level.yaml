@@ -7,16 +7,12 @@
 
 burnable_trashbin_label_extractor:
   debug_image:
-    compressed:
-      png_level: 5
     compressedDepth:
       png_level: 5
 
 dual_fisheye_to_panorama:
   quater:
     output:
-      compressed:
-        png_level: 5
       compressedDepth:
         png_level: 5
 
@@ -79,31 +75,21 @@ head_camera:
   rgb:
     half:
       image_rect_color:
-        compressed:
-          png_level: 5
         compressedDepth:
           png_level: 5
     image_raw:
-      compressed:
-        png_level: 5
       compressedDepth:
         png_level: 5
     image_rect_color:
-      compressed:
-        png_level: 5
       compressedDepth:
         png_level: 5
     quater:
       image_rect_color:
-        compressed:
-          png_level: 5
         compressedDepth:
           png_level: 5
 
 insta360:
   image_raw:
-    compressed:
-      png_level: 5
     compressedDepth:
       png_level: 5
 
@@ -116,14 +102,10 @@ l515_head:
         png_level: 5
   color:
     image_raw:
-      compressed:
-        png_level: 5
       compressedDepth:
         png_level: 5
   confidence:
     image_rect_raw:
-      compressed:
-        png_level: 5
       compressedDepth:
         png_level: 5
   depth:
@@ -134,14 +116,10 @@ l515_head:
         png_level: 5
   infra:
     image_raw:
-      compressed:
-        png_level: 5
       compressedDepth:
         png_level: 5
 
 rviz:
   image:
-    compressed:
-      png_level: 5
     compressedDepth:
       png_level: 5
