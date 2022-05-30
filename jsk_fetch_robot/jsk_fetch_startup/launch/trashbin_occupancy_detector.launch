@@ -1,6 +1,6 @@
 <launch>
-  <arg name="POINTCLOUD_INPUT" default="/head_camera/depth_registered/points"/>
-  <arg name="IMAGE_INPUT" default="/head_camera/rgb/image_rect_color"/>
+  <arg name="POINTCLOUD_INPUT" default="/head_camera/depth_registered/quater/throttled/points"/>
+  <arg name="IMAGE_INPUT" default="/head_camera/rgb/throttled/image_rect_color"/>
   <arg name="IMAGE_CAMERAINFO" default="/head_camera/rgb/camera_info"/>
   <arg name="CENTROID_FRAME" default="target"/>
   <arg name="DEFAULT_NAMESPACE" default="/trashbin_occupancy_detector"/>
