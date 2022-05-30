@@ -7,119 +7,118 @@
 
 burnable_trashbin_label_extractor:
   debug_image:
-    compressedDepth:
-      png_level: 5
+    disable_pub_plugins:
+      - 'image_transport/compressedDepth'
 
 dual_fisheye_to_panorama:
   quater:
     output:
-      compressedDepth:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
 
 head_camera:
   depth:
     image:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
     image_raw:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
     image_rect:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
     image_rect_raw:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
   depth_downsample:
     image_raw:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
   depth_registered:
     hw_registered:
       image_rect:
-        compressed:
-          png_level: 5
+        disable_pub_plugins:
+          - 'image_transport/compressed'
         compressedDepth:
           png_level: 5
       image_rect_raw:
-        compressed:
-          png_level: 5
+        disable_pub_plugins:
+          - 'image_transport/compressed'
         compressedDepth:
           png_level: 5
     image:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
     image_raw:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
   ir:
     image:
-      compressed:
-        png_level: 5
-      compressedDepth:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/compressedDepth'
   rgb:
     half:
       image_rect_color:
-        compressedDepth:
-          png_level: 5
+        disable_pub_plugins:
+          - 'image_transport/compressedDepth'
     image_raw:
-      compressedDepth:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
     image_rect_color:
-      compressedDepth:
-        png_level: 5
+        disable_pub_plugins:
+          - 'image_transport/compressedDepth'
     quater:
       image_rect_color:
-        compressedDepth:
-          png_level: 5
+        disable_pub_plugins:
+          - 'image_transport/compressedDepth'
 
 insta360:
   image_raw:
-    compressedDepth:
-      png_level: 5
+    disable_pub_plugins:
+      - 'image_transport/compressedDepth'
 
 l515_head:
   aligned_depth_to_color:
     image_raw:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
   color:
     image_raw:
-      compressedDepth:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
   confidence:
     image_rect_raw:
-      compressedDepth:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
   depth:
     image_rect_raw:
-      compressed:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressed'
       compressedDepth:
         png_level: 5
   infra:
     image_raw:
-      compressedDepth:
-        png_level: 5
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
 
 rviz:
   image:
-    compressedDepth:
-      png_level: 5
+    disable_pub_plugins:
+      - 'image_transport/compressedDepth'
