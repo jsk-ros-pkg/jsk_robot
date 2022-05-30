@@ -1,0 +1,147 @@
+# Check each node png_level by the following command
+# for f in $(rosparam list | grep png_level); do echo "$f: $(rosparam get $f)"; done
+
+# Set png_level to 5 according to the following information
+# https://github.com/start-jsk/jsk_apc/pull/2706
+# https://gist.github.com/iory/12dda33908024223be74cb03f19997b5
+
+burnable_trashbin_label_extractor:
+  debug_image:
+    compressed:
+      png_level: 5
+    compressedDepth:
+      png_level: 5
+
+dual_fisheye_to_panorama:
+  quater:
+    output:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+
+head_camera:
+  depth:
+    image:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+    image_rect:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+    image_rect_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  depth_downsample:
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  depth_registered:
+    hw_registered:
+      image_rect:
+        compressed:
+          png_level: 5
+        compressedDepth:
+          png_level: 5
+      image_rect_raw:
+        compressed:
+          png_level: 5
+        compressedDepth:
+          png_level: 5
+    image:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  ir:
+    image:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  rgb:
+    half:
+      image_rect_color:
+        compressed:
+          png_level: 5
+        compressedDepth:
+          png_level: 5
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+    image_rect_color:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+    quater:
+      image_rect_color:
+        compressed:
+          png_level: 5
+        compressedDepth:
+          png_level: 5
+
+insta360:
+  image_raw:
+    compressed:
+      png_level: 5
+    compressedDepth:
+      png_level: 5
+
+l515_head:
+  aligned_depth_to_color:
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  color:
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  confidence:
+    image_rect_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  depth:
+    image_rect_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+  infra:
+    image_raw:
+      compressed:
+        png_level: 5
+      compressedDepth:
+        png_level: 5
+
+rviz:
+  image:
+    compressed:
+      png_level: 5
+    compressedDepth:
+      png_level: 5
