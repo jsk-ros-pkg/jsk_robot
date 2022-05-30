@@ -149,6 +149,9 @@
     <arg name="depth_camera_info_url" value="$(arg depth_camera_info_url)"/>
   </include>
 
+  <!-- Set image compress png_leve to 5 -->
+  <rosparam file="$(find jsk_fetch_startup)/config/png_level.yaml" command="load"/>
+
   <!-- Laser -->
   <include file="$(find fetch_bringup)/launch/include/laser.launch.xml"/>
 
