@@ -8,7 +8,6 @@
   <arg name="launch_app_scheduler" default="true" />
   <arg name="launch_dialogflow" default="true" />
   <arg name="launch_gdrive_server" default="true" />
-  <arg name="launch_shutdown" default="true" />
   <arg name="launch_edgetpu_human_pose_estimator" default="true" />
   <arg name="launch_edgetpu_object_detector" default="true" />
   <arg name="launch_edgetpu_panorama_human_pose_estimator" default="false" />
@@ -352,9 +351,5 @@
       duration: 60
     </rosparam>
   </node>
-
-  <!-- shutdown node -->
-  <node if="$(arg launch_shutdown)"
-        name="shutdown" pkg="jsk_robot_startup" type="shutdown.py" />
 
 </launch>
