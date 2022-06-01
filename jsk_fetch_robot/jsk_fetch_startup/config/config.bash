@@ -14,7 +14,10 @@ if [ $(hostname) = 'fetch15' ]; then
   export RS_SERIAL_NO_T265="925122110450";
   export RS_SERIAL_NO_D435_FRONTRIGHT="";
   export RS_SERIAL_NO_D435_FRONTLEFT="";
-  export RS_SERIAL_NO_L515_HEAD="f0211890";
+  # Disable L515 to reduce fetch's CPU usage
+  # Use L515 after finding a way to reduce L515 CPU usage like ConnectionBasedTransport
+  # export RS_SERIAL_NO_L515_HEAD="f0211890";
+  export RS_SERIAL_NO_L515_HEAD="";
 
   export NETWORK_DEFAULT_WIFI_INTERFACE="wlan0";
   export NETWORK_DEFAULT_ROS_INTERFACE="133.11.216.217";
@@ -32,7 +35,10 @@ elif [ $(hostname) = 'fetch1075' ]; then
   export RS_SERIAL_NO_T265="";
   export RS_SERIAL_NO_D435_FRONTRIGHT="";
   export RS_SERIAL_NO_D435_FRONTLEFT="";
-  export RS_SERIAL_NO_L515_HEAD="f0232270";
+  # Disable L515 to reduce fetch's CPU usage
+  # Use L515 after finding a way to reduce L515 CPU usage like ConnectionBasedTransport
+  # export RS_SERIAL_NO_L515_HEAD="f0232270";
+  export RS_SERIAL_NO_L515_HEAD="";
 
   export NETWORK_DEFAULT_WIFI_INTERFACE="wlan1";
   export NETWORK_DEFAULT_ROS_INTERFACE="133.11.216.218";
