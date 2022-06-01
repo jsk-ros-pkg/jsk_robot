@@ -1,12 +1,16 @@
 #! /bin/bash
 
-usage() { echo "Usage: $0 [-p password ] [-d <User|System>]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-t <Pro|Air> ] [-p password ] [-d <User|System>]" 1>&2; exit 1; }
 
 TARGET_DIRECTORY=User
 PASS=""
+TYPE="Pro"
 
-while getopts "p:d:" o; do
+while getopts "t:p:d:" o; do
     case "${o}" in
+        t)
+            TYPE=${OPTARG}
+            ;;
         p)
             PASS=${OPTARG}
             ;;
@@ -92,22 +96,39 @@ function copy_data () {
     if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
         rsync --rsh="/usr/bin/sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded ../jsk_unitree_startup/autostart/ ${hostname}:Unitree/autostart/jsk_startup
         # https://stackoverflow.com/questions/23395363/make-patch-return-0-when-skipping-an-already-applied-patch
+
+        # On Air, we need to start unitree_bringup at 129.168.123.13
+        if [[ ${TYPE} == "Air" ]] ; then
+            sshpass -p $PASS ssh -t ${user}@${hostname} "sed -i 's/192.168.123.14/192.168.123.13/g' Unitree/autostart/jsk_startup/jsk_startup.sh; cat Unitree/autostart/jsk_startup/jsk_startup.sh"
+        fi
     fi
     set +x
 }
 
-copy_data pi 192.168.123.161
-copy_data unitree 192.168.123.14
-#copy_data unitree 192.168.123.15 : Pro : No Space for auto start
+if [[ ${TYPE} == "Pro" ]] ; then
+    copy_data pi 192.168.123.161
+    copy_data unitree 192.168.123.14
+    ## copy_data unitree 192.168.123.15 : Pro : No Space for auto start
+elif [[ ${TYPE} == "Air" ]] ; then
+    copy_data pi 192.168.123.161
+    copy_data unitree 192.168.123.13
+else
+    usage
+fi
 
 if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
+    if [[ ${TYPE} == "Pro" ]] ; then
+        cuda_ip="192.168.123.15"
+    elif [[ ${TYPE} == "Air" ]] ; then
+        cuda_ip="192.168.123.13"
+    fi
     # clear old known_hosts
-    ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "192.168.123.15" || echo "OK"
-    sshpass -p $PASS ssh -o StrictHostKeyChecking=no unitree@192.168.123.15 exit
+    ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${cuda_ip}" || echo "OK"
+    sshpass -p $PASS ssh -o StrictHostKeyChecking=no unitree@${cuda_ip} exit
     # update live_human_pose.py to publish human pose via mqtt
     # run ls, to execut with child process
-    sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/scripts/publish_human_pose.diff unitree@192.168.123.15:/tmp/publish_human_pose.diff
-    sshpass -p 123 ssh -t unitree@192.168.123.15 bash -c 'ls; OUT="$(patch -p0 --backup --forward /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py < /tmp/publish_human_pose.diff | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false);'
+    sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/scripts/publish_human_pose.diff unitree@${cuda_ip}:/tmp/publish_human_pose.diff
+    sshpass -p 123 ssh -t unitree@${cuda_ip} bash -c 'ls; OUT="$(patch -p0 --backup --forward /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py < /tmp/publish_human_pose.diff | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false);'
 fi
 
 set +x
