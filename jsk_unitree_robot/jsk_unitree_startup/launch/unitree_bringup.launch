@@ -23,6 +23,9 @@
         ns="$(arg joy_name_space)" />
   <node pkg="jsk_unitree_startup" type="human_pose_publisher.py"
         name="human_pose_publisher" output="log" />
+  <node pkg="jsk_unitree_startup" type="unitree_state_publisher.py"
+        name="unitree_state_publisher" output="screen"
+        ns="$(arg joy_name_space)" />
 
   <!-- <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" > -->
   <!--   <arg name="joy_name_space" default="$(arg joy_name_space)" /> -->
