@@ -1,0 +1,17 @@
+<launch>
+  <!-- copy from lead_teleop.launch.
+       We need to start rosserial from nano1 (192.168.123.13) for
+       Go1 Air beacuase it does not  have USB connector on body.
+       But app_manager start in nano2 (192.168.123.14) and
+       lead_teleop.launch start in nano2 machine. -->
+  <!-- PXN-2113 Pro 11ff:0837 -->
+  <arg name="deadzone" default="0.3" />
+
+  <!-- custom hardware for rosserial/joy node -->
+  <node name="serial_node" type="serial_node.py"
+        pkg="rosserial_python" respawn="true" >
+    <remap from="joy" to="/joy_head/joy_raw" />
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="deadzone" value="$(arg deadzone)" />
+  </node>
+</launch>
