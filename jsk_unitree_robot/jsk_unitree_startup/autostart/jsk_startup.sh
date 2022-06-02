@@ -16,6 +16,7 @@ eval rosnode list $toStartlog
 if [ "$ROS_IP" == "192.168.123.161" ];then
     roslaunch --screen sound_play soundplay_node.launch sound_play:=robotsound &
     roslaunch --screen jsk_unitree_startup rwt_app_chooser.launch &
+    roslaunch --screen jsk_unitree_startup rosserial_node.launch &
 fi
 
 if [ "$ROS_IP" == "192.168.123.14" ];then
