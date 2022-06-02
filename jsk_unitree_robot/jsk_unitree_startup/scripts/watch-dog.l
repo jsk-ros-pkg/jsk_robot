@@ -30,7 +30,7 @@
 #|
      (setq temp-threshold (ros::get-param "~temp_threshold" 50))
 |#
-     (setq bark-sound (pathname (ros::get-param "~bark_sound" "/home/pi/Music/bark.wav")))
+     (setq bark-sound (pathname (ros::get-param "~bark_sound" "/opt/jsk/User/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/autostart/bark.wav")))
 #|
      (let ((ros-img (one-shot-subscribe "~panorama_image" sensor_msgs::Image)))
        (setq paranoma-width (send ros-img :width))
