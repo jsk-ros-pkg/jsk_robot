@@ -129,6 +129,10 @@ if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
     # run ls, to execut with child process
     sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/scripts/publish_human_pose.diff unitree@${cuda_ip}:/tmp/publish_human_pose.diff
     sshpass -p 123 ssh -t unitree@${cuda_ip} bash -c 'ls; OUT="$(patch -p0 --backup --forward /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py < /tmp/publish_human_pose.diff | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false);'
+
+    if [[ ${TYPE} == "Air" ]] ; then
+        sshpass -p 123 ssh -t unitree@${cuda_ip} "sed -i 's/192.168.123.15/192.168.123.13/g' /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py"
+    fi
 fi
 
 set +x
