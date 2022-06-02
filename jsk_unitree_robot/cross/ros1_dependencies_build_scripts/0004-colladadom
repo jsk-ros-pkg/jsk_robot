@@ -1,0 +1,30 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/collada-dom/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/collada-dom/collada-dom-2.4.4
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(cat series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+done
+
+#
+mkdir -p /home/user/ros1_dependencies_sources/build/collada-dom
+cd /home/user/ros1_dependencies_sources/build/collada-dom
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_SKIP_RPATH=ON \
+  -DENABLE_SSE=OFF -DENABLE_SSE2=OFF -DENABLE_SSSE3=OFF \
+  -DOPT_COLLADA15=ON \
+  -DOPT_COLLADA14=ON \
+  -DOPT_COMPILE_VIEWER=OFF \
+  -DOPT_COMPILE_FX=OFF \
+  -DOPT_COMPILE_RT=OFF \
+  -DOPT_BUILD_PACKAGES=OFF \
+  -DOPT_BUILD_PACKAGE_DEFAULT=OFF \
+  -DOPT_DOUBLE_PRECISION=ON \
+  ${SOURCE_DIR}
+
+make -j4 install

@@ -1,3 +1,5 @@
 <launch>
-  <include file="$(find jsk_unitree_startup)/launch/lead_teleop.launch" />
+  <include file="$(find jsk_unitree_startup)/launch/lead_teleop.launch" >
+    <arg name="launch_serial_node" value="false" />
+  </include>
 </launch>

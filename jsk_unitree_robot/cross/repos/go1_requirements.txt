@@ -1,0 +1,5 @@
+# provdie catkin command
+catkin-tools
+
+# paho is installed under ~/.local/lib/python2.7/site-packages nano2 of Pro, but not instaled on Edu(?)
+paho-mqtt==1.6.1
