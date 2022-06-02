@@ -2,6 +2,8 @@
   <arg name="master" default="true" doc="launch master if enabled"/>
   <arg name="master_address" default="localhost" doc="address for app_manager master"/>
   <arg name="master_port" default="11313" doc="port for app_manager master"/>
+  <arg name="sigint_timeout" default="15.0" doc="Time between sending sigint and sending sigterm to ROSLaunchParent"/>
+  <arg name="sigterm_timeout" default="2.0" doc="Time between sending sigterm and sending sigkill to ROSLaunchParent"/>
 
   <arg name="use_applist" default="false" doc="load apps from applist argument"/>
   <arg name="applist" default="" doc="app dirs (space separated)"/>
@@ -64,6 +66,8 @@
     <arg name="master" value="$(arg master)"/>
     <arg name="master_address" value="$(arg master_address)"/>
     <arg name="master_port" value="$(arg master_port)"/>
+    <arg name="sigint_timeout" value="$(arg sigint_timeout)"/>
+    <arg name="sigterm_timeout" value="$(arg sigterm_timeout)"/>
     <arg name="use_applist" value="$(arg use_applist)"/>
     <arg name="applist" value="$(arg applist)"/>
     <arg name="respawn" value="$(arg respawn)"/>
