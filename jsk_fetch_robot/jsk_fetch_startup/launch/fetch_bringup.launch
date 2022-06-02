@@ -133,6 +133,7 @@
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
     <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+    <arg name="sigint_timeout" value="120.0" />
   </include>
 
   <!-- app scheduler -->
