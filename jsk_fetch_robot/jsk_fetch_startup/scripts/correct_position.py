@@ -2,20 +2,20 @@
 
 import rospy
 
-from jsk_topic_tools import ConnectionBasedTransport
 from power_msgs.msg import BatteryState
 from geometry_msgs.msg import PoseWithCovarianceStamped
 from geometry_msgs.msg import Pose
 from visualization_msgs.msg import MarkerArray
 
 
-class CorrectPosition(ConnectionBasedTransport):
+class CorrectPosition():
 
     def __init__(self):
-        super(CorrectPosition, self).__init__()
-        self.pub = self.advertise('initialpose',
-                                  PoseWithCovarianceStamped,
-                                  queue_size=1)
+        self.sub_dock = rospy.Subscriber(
+            '/battery_state', BatteryState, self._cb)
+        self.pub = rospy.Publisher('initialpose',
+                                   PoseWithCovarianceStamped,
+                                   queue_size=1)
         self.dock_pose = Pose()
         robot_name = rospy.get_param('/robot/name')
         if robot_name == 'fetch15':
@@ -28,13 +28,6 @@ class CorrectPosition(ConnectionBasedTransport):
 
         self.is_docking = False
         self.timer = rospy.Timer(rospy.Duration(1.0), self._cb_correct_position)
-
-    def subscribe(self):
-        self.sub_dock = rospy.Subscriber(
-            '/battery_state', BatteryState, self._cb)
-
-    def unsubscribe(self):
-        self.sub_dock.unregister()
 
     def _cb(self, msg):
         self.is_docking = msg.is_charging
