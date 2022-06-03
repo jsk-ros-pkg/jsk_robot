@@ -1,0 +1,7 @@
+<library path="lib/libtrigger_behavior_recovery">
+  <class name="speak_and_wait_recovery/SpeakAndWaitRecovery" type="speak_and_wait_recovery::SpeakAndWaitRecovery" base_class_type="nav_core::RecoveryBehavior">
+    <description>
+      A recovery behavior that make a robot to speak a given line and wait.
+    </description>
+  </class>
+</library>
