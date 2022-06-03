@@ -182,7 +182,11 @@
     </include>
 
     <!-- dock localization -->
-    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
+    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true">
+      <rosparam>
+        vital_rate: 0.1
+      </rosparam>
+    </node>
 
     <!-- include fetch_navigation -->
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
