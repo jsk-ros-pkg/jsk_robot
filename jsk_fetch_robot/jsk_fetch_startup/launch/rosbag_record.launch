@@ -7,6 +7,8 @@
 
   <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
   <arg unless="$(arg compress)" name="compress_flag" value="" />
+  <arg if="$(eval regex_topics=='')" name="regex_flag" value="" />
+  <arg unless="$(eval regex_topics=='')" name="regex_flag" value="-e" />
 
   <node name="rosbag_record" pkg="rosbag" type="record"
       args="-q $(arg compress_flag) -O $(arg rosbag) -b 0 
@@ -35,7 +37,7 @@
           /head_camera/depth_registered/throttled/image_rect/compressedDepth
           /audio
           $(arg other_topics)
-          -e $(arg regex_topics)
+          $(arg regex_flag) $(arg regex_topics)
           $(arg other_options)"
       output="screen" />
 
