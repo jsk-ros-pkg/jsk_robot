@@ -5,28 +5,22 @@ add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED
     COMPONENTS
+        actionlib_msgs
         costmap_2d
+        genmsg
         nav_core
         pluginlib
         roscpp
+        rospy
         tf2
         tf2_ros
-        genmsg
-        actionlib_msgs
+        trigger_behavior_msgs
 )
-
-add_action_files(DIRECTORY action FILES TriggerBehavior.action)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES trigger_behavior_recovery
   CATKIN_DEPENDS
-        costmap_2d
-        nav_core
-        pluginlib
-        roscpp
-        tf2
-        tf2_ros
 )
 
 # Abort if indigo or kinetic
@@ -39,18 +33,23 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(trigger_behavior_recovery src/trigger_behavior_recovery.cpp)
-add_dependencies(trigger_behavior_recovery ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_library(trigger_behavior_recovery
+    src/trigger_behavior_recovery.cpp
+)
+add_dependencies(trigger_behavior_recovery
+    ${trigger_behavior_recovery_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS}
+)
 target_link_libraries(trigger_behavior_recovery ${catkin_LIBRARIES})
 
 #
 # Install
 #
-install(TARGETS trigger_behavior_recovery
-       ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-       LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-       RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
-       )
+#install(TARGETS trigger_behavior_recovery
+#       ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#       LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#       RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+#       )
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}

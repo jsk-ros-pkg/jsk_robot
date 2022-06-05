@@ -4,8 +4,7 @@
 #include <costmap_2d/costmap_2d_ros.h>
 #include <tf2_ros/buffer.h>
 #include <actionlib/client/simple_action_client.h>
-#include <sound_play/SoundRequest.h>
-#include <sound_play/SoundRequestAction.h>
+#include <trigger_behavior_msgs/TriggerBehaviorAction.h>
 
 namespace trigger_behavior_recovery
 {
@@ -28,6 +27,7 @@ public:
 private:
     void trigger();
 
+    std::shared_ptr<actionlib::SimpleActionClient<trigger_behavior_msgs::TriggerBehaviorAction>> ptr_action_client_;
     double duration_timeout_;
     double result_timeout_;
     bool initialized_;
