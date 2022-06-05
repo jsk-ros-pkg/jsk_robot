@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>trigger_behavior_recovery</name>
+  <name>trigger_behavior_msgs</name>
   <version>1.1.0</version>
-  <description>The trigger_behavior_recovery package for trigger_behavior_recovery_plugin</description>
+  <description>The trigger_behavior_msgs package</description>
+
+  <maintainer email="sktometometo@todo.todo">sktometometo</maintainer>
 
   <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
@@ -10,22 +12,11 @@
 
   <license>BSD</license>
 
-
   <buildtool_depend>catkin</buildtool_depend>
 
-  <depend>costmap_2d</depend>
-  <depend>nav_core</depend>
-  <depend>pluginlib</depend>
-  <depend>roscpp</depend>
-  <depend>tf2</depend>
-  <depend>tf2_ros</depend>
   <depend>actionlib</depend>
   <depend>actionlib_msgs</depend>
-  <depend>trigger_behavior_msgs</depend>
-
-  <test_depend>rostest</test_depend>
 
   <export>
-      <nav_core plugin="${prefix}/trigger_behavior_recovery_plugin.xml" />
   </export>
 </package>
