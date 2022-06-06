@@ -69,6 +69,7 @@
       pkg="trigger_behavior_recovery"
       type="speak_and_wait_behavior.py"
       name="speak_and_wait_behavior"
+      output="screen"
       >
       <rosparam>
         speak_text: "Make way, Please"

@@ -5,6 +5,8 @@
 #include <tf2_ros/buffer.h>
 #include <actionlib/client/simple_action_client.h>
 #include <trigger_behavior_msgs/TriggerBehaviorAction.h>
+#include <string>
+#include <memory>
 
 namespace trigger_behavior_recovery
 {
@@ -30,6 +32,7 @@ private:
     std::shared_ptr<actionlib::SimpleActionClient<trigger_behavior_msgs::TriggerBehaviorAction>> ptr_action_client_;
     double duration_timeout_;
     double result_timeout_;
+    std::string trigger_action_name_;
     bool initialized_;
 };
 };

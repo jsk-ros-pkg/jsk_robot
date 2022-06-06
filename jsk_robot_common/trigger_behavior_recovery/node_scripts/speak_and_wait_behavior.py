@@ -12,7 +12,7 @@ class SpeakAndWaitBehavior(object):
     def __init__(self):
 
         self._speak_text = rospy.get_param('~speak_text', 'Hello World!')
-        self._duraiton_wait = rospy.get_param('~duration_wait', 5.0)
+        self._duration_wait = rospy.get_param('~duration_wait', 5.0)
         self._sound_action_name = rospy.get_param('~sound_action', 'sound_play')
         self._sound_client = SoundClient(
             blocking=True,
@@ -22,10 +22,13 @@ class SpeakAndWaitBehavior(object):
             TriggerBehaviorAction,
             self.handler,
             False)
+        self._action_server.start()
 
     def handler(self, goal):
 
         self._sound_client.say(self._speak_text)
+        rospy.loginfo('Spoken: {} and wait {} secs'.format(self._speak_text, self._duration_wait))
+
         rospy.sleep(self._duration_wait)
 
         result = TriggerBehaviorResult()
