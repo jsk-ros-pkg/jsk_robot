@@ -19,8 +19,8 @@ void TriggerBehaviorRecovery::initialize(
 {
     if (not initialized_) {
         ros::NodeHandle private_nh("~/" + name);
-        private_nh.param("duration_timeout", duration_timeout_, 1.0);
-        private_nh.param("result_timeout", result_timeout_, 3.0);
+        private_nh.param("duration_timeout", duration_timeout_, 10.0);
+        private_nh.param("result_timeout", result_timeout_, 60.0);
         std::string trigger_action_name;
         private_nh.param("trigger_action", trigger_action_name, std::string("trigger_default_behavior"));
         ptr_action_client_ = std::shared_ptr<actionlib::SimpleActionClient<trigger_behavior_msgs::TriggerBehaviorAction>>(new actionlib::SimpleActionClient<trigger_behavior_msgs::TriggerBehaviorAction>(trigger_action_name, true));
