@@ -155,3 +155,24 @@
     local-name: jsk-ros-pkg/coral_usb_ros
     uri: https://github.com/jsk-ros-pkg/coral_usb_ros.git
     version: master
+# eus10 and roseus_resume
+- git:
+    local-name: euslisp/Euslisp
+    uri: https://github.com/Affonso-Gui/EusLisp.git
+    version: eus10
+- git:
+    local-name: jsk-ros-pkg/jsk_roseus
+    uri: https://github.com/Affonso-Gui/jsk_roseus.git
+    version: eus-handler-bt-resume
+- git:
+    local-name: euslisp/jskeus
+    uri: https://github.com/euslisp/jskeus.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/geneus
+    uri: https://github.com/jsk-ros-pkg/geneus.git
+    version: master
+- git:
+    local-name: roseus_resume
+    uri: https://github.com/Affonso-Gui/roseus_resume.git
+    version: eus10
