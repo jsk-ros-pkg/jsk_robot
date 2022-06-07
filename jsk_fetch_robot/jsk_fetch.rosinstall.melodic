@@ -45,16 +45,10 @@
     version: fetch15
 # we need to use the development branch (fetch15 branch in knorth55's fork)
 # until it is merged to master
-# Use knorth55/jsk_demos fetch15 branch after the following PR is merged
-# https://github.com/knorth55/jsk_demos/pull/25
-# - git:
-#     local-name: jsk-ros-pkg/jsk_demos
-#     uri: https://github.com/knorth55/jsk_demos.git
-#     version: fetch15
 - git:
     local-name: jsk-ros-pkg/jsk_demos
-    uri: https://github.com/708yamaguchi/jsk_demos.git
-    version: welcome-to-jsk-fetch15
+    uri: https://github.com/knorth55/jsk_demos.git
+    version: fetch15
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
