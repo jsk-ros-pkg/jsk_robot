@@ -2,8 +2,6 @@ topics:
   - /audio
   - /edgetpu_human_pose_estimator/output/image/compressed
   - /edgetpu_object_detector/output/image/compressed
-  - /head_camera/depth/image_raw
-  - /head_camera/rgb/image_raw
 
 nodes:
   - /head_camera/head_camera_nodelet_manager
