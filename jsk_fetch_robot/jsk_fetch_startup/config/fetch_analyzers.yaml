@@ -102,7 +102,7 @@ analyzers:
         path: Head Camera
         timeout: 5.0
         startswith: 'head_camera'
-        num_items: 2
+        num_items: 4
       imu:
         type: diagnostic_aggregator/GenericAnalyzer
         path: IMU
@@ -152,18 +152,6 @@ analyzers:
         type: diagnostic_aggregator/GenericAnalyzer
         path: Audio
         contains: '/audio'
-        timeout: 100
-        discard_stale: true
-      head_depth_image:
-        type: diagnostic_aggregator/GenericAnalyzer
-        path: HeadDepthImage
-        contains: '/head_camera/depth/image_raw'
-        timeout: 100
-        discard_stale: true
-      head_rgb_image:
-        type: diagnostic_aggregator/GenericAnalyzer
-        path: HeadRGBImage
-        contains: '/head_camera/rgb/image_raw'
         timeout: 100
         discard_stale: true
   nodes:
