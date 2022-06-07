@@ -1,6 +1,7 @@
 (require "package://fetcheus/fetch-utils.l")
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
+(require "package://roseus_resume/euslisp/interruption-handler.l")
 
 (ros::load-ros-package "fetcheus")
 (ros::load-ros-package "fetch_driver_msgs")
@@ -515,6 +516,14 @@ Example: (send self :gripper :position) => 0.00"
       (setq *co* (instance collision-object-publisher :init))
       (ros::ros-warn ";; could not find \"apply_planning_scene\" skip creating *co*~%")))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
+
+  (warning-message 3 "Installing interruption handler...~%")
+  (roseus_resume:install-interruption-handler *ri*
+   gripper-action
+   move-base-action
+   move-base-trajectory-action)
+  (roseus_resume:install-default-intervention *ri*)
+  (warning-message 3 "...done.~%")
 
   (ros::spin-once)
   (send *ri* :spin-once)
