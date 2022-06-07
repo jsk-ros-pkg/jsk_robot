@@ -16,6 +16,15 @@
 
   <group ns="head_camera">
     <group ns="depth_registered">
+      <node name="hz_measure"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/HzMeasure /$(arg manager)" >
+        <remap from="~input" to="hw_registered/image_rect_raw" />
+        <remap from="~output" to="hw_registered/image_rect_raw/measured_hz" />
+        <rosparam subst_value="true" >
+          warning_hz: 5
+        </rosparam>
+      </node>
       <node name="resize_cloud"
             pkg="nodelet" type="nodelet"
             args="load jsk_pcl/ResizePointsPublisher /$(arg manager)"
@@ -81,6 +90,15 @@
     </group>
     <group ns="rgb"
            if="$(arg throttle_head_rgb)">
+      <node name="hz_measure"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/HzMeasure /$(arg manager)" >
+        <remap from="~input" to="image_raw" />
+        <remap from="~output" to="image_raw/measured_hz" />
+        <rosparam subst_value="true" >
+          warning_hz: 5
+        </rosparam>
+      </node>
       <node name="throttle_camera_info"
             pkg="nodelet" type="nodelet"
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
