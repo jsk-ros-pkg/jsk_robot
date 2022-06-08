@@ -207,6 +207,8 @@
       run_stop_condition: "m.run_stop is False"
       seconds_to_start_speaking: 60
       speak_interval: 600
+      ignore_time_after_runstop_is_enabled: 5.0
+      ignore_time_after_runstop_is_disabled: 5.0
     </rosparam>
   </node>
 
