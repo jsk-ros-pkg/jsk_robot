@@ -178,7 +178,7 @@ class T265OdometryTransformer(object):
 
 def main():
 
-    a = OdometryTransformer()
+    a = T265OdometryTransformer()
     rospy.spin()
 
 

@@ -6,7 +6,7 @@
   <arg name="topic_tf" default="/tf" />
 
   <arg name="publish_tf" default="true" />
-  <arg name="2d_mode" default="true" />
+  <arg name="2d_mode" default="false" />
 
   <arg name="translation_base_link_to_pose_frame_x" default="0" />
   <arg name="translation_base_link_to_pose_frame_y" default="0" />
@@ -81,8 +81,6 @@
 
       <arg name="publish_odom_tf"          value="false"/>
       <arg name="publish_tf"               value="false"/>
-
-      <arg name="respawn"                  value="$(arg respawn)"/>
     </include>
   </group>
 
@@ -90,6 +88,6 @@
       pkg="rviz"
       type="rviz"
       name="$(anon rviz)"
-      args="-d $(find jsk_robot_startup)/config/demo_t265_odometry_transformer.launch"
+      args="-d $(find jsk_robot_startup)/config/demo_t265_odometry_transformer.rviz"
       />
 </launch>
