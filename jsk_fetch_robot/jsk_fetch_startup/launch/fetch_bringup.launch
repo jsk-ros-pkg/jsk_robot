@@ -6,6 +6,7 @@
   <arg name="launch_insta360" default="true" />
   <arg name="launch_app_scheduler" default="true" />
   <arg name="launch_dialogflow" default="true" />
+  <arg name="launch_google_chat" default="true" />
   <arg name="launch_gdrive_server" default="true" />
   <arg name="launch_edgetpu_human_pose_estimator" default="true" />
   <arg name="launch_edgetpu_object_detector" default="true" />
@@ -149,6 +150,16 @@
     <arg name="run_app_manager" value="false" />
     <!-- arg name="webhook_server" value="true" / -->
     <arg name="hostname" value="$(arg hostname)" />
+  </include>
+
+  <!-- google chat -->
+  <include if="$(arg launch_google_chat)"
+           file="$(find google_chat_ros)/launch/google_chat.launch">
+    <arg name="use_yaml" value="true" />
+    <arg name="recieving_mode" value="url" />
+    <arg name="yaml_file" value="/var/lib/robot/google_chat.yaml" />
+    <arg name="gdrive_upload_service" value="/gdrive_server/upload" />
+    <arg name="to_dialogflow_client" value="true" />    
   </include>
 
   <!-- gdrive_ros -->
