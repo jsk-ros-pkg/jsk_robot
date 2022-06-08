@@ -156,10 +156,10 @@
   <include if="$(arg launch_google_chat)"
            file="$(find google_chat_ros)/launch/google_chat.launch">
     <arg name="use_yaml" value="true" />
-    <arg name="recieving_mode" value="url" />
+    <arg name="receiving_mode" value="url" />
     <arg name="yaml_file" value="/var/lib/robot/google_chat.yaml" />
     <arg name="gdrive_upload_service" value="/gdrive_server/upload" />
-    <arg name="to_dialogflow_client" value="true" />    
+    <arg name="to_dialogflow_client" value="true" />
   </include>
 
   <!-- gdrive_ros -->
