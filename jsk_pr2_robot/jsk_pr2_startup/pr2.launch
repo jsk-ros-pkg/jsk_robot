@@ -212,6 +212,19 @@
     </rosparam>
   </node>
 
+  <group ns="audible_warning" >
+    <!-- tweet with image -->
+    <node name="publish_to_tweet_server"
+          pkg="topic_tools" type="transform"
+          args="/audible_warning/output/original_text
+                /tweet_image_server/tweet/goal
+                rostwitter/TweetActionGoal
+                --wait-for-start
+                'rostwitter.msg.TweetActionGoal(goal=rostwitter.msg.TweetGoal(text=&quot;[Audible warning] &quot; + m.data, image=True, image_topic_name=&quot;/edgetpu_human_pose_estimator/output/image&quot;))'
+                --import rostwitter">
+    </node>
+  </group>
+
   <node name="sanity_diagnostics"
         pkg="jsk_tools" type="sanity_diagnostics.py" >
     <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/sanity_targets.yaml" />
