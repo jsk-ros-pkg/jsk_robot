@@ -5,6 +5,62 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## t265_odometry_transformer.py
+
+This node publishes odometry topics and TF with raw odometry topics of Realsense T265. Realsense T265 can publish odometry TF in camera frames. This node helps to use them in robot base_link frames.
+
+<TODO: images>
+
+### Subscribers
+
+- `~odom_in` (type: nav_msgs/Odometry)
+
+Raw odometry topic from Realsense T265
+
+### Publishers
+
+- `~odom_out` (type: nav_msgs/Odometry)
+
+Transformed odometry topic.
+
+- `/tf` (type: tf2_msgs/TFMessage)
+
+### Parameters
+
+- `~frame_id_base_link` (type: `string`, default: `base_link`)
+
+Frame ID of robot base_link. It is assumed that this link is top frame of TF tree because TF from odom to this link will be broadcasted.
+
+- `~frame_id_odom` (type: `string`, default: `odom`)
+
+Frame ID name to be broadcasted as odometry frame 
+
+- `~translation_base_link_to_pose_frame_x` (type: `double`, default: `0.0`)
+- `~translation_base_link_to_pose_frame_y` (type: `double`, default: `0.0`)
+- `~translation_base_link_to_pose_frame_z` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_x` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_y` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_z` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_w` (type: `double`, default: `1.0`)
+
+Relative pose from robot base link to T265 pose frame. For pose_frame of Realsense T265, please see [this]().
+
+- `~publish_tf` (type: `bool`, default: `True`)
+
+If set to true, TF from odometry frame to base_link is broadcasted.
+
+- `~2d_mode` (type: `bool`, default: `True`)
+
+If 2D odometry is prefered, please set this to True.
+
+### How to use this
+
+Connect Realsense T265 to your computer and run
+
+```bash
+roslaunch jsk_robot_startup t265_odometry_transformer.launch
+```
+
 ## scripts/email_topic.py
 
 This node sends email based on received rostopic (jsk_robot_startup/Email).

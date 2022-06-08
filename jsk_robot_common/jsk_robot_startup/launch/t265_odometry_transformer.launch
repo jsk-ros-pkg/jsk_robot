@@ -1,0 +1,95 @@
+<launch>
+  <arg name="topic_odom_in" default="/t265/odom/sample" />
+  <arg name="topic_odom_out" default="odom" />
+  <arg name="base_frame_id" default="base" />
+  <arg name="odom_frame_id" default="odom" />
+  <arg name="topic_tf" default="/tf" />
+
+  <arg name="publish_tf" default="true" />
+  <arg name="2d_mode" default="true" />
+
+  <arg name="translation_base_link_to_pose_frame_x" default="0" />
+  <arg name="translation_base_link_to_pose_frame_y" default="0" />
+  <arg name="translation_base_link_to_pose_frame_z" default="0" />
+  <arg name="rotation_base_link_to_pose_frame_x" default="0" />
+  <arg name="rotation_base_link_to_pose_frame_y" default="0" />
+  <arg name="rotation_base_link_to_pose_frame_z" default="0" />
+  <arg name="rotation_base_link_to_pose_frame_w" default="1.0" />
+
+  <arg name="launch_t265" default="true" />
+  <arg name="camera" default="t265" />
+
+  <arg name="launch_rviz" default="false" />
+
+  <node
+      pkg="jsk_robot_startup"
+      type="t265_odometry_transformer.py"
+      name="t265_odometry_transformer"
+      output="screen"
+      >
+      <remap from="~odom_in" to="/$(arg topic_odom_in)" />
+      <remap from="~odom_out" to="$(arg topic_odom_out)" />
+      <remap from="/tf" to="$(arg topic_tf)" />
+
+      <param name="~frame_id_base_link" value="$(arg base_frame_id)" />
+      <param name="~frame_id_odom" value="$(arg odom_frame_id)" />
+      <param name="~publish_tf" value="$(arg publish_tf)" />
+      <param name="~2d_mode" value="$(arg 2d_mode)" />
+
+      <!-- transform from base_link to t265 pose frame -->
+      <param name="~translation_base_link_to_pose_frame_x" value="$(arg translation_base_link_to_pose_frame_x)" />
+      <param name="~translation_base_link_to_pose_frame_y" value="$(arg translation_base_link_to_pose_frame_y)" />
+      <param name="~translation_base_link_to_pose_frame_z" value="$(arg translation_base_link_to_pose_frame_z)" />
+      <param name="~rotation_base_link_to_pose_frame_x" value="$(arg rotation_base_link_to_pose_frame_x)" />
+      <param name="~rotation_base_link_to_pose_frame_y" value="$(arg rotation_base_link_to_pose_frame_y)" />
+      <param name="~rotation_base_link_to_pose_frame_z" value="$(arg rotation_base_link_to_pose_frame_z)" />
+      <param name="~rotation_base_link_to_pose_frame_w" value="$(arg rotation_base_link_to_pose_frame_w)" />
+  </node>
+
+  <group ns="$(arg camera)" if="$(arg launch_t265)">
+    <rosparam>
+      /tracking_module/enable_mapping: false
+      /tracking_module/enable_relocalization: false
+      /tracking_module/enable_pose_jumping: false
+      /tracking_module/enable_dynamic_calibration: true
+      /tracking_module/enable_map_preservation: false
+    </rosparam>
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="tf_prefix"                value="$(arg camera)"/>
+      <arg name="serial_no"                value=""/>
+      <arg name="usb_port_id"              value=""/>
+      <arg name="device_type"              value="t265"/>
+      <arg name="json_file_path"           value=""/>
+
+      <arg name="enable_sync"              value="false"/>
+
+      <arg name="fisheye_width"            value="-1"/>
+      <arg name="fisheye_height"           value="-1"/>
+      <arg name="enable_fisheye1"          value="false"/>
+      <arg name="enable_fisheye2"          value="false"/>
+
+      <arg name="fisheye_fps"              value="-1"/>
+      <arg name="gyro_fps"                 value="-1"/>
+      <arg name="accel_fps"                value="-1"/>
+      <arg name="enable_gyro"              value="true"/>
+      <arg name="enable_accel"             value="true"/>
+      <arg name="enable_pose"              value="true"/>
+
+      <arg name="linear_accel_cov"         value="0.01"/>
+      <arg name="initial_reset"            value="true"/>
+      <arg name="unite_imu_method"         value=""/>
+
+      <arg name="publish_odom_tf"          value="false"/>
+      <arg name="publish_tf"               value="false"/>
+
+      <arg name="respawn"                  value="$(arg respawn)"/>
+    </include>
+  </group>
+
+  <node
+      pkg="rviz"
+      type="rviz"
+      name="$(anon rviz)"
+      args="-d $(find jsk_robot_startup)/config/demo_t265_odometry_transformer.launch"
+      />
+</launch>
