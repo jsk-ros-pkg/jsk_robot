@@ -40,25 +40,25 @@ class T265OdometryTransformer(object):
         self._publish_tf = bool(rospy.get_param('~publish_tf', True))
         self._2d_mode = bool(rospy.get_param('~2d_mode', True))
 
-        self._quat_t265_basebased = Quaternion(
+        self._quat_base_to_t265 = Quaternion(
             self._rotation_base_link_to_pose_frame_w,
             self._rotation_base_link_to_pose_frame_x,
             self._rotation_base_link_to_pose_frame_y,
             self._rotation_base_link_to_pose_frame_z
         ).normalised
-        self._pos_t265_basebased = np.array([
+        self._pos_base_to_t265 = np.array([
             self._translation_base_link_to_pose_frame_x,
             self._translation_base_link_to_pose_frame_y,
             self._translation_base_link_to_pose_frame_z
         ])
 
-        if self._quat_t265_basebased.norm < 0.1:
+        if self._quat_base_to_t265.norm < 0.1:
             rospy.logerr('Rotation of base_link to pose_frame is invalid.')
             sys.exit(1)
 
-        self._quat_base_t265based = self._quat_t265_basebased.inverse
-        self._pos_base_t265based = self._quat_base_t265based.rotate(
-            -self._pos_t265_basebased)
+        self._quat_t265_to_base = self._quat_base_to_t265.inverse
+        self._pos_t265_to_base = self._quat_t265_to_base.rotate(
+            -self._pos_base_to_t265)
 
         self._tf_br = tf2_ros.TransformBroadcaster()
         self._pub_odom = rospy.Publisher('~odom_out', Odometry, queue_size=1)
@@ -84,77 +84,81 @@ class T265OdometryTransformer(object):
                 10, 'Received an odom message with nan values')
             return
 
-        pos_t265_odombased = np.array([
+        pos_odom_t265_to_t265 = np.array([
             msg.pose.pose.position.x,
             msg.pose.pose.position.y,
             msg.pose.pose.position.z
         ])
-        quat_t265_odombased = Quaternion(
+        quat_odom_t265_to_t265 = Quaternion(
             msg.pose.pose.orientation.w,
             msg.pose.pose.orientation.x,
             msg.pose.pose.orientation.y,
             msg.pose.pose.orientation.z
         ).normalised
 
-        pos_base_odombased = pos_t265_odombased + \
-            quat_t265_odombased.rotate(self._pos_base_t265based)
-        quat_base_odombased = quat_t265_odombased * self._quat_base_t265based
+        pos_odom_t265_to_base = pos_odom_t265_to_t265 + quat_odom_t265_to_t265.rotate(self._pos_t265_to_base)
+        quat_odom_t265_to_base = quat_odom_t265_to_t265 * self._quat_t265_to_base
 
-        pos_dot_t265_t265based = np.array([
+        pos_odom_base_to_odom_t265 = self._pos_base_to_t265
+        quat_odom_base_to_odom_t265 = self._quat_base_to_t265
+        pos_odom_base_to_base = pos_odom_base_to_odom_t265 + quat_odom_base_to_odom_t265.rotate(pos_odom_t265_to_base)
+        quat_odom_base_to_base = quat_odom_base_to_odom_t265 * quat_odom_t265_to_base
+
+        vel_pos_t265_on_t265 = np.array([
             msg.twist.twist.linear.x,
             msg.twist.twist.linear.y,
             msg.twist.twist.linear.z
         ])
-        omega_t265_t265based = np.array([
+        vel_rot_t265_on_t265 = np.array([
             msg.twist.twist.angular.x,
             msg.twist.twist.angular.y,
             msg.twist.twist.angular.z
         ])
-        pos_dot_base_basebased = self._quat_t265_basebased.rotate(
-            pos_dot_t265_t265based +
-            np.cross(omega_t265_t265based, self._pos_base_t265based)
+        vel_pos_base_on_base = self._quat_base_to_t265.rotate(
+            vel_pos_t265_on_t265 +
+            np.cross(vel_rot_t265_on_t265, self._pos_t265_to_base)
         )
-        omega_base_basebased = self._quat_t265_basebased.rotate(
-            omega_t265_t265based)
+        vel_rot_base_on_base = self._quat_base_to_t265.rotate(
+            vel_rot_t265_on_t265)
 
         pub_msg = Odometry()
         pub_msg.header.stamp = rospy.Time.now()
         pub_msg.header.frame_id = self._frame_id_odom
         pub_msg.child_frame_id = self._frame_id_base_link
         if self._2d_mode:
-            quat_base_odombased_2d = Quaternion(
-                quat_base_odombased.w,
+            quat_odom_base_to_base_2d = Quaternion(
+                quat_odom_base_to_base.w,
                 0,
                 0,
-                quat_base_odombased.z
+                quat_odom_base_to_base.z
             ).normalised
-            pub_msg.pose.pose.position.x = pos_base_odombased[0]
-            pub_msg.pose.pose.position.y = pos_base_odombased[1]
+            pub_msg.pose.pose.position.x = pos_odom_base_to_base[0]
+            pub_msg.pose.pose.position.y = pos_odom_base_to_base[1]
             pub_msg.pose.pose.position.z = 0
-            pub_msg.pose.pose.orientation.x = quat_base_odombased_2d.x
-            pub_msg.pose.pose.orientation.y = quat_base_odombased_2d.y
-            pub_msg.pose.pose.orientation.z = quat_base_odombased_2d.z
-            pub_msg.pose.pose.orientation.w = quat_base_odombased_2d.w
-            pub_msg.twist.twist.linear.x = pos_dot_base_basebased[0]
-            pub_msg.twist.twist.linear.y = pos_dot_base_basebased[1]
+            pub_msg.pose.pose.orientation.x = quat_odom_base_to_base_2d.x
+            pub_msg.pose.pose.orientation.y = quat_odom_base_to_base_2d.y
+            pub_msg.pose.pose.orientation.z = quat_odom_base_to_base_2d.z
+            pub_msg.pose.pose.orientation.w = quat_odom_base_to_base_2d.w
+            pub_msg.twist.twist.linear.x = vel_pos_base_on_base[0]
+            pub_msg.twist.twist.linear.y = vel_pos_base_on_base[1]
             pub_msg.twist.twist.linear.z = 0
             pub_msg.twist.twist.angular.x = 0
             pub_msg.twist.twist.angular.y = 0
-            pub_msg.twist.twist.angular.z = omega_base_basebased[2]
+            pub_msg.twist.twist.angular.z = vel_rot_base_on_base[2]
         else:
-            pub_msg.pose.pose.position.x = pos_base_odombased[0]
-            pub_msg.pose.pose.position.y = pos_base_odombased[1]
-            pub_msg.pose.pose.position.z = pos_base_odombased[2]
-            pub_msg.pose.pose.orientation.x = quat_base_odombased.x
-            pub_msg.pose.pose.orientation.y = quat_base_odombased.y
-            pub_msg.pose.pose.orientation.z = quat_base_odombased.z
-            pub_msg.pose.pose.orientation.w = quat_base_odombased.w
-            pub_msg.twist.twist.linear.x = pos_dot_base_basebased[0]
-            pub_msg.twist.twist.linear.y = pos_dot_base_basebased[1]
-            pub_msg.twist.twist.linear.z = pos_dot_base_basebased[2]
-            pub_msg.twist.twist.angular.x = omega_base_basebased[0]
-            pub_msg.twist.twist.angular.y = omega_base_basebased[1]
-            pub_msg.twist.twist.angular.z = omega_base_basebased[2]
+            pub_msg.pose.pose.position.x = pos_odom_base_to_base[0]
+            pub_msg.pose.pose.position.y = pos_odom_base_to_base[1]
+            pub_msg.pose.pose.position.z = pos_odom_base_to_base[2]
+            pub_msg.pose.pose.orientation.x = quat_odom_base_to_base.x
+            pub_msg.pose.pose.orientation.y = quat_odom_base_to_base.y
+            pub_msg.pose.pose.orientation.z = quat_odom_base_to_base.z
+            pub_msg.pose.pose.orientation.w = quat_odom_base_to_base.w
+            pub_msg.twist.twist.linear.x = vel_pos_base_on_base[0]
+            pub_msg.twist.twist.linear.y = vel_pos_base_on_base[1]
+            pub_msg.twist.twist.linear.z = vel_pos_base_on_base[2]
+            pub_msg.twist.twist.angular.x = vel_rot_base_on_base[0]
+            pub_msg.twist.twist.angular.y = vel_rot_base_on_base[1]
+            pub_msg.twist.twist.angular.z = vel_rot_base_on_base[2]
         # Covariance is not transformed currently
         pub_msg.pose.covariance = msg.pose.covariance
         pub_msg.twist.covariance = msg.twist.covariance
