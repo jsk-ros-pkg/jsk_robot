@@ -89,5 +89,6 @@
       type="rviz"
       name="$(anon rviz)"
       args="-d $(find jsk_robot_startup)/config/demo_t265_odometry_transformer.rviz"
+      if="$(arg launch_rviz)"
       />
 </launch>
