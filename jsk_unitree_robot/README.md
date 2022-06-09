@@ -58,6 +58,26 @@ source devel/setup.bash
 
    Then, reboot the robot and go to [app_chooser](http://192.168.123.161:8000/rwt_app_chooser) and start your application
 
+### Setup Arduino IDE for LeadJoyDevelopment
+- Add Seeduino XIAO to board manager
+    - Open arduino IDE. `~/arduino-$ARDUINO_VERSION/arduino`
+    - Add following Boards Manager URLs (File -> Preferences -> Additional Boards Manager URLs -> Click icon)
+      - `https://files.seeedstudio.com/arduino/package_seeeduino_boards_index.json`
+    - Install `Seeed XIAO RP2040` by Seeed Studio (Tools -> Board -> Boards Manager -> Seeed XIAO RP2040)
+    - Install `Adafruit NeoPixel` (>=1.10.2) by Adafruit (Tools -> Manage Libraries -> Adafruit NeoPixel)
+    - Select`Seeed XIAO RP2040` Board (Tools -> Board -> Seeed RP2040 Boards -> Seeed XIAO RP2040)
+    - Tested environment:
+      - Arduino 1.8.19
+      - Seeed XIAO RP2040: 1.9.3
+      - Adafruit NeoPixel: 1.10.5
+ - Make rosserial_arduino libraries
+    ```bash
+    source ~/catkin_ws/devel/setup.bash
+    cd ~/arduino-$ARDUINO_VERSION/libraries
+    rm -rf ros_lib
+    rosrun rosserial_arduino make_libraries.py .
+    ```
+
 ## Topics
 
 See [List of Topics](Go1_Topics.md) for list of topics used in Go1 robot.
