@@ -9,7 +9,7 @@ see [lifelog/README.md](lifelog/README.md)
 
 This node publishes odometry topics and TF with raw odometry topics of Realsense T265. Realsense T265 can publish odometry TF in camera frames. This node helps to use them in robot base_link frames.
 
-<TODO: images>
+![t265_odometry_transformer](https://user-images.githubusercontent.com/9410362/172747852-9d78d710-528d-4c53-ba32-9af8021ce7eb.png)
 
 ### Subscribers
 
@@ -43,7 +43,7 @@ Frame ID name to be broadcasted as odometry frame
 - `~rotation_base_link_to_pose_frame_z` (type: `double`, default: `0.0`)
 - `~rotation_base_link_to_pose_frame_w` (type: `double`, default: `1.0`)
 
-Relative pose from robot base link to T265 pose frame. For pose_frame of Realsense T265, please see [this]().
+Relative pose from robot base link to T265 pose frame. For pose_frame of Realsense T265 on ROS, please see the figure above.
 
 - `~publish_tf` (type: `bool`, default: `True`)
 
