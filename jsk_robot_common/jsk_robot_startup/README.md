@@ -27,11 +27,11 @@ Transformed odometry topic.
 
 ### Parameters
 
-- `~frame_id_base_link` (type: `string`, default: `base_link`)
+- `~base_frame_id` (type: `string`, default: `base_link`)
 
 Frame ID of robot base_link. It is assumed that this link is top frame of TF tree because TF from odom to this link will be broadcasted.
 
-- `~frame_id_odom` (type: `string`, default: `odom`)
+- `~odom_frame_id` (type: `string`, default: `odom`)
 
 Frame ID name to be broadcasted as odometry frame 
 

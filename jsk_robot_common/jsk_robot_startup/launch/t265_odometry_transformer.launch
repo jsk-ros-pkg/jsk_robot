@@ -31,8 +31,8 @@
       <remap from="~odom_out" to="$(arg topic_odom_out)" />
       <remap from="/tf" to="$(arg topic_tf)" />
 
-      <param name="~frame_id_base_link" value="$(arg base_frame_id)" />
-      <param name="~frame_id_odom" value="$(arg odom_frame_id)" />
+      <param name="~base_frame_id" value="$(arg base_frame_id)" />
+      <param name="~odom_frame_id" value="$(arg odom_frame_id)" />
       <param name="~publish_tf" value="$(arg publish_tf)" />
       <param name="~2d_mode" value="$(arg 2d_mode)" />
 

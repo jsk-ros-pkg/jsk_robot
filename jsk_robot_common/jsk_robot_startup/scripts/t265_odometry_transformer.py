@@ -19,9 +19,9 @@ class T265OdometryTransformer(object):
 
         rospy.init_node('t265_odometry_transformer')
 
-        self._frame_id_base_link = str(
-            rospy.get_param('~frame_id_base_link', 'base_link'))
-        self._frame_id_odom = str(rospy.get_param('~frame_id_odom', 'odom'))
+        self._base_frame_id = str(
+            rospy.get_param('~base_frame_id', 'base_link'))
+        self._odom_frame_id = str(rospy.get_param('~odom_frame_id', 'odom'))
         self._translation_base_link_to_pose_frame_x = float(
             rospy.get_param('~translation_base_link_to_pose_frame_x'))
         self._translation_base_link_to_pose_frame_y = float(
@@ -123,8 +123,8 @@ class T265OdometryTransformer(object):
 
         pub_msg = Odometry()
         pub_msg.header.stamp = rospy.Time.now()
-        pub_msg.header.frame_id = self._frame_id_odom
-        pub_msg.child_frame_id = self._frame_id_base_link
+        pub_msg.header.frame_id = self._odom_frame_id
+        pub_msg.child_frame_id = self._base_frame_id
         if self._2d_mode:
             quat_odom_base_to_base_2d = Quaternion(
                 quat_odom_base_to_base.w,
