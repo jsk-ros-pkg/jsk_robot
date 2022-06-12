@@ -78,11 +78,11 @@ $$
 \end{align*}
 $$
 
-So
+So when $pose = (p, rot)^T$,
 
 $$
 \begin{eqnarray}
-TODO
+{}^\mathrm{Obase}pose_\mathrm{base} = T({}^\mathrm{Ovis}pose_\mathrm{vis}} = (g({}^\mathrm{Ovis}pose_\mathrm{vis}), f({}^\mathrm{Ovis}pose_\mathrm{vis})^T
 \end{eqnarray}
 $$
 
@@ -90,7 +90,7 @@ And then we can transform covariance matrix
 
 $$
 \begin{eqnarray}
-TODO
+C({}^\mathrm{Obase}pose_\mathrm{base}) = (\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0}) C({}^\mathrm{Ovis}pose_\mathrm{vis}) (\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0})^T
 \end{eqnarray}
 $$
 
