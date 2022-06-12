@@ -80,6 +80,10 @@ class CameraToBaseOffset(object):
                 self.htm_odom_base_to_odom_camera, htm_odom_camera_to_base)
 
             # calculate transformed pose covariance
+            #
+            # NOTICE: transformation of covariance for rotation
+            #       seems wrong
+            #
             raw_pose_cov_matrix = numpy.matrix(
                 msg.pose.covariance).reshape(6, 6)
             rotation_matrix = htm_odom_base_to_base[:3, :3]
