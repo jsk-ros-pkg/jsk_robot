@@ -53,13 +53,21 @@ If set to true, TF from odometry frame to base_link is broadcasted.
 
 If 2D odometry is prefered, please set this to True.
 
-### How to use this
+### How to run a demo
 
 Connect Realsense T265 to your computer and run
 
 ```bash
 roslaunch jsk_robot_startup t265_odometry_transformer.launch
 ```
+
+### How to use t265_odometry_transformer with your robot.
+
+First, this program currently assumes that T265 is attached to the base link of the robot. Please make sure your robot's configuration.
+
+Then, please check the transform from your robot base frame to t265 pose frame ( transform from $\Sigma_{base}$ to $\Sigma_{t265}$ in the figure above.)
+
+And launch `t265_odometry_transformer.launch` with your configuration.
 
 ## scripts/email_topic.py
 
