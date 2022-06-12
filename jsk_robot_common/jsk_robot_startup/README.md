@@ -34,7 +34,9 @@ See figure above and notations below.
 From these, transformed pose (`htm_odom_base_to_base` in source code) is calculated like below.
 
 $$
-{}^\mathrm{Obase}H_\mathrm{base} = {}^\mathrm{Ovis}H_\mathrm{Obase}^{-1} {}^\mathrm{Ovis}H_\mathrm{vis} {}^\mathrm{vis}H_\mathrm{base}
+\begin{eqnarray}
+    {}^\mathrm{Obase}H_\mathrm{base} = {}^\mathrm{Ovis}H_\mathrm{Obase}^{-1} {}^\mathrm{Ovis}H_\mathrm{vis} {}^\mathrm{vis}H_\mathrm{base}
+\end{eqnarray}
 $$
 
 #### Pose covariance transformation
@@ -43,7 +45,9 @@ When $y = f(x)$, it is approximated near $x = x_0$ as $y = (\left.\frac{\partial
 So relationship of covariance matricies $C(x)$ for $x$ and $C(y)$ for $y$ when $x=x_0$ is like
 
 $$
-C(y) = F C(x) F^\mathrm{T}
+\begin{eqnarray}
+    C(y) = F C(x) F^\mathrm{T}
+\end{eqnarray}
 $$
 
 where $F=\left.\frac{\partial}{\partial x}f\right|_{x=x_0}$.
@@ -51,21 +55,23 @@ where $F=\left.\frac{\partial}{\partial x}f\right|_{x=x_0}$.
 Here, we have already got transformation of position and rotation.
 
 $$
-\begin{align*}
-    {}^\mathrm{Obase}R_\mathrm{base} = {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base} \\
-    {}^\mathrm{Obase}p_\mathrm{base} = {}^\mathrm{Obase}p_\mathrm{Ovis} + {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base}
-\end{align*}
+\begin{eqnarray}
+    {}^\mathrm{Obase}R_\mathrm{base} &=& {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base} \\
+    {}^\mathrm{Obase}p_\mathrm{base} &=& {}^\mathrm{Obase}p_\mathrm{Ovis} + 
+                                         {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + 
+                                         {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base}
+\end{eqnarray}
 $$
 
 Since rotation covariance is calculated in euler angles in `geometry_msgs/PoseWithCovariance`, rotation transformation is
 
 $$
-\begin{align*}
-    {}^\mathrm{Obase}rot_\mathrm{base} = f({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) \\
-    = convert^{-1}({}^\mathrm{Obase}R_\mathrm{base}) \\
-    = convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base}) \\
-    = convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}R_\mathrm{base})
-\end{align*}
+\begin{eqnarray}
+    {}^\mathrm{Obase}rot_\mathrm{base} &=& f({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) \\
+    &=& convert^{-1}({}^\mathrm{Obase}R_\mathrm{base}) \\
+    &=& convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base}) \\
+    &=& convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}R_\mathrm{base})
+\end{eqnarray}
 $$
 
 where $convert(rot)$ is a function to convert rotation vector in euler angle to rotation matrix representation.
@@ -73,16 +79,24 @@ where $convert(rot)$ is a function to convert rotation vector in euler angle to 
 and transform function for position is
 
 $$
-\begin{align*}
-{}^\mathrm{Obase}p_\mathrm{base} = g({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) = {}^\mathrm{Obase}p_\mathrm{Ovis} + {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + {}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base}
-\end{align*}
+\begin{eqnarray}
+    {}^\mathrm{Obase}p_\mathrm{base} &=& g({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) \\
+    &=& {}^\mathrm{Obase}p_\mathrm{Ovis} + 
+        {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + 
+        {}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base}
+\end{eqnarray}
 $$
 
 So when $pose = (p, rot)^T$,
 
 $$
 \begin{eqnarray}
-{}^\mathrm{Obase}pose_\mathrm{base} = T({}^\mathrm{Ovis}pose_\mathrm{vis}) = (g({}^\mathrm{Ovis}pose_\mathrm{vis}), f({}^\mathrm{Ovis}pose_\mathrm{vis})^T
+    {}^\mathrm{Obase}pose_\mathrm{base} = T({}^\mathrm{Ovis}pose_\mathrm{vis}) = \left(
+      \begin{array}{c}
+        g({}^\mathrm{Ovis}pose_\mathrm{vis}) \\
+        f({}^\mathrm{Ovis}pose_\mathrm{vis})
+      \end{array}
+    \right)
 \end{eqnarray}
 $$
 
@@ -90,7 +104,7 @@ And then we can transform covariance matrix
 
 $$
 \begin{eqnarray}
-C({}^\mathrm{Obase}pose_\mathrm{base}) = T_0 C({}^\mathrm{Ovis}pose_\mathrm{vis}) T_0^T
+    C({}^\mathrm{Obase}pose_\mathrm{base}) = T_0 C({}^\mathrm{Ovis}pose_\mathrm{vis}) T_0^\mathrm{T}
 \end{eqnarray}
 $$
 
@@ -106,31 +120,43 @@ Velocity of base frame can be calculated as
 
 $$
 \begin{eqnarray}
-{}^\mathrm{vis}v_\mathrm{vis} &=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{base}\\
-&=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{base})\\
-&=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis} + {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base})\\
-&=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis}) + {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}R_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base} + {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
-&=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{vis} + {}^\mathrm{base}R_\mathrm{O} [{}^\mathrm{O}\omega_\mathrm{vis}\times] {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base} + {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
-&=& {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base} + {}^\mathrm{base}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base})
+    {}^\mathrm{base}v_\mathrm{base} &=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{base}\\
+    &=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{base})\\
+    &=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis} + 
+        {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base})\\
+    &=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis}) + 
+        {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}R_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base} + 
+        {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
+    &=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{vis} + 
+        {}^\mathrm{base}R_\mathrm{O} [{}^\mathrm{O}\omega_\mathrm{vis}\times] {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base} + 
+        {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
+    &=& {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + 
+        {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base} + 
+        {}^\mathrm{base}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base})
 \end{eqnarray}
 $$
 
 And it is assumed that $\frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \simeq 0$. so
 
 $$
-{}^\mathrm{vis}v_\mathrm{vis} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base}
+\begin{eqnarray}
+    {}^\mathrm{base}v_\mathrm{base} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + 
+                                      {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base}
+\end{eqnarray}
 $$
 
 And angular velocity of base frame can be calculated as
 
 $$
 \begin{eqnarray}
-{}^\mathrm{base}\omega_\mathrm{base} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}\omega_\mathrm{vis}
+    {}^\mathrm{base}\omega_\mathrm{base} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}\omega_\mathrm{vis}
 \end{eqnarray}
 $$
 
 <!-- 
 導出の追加求む。
+{}^\mathrm{vis}R_\mathrm{base} が時間的に変化するとき、うまくやれば {}^\mathrm{base}\omega_\mathrm{base} = 0 になるようにできるはず
+ってことは本来は d/dt({}^\mathrm{vis}R_\mathrm{base}) の寄与が入る項があるはず
 0=d/dt({}^\mathrm{vis}R_\mathrm{base} {}^\mathrm{base}R_\mathrm{vis}) あたりから導出できるかも。
 -->
 
