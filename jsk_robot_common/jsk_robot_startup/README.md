@@ -125,9 +125,18 @@ And angular velocity of base frame can be calculated as
 
 $$
 \begin{eqnarray}
-TODO
+{}^\mathrm{base}\omega_\mathrm{base} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}\omega_\mathrm{vis}
 \end{eqnarray}
 $$
+
+<!-- 
+導出の追加求む。
+0=d/dt({}^\mathrm{vis}R_\mathrm{base} {}^\mathrm{base}R_\mathrm{vis}) あたりから導出できるかも。
+-->
+
+#### Twist covariance transformation
+
+TODO
 
 ### Demo
 
