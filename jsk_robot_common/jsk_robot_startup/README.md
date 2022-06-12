@@ -13,7 +13,66 @@ This node publishes transformed odometry topics and TF with raw odometry topic.(
 
 ### Concept
 
+Coordinates for visual odometry is often different from coordinates robot base frame. To use it as robot odometry, Odometry topic have to be transformed.
+`nav_msgs/Odometry` has information below
+
+- pose
+- covariance for pose
+- twist
+- covariance for twist
+
+In this section, transformation for each values are described.
+
+#### Pose transformation
+
+See figure above and notations below.
+
+- ${}^\mathrm{Ovis}H_\mathrm{vis}$: pose of $\Sigma_\mathrm{vis}$ in $\Sigma_\mathrm{Ovis}$ (raw odometry, `htm_odom_camera_to_camera` in source code.)
+- ${}^\mathrm{Ovis}H_\mathrm{Obase}$: pose of $\Sigma_\mathrm{Obase}$ in $\Sigma_\mathrm{Ovis}$ (`htm_odom_base_to_odom_camera` in source code.)
+- ${}^\mathrm{vis}H_\mathrm{base}$: pose of $\Sigma_\mathrm{base}$ in $\Sigma_\mathrm{vis}$ (`htm_camera_to_base` in source code.)
+
+From these, transformed pose (`htm_odom_base_to_base` in source code) is calculated like below.
+
+$$
+{}^\mathrm{Obase}H_\mathrm{base} = {}^\mathrm{Ovis}H_\mathrm{Obase}^{-1} {}^\mathrm{Ovis}H_\mathrm{vis} {}^\mathrm{vis}H_\mathrm{base}
+$$
+
+#### Pose covariance transformation
+
 TODO
+
+#### Twist transformation
+
+<TODO: image>
+
+See the figure above.
+
+Velocity of base frame can be calculated as
+
+$$
+\begin{eqnarray}
+{}^\mathrm{vis}v_\mathrm{vis} &=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{base}\\
+&=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{base})\\
+&=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis} + {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base})\\
+&=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis}) + {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}R_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base} + {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
+&=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{vis} + {}^\mathrm{base}R_\mathrm{O} [{}^\mathrm{O}\omega_\mathrm{vis}\times] {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base} + {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
+&=& {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base} + {}^\mathrm{base}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base})
+\end{eqnarray}
+$$
+
+And it is assumed that $\frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \simeq 0$. so
+
+$$
+{}^\mathrm{vis}v_\mathrm{vis} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base}
+$$
+
+And angular velocity of base frame can be calculated as
+
+$$
+\begin{eqnarray}
+TODO
+\end{eqnarray}
+$$
 
 ### Demo
 
