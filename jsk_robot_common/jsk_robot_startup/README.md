@@ -5,6 +5,50 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## CameraBaseToOffset.py
+
+This node publishes transformed odometry topics and TF with raw odometry topic.(e.g. Realsense T265).
+
+<TODO: image>
+
+### Subscribers
+
+- `~source_odom` (type: `nav_msgs/Odometry`)
+
+Raw odometry topic
+
+### Publishers
+
+- `~output` (type: `nav_msgs/Odometry`)
+
+Transformed odometry topic.
+
+- `/tf` (type: `tf2_msgs/TFMessage`)
+
+Transformed odometry frames.
+
+### Parameters
+
+- `~base_frame_id` (type: `string`, default: `BODY`)
+
+Frame ID of robot base_link.
+
+- `~camera_frame_id` (type: `string`, default: `left_camera_optical_frame`)
+
+Frame ID of base frame of odometry source.
+
+- `~odom_frame_id` (type: `string`, default: `viso_odom`)
+
+Frame ID name to be broadcasted as odometry frame 
+
+- `~publish_tf` (type: `bool`, default: `True`)
+
+If set to true, TF from odometry frame to base_link is broadcasted.
+
+- `~invert_tf` (type: `bool`, default: `True`)
+
+If set to true, published tf transformation is not from odom to base, but from base to odom.
+
 ## scripts/email_topic.py
 
 This node sends email based on received rostopic (jsk_robot_startup/Email).
