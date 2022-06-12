@@ -1,5 +1,16 @@
 #!/usr/bin/env roseus
 
+;;
+;; Beg to person trigger behavior server
+;;
+;; This action is to beg to a person on a path when to make way for a robot.
+;; Currently conditions below are assumed.
+;;
+;;  - robot must be Fetch
+;;  - boundin box array of people topic must exist
+;;
+
+
 (ros::load-ros-manifest "trigger_behavior_msgs")
 (ros::load-ros-manifest "nav_msgs")
 (ros::load-ros-manifest "jsk_recognition_msgs")
@@ -128,6 +139,8 @@
     (send server :set-succeeded result)
     ))
 
+(ros::subscribe "~path" nav_msgs::Path callback-path)
+(ros::subscribe "~person_bbox_array" jsk_recognition_msgs::BoundingBoxArray callback-bbox-array)
 (setq *as*
       (instance ros::simple-action-server :init
                   "~behavior"
