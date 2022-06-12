@@ -21,8 +21,6 @@ from jsk_robot_startup.odometry_utils import make_homogeneous_matrix
 class CameraToBaseOffset(object):
     def __init__(self):
         rospy.init_node("CameraToBaseOffset", anonymous=True)
-        # execute rate
-        self.rate = float(rospy.get_param("~rate", 100))
         # tf parameters
         self.publish_tf = rospy.get_param("~publish_tf", True)
         if self.publish_tf:
@@ -34,7 +32,6 @@ class CameraToBaseOffset(object):
         self.odom_frame = rospy.get_param("~odom_frame", "viso_odom")
         self.tf_duration = rospy.get_param("~tf_duration", 1)
         self.listener = tf.TransformListener(True, rospy.Duration(10))
-        self.r = rospy.Rate(self.rate)
         self.initial_base_to_odom_transformation = None
         self.lock = threading.Lock()
         self.source_odom_sub = rospy.Subscriber(
@@ -44,8 +41,7 @@ class CameraToBaseOffset(object):
         self.pub = rospy.Publisher("~output", Odometry, queue_size=1)
 
     def execute(self):
-        while not rospy.is_shutdown():
-            self.r.sleep()
+        rospy.spin()
 
     def init_signal_callback(self, msg):
         time.sleep(1)  # wait to update odom_init frame
