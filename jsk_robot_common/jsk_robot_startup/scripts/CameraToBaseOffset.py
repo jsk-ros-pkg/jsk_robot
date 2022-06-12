@@ -29,6 +29,9 @@ class CameraToBaseOffset(object):
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
 
+        # other parameters
+        self.enable_covariance = rospy.get_param("~enable_covariance", False)
+
         # other members
         if self.publish_tf:
             self.broadcast = tf.TransformBroadcaster()
@@ -127,22 +130,28 @@ class CameraToBaseOffset(object):
                                 twist_transform_matrix))
 
             # make odometry msg.
-            transformed_odom_msg = copy.deepcopy(msg)
+            transformed_odom_msg = Odometry()
+            transformed_odom_msg.header.stamp = msg.header.stamp
             transformed_odom_msg.header.frame_id = self.odom_frame_id
             transformed_odom_msg.child_frame_id = self.base_frame_id
+            # Pose
             transformed_odom_msg.pose.pose.position = Point(
                 *list(htm_odom_base_to_base[:3, 3]))
             transformed_odom_msg.pose.pose.orientation = Quaternion(
                 *list(tf.transformations.quaternion_from_matrix(
                             htm_odom_base_to_base)))
-            transformed_odom_msg.pose.covariance = numpy.array(
-                        transformed_pose_cov_matrix).reshape(-1,).tolist()
+            # Twist
             transformed_odom_msg.twist.twist.linear = Vector3(
                 *list(twist_on_base[:3]))
             transformed_odom_msg.twist.twist.angular = Vector3(
                 *list(twist_on_base[3:6]))
-            transformed_odom_msg.twist.covariance = numpy.array(
-                        transformed_twist_cov_matrix).reshape(-1,).tolist()
+            if self.enable_covariance:
+                # Pose covariance
+                transformed_odom_msg.pose.covariance = numpy.array(
+                            transformed_pose_cov_matrix).reshape(-1,).tolist()
+                # Twist covariance
+                transformed_odom_msg.twist.covariance = numpy.array(
+                            transformed_twist_cov_matrix).reshape(-1,).tolist()
 
             # publish
             self.pub.publish(transformed_odom_msg)
