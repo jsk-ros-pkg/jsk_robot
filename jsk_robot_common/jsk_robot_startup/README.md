@@ -162,7 +162,27 @@ $$
 
 #### Twist covariance transformation
 
-TODO
+When $\nu = \left(v,\ \omega\right)^\mathrm{T}$, transformation of $\nu$ is like
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{base}\nu_\mathrm{base} = A {}^\mathrm{vis}\nu_\mathrm{vis} \\
+    where\ A = \left(
+        \begin{array}{c}
+            a & b \\
+            c & d
+        \end{array}
+    \right)
+\end{eqnarray}
+$$
+
+So, covariance transformation is
+
+$$
+\begin{eqnarray}
+    C({}^\mathrm{base}\nu_\mathrm{base}) = A C({}^\mathrm{vis}\nu_\mathrm{vis}) A^\mathrm{T}
+\end{eqnarray}
+$$
 
 ### Demo
 
