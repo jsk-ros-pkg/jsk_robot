@@ -82,7 +82,7 @@ So when $pose = (p, rot)^T$,
 
 $$
 \begin{eqnarray}
-{}^\mathrm{Obase}pose_\mathrm{base} = T({}^\mathrm{Ovis}pose_\mathrm{vis}} = (g({}^\mathrm{Ovis}pose_\mathrm{vis}), f({}^\mathrm{Ovis}pose_\mathrm{vis})^T
+{}^\mathrm{Obase}pose_\mathrm{base} = T({}^\mathrm{Ovis}pose_\mathrm{vis}) = (g({}^\mathrm{Ovis}pose_\mathrm{vis}), f({}^\mathrm{Ovis}pose_\mathrm{vis})^T
 \end{eqnarray}
 $$
 
@@ -90,9 +90,11 @@ And then we can transform covariance matrix
 
 $$
 \begin{eqnarray}
-C({}^\mathrm{Obase}pose_\mathrm{base}) = (\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0}) C({}^\mathrm{Ovis}pose_\mathrm{vis}) (\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0})^T
+C({}^\mathrm{Obase}pose_\mathrm{base}) = T_0 C({}^\mathrm{Ovis}pose_\mathrm{vis}) T_0^T
 \end{eqnarray}
 $$
+
+Where $T_0=\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0}$
 
 #### Twist transformation
 
