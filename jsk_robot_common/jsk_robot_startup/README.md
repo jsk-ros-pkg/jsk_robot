@@ -39,7 +39,60 @@ $$
 
 #### Pose covariance transformation
 
+When $y = f(x)$, it is approximated near $x = x_0$ as $y = (\left.\frac{\partial}{\partial x}f\right|_{x=x_0}) x$.
+So relationship of covariance matricies $C(x)$ for $x$ and $C(y)$ for $y$ when $x=x_0$ is like
+
+$$
+C(y) = F C(x) F^\mathrm{T}
+$$
+
+where $F=\left.\frac{\partial}{\partial x}f\right|_{x=x_0}$.
+
+Here, we have already got transformation of position and rotation.
+
+$$
+\begin{align*}
+    {}^\mathrm{Obase}R_\mathrm{base} = {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base} \\
+    {}^\mathrm{Obase}p_\mathrm{base} = {}^\mathrm{Obase}p_\mathrm{Ovis} + {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base}
+\end{align*}
+$$
+
+Since rotation covariance is calculated in euler angles in `geometry_msgs/PoseWithCovariance`, rotation transformation is
+
+$$
+\begin{align*}
+    {}^\mathrm{Obase}rot_\mathrm{base} = f({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) \\
+    = convert^{-1}({}^\mathrm{Obase}R_\mathrm{base}) \\
+    = convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base}) \\
+    = convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}R_\mathrm{base})
+\end{align*}
+$$
+
+where $convert(rot)$ is a function to convert rotation vector in euler angle to rotation matrix representation.
+
+and transform function for position is
+
+$$
+\begin{align*}
+{}^\mathrm{Obase}p_\mathrm{base} = g({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) = {}^\mathrm{Obase}p_\mathrm{Ovis} + {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + {}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base}
+\end{align*}
+$$
+
+So
+
+$$
+\begin{eqnarray}
 TODO
+\end{eqnarray}
+$$
+
+And then we can transform covariance matrix
+
+$$
+\begin{eqnarray}
+TODO
+\end{eqnarray}
+$$
 
 #### Twist transformation
 
