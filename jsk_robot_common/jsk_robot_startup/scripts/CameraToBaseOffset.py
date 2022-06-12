@@ -28,7 +28,6 @@ class CameraToBaseOffset(object):
         # tf parameters
         self.publish_tf = rospy.get_param("~publish_tf", True)
         self.invert_tf = rospy.get_param("~invert_tf", True)
-        self.tf_duration = rospy.get_param("~tf_duration", 1)
 
         # other members
         if self.publish_tf:
