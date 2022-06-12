@@ -9,15 +9,29 @@ see [lifelog/README.md](lifelog/README.md)
 
 This node publishes transformed odometry topics and TF with raw odometry topic.(e.g. Realsense T265).
 
-<TODO: image>
+![CameraBaseToOffset_concept](https://user-images.githubusercontent.com/9410362/173223304-70a26fd8-204e-42a5-af11-de95fd098379.png)
 
-### Subscribers
+### Concept
+
+TODO
+
+### Demo
+
+Connect Realsense T265 to your machine and run
+
+```bash
+roslaunch jsk_robot_startup some_great_example.launch
+```
+
+### ROS Interfaces of the node
+
+#### Subscribers
 
 - `~source_odom` (type: `nav_msgs/Odometry`)
 
 Raw odometry topic
 
-### Publishers
+#### Publishers
 
 - `~output` (type: `nav_msgs/Odometry`)
 
@@ -27,7 +41,7 @@ Transformed odometry topic.
 
 Transformed odometry frames.
 
-### Parameters
+#### Parameters
 
 - `~base_frame_id` (type: `string`, default: `BODY`)
 
@@ -48,6 +62,10 @@ If set to true, TF from odometry frame to base_link is broadcasted.
 - `~invert_tf` (type: `bool`, default: `True`)
 
 If set to true, published tf transformation is not from odom to base, but from base to odom.
+
+### How to use this with your robot
+
+TODO
 
 ## scripts/email_topic.py
 
