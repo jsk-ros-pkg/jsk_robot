@@ -30,6 +30,7 @@ class CameraToBaseOffset(object):
         self.invert_tf = rospy.get_param("~invert_tf", True)
 
         # other parameters
+        self.twod_mode = rospy.get_param("~2d_mode", False)
         self.enable_covariance = rospy.get_param("~enable_covariance", False)
 
         # other members
@@ -126,8 +127,8 @@ class CameraToBaseOffset(object):
             raw_twist_cov_matrix = numpy.matrix(
                 msg.twist.covariance).reshape(6, 6)
             transformed_twist_cov_matrix = (twist_transform_matrix.T).dot(
-                            raw_twist_cov_matrix.dot(
-                                twist_transform_matrix))
+                raw_twist_cov_matrix.dot(
+                    twist_transform_matrix))
 
             # make odometry msg.
             transformed_odom_msg = Odometry()
@@ -139,7 +140,7 @@ class CameraToBaseOffset(object):
                 *list(htm_odom_base_to_base[:3, 3]))
             transformed_odom_msg.pose.pose.orientation = Quaternion(
                 *list(tf.transformations.quaternion_from_matrix(
-                            htm_odom_base_to_base)))
+                    htm_odom_base_to_base)))
             # Twist
             transformed_odom_msg.twist.twist.linear = Vector3(
                 *list(twist_on_base[:3]))
@@ -148,10 +149,26 @@ class CameraToBaseOffset(object):
             if self.enable_covariance:
                 # Pose covariance
                 transformed_odom_msg.pose.covariance = numpy.array(
-                            transformed_pose_cov_matrix).reshape(-1,).tolist()
+                    transformed_pose_cov_matrix).reshape(-1,).tolist()
                 # Twist covariance
                 transformed_odom_msg.twist.covariance = numpy.array(
-                            transformed_twist_cov_matrix).reshape(-1,).tolist()
+                    transformed_twist_cov_matrix).reshape(-1,).tolist()
+            if self.twod_mode:
+                transformed_odom_msg.pose.pose.position.x = 0
+                transformed_odom_msg.pose.pose.position.y = 0
+                q_2d = numpy.array([
+                            0,
+                            0,
+                            transformed_odom_msg.pose.pose.orientation.z,
+                            transformed_odom_msg.pose.pose.orientation.w])
+                q_2d /= numpy.linalg.norm(q_2d)
+                transformed_odom_msg.pose.pose.orientation.x = q_2d[0]
+                transformed_odom_msg.pose.pose.orientation.y = q_2d[1]
+                transformed_odom_msg.pose.pose.orientation.z = q_2d[2]
+                transformed_odom_msg.pose.pose.orientation.w = q_2d[3]
+                transformed_odom_msg.twist.twist.linear.z = 0
+                transformed_odom_msg.twist.twist.angular.x = 0
+                transformed_odom_msg.twist.twist.angular.y = 0
 
             # publish
             self.pub.publish(transformed_odom_msg)
