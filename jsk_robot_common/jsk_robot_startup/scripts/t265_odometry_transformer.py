@@ -160,8 +160,6 @@ class T265OdometryTransformer(object):
             pub_msg.twist.twist.angular.y = vel_rot_base_on_base[1]
             pub_msg.twist.twist.angular.z = vel_rot_base_on_base[2]
         # Covariance is not transformed currently
-        pub_msg.pose.covariance = msg.pose.covariance
-        pub_msg.twist.covariance = msg.twist.covariance
         self._pub_odom.publish(pub_msg)
 
         if self._publish_tf:
