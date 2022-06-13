@@ -9,7 +9,7 @@ see [lifelog/README.md](lifelog/README.md)
 
 This node publishes transformed odometry topics and TF with raw odometry topic.(e.g. Realsense T265).
 
-![CameraBaseToOffset_concept](https://user-images.githubusercontent.com/9410362/173223304-70a26fd8-204e-42a5-af11-de95fd098379.png)
+![CameraToBaseOffsetConceptPose](https://user-images.githubusercontent.com/9410362/173268226-3707a424-0099-42fb-a595-f61161b73a7b.svg)
 
 ### Concept
 
@@ -112,7 +112,7 @@ Where $T_0=\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0}$
 
 #### Twist transformation
 
-<TODO: image>
+![CameraToBaseOffsetConceptTwist](https://user-images.githubusercontent.com/9410362/173268459-e8fe9b14-25f6-47ee-9be1-b55e6181f432.svg)
 
 See the figure above.
 
@@ -189,7 +189,7 @@ $$
 Connect Realsense T265 to your machine and run
 
 ```bash
-roslaunch jsk_robot_startup some_great_example.launch
+roslaunch jsk_robot_startup sample_camera_to_base_offset.launch
 ```
 
 ### ROS Interfaces of the node
@@ -231,6 +231,10 @@ If set to true, TF from odometry frame to base_link is broadcasted.
 - `~invert_tf` (type: `bool`, default: `True`)
 
 If set to true, published tf transformation is not from odom to base, but from base to odom.
+
+- `~enable_covariance` (type: `bool`, default: `True`)
+
+If set to true, pose covariance and twist covariance are transformed and published. otherwise, covariances of output odometry is set to zero.
 
 ### How to use this with your robot
 
