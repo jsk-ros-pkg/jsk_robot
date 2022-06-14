@@ -29,8 +29,10 @@
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
      (when (and (boundp '*co*) default-collision-object)
+       (send self :delete-headbox-collision-object)
        (send self :delete-keepout-collision-object)
        (send self :delete-ground-collision-object)
+       (send self :add-headbox-collision-object)
        (send self :add-keepout-collision-object)
        (send self :add-ground-collision-object))
      (setq fetch-controller-action
@@ -241,6 +243,18 @@ Example: (send self :gripper :position) => 0.00"
   (:delete-workspace ()
     (send *co* :delete-attached-object-by-id "workspace")
     (send *co* :delete-object-by-id "workspace"))
+  (:add-headbox-collision-object ()
+    (let ()
+      ;; fetch must be :reset-pose when we run this method
+      (setq *fetch-headbox* (make-cube 100 201 120))
+      (send *fetch-headbox* :move-coords (send robot :head_pan_link_lk :worldcoords)
+                                         (send robot :base_link_lk :worldcoords))
+      (send *fetch-headbox* :translate #f(33.75 0 150) (send robot :head_pan_link_lk :worldcoords))
+      (send *co* :add-attached-object *fetch-headbox* "head_pan_link"
+                 :frame_id "head_pan_link"
+                 :object_id "fetchheadbox")))
+  (:delete-headbox-collision-object ()
+    (send *co* :delete-attached-object-by-id "fetchheadbox"))
   (:add-keepout-collision-object ()
     (let ((cube (make-cube 200 350 10))
           (keepout (make-cylinder 300 10)))
