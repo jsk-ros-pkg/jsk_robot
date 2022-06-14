@@ -28,8 +28,8 @@ mkdir -p ${SOURCE_ROOT}/src/jsk_robot
 rsync -avzh --delete --exclude 'jsk_unitree_robot/cross*' --exclude "go1.l" --exclude "go1-simple.l" ../../../jsk_robot ${SOURCE_ROOT}/src/
 
 # ingore non-related packages
-for dir in $(find ${SOURCE_ROOT}/src/jsk_robot -maxdepth 1 -type d); do
     if [[ ! $dir =~ ${TARGET_ROBOT}|jsk_robot_common ]]; then
+for dir in $(find ${SOURCE_ROOT}/src/jsk_robot -maxdepth 1 -mindepth 1 -type d); do
         touch $dir/CATKIN_IGNORE
     fi
 done
