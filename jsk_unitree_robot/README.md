@@ -68,15 +68,8 @@ source devel/setup.bash
     - Select`Seeed XIAO RP2040` Board (Tools -> Board -> Seeed RP2040 Boards -> Seeed XIAO RP2040)
     - Tested environment:
       - Arduino 1.8.19
-      - Seeed XIAO RP2040: 1.9.3
+      - Seeed XIAO RP2040: 1.12.0
       - Adafruit NeoPixel: 1.10.5
- - Make rosserial_arduino libraries
-    ```bash
-    source ~/catkin_ws/devel/setup.bash
-    cd ~/arduino-$ARDUINO_VERSION/libraries
-    rm -rf ros_lib
-    rosrun rosserial_arduino make_libraries.py .
-    ```
 
 ## Topics
 
