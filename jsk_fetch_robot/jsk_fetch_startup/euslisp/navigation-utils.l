@@ -133,11 +133,30 @@
   (send (send *undock-action* :get-result) :undocked))
 
 
-(defun get-battery-charging-state (&key (timeout 1500))
+(defun get-battery-charging-state (&key (timeout 1500) (dock nil))
+  """
+  Get battery charging state
+  Args:
+    - key
+      timeout: Set waiting time for topic.
+      dock: Set t when docking to get right result.
+  """
    (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout timeout))
-          (is-charging (if msg (send msg :is_charging))))
+          (is-charging (if msg (send msg :is_charging)))
+          (start-get-state-time (send (ros::time-now) :sec))
+          (duration 0))
      ;; You may fail to subscribe /battery_state
      ;; because of message md5 difference between melodic and indigo.
+     ;; If /battery_state is subscribed before /battery_state becomes true
+     ;; while dock succeeds, the result will not be correct,
+     ;; so wait for a certain time when docking.
+     (when dock
+       (while (and (< duration (/ timeout 1000)) (not is-charging))
+         (setq msg (one-shot-subscribe "/battery_state"
+                                       power_msgs::BatteryState
+                                       :timeout timeout))
+         (if msg (setq is-charging (send msg :is_charging)))
+         (setq duration (- (send (ros::time-now) :sec) start-get-state-time))))
      (if (not msg) (return-from get-battery-charging-state nil))
      (if is-charging :charging :discharging)))
 
@@ -525,7 +544,7 @@ Args:
     ;; change the inflation_radius
     (restore-params)
     (send-kitchen-mail)
-    (setq success-battery-charging (equal (get-battery-charging-state) :charging))
+    (setq success-battery-charging (equal (get-battery-charging-state :dock t) :charging))
     (and success-go-to-kitchen success-auto-dock success-battery-charging)))
 
 
@@ -630,12 +649,12 @@ Args:
             (:finish
               '(lambda (userdata)
                  (let ((success-battery-charging
-                         (equal (get-battery-charging-state) :charging))
+                         (equal (get-battery-charging-state :dock t) :charging))
                        (success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
                        (success-go-to-kitchen
                          (cdr (assoc 'success-go-to-kitchen userdata))))
                    (restore-params)
-		   (send-kitchen-mail)
+                   (send-kitchen-mail)
                    (and success-go-to-kitchen success-auto-dock success-battery-charging)))))
           '(:init)
           '(t nil))))
