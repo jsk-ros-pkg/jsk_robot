@@ -140,3 +140,33 @@ repositories:
   liblcm/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/l/lcm/lcm_1.3.1+repack1-1.debian.tar.xz
+  alsa-lib:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/a/alsa-lib/alsa-lib_1.1.3.orig.tar.bz2
+  alsa-lib/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/a/alsa-lib/alsa-lib_1.1.3-5.debian.tar.xz
+  db5:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/d/db5.3/db5.3_5.3.28.orig.tar.xz
+  db5/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/d/db5.3/db5.3_5.3.28-13.1ubuntu1.1.debian.tar.xz
+  jack-audio-connection-kit:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/j/jack-audio-connection-kit/jack-audio-connection-kit_0.125.0.orig.tar.xz
+  jack-audio-connection-kit/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/j/jack-audio-connection-kit/jack-audio-connection-kit_0.125.0-3.debian.tar.xz
+  portaudio2:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/portaudio19/portaudio19_19.6.0.orig.tar.gz
+  portaudio2/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/portaudio19/portaudio19_19.6.0-1.debian.tar.xz
+  python-pyaudio:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11.orig.tar.gz
+  python-pyaudio/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2.debian.tar.xz
