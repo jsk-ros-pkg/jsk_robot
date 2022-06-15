@@ -143,14 +143,19 @@
   ;; while dock succeeds, the result will not be correct,
   ;; so wait for a certain time when docking.
   """
-  (let ((msg nil)
-        (is-charging nil)
-        (duration 0)
-        (start-time (send (ros::time-now) :sec)))
-    (while (and (< duration timeout) (not is-charging))
-      (setq msg (one-shot-subscribe "/battery_state" power_msgs::BatteryState))
+  (let* ((msg nil)
+         (is-charging nil)
+         (duration 0)
+         (start-time (send (ros::time-now) :sec)))
+    (while (not is-charging)
+      (when (> duration timeout)
+        (ros::ros-warn "Skip waiting for charging state because of timeout")
+        (return-from wait-until-is-charging :timeout))
+      (setq msg (one-shot-subscribe "/battery_state" power_msgs::BatteryState
+                                    :timeout 1000))
       (if msg (setq is-charging (send msg :is_charging)))
-      (setq duration (- (send (ros::time-now) :sec) start-time)))))
+      (setq duration (- (send (ros::time-now) :sec) start-time)))
+    :charging))
 
 (defun get-battery-charging-state (&key (timeout 1500))
   """
