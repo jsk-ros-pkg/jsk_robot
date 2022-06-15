@@ -64,6 +64,16 @@ class JoyTopicCompletion:
 
         self.pub.publish(msg)
 
+    def spin(self):
+        rate = rospy.Rate(10)
+        msg = Joy()
+        msg.axes = [0, 0, 0, 0, 0, 0]
+        msg.buttons = [0, 0, 0, 0, 0, 0]
+        while not rospy.is_shutdown():
+            rate.sleep()
+            if rospy.Time.now() - self.last_publish_time > rospy.Duration(3.0):
+                self.pub.publish(msg)
+
     def __init__(self):
         rospy.init_node('joy_topic_completion')
         self.pass_through = rospy.get_param('~pass_through', True)
@@ -86,8 +96,9 @@ class JoyTopicCompletion:
         self.pub.publish(msg)
         time.sleep(0.75)
 
+
 if __name__ == '__main__':
 
     joy_topic_completion = JoyTopicCompletion()
-    rospy.spin()
+    joy_topic_completion.spin()
     del(joy_topic_completion)
