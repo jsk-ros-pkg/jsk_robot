@@ -132,7 +132,7 @@
     (return-from undock nil))
   (send (send *undock-action* :get-result) :undocked))
 
-(defun wait-until-is-charging (&key timeout 10)
+(defun wait-until-is-charging (&key (timeout 10))
   """
   Wait for updating battery charging state especially when robots dock.
   Args:
@@ -550,7 +550,7 @@ Args:
     (restore-params)
     (send-kitchen-mail)
     (setq success-battery-charging (progn (wait-until-is-charging)
-                                          (equal (get-battery-charging-state) :charging))
+                                          (equal (get-battery-charging-state) :charging)))
     (and success-go-to-kitchen success-auto-dock success-battery-charging)))
 
 
