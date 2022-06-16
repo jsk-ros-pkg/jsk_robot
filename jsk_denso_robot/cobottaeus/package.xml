@@ -20,6 +20,8 @@
 
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
+  <run_depend>denso_cobotta_gripper</run_depend>
+  <run_depend>std_msgs</run_depend>
 
   <export>
   </export>
