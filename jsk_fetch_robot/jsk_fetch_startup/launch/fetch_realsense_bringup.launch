@@ -96,7 +96,7 @@
       <arg name="depth_width"           value="640"/>
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
-      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="enable_pointcloud"     value="false"/>
       <arg name="enable_infra"          value="true"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
