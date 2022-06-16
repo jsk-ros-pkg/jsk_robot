@@ -10,7 +10,7 @@ set -xeuf -o pipefail
 if ! docker buildx > /dev/null; then
     DOCKER_BUILDKIT=1 docker build --platform=local -o . "https://github.com/docker/buildx.git"
 fi
-if [ ! -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] &&  [ "$(docker images -q multiarch/qemu-user-static)" ]; then
+if [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] &&  [ ! "$(docker images -q multiarch/qemu-user-static)" ]; then
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 fi
 
