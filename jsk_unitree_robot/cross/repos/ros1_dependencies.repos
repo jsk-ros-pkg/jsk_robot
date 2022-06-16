@@ -170,3 +170,9 @@ repositories:
   python-pyaudio/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2.debian.tar.xz
+  flac:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/f/flac/flac_1.3.2.orig.tar.xz
+  flac/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/f/flac/flac_1.3.2-1.debian.tar.xz
