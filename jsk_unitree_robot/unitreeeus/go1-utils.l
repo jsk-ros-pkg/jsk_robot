@@ -67,6 +67,7 @@
               :rotation-axis t
               :translation-axis t
               :debug-view nil
+              :warnp nil
               args)))
      (send self :coords))
   ;;
@@ -82,6 +83,7 @@
             :rotation-axis :z
             :translation-axis nil
             :debug-view nil
+            :warnp nil
             args)
      ))
    )
