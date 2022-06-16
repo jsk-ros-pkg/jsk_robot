@@ -12,9 +12,9 @@
   <arg name="launch_edgetpu_object_detector" default="true" />
 
   <arg name="use_voice_text" default="false" />
-  <arg name="default_speaker" default="$(OPTENV DEFAULT_SPEAKER_ 2)" />
-  <arg name="default_english_speaker" default="$(OPTENV DEFAULT_ENGLISH_SPEAKER kal)" />
-  <arg name="default_warning_speaker" default="$(OPTENV DEFAULT_ENGLISH_SPEAKER kal)" />
+  <arg name="default_speaker" default="$(optenv DEFAULT_SPEAKER 2)" />
+  <arg name="default_english_speaker" default="$(optenv DEFAULT_ENGLISH_SPEAKER kal)" />
+  <arg name="default_warning_speaker" default="$(optenv DEFAULT_ENGLISH_SPEAKER kal)" />
   <arg name="fetch_lifelog" default="true" />
   <arg name="boot_sound" default="true" />
   <arg name="map_frame" default="eng2" />
@@ -23,7 +23,7 @@
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
-  <arg name="network_interface" default="$(OPTENV NETWORK_DEFAULT_WIFI_INTERFACE wlan0)" />
+  <arg name="network_interface" default="$(optenv NETWORK_DEFAULT_WIFI_INTERFACE wlan0)" />
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
