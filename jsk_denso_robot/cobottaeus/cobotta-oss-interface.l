@@ -1,6 +1,7 @@
 (require "package://cobottaeus/cobotta-utils.l")
 (require "package://pr2eus/robot-interface.l")
 
+(ros::load-ros-package "denso_cobotta_driver")
 (ros::load-ros-package "denso_cobotta_gripper")
 (ros::load-ros-package "std_msgs")
 
@@ -34,6 +35,59 @@
         (cons :controller-state "cobotta/arm_controller/state")
         (cons :action-type control_msgs::FollowJointTrajectoryAction)
         (cons :joint-names (list "joint_1" "joint_2" "joint_3" "joint_4" "joint_5" "joint_6")))))
+  (:set-motor-state
+    (state)
+    "Set motor power ON/OFF.
+When setting motor power OFF, brake becomes Lock.
+Details: https://densorobot.github.io/docs/denso_cobotta_ros/command_reference/rosservice.html#motor
+"
+    (let ((srv "/cobotta/set_motor_state")
+          (req (instance denso_cobotta_driver::SetMotorStateRequest :init :state state)))
+      (if (ros::wait-for-service srv 0)
+        (ros::service-call srv req)
+        nil)))
+  (:motor-on ()
+    (send self :set-motor-state t))
+  (:motor-off ()
+    (send self :set-motor-state nil))
+  (:get-motor-state ()
+    (let ((srv "/cobotta/get_motor_state")
+          (req (instance denso_cobotta_driver::GetMotorStateRequest :init)))
+      (if (ros::wait-for-service srv 0)
+        (ros::service-call srv req)
+        nil)))
+  (:set-brake-state
+    (state)
+    "Set brake Lock/Release.
+Releasing brake after setting motor power OFF makes arm joints totally free.
+Be careful of speed limit over, moving arm too fast makes brake locked again.
+Details: https://densorobot.github.io/docs/denso_cobotta_ros/command_reference/rosservice.html#brake
+"
+    (let ((srv "/cobotta/set_brake_state")
+          (req (instance denso_cobotta_driver::SetBrakeStateRequest :init :state state)))
+      (if (ros::wait-for-service srv 0)
+        (ros::service-call srv req)
+        nil)))
+  (:brake-lock ()
+    (send self :set-brake-state (list t t t t t t)))
+  (:brake-release ()
+    (send self :set-brake-state (list nil nil nil nil nil nil)))
+  (:get-brake-state ()
+    (let ((srv "/cobotta/get_brake_state")
+          (req (instance denso_cobotta_driver::GetBrakeStateRequest :init)))
+      (if (ros::wait-for-service srv 0)
+        (ros::service-call srv req)
+        nil)))
+  (:clear-error ()
+    "Clear all errors except FATAL error.
+If your robot is in emergency state, calling :motor-on after :clear-error probably returns your robot to normal state.
+Details: https://densorobot.github.io/docs/denso_cobotta_ros/command_reference/rosservice.html#error
+"
+    (let ((srv "/cobotta/clear_error")
+          (req (instance denso_cobotta_driver::ClearErrorRequest :init)))
+      (if (ros::wait-for-service srv 0)
+        (ros::service-call srv req)
+        nil)))
   (:start-grasp
     (&rest args &key &allow-other-keys)
     (send* self :go-grasp :pos 0 args)
