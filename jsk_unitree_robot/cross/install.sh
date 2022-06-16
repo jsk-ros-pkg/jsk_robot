@@ -101,6 +101,12 @@ function copy_data () {
         if [[ ${TYPE} == "Air" ]] ; then
             sshpass -p $PASS ssh -t ${user}@${hostname} "sed -i 's/192.168.123.14/192.168.123.13/g' Unitree/autostart/jsk_startup/jsk_startup.sh; cat Unitree/autostart/jsk_startup/jsk_startup.sh"
         fi
+
+        # update udev
+        # respeaker_ros
+        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find respeaker_ros)/config/60-respeaker.rules /etc/udev/rules.d/60-respeaker.rules"
+        #
+        sshpass -p $PASS ssh -t ${user}@${hostname} "ls -al /etc/udev/rules.d/; sudo systemctl restart udev"
     fi
     set +x
 }
