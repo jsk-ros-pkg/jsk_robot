@@ -12,18 +12,18 @@
   <arg name="launch_edgetpu_object_detector" default="true" />
 
   <arg name="use_voice_text" default="false" />
-  <arg name="default_speaker" default="2" />
-  <arg name="default_english_speaker" default="kal" />
-  <arg name="default_warning_speaker" default="kal" />
+  <arg name="default_speaker" default="$(OPTENV DEFAULT_SPEAKER_ 2)" />
+  <arg name="default_english_speaker" default="$(OPTENV DEFAULT_ENGLISH_SPEAKER kal)" />
+  <arg name="default_warning_speaker" default="$(OPTENV DEFAULT_ENGLISH_SPEAKER kal)" />
   <arg name="fetch_lifelog" default="true" />
-  <arg name="boot_sound" default="false" />
+  <arg name="boot_sound" default="true" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
-  <arg name="network_interface" default="wlan0" />
+  <arg name="network_interface" default="$(OPTENV NETWORK_DEFAULT_WIFI_INTERFACE wlan0)" />
 
   <arg name="battery_warning" default="true" />
   <arg name="nav_speak" default="true" />
@@ -34,6 +34,7 @@
   <arg name="network_detector" default="true" />
   <arg name="network_status" default="true" />
   <arg name="use_speech_recognition" default="true" />
+  <arg name="use_audible_warning" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -342,7 +343,8 @@
   <node name="audible_warning"
         pkg="jsk_tools" type="audible_warning.py"
         clear_params="true"
-        output="screen" >
+        output="screen"
+        if="$(arg use_audible_warning)" >
     <remap from="/robotsound" to="/sound_play" />
     <rosparam command="load" file="$(find jsk_fetch_startup)/config/warning_blacklist.yaml" />
     <rosparam subst_value="true">
