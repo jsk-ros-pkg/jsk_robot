@@ -57,7 +57,7 @@
       <remap from="~input" to="$(arg OUTPUT)" />
       <rosparam>
         tolerance: 0.02
-        min_size: 100
+        min_size: 20
         vital_rate: 0.1
       </rosparam>
     </node>
