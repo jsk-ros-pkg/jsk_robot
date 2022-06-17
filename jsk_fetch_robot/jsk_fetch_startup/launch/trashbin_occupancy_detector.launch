@@ -3,7 +3,7 @@
   <arg name="IMAGE_INPUT" default="/head_camera/rgb/throttled/image_rect_color"/>
   <arg name="IMAGE_CAMERAINFO" default="/head_camera/rgb/camera_info"/>
   <arg name="CENTROID_FRAME" default="target"/>
-  <arg name="DEFAULT_NAMESPACE" default="/trashbin_occupancy_detector"/>
+  <arg name="DEFAULT_NAMESPACE" default="trashbin_occupancy_detector"/>
   <arg name="FILTER_NAME_SUFFIX" default=""/>
   <arg name="OUTPUT" default="trashbin_handle/hsi_output$(arg FILTER_NAME_SUFFIX)"/>
 
@@ -142,14 +142,12 @@
     </node>
   </group>
 
-  <node pkg="jsk_fetch_startup" type="container_occupancy_detector"
-        name="container_occupancy_detector"
-        output="screen" respawn="true">
-    <remap from="input_boxes" to="$(arg DEFAULT_NAMESPACE)/trashbin/boxes" />
-    <remap from="input_cloud" to="$(arg POINTCLOUD_INPUT)" />
-    <remap from="debug_cloud" to="$(arg POINTCLOUD_INPUT)/debug/points" />
-    <remap from="output_boxes" to="$(arg DEFAULT_NAMESPACE)/trashbin/occupancy" />
-  </node>
+  <include file="$(find jsk_pcl_ros)/launch/container_occupancy_detector.launch">
+    <arg name="POINTCLOUD_INPUT" value="$(arg POINTCLOUD_INPUT)" />
+    <arg name="CONTAINER_BOXES_INPUT" value="$(arg DEFAULT_NAMESPACE)/trashbin/boxes" />
+    <arg name="DEFAULT_NAMESPACE" value="$(arg DEFAULT_NAMESPACE)"/>
+    <arg name="manager" value="$(arg manager)" />
+  </include>
 
   <!-- CURRENTLY IT DOESN'T WORK WELL... -->
   <node name="burnable_trashbin_label_extractor" pkg="jsk_perception"
