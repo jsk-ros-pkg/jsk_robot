@@ -12,7 +12,7 @@ use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 mkdir -p ~/denso_ws/src
 cd ~/denso_ws/src
 wstool init
-wstool merge https://raw.githubusercontent.com/k-okada/jsk_robot/add_cobotta/jsk_denso_robot/denso.rosinstall
+wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_denso_robot/denso.rosinstall
 wstool update
 cd ../
 git clone https://github.com/k-okada/cobotta_descriptions.git
