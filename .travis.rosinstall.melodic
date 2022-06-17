@@ -53,3 +53,8 @@
 - git:
     local-name: UbiquityRobotics/magni_robot
     uri: https://github.com/UbiquityRobotics/magni_robot
+# denso_cobotta_control, denso_cobotta_descriptions, denso_cobotta_driver, and denso_cobotta_gripper are not released
+- git:
+    local-name: DENSORobot/denso_cobotta_ros
+    uri: https://github.com/DENSORobot/denso_cobotta_ros.git
+    version: bb60e75adb8477ed3402561b4ec3ba687af3f397
