@@ -6,7 +6,7 @@ ROS package for Denso b-CAP communication robot.
 
 ## How to setup development environment
 
-use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
+Use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 
 ```
 mkdir -p ~/denso_ws/src
@@ -39,11 +39,11 @@ Then you need to input the IP address of your robot. The default robot IP addres
 
 ![](img/vtp-connect.png)
 
-To control the robot, you need to specify user level and password. The default password can be find [COBOTTA User Manuals](https://www.fa-manuals.denso-wave.com/jp/COBOTTA/007030/)
+To control the robot, you need to specify user level and password. The default password can be found on [COBOTTA User Manuals](https://www.fa-manuals.denso-wave.com/jp/COBOTTA/007030/).
 
 ![](img/vtp-login.png)
 
-You can skip calibration section and also put "Prepare Motion"
+You can skip calibration section and also put "Prepare Motion".
 
 ![](img/vtp-skip.png)
 
@@ -74,7 +74,7 @@ You can set the IP address by using this 10-key like interface. You need to push
 To work with ROS node. You need to tell IP address of your ROS node running computer to the robot.
 This is called 'executable' and you need to set 'executable' IP address from Virtual TP software.
 
-Form main panel, push "Setting" button on the right bottom.
+From main panel, push "Setting" button on the right bottom.
 
 ![](img/vtp-exec2.png)
 
@@ -99,7 +99,7 @@ Make sure that `ip_address` is set by [Setup IP address of the robot](#setup-ip-
 
 ## Use EusLisp model
 
-To control the robot form EusLisp. Please start `roseus` and type as follows.
+To control the robot from EusLisp. Please start `roseus` and type as follows.
 
 ```
 (load "package://cobottaeus/cobotta-interface.l")
@@ -128,7 +128,7 @@ You can also use `move-end-rot` method to turn the gripper.
 ```
 
 
-To control real robot. you can use `*ri*` object.
+To control real robot, you can use `*ri*` object.
 ```
 (send *ri* :angle-vector (send *cobotta* :angle-vector) 2000)
 ```
@@ -139,7 +139,7 @@ To obtain current robot pose, use `:state :potentio-vector` method.
 (send *ri* :state :potentio-vector)
 ```
 
-To open and close the gripper. You can use `:start-grasp` and `:stop-grasp`.
+To open and close the gripper, you can use `:start-grasp` and `:stop-grasp`.
 ```
 (send *ri* :stop-grasp)
 (send *ri* :start-grasp)
@@ -147,7 +147,7 @@ To open and close the gripper. You can use `:start-grasp` and `:stop-grasp`.
 
 `:start-grasp` method returns `t` if it succeeded to grasp object. If it returns `nil`, nothing was grasped.
 
-When the robot detect errors, the LED of the robot become yellow or red. Or you can find warning message like follows.
+When the robot detects errors, the LED of the robot becomes yellow or red. Or you can find warning message like follows.
 ```
 [ WARN] [1607683352.232275227]: Call {func_id: 72, vntArgs: ({vt: 3, value: 182} {vt: 3, value: 1} {vt: 8, value: P(210.0,0.0,-60.0,180.0,0.0,80.0,261)} {vt: 8, value: })}
 -2111814862 -7ddfbcce
