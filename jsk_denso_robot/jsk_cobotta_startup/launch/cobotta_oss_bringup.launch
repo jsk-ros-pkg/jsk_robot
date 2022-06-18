@@ -10,7 +10,7 @@
   <arg name="robot_description" default="robot_description"/>
 
   <param if="$(arg load_robot_description)" name="$(arg robot_description)"
-         command="$(find xacro)/xacro $(find denso_cobotta_descriptions)/cobotta_description/cobotta.urdf.xacro
+         command="$(find xacro)/xacro --inorder $(find denso_cobotta_descriptions)/cobotta_description/cobotta.urdf.xacro
          gripper_type:=$(arg gripper_type)" />
 
   <!-- Files for denso_cobotta_driver node. -->
