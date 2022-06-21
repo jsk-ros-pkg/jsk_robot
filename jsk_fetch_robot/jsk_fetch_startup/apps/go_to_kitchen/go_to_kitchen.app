@@ -24,12 +24,20 @@ plugins:
       video_framerate: 30
       video_encoding: RGB
   - name: object_detection_video_recorder_plugin
-    type: app_recorder/video_recorder_plugin
+    type: app_recorder/audio_video_recorder_plugin
     launch_args:
       video_path: /tmp
       video_title: go_to_kitchen_object_detection.avi
-      video_topic_name: /edgetpu_object_detector_visualization/output
-      video_fps: 5.0
+      audio_topic_name: /audio
+      audio_channels: 1
+      audio_sample_rate: 16000
+      audio_format: wave
+      audio_sample_format: S16LE
+      video_topic_name: /edgetpu_object_detector/output/image
+      video_height: 480
+      video_width: 640
+      video_framerate: 10
+      video_encoding: RGB
   - name: panorama_video_recorder_plugin
     type: app_recorder/video_recorder_plugin
     launch_args:

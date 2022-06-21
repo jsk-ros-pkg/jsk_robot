@@ -37,7 +37,11 @@ windows:
   - jsk-network-monitor: tail -f -n 1000 /var/log/ros/jsk-network-monitor.log
   - jsk-log-wifi: tail -f -n 1000 /var/log/ros/jsk-log-wifi.log
   - jsk-app-scheduler: tail -f -n 1000 /var/log/ros/jsk-app-scheduler.log
-  - jsk-coral: tail -f -n 1000 /var/log/ros/jsk-coral.log
+  # - jsk-coral: tail -f -n 1000 /var/log/ros/jsk-coral.log
+  - jsk-object-detector: tail -f -n 1000 /var/log/ros/jsk-object-detector.log
+  - jsk-panorama-object-detector: tail -f -n 1000 /var/log/ros/jsk-panorama-object-detector.log
+  - jsk-human-pose-estimator: tail -f -n 1000 /var/log/ros/jsk-human-pose-estimator.log
+  - jsk-panorama-human-pose-estimator: tail -f -n 1000 /var/log/ros/jsk-panorama-human-pose-estimator.log
   - jsk-dialog: tail -f -n 1000 /var/log/ros/jsk-dialog.log
   - jsk-gdrive: tail -f -n 1000 /var/log/ros/jsk-gdrive.log
   - jsk-shutdown: tail -f -n 1000 /var/log/ros/jsk-shutdown.log
