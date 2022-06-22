@@ -5,13 +5,19 @@
        But app_manager start in nano2 (192.168.123.14) and
        lead_teleop.launch start in nano2 machine. -->
   <!-- PXN-2113 Pro 11ff:0837 -->
+  <arg name="joy_topic" default="/joy_head/joy_raw" />
+  <arg name="joy_dev" default="/dev/ttyACM0" />
   <arg name="deadzone" default="0.3" />
+  <arg name="debounce_period" default="50" />
+  <arg name="press_interval" default="500" />
 
   <!-- custom hardware for rosserial/joy node -->
   <node name="serial_node" type="serial_node.py"
         pkg="rosserial_python" respawn="true" >
-    <remap from="joy" to="/joy_head/joy_raw" />
-    <param name="port" value="/dev/ttyACM0" />
+    <remap from="joy" to="$(arg joy_topic)" />
+    <param name="port" value="$(arg joy_dev)" />
     <param name="deadzone" value="$(arg deadzone)" />
+    <param name="debounce_period" value="$(arg debounce_period)" />
+    <param name="press_interval" value="$(arg press_interval)" />
   </node>
 </launch>
