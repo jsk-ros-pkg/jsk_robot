@@ -112,6 +112,7 @@ function copy_data () {
     # enable Internet with USB LTE module
     if [[ "${hostname}" == "192.168.123.161" ]]; then
         sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo systemctl restart dhcpcd"
     fi
     set +x
 }
