@@ -34,13 +34,13 @@ set -euf -o pipefail
 # Check if ros has been cross-compilled
 if [ ! -d "$(pwd)/${TARGET_MACHINE}_${TARGET_DIRECTORY}" ]; then
     echo "ERROR: System directory is not found" 1>&2
-    echo "ERROR: please build ros for pepper first" 1>&2
+    echo "ERROR: please build ros for Unitree first" 1>&2
     exit 1
 fi
 
 # Get password
 
-# Receive pepper hostname or ip
+# Receive Unitree hostname or ip
 echo 'Automatic install script for ros unitree Go1 \n'
 echo "!!! CAUTION !!! If you modifeid files in the Go1, it will be removed/overwrited"
 
