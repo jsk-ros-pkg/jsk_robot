@@ -33,6 +33,12 @@
 
   <include file="$(find app_manager)/launch/app_manager.launch" />
 
+  <!-- start lead teleop.launch -->
+  <node name="rosservice"
+        pkg="rosservice" type="rosservice"
+        args="call --wait /robot/start_app 'name: jsk_unitree_startup/lead_teleop'"
+        output="screen" />
+
   <!-- let people to know unitree is bringup -->
   <node pkg="jsk_unitree_startup" type="wakeup.l"
         name="wakeup" output="log" />
