@@ -1,5 +1,6 @@
 <launch>
   <include file="$(find jsk_unitree_startup)/launch/lead_teleop.launch" >
     <arg name="launch_serial_node" value="false" />
+    <arg name="joy_topic" value="/joy_head/joy_raw_to_input" />
   </include>
 </launch>
