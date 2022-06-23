@@ -40,7 +40,13 @@
            (instance ros::simple-action-client :init
                      "/query_controller_states"
                      robot_controllers_msgs::QueryControllerStatesAction))
-     ))
+
+     (roseus_resume:install-interruption-handler self
+         gripper-action
+         move-base-action
+         move-base-trajectory-action)
+     (roseus_resume:install-default-intervention self)
+     t))
   (:state (&rest args)
    "We do not have :wait-until-update option for :state :worldcoords.
 In other cases, :state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency.
@@ -516,14 +522,6 @@ Example: (send self :gripper :position) => 0.00"
       (setq *co* (instance collision-object-publisher :init))
       (ros::ros-warn ";; could not find \"apply_planning_scene\" skip creating *co*~%")))
   (unless (boundp '*ri*) (setq *ri* (instance fetch-interface :init)))
-
-  (warning-message 3 "Installing interruption handler...~%")
-  (roseus_resume:install-interruption-handler *ri*
-   gripper-action
-   move-base-action
-   move-base-trajectory-action)
-  (roseus_resume:install-default-intervention *ri*)
-  (warning-message 3 "...done.~%")
 
   (ros::spin-once)
   (send *ri* :spin-once)
