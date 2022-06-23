@@ -1,0 +1,22 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/festlex-cmu/festival
+
+#
+cd ${SOURCE_DIR}
+if [ ! -e festlex-cmu_2.4-1.diff ]; then
+    wget http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-cmu/festlex-cmu_2.4-1.diff.gz
+    gunzip festlex-cmu_2.4-1.diff.gz
+    patch -p1 < festlex-cmu_2.4-1.diff
+fi
+
+##
+
+cd ${SOURCE_DIR}
+make -C lib/dicts/cmu
+
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+cp lib/dicts/cmu/cmudict-*.out     /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+cp lib/dicts/cmu/cmulex.scm        /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+cp lib/dicts/cmu/cmu_lts_rules.scm /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
