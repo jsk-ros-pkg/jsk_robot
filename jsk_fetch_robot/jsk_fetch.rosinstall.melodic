@@ -3,14 +3,19 @@
 
 # Use knorth55 fetch15 branch after the following PR is merged.
 # https://github.com/knorth55/app_manager/pull/2
+# https://github.com/knorth55/app_manager/pull/3
 # - git:
 #     local-name: PR2/app_manager
 #     uri: https://github.com/knorth55/app_manager.git
 #     version: fetch15
+# - git:
+#     local-name: PR2/app_manager
+#     uri: https://github.com/708yamaguchi/app_manager.git
+#     version: signal-timeout-fetch15
 - git:
     local-name: PR2/app_manager
-    uri: https://github.com/708yamaguchi/app_manager.git
-    version: signal-timeout-fetch15
+    uri: https://github.com/Affonso-Gui/app_manager.git
+    version: fetch15
 - git:
     local-name: RobotWebTools/rosbridge_suite
     uri: https://github.com/RobotWebTools/rosbridge_suite.git
