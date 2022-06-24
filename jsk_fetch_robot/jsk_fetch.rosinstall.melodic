@@ -134,10 +134,17 @@
 # If you upgrade realsense-ros version, please upgrade librealsense packages.
 # Currently, realsense-ros 2.3.0 (source) and librealsense 2.45.0 (apt) works
 # https://github.com/IntelRealSense/librealsense/issues/10304#issuecomment-1067354378
+# realsense_camera has a problem in src/base_realsense_node.cpp which prevents it from build (find_if -> std::find_if)
+# https://github.com/IntelRealSense/realsense-ros/issues/910
+# Using Affonso-Gui/realsense e155795440b29d4edb78827ac0d1f50e4aad8750 for now
 - git:
     local-name: IntelRealSense/realsense-ros
-    uri: https://github.com/IntelRealSense/realsense-ros.git
-    version: 2.3.0
+    uri: https://github.com/Affonso-Gui/realsense.git
+    version: fetch15
+# - git:
+#     local-name: IntelRealSense/realsense-ros
+#     uri: https://github.com/IntelRealSense/realsense-ros.git
+#     version: 2.3.0
 # Until PRs below merged, we need to use develop branch
 #   - https://github.com/fetchrobotics/fetch_open_auto_dock/pull/9
 #   - https://github.com/fetchrobotics/fetch_open_auto_dock/pull/8
