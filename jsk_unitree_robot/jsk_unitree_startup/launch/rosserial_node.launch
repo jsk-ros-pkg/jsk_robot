@@ -5,13 +5,38 @@
        But app_manager start in nano2 (192.168.123.14) and
        lead_teleop.launch start in nano2 machine. -->
   <!-- PXN-2113 Pro 11ff:0837 -->
+  <arg name="joy_topic" default="/joy_head/joy_raw" doc="joy topic read by rosserial" />
+  <arg name="joy_topic_dummy" default="/joy_head/joy_dummy" doc="Dummy input (no signal)." />
+  <arg name="joy_topic_to_input" default="/joy_head/joy_raw_to_input" doc="joy topic that is switched and output by mux." />
+  <arg name="joy_dev" default="/dev/ttyACM0" />
   <arg name="deadzone" default="0.3" />
+  <arg name="debounce_period" default="50" />
+  <arg name="press_interval" default="500" />
 
   <!-- custom hardware for rosserial/joy node -->
   <node name="serial_node" type="serial_node.py"
         pkg="rosserial_python" respawn="true" >
-    <remap from="joy" to="/joy_head/joy_raw" />
-    <param name="port" value="/dev/ttyACM0" />
+    <remap from="joy" to="$(arg joy_topic)" />
+    <param name="port" value="$(arg joy_dev)" />
     <param name="deadzone" value="$(arg deadzone)" />
+    <param name="debounce_period" value="$(arg debounce_period)" />
+    <param name="press_interval" value="$(arg press_interval)" />
   </node>
+
+  <!-- input mux: ($(arg joy_topic) & $(arg joy_topic_dummy)) -> / -->
+  <node name="input_joy_mux"
+        pkg="topic_tools" type="mux"
+        respawn="true"
+	      args="$(arg joy_topic_to_input) $(arg joy_topic_dummy) $(arg joy_topic)">
+    <remap from="mux" to="input_joy_mux" />
+  </node>
+
+  <node name="input_joy_selector"
+        pkg="jsk_robot_startup" type="mux_selector.py"
+	      respawn="true"
+	      args="$(arg joy_topic) 'm.buttons[5]==1' $(arg joy_topic) $(arg joy_topic) 'm.buttons[4]==1' $(arg joy_topic_dummy)">
+    <remap from="mux" to="input_joy_mux" />
+    <param name="wait" value="true" />
+  </node>
+
 </launch>

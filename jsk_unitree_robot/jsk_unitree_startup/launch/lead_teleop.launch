@@ -2,22 +2,27 @@
   <arg name="launch_serial_node" default="true" />
   <!-- copied from https://github.com/jsk-ros-pkg/jsk_robot/blob/9282d6b2903223d3880507be34aa646e1e048506/jsk_spot_robot/jsk_spot_head_joy/launch/head_teleop.launch -->
   <!-- PXN-2113 Pro 11ff:0837 -->
-  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="joy_dev" default="/dev/ttyACM0" />
+  <arg name="joy_topic" default="/joy_head/joy_raw" />
   <arg name="cmd_vel_topic" default="/go1/cmd_vel" />
   <arg name="pass_through" default="false" />
   <arg name="deadzone" default="0.3" />
+  <arg name="debounce_period" default="50" />
+  <arg name="press_interval" default="500" />
 
   <!-- custom hardware for rosserial/joy node -->
   <group if="$(arg launch_serial_node)" >
-    <node name="serial_node" type="serial_node.py"
-          pkg="rosserial_python" >
-      <remap from="joy" to="/joy_head/joy_raw" />
-      <param name="port" value="/dev/ttyACM0" />
-      <param name="deadzone" value="$(arg deadzone)" />
-    </node>
+    <include file="$(find jsk_unitree_startup)/launch/rosserial_node.launch" >
+      <arg name="joy" value="$(arg joy_topic)" />
+      <arg name="port" value="$(arg joy_dev)" />
+      <arg name="deadzone" value="$(arg deadzone)" />
+      <arg name="debounce_period" value="$(arg debounce_period)" />
+      <arg name="press_interval" value="$(arg press_interval)" />
+    </include>
   </group>
 
   <include file="$(find jsk_robot_startup)/launch/head_teleop.launch">
+    <arg name="joy_topic_raw" default="$(arg joy_topic)" />
     <arg name="joy_name_space" default="/go1/" />
     <arg name="launch_joy_node" default="false" />
     <arg name="teleop_twist_joy_param_file" default="$(find jsk_unitree_startup)/config/lead_teleop_twist_joy.yaml" />
