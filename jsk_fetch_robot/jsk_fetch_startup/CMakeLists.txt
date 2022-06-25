@@ -21,11 +21,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   tf2_eigen
   tf2_msgs
-  pcl_ros
-  pcl_conversions
 )
 find_package(Boost REQUIRED COMPONENTS)
-find_package(PCL 1.8 REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -41,18 +38,10 @@ catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  ${PCL_INCLUDE_DIRS}
 )
 add_executable(trashbins_pose_estimator src/trashbins_pose_estimator.cpp)
 target_link_libraries(trashbins_pose_estimator
   ${catkin_LIBRARIES}
-  ${PCL_LIBRARIES}
-)
-add_executable(container_occupancy_detector src/container_occupancy_detector.cpp)
-target_link_libraries(container_occupancy_detector
-  ${catkin_LIBRARIES}
-  ${PCL_LIBRARIES}
-  ${Boost_LIBRARIES}
 )
 
 #############
