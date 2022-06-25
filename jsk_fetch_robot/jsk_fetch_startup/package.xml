@@ -74,6 +74,9 @@
   <!-- for rwt_nav -->
   <run_depend>robot_pose_publisher</run_depend>
 
+  <!-- for container occupancy detection -->
+  <run_depend>jsk_pcl_ros</run_depend>
+
   <test_depend>rostest</test_depend>
 
   <export>
