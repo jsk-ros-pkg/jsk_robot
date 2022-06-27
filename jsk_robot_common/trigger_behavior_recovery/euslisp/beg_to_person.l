@@ -142,6 +142,7 @@
 
 (defun execute-cb (server goal)
   (let (result nearest-person-coords)
+    (ros::ros-warn "server called")
     (setq result (send server :result))
     (setq nearest-person-coords
           (get-nearest-person-to-path
@@ -171,6 +172,8 @@
                   "~behavior"
                   trigger_behavior_msgs::TriggerBehaviorAction
                   :execute-cb #'execute-cb))
+
+(ros::ros-info "initialized")
 
 (ros::rate 500)
 (while (ros::ok)

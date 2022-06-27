@@ -4,6 +4,7 @@
       pkg="jsk_perception"
       type="rect_array_in_panorama_to_bounding_box_array.py"
       name="edgetpu_panorama_object_detection_rect_array_in_panorama_to_bounding_box_array"
+      output="log"
       >
       <remap from="~panorama_image" to="/dual_fisheye_to_panorama/quater/output" />
       <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
