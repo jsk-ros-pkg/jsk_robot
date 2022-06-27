@@ -110,9 +110,9 @@
     coords-robotbased))
 
 (defun look-at-target-coords (target-coords)
-  (send *robot* :angle-vector (send *ri* :state :potentio-vector))
-  (send *robot* :look-at-target target-coords)
-  (send *ri* :angle-vector-raw (send *robot* :angle-vector) 500)
+  (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
+  (send *fetch* :look-at-target target-coords)
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 500)
   )
 
 (defun callback-path (msg)
