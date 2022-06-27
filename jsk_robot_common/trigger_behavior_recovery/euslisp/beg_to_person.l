@@ -53,10 +53,12 @@
 (setq *path-coords-list* nil)
 (setq *people-coords-list* nil)
 
-(defun check-person-on-path (person-coords path-coords-list &key (threshold 1.0))
+(defun check-person-on-path (person-coords path-coords-list &key (print-dist nil) (threshold 1.0))
   (let (distance)
     (setq distance (calc-distance-person-to-path
                      person-coords path-coords-list))
+    (if print-dist
+      (ros::ros-info "distance: ~A" distance))
     (< distance threshold)))
 
 (defun calc-distance-person-to-path (person-coords path-coords-list)
