@@ -111,7 +111,7 @@
     (if coords-odom-to-path-frame
       (setq *path-coords-list*
           (mapcar
-            (lambda (ros-pose-on-path-frame)
+            #'(lambda (ros-pose-on-path-frame)
               (transform-coords
                 coords-odom-to-path-frame
                 (ros::tf-pose->coords (send ros-pose-on-path-frame :pose))
@@ -131,7 +131,7 @@
     (if coords-odom-to-bbox-frame
       (setq *people-coords-list*
           (mapcar
-            (lambda (bbox)
+            #'(lambda (bbox)
               (transform-coords
                 coords-odom-to-bbox-frame
                 (ros::tf-pose->coords (send bbox :pose))
@@ -174,6 +174,6 @@
 
 (ros::rate 500)
 (while (ros::ok)
- (send s :worker)
+ (send *as* :worker)
  (ros::spin-once)
  (ros::sleep))
