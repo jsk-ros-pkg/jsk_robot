@@ -150,8 +150,8 @@
   (let (result nearest-person-coords)
     (ros::ros-warn "server called")
     (setq result (send server :result))
-    (ros::ros-info "*people-coords-list*: ~A" *people-coords-list*:)
-    (ros::ros-info "*path-coords-list*: ~A" *path-coords-list*:)
+    (ros::ros-info "*people-coords-list*: ~A" *people-coords-list*)
+    (ros::ros-info "*path-coords-list*: ~A" *path-coords-list*)
     (setq nearest-person-coords
           (get-nearest-person-to-path
             *people-coords-list*
