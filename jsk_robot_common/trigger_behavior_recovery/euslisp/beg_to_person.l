@@ -163,7 +163,8 @@
             (not *people-coords-list*))
       (progn
         (send result :result :success nil)
-        (send result :result :message "No message cached.")
+        (send result :result :message "No message cached yet.")
+        (ros::ros-info "No message cached yet.")
         (send server :set-aborted result)
         (return-from execute-cb)
         ))
