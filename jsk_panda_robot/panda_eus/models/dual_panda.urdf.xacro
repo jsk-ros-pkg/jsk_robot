@@ -212,6 +212,23 @@
     <origin rpy="0.0 0.0 -1.5707963267949" xyz="0.08 0.0 1.505"/>
   </joint-->
 
+  <!-- eus end effector link -->
+  <link name="$(arg arm_id_1)_end_effector" >
+  </link>
+  <joint name="$(arg arm_id_1)_end_effector_joint" type="fixed">
+    <parent link="$(arg arm_id_1)_link7"/>
+    <child link="$(arg arm_id_1)_end_effector"/>
+    <origin xyz="0 0 0.2" rpy="0 -1.570796327 -0.785398163"/>
+  </joint>
+
+  <link name="$(arg arm_id_2)_end_effector" >
+  </link>
+  <joint name="$(arg arm_id_2)_end_effector_joint" type="fixed">
+    <parent link="$(arg arm_id_2)_link7"/>
+    <child link="$(arg arm_id_2)_end_effector"/>
+    <origin xyz="0 0 0.2" rpy="0 -1.570796327 -0.785398163"/>
+  </joint>
+
   <!-- gazebo -->
   <xacro:macro name="gazebo_transmission" params="joint_name" >
     <transmission name="${joint_name}_trans">
