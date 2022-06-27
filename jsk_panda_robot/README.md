@@ -61,7 +61,13 @@ source devel/setup.bash
             reset_phantom: true
             wait: 3.0" 
         ```
-2.  Start user PC: `$ rosrun  jsk_panda_teleop start_master_side.sh`, then you should see rviz popup like this: 
+2.  Start user PC:
+    ```
+    $ rossetmaster dual_panda
+    $ rossetip
+    $ rosrun jsk_panda_teleop start_master_side.sh
+    ```
+    Then you should see rviz popup like this: 
 ![image](https://user-images.githubusercontent.com/43567489/159150327-5e4d246b-2311-4eb4-814a-7f6fd11b6f29.png)
 
 #### Move robot
