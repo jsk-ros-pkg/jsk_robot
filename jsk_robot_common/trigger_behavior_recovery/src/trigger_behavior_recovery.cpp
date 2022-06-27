@@ -62,7 +62,7 @@ void TriggerBehaviorRecovery::trigger()
     }
     auto result = ptr_action_client_->getResult();
     if ( result->success ) {
-        ROS_INFO_STREAM("Behavior succeeded. message: " << result->message);
+        ROS_WARN_STREAM("Behavior succeeded. message: " << result->message);
         return;
     } else {
         ROS_ERROR_STREAM("Behavior failed. message: " << result->message);
