@@ -17,4 +17,4 @@
   (send *ri* :stop-grasp :rarm))
 
 (main)
-(eixt)
+(exit)
