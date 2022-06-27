@@ -79,9 +79,15 @@
                 person-coords
                 path-coords-list))
       (if (not nearest-distance)
-        (setq nearest-distance temp-distance))
+        (progn
+          (setq nearest-distance temp-distance)
+          (setq nearest-person-coords person-coords)
+          ))
       (if (< temp-distance nearest-distance)
-        (setq nearest-distance temp-distance))
+        (progn
+          (setq nearest-distance temp-distance)
+          (setq nearest-person-coords person-coords)
+          ))
       )
     nearest-person-coords))
 
@@ -144,6 +150,8 @@
   (let (result nearest-person-coords)
     (ros::ros-warn "server called")
     (setq result (send server :result))
+    (ros::ros-info "*people-coords-list*: ~A" *people-coords-list*:)
+    (ros::ros-info "*path-coords-list*: ~A" *path-coords-list*:)
     (setq nearest-person-coords
           (get-nearest-person-to-path
             *people-coords-list*
