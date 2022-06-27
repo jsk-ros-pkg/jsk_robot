@@ -150,8 +150,6 @@
   (let (result nearest-person-coords)
     (ros::ros-warn "server called")
     (setq result (send server :result))
-    (ros::ros-info "*people-coords-list*: ~A" *people-coords-list*)
-    (ros::ros-info "*path-coords-list*: ~A" *path-coords-list*)
     (setq nearest-person-coords
           (get-nearest-person-to-path
             *people-coords-list*
@@ -163,12 +161,14 @@
       (progn
         (look-at-target-coords (transform-coords-odombased-to-robotbased nearest-person-coords))
         (send *ri* :speak-jp *speak-text*)
-        (send result :success t)
-        (send result :message "Beg to person to make way.")
+        (send result :result :success t)
+        (send result :result :message "Beg to person to make way.")
+        (ros::ros-info "Beg to person to make way.")
         )
       (progn
-        (send result :success t)
-        (send result :message "No person on path.")
+        (send result :result :success nil)
+        (send result :result :message "No person on path.")
+        (ros::ros-info "No person on path.")
         )
       )
     (send server :set-succeeded result)
