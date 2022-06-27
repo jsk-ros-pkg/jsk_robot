@@ -29,14 +29,14 @@
     <arg if = "$(arg quiet)" name="other_options" value="-q"/>
     <arg name="other_topics" value="$(arg other_topics)
                                     /audio
-				                    /camera/depth/camera_info
+                                    /camera/depth/camera_info
                                     /camera/depth/image_raw/compressedDepth
                                     /camera/rgb/camera_info
                                     /camera/rgb/image_raw/compressed
-				                    /right_camera/camera_info
-        				            /right_camera/image_raw/compressed
-				                    /left_camera/camera_info
-				                    /left_camera/image_raw/compressed
+                                    /right_camera/camera_info
+                                    /right_camera/image_raw/compressed
+                                    /left_camera/camera_info
+                                    /left_camera/image_raw/compressed
                                     /dual_panda/larm/status_overlay
                                     /dual_panda/rarm/status_overlay
                                     /dual_panda/larm/franka_gripper/joint_states
@@ -44,8 +44,8 @@
                                     /dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
                                     /dual_panda/dual_arm_cartesian_pose_controller/left_frame
                                     /dual_panda/dual_arm_cartesian_pose_controller/right_frame
-				                    /dual_panda/end_coords/rarm
-				                    /dual_panda/end_coords/larm
+                                    /dual_panda/end_coords/rarm
+                                    /dual_panda/end_coords/larm
                                     /dual_panda/joint_states
                                     /dual_panda/larm_state_controller/F_ext
                                     /dual_panda/larm_state_controller/franka_states
