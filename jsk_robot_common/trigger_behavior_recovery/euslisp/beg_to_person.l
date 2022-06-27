@@ -112,7 +112,7 @@
 (defun look-at-target-coords (target-coords)
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
   (send *fetch* :look-at-target target-coords)
-  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 500)
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000)
   )
 
 (defun callback-path (msg)
@@ -177,7 +177,7 @@
           *path-coords-list*)
       (progn
         (look-at-target-coords (transform-coords-fixedbased-to-robotbased nearest-person-coords))
-        (send *ri* :speak-jp *speak-text*)
+        (send *ri* :speak-jp *speak-text* :wait t)
         (send result :result :success t)
         (send result :result :message "Beg to person to make way.")
         (ros::ros-info "Beg to person to make way.")

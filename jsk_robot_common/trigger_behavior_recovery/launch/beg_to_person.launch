@@ -27,7 +27,8 @@
       <remap from="~path" to="/move_base/TrajectoryPlannerROS/global_plan" />
       <remap from="~person_bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
       <rosparam>
-        odom_frame_id: "odom"
+        fixed_frame_id: "map"
+        base_frame_id: "base_link"
         speak_text: "道をあけて下さい"
       </rosparam>
   </node>
