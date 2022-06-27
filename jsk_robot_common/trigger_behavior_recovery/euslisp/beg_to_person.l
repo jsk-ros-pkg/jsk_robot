@@ -148,6 +148,7 @@
           (get-nearest-person-to-path
             *people-coords-list*
             *path-coords-list*))
+    (ros::ros-info "nearest-person-coords: ~A" nearest-person-coords)
     (if (check-person-on-path
           nearest-person-coords
           *path-coords-list*)
