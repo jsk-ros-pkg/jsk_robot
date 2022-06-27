@@ -1,0 +1,33 @@
+<launch>
+  <!-- Detection of Panorama Object Detector -->
+  <node
+      pkg="jsk_perception"
+      type="rect_array_in_panorama_to_bounding_box_array.py"
+      name="edgetpu_panorama_object_detection_rect_array_in_panorama_to_bounding_box_array"
+      >
+      <remap from="~panorama_image" to="/dual_fisheye_to_panorama/quater/output" />
+      <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
+      <remap from="~input_class" to="/edgetpu_panorama_object_detector/output/class" />
+      <remap from="~input_rects" to="/edgetpu_panorama_object_detector/output/rects" />
+      <remap from="~bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
+      <rosparam>
+          frame_fixed: "odom"
+          dimensions_labels:
+              person: [0.5, 0.5, 1.5]
+      </rosparam>
+  </node>
+
+  <node
+      pkg="trigger_behavior_recovery"
+      type="beg_to_person.l"
+      name="beg_to_person"
+      output="screen"
+      >
+      <remap from="~path" to="/move_base/TrajectoryPlannerROS/global_plan" />
+      <remap from="~person_bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
+      <rosparam>
+        odom_frame_id: "odom"
+        speak_text: "道をあけて下さい"
+      </rosparam>
+  </node>
+</launch>
