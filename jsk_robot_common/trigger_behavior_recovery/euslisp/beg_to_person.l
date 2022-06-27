@@ -10,6 +10,31 @@
 ;;  - boundin box array of people topic must exist
 ;;
 
+;;
+;; ROS Interfaces
+;;
+;;   Subscribers
+;;
+;;     * `~path` (type: nav_msgs::Path)
+;;       Path to check if a person stands near
+;;
+;;     * `~person_bbox_array` (type: jsk_recognition_msgs::BoundingBoxArray)
+;;       Bounding box array of people.
+;;
+;;   Action Server
+;;
+;;     * `~behavior` (type: trigger_behavior_msgs::TriggerBehaviorAction)
+;;       Trigger behavior action server
+;;
+;;   Parameters
+;;
+;;     * `~odom_frame_id` (type: string)
+;;       Odometry frame ID
+;;
+;;     * `~speak_text` (type: string)
+;;       Speeched text when person on path
+;;
+
 
 (ros::load-ros-manifest "trigger_behavior_msgs")
 (ros::load-ros-manifest "nav_msgs")
@@ -139,14 +164,13 @@
     (send server :set-succeeded result)
     ))
 
-(ros::subscribe "~path" nav_msgs::Path callback-path)
-(ros::subscribe "~person_bbox_array" jsk_recognition_msgs::BoundingBoxArray callback-bbox-array)
+(ros::subscribe "~path" nav_msgs::Path #'callback-path)
+(ros::subscribe "~person_bbox_array" jsk_recognition_msgs::BoundingBoxArray #'callback-bbox-array)
 (setq *as*
       (instance ros::simple-action-server :init
                   "~behavior"
                   trigger_behavior_msgs::TriggerBehaviorAction
                   :execute-cb #'execute-cb))
-(ros::subscribe "~path" nav_msgs::Path callback-path)
 
 (ros::rate 500)
 (while (ros::ok)
