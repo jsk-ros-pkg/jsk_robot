@@ -47,6 +47,7 @@
 (ros::load-ros-manifest "jsk_recognition_msgs")
 
 (load "package://fetcheus/fetch-interface.l")
+(load "package://trigger_behavior_recovery/euslisp/utils.l")
 
 (ros::roseus "beg_to_person")
 (fetch-init)
@@ -57,62 +58,19 @@
 (setq *fixed-frame-id* (ros::get-param "~fixed_frame_id" "odom"))
 (setq *base-frame-id* (ros::get-param "~base_frame_id" "base_link"))
 (setq *speak-text* (ros::get-param "~speak_text" "道をあけて下さい"))
+
 (setq *path-coords-list* nil)
 (setq *people-coords-list* nil)
 
-(defun check-person-on-path (person-coords path-coords-list &key (threshold 2000))
-  (let (distance)
-    (setq distance (calc-distance-person-to-path person-coords path-coords-list))
-    (ros::ros-info "distance: ~A" distance)
-    (< distance threshold)))
-
-(defun calc-distance-person-to-path (person-coords path-coords-list)
-  (let (nearest-distance temp-distance)
-    (dolist (path-coords path-coords-list)
-      (setq temp-distance (distance (send path-coords :pos) (send person-coords :pos)))
-      (if (not nearest-distance)
-          (setq nearest-distance temp-distance)
-        (progn
-          (if (< temp-distance nearest-distance)
-              (setq nearest-distance temp-distance)
-            )
-          )
-        )
-      )
-    nearest-distance))
-
-(defun get-nearest-person-to-path (people-coords-list path-coords-list)
-  (let (nearest-person-coords nearest-distance temp-distance)
-    (dolist (person-coords people-coords-list)
-      (setq temp-distance
-              (calc-distance-person-to-path
-                person-coords
-                path-coords-list))
-      (if (not nearest-distance)
-        (progn
-          (setq nearest-distance temp-distance)
-          (setq nearest-person-coords person-coords)
-          ))
-      (if (< temp-distance nearest-distance)
-        (progn
-          (setq nearest-distance temp-distance)
-          (setq nearest-person-coords person-coords)
-          ))
-      )
-    nearest-person-coords))
-
-(defun transform-coords-fixedbased-to-robotbased (coords-odombased)
+(defun transform-coords-fixedbased-to-robotbased (coords-fixedbased)
   (let (coords-robotbased
-        (coords-fixed-to-robot
+        (coords-robot-to-fixed
            (send *tfl* :lookup-transform
-                 *fixed-frame-id*
                  *base-frame-id*
+                 *fixed-frame-id*
                  (ros::time)))
         )
-    (setq coords-robotbased
-          (transform-coords
-            (send coords-fixed-to-robot :inverse-transformation)
-            coords-odombased))
+    (setq coords-robotbased (transform-coords coords-robot-to-fixed coords-fixedbased))
     coords-robotbased))
 
 (defun look-at-target-coords (target-coords)
@@ -171,29 +129,25 @@
   )
 
 (defun execute-cb (server goal)
-  (let (result nearest-person-coords)
-    (ros::ros-warn "server called")
-    (setq result (send server :result))
-    (if (or (not *path-coords-list*)
-            (not *people-coords-list*))
+  (ros::ros-warn "server called")
+  (let (nearest-person-coords
+        target-person-coords
+        (result (send server :result))
+        )
+    (if (or (not *path-coords-list*) (not *people-coords-list*))
       (progn
         (send result :result :success nil)
         (send result :result :message "No message cached yet.")
-        (ros::ros-info "No message cached yet.")
+        (ros::ros-error "No message cached yet.")
         (send server :set-aborted result)
         (return-from execute-cb)
         ))
-    (setq nearest-person-coords
-          (get-nearest-person-to-path
-            *people-coords-list*
-            *path-coords-list*))
-    (ros::ros-info "nearest-person-coords: ~A" nearest-person-coords)
+    (setq nearest-person-coords (get-nearest-object-to-path *people-coords-list* *path-coords-list*))
     (publish-debug-pose nearest-person-coords)
-    (if (check-person-on-path
-          nearest-person-coords
-          *path-coords-list*)
+    (if (check-object-on-path nearest-person-coords *path-coords-list*)
       (progn
-        (look-at-target-coords (transform-coords-fixedbased-to-robotbased nearest-person-coords))
+        (setq target-person-coords (transform-coords-fixedbased-to-robotbased nearest-person-coords))
+        (look-at-target-coords target-person-coords)
         (send *ri* :speak-jp *speak-text* :wait t)
         (send result :result :success t)
         (send result :result :message "Beg to person to make way.")
