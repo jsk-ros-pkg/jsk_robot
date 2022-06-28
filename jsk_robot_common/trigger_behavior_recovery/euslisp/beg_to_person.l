@@ -13,6 +13,11 @@
 ;;
 ;; ROS Interfaces
 ;;
+;;   Publisher
+;;
+;;    * `~debug` (type: geometry_msgs::PoseStamped)
+;;       target object pose to look at
+;;
 ;;   Subscribers
 ;;
 ;;     * `~path` (type: nav_msgs::Path)
@@ -38,6 +43,7 @@
 
 (ros::load-ros-manifest "trigger_behavior_msgs")
 (ros::load-ros-manifest "nav_msgs")
+(ros::load-ros-manifest "geometry_msgs")
 (ros::load-ros-manifest "jsk_recognition_msgs")
 
 (load "package://fetcheus/fetch-interface.l")
@@ -155,6 +161,15 @@
             (send msg :boxes))))
     ))
 
+(defun publish-debug-pose (coords)
+  (let ((msg (instance geometry_msgs::PoseStamped :init)))
+    (send msg :header :frame_id *fixed-frame-id*)
+    (send msg :header :stamp (ros::time-now))
+    (send msg :pose (ros::coords->tf-pose coords))
+    (ros::publish "~debug" msg)
+    )
+  )
+
 (defun execute-cb (server goal)
   (let (result nearest-person-coords)
     (ros::ros-warn "server called")
@@ -173,6 +188,7 @@
             *people-coords-list*
             *path-coords-list*))
     (ros::ros-info "nearest-person-coords: ~A" nearest-person-coords)
+    (publish-debug-pose nearest-person-coords)
     (if (check-person-on-path
           nearest-person-coords
           *path-coords-list*)
@@ -194,6 +210,7 @@
 
 (ros::subscribe "~path" nav_msgs::Path #'callback-path)
 (ros::subscribe "~person_bbox_array" jsk_recognition_msgs::BoundingBoxArray #'callback-bbox-array)
+(ros::advertise "~debug" geometry_msgs::Posestamped 1)
 (setq *as*
       (instance ros::simple-action-server :init
                   "~behavior"
