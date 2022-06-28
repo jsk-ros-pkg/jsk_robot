@@ -39,6 +39,7 @@
     version: fetch15
 # we need to use the development branch until PR below are merged.
 #  - https://github.com/jsk-ros-pkg/jsk_common/pull/1719
+#  - https://github.com/jsk-ros-pkg/jsk_common/pull/1746
 # Waiting 2.2.12 release
 # - git:
 #     local-name: jsk-ros-pkg/jsk_common
