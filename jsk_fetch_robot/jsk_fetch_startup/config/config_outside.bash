@@ -7,6 +7,6 @@ SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}"; )" &> /dev/null && 
 if [ $(hostname) = 'fetch15' ]; then
   export NETWORK_DEFAULT_PROFILE_ID="sanshiro-outside";
 elif [ $(hostname) = 'fetch1075' ]; then
-  export NETWORK_DEFAULT_ROS_INTERFACE="wlan0";
+  export NETWORK_DEFAULT_ROS_INTERFACE="fetch1075.local";
   export NETWORK_DEFAULT_PROFILE_ID="sanshiro-outside";
 fi
