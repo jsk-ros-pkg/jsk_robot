@@ -13,7 +13,7 @@ for file in $(ls *.conf); do
 done
 sudo supervisorctl reread
 # Enable jsk_dstat job to save the csv log under /var/log
-ln -sf /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk-dstat.csv
+sudo ln -sf /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk-dstat.csv
 
 sudo ln -sf $jsk_fetch_startup/config/config.bash /var/lib/robot/config.bash
 sudo ln -sf $jsk_fetch_startup/config/config.bash /var/lib/robot/config_outside.bash
