@@ -7,7 +7,7 @@ if [ $(hostname) = 'fetch15' ]; then
   export DEFAULT_WARNING_SPEAKER=cmu_us_fem.flitevox;
 
   export USE_BASE_CAMERA_MOUNT=true;
-  export USE_HEAD_BOX=true;
+  export USE_HEAD_BOX=false;
   export USE_HEAD_L515=true;
   export USE_INSTA360_STAND=true;
 
