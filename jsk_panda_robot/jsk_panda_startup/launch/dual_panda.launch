@@ -22,9 +22,6 @@
   <arg name="rviz"     default="true" />
   <arg name="load_gripper"  default="false" />
   <arg name="gripper_homed" default="false" />
-  <!-- this pub rate is same as gripper, three times as big as arms-->
-  <arg name="end_coords_publishing_hz" default="30" />
-
 
   <include file="$(find franka_control)/launch/franka_combined_control.launch" >
     <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
@@ -77,10 +74,6 @@
       <param name="use_window" value="false"/>
     </node>
   </group>
-
-  <!-- add end-pose publisher -->
-  <rosparam param="/dual_panda/end_coords_pub_hz" subst_value="True">$(arg end_coords_publishing_hz)</rosparam>
-  <node pkg="jsk_panda_startup" type="end-coords_publisher.l" name="end_coords_publisher" />
 
   <!-- hand eye cameras -->
   <node name="uvc_camera_left" pkg="uvc_camera" type="uvc_camera_node" output="screen">
