@@ -34,13 +34,13 @@ set -euf -o pipefail
 # Check if ros has been cross-compilled
 if [ ! -d "$(pwd)/${TARGET_MACHINE}_${TARGET_DIRECTORY}" ]; then
     echo "ERROR: System directory is not found" 1>&2
-    echo "ERROR: please build ros for pepper first" 1>&2
+    echo "ERROR: please build ros for Unitree first" 1>&2
     exit 1
 fi
 
 # Get password
 
-# Receive pepper hostname or ip
+# Receive Unitree hostname or ip
 echo 'Automatic install script for ros unitree Go1 \n'
 echo "!!! CAUTION !!! If you modifeid files in the Go1, it will be removed/overwrited"
 
@@ -107,6 +107,12 @@ function copy_data () {
         sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find respeaker_ros)/config/60-respeaker.rules /etc/udev/rules.d/60-respeaker.rules"
         #
         sshpass -p $PASS ssh -t ${user}@${hostname} "ls -al /etc/udev/rules.d/; sudo systemctl restart udev"
+    fi
+
+    # enable Internet with USB LTE module
+    if [[ "${hostname}" == "192.168.123.161" ]]; then
+        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo systemctl restart dhcpcd"
     fi
     set +x
 }
