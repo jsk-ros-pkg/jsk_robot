@@ -1,0 +1,14 @@
+<launch>
+  <node
+      pkg="trigger_behavior_recovery"
+      type="speak_and_wait_behavior.py"
+      name="speak_and_wait_behavior"
+      output="screen"
+      >
+      <rosparam>
+        speak_text: "とおれません、みちをあけてください。"
+        duration_wait: 5.0
+        sound_action: /robotsound_jp
+      </rosparam>
+  </node>
+</launch>
