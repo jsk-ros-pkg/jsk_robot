@@ -176,3 +176,30 @@ repositories:
   flac/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/f/flac/flac_1.3.2-1.debian.tar.xz
+  libncurses:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/ncurses_6.1.orig.tar.gz
+  libncurses/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/ncurses_6.1-1ubuntu1.debian.tar.xz
+  speech_tools:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/s/speech-tools/speech-tools_2.5.0.orig.tar.gz
+  speech_tools/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/s/speech-tools/speech-tools_2.5.0-4.debian.tar.xz
+  festival:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festival/festival_2.5.0.orig.tar.gz
+  festival/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festival/festival_2.5.0-1.debian.tar.xz
+  festvox-kallpc16k:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festvox-kallpc16k/festvox-kallpc16k_2.4.orig.tar.gz
+  festlex-cmu:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-cmu/festlex-cmu_2.4.orig.tar.gz
+  festlex-poslex:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-poslex/festlex-poslex_2.4.orig.tar.gz
