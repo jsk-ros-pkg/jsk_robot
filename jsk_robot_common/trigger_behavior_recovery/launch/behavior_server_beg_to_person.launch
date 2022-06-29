@@ -21,8 +21,8 @@
 
   <node
       pkg="trigger_behavior_recovery"
-      type="beg_to_person.l"
-      name="beg_to_person"
+      type="beg_to_person_behavior.l"
+      name="beg_to_person_behavior"
       output="screen"
       >
       <remap from="~path" to="/move_base/TrajectoryPlannerROS/global_plan" />
