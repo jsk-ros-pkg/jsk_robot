@@ -1,5 +1,6 @@
 <launch>
-  <!-- Detection of Panorama Object Detector -->
+
+
   <node
       pkg="jsk_perception"
       type="rect_array_in_panorama_to_bounding_box_array.py"
@@ -12,7 +13,7 @@
       <remap from="~input_rects" to="/edgetpu_panorama_object_detector/output/rects" />
       <remap from="~bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
       <rosparam>
-          frame_fixed: "odom"
+          frame_fixed: "map"
           dimensions_labels:
               person: [0.5, 0.5, 1.5]
       </rosparam>
