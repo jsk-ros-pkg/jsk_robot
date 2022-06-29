@@ -29,4 +29,8 @@
     <arg name="joystick_teleop_param_file" default="$(find jsk_unitree_startup)/config/lead_joystick_teleop.yaml" />
   </include>
 
+  <!-- smach node to tell current status  -->
+  <node pkg="jsk_unitree_startup" type="lead-teleop-state.l"
+        name="lead_teleop_state" />
+
 </launch>
