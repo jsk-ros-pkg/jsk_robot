@@ -43,6 +43,7 @@
 
 (ros::load-ros-manifest "trigger_behavior_msgs")
 (ros::load-ros-manifest "nav_msgs")
+(ros::load-ros-manifest "coral_usb")
 (ros::load-ros-manifest "geometry_msgs")
 (ros::load-ros-manifest "jsk_recognition_msgs")
 
@@ -58,6 +59,11 @@
 (setq *fixed-frame-id* (ros::get-param "~fixed_frame_id" "odom"))
 (setq *base-frame-id* (ros::get-param "~base_frame_id" "base_link"))
 (setq *speak-text* (ros::get-param "~speak_text" "道をあけて下さい"))
+(setq *use-panorama-coral-detector* (ros::get-param "~use_panorama_coral_detector" nil))
+(if *use-panorama-coral-detector*
+  (progn
+    (setq *panorama-edgetpu-node-name* "~panorama_edgetpu_node_name" "edgetpu_panorama_object_detector")
+    ))
 
 (setq *path-coords-list* nil)
 (setq *people-coords-list* nil)
@@ -129,7 +135,32 @@
   )
 
 (defun execute-cb (server goal)
-  (ros::ros-warn "server called")
+  (ros::ros-warn "Action server called")
+  (if *use-panorama-coral-detector*
+    (let (ret res result (req (instance coral_usb::StartNodeRequest :init)))
+      (send req :name *panorama-edgetpu-node-name*)
+      (setq ret (ros::wait-for-service "~start_edgetpu_node" :timeout 5.0))
+      (if (not ret)
+        (progn
+          (send result :result :success nil)
+          (send result :result :message "Failed to find edgetpu manager interface.")
+          (ros::ros-error "Failed to find edgetpu manager interface.")
+          (send server :set-aborted result)
+          (return-from execute-cb)
+          )
+        )
+      (setq res (ros::service-call "~start_edgetpu_node" req t))
+      (if (not (send res :success))
+        (progn
+          (send result :result :success nil)
+          (send result :result :message "Failed to start edgetpu node.")
+          (ros::ros-error "Failed to start edgetpu node.")
+          (send server :set-aborted result)
+          (return-from execute-cb)
+          )
+        )
+      )
+    )
   (let (nearest-person-coords
         target-person-coords
         (result (send server :result))
@@ -165,6 +196,9 @@
 (ros::subscribe "~path" nav_msgs::Path #'callback-path)
 (ros::subscribe "~person_bbox_array" jsk_recognition_msgs::BoundingBoxArray #'callback-bbox-array)
 (ros::advertise "~debug" geometry_msgs::Posestamped 1)
+(if *use-panorama-coral-detector*
+  (progn
+    ))
 (setq *as*
       (instance ros::simple-action-server :init
                   "~behavior"

@@ -1,6 +1,5 @@
 <launch>
 
-
   <node
       pkg="jsk_perception"
       type="rect_array_in_panorama_to_bounding_box_array.py"
@@ -27,10 +26,13 @@
       >
       <remap from="~path" to="/move_base/TrajectoryPlannerROS/global_plan" />
       <remap from="~person_bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
+      <remap from="~start_edgetpu_node" to="/edgetpu_object_node_manager/start" />
       <rosparam>
         fixed_frame_id: "map"
         base_frame_id: "base_link"
         speak_text: "道をあけて下さい"
+        use_panorama_coral_detector: True
+        panorama_edgetpu_node_name: "edgetpu_panorama_object_detector"
       </rosparam>
   </node>
 </launch>
