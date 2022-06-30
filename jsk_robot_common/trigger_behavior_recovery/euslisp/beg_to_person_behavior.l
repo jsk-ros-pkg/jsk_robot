@@ -182,7 +182,7 @@
         (setq target-person-coords (transform-coords-fixedbased-to-robotbased nearest-person-coords))
         (look-at-target-coords target-person-coords)
         (send *ri* :speak-jp *speak-text* :wait t)
-        (unix:sleep *duration-wait*)
+        (unix:usleep (round (* 1000000 *duration-wait*)))
         (send result :result :success t)
         (send result :result :message "Beg to person to make way.")
         (ros::ros-info "Beg to person to make way.")
