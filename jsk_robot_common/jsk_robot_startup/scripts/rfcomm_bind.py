@@ -37,6 +37,11 @@ class RfcommBind(object):
         else:
             rospy.logerr('Cannot find {}'.format(yaml_path))
 
+    def release_devices(self):
+        subprocess.call(
+            ['sudo', 'rfcomm', 'release', 'all'],
+            stdout=PIPE, stderr=PIPE)
+
     def bind_devices(self):
         dev_num = 0
         for dev in self.rfcomm_devices:
@@ -57,4 +62,5 @@ class RfcommBind(object):
 if __name__ == "__main__":
     rospy.init_node('rfcomm_bind')
     app = RfcommBind()
+    app.release_devices()
     app.bind_devices()
