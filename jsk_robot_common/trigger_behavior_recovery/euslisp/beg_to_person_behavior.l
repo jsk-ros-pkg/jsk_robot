@@ -139,7 +139,7 @@
   (if *use-panorama-coral-detector*
     (let (ret res result (req (instance coral_usb::StartNodeRequest :init)))
       (send req :name *panorama-edgetpu-node-name*)
-      (setq ret (ros::wait-for-service "~start_edgetpu_node" :timeout 5.0))
+      (setq ret (ros::wait-for-service "~start_edgetpu_node" 5.0))
       (if (not ret)
         (progn
           (send result :result :success nil)
