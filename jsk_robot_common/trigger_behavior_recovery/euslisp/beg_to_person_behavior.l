@@ -62,7 +62,7 @@
 (setq *use-panorama-coral-detector* (ros::get-param "~use_panorama_coral_detector" nil))
 (if *use-panorama-coral-detector*
   (progn
-    (setq *panorama-edgetpu-node-name* "~panorama_edgetpu_node_name" "edgetpu_panorama_object_detector")
+    (setq *panorama-edgetpu-node-name* (ros::get-param "~panorama_edgetpu_node_name" "edgetpu_panorama_object_detector"))
     ))
 
 (setq *path-coords-list* nil)
