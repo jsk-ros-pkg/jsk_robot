@@ -24,10 +24,11 @@ import roslib.message
 import rostopic
 from topic_tools.srv import MuxSelect
 import traceback
-if sys.version.major == 2:
+if sys.version_info.major < 3:
     import thread
 else:
-    import _thread
+    import _thread as thread
+
 
 def callback (m, expr, topic, index):
     global selects, lockobj
@@ -105,10 +106,7 @@ def update_trigger(conditions, wait=False):
 if __name__ == "__main__":
     global selects, subs, topics
     global lockobj
-    if sys.version.major == 2:
-        lockobj = thread.allocate_lock()
-    else:
-        lockobj = _thread.allocate_lock()
+    lockobj = thread.allocate_lock()
     selects = []
     subs = []
     topics = {}
