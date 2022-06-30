@@ -19,13 +19,15 @@ If the type of the monitored topic is unknown, you can set the type with `~topic
 """
 
 import rospy
-import thread
 import sys
 import roslib.message
 import rostopic
 from topic_tools.srv import MuxSelect
 import traceback
-
+if sys.version.major == 2:
+    import thread
+else:
+    import _thread
 
 def callback (m, expr, topic, index):
     global selects, lockobj
@@ -103,7 +105,10 @@ def update_trigger(conditions, wait=False):
 if __name__ == "__main__":
     global selects, subs, topics
     global lockobj
-    lockobj = thread.allocate_lock()
+    if sys.version.major == 2:
+        lockobj = thread.allocate_lock()
+    else:
+        lockobj = _thread.allocate_lock()
     selects = []
     subs = []
     topics = {}
