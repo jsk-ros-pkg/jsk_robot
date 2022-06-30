@@ -59,6 +59,7 @@
 (setq *fixed-frame-id* (ros::get-param "~fixed_frame_id" "odom"))
 (setq *base-frame-id* (ros::get-param "~base_frame_id" "base_link"))
 (setq *speak-text* (ros::get-param "~speak_text" "道をあけて下さい"))
+(setq *duration-wait* (ros::get-param "~duration_wait" 5.0))
 (setq *use-panorama-coral-detector* (ros::get-param "~use_panorama_coral_detector" nil))
 (if *use-panorama-coral-detector*
   (progn
@@ -81,8 +82,9 @@
 
 (defun look-at-target-coords (target-coords)
   (send *fetch* :angle-vector (send *ri* :state :potentio-vector))
+  (ros::ros-info "target-coords: ~A" target-coords)
   (send *fetch* :look-at-target target-coords)
-  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 1000)
+  (send *ri* :angle-vector (send *fetch* :angle-vector) 1000)
   )
 
 (defun callback-path (msg)
@@ -180,6 +182,7 @@
         (setq target-person-coords (transform-coords-fixedbased-to-robotbased nearest-person-coords))
         (look-at-target-coords target-person-coords)
         (send *ri* :speak-jp *speak-text* :wait t)
+        (unix:sleep *duration-wait*)
         (send result :result :success t)
         (send result :result :message "Beg to person to make way.")
         (ros::ros-info "Beg to person to make way.")
