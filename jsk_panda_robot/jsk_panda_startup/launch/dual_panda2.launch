@@ -1,15 +1,10 @@
 <?xml version="1.0" ?>
 <launch>
-  <!-- uvc_cam -->
-  <!-- TODO: Use udev rule -->
-  <arg name="right_camera_dev" default="/dev/video0" />
-  <arg name="left_camera_dev" default="/dev/video1" />
 
   <arg name="rarm_ip" default="172.16.0.10"/>
   <arg name="larm_ip" default="172.16.0.100"/>
 
   <!-- Capturing Audio -->
-  <!-- TODO -->
   <!-- Currently using only one of USB cameras as audio input. However it might be better to use both USB cameras to capture audio -->
   <arg name="launch_audio_capture" default="true" doc="Launch audio_capture node to publish audio topic from microphone" />
   <arg name="n_channel" default="1" doc="Number of channels of audio topic and microphone. '$ pactl list short sinks' to check your hardware" />
@@ -56,47 +51,25 @@
   </group>
 
   <!-- vision -->
-  <include file="$(find openni2_launch)/launch/openni2.launch" />
+  <!-- 20220701 amabe "left to apply to realsense images" -->
+  <!-- <include file="$(find openni2_launch)/launch/openni2.launch" /> -->
 
-  <group ns="larm_marker">
-    <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
-      <remap from="image" to="/edgetpu_object_detector/output/image"/>
-      <remap from="camera_info" to="/camera/rgb/camera_info"/>
-      <param name="use_window" value="false"/>
-    </node>
-  </group>
+  <!-- <group ns="larm_marker"> -->
+  <!--   <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log"> -->
+  <!--     <remap from="image" to="/edgetpu_object_detector/output/image"/> -->
+  <!--     <remap from="camera_info" to="/camera/rgb/camera_info"/> -->
+  <!--     <param name="use_window" value="false"/> -->
+  <!--   </node> -->
+  <!-- </group> -->
 
-  <group ns="rarm_marker">
-    <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
-      <remap from="image" to="/larm_marker/image_marked"/>
-      <remap from="image_marked" to="/operator_view"/>
-      <remap from="camera_info" to="/camera/rgb/camera_info"/>
-      <param name="use_window" value="false"/>
-    </node>
-  </group>
-
-  <!-- hand eye cameras -->
-  <node name="uvc_camera_left" pkg="uvc_camera" type="uvc_camera_node" output="screen">
-    <remap from="image_raw" to="/left_camera/image_raw"/>
-    <remap from="image_raw/compressed" to="/left_camera/image_raw/compressed"/>
-    <remap from="camera_info" to="/left_camera/camera_info"/>
-    <param name="device" value="$(arg left_camera_dev)"/>
-    <param name="fps" value="30"/>
-    <param name="width" value="640"/>
-    <param name="height" value="360"/>
-    <param name="format" value="rgb"/>
-  </node>
-
-  <node name="uvc_camera_right" pkg="uvc_camera" type="uvc_camera_node" output="screen">
-    <remap from="image_raw" to="/right_camera/image_raw"/>
-    <remap from="image_raw/compressed" to="/right_camera/image_raw/compressed"/>
-    <remap from="camera_info" to="/right_camera/camera_info"/>
-    <param name="device" value="$(arg right_camera_dev)"/>
-    <param name="fps" value="30"/>
-    <param name="width" value="640"/>
-    <param name="height" value="360"/>
-    <param name="format" value="rgb"/>
-  </node>
+  <!-- <group ns="rarm_marker"> -->
+  <!--   <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log"> -->
+  <!--     <remap from="image" to="/larm_marker/image_marked"/> -->
+  <!--     <remap from="image_marked" to="/operator_view"/> -->
+  <!--     <remap from="camera_info" to="/camera/rgb/camera_info"/> -->
+  <!--     <param name="use_window" value="false"/> -->
+  <!--   </node> -->
+  <!-- </group> -->
 
   <!-- sound device -->
   <node name="audio_capture" pkg="audio_capture" type="audio_capture"
