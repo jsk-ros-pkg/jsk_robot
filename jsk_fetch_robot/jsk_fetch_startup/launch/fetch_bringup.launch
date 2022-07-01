@@ -259,4 +259,9 @@
     </rosparam>
   </node>
 
+  <!-- Two robots cannot use one rosserial device at the same time -->
+  <group if="$(eval hostname == 'fetch1075')">
+    <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
+  </group>
+
 </launch>
