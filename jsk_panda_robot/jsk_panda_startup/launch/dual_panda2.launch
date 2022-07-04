@@ -3,15 +3,6 @@
 
   <arg name="rarm_ip" default="172.16.0.10"/>
   <arg name="larm_ip" default="172.16.0.100"/>
-
-  <!-- Capturing Audio -->
-  <!-- Currently using only one of USB cameras as audio input. However it might be better to use both USB cameras to capture audio -->
-  <arg name="launch_audio_capture" default="true" doc="Launch audio_capture node to publish audio topic from microphone" />
-  <arg name="n_channel" default="1" doc="Number of channels of audio topic and microphone. '$ pactl list short sinks' to check your hardware" />
-  <arg name="depth" default="16" doc="Bit depth of audio topic and microphone. '$ pactl list short sinks' to check your hardware" />
-  <arg name="sample_rate" default="16000" doc="Frame rate of audio topic and microphone. '$ pactl list short sinks' to check your hardware"/>
-  <arg name="audio_device" default="hw:5,0" doc="Card and device number of microphone (e.g. hw:0,0). you can check card number and device number by '$ arecord -l', then uses hw:[card number],[device number]" />
-
   <arg name="robot_id" default="dual_panda" />
   <arg name="debug"    default="false" />
   <arg name="rviz"     default="true" />
@@ -99,18 +90,5 @@
   <!--     <param name="use_window" value="false"/> -->
   <!--   </node> -->
   <!-- </group> -->
-
-  <!-- sound device -->
-  <node name="audio_capture" pkg="audio_capture" type="audio_capture"
-        if="$(arg launch_audio_capture)"
-        respawn="true">
-    <rosparam subst_value="true">
-      format: wave
-      channels: $(arg n_channel)
-      depth: $(arg depth)
-      sample_rate: $(arg sample_rate)
-    </rosparam>
-    <param name="device" value="$(arg audio_device)" />
-  </node>
 
 </launch>
