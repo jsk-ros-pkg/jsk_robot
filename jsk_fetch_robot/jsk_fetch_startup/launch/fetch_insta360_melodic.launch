@@ -10,7 +10,7 @@
     <arg name="height" value="1088" />
     <arg name="width" value="2176" />
     <arg name="throttle" value="true" />
-    <arg name="throttled_rate" value="1.0" />
+    <arg name="throttled_rate" value="10.0" />
     <!-- for melodic -->
     <arg name="use_usb_cam" value="false" />
     <arg name="panorama_resolution_mode" value="low" />
