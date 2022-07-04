@@ -7,11 +7,13 @@
     <!-- To check the valid formats, -->
     <!-- $ sudo apt-get install v4l-utils -->
     <!-- $ v4l2-ctl -d /dev/insta360 -\-list-formats-ext -->
-    <arg name="height" value="736" />
-    <arg name="width" value="1472" />
+    <arg name="height" value="1088" />
+    <arg name="width" value="2176" />
     <arg name="throttle" value="true" />
+    <arg name="throttled_rate" value="1.0" />
     <!-- for melodic -->
     <arg name="use_usb_cam" value="false" />
+    <arg name="panorama_resolution_mode" value="low" />
   </include>
 
   <group ns="dual_fisheye_to_panorama">
@@ -23,8 +25,8 @@
       <remap from="~image" to="quater/output" />
       <remap from="~camera_info" to="quater/camera_info" />
       <rosparam>
-        scale_width: 0.25
-        scale_height: 0.25
+        scale_width: 0.5
+        scale_height: 0.5
       </rosparam>
     </node>
   </group>
