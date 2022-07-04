@@ -203,15 +203,6 @@
     <origin rpy="0.0 0.2 0.0" xyz="0.0 0.0 1.66"/>
   </joint>
 
-  <!-- pan_tilt -->
-  <!--xacro:include filename="$(find franka_description)/pan_tilt/pan_tilt_kinect.urdf.xacro" />
-  <xacro:pan_tilt_kinect />
-  <joint name="base_to_head" type="fixed" >
-    <parent link="dual_arm_base" />
-    <child  link="pan_tilt_BASE" />
-    <origin rpy="0.0 0.0 -1.5707963267949" xyz="0.08 0.0 1.505"/>
-  </joint-->
-
   <!-- eus end effector link -->
   <link name="$(arg arm_id_1)_end_effector" >
   </link>
