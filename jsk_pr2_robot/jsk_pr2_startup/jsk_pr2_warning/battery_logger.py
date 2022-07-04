@@ -87,7 +87,13 @@ class DweetLogger(BatteryLogger):
             rospy.logerr("{}".format(e))
             rospy.logerr("Could not write to dweet.io")
             return
-        assert res.ok and json.loads(res.content)["this"] == "succeeded"
+        try:
+            contents = json.loads(res.content)
+        except ValueError as e:
+            rospy.logerr("{}".format(e))
+            rospy.logerr("Request successed, but return value is invalid.")
+            return
+        assert res.ok and contents["this"] == "succeeded"
 
 
 class BatteryInfoAggregator(object):
