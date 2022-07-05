@@ -75,6 +75,7 @@ plugins:
         - /head_camera/rgb/throttled/image_rect_color/compressed
         - /head_camera/depth_registered/throttled/image_rect/compressedDepth
         - /audio
+        - /rviz/throttled/image/compressed
   - name: result_recorder_plugin
     type: app_recorder/result_recorder_plugin
     plugin_args:
