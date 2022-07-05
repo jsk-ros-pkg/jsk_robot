@@ -27,8 +27,7 @@ class SpeakAndWaitBehavior(object):
     def handler(self, goal):
 
         self._sound_client.say(self._speak_text)
-        try:
-            rospy.loginfo('Spoken: {} and wait {} secs'.format(self._speak_text, self._duration_wait))
+        rospy.loginfo('Spoken: {} and wait {} secs'.format(self._speak_text, self._duration_wait))
 
         rospy.sleep(self._duration_wait)
 
