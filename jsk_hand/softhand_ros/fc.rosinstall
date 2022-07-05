@@ -1,0 +1,8 @@
+- git:
+    local-name: knorth55/softhand_ros
+    uri: https://github.com/knorth55/softhand_ros.git
+    version: master
+- git:
+    local-name: pazeshun/dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel
