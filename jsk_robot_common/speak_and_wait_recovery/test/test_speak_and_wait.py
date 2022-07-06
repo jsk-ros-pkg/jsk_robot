@@ -6,29 +6,47 @@ NAME = 'speak_and_wait_recovery_test'
 import rostest
 import unittest
 import sys
+import threading
 
 import actionlib
 import rospy
-from sound_play.msg import SoundRequestAction, SoundRequestResult
+from sound_play.msg import SoundRequestAction
+from sound_play.msg import SoundRequestResult
+from sound_play.msg import SoundRequest
 
 
 class TestSpeakAndWaitRecovery(unittest.TestCase):
 
+    def __init__(self, *args):
+        super(self.__class__, self).__init__(*args)
+        rospy.init_node(NAME)
+        self.lock_for_msg = threading.Lock()
+        self.msg = SoundRequest()
+        self.action_server = \
+                actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
+        self.action_server.start()
+
     def handler(self, goal):
 
-        self.msg = goal.sound_request
+        with self.lock_for_msg:
+            self.msg = goal.sound_request
+        rospy.logwarn('Receive ad message')
         self.action_server.set_succeeded(SoundRequestResult(playing=True,stamp=rospy.Time.now()))
 
     def test_speak_and_wait_recovery(self):
 
-        self.msg = None
-        self.action_server = actionlib.SimpleActionServer( '/sound_play', SoundRequestAction, execute_cb=self.handler, auto_start=False)
-        self.action_server.start()
+        msg = SoundRequest()
+        rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            if self.msg is not None:
-                msg = self.msg
-                break
+            with self.lock_for_msg:
+                if self.msg.arg != '':
+                    msg = self.msg
+                    break
+                else:
+                    rospy.logwarn('waiting')
+            rate.sleep()
 
+        rospy.logwarn('msg: {}'.format(msg))
         self.assertEqual(msg.sound, -3)
         self.assertEqual(msg.command, 1)
         self.assertEqual(msg.volume, 1.0)
@@ -36,5 +54,4 @@ class TestSpeakAndWaitRecovery(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    rospy.init_node(NAME)
     rostest.rosrun(PKG, NAME, TestSpeakAndWaitRecovery, sys.argv)
