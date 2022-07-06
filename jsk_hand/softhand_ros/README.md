@@ -148,7 +148,7 @@ roseus softhand-v2-interface.l
 
 ```bash
 # set baud rate from 57600 to 1000000
-rosrun dynamixel_driver set_servo_config.py -b 57600 -r 1 <MOTOR_ID> -p /dev/{l/r}hand-e151
+rosrun dynamixel_driver set_servo_config.py -b 57600 -r 1 <MOTOR_ID> -p /dev/{l/r}hand-e160
 ```
 
 #### Set motor ID
@@ -158,7 +158,7 @@ rosrun dynamixel_driver set_servo_config.py -b 57600 -r 1 <MOTOR_ID> -p /dev/{l/
 - 3: Middle finger
 
 ```bash
-rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 1000000 -p /dev/{l/r}hand-e151
+rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 1000000 -p /dev/{l/r}hand-e160
 ```
 
 #### Disable overload error
@@ -167,7 +167,7 @@ rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 1000000 -p
 from dynamixel_driver import dynamixel_io
 
 # for softhand v1
-dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-e151", 1000000)
+dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-e160", 1000000)
 dxl_io.write(<MOTOR_ID>, 17, (4,))
 dxl_io.write(<MOTOR_ID>, 18, (4,))
 ```
@@ -178,7 +178,7 @@ dxl_io.write(<MOTOR_ID>, 18, (4,))
 
 ```bash
 # set baud rate from 57600 to 57143
-rosrun dynamixel_driver set_servo_config.py -b 57600 -r 34 <MOTOR_ID> -p /dev/{l/r}hand-v2-e151
+rosrun dynamixel_driver set_servo_config.py -b 57600 -r 34 <MOTOR_ID> -p /dev/{l/r}hand-v2-e160
 ```
 
 #### Set motor ID
@@ -188,7 +188,7 @@ rosrun dynamixel_driver set_servo_config.py -b 57600 -r 34 <MOTOR_ID> -p /dev/{l
 - 3: Middle finger
 
 ```bash
-rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 57600 -p /dev/{l/r}hand-v2-e151
+rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 57600 -p /dev/{l/r}hand-v2-e160
 ```
 
 #### Disable overload error
@@ -197,19 +197,21 @@ rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 57600 -p /
 from dynamixel_driver import dynamixel_io
 
 # for softhand v2
-dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-v2-e151", 57600)
+dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-v2-e160", 57600)
 dxl_io.write(<MOTOR_ID>, 17, (4,))
 dxl_io.write(<MOTOR_ID>, 18, (4,))
 ```
 
-### Change `product` to distinguish E151 board
+### Change `product` to distinguish E160 board
 
-We distinguish left and right hand with `product` field of FTDI chip on E151.
+This is for [USB2TTL dongle](https://www.besttechnology.co.jp/modules/onlineshop/index.php?fct=photo&p=268) and [DXSharingBoard(TTL)](https://www.besttechnology.co.jp/modules/onlineshop/index.php?fct=photo&p=195)
 
-- Left softhand v1 E151's `product`: `LEFT-E151`
-- Right softhand v1 E151's `product`: `RIGHT-E151`
-- Left softhand v2 E151's `product`: `LEFT-V2-E151`
-- Right softhand v2 E151's `product`: `RIGHT-V2-E151`
+We distinguish left and right hand with `product` field of FTDI chip on E160.
+
+- Left softhand v1 E160's `product`: `LEFT-E160`
+- Right softhand v1 E160's `product`: `RIGHT-E160`
+- Left softhand v2 E160's `product`: `LEFT-V2-E160`
+- Right softhand v2 E160's `product`: `RIGHT-V2-E160`
 
 In order to change them, please follow [jsk_apc doc](https://jsk-apc.readthedocs.io/en/latest/jsk_arc2017_baxter/setup_gripper_v6.html#distinguish-left-dxhub-from-right-one).
 
@@ -220,11 +222,11 @@ git clone https://github.com/richardeoin/ftx-prog.git
 cd ftx-prog/
 make
 # for left softhand v1
-sudo ./ftx-prog --product LEFT-E151
+sudo ./ftx-prog --product LEFT-E160
 # for right softhand v1
-sudo ./ftx-prog --product RIGHT-E151
+sudo ./ftx-prog --product RIGHT-E160
 # for left softhand v2
-sudo ./ftx-prog --product LEFT-V2-E151
+sudo ./ftx-prog --product LEFT-V2-E160
 # for right softhand v2
-sudo ./ftx-prog --product RIGHT-V2-E151
+sudo ./ftx-prog --product RIGHT-V2-E160
 ```
