@@ -23,3 +23,8 @@ catkin_package(
     actionlib_msgs
     message_runtime
 )
+
+install(DIRECTORY config euslisp launch udev
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
+)
