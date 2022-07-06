@@ -144,6 +144,14 @@ roseus softhand-v2-interface.l
 
 ### Softhand v1 dynamixel setup
 
+#### Check default parameters of dynamixel
+
+Motor's default id is `1` and default baud rate is `57600`.
+
+```bash
+rosrun dynamixel_driver info_dump.py -b 57600 -p /dev/{l/r}hand-e160 1
+```
+
 #### Set baud rate
 
 ```bash
@@ -173,6 +181,14 @@ dxl_io.write(<MOTOR_ID>, 18, (4,))
 ```
 
 ### Softhand v2 dynamixel setup
+
+#### Check default parameters of dynamixel
+
+Motor's default id is `1` and default baud rate is `57600`.
+
+```bash
+rosrun dynamixel_driver info_dump.py -b 57600 -p /dev/{l/r}hand-e160 1
+```
 
 #### Set baud rate
 
