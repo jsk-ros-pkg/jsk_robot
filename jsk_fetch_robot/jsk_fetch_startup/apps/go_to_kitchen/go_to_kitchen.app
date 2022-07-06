@@ -63,7 +63,7 @@ plugins:
       rosbag_path: /tmp
       rosbag_title: go_to_kitchen_rosbag.bag
       image_topic_name: /edgetpu_object_detector/output/image/compressed
-      image_fps: 30
+      image_fps: 5
       audio_topic_name: /audio
       audio_sample_rate: 16000
       audio_channels: 1
