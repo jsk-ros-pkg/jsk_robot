@@ -26,10 +26,14 @@
     local-name: code-iai/snap_map_icp
     uri: https://github.com/code-iai/snap_map_icp.git
     version: da2d590c5b4923c0776d990bb3ba9ec8e9122ecf
+# - git:
+#     local-name: euslisp/Euslisp
+#     uri: https://github.com/euslisp/Euslisp.git
+#     version: master 
 - git:
     local-name: euslisp/Euslisp
-    uri: https://github.com/euslisp/Euslisp.git
-    version: master 
+    uri: https://github.com/Affonso-Gui/EusLisp.git
+    version: eus10
 - git:
     local-name: euslisp/jskeus
     uri: https://github.com/euslisp/jskeus.git
@@ -69,7 +73,11 @@
 - git:
     local-name: jsk-ros-pkg/jsk_roseus
     uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
-    version: master 
+    version: knorth55/pr1040 
+- git:
+    local-name: Affonso-Gui/roseus_resume
+    uri: https://github.com/Affonso-Gui/roseus_resume.git
+    version: eus10
 - git:
     local-name: jsk-ros-pkg/jsk_smart_apps
     uri: https://github.com/jsk-ros-pkg/jsk_smart_apps.git
