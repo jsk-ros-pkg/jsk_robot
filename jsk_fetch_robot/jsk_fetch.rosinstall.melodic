@@ -189,3 +189,8 @@
     local-name: roseus_resume
     uri: https://github.com/Affonso-Gui/roseus_resume.git
     version: eus10
+# roseus_bt
+- git:
+    local-name: BehaviorTree.ROS
+    uri: https://github.com/BehaviorTree/BehaviorTree.ROS
+    version: master
