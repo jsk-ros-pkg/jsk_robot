@@ -21,4 +21,4 @@ blacklist:
   - name: "/Realtime Controllers/Calibration stuck"
   - name: "/Computers/CPU/c\\d CPU Temperature"
 run_stop_blacklist:
-  - "/Motors.*"
+  - name: "/Motors.*"
