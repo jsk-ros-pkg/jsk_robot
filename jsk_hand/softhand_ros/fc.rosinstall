@@ -1,17 +1,11 @@
-# we need following commits in pazeshun/dynamixel_motor@gripper-v6-devel
-# https://github.com/pazeshun/dynamixel_motor/commit/4df35968a32a6b7737b13932c0f40d923b008a75
-# https://github.com/pazeshun/dynamixel_motor/commit/f972f81bc0f89e75b4f8cdb639fcb1075452fd97
-# https://github.com/pazeshun/dynamixel_motor/commit/508fb26a5b366112120e4c61aa62207c56d63b8b
-# https://github.com/pazeshun/dynamixel_motor/commit/573ff7e9a27449f517e771c272b1ef1ef30f76c5
-# https://github.com/pazeshun/dynamixel_motor/commit/48ab58bc0ec4fc26f81cf5f96802380813beefae
-# https://github.com/pazeshun/dynamixel_motor/commit/84b6ae79f5d7f6f19512e1f606b1ef59dae58615
-# https://github.com/pazeshun/dynamixel_motor/commit/1b7b62c18b9d4ce0e3b7b92d8d1aab00c3906533
-# https://github.com/pazeshun/dynamixel_motor/commit/d67b4596f8014bb60a73f3abb76b8b128859520b
-# https://github.com/pazeshun/dynamixel_motor/commit/957bfbc6ecfef6354bf16da651ab8029b9e56888
-# https://github.com/pazeshun/dynamixel_motor/commit/f91a45ac89e651777dd4ed5e0fd72ca1b81627ef
-# https://github.com/pazeshun/dynamixel_motor/commit/1c566e9f097b6b250aeb858485faf10e73d8cb46
-# https://github.com/pazeshun/dynamixel_motor/commit/9b4e3b4872fdf7fdd0292758fbd09cbeb75e7700
-# https://github.com/pazeshun/dynamixel_motor/commit/7d10df45016469d02fe670d528cab4e1d1e04976
+# we need following PRs:
+# https://github.com/arebgun/dynamixel_motor/pull/68
+# https://github.com/arebgun/dynamixel_motor/pull/78
+# https://github.com/arebgun/dynamixel_motor/pull/97
+# https://github.com/arebgun/dynamixel_motor/pull/98
+# https://github.com/arebgun/dynamixel_motor/pull/99
+# https://github.com/arebgun/dynamixel_motor/pull/100
+# https://github.com/arebgun/dynamixel_motor/pull/101
 - git:
     local-name: pazeshun/dynamixel_motor
     uri: https://github.com/pazeshun/dynamixel_motor.git
