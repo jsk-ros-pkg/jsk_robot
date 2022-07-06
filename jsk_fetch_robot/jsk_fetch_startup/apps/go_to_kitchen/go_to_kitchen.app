@@ -14,7 +14,7 @@ plugins:
     launch_args:
       rosbag_path: /tmp
       rosbag_title: go_to_kitchen_rosbag.bag
-      compress: true
+      compress: false
       rosbag_topic_names:
         - /rosout
         - /tf
