@@ -8,6 +8,38 @@ This package depends on the branch below.
 
 - [pazeshun/dynamixel_motor@gripper-v6-devel](https://github.com/pazeshun/dynamixel_motor/tree/gripper-v6-devel)
 
+## Citation
+
+### Softhand v1
+
+```
+@INPROCEEDINGS{hirose_softhand_v1,
+  author={Hirose, Toshinori and Kakiuchi, Yohei and Okada, Kei and Inaba, Masayuki},
+  booktitle={2019 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)}, 
+  title={Design of Soft Flexible Wire-driven Finger Mechanism for Contact Pressure Distribution}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={4699-4705},
+  doi={10.1109/IROS40897.2019.8968011}
+}
+```
+
+### Softhand v2
+
+```
+@INPROCEEDINGS{hirose_softhand_v2,
+  author={Hirose, Toshinori and Kitagawa, Shingo and Hasegawa, Shun and Kakiuchi, Yohei and Okada, Kei and Inaba, Masayuki},
+  booktitle={2022 IEEE 5th International Conference on Soft Robotics (RoboSoft)}, 
+  title={Waterproof Soft Robot Hand with Variable Stiffness Wire-driven Finger Mechanism Using Low Melting Point Alloy for Contact Pressure Distribution and Concentration}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={109-116},
+  doi={10.1109/RoboSoft54090.2022.9762208}
+}
+```
+
 ## Installation
 
 ### Workspace build
@@ -32,6 +64,29 @@ sudo cp udev/*.rules /etc/udev/rules.d
 sudo service udev reload
 sudo service udev restart
 ```
+
+## Softhand Description
+
+### Softhand v1
+
+Softhand V1 is designed for contact pressure distribution.
+
+The hand can grasp soft and fragile object with low power,
+and solid and heavy object with high power.
+
+For more detailed information, please read [Design of Soft Flexible Wire-driven Finger Mechanism for Contact Pressure Distribution](https://ieeexplore.ieee.org/document/8968011)
+
+![](.media/softhand_v1.png)
+
+###  Softhand v2
+
+Softhand V2 is designed for waterproof and variable stiffness.
+
+The hand can grasp as softhand v1, but also can massage human's head and hair.
+
+For more detailed information please read [Waterproof Soft Robot Hand with Variable Stiffness Wire-driven Finger Mechanism Using Low Melting Point Alloy for Contact Pressure Distribution and Concentration](https://ieeexplore.ieee.org/document/9762208).
+
+![](.media/softhand_v2.png)
 
 ## How to use
 
@@ -87,70 +142,67 @@ roseus softhand-v2-interface.l
 
 ## Softhand hardware installation
 
-### Set baud rate
+### Softhand v1 dynamixel setup
 
-#### For softhand v1
+#### Set baud rate
 
 ```bash
 # set baud rate from 57600 to 1000000
-rosrun dynamixel_driver set_servo_config.py -b 57600 -r 1 MOTOR_ID
+rosrun dynamixel_driver set_servo_config.py -b 57600 -r 1 <MOTOR_ID> -p /dev/{l/r}hand-e151
 ```
 
-#### For softhand v2
-
-```bash
-# set baud rate from 57600 to 57143
-rosrun dynamixel_driver set_servo_config.py -b 57600 -r 34 MOTOR_ID
-```
-
-### Set motor ID
-
-```bash
-rosrun dynamixel_driver change_id.py OLD_MOTOR_ID NEW_MOTOR_ID
-```
-
-#### Motor IDs of Softhand v1
+#### Set motor ID
 
 - 1: Thumb
 - 2: Index finger
 - 3: Middle finger
 
-#### Motor IDs of Softhand v2
+```bash
+rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 1000000 -p /dev/{l/r}hand-e151
+```
 
-- 1: Thumb rotate
-- 2: Thumb
-- 3: Index finger
-- 4: Middle finger
-
-### Disable overload error
-
-#### For softhand v1
+#### Disable overload error
 
 ```python
-import roslib
-roslib.load_manifest('dynamixel_driver')
 from dynamixel_driver import dynamixel_io
 
 # for softhand v1
-dxl_io = dynamixel_io.DynamixelIO("/dev/ttyUSB0", 1000000)
-dxl_io.write(MOTOR_ID, 17, (4,))
-dxl_io.write(MOTOR_ID, 18, (4,))
+dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-e151", 1000000)
+dxl_io.write(<MOTOR_ID>, 17, (4,))
+dxl_io.write(<MOTOR_ID>, 18, (4,))
 ```
 
-#### For softhand v2
+### Softhand v2 dynamixel setup
+
+#### Set baud rate
+
+```bash
+# set baud rate from 57600 to 57143
+rosrun dynamixel_driver set_servo_config.py -b 57600 -r 34 <MOTOR_ID> -p /dev/{l/r}hand-v2-e151
+```
+
+#### Set motor ID
+
+- 1: Thumb
+- 2: Index finger
+- 3: Middle finger
+
+```bash
+rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 57600 -p /dev/{l/r}hand-v2-e151
+```
+
+#### Disable overload error
 
 ```python
-import roslib
-roslib.load_manifest('dynamixel_driver')
 from dynamixel_driver import dynamixel_io
 
 # for softhand v2
-dxl_io = dynamixel_io.DynamixelIO("/dev/ttyUSB0", 57600)
-dxl_io.write(MOTOR_ID, 17, (4,))
-dxl_io.write(MOTOR_ID, 18, (4,))
+dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-v2-e151", 57600)
+dxl_io.write(<MOTOR_ID>, 17, (4,))
+dxl_io.write(<MOTOR_ID>, 18, (4,))
 ```
 
-#### Change `product` to distinguish E151 board
+### Change `product` to distinguish E151 board
 
 We distinguish left and right hand with `product` field of FTDI chip on E151.
 
