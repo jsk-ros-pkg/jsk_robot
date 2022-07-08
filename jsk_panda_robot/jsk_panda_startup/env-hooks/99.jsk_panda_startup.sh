@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rossetpanda() {
+rossetdualpanda() {
     rossetmaster dual_panda.jsk.imi.i.u-tokyo.ac.jp
     rossetip
 }

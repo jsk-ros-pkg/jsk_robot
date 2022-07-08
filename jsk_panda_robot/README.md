@@ -38,7 +38,7 @@ source devel/setup.bash
    2.  `roslaunch jsk_panda_startup dual_panda.launch`
 
 2. Controlling Dual-Panda via roseus
-   1. `$ rossetpanda`
+   1. `$ rossetdualpanda`
    2. execute following script in roseus;
       ```
       (load "package://panda_eus/euslisp/dual_panda-interface.l")
@@ -64,8 +64,7 @@ source devel/setup.bash
         ```
 2.  Start user PC:
     ```
-    $ rossetmaster dual_panda
-    $ rossetip
+    $ rossetdualpanda
     $ rosrun jsk_panda_teleop start_master_side.sh
     ```
     Then you should see rviz popup like this: 
