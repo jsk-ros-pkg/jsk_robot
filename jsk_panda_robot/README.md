@@ -25,7 +25,7 @@
 ### Installation for Panda Controller PC
 1. Please see and follow installation written in: https://frankaemika.github.io/docs/installation_linux.html
    * Note that you need to install real-time kernel (`PREEMPT-PR` kernel) for real-time control.
-   * Ref: Current controller PC uses following kernel: `5.4.19-rt11`
+   * Ref: Current controller PC uses following kernel:  `dual_panda`: `5.4.19-rt11`, `dual_panda2`: `5.4.93-rt51`
 2. Please do the same ROS environment setup as `Installation for User PC` section above.
 
 
@@ -36,12 +36,12 @@
 ### Via roseus
 1. Start controller on controller PC:
    ```bash
-   ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp
-   roslaunch jsk_panda_startup dual_panda.launch
+   ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp  # Or ssh leus@dual_panda2.jsk.imi.i.u-tokyo.ac.jp
+   roslaunch jsk_panda_startup dual_panda.launch  # Or roslaunch jsk_panda_startup dual_panda2.launch
    ```
 
 2. Controlling Dual-Panda via roseus:
-   1. `rossetdualpanda`
+   1. `rossetdualpanda  # Or rossetdualpanda2`
    2. execute following script in roseus:
       ```lisp
       (load "package://panda_eus/euslisp/dual_panda-interface.l")
