@@ -43,8 +43,8 @@ source devel/setup.bash
       ```
       (load "package://panda_eus/euslisp/dual_panda-interface.l")
       (dual_panda-init)
-      (send *robot* :angle-vector (send *robot* :reset-pose)
-      (when (send *ri* :check-error
+      (send *robot* :angle-vector (send *robot* :reset-pose))
+      (when (send *ri* :check-error)
         (send *ri* :recover-error))
       (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
       ```
@@ -52,7 +52,7 @@ source devel/setup.bash
 #### Start program
 1. Start controller on controller PC;
    1.  `$ ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp`
-   2.  `$ roslaunch jsk_panda_teleop start_panda_rt_controller.launch start_bilateral:=true`
+   2.  `$ roslaunch jsk_panda_teleop start_panda_teleop_follower_side.launch start_bilateral:=true`
         `start_bilateral:=true` connects haptic device and dual_panda from the beginning, i.e. it moves the robot immediately after running leader (user) side.
         If you start with `start_bilateral:=false`, you would need to call following service call:
         ```
