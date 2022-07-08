@@ -1,0 +1,421 @@
+nodes:
+  'dummy':
+    name_en: 'dummy'
+    name_jp: 'ダミー'
+  'eng2_JSKEntrance':
+    name_en: '73B1'
+    name_jp:
+      - 'JSK'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'hated-salmon-+oAmVbVKzwfer6BexXKNog=='
+        localization_method: 'waypoint'
+  'eng2_73B1':
+    name_en: '73B1'
+    name_jp:
+      - '73 B 1'
+      - '73B1'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'unkept-scarab-pfr5U1CBRCXx9EOt6eQDCw=='
+        localization_method: 'waypoint'
+  'eng2_73B2':
+    name_en: '73B2'
+    name_jp:
+      - '73 B 2'
+      - '73B2'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'dyed-bat-t00VKo5XixLihCvpsZPRqw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/73b2_inside.walk'
+        id: 'goodly-hogg-cEjt+0aMeZdksVRXrP7.uw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
+        id: 'fuzzed-medusa-wyXWCEjmWas1kMo8EJW8Bw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_83A2.walk'
+        id: 'dyed-viper-HVQRLVeklEUaE2aXJW+d6Q=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_73B2_trash.walk'
+        id: 'tined-mouse-D.2ws5hStb8AE.C.J5lKEw=='
+        localization_method: 'fiducial'
+  'eng2_73B2_belka_home':
+    name_en: 'belka'
+    name_jp:
+      - 'ベルカ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'uppity-cayman-rm8aTrilycp7soPeorOdUw=='
+        localization_method: 'waypoint'
+  'eng2_73B2_strelka_home':
+    name_en: 'strelka'
+    name_jp:
+      - 'ストレルカ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'proof-llama-9slE0zml9BYcNFbpQkmNcg=='
+        localization_method: 'waypoint'
+  'eng2_73B2_shinjo_desk':
+    name_en: 'shinjo'
+    name_jp:
+      - '新城'
+      - '新城の席'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/73b2_inside.walk'
+        id: 'cogent-vole-wTZdgPPyjZIObFh2dr7EqA=='
+        localization_method: 'waypoint'
+  'eng2_73A2':
+    name_en: '73A2'
+    name_jp:
+      - '73 A 2'
+      - '73A2'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'enough-python-pqYBEhDZHuCEapcDxLK32w=='
+        localization_method: 'waypoint'
+  'eng2_73A4':
+    name_en: '73A4'
+    name_jp:
+      - '73 A 4'
+      - '73A4'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'dashed-kodiak-bKNHSR3S7fXE11UeXeeekA=='
+        localization_method: 'waypoint'
+  'eng2_81C1':
+    name_en: '81C1'
+    name_jp:
+      - '81 C 1'
+      - '81C1'
+      - 'プロジェクト部屋'
+      - 'プロジェクト 部屋'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_81C1.walk'
+        id: 'sable-narwal-o7qEo7543BUTj4sNKWcQ6g=='
+        localization_method: 'waypoint'
+  'eng2_83A2':
+    name_en: '83A2'
+    name_jp:
+      - '83 A 2'
+      - '83A2'
+      - '工作室'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_83A2.walk'
+        id: 'shaved-koala-aLy+bUIQpAHBQbi5DxeKJA=='
+        localization_method: 'waypoint'
+  'eng2_7FElevator':
+    name_en: 'Elevator'
+    name_jp:
+      - '7階エレベーター'
+      - '7階 エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_73B2_to_7FElevator.walk'
+        id: 'looted-cougar-RWT2C0zLJXG.ezYnCuLUeQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_2FElevator.walk'
+        id: 'larger-mudcat-0x3bt3Dif.1QU9JfXpyQPw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+        id: 'sly-chetah-IZ4pVY7vrqO36OoKCYk9Zg=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
+        id: 'meager-fox-bT4DU3uCHBJFWuYILkopVg=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_73B2_trash.walk'
+        id: 'spruce-frog-bNtHHEv469wvlNxlIxBV5w=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/7f/elevator_bot_down'
+    floor: 7
+    floor_height: 24
+  'eng2_2FElevator':
+    name_en: 'Elevator'
+    name_jp:
+      - '2階 エレベーター'
+      - '2階エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_2FElevator.walk'
+        id: 'rainy-collie-uwFW2KVYg2YCUi8FF6N00g=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_2FEntrance.walk'
+        id: 'snaky-beagle-.fmRm2JflzlV6Dv5fTdnIQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainGate.walk'
+        id: 'banner-oxen-UrEwTUbZYL0IQnY5TCFwrA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_2FElevator.walk'
+        id: 'shelfy-dassie-vK9Tf3cAQpdA.25gPJl8OQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'inland-remora-FqtX8ScP+.inEd4xFYKq4A=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+        id: 'dashed-virus-QgetwIkinypWecGNMSS4Yw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
+        id: 'mythic-leech-Uslc00eTIhygFsCdH2q1Qg=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+        id: 'brumal-gerbil-NLVgQc0oBXbc8BCZev57LQ=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2fentrance_to_1fentrance.walk'
+        id: 'felted-weasel-kFVXZpw1.DvEm6FCSgC5XQ=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/2f/elevator_bot_up'
+    floor: 2
+    floor_height: 0
+  'eng2_3FElevator':
+    name_en: 'Elevator'
+    name_jp:
+      - '3階 エレベーター'
+      - '3階エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_3FElevator_to_2FElevator.walk'
+        id: 'eighth-ant-0Ot3VoMm0uiJNBHnbJOF9w=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'doughy-vulture-kMie2F0bAno9STnKFjNadA=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/3f/elevator_bot_up'
+    floor: 3
+    floor_height: 4.5
+  'eng2_1FElevator':
+    name_en: 'Elevator'
+    name_jp:
+      - '1階 エレベーター'
+      - '1階エレベーター'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_elevator_7FElevator_to_1FElevator.walk'
+        id: 'brag-eagle-Of.kPg1gvRBhSWzrP+G3Yw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk'
+        id: 'sunlit-iguana-cXGwqooA99O95Hzqas19dw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk'
+        id: 'gilled-bee-ve3JJ8B2sMTnRL3s8p.SZA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk'
+        id: 'oafish-vervet-w.bCe7FjEILCP8oBQg6Miw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1fentrance_to_1FElevator.walk'
+        id: 'anemic-spider-TimPFBe0OMBdd+kWxYBW2Q=='
+        localization_method: 'fiducial'
+    switchbot_device: '/eng2/1f/elevator_bot_up'
+    floor: 1
+    floor_height: -4.5
+  'eng2_Mech_Office':
+    name_en: 'Mech Office'
+    name_jp:
+      - '機械系 事務室'
+      - '機械系事務室'
+      - '事務室'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'foiled-ibis-dAio3Ld6rCSWQgy9ERDulw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
+        id: 'askant-beef-JQLXogu60cJgJiSXcyjKUQ=='
+        localization_method: 'fiducial'
+  'eng2_Mailbox':
+    name_en: 'Mailbox'
+    name_jp:
+      - '郵便入れ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
+        id: 'sacked-tomcat-wpzX0UCSooUeKol.CShTqQ=='
+        localization_method: 'waypoint'
+  'eng2_CampusMail':
+    name_en: 'CampusMail'
+    name_jp:
+      - '学内便'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MechOffice_inside.walk'
+        id: 'jovial-civet-OPcK4EyGMTkxjZg04nuO.Q=='
+        localization_method: 'waypoint'
+  'eng2_3F_door_inside':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'silty-llama-gdnA1Y.5ugUuDuZ9RL9upQ=='
+        localization_method: 'waypoint'
+  'eng2_3F_door_outside':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_3FElevator_to_Mech_Office.walk'
+        id: 'plane-marlin-gaEqSGH8WX35X1619X0NwQ=='
+        localization_method: 'waypoint'
+  'eng_TelephoneBox':
+    name_en: 'telephone box'
+    name_jp: '電話ボックス'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'slain-pika-VdtPz3lWcp5T+pEArUB3PA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng_TelephoneBox_to_HongoMainGate.walk'
+        id: 'aired-hyrax-BF+hXHaUufi.DLd3pEWm5Q=='
+        localization_method: 'fiducial'
+  'eng8_Piloti_Center':
+    name_en: 'Piloti'
+    name_jp: '8号館 ピロティ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_eng8_2FElevator.walk'
+        id: 'azoic-lion-Iapbto7rzlzuFF0MvXdyPA=='
+        localization_method: 'fiducial'
+  'eng2_subway_pillar':
+    name_en: 'Piloti'
+    name_jp: 'サブウェイ'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_subway.walk'
+        id: 'quack-snail-Zm7LgLSyql.xcoqi9OeCQA=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'risen-bowfin-2he29MpsZLJRToJDhZ3.3g=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+        id: 'unread-donkey-2pdTiY6qfMnAfHD8RNH2ZA=='
+        localization_method: 'fiducial'
+  'eng2_subway_initial':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'skimpy-vole-2plogvKFUrjXTCoxsCsNGA=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation_02.walk'
+        id: 'fired-minnow-Pw+F4RFHFQwQolGeuHgkEQ=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_00':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'perky-crake-iZWT3e+cQtLKUCo8iVTu7Q=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_01':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'spacy-eland-WlC6wgdJeo5u.TY6T3hA8Q=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_02':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'apodal-drum-o2pzrnIBJdLVWMX.ElaQOQ=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_03':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'formed-gerbil-yZerC+XIahSrvCJK5Duk6A=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_04':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'ruled-otter-2zSijP2KPICZpqU80utSPw=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_10':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'spiral-falcon-bG1t8To8x.p7BWwOWjH2Lg=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_11':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'manky-mite-EvhV0ln+iiG+pTCfeEnArQ=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_12':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'brash-sheep-NYE7iE0HuaqR0i5xnzYE1A=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_13':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'swampy-jay-jEYEQ+FOe4eMKEhoGco9LA=='
+        localization_method: 'waypoint'
+  'eng2_subway_table_14':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_subway_tablenavigation.walk'
+        id: 'terse-crest-Toj82ugJt2Y029d7Afhq0A=='
+        localization_method: 'waypoint'
+  'eng2_MainEntrance_upper':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2FElevator_to_MainEntrance.walk'
+        id: 'violet-ibis-HtCPm39SIDSzoJFVX88S+A=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+        id: 'about-goat-EHRLqkk7XWmMXAdfcXHP5g=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'ahead-mink-Fml31k5vw.Y2XR.7v1BSeg=='
+        localization_method: 'fiducial'
+  'eng2_MainEntrance_lower':
+    name_en: 'Entrance'
+    name_jp:
+      - '2号館 正面入口'
+      - '2号館正面入口'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+        id: 'aft-tick-clWAq8obxtWm64bTthYwMQ=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'rested-grouse-GzVp6htKyt6kdIcS+Tu6aA=='
+        localization_method: 'waypoint'
+  'eng2_MainEntrance_outer':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+        id: 'tilled-weevil-slAZLtX3U2NcqaINkGY0Sw=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'sown-pincer-NcgfKhWf9H+B3yWIKA8W7A=='
+        localization_method: 'waypoint'
+  'eng2_1FEntrance_outer':
+    name_en: '1F Entrance'
+    name_jp:
+      - '2号館1階入口'
+      - '2号館 1階入口'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1fentrance_to_1FElevator.walk'
+        id: 'madcap-racoon-WmDiG93hDjlU6eDOUX2Jbg=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2fentrance_to_1fentrance.walk'
+        id: 'jammed-deer-L6mHZb2lmu+iQwGexsoAvw=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_outside.walk'
+        id: 'bully-walrus-xsZTCuUHJ0dvzFGGmEZJxQ=='
+        localization_method: 'fiducial'
+  'eng2_corner_northwest':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_outside.walk'
+        id: 'setose-angus-zflUwvXh2LTV96LNrrAHFg=='
+        localization_method: 'fiducial'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_2fentrance_to_1fentrance.walk'
+        id: 'honey-agouti-3CfK3qU9XiErSV9gttqSKA=='
+        localization_method: 'fiducial'
+  'eng2_GarbageCollectionArea_east':
+    name_en: 'Garbage collection area'
+    name_jp: 'ゴミ捨て場'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaEast.walk'
+        id: 'podgy-oxen-t+KIiX.QiVaFGcphBsrekA=='
+        localization_method: 'waypoint'
+  'eng2_GarbageCollectionArea_south':
+    name_en: 'Garbage collection area'
+    name_jp: 'ゴミ捨て場'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth.walk'
+        id: 'atonic-frog-uCPybjcZAN3fQZHNx71GRw=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_1FElevator_to_1FGarbageCollectionAreaSouth_via213.walk'
+        id: 'boxy-hound-2E2IbEf63lXIM91zP.P2Ww=='
+        localization_method: 'waypoint'
+  'eng2_7F_trashcan':
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7FElevator_to_73B2_trash.walk'
+        id: 'faddy-cuckoo-ZSHi6wGNKFCQhYetW6iLew=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_7f_around.walk'
+        id: ''
+        localization_method: 'waypoint'
+  'HongoMainGate':
+    name_en: 'Maingate'
+    name_jp: '正門'
+    waypoints_on_graph:
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate.walk'
+        id: 'aglow-gadfly-tSusAUqUNtqVaKFO49pDbQ=='
+        localization_method: 'waypoint'
+      - graph: '$(find spot_autowalk_data)/autowalk/eng2_MainEntrance_to_HongoMainGate_Daylight.walk'
+        id: 'regal-bison-qmAA7fyZh10L2bzoTNqUFQ=='
+        localization_method: 'waypoint'

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>spot_behavior_manager</name>
+  <version>1.1.0</version>
+  <description>The spot_behavior_manager package</description>
+
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
+  <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>networkx</exec_depend>
+  <exec_depend>rospkg</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>sound_play</exec_depend>
+  <exec_depend>spot_behavior_manager_msgs</exec_depend>
+  <exec_depend>spot_ros_client</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <build_export_depend>actionlib</build_export_depend>
+  <build_export_depend>networkx</build_export_depend>
+  <build_export_depend>rospkg</build_export_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>roslaunch</build_export_depend>
+  <build_export_depend>sound_play</build_export_depend>
+  <build_export_depend>spot_behavior_manager_msgs</build_export_depend>
+  <build_export_depend>spot_ros_client</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+
+  <export></export>
+</package>

@@ -1,0 +1,19 @@
+<launch>
+    <arg name="use_gdrive_ros" default="true" />
+
+    <!-- gdrive_ros node -->
+    <include file="$(find gdrive_ros)/launch/gdrive_server.launch" if="$(arg use_gdrive_ros)" />
+
+    <!-- email node -->
+    <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen"/>
+
+    <!-- image capture node -->
+    <node name="image_capture_server" pkg="image_view2" type="image_capture_server" output="screen"/>
+
+    <!-- audio video recorder server -->
+    <node
+        pkg="audio_video_recorder"
+        type="audio_video_recorder_server"
+        name="audio_video_recorder_server"
+        />
+</launch>

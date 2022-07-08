@@ -1,0 +1,8 @@
+[Unit]
+Description=Timer for JSK Spot Auto Power Off
+
+[Timer]
+OnCalendar = *-*-* 01:00:00
+
+[Install]
+WantedBy=timers.target

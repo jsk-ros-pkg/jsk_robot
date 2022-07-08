@@ -1,0 +1,8 @@
+[Unit]
+Description=JSK Spot Auto Power Off Service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c ". /opt/ros/melodic/setup.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosrun jsk_spot_startup auto-power-off.sh && exit 0"
+KillMode=control-group
+KillSignal=SIGTERM

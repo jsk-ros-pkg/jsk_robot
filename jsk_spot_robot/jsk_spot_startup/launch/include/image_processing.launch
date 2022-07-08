@@ -1,0 +1,15 @@
+<launch>
+
+    <!-- Create object detection visuzaliation image and comress it -->
+    <node
+        pkg="jsk_perception"
+        type="draw_rects"
+        name="object_detection_visualizer"
+        >
+        <remap from="~input" to="/dual_fisheye_to_panorama/output" />
+        <remap from="~input/rects" to="/spot_recognition/rects" />
+        <remap from="~input/class" to="/spot_recognition/class" />
+        <remap from="~output" to="/spot_recognition/object_detection_image" />
+    </node>
+
+</launch>

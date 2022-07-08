@@ -1,0 +1,25 @@
+<launch>
+  <arg name="INPUT_PANORAMA_IMAGE" default="/dual_fisheye_to_panorama/output" />
+  <arg name="TOPIC_OBJ_CLASS" default="/spot_recognition/class" />
+  <arg name="TOPIC_OBJ_RECTS" default="/spot_recognition/rects" />
+  <arg name="gpu" default="0"/>
+  <node
+      pkg="jsk_perception"
+      type="deep_sort_tracker_node.py"
+      name="deep_sort_tracker"
+      output="screen"
+      clear_params="true"
+      >
+    <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
+    <remap from="~input/rects" to="$(arg TOPIC_OBJ_RECTS)" />
+    <remap from="~input/class" to="$(arg TOPIC_OBJ_CLASS)" />
+    <remap from="~output/labels" to="/spot_recognition/tracking_labels" />
+    <rosparam subst_value="true">
+      gpu: $(arg gpu)
+      target_labels: ['person']
+      pretrained_model: $(find jsk_perception)/trained_data/deepsort_chainermodel.npz
+      #approximate_sync: True
+      #slop: 0.3
+    </rosparam>
+  </node>
+</launch>

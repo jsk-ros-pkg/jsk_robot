@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>spot_person_lead_behaviors</name>
+  <version>1.1.0</version>
+  <description>The spot_person_lead_behaviors package</description>
+
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
+  <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>spot_behavior_manager</depend>
+
+  <export>
+  </export>
+</package>

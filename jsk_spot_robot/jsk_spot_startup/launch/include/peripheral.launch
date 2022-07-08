@@ -1,0 +1,59 @@
+<launch>
+    <arg name="use_insta_360" default="true"/>
+    <arg name="use_respeaker" default="true"/>
+    <arg name="use_front_mirophone" default="true"/>
+
+    <!-- insta360 -->
+    <include
+        if="$(arg use_insta_360)"
+        file="$(find jsk_spot_startup)/launch/include/insta360_air.launch"
+        >
+        <arg name="gui" value="false" />
+        <arg name="brightness" value="128" />
+        <arg name="throttle" value="false" />
+        <arg name="throttled_rate" value="5" />
+    </include>
+
+    <!-- front microphone -->
+    <node
+        pkg="audio_capture"
+        type="audio_capture"
+        name="audio_capture"
+        >
+        <rosparam subst_value="true">
+            bitrate: 128
+            device: $(optenv DEVICE_MICROPHONE default)
+            channels: 1
+            sample_rate: 16000
+            sample_format: S16LE
+            format: wave
+        </rosparam>
+    </node>
+    <node
+        pkg="webrtcvad_ros"
+        type="webrtcvad_ros.py"
+        name="webrtcvad_ros"
+        >
+        <rosparam>
+            aggressiveness: 1
+            minimum_duration: 0.5
+        </rosparam>
+        <remap from="audio_info" to="/audio_info" />
+        <remap from="audio_data" to="/audio" />
+    </node>
+
+    <!-- spot spinal (Imu, barometer and so on) -->
+    <group ns="/spinal">
+        <node
+            pkg="rosserial_python"
+            type="serial_node.py"
+            name="spot_spinal"
+            >
+            <rosparam>
+                baud: 921600
+                port: /dev/spot-spinal
+            </rosparam>
+        </node>
+    </group>
+
+</launch>

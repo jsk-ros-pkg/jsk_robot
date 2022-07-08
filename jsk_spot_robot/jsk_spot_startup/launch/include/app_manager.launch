@@ -1,0 +1,65 @@
+<launch>
+  <arg name="use_roswww_basic" default="false" />
+  <arg name="use_app_scheduler" default="false" />
+  <arg name="use_dialogflow" default="true" />
+  <arg name="use_webhook_server" default="true" />
+
+  <arg name="credential" default="$(optenv GOOGLE_APPLICATION_CREDENTIALS)"/>
+  <arg name="project_id" default="$(optenv DIALOGFLOW_PROJECT_ID)"/>
+  <arg name="basic_yaml_file" default="$(optenv ROSWWW_BASIC_KEYS_YAML)"/>
+  <arg name="schedule_yaml_file" default="$(optenv APP_SCHEDULE_YAML)"/>
+
+  <arg name="robot_type" default="spot"/>
+
+  <rosparam subst_value="true">
+    robot:
+        type: $(arg robot_type)
+  </rosparam>
+
+  <!-- app manager -->
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+    <arg name="use_applist" value="false" />
+    <arg name="respawn" value="false" />
+    <arg name="basic" value="$(arg use_roswww_basic)" />
+    <arg name="basic_yaml" value="$(arg basic_yaml_file)" />
+  </include>
+
+  <!-- app scheduler -->
+  <include file="$(find app_scheduler)/launch/app_scheduler.launch" if="$(arg use_app_scheduler)">
+    <arg name="yaml_path" value="$(arg schedule_yaml_file)" />
+  </include>
+
+  <!-- dialogflow client -->
+  <node
+      pkg="dialogflow_task_executive"
+      type="dialogflow_client.py"
+      name="dialogflow_client"
+      output="screen"
+      if="$(arg use_dialogflow)">
+    <remap from="speech_to_text" to="/speech_to_text_jp"/>
+    <rosparam subst_value="true">
+      use_audio: false
+      language: ja-JP
+      use_tts: true
+      project_id: $(arg project_id)
+      timeout: 30.0
+    </rosparam>
+  </node>
+
+  <!-- task executive -->
+  <node
+      pkg="dialogflow_task_executive"
+      type="task_executive.py"
+      name="task_executive"
+      output="screen"
+      if="$(arg use_dialogflow)">
+    <rosparam subst_value="true">
+    </rosparam>
+  </node>
+
+  <!-- webhook server -->
+  <include
+      if="$(arg use_webhook_server)"
+      file="$(find dialogflow_task_executive)/launch/webhook_server.launch"
+      />
+</launch>

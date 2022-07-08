@@ -1,0 +1,17 @@
+apps:
+- app: jsk_spot_apps/spot_watch_dog
+  display: Watch Dog
+- app: jsk_spot_apps/take_envelop_to_mech_office
+  display: Take Envelop To Mech Office
+- app: jsk_spot_apps/delivery_demo
+  display: Delivery Demo
+- app: jsk_spot_apps/sing_and_dance
+  display: Sing And Dance
+- app: jsk_spot_apps/go_to_place
+  display: Go To Place
+- app: jsk_spot_apps/go_back_home
+  display: Go Back Home
+- app: jsk_spot_apps/person_lead_demo
+  display: Person Lead Demo
+- app: jsk_spot_apps/patrol_and_greeting
+  display: Patrol And Greeting

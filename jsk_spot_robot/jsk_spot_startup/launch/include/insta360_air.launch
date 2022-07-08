@@ -1,0 +1,104 @@
+<launch>
+
+  <!-- insta360 air settings -->
+  <arg name="camera_name" default="insta360" />
+  <arg name="vendor" default="0x2e1a" />
+  <arg name="product" default="0x1000"/>
+  <!--
+  Available sizes for mjpeg are
+      1472 x 736  with 30 fps
+      2176 x 1088 with 30 fps
+      3008 x 1504 with 30 fps
+  -->
+  <arg name="width" default="2176" />
+  <arg name="height" default="1088" />
+  <arg name="video_mode" default="mjpeg" />
+  <arg name="frame_rate" default="30" />
+  <arg name="brightness" default="128" />
+  <arg name="throttle" default="false" />
+  <arg if="$(arg throttle)" name="dual_fisheye_image" default="/insta360/throttled/image_raw" />
+  <arg unless="$(arg throttle)" name="dual_fisheye_image" default="/insta360/image_raw" />
+  <arg name="throttled_rate" default="5.0" />
+  <arg name="refine_align" default="false" />
+  <arg name="save_unwarped" default="false" />
+  <arg name="gui" default="false" />
+
+  <!-- 3840 x 1920 configuration -->
+  <!--
+  <arg name="mls_map_path" default="$(find jsk_perception)/config/fisheye_stitcher_grid_xd_yd_3840x1920.yml.gz" doc="Yaml file for MLS grids." />
+  <arg name="image_width" default="3840" />
+  <arg name="image_height" default="1920" />
+  <arg name="blend_param_p_wid" default="55" />
+  <arg name="blend_param_p_x1" default="75" />
+  <arg name="blend_param_p_x2" default="1775" />
+  <arg name="blend_param_row_start" default="590" />
+  <arg name="blend_param_row_end" default="1320" />
+  -->
+
+  <!-- 2000 x 1000 configuration -->
+  <arg name="mls_map_path" default="$(find jsk_perception)/config/fisheye_stitcher_grid_xd_yd_2000x1000.yml.gz" doc="Yaml file for MLS grids." />
+  <arg name="image_width" default="2000" />
+  <arg name="image_height" default="1000" />
+  <arg name="blend_param_p_wid" default="30" />
+  <arg name="blend_param_p_x1" default="75" />
+  <arg name="blend_param_p_x2" default="885" />
+  <arg name="blend_param_row_start" default="295" />
+  <arg name="blend_param_row_end" default="660" />
+
+  <!-- Publish camera image -->
+  <include file="$(find jsk_perception)/launch/libuvc_camera.launch">
+    <arg name="camera_name" value="$(arg camera_name)" />
+    <arg name="vendor" value="$(arg vendor)" />
+    <arg name="product" value="$(arg product)" />
+    <arg name="height" value="$(arg height)" />
+    <arg name="width" value="$(arg width)" />
+    <arg name="video_mode" value="$(arg video_mode)" />
+    <arg name="frame_rate" value="$(arg frame_rate)" />
+    <arg name="brightness" value="$(arg brightness)" /> <!-- -32768 ~ 32767 -->
+    <arg name="gui" value="$(arg gui)" />
+  </include>
+
+  <group ns="insta360" if="$(arg throttle)">
+    <node name="throttle_camera_info"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_topic_tools/LightweightThrottle"
+          respawn="true">
+      <remap from="~input" to="camera_info"/>
+      <remap from="~output" to="throttled/camera_info" />
+      <param name="update_rate" value="$(arg throttled_rate)" />
+    </node>
+    <node name="throttle_rgb"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_topic_tools/LightweightThrottle"
+          respawn="true">
+      <remap from="~input" to="image_raw" />
+      <remap from="~output" to="throttled/image_raw" />
+      <param name="update_rate" value="$(arg throttled_rate)" />
+    </node>
+    <node name="throttle_rgb_compressed"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_topic_tools/LightweightThrottle"
+          respawn="true">
+      <remap from="~input" to="image_raw/compressed" />
+      <remap from="~output" to="throttled/image_raw/compressed" />
+      <param name="update_rate" value="$(arg throttled_rate)" />
+    </node>
+  </group>
+
+  <include file="$(find jsk_perception)/sample/sample_dual_fisheye_to_panorama.launch">
+    <arg name="gui" value="false" />
+    <arg name="INPUT_IMAGE" value="$(arg dual_fisheye_image)" />
+    <arg name="fovd" value="210" />
+    <arg name="refine_align" value="$(arg refine_align)" />
+    <arg name="save_unwarped" value="$(arg save_unwarped)" />
+    <arg name="mls_map_path" value="$(arg mls_map_path)" />
+    <arg name="image_width" value="$(arg image_width)" />
+    <arg name="image_height" value="$(arg image_height)" />
+    <arg name="blend_param_p_wid" value="$(arg blend_param_p_wid)" />
+    <arg name="blend_param_p_x1" value="$(arg blend_param_p_x1)" />
+    <arg name="blend_param_p_x2" value="$(arg blend_param_p_x2)" />
+    <arg name="blend_param_row_start" value="$(arg blend_param_row_start)" />
+    <arg name="blend_param_row_end" value="$(arg blend_param_row_end)" />
+  </include>
+
+</launch>

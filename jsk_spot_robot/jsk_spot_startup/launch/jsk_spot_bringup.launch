@@ -1,0 +1,77 @@
+<launch>
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
+  <arg name="launch_robot_state_publisher" default="true" />
+
+  <arg name="use_driver" default="true" />
+  <arg name="use_peripheral" default="true" />
+  <arg name="use_object_detection" default="true" />
+  <arg name="use_multi_object_tracking" default="false" />
+  <arg name="use_image_processing" default="true" />
+  <arg name="use_interaction" default="true" />
+  <arg name="use_recorder" default="true" />
+  <arg name="use_app_manager" default="true" />
+  <arg name="use_teleop" default="true" />
+
+  <!-- spot driver -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/driver.launch"
+      if="$(arg use_driver)"
+      >
+      <arg name="credential_config" value="$(arg credential_config)" />
+      <arg name="launch_robot_state_publisher" value="$(arg launch_robot_state_publisher)" />
+  </include>
+
+  <!-- peripheral devices -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+      if="$(arg use_peripheral)"
+      />
+
+  <!-- object detction -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/object_detection.launch"
+      if="$(arg use_object_detection)"
+      />
+
+  <!-- multi object tracking -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/multi_object_tracking.launch"
+      if="$(arg use_multi_object_tracking)"
+      />
+
+  <!-- image processing -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/image_processing.launch"
+      if="$(arg use_image_processing)"
+      />
+
+  <!-- interaction nodes -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+      if="$(arg use_interaction)"
+      />
+
+  <!-- recorder nodes -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/recorder.launch"
+      if="$(arg use_recorder)"
+      >
+      <arg name="use_gdrive_ros" value="true"/>
+  </include>
+
+  <!-- app manager -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/app_manager.launch"
+      if="$(arg use_app_manager)"
+      >
+      <arg name="use_app_scheduler" value="true"/>
+      <arg name="use_dialogflow" value="true"/>
+  </include>
+
+  <!-- teleop node -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/teleop.launch"
+      if="$(arg use_teleop)"
+      />
+
+</launch>

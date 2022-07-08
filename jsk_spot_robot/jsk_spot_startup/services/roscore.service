@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Roscore
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c ". /opt/ros/roscore_prestart.bash && . /opt/ros/melodic/setup.bash && roscore"
+KillMode=control-group
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

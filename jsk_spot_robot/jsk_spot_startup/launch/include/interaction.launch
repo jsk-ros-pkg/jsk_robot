@@ -1,0 +1,108 @@
+<launch>
+    <arg name="speech_recognition_language" default="japanese" />
+    <arg name="speech_recognition_network" default="online" />
+
+    <arg name="audio_topic" default="/webrtcvad_ros/speech_audio" />
+
+    <!-- sound_play for english -->
+    <node pkg="sound_play" type="soundplay_node.py" name="sound_play" respawn="true">
+        <rosparam subst_value="true">
+            device: $(optenv DEVICE_SPEAKER default)
+        </rosparam>
+        <remap from="sound_play" to="robotsound" />
+    </node>
+
+    <node pkg="sound_play" type="soundplay_node.py" name="sound_play_jp" respawn="true">
+        <rosparam subst_value="true">
+            device: $(optenv DEVICE_SPEAKER default)
+        </rosparam>
+        <remap from="robotsound" to="robotsound_jp"/>
+        <remap from="sound_play" to="robotsound_jp"/>
+        <env name="PATH" value="$(find voice_text)/bin:$(env PATH)" />
+    </node>
+
+    <!-- sound_play for japanese (aques_talk) -->
+    <include file="$(find voice_text)/launch/voice_text.launch">
+        <arg name="launch_sound_play" value="false" />
+        <arg name="sound_play_respawn" value="true" />
+    </include>
+
+    <!-- ros speech recognition -->
+    <include file="$(find ros_speech_recognition)/launch/speech_recognition.launch">
+        <arg name="launch_sound_play" value="false" />
+        <arg name="launch_audio_capture" value="false" />
+        <arg name="audio_topic" value="/audio" />
+        <arg name="language" default="ja-JP" />
+    </include>
+
+    <!-- speech_recognition (english, offline) -->
+    <node
+        pkg="ros_speech_recognition"
+        type="speech_recognition_node.py"
+        name="speech_recognition"
+        respawn="true"
+        output="screen"
+        if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'offline')"
+        >
+        <remap from="/Tablet/voice" to="/speech_to_text_en" />
+        <rosparam subst_value="true">
+          audio_topic: $(arg audio_topic)
+          n_channel: 1
+          depth: 16
+          sample_rate: 16000
+          engine: "Sphinx"
+          language: "en-US"
+          continuous: True
+        </rosparam>
+    </node>
+    <!-- speech_recognition (english, online) -->
+    <node
+        pkg="respeaker_ros"
+        type="speech_to_text.py"
+        name="speech_to_text"
+        respawn="true"
+        output="screen"
+        if="$(eval arg('speech_recognition_language') == 'english' and arg('speech_recognition_network') == 'online')"
+        >
+        <remap from="audio" to="$(arg audio_topic)" />
+        <remap from="speech_to_text" to="/speech_to_text_en" />
+        <rosparam subst_value="true">
+          language: "en-US"
+          self_cancellation: true
+          tts_action_names:
+            - robotsound
+            - robotsound_jp
+          tts_tolerance: 0.5
+        </rosparam>
+    </node>
+    <!-- speech_recognition (japanese, offline) -->
+    <include
+        file="$(find julius_ros)/launch/julius.launch"
+        if="$(eval arg('speech_recognition_language') == 'japanese' and arg('speech_recognition_network') == 'offline')"
+        >
+        <arg name="launch_audio_capture" value="false"/>
+        <arg name="launch_sound_play" value="false"/>
+        <arg name="speech_to_text_topic" value="/speech_to_text_jp"/>
+    </include>
+    <!-- speech_recognition (english, online) -->
+    <node
+        pkg="respeaker_ros"
+        type="speech_to_text.py"
+        name="speech_to_text"
+        respawn="true"
+        output="screen"
+        if="$(eval arg('speech_recognition_language') == 'japanese' and arg('speech_recognition_network') == 'online')"
+        >
+        <remap from="audio" to="$(arg audio_topic)" />
+        <remap from="speech_to_text" to="/speech_to_text_jp" />
+        <rosparam subst_value="true">
+          language: "ja-JP"
+          self_cancellation: true
+          tts_action_names:
+            - robotsound
+            - robotsound_jp
+          tts_tolerance: 0.5
+        </rosparam>
+    </node>
+
+</launch>

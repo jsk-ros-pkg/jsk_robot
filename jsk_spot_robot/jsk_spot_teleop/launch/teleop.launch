@@ -1,0 +1,52 @@
+<launch>
+  <arg name="pad_type" default="dualshock3" />
+
+  <arg name="joy_dev" default="/dev/input/js_$(arg pad_type)" />
+  <arg name="joy_topic" default="/joy_$(arg pad_type)" />
+  <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
+
+  <node
+      pkg="joy"
+      type="joy_node"
+      name="joy_node_$(arg pad_type)"
+      >
+    <remap from="joy" to="$(arg joy_topic)" />
+
+    <rosparam subst_value="True">
+        dev: $(arg joy_dev)
+        deadzone: 0.5
+        autorepeat_rate: 20
+    </rosparam>
+  </node>
+
+  <node
+      pkg="teleop_twist_joy"
+      type="teleop_node"
+      name="teleop_twist_joy_$(arg pad_type)"
+      >
+    <remap from="joy" to="$(arg joy_topic)" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
+
+    <rosparam
+        command="load"
+        file="$(find jsk_spot_teleop)/config/$(arg pad_type)_teleop_twist_joy.yaml"
+        />
+  </node>
+
+  <node
+      pkg="jsk_spot_teleop"
+      type="joystick_teleop"
+      name="joystick_teleop_$(arg pad_type)"
+      output="screen"
+      >
+      <remap from="joy" to="$(arg joy_topic)" />
+
+      <rosparam
+          command="load"
+          file="$(find jsk_spot_teleop)/config/$(arg pad_type)_joystick_teleop.yaml"
+          />
+      <rosparam subst_value="True">
+        dock_id: $(optenv DOCKING_STATION_ID -1)
+      </rosparam>
+  </node>
+</launch>

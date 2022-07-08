@@ -1,0 +1,65 @@
+<launch>
+    <arg name="initial_node_id" default="eng2_73B2" />
+
+    <arg name="use_person_detection" default="true"/>
+    <arg name="use_obstacle_detection" default="true"/>
+
+    <rosparam subst_value="true">
+        /narrow_behavior/use_person_detection: $(arg use_person_detection)
+        /narrow_behavior/use_obstacle_detection: $(arg use_obstacle_detection)
+    </rosparam>
+
+    <!-- behahvior_executor_server for autonomous walking -->
+    <node
+        pkg="spot_behavior_manager_server"
+        type="behavior_manager_server.py"
+        name="spot_behavior_manager_server"
+        output="screen"
+        >
+
+        <rosparam
+            ns="map"
+            file="$(find spot_behavior_graph)/config/edges.yaml"
+            subst_value="true"
+            />
+        <rosparam
+            ns="map"
+            file="$(find spot_behavior_graph)/config/nodes.yaml"
+            subst_value="true"
+            />
+
+        <rosparam subst_value="true">
+            initial_node_id: '$(arg initial_node_id)'
+            action_names_synchronizer:
+                - '/spot_person_lead_server/execute_behaviors'
+            silent_mode: true
+        </rosparam>
+    </node>
+
+    <!-- behahvior_executor_server for person leading -->
+    <node
+        pkg="spot_behavior_manager_server"
+        type="behavior_manager_server.py"
+        name="spot_person_lead_server"
+        output="screen"
+        >
+
+        <rosparam
+            ns="map"
+            file="$(find spot_behavior_graph)/config/edges_person_lead.yaml"
+            subst_value="true"
+            />
+        <rosparam
+            ns="map"
+            file="$(find spot_behavior_graph)/config/nodes.yaml"
+            subst_value="true"
+            />
+
+        <rosparam subst_value="true">
+            initial_node_id: '$(arg initial_node_id)'
+            action_names_synchronizer:
+                - '/spot_behavior_manager_server/execute_behaviors'
+            silent_mode: true
+        </rosparam>
+    </node>
+</launch>

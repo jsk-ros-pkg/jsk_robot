@@ -1,0 +1,1 @@
+KERNEL=="js*", ATTRS{name}=="Wireless Controller", SYMLINK+="input/js_dualsense"

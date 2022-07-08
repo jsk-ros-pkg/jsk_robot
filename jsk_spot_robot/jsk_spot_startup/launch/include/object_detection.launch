@@ -1,0 +1,79 @@
+<launch>
+  <arg name="INPUT_PANORAMA_IMAGE" default="/dual_fisheye_to_panorama/output" />
+  <arg name="INPUT_PANORAMA_INFO" default="/dual_fisheye_to_panorama/panorama_info" />
+
+  <arg name="use_edgetpu" default="true"/>
+  <!-- edge detection parameter -->
+  <arg name="model_file" default="$(find coral_usb)/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
+  <arg name="label_file" default="$(find coral_usb)/models/coco_labels.txt"/>
+  <arg name="device_id" default="0" />
+  <arg name="n_split" default="3" />
+  <arg name="overlap" default="true" />
+  <!-- -->
+  <arg name="gpu" default="0"/>
+
+  <arg name="TOPIC_OBJ_CLASS" default="/spot_recognition/class" />
+  <arg name="TOPIC_OBJ_RECTS" default="/spot_recognition/rects" />
+
+  <!-- EdgeTPU object detection -->
+  <node
+      pkg="coral_usb"
+      type="edgetpu_panorama_object_detector.py"
+      name="edgetpu_panorama_object_detector"
+      output="screen"
+      respawn="true"
+      if="$(arg use_edgetpu)"
+      >
+    <remap from="~input" to="$(arg INPUT_PANORAMA_IMAGE)" />
+    <remap from="~output/class" to="$(arg TOPIC_OBJ_CLASS)" />
+    <remap from="~output/rects" to="$(arg TOPIC_OBJ_RECTS)" />
+    <rosparam subst_value="true" >
+      score_thresh: 0.7
+      model_file: $(arg model_file)
+      label_file: $(arg label_file)
+      image_transport: raw
+      device_id: $(arg device_id)
+      n_split: $(arg n_split)
+      overlap: $(arg overlap)
+      enable_visualization: false
+    </rosparam>
+  </node>
+  <!-- GPU object detection -->
+  <node
+      pkg="jsk_perception"
+      type="ssd_object_detector.py"
+      name="ssd_object_detector"
+      output="screen"
+      respawn="true"
+      unless="$(arg use_edgetpu)"
+      >
+    <remap from="~input_panorama_image" to="$(arg INPUT_PANORAMA_IMAGE)" />
+    <remap from="~output/class" to="$(arg TOPIC_OBJ_CLASS)" />
+    <remap from="~output/rects" to="$(arg TOPIC_OBJ_RECTS)" />
+    <rosparam subst_value="true">
+      gpu: $(arg gpu)
+      model_path: voc0712
+    </rosparam>
+  </node>
+
+  <!-- rects 2 bounding box array -->
+  <node
+      pkg="jsk_perception"
+      type="rect_array_in_panorama_to_bounding_box_array.py"
+      name="rect_array_in_panorama_to_bounding_box_array"
+      output="screen"
+      >
+    <remap from="~panorama_image" to="/dual_fisheye_to_panorama/output" />
+    <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
+    <remap from="~input_class" to="$(arg TOPIC_OBJ_CLASS)" />
+    <remap from="~input_rects" to="$(arg TOPIC_OBJ_RECTS)" />
+    <remap from="~bbox_array" to="/spot_recognition/bbox_array" />
+    <rosparam subst_value="true">
+        frame_fixed: "odom"
+        dimensions_labels:
+            person: [0.5, 0.5, 1.5]
+            car: [4.0, 4.0, 2.0]
+            truck: [4.0, 4.0, 3.0]
+    </rosparam>
+  </node>
+</launch>
