@@ -48,6 +48,7 @@ source devel/setup.bash
         (send *ri* :recover-error))
       (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
       ```
+      `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
 ### Teleop
 #### Start program
 1. Start controller on controller PC;
