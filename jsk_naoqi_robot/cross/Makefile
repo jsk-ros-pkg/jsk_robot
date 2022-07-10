@@ -1,4 +1,4 @@
-TARGET_MACHINE?=arm64v8
+TARGET_MACHINE?=i386
 
 all:
 	@echo "'make system' for setup System directories"
@@ -21,7 +21,7 @@ install:
 	./install.sh
 
 clean:
-	rm -fr ${TARGET_MACHINE}_ws_*
+	rm -fr ${TARGET_MACHINE}_ws_* Python-2.7.17 Python-2.7.17-host minizip zlib-1.2.11 pyliblzma-0.5.3
 
 distclean: clean
 	rm -fr ${TARGET_MACHINE}_*

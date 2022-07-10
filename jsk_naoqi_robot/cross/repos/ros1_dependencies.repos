@@ -1,4 +1,65 @@
 repositories:
+#
+# copy original ros1_dependencies.repos for pepper
+#  https://github.com/esteve/ros2_pepper/blob/master/repos/ros1_dependencies.repos
+#
+  bullet3:
+    type: git
+    url: https://github.com/bulletphysics/bullet3.git
+    version: 19f999ac087e68ffc2551ffb73e35e60271a0d27
+  console_bridge:
+    type: git
+    url: https://github.com/ros/console_bridge.git
+    version: 8c3c62501bf8521dcf53705b497ea982b874c25d
+  flann:
+    type: git
+    url: https://github.com/mariusmuja/flann.git
+    version: 1.9.1
+  pcl:
+    type: git
+    url: https://github.com/PointCloudLibrary/pcl.git
+    version: b35b8c785bb9c196755182cbd0a3dd3be9754739
+  poco:
+    type: git
+    url: https://github.com/pocoproject/poco.git
+    version: poco-1.7.8p3-release
+  qhull:
+    type: git
+    url: https://github.com/qhull/qhull.git
+    version: 5a79a0009454c86e9848646b3c296009125231bf
+  SDL:
+    type: git
+    url: https://github.com/SDL-mirror/SDL.git
+    version: SDL-1.2
+  SDL_image:
+    type: git
+    url: https://github.com/SDL-mirror/SDL_image.git
+    version: SDL-1.2
+  tinyxml2:
+    type: git
+    url: https://github.com/leethomason/tinyxml2.git
+    version: 5.0.1
+  uuid:
+    type: git
+    url: https://github.com/certik/uuid.git
+    version: f895102e2ddaf86387a62c3544abb78c0a5cfbae
+  libcurl:
+    type: git
+    url: https://github.com/curl/curl.git
+    version: curl-7_83_0
+  sip:
+    type: tar
+    url: https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/sip4/4.17+dfsg-1ubuntu0.1/sip4_4.17+dfsg.orig.tar.gz
+  # collada-dom:
+  #   type: git
+  #   url: https://github.com/rdiankov/collada-dom.git
+  #   version: v2.4.4
+  harfbuzz:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/h/harfbuzz/harfbuzz_1.7.2.orig.tar.bz2
+#
+#
+#
   urdfdom-headers:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/u/urdfdom-headers/urdfdom-headers_1.0.0.orig.tar.gz
@@ -11,6 +72,18 @@ repositories:
   urdfdom/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/u/urdfdom/urdfdom_1.0.0-2build2.debian.tar.xz
+  zlib1g:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/z/zlib/zlib_1.2.11.dfsg.orig.tar.xz
+  zlib1g/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/z/zlib/zlib_1.2.11.dfsg-0ubuntu2.1.debian.tar.xz
+  minizip:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/minizip/minizip_1.1.orig.tar.xz
+  minizip/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/minizip/minizip_1.1-8build1.debian.tar.xz
   assimp:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/a/assimp/assimp_4.1.0~dfsg.orig.tar.gz
@@ -203,3 +276,45 @@ repositories:
   festlex-poslex:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-poslex/festlex-poslex_2.4.orig.tar.gz
+  libassuan:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/liba/libassuan/libassuan_2.5.1.orig.tar.bz2
+  libassuan/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/liba/libassuan/libassuan_2.5.1-2.debian.tar.xz
+  libgpgme-error-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libg/libgpg-error/libgpg-error_1.27.orig.tar.bz2
+  libgpgme-error-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libg/libgpg-error/libgpg-error_1.27-6.debian.tar.xz
+  libgcrypt-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libg/libgcrypt20/libgcrypt20_1.8.1.orig.tar.bz2
+  libgcrypt-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libg/libgcrypt20/libgcrypt20_1.8.1-4ubuntu1.3.debian.tar.xz
+  libksba:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libk/libksba/libksba_1.3.5.orig.tar.bz2
+  libksba/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libk/libksba/libksba_1.3.5-2.debian.tar.xz
+  npth:
+    type: tar
+    url:  http://archive.ubuntu.com/ubuntu/pool/main/n/npth/npth_1.5.orig.tar.bz2
+  npth/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/n/npth/npth_1.5-3.debian.tar.xz
+  gpgconf:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/g/gnupg2/gnupg2_2.2.4.orig.tar.bz2
+  gpgconf/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/g/gnupg2/gnupg2_2.2.4-1ubuntu1.6.debian.tar.bz2
+  libgpgme-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/g/gpgme1.0/gpgme1.0_1.10.0.orig.tar.bz2
+  libgpgme-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/g/gpgme1.0/gpgme1.0_1.10.0-1ubuntu2.debian.tar.xz

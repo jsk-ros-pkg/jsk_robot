@@ -1,8 +1,8 @@
 #!/bin/bash
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/jack-audio-connection-kit/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/jack-audio-connection-kit/jackd1-0.125.0
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/jack-audio-connection-kit/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/jack-audio-connection-kit/jackd1-0.125.0
 
 #
 # constantly does not have patches
@@ -15,6 +15,6 @@ done
 cd ${SOURCE_DIR}
 
 ./autogen.sh
-CFLAGS="-I/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/include" LIBS="-L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib" ./configure --enable-force-install --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure --enable-force-install --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies --host=i686-aldebaran-linux-gnu
 
 make -j4 install

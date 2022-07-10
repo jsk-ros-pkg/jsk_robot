@@ -1,8 +1,8 @@
 #!/bin/bash
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/python-incremental/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/python-incremental/incremental-16.10.1
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/python-incremental/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/python-incremental/incremental-16.10.1
 
 cd ${DEBIAN_DIR}/patches
 for patch_file in $(grep -v ^# series); do
@@ -10,8 +10,8 @@ for patch_file in $(grep -v ^# series); do
 done
 
 cd ${SOURCE_DIR}
-mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages/
-PYTHONPATH="/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages" \
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages/
+PYTHONPATH="/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages" \
           python \
           setup.py install \
-          --prefix /opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+          --prefix /home/nao/${INSTALL_ROOT}/ros1_dependencies

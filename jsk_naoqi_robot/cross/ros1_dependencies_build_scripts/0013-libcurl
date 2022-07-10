@@ -1,0 +1,16 @@
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/libcurl
+cd /home/nao/ros1_dependencies_sources/build/libcurl
+cmake \
+  -DCURL_USE_OPENSSL=ON -DOPENSSL_ROOT_DIR=/home/nao/ctc/openssl -DCMAKE_USE_LIBSSH2=OFF \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_FIND_ROOT_PATH="/home/nao/ros1_dependencies;/home/nao/ctc" \
+  -DBUILD_SHARED_LIBS=ON \
+  ../../src/libcurl
+make -j4 install
+
+echo "
+  -DCMAKE_TOOLCHAIN_FILE=/home/nao/ctc-cmake-toolchain.cmake \
+  -DALDE_CTC_CROSS=/home/nao/ctc \
+"

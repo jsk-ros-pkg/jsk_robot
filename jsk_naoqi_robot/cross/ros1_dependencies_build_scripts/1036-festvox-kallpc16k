@@ -1,7 +1,7 @@
 #!/bin/bash
 set -xeu -o pipefail
 
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/festvox-kallpc16k/festival
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/festvox-kallpc16k/festival
 
 #
 cd ${SOURCE_DIR}
@@ -15,7 +15,7 @@ fi
 
 cd ${SOURCE_DIR}
 
-mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/festvox/
-mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/group/
-cp lib/voices/english/kal_diphone/festvox/*.scm /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/festvox/
-cp lib/voices/english/kal_diphone/group/*.group /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/group/
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/festvox/
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/group/
+cp lib/voices/english/kal_diphone/festvox/*.scm /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/festvox/
+cp lib/voices/english/kal_diphone/group/*.group /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/group/

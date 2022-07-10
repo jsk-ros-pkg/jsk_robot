@@ -1,8 +1,8 @@
 #!/bin/bash
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/portaudio2/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/portaudio2/portaudio/
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/portaudio2/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/portaudio2/portaudio/
 
 #
 # constantly does not have patches
@@ -12,12 +12,15 @@ for patch_file in $(grep -v ^# series); do
     OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
 done
 
-mkdir -p /home/user/ros1_dependencies_sources/build/portaudio2
-cd /home/user/ros1_dependencies_sources/build/portaudio2
+mkdir -p /home/nao/ros1_dependencies_sources/build/portaudio2
+cd /home/nao/ros1_dependencies_sources/build/portaudio2
 
+echo ${LDFLAGS}
+export LDFLAGS="${LDFLAGS} -L/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib"
 cmake \
-  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
   -DCMAKE_BUILD_TYPE=Release \
   ${SOURCE_DIR}
 
-make -j4 install
+make -j4 install VERBOSE=1 LDFLAGS="${LDFLAGS} -L/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib"
+

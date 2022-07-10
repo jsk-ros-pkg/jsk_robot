@@ -1,9 +1,9 @@
 #
-# Install Ubuntu
+# Install Ubuntu (copied from https://github.com/esteve/ros2_pepper.git )
 #
-ARG TARGET_MACHINE=arm64v8
-FROM $TARGET_MACHINE/ubuntu:bionic
-MAINTAINER k-okada@jsk.t.u-tokyo.ac.jp
+ARG TARGET_MACHINE=i386
+FROM $TARGET_MACHINE/ubuntu:xenial
+MAINTAINER esteve@apache.org
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends locales
 RUN locale-gen en_US en_US.UTF-8
@@ -14,35 +14,92 @@ RUN apt-get install -y --no-install-recommends apt-transport-https
 #
 # Install ROS
 #
-RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/ros-latest.list
-RUN apt-get install -y --no-install-recommends curl gnupg2
-RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-RUN apt-get update -y
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-COPY deb-packages.txt .
-COPY ros-packages.txt .
-RUN apt install -y --no-install-recommends $(cat deb-packages.txt | grep -v ^#)
-RUN apt install -y --no-install-recommends $(cat ros-packages.txt | grep -v ^#)
+RUN echo "deb http://snapshots.ros.org/kinetic/final/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
+RUN apt-get update
+# RUN apt-get install -y gcc g++ gcc-4.9 g++-4.9 cpp-4.9 make  # build-essential
+# RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 4
+# RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 4
+# RUN apt-get install -y --no-install-recommends python-rosdep python-rosinstall-generator python-wstool python-rosinstall
+# RUN apt-get install -y --no-install-recommends automake pkg-config libtool
+# #RUN apt-get install -y flex
+# RUN apt-get install -y python-catkin-pkg
+#
+# Install packages within Juliette 2.5.5.5
+#
+# RUN apt-get install -y python
+# RUN apt-get install -y libconsole-bridge-dev
+# RUN apt-get install -y libqt5gui5
+# RUN apt-get install -y libeigen3-dev
+# RUN wget http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
+# RUN tar -xvf boost_1_59_0.tar.gz && cd boost_1_59_0 && ./bootstrap.sh --prefix=/usr && ./b2 install
 #
 # Package required for cross environment
 #
-RUN apt install -y python-pip
-RUN git clone https://github.com/k-okada/rosinstall_generator /tmp/rosinstall_generator -b add_depend_type
-RUN pip install /tmp/rosinstall_generator
-RUN apt install -y python3-vcstool
+RUN apt-get install -y --no-install-recommends autoconf automake libtool cmake make git wget unzip patch pkg-config
+# RUN apt install -y --no-install-recommends python-pip
+# RUN git clone https://github.com/k-okada/rosinstall_generator /tmp/rosinstall_generator -b add_depend_type
+# RUN pip install /tmp/rosinstall_generator
+## RUN apt-get install -y --allow-unauthenticated --no-install-recommends python3-pip python3-empy python3-yaml python3-setuptools python3-urllib3 python3-openssl
+# RUN apt-get install -y --no-install-recommends libc6
+# RUN apt-get install -y --no-install-recommends apt-transport-https
+# RUN apt-get install -y --no-install-recommends build-essential cmake git libssl-dev wget zlib1g-dev unzip
+# ## RUN apt-get install -y --allow-unauthenticated --no-install-recommends python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential
+# ##RUN apt-get install -y --allow-unauthenticated --no-install-recommends python3-vcstool python3-empy
+# RUN apt-get install -y --no-install-recommends automake pkg-config libtool
+# RUN apt-get install -y flex
+#
+# Install vcstool
+#
+RUN apt-get install -y --allow-unauthenticated --no-install-recommends python3-pip python3-empy python3-yaml python3-setuptools python3-urllib3 python3-openssl python3-docutils python3-pyparsing python3-dateutil
+RUN apt-get install -y --allow-unauthenticated --no-install-recommends python3-vcstool
+RUN apt-get install -y --allow-unauthenticated --no-install-recommends bzip2 xz-utils
+RUN git clone https://github.com/k-okada/rosinstall_generator /tmp/rosinstall_generator -b add_depend_type && \
+    pip3 install /tmp/rosinstall_generator
+#
+### RUN apt-get install -y python-setuptools python-wheel
+### RUN pip install incremental==16.10.1 hyperlink==17.1.1 Automat==0.3.0 constantly==15.1 zope.interface==3.6.0 future==0.15.2
+#
+# Install build tools
+#
+RUN  apt-get install -y --allow-unauthenticated --no-install-recommends libomp-dev
+##RUN apt-get install -y --allow-unauthenticated --no-install-recommends catkin
+## RUN pip3 install catkin-tools
+# RUN apt-get install -y sudo
+## RUN apt-get install -y --no-install-recommends libc6-dev
+RUN apt remove -y python2.7
+## RUN apt-get install -y python-setuptools python-wheel python-openssl
 #
 # Setup Users
 #
 RUN apt-get install -y sudo
-RUN useradd -ms /bin/bash -G sudo user
+RUN dpkg -r --force-depends libc6-dev  # force remove dev files
+RUN useradd -ms /bin/bash -G sudo nao
 RUN newgrp
-RUN echo user:user | chpasswd
-#
-# Remove packages is not found on 161
-#
-RUN dpkg -r --force-depends cython gir1.2-gstreamer-1.0 libtinyxml-dev python-attr python-autobahn python-automat python-cbor python-concurrent.futures python-constantly python-constantly python-incremental python-lz4 python-nacl python-pyasn1 python-pyasn1-modules python-qrcode python-service-identity python-snappy python-trie python-trollius python-twisted-bin python-twisted-core python-twisted python-txaio python-ubjson python-u-msgpack python-wsaccel python-zope.interface
-#
-#
-#
-WORKDIR /home/user
-USER user
+RUN echo nao:nao | chpasswd
+WORKDIR /home/nao
+USER nao
+ENV CC /home/nao/ctc/bin/i686-aldebaran-linux-gnu-cc
+#-std=gnu11
+ENV CPP /home/nao/ctc/bin/i686-aldebaran-linux-gnu-cpp
+#-std=gnu++14
+ENV CXX /home/nao/ctc/bin/i686-aldebaran-linux-gnu-c++
+#-std=gnu++14
+ENV RANLIB /home/nao/ctc/bin/i686-aldebaran-linux-gnu-ranlib
+ENV AR /home/nao/ctc/bin/i686-aldebaran-linux-gnu-ar
+ENV AAL /home/nao/ctc/bin/i686-aldebaran-linux-gnu-aal
+ENV LD /home/nao/ctc/bin/i686-aldebaran-linux-gnu-ld
+ENV LINK /home/nao/ctc/bin/i686-aldebaran-linux-gnu-c++
+ENV READELF /home/nao/ctc/bin/i686-aldebaran-linux-gnu-readelf
+
+# ENV CFLAGS -isysroot /home/nao/ctc/i686-aldebaran-linux-gnu/sysroot
+# ### ENV CPPFLAGS -I/home/nao/ctc/i686-aldebaran-linux-gnu/sysroot/usr/include -I/home/nao/ctc/zlib/include -I/home/nao/ctc/bzip2/include -I/home/nao/ctc/openssl/include
+# ENV LDFLAGS -L/home/nao/ctc/zlib/lib -L/home/nao/ctc/bzip2/lib -L/home/nao/ctc/openssl/lib
+
+ENV CMAKE_PREFIX_PATH /home/nao/ctc/tiff:/home/nao/ctc/jpeg:/home/nao/ctc/png:/home/nao/ctc/xml2:/home/nao/ctc/lz4:/home/nao/ctc/pcre:/home/nao/ctc/ffi
+ENV CFLAGS -isysroot /home/nao/ctc/i686-aldebaran-linux-gnu/sysroot -I/home/nao/ctc/bzip2/include -I/home/nao/ctc/openssl/include -I/home/nao/ctc/archive -I/home/nao/ctc/xz_utils/include -I/home/nao/ctc/xml2/include -I/home/nao/ctc/lz4/include -I/home/nao/ctc/ogg/include -I/home/nao/ctc/zlib/include -I/home/nao/ctc/ffi/lib/libffi-3.0.13/include/ -I/home/nao/ctc/pcre/include
+ENV CPPFLAGS -isysroot /home/nao/ctc/i686-aldebaran-linux-gnu/sysroot -I/home/nao/ctc/bzip2/include -I/home/nao/ctc/openssl/include -I/home/nao/ctc/archive -I/home/nao/ctc/xz_utils/include -I/home/nao/ctc/xml2/include -I/home/nao/ctc/lz4/include -I/home/nao/ctc/ogg/include -I/home/nao/ctc/zlib/include -I/home/nao/ctc/ffi/lib/libffi-3.0.13/include/ -I/home/nao/ctc/pcre/include
+ENV CXXFLAGS -isysroot /home/nao/ctc/i686-aldebaran-linux-gnu/sysroot -I/home/nao/ctc/bzip2/include -I/home/nao/ctc/openssl/include -I/home/nao/ctc/archive -I/home/nao/ctc/xz_utils/include -I/home/nao/ctc/xml2/include -I/home/nao/ctc/lz4/include -I/home/nao/ctc/ogg/include -I/home/nao/ctc/zlib/include -I/home/nao/ctc/ffi/lib/libffi-3.0.13/include/ -I/home/nao/ctc/pcre/include
+ENV LDFLAGS -Wl,--as-needed,--sysroot,\${ALDE_CTC_CROSS}/i686-aldebaran-linux-gnu/sysroot/  -L/home/nao/ctc/icu/lib -L/home/nao/ctc/bzip2/lib -L/home/nao/ctc/openssl/lib -L/home/nao/ctc/archive/lib  -L/home/nao/ctc/xz_utils/lib -L/home/nao/ctc/tiff/lib -L/home/nao/ctc/jpeg/lib -L/home/nao/ctc/png/lib -L/home/nao/ctc/xml2/lib -L/home/nao/ctc/lz4/lib -L/home/nao/ctc/pcre/lib -L/home/nao/ctc/ogg/lib -L/home/nao/ctc/zlib/lib -L/home/nao/ctc/ffi/lib -L//home/nao/ctc/curl/lib -L//home/nao/ctc/boost/lib
+ENV LD_LIBRARY_PATH /home/nao/ctc/icu/lib:/home/nao/ctc/curl/lib:/home/nao/ctc/c_ares/lib:/home/nao/ctc/bzip2/lib:/home/nao/ctc/openssl/lib:/home/nao/ctc/archive/lib:/home/nao/ctc/xz_utils/lib:/home/nao/ctc/tiff/lib:/home/nao/ctc/jpeg/lib:/home/nao/ctc/png/lib:/home/nao/ctc/xml2/lib:/home/nao/ctc/lz4/lib:/home/nao/ctc/pcre/lib:/home/nao/ctc/ogg/lib:/home/nao/ctc/zlib/lib:/home/nao/ctc/ffi/lib:/home/nao/ctc/boost/lib
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

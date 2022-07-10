@@ -2,8 +2,8 @@
 
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/flac/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/flac/flac-1.3.2
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/flac/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/flac/flac-1.3.2
 
 cd ${DEBIAN_DIR}/patches
 for patch_file in $(cat series); do
@@ -16,6 +16,7 @@ aclocal
 libtoolize
 automake --add-missing
 autoconf
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies --host=i686-aldebaran-linux-gnu
+
 
 make -j4 install

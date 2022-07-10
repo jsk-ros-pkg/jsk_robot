@@ -1,14 +1,14 @@
 #!/bin/bash
 set -xeu -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/festival/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/festival/festival
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/festival/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/festival/festival
 
 #
 cd ${DEBIAN_DIR}/patches
 if [ ! -e .patched ]; then
-    sed -i 's@/usr/share/festival@/opt/jsk/System/ros1_dependencies/share/festival@' *.diff ${SOURCE_DIR}/src/arch/festival/festival.cc
-    sed -i 's@/usr/bin/festival@/opt/jsk/System/ros1_dependencies/bin/festival@' *.diff
+    sed -i 's@/usr/share/festival@/home/nao/System/ros1_dependencies/share/festival@' *.diff ${SOURCE_DIR}/src/arch/festival/festival.cc
+    sed -i 's@/usr/bin/festival@/home/nao/System/ros1_dependencies/bin/festival@' *.diff
     for patch_file in $(grep -v ^# series); do
         # do not have to change #include "../speech_tools/base_class/" to #include "/usr/include/speech_tools/base_class/"
         if [[ ${patch_file} =~ 12-build-include-absolute-paths.diff|19-debian-build.diff ]]; then continue; fi
@@ -20,29 +20,31 @@ touch .patched
 ##
 
 # festival and speech_tools must be in same direcoty, see festival/INSTALL file
-ln -sf /home/user/ros1_dependencies_sources/src/speech_tools/speech_tools /home/user/ros1_dependencies_sources/src/festival/speech_tools
+ln -sf /home/nao/ros1_dependencies_sources/src/speech_tools/speech_tools /home/nao/ros1_dependencies_sources/src/festival/speech_tools
 cd ${SOURCE_DIR}
 
 aclocal
 libtoolize
 autoconf
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies --host=i686-aldebaran-linux-gnu --build=i686-aldebaran-linux-gnu
 
-EST="../speech_tools" make -j1 all
+make clean
+#EST="../speech_tools" make -j1 all CXX=${CXX:-g++} CC=${CC:-gcc} AR=${AR:-ar} RANLIB=${RANLIB:-ranlib}
+LIBS="" EST="../speech_tools" make -j1 all CXX=${CXX:-g++} CC=${CC:-gcc} AR=${AR:-ar} RANLIB=${RANLIB:-ranlib}
 
-cp src/main/festival src/main/festival_client bin/text2wave /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin/
-cp lib/etc/unknown_DebianGNULinux/audsp /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib
+cp src/main/festival src/main/festival_client bin/text2wave /home/nao/${INSTALL_ROOT}/ros1_dependencies/bin/
+cp lib/etc/unknown_DebianGNULinux/audsp /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib
 
-mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/
-rm -fr /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/*
-cp lib/*.scm /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/
-cp lib/*.gram /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/
-cp lib/*.ngrambin /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/
-cp -r lib/languages /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/
-cp -r lib/multisyn /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/
+rm -fr /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/*
+cp lib/*.scm /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/
+cp lib/*.gram /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/
+cp lib/*.ngrambin /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/
+cp -r lib/languages /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/
+cp -r lib/multisyn /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/
 
-mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
-rm -fr /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/*
-cp lib/Sable.v0_2.dtd   /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
-cp lib/Singing.v0_1.dtd /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
-cp lib/sable-latin.ent  /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
+rm -fr /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/*
+cp lib/Sable.v0_2.dtd   /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
+cp lib/Singing.v0_1.dtd /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/
+cp lib/sable-latin.ent  /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/sgml/festival/

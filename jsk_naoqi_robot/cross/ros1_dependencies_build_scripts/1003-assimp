@@ -1,21 +1,24 @@
 #!/bin/bash
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/assimp/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/assimp/assimp-4.1.0
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/assimp/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/assimp/assimp-4.1.0
 
 cd ${DEBIAN_DIR}/patches
 for patch_file in $(cat series); do
     OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
 done
 
-mkdir -p /home/user/ros1_dependencies_sources/build/assimp
-cd /home/user/ros1_dependencies_sources/build/assimp
+mkdir -p /home/nao/ros1_dependencies_sources/build/assimp
+cd /home/nao/ros1_dependencies_sources/build/assimp
 
+CXXFLAGS="-DASSIMP_BUILD_NO_COMPRESSED_IFC=ON -DASSIMP_BUILD_NO_Q3BSP_IMPORTER=OF ${CXXFLAGS}"
 cmake \
-  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_FIND_ROOT_PATH="/home/nao/System/ros1_dependencies;/home/nao/ctc" \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
   -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_SHARED_LINKER_FLAGS="-Wl,--version-script=${DEBIAN_DIR}/libassimp4.ver" \
+  -DCMAKE_EXE_LINKER_FLAGS="-L/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-Wl,--version-script=${DEBIAN_DIR}/libassimp4.ver -L/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib" \
   -DBUILD_ASSIMP_SAMPLES=OFF \
   -DASSIMP_BUILD_TESTS=OFF \
   -DBUILD_DOCS=OFF \
@@ -23,4 +26,11 @@ cmake \
   -DASSIMP_ENABLE_BOOST_WORKAROUND=OFF \
   ${SOURCE_DIR}
 
-make -j4 install
+make -j4 install VERBOSE=1
+
+
+echo "
+  -DZLIB_FOUND=1 -DZLIB_INCLUDE_DIR=/home/nao/ctc/zlib/include -DZLIB_LIBRARY_DIR=/home/nao/ctc/zlib/lib -DLIB_LIBRARIES="/home/nao/ctc/zlib/lib/libz.so" \
+  -DUNZIP_FOUND=1 -DUNZIP_INCLUDE_DIRS=/home/nao/System/ros1_dependencies/include/minizip -DUNZIP_LIBRARIES="/home/nao/System/ros1_dependencies/lib/libminizip.a" \
+
+"

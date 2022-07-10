@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/SDL
+cd /home/nao/ros1_dependencies_sources/src/SDL
+./autogen.sh
+cd /home/nao/ros1_dependencies_sources/build/SDL
+../../src/SDL/configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-shared
+make -j4 install

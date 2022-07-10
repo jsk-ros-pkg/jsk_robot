@@ -1,8 +1,8 @@
 #!/bin/bash
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/alsa-lib/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/alsa-lib/alsa-lib-1.1.3
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/alsa-lib/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/alsa-lib/alsa-lib-1.1.3
 
 #
 # constantly does not have patches
@@ -14,6 +14,8 @@ done
 
 cd ${SOURCE_DIR}
 
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --host=i686-aldebaran-linux-gnu
 
-make -j4 install
+make -j4 install VERBOSE=1

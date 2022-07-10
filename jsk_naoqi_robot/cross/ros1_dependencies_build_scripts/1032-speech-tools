@@ -1,8 +1,8 @@
 #!/bin/bash
 set -xeu -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/speech_tools/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/speech_tools/speech_tools
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/speech_tools/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/speech_tools/speech_tools
 
 #
 cd ${DEBIAN_DIR}/patches
@@ -18,19 +18,23 @@ cd ${SOURCE_DIR}
 aclocal
 autoconf
 
-eval "$(dpkg-buildflags --export=sh)"
-export CXXFLAGS="${CXXFLAGS} -I/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/include -fno-delete-null-pointer-checks"
-export LDFLAGS="${LDFLAGS} -L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib"
-# example directory does not use LDFLAGS...
-export CXXFLAGS="${CXXFLAGS} -L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib"
-# main directory does not use LDFLAGS...
-export CFLAGS="${CFLAGS} -L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib"
 export PROJECT_VERSION=2.5.0
 export PROJECT_MAJOR_VERSION=2
 
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies --host=i686-aldebaran-linux-gnu
 
-make -j1 PULSEAUDIO=none
+sed -i 's@^ifndef LIBS$@ifndef LIBS_ignored@' ${SOURCE_DIR}/config/rules/defaults.mak
+make clean
+#	$(strip $(LINK_COMMAND) -o $@ $@_main.o $(LIBS) -L../lib -leststring -lestbase -lestools -lasound -lncurses $($(@:=_LIBS)))
+#make -j1 PULSEAUDIO=none CC=/home/nao/ctc/bin/i686-aldebaran-linux-gnu-gcc CXX=/home/nao/ctc/bin/i686-aldebaran-linux-gnu-g++ AR=${AR:-ar} RANLIB=${RANLIB:-ranlib} SHARED_LINKFLAGS="-Wl,--no-as-needed" VERBOSE=1
+#CXX=${CXX:-g++} CC=${CC:-gcc} AR=${AR:-ar} RANLIB=${RANLIB:-ranlib} VERBOSE=1
+#unset LIBS
+#touch main/.make_execs main/.sub_directories
+LIBS="" make \
+    -j1 PULSEAUDIO=none CXX=${CXX:-g++} CC=${CC:-gcc} AR=${AR:-ar} RANLIB=${RANLIB:-ranlib} VERBOSE=1 \
+    OS_LIBS="-L/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib -ldl -lncurses"
+#     LDFLAGS="-L/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib -L/home/nao/System/Python-2.7.17/lib -L/home/nao/ctc/bzip2/lib -L/home/nao/ctc/openssl/lib -L/home/nao/ctc/xz_utils/lib -L/home/nao/ctc/tiff/lib -L/home/nao/ctc/jpeg/lib -L/home/nao/ctc/png/lib -L/home/nao/ctc/xml2/lib -L/home/nao/ctc/pcre/lib -L/home/nao/ctc/ogg/lib"
 
-cp lib/*.a    /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib
-cp lib/*.so.* /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib
+
+cp lib/*.a    /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib
+cp lib/*.so.* /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib

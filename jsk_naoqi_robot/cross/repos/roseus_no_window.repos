@@ -26,3 +26,20 @@ repositories:
     type: zip
     url: https://github.com/k-okada/jsk_model_tools/archive/refs/heads/develop.zip
     version: jsk_model_tools-develop/euscollada
+  # https://github.com/ros-planning/geometric_shapes/pull/224
+  geometric_shapes:
+    type: git
+    url: https://github.com/k-okada/geometric_shapes.git
+    version: eigen_3_1
+  # noetic branch drop depend to gtk
+  # version 1.16.0 is latest version that can compile on 10.04
+  image_pipeline:
+    type: git
+    url: https://github.com/ros-perception/image_pipeline.git
+    version: 1.16.0
+  # jsk_visualization with embedded support
+  # https://github.com/jsk-ros-pkg/jsk_visualization/pull/848
+  jsk_visualization:
+    type: git
+    url: https://github.com/k-okada/jsk_visualization.git
+    version: jsk_rviz_plugins_msgs

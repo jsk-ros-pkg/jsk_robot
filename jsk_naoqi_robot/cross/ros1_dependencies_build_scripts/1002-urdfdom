@@ -2,11 +2,11 @@
 
 set -xeuf -o pipefail
 
-mkdir -p /home/user/ros1_dependencies_sources/build/urdfdom
-cd /home/user/ros1_dependencies_sources/build/urdfdom
+mkdir -p /home/nao/ros1_dependencies_sources/build/urdfdom
+cd /home/nao/ros1_dependencies_sources/build/urdfdom
 
 cmake \
-  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
   -DCMAKE_BUILD_TYPE=Release \
   ../../src/urdfdom/urdfdom-1.0.0
 

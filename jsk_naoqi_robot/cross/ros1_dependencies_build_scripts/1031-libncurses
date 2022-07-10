@@ -1,8 +1,8 @@
 #!/bin/bash
 set -xeuf -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/libncurses/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/libncurses/ncurses-6.1
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/libncurses/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/libncurses/ncurses-6.1
 
 #
 cd ${DEBIAN_DIR}/patches
@@ -12,6 +12,6 @@ done
 
 cd ${SOURCE_DIR}
 
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies -with-shared
+./configure --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies -with-shared  --host=i686-aldebaran-linux-gnu
 
 make -j4 install

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -xeu -o pipefail
 
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/festlex-cmu/festival
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/festlex-cmu/festival
 
 #
 cd ${SOURCE_DIR}
@@ -16,7 +16,7 @@ fi
 cd ${SOURCE_DIR}
 make -C lib/dicts/cmu
 
-mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
-cp lib/dicts/cmu/cmudict-*.out     /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
-cp lib/dicts/cmu/cmulex.scm        /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
-cp lib/dicts/cmu/cmu_lts_rules.scm /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+cp lib/dicts/cmu/cmudict-*.out     /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+cp lib/dicts/cmu/cmulex.scm        /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
+cp lib/dicts/cmu/cmu_lts_rules.scm /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
