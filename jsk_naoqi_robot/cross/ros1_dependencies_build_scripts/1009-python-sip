@@ -1,0 +1,21 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+# python_orocos_kdl requries python-sip_4.19.7+dfsg-1ubuntu0.1_amd64.deb but it is not instllable via pip
+
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/python-sip/sip-4.19.7
+
+mkdir -p /home/user/ros1_dependencies_sources/build/python-sip
+cd /home/user/ros1_dependencies_sources/build/python-sip
+
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/include
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages
+
+python \
+    ${SOURCE_DIR}/configure.py \
+    -d /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages \
+    -e /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/include \
+    -b /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin \
+
+make -j4 install
