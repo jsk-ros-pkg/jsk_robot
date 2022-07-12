@@ -6,6 +6,7 @@
   <arg name="RARM_VISION_RGB_IMAGE" default="/rarm_vision/camera/color/image_raw"/>
   <arg name="LARM_VISION_RGB_IMAGE" default="/larm_vision/camera/color/image_raw"/>
   <param name="robot_description" command="xacro --inorder $(arg robot)" />
+  <arg name="args" default="" />
   <param name="/use_sim_time" value="true" />
   <node name="rosbag_play"
         pkg="rosbag" type="play"
@@ -13,7 +14,7 @@
   </node>
 
   <group ns="$(arg robot_id)">
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
+    <param name="robot_description" command="xacro --inorder $(arg robot) $(arg args)" />
   </group>
 
   <node name="rarm_vision_rgb_decompress" pkg="image_transport" type="republish"
