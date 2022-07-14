@@ -1,6 +1,6 @@
 <launch>
   <param name="robot/type" value="pepper" />
-  <param name="robot/name" command='bash -c "getent hosts $NAO_IP | tr -s \" \" | cut -d\  -f 2 | cut -d. -f 1"' />
+  <param name="robot/name" command='bash -c "getent hosts $NAO_IP | tr -s \" \" | cut -d\  -f 2 | cut -d. -f 1 | tr -d \\\\n "' />
   <arg name="nao_ip" value="$(env NAO_IP)"/>
   <arg name="roscore_ip" value="$(env ROS_IP)"/>
   <arg name="network_interface"   default="eth0" />
