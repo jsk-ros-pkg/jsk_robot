@@ -14,11 +14,11 @@
    mkdir -p ~/franka_ws/src
    cd ~/franka_ws/src
    wstool init
-   wstool merge https://raw.githubusercontent.com/ykawamura96/jsk_robot/add_panda_robot/jsk_panda_robot/jsk_panda.rosinstall
+   wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_panda_robot/jsk_panda_user.rosinstall
    wstool update
    cd ../
    source /opt/ros/melodic/setup.bash
-   rosdep install -y -r --from-paths src --ignore-src
+   rosdep install -y -r --from-paths src --ignore-src --skip-keys=librealsense2,realsense2_camera  # See comments in jsk_panda.rosinstall
    catkin build jsk_panda_startup jsk_panda_teleop
    source devel/setup.bash
    ```
@@ -26,8 +26,23 @@
 1. Please see and follow installation written in: https://frankaemika.github.io/docs/installation_linux.html
    * Note that you need to install real-time kernel (`PREEMPT-PR` kernel) for real-time control.
    * Ref: Current controller PC uses following kernel:  `dual_panda`: `5.4.19-rt11`, `dual_panda2`: `5.4.93-rt51`
-2. Please do the same ROS environment setup as `Installation for User PC` section above.
-
+2. Install librealsense2:
+   https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages
+3. Install OpenHaptics and Touch Device Driver from here: https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
+   * If your Ubuntu version is not supported, check JSK backup: https://drive.google.com/drive/folders/1FiQ4m3XtoDlwdRIq3H7LJv8T882SBVBl
+4. Install ROS packages:
+   ```bash
+   mkdir -p ~/franka_ws/src
+   cd ~/franka_ws/src
+   wstool init
+   wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_panda_robot/jsk_panda.rosinstall
+   wstool update
+   cd ../
+   source /opt/ros/melodic/setup.bash
+   rosdep install -y -r --from-paths src --ignore-src --skip-keys=librealsense2,realsense2_camera  # See comments in jsk_panda.rosinstall
+   catkin build jsk_panda_startup jsk_panda_teleop
+   source devel/setup.bash
+   ```
 
 
 ## Running Dual-Panda

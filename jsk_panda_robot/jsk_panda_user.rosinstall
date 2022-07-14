@@ -1,4 +1,4 @@
-# This file is for workspace for panda controller PC
+# This file is for workspace for user PC
 
 - git:
     local-name: jsk-ros-pkg/jsk_robot
@@ -23,10 +23,3 @@
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: f455d96f431d094177be5f7569c79a3e25e8e360
-
-# ros-$ROS_DISTRO-librealsense2 is unstable, so we install librealsense2 from intel apt repo and build realsense2_camera with it.
-# See Notice of https://github.com/IntelRealSense/realsense-ros/tree/2.3.2#method-1-the-ros-distribution.
-- git:
-    local-name: realsense-ros
-    uri: https://github.com/IntelRealSense/realsense-ros.git
-    version: 2.3.2
