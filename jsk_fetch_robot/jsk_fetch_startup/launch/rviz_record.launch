@@ -1,0 +1,40 @@
+<launch>
+
+  <!-- rviz to launch within fetch body for video record -->
+
+  <arg name="DISPLAY" value=":0" />
+  <arg name="HOME" value="/home/fetch" />
+  <arg name="rviz_namespace" default="rviz" />
+  <arg name="throttled_rate" default="5.0" />
+  <arg name="throttle_rviz" default="true" />
+
+  <node name="$(anon jsk_startup_rviz)"
+        pkg="rviz" type="rviz"
+        args="-d $(find jsk_fetch_startup)/config/jsk_startup_record.rviz" >
+    <env name="DISPLAY" value="$(arg DISPLAY)" />
+    <env name="HOME" value="$(arg HOME)" />
+    <remap from="/rviz/image" to="$(arg rviz_namespace)/image" />
+  </node>
+
+  <group ns="$(arg rviz_namespace)" >
+    <node name="throttle_image"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_topic_tools/LightweightThrottle"
+          if="$(arg throttle_rviz)"
+          respawn="true">
+      <remap from="~input" to="image" />
+      <remap from="~output" to="throttled/image" />
+      <param name="update_rate" value="$(arg throttled_rate)" />
+    </node>
+    <node name="throttle_image_compressed"
+          pkg="nodelet" type="nodelet"
+          args="standalone jsk_topic_tools/LightweightThrottle"
+          if="$(arg throttle_rviz)"
+          respawn="true">
+      <remap from="~input" to="image/compressed" />
+      <remap from="~output" to="throttled/image/compressed" />
+      <param name="update_rate" value="$(arg throttled_rate)" />
+    </node>
+  </group>
+
+</launch>

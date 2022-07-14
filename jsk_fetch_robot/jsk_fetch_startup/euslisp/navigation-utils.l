@@ -46,15 +46,16 @@
   t)
 
 
-(defun inflation-loose ()
+(defun inflation-loose (&key (local-costmap-inflation-radius 0.35)
+                             (global-costmap-inflation-radius 0.7))
   ;; Increase the global inflation to generate a path
   ;; that is less sensitive to differences between the map shape and the actual object placement.
   (ros::set-dynamic-reconfigure-param
-    "/move_base/global_costmap/inflater" "inflation_radius" :double 0.7)
+    "/move_base/global_costmap/inflater" "inflation_radius" :double global-costmap-inflation-radius)
   ;; Decrease the local inflation to generate a path
   ;; that allows the robot to pass close to the object.
   (ros::set-dynamic-reconfigure-param
-    "/move_base/local_costmap/inflater" "inflation_radius" :double 0.35)
+    "/move_base/local_costmap/inflater" "inflation_radius" :double local-costmap-inflation-radius)
   t)
 
 

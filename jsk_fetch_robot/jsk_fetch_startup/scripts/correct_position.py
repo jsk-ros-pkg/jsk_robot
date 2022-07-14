@@ -37,6 +37,7 @@ class CorrectPosition(ConnectionBasedTransport):
         self.sub_dock.unregister()
 
     def _cb(self, msg):
+        self.poke()
         self.is_docking = msg.is_charging
 
     def _cb_correct_position(self, event):
