@@ -1,10 +1,10 @@
 #!/usr/bin/env roseus
 
 ;; load package
-;;(ros::load-ros-package "naoqi_bridge_msgs")
 (ros::load-ros-package "peppereus")
-(ros::load-ros-package "sensor_msgs")
-;;(ros::load-ros-package "roseus")
+
+(ros::roseus-add-msgs "sensor_msgs")
+(ros::roseus-add-msgs "naoqi_bridge_msgs")
 
 ;; load simple model for fast-boot
 (require :pepper "package://peppereus/pepper-simple.l")
@@ -50,102 +50,145 @@
 (defvar *pose6* (list #f(2.0 -2.0 -5.0 110.0 35.0 -40.0 -60.0 -40.0 110.0 -35.0 40.0 60.0 40.0 0.0 15.0) #f(2.0 -2.0 -5.0 110.0 35.0 -40.0 -60.0 -40.0 110.0 -35.0 40.0 60.0 40.0 0.0 15.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)))
 (defvar *time6* (list 2000 3000 1000))
 
-;; 
+;;
 (defvar *reset* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0))
 (defvar *a* #f(2.0 -2.0 -5.0 0.0 10.0 -100.0 -70.0 60.0 0.0 -10.0 100.0 70.0 -60.0 0.0 0.0))
 (defvar *d* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
 (defvar *e* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
 
-(defvar *img-list* (list "golden-saying-by-pepper-1.png" "golden-saying-by-pepper-2.png" "golden-saying-by-pepper-3.png" "golden-saying-by-pepper-4.png" "golden-saying-by-pepper-5.png" "golden-saying-by-pepper-6.png"))
+(defvar *img-list*
+  (list
+   "golden-saying-by-pepper-1.png"
+   "golden-saying-by-pepper-2.png"
+   "golden-saying-by-pepper-3.png"
+   "golden-saying-by-pepper-4.png"
+   "golden-saying-by-pepper-5.png"
+   "golden-saying-by-pepper-6.png"))
 (defvar *pose-list* (list *pose1* *pose2* *pose3* *pose4* *pose5* *pose6*))
 (defvar *time-list* (list *time1* *time2* *time3* *time4* *time5* *time6*))
-(defvar *comment-list* (list "\\vol=40\\\\vct=120\\\\rspd=80\\研究会に出て，\\vct=150\\えらいッ！\\rspd=100\\" "\\vct=120\\\\rspd=80\\ご飯，食べた？\\rspd=100\\" "\\vct=120\\\\rspd=80\\今週も，\\vct=150\\頑張ろうッ！\\rspd=100\\" "\\vct=120\\\\rspd=80\\コメント少ないのは，順調ってことだよッ！\\rspd=100\\" "\\vct=120\\\\rspd=80\\座りっぱなし，\\vct=150\\気をつけてッ！\\rspd=100\\" "\\vct=120\\\\rspd=80\\報告して，\\vct=150\\えらいッ！\\rspd=100\\"))
+(defvar *comment-list*
+  (list
+   "\\vol=40\\\\vct=120\\\\rspd=80\\研究会に出て，\\vct=150\\えらいッ！\\rspd=100\\"
+   "\\vct=120\\\\rspd=80\\ご飯，食べた？\\rspd=100\\"
+   "\\vct=120\\\\rspd=80\\今週も，\\vct=150\\頑張ろうッ！\\rspd=100\\"
+   "\\vct=120\\\\rspd=80\\コメント少ないのは，順調ってことだよッ！\\rspd=100\\"
+   "\\vct=120\\\\rspd=80\\座りっぱなし，\\vct=150\\気をつけてッ！\\rspd=100\\"
+   "\\vct=120\\\\rspd=80\\報告して，\\vct=150\\えらいッ！\\rspd=100\\"
+   ))
 
 ;; parameter
 (defparameter *continue* t)
 (defparameter *count* 0)
+(defparameter *last-tm* (ros::time-now))
 
 (ros::roseus "online-meeting-enhancement-main")
 
 (ros::subscribe "joy" sensor_msgs::Joy
-		#'(lambda (msg)
-		    (let (button)
-		      ;; reset value
-		      (setq *continue* t)
-		      ;; update value
-		      (setq button (send msg :buttons))
-		      ;; Y button: stop
-		      (print (elt button 3))
-		      (if (eq (elt button 3) 1)
-			  (setq *continue* nil))
-		      )))
+                #'(lambda (msg)
+                    (let ((button (send msg :buttons)))
+                      (ros::ros-info "received joy button ~A" button)
+                      (when (eq (elt button 3) 1)
+                        (send *ri* :speak "はい")
+                        (setq *continue* nil)))))
 
-(defun init ()
-  (unless (boundp '*ri*)
-    (pepper-init))
-  ;; check pepper's life
-  (if (not (string= (send *ri* :get-life) "disabled"))
-      (send *ri* :disable-life))
-  (send *ri* :servo-on)
-  (send *ri* :set-language "Japanese")
-  (send *ri* :stop-grasp)
-  (send *ri* :set-basic-awareness-enabled nil)
-  (send *ri* :set-background-movement-enabled nil)
-  (send *ri* :show-image (elt *img-list* 0))
-  (send *ri* :speak (elt *comment-list* 0))
-  (send *ri* :angle-vector-sequence (elt *pose-list* 0) (elt *time-list* 0))
-  (send *ri* :wait-interpolation)
-  ;;(send *ri* :angle-vector (send *pepper* :spread-hands-smally))
-  (send *ri* :set-basic-awareness-enabled t)
-  (send *ri* :set-background-movement-enabled t)  
-  )
+(defun start-func (args)
+  (let ()
+    (setq *last-tm* (ros::time-now))
+    ;;
+    (send *ri* :servo-on)
+    (send *ri* :set-language "Japanese")
+    (send *ri* :stop-grasp)
+    (send *ri* :set-basic-awareness-enabled nil)
+    (send *ri* :set-background-movement-enabled nil)
+    (send *ri* :show-image (elt *img-list* 0))
+    (send *ri* :speak (elt *comment-list* 0))
+    (send *ri* :angle-vector-sequence (elt *pose-list* 0) (elt *time-list* 0))
+    (send *ri* :wait-interpolation)
+    (send *ri* :set-basic-awareness-enabled t)
+    (send *ri* :set-background-movement-enabled t)
+    ;;
+    (setq *count* 1)
+    (set-alist 'description "Start Meeting" args)
+    :started))
 
-(defun main (&optional (wait 600))
-  (ros::rate *process-rate*)
-  (init)
-  (print "start")
-  (let ((tm nil))
-    (while *continue*
-      (if (not tm)
-	  (setq tm (ros::time-now)))
-      ;;(print (send (ros::time- (ros::time-now) tm) :to-sec))
-      (if (and tm
-	       (> (send (ros::time- (ros::time-now) tm) :to-sec) wait))
-	  (progn
-	    ;;    (unix:sleep 30) ;; sleep 30s
-	    (setq *count* (+ *count* 1))
-	    (if (eq *count* (length *img-list*))
-		(setq *count* 0))
-	    (send *ri* :set-basic-awareness-enabled nil)
-	    (send *ri* :set-background-movement-enabled nil)
-	    (send *ri* :show-image (elt *img-list* *count*))
-	    (send *ri* :speak (elt *comment-list* *count*))
-	    (send *ri* :angle-vector-sequence (elt *pose-list* *count*) (elt *time-list* *count*))
-	    (send *ri* :wait-interpolation)
-	    ;;(send *ri* :angle-vector (send *pepper* :spread-hands-smally))
-	    (send *ri* :set-basic-awareness-enabled t)
-	    (send *ri* :set-background-movement-enabled t)
-	    (setq tm nil)
-	    ))
+(defun end-func (args)
+  (let ()
+    (send *ri* :show-image "golden-saying-by-pepper-7.png")
+    (send *ri* :angle-vector-sequence (list #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0) #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 -30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)) (list 1000 1000 1000 1000))
+    (send *ri* :speak "\\vct=120\\\\rspd=80\\みなさん")
+    (send *ri* :wait-interpolation)
+
+    (send *ri* :angle-vector-sequence (list *a* *d* *a* *d* *a* *d* *a* *d* *a* *e* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
+    (send *ri* :speak "\\vct=120\\\\rspd=80\\おつかれさまでしたッ！\\rspd=100\\")
+    (send *ri* :wait-interpolation)
+    (send *ri* :hide-image)
+    (send *ri* :set-language "English")
+    ;;
+    (set-alist 'description "End Meeting" args)
+    :finished))
+
+(defun comment-func (args)
+  (let (count str (wait 60) tm)
+    (ros::ros-info "comment func, *count* = ~A" *count*)
+    (setq *last-tm* (ros::time-now))
+    ;; wait for 600 sec OR if someone set *coutinue* nil, return with :finished
+    (while (and (ros::ok)
+                *continue*
+                (< (setq tm (send (ros::time- (ros::time-now) *last-tm*) :to-sec)) wait))
+      (ros::ros-info "wait for move .. continue = ~A, time ~A < ~A (wait)" *continue* tm wait)
       (ros::spin-once)
-      (ros::sleep)
-      ); while
-    )
-  ;;(send *ri* :set-language "Japanese")
-  (send *ri* :show-image "golden-saying-by-pepper-7.png")
-  (send *ri* :angle-vector-sequence (list #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0) #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 -30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)) (list 1000 1000 1000 1000))
-  (send *ri* :speak "\\vct=120\\\\rspd=80\\みなさん")
-  (send *ri* :wait-interpolation)  
+      (ros::duration-sleep 1))
+    (unless *continue*
+      (return-from comment-func :finished))
+    (setq *last-tm* (ros::time-now))
+    ;;
+    (setq count (mod *count* (length *img-list*)))
+    ;;
+    (send *ri* :set-basic-awareness-enabled nil)
+    (send *ri* :set-background-movement-enabled nil)
+    (send *ri* :show-image (elt *img-list* count))
+    (send *ri* :speak (elt *comment-list* count))
+    (send *ri* :angle-vector-sequence (elt *pose-list* count) (elt *time-list* count))
+    (send *ri* :wait-interpolation)
+    ;;(send *ri* :angle-vector (send *pepper* :spread-hands-smally))
+    (send *ri* :set-basic-awareness-enabled t)
+    (send *ri* :set-background-movement-enabled t)
+    ;;
+    (incf *count*)
+    (setq str (elt *comment-list* count))
+    ;; trim // ... //
+    (while (setq term1 (position #\\ str :count 1) term2 (position #\\ str :count 2))
+      (setq str (concatenate string (subseq str 0 term1) (subseq str (+ term2 1)))))
+    (ros::ros-info "comment func,  count  = ~A, str =  ~A" count str)
+    (set-alist 'description str args)
+    :next))
 
-  (send *ri* :angle-vector-sequence (list *a* *d* *a* *d* *a* *d* *a* *d* *a* *e* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
-  (send *ri* :speak "\\vct=120\\\\rspd=80\\おつかれさまでしたッ！\\rspd=100\\")
-  (send *ri* :wait-interpolation)
-  (send *ri* :hide-image)
-  (send *ri* :set-language "English")
-  (print "end")
-  )
+
+(load "package://roseus_smach/src/state-machine-ros.l")
+(defun meeting-sm ()
+  (let (sm)
+    (setq sm
+          (make-state-machine
+           '((:start :started :comment)    ;; transitions (node transition node)
+             (:comment :next :comment)
+             (:comment :finished :end)
+             (:end :finished :goal)
+             )
+           '((:start    'start-func)       ;; node-to-function maps
+             (:end      'end-func)
+             (:comment  'comment-func)
+             )
+           '(:start)                    ;; initial node
+           '(:goal)                     ;; goal node
+           ))
+    (send sm :arg-keys 'description)
+    sm))
+
+;; create robot interface
+(unless (boundp '*ri*) (pepper-init))
+(objects (list *pepper*))
 
 
-
-
-
+;; state machine
+(exec-state-machine (meeting-sm))
+(exit)
