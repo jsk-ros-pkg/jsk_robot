@@ -1,6 +1,6 @@
 (ros::roseus "pepper")
 
-(load "package://peppereus/pepper.l")
+(require :pepper "package://peppereus/pepper.l")
 (load "package://naoqieus/naoqi-interface.l")
 
 (defclass pepper-interface

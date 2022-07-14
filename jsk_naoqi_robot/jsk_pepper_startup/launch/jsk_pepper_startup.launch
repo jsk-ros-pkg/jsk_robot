@@ -71,4 +71,15 @@ enable_turbo_button: 0  # A button
   <node name="speaking_program_is_started_or_terminated"
         pkg="roseus" type="roseus"
         args="$(find jsk_robot_startup)/lifelog/speaking-program-is-started-or-terminated.l &quot;(progn (unix:sleep 3) (good-morning) (ros::spin))&quot;" respawn="true" />
+
+
+  <!-- we can access app_chooser by by http://${NAO_IP}:8000/rwt_app_chooser/#!robot -->
+  <include file="$(find app_manager)/launch/app_manager.launch" />
+  <arg name="port" default="9090" />
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <arg name="port" value="$(arg port)" />
+  </include>
+  <!-- start roswww on 8000 port -->
+  <include file="$(find rwt_app_chooser)/launch/rwt_app_chooser.launch" />
+
 </launch>
