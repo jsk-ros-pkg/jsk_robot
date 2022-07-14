@@ -1,0 +1,13 @@
+<launch>
+  <arg name="machine" default="localhost"/>
+  <arg name="rfcomm_devices" default="/var/lib/robot/rfcomm_devices.yaml" />
+
+  <machine name="localhost" address="localhost"/>
+
+  <node name="bind_rfcomm" pkg="jsk_robot_startup" type="rfcomm_bind.py"
+        output="screen" machine="$(arg machine)">
+    <rosparam subst_value="true">
+      rfcomm_devices: $(arg rfcomm_devices)
+    </rosparam>
+  </node>
+</launch>

@@ -214,3 +214,29 @@ rostopic pub /reboot std_msgs/Empty
 This launch file provides a set of nodes for safe teleoperation common to mobile robots. Robot-specific nodes such as `/joy`, `/teleop` or `/cable_warning` must be included in the teleop launch file for each robot, such as [safe_teleop.xml for PR2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_move_base/safe_teleop.xml) or [safe_teleop.xml for fetch](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml).
 
 ![JSK teleop_base system](images/jsk_safe_teleop_system.png)
+
+## launch/rfcomm_bind.launch
+
+This script binds rfcomm device to remote bluetooth device. By binding rfcomm device, we can connect bluetooth device via device file (e.g. `/dev/rfcomm1`). For example, rosserial with [this PR](https://github.com/ros-drivers/rosserial/pull/569) can be used over bluetooth connection.
+
+### Usage
+
+Save the bluetooth device MAC address to file like `/var/lib/robot/rfcomm_devices.yaml`.
+
+```
+- name: device1
+  address: XX:XX:XX:XX:XX:XX
+- name: device2
+  address: YY:YY:YY:YY:YY:YY
+```
+
+Then, bind rfcomm devices.
+
+```
+roslaunch jsk_robot_startup rfcomm_bind.launch
+```
+
+To check how many devices are bound to rfcomm, use rfcomm command.
+```
+rfcomm
+```
