@@ -141,6 +141,15 @@
 
 
 (defun go-to-spot (name &key (relative-pos nil) (relative-rot nil) (undock-rotate nil) (clear-costmap t))
+  "Move the robot to the spot defined in /spots_marker_array topic. The reason for using relative-pos and relative-rot instead of relative-coords is that it is easier to understand if relative-pos and relative-rot are specified in the different coords (specifically, world (map) and local (spot) coords respectively). For detail, see https://github.com/jsk-ros-pkg/jsk_robot/pull/1458#pullrequestreview-1039654868
+Args:
+- name : The name of the spot defined in /spots_marker_array topic
+- relative-pos : The robot moves to a position that is distant from the spot by relative-pos[mm]. relative-pos is specified in the world (map) coords.
+- relative-rot : The robot moves to a position rotated by relative-pos[deg] from the spot. relative-rot is specified in the local (spot) coords.
+- undock-rotate : If t, the robot rotates 180 degrees after undock before moving to the spot.
+- clear-costmap : If t, clear costmap for obstacle avoidance before the robot moves.
+"
+
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
