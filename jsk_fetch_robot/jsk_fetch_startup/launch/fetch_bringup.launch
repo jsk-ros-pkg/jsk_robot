@@ -1,4 +1,5 @@
 <launch>
+  <arg name="hostname" default="fetch15" />
   <arg name="launch_moveit" default="true" />
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
@@ -22,7 +23,8 @@
         respawn="true" output="screen">
     <rosparam>
       duration: 180
-      charge_level_threshold: 40.0
+      charge_level_threshold: 80.0
+      shutdown_level_threshold: 60.0
       charge_level_step: 10.0
       volume: 1.0
     </rosparam>
@@ -180,7 +182,11 @@
     </include>
 
     <!-- dock localization -->
-    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
+    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true">
+      <rosparam>
+        vital_rate: 0.1
+      </rosparam>
+    </node>
 
     <!-- include fetch_navigation -->
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
@@ -191,36 +197,42 @@
       <arg name="launch_map_server" value="false" />
       <arg name="odom_topic" value="/odom_combined" />
     </include>
-
-    <!-- slam for build a map -->
-    <node pkg="slam_karto" type="slam_karto" name="slam_karto"
-          output="screen" if="$(arg use_build_map)" >
-      <remap from="scan" to="base_scan"/>
-    </node>
+    <!-- relay plan path topic for visualization -->
+    <node name="relay_navfn_planner_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/NavfnROS/plan /move_base/navigation_plan_viz" />
+    <node name="relay_global_planner_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/GlobalPlanner/plan /move_base/navigation_plan_viz" />
+    <node name="relay_trajectory_planner_global_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TrajectoryPlannerROS/global_plan /move_base/global_plan_viz" />
+    <node name="relay_trajectory_planner_local_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TrajectoryPlannerROS/local_plan /move_base/local_plan_viz" />
+    <node name="relay_teb_planner_global_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TebLocalPlannerROS/global_plan /move_base/global_plan_viz" />
+    <node name="relay_teb_planner_local_plan"
+          pkg="topic_tools" type="relay"
+          args="/move_base/TebLocalPlannerROS/local_plan /move_base/local_plan_viz" />
 
     <!-- load amcl params -->
     <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/fetch_amcl_common_params.yaml" />
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_common_params.yaml" />
     <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/fetch_amcl_$(env ROS_DISTRO)_params.yaml" />
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_$(env ROS_DISTRO)_params.yaml" />
     <!-- load move_base params -->
     <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_common_params.yaml" />
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_common_params.yaml" />
     <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
   </group>
 
-  <!-- /imu has no frame_id information and there is no bug fix release in indigo. -->
-  <!-- see https://github.com/fetchrobotics/fetch_ros/issues/70 -->
-  <node name="imu_corrector" pkg="jsk_fetch_startup" type="imu_corrector.py">
-    <remap from="~input" to="/imu" />
-    <remap from="~output" to="/imu_corrected" />
-  </node>
-
-  <!-- /odom has no covariance value. -->
-  <node name="odom_corrector" pkg="jsk_fetch_startup" type="odom_corrector.py">
-    <remap from="~input" to="/odom" />
-    <remap from="~output" to="/odom_corrected" />
+  <!-- slam for build a map -->
+  <node pkg="slam_karto" type="slam_karto" name="slam_karto"
+        output="screen" if="$(arg use_build_map)" >
+    <remap from="scan" to="base_scan"/>
   </node>
 
   <!-- check if room light is on -->
@@ -235,5 +247,21 @@
       base_frame: /base_link
     </rosparam>
   </node>
+
+  <!-- Check fetch's boards in a constant period -->
+  <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
+  </node>
+
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
+  <!-- Two robots cannot use one rosserial device at the same time -->
+  <group if="$(eval hostname == 'fetch1075')">
+    <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
+  </group>
 
 </launch>

@@ -1,7 +1,5 @@
 <launch>
   <param name="robot/database" value="jsk_robot_lifelog"/>
-  <param name="robot/type" value="baxter"/>
-  <param name="robot/name" value="baxter"/>
 
   <arg name="twitter" default="true" />
   <arg name="output" default="screen" />
