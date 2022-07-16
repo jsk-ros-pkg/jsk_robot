@@ -140,8 +140,16 @@
      (if is-charging :charging :discharging)))
 
 
-(defun go-to-spot (name &optional (relative-coords (make-coords))
-                        &key (undock-rotate nil) (clear-costmap t))
+(defun go-to-spot (name &key (relative-pos nil) (relative-rot nil) (undock-rotate nil) (clear-costmap t))
+  "Move the robot to the spot defined in /spots_marker_array topic. The reason for using relative-pos and relative-rot instead of relative-coords is that it is easier to understand if relative-pos and relative-rot are specified in the different coords (specifically, world (map) and local (spot) coords respectively). For detail, see https://github.com/jsk-ros-pkg/jsk_robot/pull/1458#pullrequestreview-1039654868
+Args:
+- name : The name of the spot defined in /spots_marker_array topic
+- relative-pos : The robot moves to a position that is distant from the spot by relative-pos[mm]. relative-pos is specified in the world (map) coords.
+- relative-rot : The robot moves to a position rotated by relative-pos[deg] from the spot. relative-rot is specified in the local (spot) coords.
+- undock-rotate : If t, the robot rotates 180 degrees after undock before moving to the spot.
+- clear-costmap : If t, clear costmap for obstacle avoidance before the robot moves.
+"
+
   ;; undock if fetch is docking
   (unless (boundp '*ri*)
     (require :fetch-interface "package://fetcheus/fetch-interface.l")
@@ -173,15 +181,18 @@
   (let* ((ret (get-spot-coords name))
          (goal-pose (car ret))
          (frame-id (cdr ret)))
-    (when relative-coords
-      (setq goal-pose (send goal-pose :transform relative-coords :world)))
+    (when relative-pos
+      (setq goal-pose (send goal-pose :translate relative-pos :world)))
+    (when relative-rot
+      (setq goal-pose (send goal-pose :rotate relative-rot :z :local)))
     (send *ri* :move-to goal-pose :frame-id frame-id)))
 
 
 (defun auto-dock (&key (n-trial 1) (clear-costmap t))
   (let ((success nil))
     (dotimes (i n-trial)
-      (when (go-to-spot *dock-spot* (make-coords :pos #f(-800 0 0))
+      (when (go-to-spot *dock-spot*
+                        :relative-pos #f(-800 0 0)
                         :clear-costmap clear-costmap)
         (ros::ros-info "arrived at the dock.")
         (setq success (dock))
@@ -283,6 +294,13 @@
   (ros::ros-error "failed going to the kitchen.")
   (send *ri* :speak-jp "キッチンのコンロの前に行くのに失敗しました。" :wait t))
 
+(defun report-move-to-trashcan-front ()
+  (ros::ros-info "arrived at the trash can")
+  (send *ri* :speak-jp "ゴミ箱の前につきました。" :wait t))
+
+(defun report-move-to-trashcan-front-failure ()
+  (ros::ros-error "failed going to the trash can front")
+  (send *ri* :speak-jp "ゴミ箱の前に行くのに失敗しました。" :wait t))
 
 (defun report-start-go-to-kitchen ()
   (ros::ros-info "start going to the kitchen.")
@@ -298,7 +316,7 @@
   (ros::ros-info "room light is off.")
   (send *ri* :speak-jp "電気が消えています。" :wait t))
 
-(defun notify-recognition ()
+(defun notify-recognition (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/edgetpu_object_detector/output/class"
                                   jsk_recognition_msgs::ClassificationResult))
          (label-names (send msg :label_names)))
@@ -306,24 +324,24 @@
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
       (notify-app "object recognition"
                   (send msg :header :stamp)
-                  "kitchen"
-                  (format nil "~A is found." label-names)))))
+                  location
+                  (format nil "~A is found" label-names)))))
 
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
-  (notify-recognition)
   (if tweet
     (progn
       ;; stove
       (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (notify-recognition :location "kitchen stove")
       (send *ri* :go-pos-unsafe 0 0 -45)
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
-      (send *ri* :go-pos-unsafe 0 0 135))
+      (notify-recognition :location "kitchen sink"))
     (progn
-      (send *ri* :go-pos-unsafe 0 0 90))))
+      (notify-recognition :location "kitchen"))))
 
 
 (defun move-to-sink-front (&key (n-trial 1) (offset #f(400 -500 0)))
@@ -331,9 +349,31 @@
     (dotimes (i n-trial)
       (setq success-move-to-sink-front
             (go-to-spot "/eng2/7f/room73B2-sink-front0"
-                        (make-coords :pos offset) :undock-rotate t))
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-sink-front (return)))
     success-move-to-sink-front))
+
+(defun inspect-trashcan (&key (tweet t))
+  (report-move-to-trashcan-front)
+  (send *fetch* :head :neck-p :joint-angle 40)
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+	(tweet-string "I took a photo of 73B2 trash cans." :warning-time 3
+		      :with-image "/edgetpu_object_detector/output/image" :speak t)
+	(notify-recognition :location "trash cans"))
+    (progn
+      (notify-recognition :location "trash cans"))))
+
+(defun move-to-trashcan-front (&key (n-trial 1) (offset #f(-300 -300 0)))
+  (let ((success-move-to-trashcan-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-trashcan-front
+            (go-to-spot "/eng2/7f/room73B2-microwave-front"
+                        :relative-pos offset :relative-rot -pi/2))
+      (when success-move-to-trashcan-front (return)))
+    success-move-to-trashcan-front))
 
 
 (defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1)
@@ -346,6 +386,7 @@
   ;; Check if the lights are on in the room
   (let ((initial-light-on (get-light-on))
         (success-go-to-kitchen nil)
+        (success-go-to-trashcan nil)
         (success-auto-dock nil)
         (success-battery-charging nil))
     (store-params)
@@ -363,6 +404,12 @@
     (if success-go-to-kitchen
       (inspect-kitchen :tweet tweet)
       (report-move-to-sink-front-failure))
+    ;; go to kitchen trash can
+    (setq success-go-to-trashcan (move-to-trashcan-front :n-trial n-trashcan-trial))
+    ;; report result to go to trash can
+    (if success-go-to-trashcan
+      (inspect-trashcan :tweet tweet)
+      (report-move-to-trashcan-front-failure))
     ;; go back from dock
     (report-auto-dock)
     (setq success-auto-dock (auto-dock :n-trial n-dock-trial :clear-costmap nil))
@@ -386,8 +433,13 @@
             (:room-light-on -> :move-to-sink-front)
             (:move-to-sink-front -> :inspect-kitchen)
             (:move-to-sink-front !-> :report-move-to-sink-front-failure)
-            (:inspect-kitchen -> :auto-dock)
-            (:report-move-to-sink-front-failure -> :auto-dock)
+            ;;(:inspect-kitchen -> :auto-dock)
+            ;;(:report-move-to-sink-front-failure -> :auto-dock)
+            (:inspect-kitchen -> :move-to-trashcan-front)
+            (:move-to-trashcan-front -> :inspect-trashcan)
+            (:move-to-trashcan-front !-> :report-move-to-trashcan-front-failure)
+            (:inspect-trashcan -> :auto-dock)
+            (:report-move-to-trashcan-front-failure -> :auto-dock)
             (:auto-dock -> :room-light-off)
             (:room-light-off -> :finish)
             (:finish -> t)
@@ -432,6 +484,20 @@
             (:report-move-to-sink-front-failure
               '(lambda (userdata)
                  (report-move-to-sink-front-failure)
+                 t))
+            (:move-to-trashcan-front
+              '(lambda (userdata)
+                 (let* ((n-trial (cdr (assoc 'n-trashcan-trial userdata)))
+                        (success (move-to-trashcan-front :n-trial n-trial)))
+                   (setf (cdr (assoc 'success-go-to-trashcan userdata)) success)
+                   success)))
+            (:inspect-trashcan
+              '(lambda (userdata)
+                 (inspect-trashcan :tweet (cdr (assoc 'tweet userdata)))
+                 t))
+            (:report-move-to-trashcan-front-failure
+              '(lambda (userdata)
+                 (report-move-to-trashcan-front-failure)
                  t))
             (:auto-dock
               '(lambda (userdata)
