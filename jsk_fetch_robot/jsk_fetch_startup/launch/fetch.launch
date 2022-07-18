@@ -17,6 +17,7 @@
   <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="$(optenv RS_SERIAL_NO_D435_FRONTRIGHT)" />
   <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="$(optenv RS_SERIAL_NO_D435_FRONTLEFT)" />
   <arg name="RS_SERIAL_NO_L515_HEAD" default="$(optenv RS_SERIAL_NO_L515_HEAD)" />
+  <arg name="l515_high_resolution" default="$(optenv L515_HIGH_RESOLUTION true)" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -40,6 +41,7 @@
       <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" value="$(arg RS_SERIAL_NO_D435_FRONTRIGHT)" />
       <arg name="RS_SERIAL_NO_D435_FRONTLEFT" value="$(arg RS_SERIAL_NO_D435_FRONTLEFT)" />
       <arg name="RS_SERIAL_NO_L515_HEAD" value="$(arg RS_SERIAL_NO_L515_HEAD)" />
+      <arg name="l515_high_resolution" value="$(arg l515_high_resolution)" />
   </include>
 
   <!-- Odometry -->
