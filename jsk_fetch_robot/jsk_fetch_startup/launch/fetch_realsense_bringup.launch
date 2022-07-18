@@ -7,6 +7,19 @@
   <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="" />
   <arg name="RS_SERIAL_NO_L515_HEAD" default="" />
 
+  <arg name="l515_high_resolution" default="true" />
+  <!-- Available profiles can be shown by $ rs-enumerate-devices -->
+  <!-- L515 high resolution -->
+  <arg name="l515_color_width" default="1920" if="$(arg l515_high_resolution)" />
+  <arg name="l515_color_height" default="1080" if="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_width" default="640" if="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_height" default="480" if="$(arg l515_high_resolution)" />
+  <!-- L515 low resolution -->
+  <arg name="l515_color_width" default="640" unless="$(arg l515_high_resolution)" />
+  <arg name="l515_color_height" default="480" unless="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_width" default="320" unless="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_height" default="240" unless="$(arg l515_high_resolution)" />
+
   <!-- t265 -->
   <group ns="t265" if="$(eval arg('RS_SERIAL_NO_T265') != '')">
     <rosparam>
@@ -91,10 +104,10 @@
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
       <arg name="filters"               value="pointcloud"/>
-      <arg name="color_width"           value="1920"/>
-      <arg name="color_height"          value="1080"/>
-      <arg name="depth_width"           value="640"/>
-      <arg name="depth_height"          value="480"/>
+      <arg name="color_width"           value="$(arg l515_color_width)"/>
+      <arg name="color_height"          value="$(arg l515_color_height)"/>
+      <arg name="depth_width"           value="$(arg l515_depth_width)"/>
+      <arg name="depth_height"          value="$(arg l515_depth_height)"/>
       <arg name="clip_distance"         value="-2"/>
       <arg name="enable_pointcloud"     value="false"/>
       <arg name="enable_infra"          value="true"/>
