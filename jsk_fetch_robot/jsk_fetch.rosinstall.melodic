@@ -75,6 +75,14 @@
     local-name: ros-drivers/audio_common
     uri: https://github.com/ros-drivers/audio_common.git
     version: master
+# Remove after the following PRs are merged and released
+# https://github.com/ros-drivers/rosserial/pull/570
+# https://github.com/ros-drivers/rosserial/pull/594
+# https://github.com/ros-drivers/rosserial/pull/596
+- git:
+    local-name: ros-drivers/rosserial
+    uri: https://github.com/708yamaguchi/rosserial.git
+    version: fetch15
 - git:
     local-name: ros-perception/slam_gmapping
     uri: https://github.com/ros-perception/slam_gmapping.git
