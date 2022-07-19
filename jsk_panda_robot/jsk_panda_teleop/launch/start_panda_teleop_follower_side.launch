@@ -4,7 +4,7 @@
   <!-- uvc_cam -->
   <!-- TODO: Use udev rule -->
   <arg name="right_camera_dev" default="/dev/video0" />
-  <arg name="left_camera_dev" default="/dev/video1" />
+  <arg name="left_camera_dev" default="/dev/video2" />
   <!--Be sure to pass the IPs of your pandas like robot_ips:={panda_1/robot_ip: <my_ip_1>, panda_2/robot_ip: <my_ip_2>}   -->
 
   <!-- Capturing Audio -->

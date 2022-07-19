@@ -3,7 +3,7 @@
   <!-- uvc_cam -->
   <!-- TODO: Use udev rule -->
   <arg name="right_camera_dev" default="/dev/video0" />
-  <arg name="left_camera_dev" default="/dev/video1" />
+  <arg name="left_camera_dev" default="/dev/video2" />
 
   <arg name="rarm_ip" default="172.16.0.20"/>
   <arg name="larm_ip" default="172.16.0.200"/>
