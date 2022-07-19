@@ -10,6 +10,7 @@
   <arg name="pdm_spm1423_ns" value="pdm_spm1423" />
   <arg name="mlx90640_ns" value="mlx90640" />
   <arg name="unitv_ns" value="unitv" />
+  <arg name="enviii_ns" value="enviii" />
 
   <!-- rosseiral via Bluetooth -->
   <!-- sgp30 gas sensor -->
@@ -75,5 +76,17 @@
         resolution_factor: 2.0
       </rosparam>
     </node>
+  </group>
+  <!-- enviii thermography -->
+  <group ns="$(arg enviii_ns)">
+    <node pkg="rosserial_python" type="serial_node.py" name="serial_node"
+          respawn="true" respawn_delay="10">
+      <rosparam subst_value="true">
+        port: /dev/rfcomm4
+        baud: 115200
+      </rosparam>
+    </node>
+    <node pkg="rosservice" type="rosservice" name="set_logger_level"
+          args="call --wait /$(arg enviii_ns)/serial_node/set_logger_level 'rosout' 'error'" />
   </group>
 </launch>
