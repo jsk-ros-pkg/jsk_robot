@@ -12,6 +12,9 @@
 ;; load files
 (require :pepper-interface "package://peppereus/pepper-interface.l")
 
+;; base64
+(require :base64 "lib/llib/base64.l")
+
 ;; var
 (defvar *process-rate* 1)
 ;; (setq *touch_ears* #f(20.0 -2.0 -30.0 -15.0 20.0 -70.0 -88.0 -40.0 -15.0 -20.0 70.0 88.0 40.0 0.0 30.0))
@@ -161,6 +164,9 @@
       (setq str (concatenate string (subseq str 0 term1) (subseq str (+ term2 1)))))
     (ros::ros-info "comment func,  count  = ~A, str =  ~A" count str)
     (set-alist 'description str args)
+    (when *image*
+         ;; not to send \n ???
+        (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) args)) ;; should be compressed??
     :next))
 
 
@@ -188,7 +194,11 @@
 (unless (boundp '*ri*) (pepper-init))
 (objects (list *pepper*))
 
+;;
+(defun image_cb (msg)
+  (setq *image* msg))
+(ros::subscribe "/pepper_robot/camera/front/image_raw" sensor_msgs::Image #'image_cb)
 
 ;; state machine
-(exec-state-machine (meeting-sm))
+(exec-state-machine (meeting-sm) '((description . "")(image . "")))
 (exit)
