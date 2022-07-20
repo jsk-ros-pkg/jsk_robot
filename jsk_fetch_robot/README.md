@@ -45,6 +45,9 @@ wstool init .
 wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
 wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
 wstool update -t .
+# To use eus10, furuschev script is required.
+wget https://raw.githubusercontent.com/jsk-ros-pkg/jsk_roseus/master/setup_upstream.sh -O /tmp/setup_upstream.sh
+bash /tmp/setup_upstream.sh -w . -p jsk-ros-pkg/geneus -p euslisp/jskeus
 source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep install -y -r --from-paths . --ignore-src
 cd ../
