@@ -12,7 +12,7 @@
   <arg name="larm_camera_serial_no" default="017322070987"/>
 
   <include file="$(find franka_control)/launch/franka_combined_control.launch" >
-    <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
+    <arg name="robot"     value="$(find panda_eus)/models/dual_panda2.urdf.xacro" />
     <arg name="robot_id"  value="$(arg robot_id)" />
     <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
     <arg name="hw_config_file"   value="$(find jsk_panda_startup)/config/dual_panda_control_node.yaml"/>
