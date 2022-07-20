@@ -10,7 +10,7 @@
 (defclass naoqi-interface
   :super robot-interface
   :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action body-pose-with-speed-action
-                          master-volume)
+                          master-volume master-language)
   )
 
 (defmethod naoqi-interface
@@ -20,6 +20,7 @@
    (setq naoqi-namespace ns)
    (setq dcm-namespace dns)
    (setq master-volume 0.5)
+   (setq master-language "English")
    (print args)
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
    (ros::advertise (format nil "~A/move_base_simple/goal" group-namespace) geometry_msgs::PoseStamped 1)
@@ -247,12 +248,17 @@
    )
   ;;
   (:speak
-   (str &key wait (volume master-volume))
+   (str &key (lang master-language) wait (volume master-volume))
    (let ((speech_msg (instance std_msgs::String :init)))
      ;; check if volume is updated
      (when (/= volume master-volume)
        (setq master-volume volume)
        (send self :set-master-volume (round (* master-volume 100))))
+     (if (not (member lang '("English" "Japanese") :test #'equal))
+         (ros::ros-error ":speak :lang ~A must be English or Japanese" lang))
+     (when (not (equal lang master-language))
+       (setq master-language lang)
+       (send self :set-language master-language))
      (send speech_msg :data str)
      (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
      (when wait
