@@ -204,39 +204,27 @@
   </joint>
 
   <!-- realsense -->
-  <link name="$(arg arm_id_1)_camera_link" >
-    <!-- <geometry> -->
-    <!--   <mesh filename="../../jsk_panda_accessories/realsense/realsense_with_mount.stl"/> -->
-    <!-- </geometry> -->
-    <inertial>
-      <origin xyz="0.0 0.0 0.0" rpt="0 0 0" />
-      <mass value = "0.005" />
-      <inertia ixx="0.0000000001" ixy="0.0000000001" ixz="0.0000000001"
-    	       iyy="0.0000000001" iyz="0.0000000001" izz="0.0000000001" />
-    </inertial>
-  </link>
+  <link name="$(arg arm_id_1)_camera_link"/>
   <joint name="$(arg arm_id_1)_camera_joint" type="fixed">
     <parent link="$(arg arm_id_1)_link7"/>
     <child link="$(arg arm_id_1)_camera_link"/>
     <origin xyz="0.049497475 -0.02828421 0.12375" rpy="1.57079632 -1.57079632 0.78539816"/>
   </joint>
-
-  <link name="$(arg arm_id_2)_camera_link" >
-    <!-- <geometry> -->
-    <!--   <mesh filename="../../jsk_panda_accessories/realsense/realsense_with_mount.stl"/> -->
-    <!-- </geometry> -->
-    <inertial>
-      <origin xyz="0.0 0.0 0.0" rpt="0 0 0" />
-      <mass value = "0.005" />
-      <inertia ixx="0.0000000001" ixy="0.0000000001" ixz="0.0000000001"
-    	       iyy="0.0000000001" iyz="0.0000000001" izz="0.0000000001" />
-    </inertial>
-  </link>
+  <link name="$(arg arm_id_2)_camera_link"/>
   <joint name="$(arg arm_id_2)_camera_joint" type="fixed">
     <parent link="$(arg arm_id_2)_link7"/>
     <child link="$(arg arm_id_2)_camera_link"/>
     <origin xyz="0.049497475 -0.02828421 0.12375" rpy="1.57079632 -1.57079632 0.78539816"/>
   </joint>
+
+  <!-- mesh model of realsense -->
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  <xacro:sensor_d435 parent="$(arg arm_id_1)_link7" name="rarm_camera_mesh" use_nominal_extrinsics="true">
+    <origin xyz="0.053 -0.007 0.113" rpy="2.356 -1.570796326 0"/>
+  </xacro:sensor_d435>
+  <xacro:sensor_d435 parent="$(arg arm_id_2)_link7" name="larm_camera_mesh" use_nominal_extrinsics="true">
+    <origin xyz="0.053 -0.007 0.113" rpy="2.356 -1.570796326 0"/>
+  </xacro:sensor_d435>
 
   <!-- eus end effector link -->
   <link name="$(arg arm_id_1)_end_effector" >
@@ -254,15 +242,6 @@
     <child link="$(arg arm_id_2)_end_effector"/>
     <origin xyz="0 0 0.2" rpy="0 -1.570796327 -0.785398163"/>
   </joint>
-  
-  <!-- handcamera  -->                                                                          
-  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
-  <xacro:sensor_d435 parent="larm_hand" name="lcamera" use_nominal_extrinsics="true">
-    <origin xyz="0.06 0 0.015" rpy="0 -1.570796326 0"/>
-  </xacro:sensor_d435>
-  <xacro:sensor_d435 parent="rarm_hand" name="rcamera" use_nominal_extrinsics="true">
-    <origin xyz="0.06 0 0.015" rpy="0 -1.570796326 0"/>
-  </xacro:sensor_d435>
 
   <!-- gazebo -->
   <xacro:macro name="gazebo_transmission" params="joint_name" >
@@ -303,5 +282,4 @@
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     </plugin>
   </gazebo>
-  
 </robot>
