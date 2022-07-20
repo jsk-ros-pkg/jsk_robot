@@ -8,12 +8,12 @@
     uri: https://github.com/ykawamura96/jsk_robot.git
     version: add_panda_robot
 
-# Need for using multiple haptic devices
-# wait https://github.com/bharatm11/Geomagic_Touch_ROS_Drivers/pull/5 to be merged.
+# Wait https://github.com/bharatm11/Geomagic_Touch_ROS_Drivers/pull/8 to be merged.
+# NOTE: even when that is merged, you have to use dual-phantom-beta branch, not hydro-devel, until dual-phantom-beta is merged into hydro-devel
 - git:
     local-name: phantom_drivers
-    uri: https://github.com/ykawamura96/Geomagic_Touch_ROS_Drivers.git
-    version: dual_phantom
+    uri: https://github.com/pazeshun/Geomagic_Touch_ROS_Drivers.git
+    version: dual-phantom-readme
 
 # Wait https://github.com/frankaemika/franka_ros/pull/270 to be merged.
 - git:
