@@ -254,6 +254,15 @@
     <child link="$(arg arm_id_2)_end_effector"/>
     <origin xyz="0 0 0.2" rpy="0 -1.570796327 -0.785398163"/>
   </joint>
+  
+  <!-- handcamera  -->                                                                          
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  <xacro:sensor_d435 parent="larm_hand" name="lcamera" use_nominal_extrinsics="true">
+    <origin xyz="0.06 0 0.015" rpy="0 -1.570796326 0"/>
+  </xacro:sensor_d435>
+  <xacro:sensor_d435 parent="rarm_hand" name="rcamera" use_nominal_extrinsics="true">
+    <origin xyz="0.06 0 0.015" rpy="0 -1.570796326 0"/>
+  </xacro:sensor_d435>
 
   <!-- gazebo -->
   <xacro:macro name="gazebo_transmission" params="joint_name" >
