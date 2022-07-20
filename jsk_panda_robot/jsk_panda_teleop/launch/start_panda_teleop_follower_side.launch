@@ -24,8 +24,7 @@
   <arg name="start_bilateral" default="false" doc="Set this value True to immidiently start Teleop-connection"/>
   <!-- controller for arms -->
   <include file="$(find franka_control)/launch/franka_combined_control.launch" >
-    <!-- <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" /> -->
-    <arg name="robot"     value="$(find panda_eus)/models/dual_panda_with_handeye.urdf.xacro" />
+    <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
     <arg name="robot_id"  value="$(arg robot_id)" />
     <arg name="robot_ips" value="$(arg robot_ips)" />
     <arg name="hw_config_file"   value="$(find jsk_panda_teleop)/config/dual_panda_control_node.yaml"/>
