@@ -11,11 +11,11 @@
   <!-- test dual arm distance = 0.68 m (2021/03/10)-->
   <!-- right arm with gripper -->
   <xacro:panda_arm arm_id="$(arg arm_id_1)" connected_to="fixed_base"  xyz="-0.02 -0.34 0.0" safety_distance="0.03"/>
-  <xacro:hand ns="$(arg arm_id_1)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_1)_link8" safety_distance="0.03"/>
+  <xacro:hand arm_id="$(arg arm_id_1)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_1)_link8" safety_distance="0.03"/>
 
   <!-- left arm with gripper -->
   <xacro:panda_arm arm_id="$(arg arm_id_2)" connected_to="fixed_base"  xyz="-0.02  0.34 0.0" safety_distance="0.03"/>
-  <xacro:hand ns="$(arg arm_id_2)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_2)_link8" safety_distance="0.03"/>
+  <xacro:hand arm_id="$(arg arm_id_2)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_2)_link8" safety_distance="0.03"/>
 
   <link name="fixed_base" />
 
