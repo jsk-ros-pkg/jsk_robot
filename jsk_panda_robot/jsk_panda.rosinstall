@@ -2,11 +2,10 @@
 # Currently .rosintall is shared with user PC's one.
 
 
-# Wait until https://github.com/jsk-ros-pkg/jsk_robot/pull/1343 to be merged
 - git:
     local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/ykawamura96/jsk_robot.git
-    version: add_panda_robot
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
 
 # Wait https://github.com/bharatm11/Geomagic_Touch_ROS_Drivers/pull/8 to be merged.
 # NOTE: even when that is merged, you have to use dual-phantom-beta branch, not hydro-devel, until dual-phantom-beta is merged into hydro-devel
