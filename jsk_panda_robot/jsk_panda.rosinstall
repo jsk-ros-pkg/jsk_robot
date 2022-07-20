@@ -15,8 +15,8 @@
     uri: https://github.com/ykawamura96/Geomagic_Touch_ROS_Drivers.git
     version: dual_phantom
 
-# Need for using dual_arm_impedance controller
+# Wait https://github.com/frankaemika/franka_ros/pull/270 to be merged.
 - git:
     local-name: franka_ros
-    uri: https://github.com/ykawamura96/franka_ros.git
-    version: add_dual_arm_impedance_controller
+    uri: https://github.com/pazeshun/franka_ros.git
+    version: add_dual_arm_impedance_controller_refactored
