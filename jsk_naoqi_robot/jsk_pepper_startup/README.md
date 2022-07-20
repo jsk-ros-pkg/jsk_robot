@@ -151,3 +151,10 @@ You can also try `ssh nao@<Pepper's IP>` and
 qicli call ALBehaviorManager.isBehaviorRunning boot-config
 qicli call ALBehaviorManager.stopBehavior boot-config
 ```
+
+- If you encounter the error below when you launch `naoqi_driver.launch`, please refer to [this issue](https://github.com/jsk-ros-pkg/jsk_robot/issues/1474).
+
+```
+what():	ALProxy::ALProxy
+Can't find service: ROS-Driver-Audio
+```
