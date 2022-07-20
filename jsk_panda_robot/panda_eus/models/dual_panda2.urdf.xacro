@@ -202,14 +202,7 @@
     <child  link="display"/>
     <origin rpy="0.0 0.2 0.0" xyz="0.0 0.0 1.66"/>
   </joint>
-  <!-- test xtion frame -->
-  <link name="camera_link" />
-  <joint name="camera_fixed_joint" type="fixed">
-    <parent link="dual_arm_base"/>
-    <child link="camera_link"/>
-    <origin xyz="-0.22 -0.0 1.46" rpy="0 0.88 0"/>
-  </joint>
-  
+
   <!-- realsense -->
   <link name="$(arg arm_id_1)_camera_link" >
     <!-- <geometry> -->
