@@ -128,7 +128,7 @@
     :finished))
 
 (defun comment-func (args)
-  (let (count str (wait 60) tm)
+  (let (count str (wait 600) tm)
     (ros::ros-info "comment func, *count* = ~A" *count*)
     (setq *last-tm* (ros::time-now))
     ;; wait for 600 sec OR if someone set *coutinue* nil, return with :finished
