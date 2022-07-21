@@ -43,8 +43,7 @@
          gripper-action
          move-base-action
          move-base-trajectory-action)
-     (roseus_resume:install-default-intervention self)
-     t))
+     (roseus_resume:install-default-intervention self)))
   (:state (&rest args)
    "We do not have :wait-until-update option for :state :worldcoords.
 In other cases, :state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency.
