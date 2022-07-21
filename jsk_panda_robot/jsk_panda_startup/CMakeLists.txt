@@ -8,7 +8,7 @@ catkin_package()
 ## Install ##
 #############
 
-install(DIRECTORY launch config scripts
+install(DIRECTORY launch config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
