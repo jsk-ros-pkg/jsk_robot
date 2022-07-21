@@ -1,5 +1,5 @@
 <launch>
-  <arg name="device" default="/dev/rhand-e151" />
+  <arg name="device" default="/dev/rhand-e160" />
   <arg name="mode" default="position" />
 
   <include file="$(find softhand_ros)/launch/softhand.launch">
