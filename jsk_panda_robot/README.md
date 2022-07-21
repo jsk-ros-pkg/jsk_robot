@@ -24,7 +24,7 @@ source devel/setup.bash
 ### Installation for Panda Controller PC
 1. Please see and follow installation written in: https://frankaemika.github.io/docs/installation_linux.html
    * Note that you need to install real-time kernel (`PREEMPT-PR` kernel) for real-time control.
-   * Ref: Current controller PC uses following kernel:
+   * Ref: Current controller PC uses following kernel: `5.4.19-rt11`
 2. Please do the same ROS environment setup as `Installation for User PC` section above.
 
 
