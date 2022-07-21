@@ -238,11 +238,11 @@ git clone https://github.com/richardeoin/ftx-prog.git
 cd ftx-prog/
 make
 # for left softhand v1
-sudo ./ftx-prog --product LEFT-E160
+sudo ./ftx_prog --product LEFT-E160
 # for right softhand v1
-sudo ./ftx-prog --product RIGHT-E160
+sudo ./ftx_prog --product RIGHT-E160
 # for left softhand v2
-sudo ./ftx-prog --product LEFT-V2-E160
+sudo ./ftx_prog --product LEFT-V2-E160
 # for right softhand v2
-sudo ./ftx-prog --product RIGHT-V2-E160
+sudo ./ftx_prog --product RIGHT-V2-E160
 ```
