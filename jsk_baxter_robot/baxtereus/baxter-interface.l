@@ -1,7 +1,15 @@
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
 (require :baxter "package://baxtereus//baxter-util.l")
-(require :roseus_resume "package://roseus_resume/euslisp/interruption-handler.l")
 (ros::load-ros-package "baxter_core_msgs")
+
+(defvar *enable-roseus-resume* (ros::rospack-find "roseus_resume"))
+(if *enable-roseus-resume*
+  (progn
+    (require :roseus_resume "package://roseus_resume/euslisp/interruption-handler.l")
+    (warning-message 2 "roseus_resume is enabled.~%"))
+  (progn
+    (unless (find-package "ROSEUS_RESUME") (make-package "ROSEUS_RESUME"))
+    (warning-message 3 "roseus_resume is disabled.~%")))
 
 (defparameter *suction* 65537) ;;vacuum
 (defparameter *electoric* 65538)
@@ -48,12 +56,14 @@
      (ros::spin-once)
      (if mvit-rb (setq moveit-robot mvit-rb))
      (if mvit-env (send self :set-moveit-environment (send mvit-env :init :robot moveit-robot)))
-     (warning-message 3 "Installing interruption handler...~%")
-     (roseus_resume:install-interruption-handler self
-        right-gripper-action
-        left-gripper-action)
-     (roseus_resume:install-default-intervention self)
-     (warning-message 3 "...done.~%")
+     (if *enable-roseus-resume*
+       (progn
+         (warning-message 3 "Installing interruption handler...~%")
+         (roseus_resume::install-interruption-handler self
+            right-gripper-action
+            left-gripper-action)
+         (roseus_resume::install-default-intervention self)
+         (warning-message 3 "...done.~%")))
      ))
   (:right-property-cb (msg)
    (setq right-gripper-type (send msg :id))
