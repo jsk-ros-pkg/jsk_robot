@@ -1,14 +1,14 @@
 # JSK Panda Robot
 ## Installation
 - Following pages provide informative resources.
-- Official manual page: : https://frankaemika.github.io/docs/installation_linux.html
+- Official manual page: https://frankaemika.github.io/docs/installation_linux.html
 - Franka Community: https://www.franka-community.de/
 
 
 ### Installation for User PC
-1. Install OpenHaptics from here; https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
+1. Install OpenHaptics from here: https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
 
-2. Install ROS packages.
+2. Install ROS packages:
    ```bash
    mkdir -p ~/franka_ws/src
    cd ~/franka_ws/src
@@ -33,15 +33,15 @@
 ### Boot robot
 1. Please turn on the controller box and unlock joints by accessing desk.
 ### Via roseus
-1. Start controller on controller PC;
+1. Start controller on controller PC:
    ```bash
    ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp
    roslaunch jsk_panda_startup dual_panda.launch
    ```
 
-2. Controlling Dual-Panda via roseus
+2. Controlling Dual-Panda via roseus:
    1. `rossetdualpanda`
-   2. execute following script in roseus;
+   2. execute following script in roseus:
       ```lisp
       (load "package://panda_eus/euslisp/dual_panda-interface.l")
       (dual_panda-init)
@@ -53,7 +53,7 @@
       `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
 ### Teleop
 #### Start program
-1. Start controller on controller PC;
+1. Start controller on controller PC:
    ```bash
    ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp
    roslaunch jsk_panda_teleop start_panda_teleop_follower_side.launch start_bilateral:=true
