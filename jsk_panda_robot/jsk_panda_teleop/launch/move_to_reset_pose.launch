@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <launch>
-  <arg name="rarm_ip" default="172.16.0.2"/>
-  <arg name="larm_ip" default="172.16.1.2"/>
+  <arg name="rarm_ip" default="172.16.0.20"/>
+  <arg name="larm_ip" default="172.16.0.200"/>
 
   <arg name="robot_id" default="dual_panda" />
 
