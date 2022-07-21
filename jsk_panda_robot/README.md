@@ -18,7 +18,7 @@ wstool update
 cd ../
 source /opt/ros/melodic/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
-catkin build
+catkin build jsk_panda_startup jsk_panda_teleop
 source devel/setup.bash
 ```
 ### Installation for Panda Controller PC

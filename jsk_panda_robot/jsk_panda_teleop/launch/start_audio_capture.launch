@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<launch>
+
+  <!-- USB microphone on right hand -->
+  <arg name="launch_audio_capture" default="true" doc="Launch audio_capture node to publish audio topic from microphone" />
+  <arg name="n_channel" default="1" doc="Number of channels of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="depth" default="16" doc="Bit depth of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="sample_rate" default="44100" doc="Frame rate of audio topic and microphone. '$ pactl list short sources' to check your hardware"/>
+  <arg name="audio_device" default="hw:2,0" doc="Card and device number of microphone (e.g. hw:0,0). you can check card number and device number by '$ arecord -l', then uses hw:[card number],[device number]" />
+  <arg name="high_cut_freq" default="6000" />
+  <arg name="low_cut_freq" default="1" />
+  <arg name="spectrogram_period" default="1" />
+
+  <!-- sound device -->
+  <node name="audio_capture" pkg="audio_capture" type="audio_capture"
+        if="$(arg launch_audio_capture)"
+        respawn="true">
+    <rosparam subst_value="true">
+      format: wave
+      channels: $(arg n_channel)
+      depth: $(arg depth)
+      sample_rate: $(arg sample_rate)
+    </rosparam>
+    <param name="device" value="$(arg audio_device)" />
+  </node>
+
+  <include file="$(find audio_to_spectrogram)/launch/audio_to_spectrogram.launch">
+    <arg name="launch_audio_capture" value="false" />
+    <arg name="bitdepth" value="$(arg depth)" />
+    <arg name="mic_sampling_rate" value="$(arg sample_rate)" />
+    <arg name="n_channel" value="$(arg n_channel)" />
+    <arg name="audio_topic" value="/audio" />
+    <arg name="high_cut_freq" value="$(arg high_cut_freq)" />
+    <arg name="low_cut_freq" value="$(arg low_cut_freq)" />
+    <arg name="spectrogram_period" value="$(arg spectrogram_period)" />
+    <arg name="gui" value="false" />
+  </include>
+
+  <!-- mono spectrogram -> preprocessed mono spectrogram -->
+  <!-- Spectral subtraction by spectral subtraction method -->
+  <node pkg="sound_classification" type="preprocess_gray_image.py" name="preprocess_gray_image" >
+    <remap from="~input" to="/spectrum_to_spectrogram/spectrogram" />
+    <rosparam subst_value="true">
+      train_data: None
+    </rosparam>
+  </node>
+
+</launch>

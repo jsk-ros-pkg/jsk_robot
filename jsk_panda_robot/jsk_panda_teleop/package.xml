@@ -32,5 +32,7 @@
   <run_depend>audio_capture</run_depend>
   <run_depend>audio_play</run_depend>
   <run_depend>audio_common_msgs</run_depend>
+  <run_depend>audio_to_spectrogram</run_depend>
+  <run_depend>sound_classification</run_depend>
 
 </package>

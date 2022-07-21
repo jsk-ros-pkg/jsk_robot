@@ -19,3 +19,9 @@
     local-name: franka_ros
     uri: https://github.com/pazeshun/franka_ros.git
     version: add_dual_arm_impedance_controller_refactored
+
+# Wait sound_classification to be released.
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: f455d96f431d094177be5f7569c79a3e25e8e360
