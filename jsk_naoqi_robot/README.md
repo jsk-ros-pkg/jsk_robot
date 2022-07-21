@@ -106,7 +106,7 @@ sudo apt-get install ros-${ROS_DISTRO}-nao-meshes
 ```
 
 If you have ROS >= kinetic, please use [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).  
-This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for ROS >= kinetic.
+This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/6) for ROS >= kinetic.
 
 ```
 cd  catkin_ws/src
@@ -115,7 +115,7 @@ wstool update naoqi_dashboard
 cd naoqi_dashboard
 git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
 git fetch kochigami
-git checkout -b modify-for-kinetic kochigami/kochigami-develop
+git checkout -b kochigami-develop kochigami/kochigami-develop
 ```
 
 Finally, please compile them.  
