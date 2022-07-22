@@ -22,6 +22,7 @@
   <run_depend>nao_interaction_msgs</run_depend>
   <run_depend>pepper_bringup</run_depend>
   <run_depend>roseus</run_depend>
+  <run_depend>roseus_smach</run_depend>
   <run_depend>rostwitter</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
