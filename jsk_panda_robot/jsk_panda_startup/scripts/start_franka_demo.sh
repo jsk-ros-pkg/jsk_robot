@@ -24,6 +24,6 @@ byobu-new-window franka coral  "source ~/coral_ws/devel/setup.bash && roslaunch 
 
 byobu-new-window franka teleop  roslaunch --wait rwt_teleop franka_screenpoint_teleop.launch
 
-byobu-new-window franka rviz     rviz -d ~/Desktop/dual_panda.rviz
+byobu-new-window franka rviz     rviz -d $(rospack find jsk_panda_startup)/config/rviz/dual_panda.rviz
 
 byobu
