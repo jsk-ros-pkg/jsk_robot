@@ -44,6 +44,7 @@
           (format nil "~A/thumb_joint_controller" (if namespace namespace "")))
     (setq thumb-command-topic-name
           (format nil "~A/command" thumb-controller-name))
+    (ros::advertise thumb-command-topic-name std_msgs::Float64 1)
     (when calibrate (send self :calibrate))
     self)
   (:calibrate-finger1 () (send self :calibrate-finger-impl 1))
