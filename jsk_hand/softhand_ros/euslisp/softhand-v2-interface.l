@@ -9,12 +9,18 @@
           finger1-command-topic-name
           finger2-command-topic-name
           finger3-command-topic-name
+          finger1-state-topic-name
+          finger2-state-topic-name
+          finger3-state-topic-name
           finger1-calib-action-client
           finger2-calib-action-client
           finger3-calib-action-client
           finger1-set-torque-limit-service-name
           finger2-set-torque-limit-service-name
           finger3-set-torque-limit-service-name
+          finger1-state-msg
+          finger2-state-msg
+          finger3-state-msg
           heater-controller-name
           heater1-command-topic-name
           heater2-command-topic-name
@@ -38,6 +44,7 @@
           (format nil "~A/thumb_joint_controller" (if namespace namespace "")))
     (setq thumb-command-topic-name
           (format nil "~A/command" thumb-controller-name))
+    (ros::advertise thumb-command-topic-name std_msgs::Float64 1)
     (when calibrate (send self :calibrate))
     self)
   (:calibrate-finger1 () (send self :calibrate-finger-impl 1))
