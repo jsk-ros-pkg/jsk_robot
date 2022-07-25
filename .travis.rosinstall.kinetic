@@ -28,3 +28,10 @@
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
     version: 0ad250a996a2ef68172fc064698f253bc9cf08d0
+# panda_eus requires franka_description with the following commit (0.7.0 or later):
+# https://github.com/frankaemika/franka_ros/commit/33be4c68531bcb3ccb38cd48a855f94c7347927c
+# kinetic is already EOL and 0.7.0 is never released. (2022/07/25)
+- tar:
+    local-name: franka_ros/franka_description
+    uri: https://github.com/frankaemika/franka_ros-release/archive/release/melodic/franka_description/0.9.0-1.tar.gz
+    version: franka_ros-release-release-melodic-franka_description-0.9.0-1
