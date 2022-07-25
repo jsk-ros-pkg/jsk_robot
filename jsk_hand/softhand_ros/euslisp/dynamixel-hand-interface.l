@@ -1,0 +1,98 @@
+(ros::roseus-add-msgs "std_msgs")
+(ros::roseus-add-msgs "dynamixel_msgs")
+(ros::roseus-add-msgs "dynamixel_controllers")
+(ros::roseus-add-srvs "dynamixel_controllers")
+
+
+(defclass dynamixel-hand-interface
+  :super propertied-object
+  :slots (finger-ids))
+
+
+(defmethod dynamixel-hand-interface
+  (:init (&key (finger-num 3) (namespace nil))
+    (ros::rate 10)
+    (setq finger-ids nil)
+    (dotimes (i finger-num)
+      (let* ((fid (+ i 1))
+             (cname (format nil "~A/finger~A_joint_controller" (if namespace namespace "") fid))
+             (ctname (format nil "~A/command" cname))
+             (stname (format nil "~A/state" cname)))
+        (send self :set-val (read-from-string (format nil "finger~A-controller-name" fid)) cname)
+        (send self :set-val (read-from-string (format nil "finger~A-command-topic-name" fid)) ctname)
+        (send self :set-val (read-from-string (format nil "finger~A-state-topic-name" fid)) stname)
+        (send self :set-val (read-from-string (format nil "finger~A-set-torque-limit-service-name" fid))
+              (format nil "~A/set_torque_limit" cname))
+        (ros::advertise ctname std_msgs::Float64 1)
+        (ros::subscribe stname dynamixel_msgs::JointState
+                        #'send self :finger-state-cb fid)
+        (send self :set-val (read-from-string (format nil "finger~A-calib-action-client" fid))
+              (instance ros::simple-action-client :init
+                        (format nil "~A/calib" cname)
+                        dynamixel_controllers::CalibJointAction))
+        (setq finger-ids (append finger-ids (list fid)))))
+    self)
+  (:calibrate-finger-impl (fid)
+    (send self :start-finger-calib-impl fid)
+    (send (instance ros::Duration :init 3) :sleep)
+    (while (send self :finger-calibratingp-impl fid)
+      (ros::spin-once)))
+  (:start-finger-calib-impl (fid)
+    (send (eval (read-from-string (format nil "finger~A-calib-action-client" fid)))
+          :send-goal (instance dynamixel_controllers::CalibJointActionGoal :init)))
+  (:finger-calibratingp-impl (fid)
+    (ros::spin-once)
+    (eq (send (eval (read-from-string (format nil "finger~A-calib-action-client" fid)))
+              :get-state)
+        ros::*simple-goal-state-active*))
+  (:calibrate ()
+    (let ((calibrate-p t))
+      (dolist (fid finger-ids)
+        (let ((calibrate-finger-p (send self :calibrate-finger-impl fid)))
+          (setq calibrate-p (and calibrate-p calibrate-finger-p))))
+      calibrate-p))
+  (:finger-rotate-impl (fid angle)
+    (let ((msg (instance std_msgs::Float64 :init :data angle)))
+      (ros::publish
+        (eval (read-from-string (format nil "finger~A-command-topic-name" fid))) msg)))
+  (:finger-all-rotate (angle)
+    (let ((all-rotate-p t))
+      (dolist (fid finger-ids)
+        (let ((finger-rotate-p (send self :finger-rotate-impl fid angle)))
+          (setq all-rotate-p (and all-rotate-p finger-rotate-p))))
+      all-rotate-p))
+  (:finger-state-cb (msg fid)
+    (send self :set-val (read-from-string (format nil "finger~A-state-msg" fid)) msg))
+  (:get-finger-state-msg (fid &key (timeout 10))
+    (let ((now (ros::time-now))
+          (fsmsg (eval (read-from-string (format nil "finger~A-state-msg" fid)))))
+      (while (or (not fsmsg)
+        (not (> (send (send fsmsg :header :stamp) :to-nsec)
+            (send now :to-nsec))))
+        (progn
+          (ros::spin-once)
+          (if (> (- (send (ros::time-now) :to-sec)
+                (send now :to-sec)) timeout)
+              (return-from :get-finger-state-msg nil))))
+      (return-from :get-finger-state-msg fsmsg)))
+  (:get-finger-current-pos-impl (fid)
+    (let* ((finger-state-msg (send self :get-finger-state-msg fid))
+           (finger-current-pos
+             (if finger-state-msg (send finger-state-msg :current_pos))))
+      finger-current-pos))
+  (:set-finger-torque-limit-impl (fid torque)
+    (let ((req (instance dynamixel_controllers::SetTorqueLimitRequest :init
+                         :torque_limit torque)))
+      (ros::service-call
+        (eval (format nil "finger~A-set-torque-limit-service-name" fid)) req)))
+  (:set-torque-limit-all (torque)
+    (let ((set-torque-p t))
+      (dolist (fid finger-ids)
+        (let ((set-finger-torque-p (send self :set-finger-torque-limit-impl fid torque)))
+          (setq set-torque-p (and set-torque-p set-finger-torque-p))))
+      set-torque-p)))
+
+
+(provide :dynamixel-hand-interface "package://softhand_ros/euslisp/dynamixel-hand-interface.l")
+
+
