@@ -37,6 +37,10 @@ flags.DEFINE_bool(
     'command from start. Otherwise you have to call rosservice.')
 
 
+# use raw_input for python2 c.f. https://stackoverflow.com/questions/5868506/backwards-compatible-input-calls-in-python
+if hasattr(__builtins__, 'raw_input'):
+    input = raw_input
+
 def get_status_overlay(moving, arm_name):
     text = OverlayText()
     text.width = 400
@@ -186,7 +190,7 @@ class SingleArmHandler(object):
 
     def set_initial_pose(self, no_ask=False):
         if not no_ask:
-            res = raw_input(
+            res = input(
                 'Press Enter to set this {} pose as initial position'.format(
                     self.arm_name))
         self.current_frame.header.frame_id = '{}_link0'.format(self.arm_name)
