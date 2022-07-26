@@ -64,6 +64,12 @@ function copy_data () {
     ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${hostname}" || echo "OK"
     sshpass -p $PASS ssh -o StrictHostKeyChecking=no ${user}@${hostname} exit
 
+    if [[ "${TARGET_DIRECTORY}" == "System" ]]; then
+        sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/sitecustomize.py ${user}@${hostname}:/tmp/sitecustomize.py
+        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo cp -f /tmp/sitecustomize.py /usr/lib/python2.7/sitecustomize.py"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo cp -f /tmp/sitecustomize.py /usr/lib/python3/sitecustomize.py"
+    fi
+
     # cehck disk space
     echo "Copy ${TARGET_MACHINE}_${TARGET_DIRECTORY} ...."
     echo "==="
