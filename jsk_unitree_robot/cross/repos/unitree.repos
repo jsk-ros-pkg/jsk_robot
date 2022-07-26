@@ -21,3 +21,11 @@ repositories:
     type: git
     url: https://github.com/Affonso-Gui/app_manager
     version: enable-parallel-run-apps
+  google_chat_ros:
+    type: git
+    url: https://github.com/mqcmd196/jsk_3rdparty
+    version: google_chat_ros
+  catkin_virtualenv:
+    type: git
+    url: https://github.com/locusrobotics/catkin_virtualenv
+    version: 0.8.0

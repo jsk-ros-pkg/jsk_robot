@@ -16,6 +16,7 @@
   <run_depend>rosserial_python</run_depend>
   <run_depend>teleop_twist_joy</run_depend>
   <run_depend>respeaker_ros</run_depend>
+  <run_depend>google_chat_ros</run_depend>
 
   <!-- for diagnostic aggregator -->
   <run_depend>diagnostic_aggregator</run_depend>
