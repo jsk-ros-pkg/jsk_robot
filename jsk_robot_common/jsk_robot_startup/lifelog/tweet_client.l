@@ -4,37 +4,46 @@
 (ros::roseus-add-msgs "std_msgs")
 (ros::roseus-add-msgs "sensor_msgs")
 
-(load "package://pr2eus/speak.l")
+(require "package://pr2eus/speak.l")
 
-(ros::roseus "tweet_client")
-(ros::advertise "/tweet" std_msgs::String 1)
+(if (not (boundp `*initialized-tweet-client*))
+  (setq *initialized-tweet-client* nil))
 
-;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
-(while (not (ros::has-param "/active_user/elapsed_time"))
-  (unix::sleep 3)
-  (ros::ros-info "Wait for /active_user/elapsed_time parameter ..."))
+(defun init-tweet-client ()
+  (ros::advertise "/tweet" std_msgs::String 1)
 
-(cond
- ((ros::has-param "/active_user/tweet_second")
-  (setq *tweet-second* (ros::get-param "/active_user/tweet_second")))
- (t
-  (setq *tweet-second* 300)
-  ))
+  ;; next tweet timing ( x(i+1) = x(i) * 2, 5 * 60 = 300 sec)
+  (while (not (ros::has-param "/active_user/elapsed_time"))
+    (unix::sleep 3)
+    (ros::ros-info "Wait for /active_user/elapsed_time parameter ..."))
 
-(setq *target-second* (+ (ros::get-param "/active_user/elapsed_time")
-                         *tweet-second*))
+  (cond
+   ((ros::has-param "/active_user/tweet_second")
+    (setq *tweet-second* (ros::get-param "/active_user/tweet_second")))
+   (t
+    (setq *tweet-second* 300)
+    ))
 
-(setq *waking-tweet-second* 3600.0)
-(cond
- ((ros::has-param "/active_user/start_time")
-  (let ((st (ros::get-param "/active_user/start_time")))
-    (setq *waking-target-second*
-          (+ (- (send (ros::time-now) :to-sec) st)
-             *waking-tweet-second*))))
- (t
-  (setq *waking-target-second* *waking-tweet-second*)))
+  (setq *target-second* (+ (ros::get-param "/active_user/elapsed_time")
+                           *tweet-second*))
+
+  (setq *waking-tweet-second* 3600.0)
+  (cond
+   ((ros::has-param "/active_user/start_time")
+    (let ((st (ros::get-param "/active_user/start_time")))
+      (setq *waking-target-second*
+            (+ (- (send (ros::time-now) :to-sec) st)
+               *waking-tweet-second*))))
+   (t
+    (setq *waking-target-second* *waking-tweet-second*)))
+
+  (setq *initialized-tweet-client* t)
+  )
 
 (defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t))
+  (if (not *initialized-tweet-client*)
+    (init-tweet-client)
+    )
   (let (prev-image-topic img)
   (when warning-time
     (unless (numberp warning-time)
