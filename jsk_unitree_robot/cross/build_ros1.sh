@@ -50,6 +50,7 @@ docker run -it --rm \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
+  -v ${PWD}/startup_scripts/sitecustomize.py:/usr/lib/python2.7/sitecustomize.py:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:rw \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/${SOURCE_ROOT}:rw \
   ros1-unitree:${TARGET_MACHINE} \
@@ -69,3 +70,4 @@ docker run -it --rm \
     " 2>&1 | tee ${TARGET_MACHINE}_build_ros1.log
 
 cp ${PWD}/startup_scripts/system_setup.bash ${HOST_INSTALL_ROOT}/
+cp ${PWD}/startup_scripts/sitecustomize.py ${HOST_INSTALL_ROOT}/
