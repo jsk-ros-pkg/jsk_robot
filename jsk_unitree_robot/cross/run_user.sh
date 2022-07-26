@@ -16,6 +16,8 @@ docker run -it --rm \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/Python:/opt/jsk/${INSTALL_ROOT}/Python:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:ro \
+  -v ${PWD}/startup_scripts/sitecustomize.py:/usr/lib/python2.7/sitecustomize.py:ro \
+  -v ${PWD}/startup_scripts/sitecustomize.py:/usr/lib/python3.6/sitecustomize.py:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
   -v ${HOST_INSTALL_ROOT}/system_setup.bash:/opt/jsk/${INSTALL_ROOT}/system_setup.bash:ro \
   -v ${PWD}/${SOURCE_ROOT}:/opt/jsk/User:rw \
