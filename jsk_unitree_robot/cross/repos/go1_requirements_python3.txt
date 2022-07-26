@@ -1,0 +1,2 @@
+# needeed by catkin_virtualenv
+catkin-pkg
