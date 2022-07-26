@@ -98,9 +98,9 @@ function copy_data () {
     sshpass -p $PASS ssh -t ${user}@${hostname} "test -e /opt/jsk" || \
         sshpass -p $PASS ssh -t ${user}@${hostname} "sudo mkdir -p /opt/jsk && sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /opt/jsk && ls -al /opt/jsk"
 
-    rsync --rsh="/usr/bin/sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded --exclude "*.pyc" --exclude "^logs/" ${TARGET_MACHINE}_${TARGET_DIRECTORY}/ ${hostname}:/opt/jsk/${TARGET_DIRECTORY}
+    rsync --rsh="sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded --exclude "*.pyc" --exclude "^logs/" ${TARGET_MACHINE}_${TARGET_DIRECTORY}/ ${hostname}:/opt/jsk/${TARGET_DIRECTORY}
     if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
-        rsync --rsh="/usr/bin/sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded ../jsk_unitree_startup/autostart/ ${hostname}:Unitree/autostart/jsk_startup
+        rsync --rsh="sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded ../jsk_unitree_startup/autostart/ ${hostname}:Unitree/autostart/jsk_startup
         # https://stackoverflow.com/questions/23395363/make-patch-return-0-when-skipping-an-already-applied-patch
 
         # On Air, we need to start unitree_bringup at 129.168.123.13
