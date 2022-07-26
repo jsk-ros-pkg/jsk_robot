@@ -5,6 +5,8 @@
 
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
+(init-tweet-client)
+
 (defun twit-cb (msg)
   (let ((twit-str (send msg :data)))
     (tweet-string twit-str

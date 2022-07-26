@@ -4,6 +4,8 @@
 
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
+(init-tweet-client)
+
 (setq *src-lines* nil)
 (setq *random-state* (coerce (unix::gettimeofday) integer-vector))
 

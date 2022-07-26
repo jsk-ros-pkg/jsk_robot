@@ -5,6 +5,8 @@
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 (ros::load-ros-manifest "diagnostic_msgs")
 
+(init-tweet-client)
+
 (defun diagnostics-cb (msg)
   (let ((diagnostics (make-hash-table :test #'equal))
 	(tm (ros::time-now))

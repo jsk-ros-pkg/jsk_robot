@@ -4,6 +4,8 @@
 
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
+(init-tweet-client)
+
 (defvar *robot-name* "robot")
 (when (ros::has-param "/active_user/robot_name")
   (setq *robot-name* (ros::get-param "/active_user/robot_name"))
