@@ -23,7 +23,7 @@ repositories:
     version: enable-parallel-run-apps
   google_chat_ros:
     type: git
-    url: https://github.com/mqcmd196/jsk_3rdparty
+    url: https://github.com/iory/jsk_3rdparty
     version: google_chat_ros
   catkin_virtualenv:
     type: git
