@@ -27,5 +27,5 @@ repositories:
     version: google_chat_ros
   catkin_virtualenv:
     type: git
-    url: https://github.com/locusrobotics/catkin_virtualenv
-    version: 0.8.0
+    url: https://github.com/iory/catkin_virtualenv
+    version: avoid-catkin_run_tests_target
