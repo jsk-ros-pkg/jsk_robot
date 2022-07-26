@@ -16,4 +16,5 @@ cd ${SOURCE_DIR}/build_unix
 
 ../dist/configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies --build $(uname -m)-unknown-linux-gnu --enable-cxx --enable-compat185
 
+# Can be compiled safely with j1.
 make -j1 install
