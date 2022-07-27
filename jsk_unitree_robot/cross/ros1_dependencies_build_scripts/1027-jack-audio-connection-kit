@@ -17,4 +17,4 @@ cd ${SOURCE_DIR}
 ./autogen.sh
 CFLAGS="-I/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/include" LIBS="-L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib" ./configure --enable-force-install --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
-make -j4 install
+make install

@@ -23,4 +23,4 @@ cmake \
   -DASSIMP_ENABLE_BOOST_WORKAROUND=OFF \
   ${SOURCE_DIR}
 
-make -j4 install
+make install

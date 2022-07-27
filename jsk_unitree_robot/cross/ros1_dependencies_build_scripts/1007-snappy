@@ -18,4 +18,4 @@ cmake \
   -DBUILD_SHARED_LIBS=on \
   ${SOURCE_DIR}
 
-make -j4 install
+make install
