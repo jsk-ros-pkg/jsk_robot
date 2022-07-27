@@ -16,4 +16,4 @@ cd ${SOURCE_DIR}
 
 ./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
-make -j4 install
+make install

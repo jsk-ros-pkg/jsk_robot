@@ -4,6 +4,7 @@ TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
 SOURCE_ROOT=${TARGET_MACHINE}_ws_system
+MAKEFLAGS=${MAKEFLAGS:-'-j4'}
 
 UPDATE_SOURCE_ROOT=1  # TRUE
 if [ -e "${SOURCE_ROOT}" ]; then
@@ -48,6 +49,7 @@ PR2EUS="pr2eus"
 docker run -it --rm \
   -u $(id -u $USER) \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
+  -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:rw \
