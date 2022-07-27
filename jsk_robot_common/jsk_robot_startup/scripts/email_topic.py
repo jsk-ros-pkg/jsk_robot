@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from email.mime.application import MIMEApplication
+from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import errno
@@ -12,6 +13,9 @@ import smtplib
 import socket
 from socket import error as socket_error
 import yaml
+import copy
+import random, string  # for image cid
+import base64
 
 
 class EmailTopic(object):
@@ -43,7 +47,11 @@ class EmailTopic(object):
             'email', Email, self._cb, queue_size=1)
 
     def _cb(self, msg):
-        rospy.loginfo('Received an msg: {}'.format(msg))
+        msg_compact = copy.deepcopy(msg)
+        for content in msg_compact.body:
+            if len(content.img_data) >= 64:
+                content.img_data = content.img_data[:64] + "...."
+        rospy.loginfo('Received an msg: {}'.format(msg_compact))
         send_mail_args = {}
         # Set default value for self._send_mail arguments
         send_mail_args['subject'] = ''
@@ -75,7 +83,6 @@ class EmailTopic(object):
         msg["Subject"] = subject
         msg["From"] = sender_address
         msg["To"] = receiver_address
-        msg.attach(MIMEText(body, 'plain', 'utf-8'))
         # Support embed image
         for content in body:
             if content.type == 'text':
@@ -83,24 +90,27 @@ class EmailTopic(object):
             elif content.type == 'html':
                 msg.attach(MIMEText(content.message, 'html'))
             elif content.type == 'img':
-                if content.file_path == '':
-                    rospy.logwarn('File name is empty. Skipped.')
+                if content.img_data != '':
+                    embed_img = MIMEImage(base64.b64decode(content.img_data))
+                    cid = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
+                elif os.path.exists(content.file_path):
+                    with open(content.file_path, 'rb') as img:
+                        embed_img = MIMEImage(img.read())
+                    cid = content.file_path
+                else:
+                    rospy.logerr("'img' content requries either file_path {}".format(content.type))
+                    rospy.logerr("                           or img_data {} with img_format {}".format(content.img_data, content.img_format))
                     continue
-                if not os.path.exists(content.file_path):
-                    rospy.logerr(
-                        'File {} is not found.'.format(content.file_path))
-                    return
-                with open(content.file_path, 'rb') as img:
-                    embed_img = MIMEImage(img.read())
-                    embed_img.add_header(
-                        'Content-ID', '<{}>'.format(content.file_path))
-                    msg.attach(embed_img)  # This line is necessary to embed
+                embed_img.add_header(
+                    'Content-ID', '<{}>'.format(cid))
+                embed_img.add_header(
+                    'Content-Disposition', 'inline; filename="{}"'.format(os.path.basename(cid)))
+                msg.attach(embed_img)  # This line is necessary to embed
                 if content.img_size:
                     image_size = content.img_size
                 else:
                     image_size = 100
-                text = '<img src="cid:{}" width={}%>'.format(
-                    content.file_path, image_size)
+                text = '<img src="cid:{}" width={}%>'.format(cid, image_size)
                 bodytext = MIMEText(text, 'html')
                 msg.attach(bodytext)
             else:
