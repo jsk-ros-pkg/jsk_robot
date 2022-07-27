@@ -89,7 +89,7 @@
    rosrun jsk_panda_teleop start_master_side.sh
    ```
    Then you should see rviz popup like this:
-   ![image](https://user-images.githubusercontent.com/43567489/159150327-5e4d246b-2311-4eb4-814a-7f6fd11b6f29.png)
+   ![image](https://user-images.githubusercontent.com/14994939/181154686-cb8e95c8-96a7-47ac-b074-bf3c72bc5ee8.png)
 
 #### Move robot
 1. Press connection mode switch (white button) to change connect or not-connect status between the haptic devices and the robot.
