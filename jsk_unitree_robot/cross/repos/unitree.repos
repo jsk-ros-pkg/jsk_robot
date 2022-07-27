@@ -21,11 +21,20 @@ repositories:
     type: git
     url: https://github.com/Affonso-Gui/app_manager
     version: enable-parallel-run-apps
+    # For parallel feature of app manager
+    # https://github.com/PR2/app_manager/pull/59
   google_chat_ros:
     type: git
     url: https://github.com/iory/jsk_3rdparty
     version: google_chat_ros
+    # Support Google Chat API.
+    # https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/323
+    # To support aarch64, used the following branch. https://github.com/mqcmd196/jsk_3rdparty/pull/2
   catkin_virtualenv:
     type: git
     url: https://github.com/iory/catkin_virtualenv
     version: avoid-catkin_run_tests_target
+    # At current, if we do a catkin build with CATKIN_ENABLE_TESTING=FALSE,
+    # we get the error 'Unknown CMake command "catkin_run_tests_target"'
+    # when calling catkin_generate_virtualenv. The following PR fixes this error.
+    # https://github.com/locusrobotics/catkin_virtualenv/pull/89
