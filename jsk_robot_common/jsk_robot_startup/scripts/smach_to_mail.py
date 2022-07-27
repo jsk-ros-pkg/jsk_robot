@@ -25,7 +25,7 @@ class SmachToMail():
         rospy.Subscriber(
             "~smach/container_status", SmachContainerStatus, self._status_cb)
         self.bridge = CvBridge()
-        self.smach_state_list = []  # for status list
+        self.smach_state_list = None  # for status list
         self.sender_address = "tsukamoto@jsk.imi.i.u-tokyo.ac.jp"
         self.receiver_address = "tsukamoto@jsk.imi.i.u-tokyo.ac.jp"
 
@@ -46,46 +46,51 @@ class SmachToMail():
             rospy.logerr("please check your program execute smach with (exec-state-machine (sm) '((description . "")(image . "")))")
 
         rospy.loginfo("- status -> {}".format(status_str))
+        rospy.loginfo("- info_str -> {}".format(info_str))
         if local_data_str.has_key('DESCRIPTION'):
             rospy.loginfo("- description_str -> {}".format(local_data_str['DESCRIPTION']))
         else:
             rospy.logwarn("smach does not have DESCRIPTION, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
-
-        if status_str == "START" or "INIT":
-            self.smach_state_list = []
         if local_data_str.has_key('IMAGE') and local_data_str['IMAGE']:
-            imgmsg = CompressedImage()
-            imgmsg.deserialize(base64.b64decode(local_data_str['IMAGE']))
-            cv_image = self.bridge.compressed_imgmsg_to_cv2(imgmsg, "bgr8")
-            rospy.logerr(
-                "cv image type:{}".format(imghdr.what(None, cv_image)))  # for debugging
-            dt_now = datetime.datetime.now()   # header should be used??
+            rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
 
-            file_path = "/tmp/{}_{}.jpg".format(
-                status_str.lower(), dt_now.strftime('%y%m%d%H%M%S'))
-            rospy.loginfo("- filepath:{}".format(file_path))
-            # if (next((x for x in self.smach_state_list if x["IMAGE"] == file_path), None)):
-            #     rospy.loginfo("same file name!!!!")
-            # else:
-            #     rospy.loginfo("not same file name!!!")
-            cv2.imwrite(file_path, cv_image)
-            # cv2.imshow("Image", input_image)
-            cv2.waitKey(2)
-        else:
-            file_path = ""
+        if status_str in ["START", "INIT"]:
+            self.smach_state_list = []
+            # DESCRIPTION of START is MAIL SUBJECT
+            if local_data_str.has_key('DESCRIPTION'):
+                self.smach_state_subject = local_data_str['DESCRIPTION']
+                del local_data_str['DESCRIPTION']
+            else:
+                self.smach_state_subject = None
 
         status_dict = {}
         if local_data_str.has_key('DESCRIPTION'):
             status_dict.update({'DESCRIPTION': local_data_str['DESCRIPTION']})
-        if file_path != "":
-            status_dict.update({'IMAGE': file_path})  # dict is complicated?
 
-        self.smach_state_list.append(status_dict)
-        rospy.loginfo("- info_str -> {}".format(info_str))
+        if local_data_str.has_key('IMAGE') and local_data_str['IMAGE']:
+            imgmsg = CompressedImage()
+            imgmsg.deserialize(base64.b64decode(local_data_str['IMAGE']))
+            cv_image = self.bridge.compressed_imgmsg_to_cv2(imgmsg, "bgr8")
+            scale_percent = 640.0 / cv_image.shape[1] * 100.0
+            width = int(cv_image.shape[1] * scale_percent / 100)
+            height = int(cv_image.shape[0] * scale_percent / 100)
+            dim = (width, height)
+            cv_image = cv2.resize(cv_image, dim, interpolation = cv2.INTER_AREA)
+            status_dict.update({'IMAGE': base64.b64encode(cv2.imencode('.jpg', cv_image)[1].tostring())})  # dict is complicated?
+
+        if self.smach_state_list == None:
+            rospy.logwarn("received {}, but we did not find START node".format(status_dict))
+        else:
+            self.smach_state_list.append(status_dict)
 
         if status_str in ["END", "FINISH"]:
-            rospy.loginfo("END!!")
-            self._send_mail()
+            if self.smach_state_list == None:
+                rospy.logwarn("received END node, but we did not find START node")
+                rospy.logwarn("failed to send {}".format(status_dict))
+            else:
+                rospy.loginfo("END!!")
+                self._send_mail()
+                self.smach_state_list = None
 
     def _send_mail(self):
         email_msg = Email()
@@ -94,27 +99,31 @@ class SmachToMail():
         changeline.type = 'html'
         changeline.message = "<br>"
         for x in self.smach_state_list:
-            description = EmailBody()
-            image = EmailBody()
-            description.type = 'text'
             if x.has_key('DESCRIPTION'):
+                description = EmailBody()
+                description.type = 'text'
                 description.message = x['DESCRIPTION']
-            email_msg.body.append(description)
-            email_msg.body.append(changeline)
+                email_msg.body.append(description)
+                email_msg.body.append(changeline)
             if x.has_key('IMAGE') and x['IMAGE']:
+                image = EmailBody()
                 image.type = 'img'
-                image.img_size = 50
-                image.file_path = x['IMAGE']
+                image.img_size = 100
+                image.img_data = x['IMAGE']
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
-        rospy.loginfo("body:{}".format(email_msg.body))
+        # rospy.loginfo("body:{}".format(email_msg.body))
 
-        email_msg.subject = 'Smach mail test'
+        if self.smach_state_subject:
+            email_msg.subject = self.smach_state_subject
+        else:
+            email_msg.subject = 'Message from {}'.format(rospy.get_param('/robot/name', 'robot'))
 
         email_msg.sender_address = self.sender_address
         email_msg.receiver_address = self.receiver_address
 
-        time.sleep(1)
+        rospy.loginfo("send '{}' email to {}".format(email_msg.subject, email_msg.receiver_address))
+
         self.pub.publish(email_msg)
 
 
