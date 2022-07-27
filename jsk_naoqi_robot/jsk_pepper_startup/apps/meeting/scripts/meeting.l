@@ -111,7 +111,7 @@
     (send *ri* :set-background-movement-enabled t)
     ;;
     (setq *count* 1)
-    (set-alist 'description "Start Meeting" args)
+    (set-alist 'description "" args)
     :started))
 
 (defun end-func (args)
@@ -132,6 +132,9 @@
 
 (defun comment-func (args)
   (let (count str (wait 600) tm)
+    ;; cleanup description/image
+    (set-alist 'description "" args)
+    (set-alist 'image "" args)
     (ros::ros-info "comment func, *count* = ~A" *count*)
     (setq *last-tm* (ros::time-now))
     ;; wait for 600 sec OR if someone set *coutinue* nil, return with :finished
@@ -195,10 +198,22 @@
 (objects (list *pepper*))
 
 ;;
+(setq *image* nil)
 (defun image_cb (msg)
   (setq *image* msg))
-(ros::subscribe "/pepper_robot/camera/front/image_raw" sensor_msgs::Image #'image_cb)
+(ros::subscribe "/pepper_robot/camera/front/image_rect_color/compressed" sensor_msgs::CompressedImage #'image_cb)
+
+;; this does not work...
+;; (unix:signal unix::sigint '(lambda-closure nil 0 0 (sig code) (setq *continue* nil)))
+
+;; https://github.com/jsk-ros-pkg/jsk_roseus/pull/717
+;; did not work, when we subscribe image data ???
+
+(defun ros::roseus-sigint-handler (sig code)
+  (ros::ros-warn (format nil "ros::roseus-sigint-handler ~A" sig))
+  (setq *continue* nil))
+(unix:signal unix::sigint 'ros::roseus-sigint-handler)
 
 ;; state machine
-(exec-state-machine (meeting-sm) '((description . "")(image . "")))
+(exec-state-machine (meeting-sm) '((description . "研究会に参加しました！")(image . "")))
 (exit)
