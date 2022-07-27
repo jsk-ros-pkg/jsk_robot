@@ -28,7 +28,6 @@ libtoolize
 autoconf
 ./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
-# Can be compiled safely with j1.
 EST="../speech_tools" make -j1 all
 
 cp src/main/festival src/main/festival_client bin/text2wave /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin/

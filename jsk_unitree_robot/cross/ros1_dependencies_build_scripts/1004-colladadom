@@ -27,4 +27,4 @@ cmake \
   -DOPT_DOUBLE_PRECISION=ON \
   ${SOURCE_DIR}
 
-make -j${JSK_UNITREE_COMPILE_PARALLEL:-4} install
+make -j4 install

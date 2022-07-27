@@ -30,7 +30,6 @@ export PROJECT_MAJOR_VERSION=2
 
 ./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
-# Can be compiled safely with j1.
 make -j1 PULSEAUDIO=none
 
 cp lib/*.a    /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib

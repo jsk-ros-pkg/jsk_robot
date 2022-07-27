@@ -23,4 +23,4 @@ cmake \
   -DASSIMP_ENABLE_BOOST_WORKAROUND=OFF \
   ${SOURCE_DIR}
 
-make -j${JSK_UNITREE_COMPILE_PARALLEL:-4} install
+make -j4 install
