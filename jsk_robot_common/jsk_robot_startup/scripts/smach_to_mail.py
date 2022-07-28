@@ -7,6 +7,7 @@ import imghdr
 import pickle
 import rospy
 import time
+import sys
 
 from cv_bridge import CvBridge
 from jsk_robot_startup.msg import Email
