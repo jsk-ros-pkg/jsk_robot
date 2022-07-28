@@ -17,6 +17,8 @@ docker run -it --rm \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
   -v ${HOST_INSTALL_ROOT}/system_setup.bash:/opt/jsk/${INSTALL_ROOT}/system_setup.bash:ro \
+  -v ${HOST_INSTALL_ROOT}/sitecustomize.py:/usr/lib/python2.7/sitecustomize.py:ro \
+  -v ${HOST_INSTALL_ROOT}/sitecustomize.py:/usr/lib/python3.6/sitecustomize.py:ro \
   -v ${PWD}/${SOURCE_ROOT}:/opt/jsk/User:rw \
   ros1-unitree:${TARGET_MACHINE} \
   bash -c "echo 'source /opt/jsk/User/user_setup.bash; env; cd /opt/jsk/User' > ~/.bashrc; exec \"\$0\""
