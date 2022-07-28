@@ -14,9 +14,9 @@ $ sudo usermod -aG docker $USER
 $ newgrp
 ```
 
-2. Install Qemu software
+2. Install Qemu software and other prerequisites
 ```
-$ sudo apt install -y qemu-user-static
+$ sudo apt install -y qemu-user-static sshpass python-vcstool
 ```
 
 ### Build ROS System on Docker  (Run only the fist time per host computer)
