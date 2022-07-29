@@ -54,6 +54,8 @@ function copy_data () {
     fi
 
     # Check if robot is reachable
+    # Use perl instead of `grep -Po '[0-9]{1,3}(?=% packet loss)'` for Mac environment.
+    # See https://stackoverflow.com/questions/16658333/grep-p-no-longer-works-how-can-i-rewrite-my-searches/16658690#16658690
     reachability=$(ping -c4 ${hostname} 2>/dev/null | awk '/---/,0' | perl -nle'print $& while m{[0-9]{1,3}(?=% packet loss)}g')
     if [ -z "$reachability" ] || [ "$reachability" == 100 ]; then
         echo "ERROR: ${hostname} unreachable" 1>&2
