@@ -25,11 +25,10 @@ repositories:
     # https://github.com/PR2/app_manager/pull/59
   google_chat_ros:
     type: git
-    url: https://github.com/iory/jsk_3rdparty
+    url: https://github.com/mqcmd196/jsk_3rdparty
     version: google_chat_ros
     # Support Google Chat API.
     # https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/323
-    # To support aarch64, used the following branch. https://github.com/mqcmd196/jsk_3rdparty/pull/2
   catkin_virtualenv:
     type: git
     url: https://github.com/iory/catkin_virtualenv
