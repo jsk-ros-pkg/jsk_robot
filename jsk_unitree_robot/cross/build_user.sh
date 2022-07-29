@@ -37,6 +37,10 @@ done
 # add unitree repos
 [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import ${SOURCE_ROOT}/src < repos/unitree.repos
 
+# check if /proc/sys/fs/binfmt_misc/qemu-* is updated
+# See https://github.com/k-okada/jsk_robot/issues/61
+docker run -it --rm ros1-unitree:${TARGET_MACHINE} bash -c 'exit' ||  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
 # run on docker
 docker run -it --rm \
   -u $(id -u $USER) \
