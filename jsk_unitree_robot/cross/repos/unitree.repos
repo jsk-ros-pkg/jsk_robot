@@ -32,8 +32,13 @@ repositories:
   catkin_virtualenv:
     type: git
     url: https://github.com/iory/catkin_virtualenv
-    version: avoid-catkin_run_tests_target
+    version: unitree
     # At current, if we do a catkin build with CATKIN_ENABLE_TESTING=FALSE,
     # we get the error 'Unknown CMake command "catkin_run_tests_target"'
     # when calling catkin_generate_virtualenv. The following PR fixes this error.
     # https://github.com/locusrobotics/catkin_virtualenv/pull/89
+    #
+    # Some python environments may not have ensurepip installed.
+    # Also, some users may not be able to use sudo apt install to install python3-venv (sudo command), etc.
+    # The following PR will enable catkin_virtualenv in environments without ensurepip by doing get-pip.py within venv.
+    # https://github.com/locusrobotics/catkin_virtualenv/pull/90
