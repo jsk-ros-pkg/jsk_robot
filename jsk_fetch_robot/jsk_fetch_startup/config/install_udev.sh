@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 99-edgetpu-accelerator.rules and 99-realsense-libusb.rules are not tracked in jsk_fetch_startup
+# because they are installed by apt
+
 jsk_fetch_startup=$(builtin cd "`dirname "${BASH_SOURCE[0]}"`"/.. > /dev/null && pwd)
 
 cd $jsk_fetch_startup/udev_rules
