@@ -120,6 +120,7 @@ function copy_data () {
         if [[ "${hostname}" == "192.168.123.161" ]]; then
             sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
             sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/sysctl.conf /etc/sysctl.conf"
+            sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/iptables.ipv4.nat /etc/iptables.ipv4.nat"
             sshpass -p $PASS ssh -t ${user}@${hostname} "sudo systemctl restart dhcpcd"
         fi
     fi
