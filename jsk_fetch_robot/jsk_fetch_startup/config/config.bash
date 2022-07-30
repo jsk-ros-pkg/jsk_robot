@@ -41,8 +41,6 @@ elif [ $(hostname) = 'fetch1075' ]; then
   # Use L515 after finding a way to reduce L515 CPU usage like ConnectionBasedTransport
   export RS_SERIAL_NO_L515_HEAD="f0232270";
   #export RS_SERIAL_NO_L515_HEAD="";
-  # Currently, fetch1075 uses USB 2 for L515, so high resolution mode is not available.
-  export L515_HIGH_RESOLUTION=false;
 
   export NETWORK_DEFAULT_WIFI_INTERFACE="wlan1";
   export NETWORK_DEFAULT_ROS_INTERFACE="fetch1075";
