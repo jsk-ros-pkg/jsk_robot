@@ -69,7 +69,6 @@
       <arg name="tf_prefix"             value="d435_front_right"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
-      <arg name="filters"               value="pointcloud"/>
       <arg name="color_width"           value="640"/>
       <arg name="color_height"          value="480"/>
       <arg name="depth_width"           value="640"/>
@@ -86,7 +85,6 @@
       <arg name="tf_prefix"             value="d435_front_left"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
-      <arg name="filters"               value="pointcloud"/>
       <arg name="color_width"           value="640"/>
       <arg name="color_height"          value="480"/>
       <arg name="depth_width"           value="640"/>
@@ -103,7 +101,6 @@
       <arg name="tf_prefix"             value="l515_head"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
-      <arg name="filters"               value="pointcloud"/>
       <arg name="color_width"           value="$(arg l515_color_width)"/>
       <arg name="color_height"          value="$(arg l515_color_height)"/>
       <arg name="depth_width"           value="$(arg l515_depth_width)"/>
