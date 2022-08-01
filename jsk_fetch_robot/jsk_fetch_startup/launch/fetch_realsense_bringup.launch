@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="respawn" default="true" />
+  <arg name="manager" default="realsense2_camera_manager" />
 
   <arg name="RS_SERIAL_NO_T265" default="" />
   <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="" />
@@ -19,6 +20,11 @@
   <arg name="l515_color_height" default="480" unless="$(arg l515_high_resolution)" />
   <arg name="l515_depth_width" default="320" unless="$(arg l515_high_resolution)" />
   <arg name="l515_depth_height" default="240" unless="$(arg l515_high_resolution)" />
+
+  <!-- Args for depth registration and pointcloud -->
+  <arg name="rgb"                             default="color" />
+  <arg name="depth_registered_pub"            default="depth_registered" />
+  <arg name="depth_registered"                default="aligned_depth_to_color" />
 
   <!-- t265 -->
   <group ns="t265" if="$(eval arg('RS_SERIAL_NO_T265') != '')">
@@ -94,6 +100,8 @@
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
+
+  <!-- L515 -->
   <group ns="l515_head" if="$(eval arg('RS_SERIAL_NO_L515_HEAD') != '')">
     <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
       <arg name="device_type"           value="l515"/>
@@ -115,6 +123,26 @@
         /l515_head/l500_depth_sensor/global_time_enabled: true
         /l515_head/rgb_camera/global_time_enabled: true
     </rosparam>
+    <!-- Create pointcloud with throttled RGB and depth image to reduce CPU usage -->
+    <!--
+        This launch file is copied from realsense2_camera in realsense_ros https://github.com/IntelRealSense/realsense-ros and then modified
+        And it is originally distributed under Apache-2.0 License
+    -->
+    <!-- Create rectified image -->
+    <include file="$(find rgbd_launch)/launch/includes/rgb.launch.xml">
+      <arg name="manager"                       value="/l515_head/$(arg manager)" />
+      <arg name="respawn"                       value="$(arg respawn)" />
+      <arg name="rgb"                           value="$(arg rgb)" />
+      <arg name="debayer_processing"            value="false" />
+    </include>
+    <!-- Publish registered XYZRGB point cloud with hardware registered input (ROS Realsense depth alignment) -->
+    <node pkg="nodelet" type="nodelet" name="points_xyzrgb_hw_registered"
+          args="load depth_image_proc/point_cloud_xyzrgb /l515_head/$(arg manager)" respawn="$(arg respawn)">
+      <remap from="rgb/image_rect_color"        to="$(arg rgb)/image_rect_color"        />
+      <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info"             />
+      <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"  />
+      <remap from="depth_registered/points"     to="$(arg depth_registered_pub)/points" />
+    </node>
   </group>
 
 </launch>
