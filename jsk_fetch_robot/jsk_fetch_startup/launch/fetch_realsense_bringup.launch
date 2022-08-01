@@ -25,6 +25,8 @@
   <arg name="rgb"                             default="color" />
   <arg name="depth_registered_pub"            default="depth_registered" />
   <arg name="depth_registered"                default="aligned_depth_to_color" />
+  <arg name="throttle_l515_points"            default="true" doc="Use throttled rgb and depth images to create pointcloud" />
+  <arg name="throttled_rate"                  default="5.0" doc="Rate [Hz] to publish L515 pointcloud" />
 
   <!-- t265 -->
   <group ns="t265" if="$(eval arg('RS_SERIAL_NO_T265') != '')">
@@ -135,12 +137,49 @@
       <arg name="rgb"                           value="$(arg rgb)" />
       <arg name="debayer_processing"            value="false" />
     </include>
+    <group if="$(arg throttle_l515_points)">
+      <group ns="$(arg rgb)">
+        <!-- Throttle RGB images -->
+        <node name="throttle_image"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+              respawn="true">
+          <remap from="~input" to="image_rect_color" />
+          <remap from="~output" to="throttled/image_rect_color" />
+          <param name="update_rate" value="$(arg throttled_rate)" />
+        </node>
+        <!-- Throttle camera info -->
+        <node name="throttle_camera_info"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+              respawn="true">
+          <remap from="~input" to="camera_info" />
+          <remap from="~output" to="throttled/camera_info" />
+          <param name="update_rate" value="$(arg throttled_rate)" />
+        </node>
+      </group>
+      <group ns="$(arg depth_registered)">
+        <!-- Throttle depth images -->
+        <node name="throttle_image"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+              respawn="true">
+          <remap from="~input" to="image_raw" />
+          <remap from="~output" to="throttled/image_raw" />
+          <param name="update_rate" value="$(arg throttled_rate)" />
+        </node>
+      </group>
+    </group>
     <!-- Publish registered XYZRGB point cloud with hardware registered input (ROS Realsense depth alignment) -->
+    <!-- The output topic name is always /l515_head/depth_registered/points regardless of throttle option -->
     <node pkg="nodelet" type="nodelet" name="points_xyzrgb_hw_registered"
           args="load depth_image_proc/point_cloud_xyzrgb /l515_head/$(arg manager)" respawn="$(arg respawn)">
-      <remap from="rgb/image_rect_color"        to="$(arg rgb)/image_rect_color"        />
-      <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info"             />
-      <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"  />
+      <remap from="rgb/image_rect_color"        to="$(arg rgb)/throttled/image_rect_color"        if="$(arg throttle_l515_points)" />
+      <remap from="rgb/image_rect_color"        to="$(arg rgb)/image_rect_color"                  unless="$(arg throttle_l515_points)" />
+      <remap from="rgb/camera_info"             to="$(arg rgb)/throttled/camera_info"             if="$(arg throttle_l515_points)" />
+      <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info"                       unless="$(arg throttle_l515_points)" />
+      <remap from="depth_registered/image_rect" to="$(arg depth_registered)/throttled/image_raw"  if="$(arg throttle_l515_points)" />
+      <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"            unless="$(arg throttle_l515_points)" />
       <remap from="depth_registered/points"     to="$(arg depth_registered_pub)/points" />
     </node>
   </group>
