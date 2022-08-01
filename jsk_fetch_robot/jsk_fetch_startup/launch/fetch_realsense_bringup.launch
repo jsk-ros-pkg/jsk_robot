@@ -184,6 +184,17 @@
         <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"            unless="$(arg throttle_l515_points)" />
         <remap from="depth_registered/points"     to="$(arg depth_registered_pub)/points" />
       </node>
+      <node name="resize_cloud"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/ResizePointsPublisher /l515_head/$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="$(arg depth_registered_pub)/points" />
+        <remap from="~output" to="$(arg depth_registered_pub)/quater/points" />
+        <rosparam>
+          step_x: 4
+          step_y: 4
+        </rosparam>
+      </node>
     </group>
   </group>
 
