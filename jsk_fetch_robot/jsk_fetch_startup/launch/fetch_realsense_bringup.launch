@@ -22,6 +22,7 @@
   <arg name="l515_depth_height" default="240" unless="$(arg l515_high_resolution)" />
 
   <!-- Args for depth registration and pointcloud -->
+  <arg name="enable_pointcloud"               default="true" doc="If false, L515 pointcloud is not created and published" />
   <arg name="rgb"                             default="color" />
   <arg name="depth_registered_pub"            default="depth_registered" />
   <arg name="depth_registered"                default="aligned_depth_to_color" />
@@ -82,7 +83,7 @@
       <arg name="depth_width"           value="640"/>
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
-      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="enable_pointcloud"     value="$(arg enable_pointcloud)"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
@@ -98,7 +99,7 @@
       <arg name="depth_width"           value="640"/>
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
-      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="enable_pointcloud"     value="$(arg enable_pointcloud)"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
@@ -130,58 +131,60 @@
         This launch file is copied from realsense2_camera in realsense_ros https://github.com/IntelRealSense/realsense-ros and then modified
         And it is originally distributed under Apache-2.0 License
     -->
-    <!-- Create rectified image -->
-    <include file="$(find rgbd_launch)/launch/includes/rgb.launch.xml">
-      <arg name="manager"                       value="/l515_head/$(arg manager)" />
-      <arg name="respawn"                       value="$(arg respawn)" />
-      <arg name="rgb"                           value="$(arg rgb)" />
-      <arg name="debayer_processing"            value="false" />
-    </include>
-    <group if="$(arg throttle_l515_points)">
-      <group ns="$(arg rgb)">
-        <!-- Throttle RGB images -->
-        <node name="throttle_image"
-              pkg="nodelet" type="nodelet"
-              args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
-              respawn="true">
-          <remap from="~input" to="image_rect_color" />
-          <remap from="~output" to="throttled/image_rect_color" />
-          <param name="update_rate" value="$(arg throttled_rate)" />
-        </node>
-        <!-- Throttle camera info -->
-        <node name="throttle_camera_info"
-              pkg="nodelet" type="nodelet"
-              args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
-              respawn="true">
-          <remap from="~input" to="camera_info" />
-          <remap from="~output" to="throttled/camera_info" />
-          <param name="update_rate" value="$(arg throttled_rate)" />
-        </node>
+    <group if="$(arg enable_pointcloud)">
+      <!-- Create rectified image -->
+      <include file="$(find rgbd_launch)/launch/includes/rgb.launch.xml">
+        <arg name="manager"                       value="/l515_head/$(arg manager)" />
+        <arg name="respawn"                       value="$(arg respawn)" />
+        <arg name="rgb"                           value="$(arg rgb)" />
+        <arg name="debayer_processing"            value="false" />
+      </include>
+      <group if="$(arg throttle_l515_points)">
+        <group ns="$(arg rgb)">
+          <!-- Throttle RGB images -->
+          <node name="throttle_image"
+                pkg="nodelet" type="nodelet"
+                args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+                respawn="true">
+            <remap from="~input" to="image_rect_color" />
+            <remap from="~output" to="throttled/image_rect_color" />
+            <param name="update_rate" value="$(arg throttled_rate)" />
+          </node>
+          <!-- Throttle camera info -->
+          <node name="throttle_camera_info"
+                pkg="nodelet" type="nodelet"
+                args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+                respawn="true">
+            <remap from="~input" to="camera_info" />
+            <remap from="~output" to="throttled/camera_info" />
+            <param name="update_rate" value="$(arg throttled_rate)" />
+          </node>
+        </group>
+        <group ns="$(arg depth_registered)">
+          <!-- Throttle depth images -->
+          <node name="throttle_image"
+                pkg="nodelet" type="nodelet"
+                args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+                respawn="true">
+            <remap from="~input" to="image_raw" />
+            <remap from="~output" to="throttled/image_raw" />
+            <param name="update_rate" value="$(arg throttled_rate)" />
+          </node>
+        </group>
       </group>
-      <group ns="$(arg depth_registered)">
-        <!-- Throttle depth images -->
-        <node name="throttle_image"
-              pkg="nodelet" type="nodelet"
-              args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
-              respawn="true">
-          <remap from="~input" to="image_raw" />
-          <remap from="~output" to="throttled/image_raw" />
-          <param name="update_rate" value="$(arg throttled_rate)" />
-        </node>
-      </group>
+      <!-- Publish registered XYZRGB point cloud with hardware registered input (ROS Realsense depth alignment) -->
+      <!-- The output topic name is always /l515_head/depth_registered/points regardless of throttle option -->
+      <node pkg="nodelet" type="nodelet" name="points_xyzrgb_hw_registered"
+            args="load depth_image_proc/point_cloud_xyzrgb /l515_head/$(arg manager)" respawn="$(arg respawn)">
+        <remap from="rgb/image_rect_color"        to="$(arg rgb)/throttled/image_rect_color"        if="$(arg throttle_l515_points)" />
+        <remap from="rgb/image_rect_color"        to="$(arg rgb)/image_rect_color"                  unless="$(arg throttle_l515_points)" />
+        <remap from="rgb/camera_info"             to="$(arg rgb)/throttled/camera_info"             if="$(arg throttle_l515_points)" />
+        <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info"                       unless="$(arg throttle_l515_points)" />
+        <remap from="depth_registered/image_rect" to="$(arg depth_registered)/throttled/image_raw"  if="$(arg throttle_l515_points)" />
+        <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"            unless="$(arg throttle_l515_points)" />
+        <remap from="depth_registered/points"     to="$(arg depth_registered_pub)/points" />
+      </node>
     </group>
-    <!-- Publish registered XYZRGB point cloud with hardware registered input (ROS Realsense depth alignment) -->
-    <!-- The output topic name is always /l515_head/depth_registered/points regardless of throttle option -->
-    <node pkg="nodelet" type="nodelet" name="points_xyzrgb_hw_registered"
-          args="load depth_image_proc/point_cloud_xyzrgb /l515_head/$(arg manager)" respawn="$(arg respawn)">
-      <remap from="rgb/image_rect_color"        to="$(arg rgb)/throttled/image_rect_color"        if="$(arg throttle_l515_points)" />
-      <remap from="rgb/image_rect_color"        to="$(arg rgb)/image_rect_color"                  unless="$(arg throttle_l515_points)" />
-      <remap from="rgb/camera_info"             to="$(arg rgb)/throttled/camera_info"             if="$(arg throttle_l515_points)" />
-      <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info"                       unless="$(arg throttle_l515_points)" />
-      <remap from="depth_registered/image_rect" to="$(arg depth_registered)/throttled/image_raw"  if="$(arg throttle_l515_points)" />
-      <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"            unless="$(arg throttle_l515_points)" />
-      <remap from="depth_registered/points"     to="$(arg depth_registered_pub)/points" />
-    </node>
   </group>
 
 </launch>
