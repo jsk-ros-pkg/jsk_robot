@@ -42,6 +42,7 @@
       <arg name="RS_SERIAL_NO_D435_FRONTLEFT" value="$(arg RS_SERIAL_NO_D435_FRONTLEFT)" />
       <arg name="RS_SERIAL_NO_L515_HEAD" value="$(arg RS_SERIAL_NO_L515_HEAD)" />
       <arg name="l515_high_resolution" value="$(arg l515_high_resolution)" />
+      <arg name="enable_pointcloud" value="true" />
   </include>
 
   <!-- Odometry -->
