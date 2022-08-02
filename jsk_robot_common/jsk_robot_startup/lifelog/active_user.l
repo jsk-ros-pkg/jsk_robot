@@ -123,7 +123,7 @@
       (setq *user-name* tname))))
 (unless (and (boundp '*user-name*) *user-name*)
   (unix::system
-   (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt"
+   (format nil "getent passwd `whoami` | cut -d ':' -f 1 > /tmp/username_~d.txt"
            (unix::getpid)))
   (warn "Get PID ~A" (unix::getpid))
   (with-open-file
