@@ -115,7 +115,7 @@
   (simple-dock))
 
 
-(defun undock ()
+(defun undock (&key (rotate-in-place nil))
   (unless *undock-action*
     (setq *undock-action*
           (instance ros::simple-action-client :init
@@ -124,7 +124,8 @@
     (ros::ros-error "/undock action server is not started")
     (return-from undock nil))
   (send *undock-action* :send-goal
-        (instance fetch_auto_dock_msgs::UndockActionGoal :init))
+        (instance fetch_auto_dock_msgs::UndockActionGoal :init
+                  :goal (instance fetch_auto_dock_msgs::UndockGoal :rotate_in_place rotate-in-place)))
   (unless (send *undock-action* :wait-for-result :timeout 60)
     (ros::ros-error "No result returned from /undock action server")
     (return-from undock nil))
@@ -167,10 +168,7 @@ Args:
             (return-from go-to-spot-undock t))
           (if (equal battery-charging-state :charging)
             (progn
-              (setq undock-success (auto-undock :n-trial 3))
-              ;; rotate after undock
-              (if (and undock-success undock-rotate)
-                (send *ri* :go-pos-unsafe 0 0 180)))
+              (setq undock-success (auto-undock :n-trial 3 :rotate-in-place undock-rotate)))
             (return-from go-to-spot-undock t))
           (if (not undock-success)
             (progn
@@ -200,14 +198,14 @@ Args:
     success))
 
 
-(defun auto-undock (&key (n-trial 1))
+(defun auto-undock (&key (n-trial 1) (rotate-in-place nil))
   (let ((success nil))
     (unless (boundp '*ri*)
       (require :fetch-interface "package://fetcheus/fetch-interface.l")
       (fetch-init))
     (dotimes (i n-trial)
       (ros::ros-info "trying to do undock.")
-      (setq success (undock))
+      (setq success (undock :rotate-in-place rotate-in-place))
       (when success (return-from auto-undock success)))
     (if (not success)
       (let ((enable-request (instance power_msgs::BreakerCommandRequest :init :enable t))

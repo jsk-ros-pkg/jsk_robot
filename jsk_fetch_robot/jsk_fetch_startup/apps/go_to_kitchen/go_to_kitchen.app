@@ -3,6 +3,7 @@ platform: fetch
 launch: jsk_fetch_startup/go_to_kitchen.xml
 interface: jsk_fetch_startup/go_to_kitchen.interface
 icon: jsk_fetch_startup/go_to_kitchen.png
+timeout: 1200
 plugins:
   - name: service_notification_saver_plugin
     type: app_notification_saver/service_notification_saver
@@ -24,12 +25,20 @@ plugins:
       video_framerate: 30
       video_encoding: RGB
   - name: object_detection_video_recorder_plugin
-    type: app_recorder/video_recorder_plugin
+    type: app_recorder/audio_video_recorder_plugin
     launch_args:
       video_path: /tmp
       video_title: go_to_kitchen_object_detection.avi
-      video_topic_name: /edgetpu_object_detector_visualization/output
-      video_fps: 5.0
+      audio_topic_name: /audio
+      audio_channels: 1
+      audio_sample_rate: 16000
+      audio_format: wave
+      audio_sample_format: S16LE
+      video_topic_name: /edgetpu_object_detector/output/image
+      video_height: 480
+      video_width: 640
+      video_framerate: 10
+      video_encoding: RGB
   - name: panorama_video_recorder_plugin
     type: app_recorder/video_recorder_plugin
     launch_args:
@@ -37,6 +46,13 @@ plugins:
       video_title: go_to_kitchen_panorama.avi
       video_topic_name: /dual_fisheye_to_panorama/output
       video_fps: 1.0
+  - name: rviz_video_recorder_plugin
+    type: app_recorder/video_recorder_plugin
+    launch_args:
+      video_path: /tmp
+      video_title: go_to_kitchen_rviz.avi
+      video_topic_name: /rviz/image
+      video_fps: 30.0
   - name: respeaker_audio_recorder_plugin
     type: app_recorder/audio_recorder_plugin
     launch_args:
@@ -74,6 +90,9 @@ plugins:
         - /head_camera/depth_registered/throttled/camera_info
         - /head_camera/rgb/throttled/image_rect_color/compressed
         - /head_camera/depth_registered/throttled/image_rect/compressedDepth
+        - /server_name/smach/container_init
+        - /server_name/smach/container_status
+        - /server_name/smach/container_structure
         - /audio
         - /rviz/throttled/image/compressed
   - name: result_recorder_plugin
@@ -89,6 +108,7 @@ plugins:
         - /tmp/go_to_kitchen_head_camera.avi
         - /tmp/go_to_kitchen_object_detection.avi
         - /tmp/go_to_kitchen_panorama.avi
+        - /tmp/go_to_kitchen_rviz.avi
         - /tmp/go_to_kitchen_audio.wav
         - /tmp/go_to_kitchen_rosbag.bag
       upload_file_titles:
@@ -96,10 +116,18 @@ plugins:
         - go_to_kitchen_head_camera.avi
         - go_to_kitchen_object_detection.avi
         - go_to_kitchen_panorama.avi
+        - go_to_kitchen_rviz.avi
         - go_to_kitchen_audio.wav
         - go_to_kitchen_rosbag.bag
       upload_parents_path: fetch_go_to_kitchen
       upload_server_name: /gdrive_server
+  - name: tweet_notifier_plugin
+    type: app_notifier/tweet_notifier_plugin
+    plugin_args:
+      client_name: /tweet_image_server/tweet
+      image: true
+      image_topic_name: /edgetpu_object_detector/output/image
+      warning: false
   - name: speech_notifier_plugin
     type: app_notifier/speech_notifier_plugin
     plugin_args:
@@ -135,10 +163,12 @@ plugin_order:
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
     - panorama_video_recorder_plugin
+    - rviz_video_recorder_plugin
     - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - result_recorder_plugin
     - gdrive_uploader_plugin
+    - tweet_notifier_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
     - shutdown_plugin
@@ -149,10 +179,12 @@ plugin_order:
     - head_camera_video_recorder_plugin
     - object_detection_video_recorder_plugin
     - panorama_video_recorder_plugin
+    - rviz_video_recorder_plugin
     - respeaker_audio_recorder_plugin
     - rosbag_recorder_plugin
     - result_recorder_plugin
     - gdrive_uploader_plugin
+    - tweet_notifier_plugin
     - speech_notifier_plugin
     - mail_notifier_plugin
     - shutdown_plugin
