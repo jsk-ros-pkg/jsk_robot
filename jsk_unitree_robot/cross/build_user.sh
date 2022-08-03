@@ -41,9 +41,18 @@ done
 # See https://github.com/k-okada/jsk_robot/issues/61
 docker run -it --rm ros1-unitree:${TARGET_MACHINE} bash -c 'exit' ||  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
+case ${OSTYPE} in
+    linux*)
+        OPTIONS="-u $(id -u $USER)"
+        ;;
+    darwin*)
+        OPTIONS=""
+        ;;
+esac
+
 # run on docker
 docker run -it --rm \
-  -u $(id -u $USER) \
+  ${OPTIONS} \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/Python:/opt/jsk/${INSTALL_ROOT}/Python:ro \

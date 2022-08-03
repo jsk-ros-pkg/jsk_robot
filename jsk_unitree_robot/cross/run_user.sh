@@ -7,10 +7,19 @@ SOURCE_ROOT=${TARGET_MACHINE}_User
 
 set -xeuf -o pipefail
 
+case ${OSTYPE} in
+    linux*)
+        OPTIONS="-u $(id -u $USER)"
+        ;;
+    darwin*)
+        OPTIONS=""
+        ;;
+esac
+
 #  -v ${PWD}/${TARGET_MACHINE}_ws_system:/home/user/${TARGET_MACHINE}_ws_system:rw \
 # run on docker
 docker run -it --rm \
-  -u $(id -u $USER) \
+  ${OPTIONS} \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/Python:/opt/jsk/${INSTALL_ROOT}/Python:ro \
