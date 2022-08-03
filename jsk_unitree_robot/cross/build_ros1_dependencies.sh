@@ -27,8 +27,17 @@ mkdir -p ${HOST_INSTALL_ROOT}/Python
 cp repos/go1_requirements.txt ${SOURCE_ROOT}/go1_requirements.txt
 cp repos/go1_requirements_python3.txt ${SOURCE_ROOT}/go1_requirements_python3.txt
 
+case ${OSTYPE} in
+    linux*)
+        OPTIONS="-u $(id -u $USER)"
+    ;;
+    darwin*)
+        OPTIONS=""
+    ;;
+esac
+
 docker run -it --rm \
-  -u $(id -u $USER) \
+  ${OPTIONS} \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${PWD}/ros1_dependencies_build_scripts:/home/user/ros1_dependencies_build_scripts:ro \
@@ -45,7 +54,6 @@ docker run -it --rm \
     done && \
     pip3 install -U --user pip && \
     pip install -U --user pip && \
-    export PYTHONPATH=\"/opt/jsk/System/ros1_dependencies/lib/python2.7/site-packages\" && \
     export PKG_CONFIG_PATH=\"/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig\" && \
     ~/.local/bin/pip install --prefix=/opt/jsk/${INSTALL_ROOT}/Python -r /home/user/ros1_dependencies_sources/go1_requirements.txt && \
     PYTHONPATH= ~/.local/bin/pip3 install --prefix=/opt/jsk/${INSTALL_ROOT}/Python -r /home/user/ros1_dependencies_sources/go1_requirements_python3.txt \
