@@ -1,0 +1,22 @@
+<launch>
+  <arg name="google_chat_credentials_json" default="/var/lib/robot/dialogflow/sparky-pdse-c8cd9692a84f.json" />
+  <arg name="dialogflow_credentials_json" default="/var/lib/robot/dialogflow/facialexpression-rpwe-01533d0109c5.json" />
+
+  <!-- Google Chat ROS -->
+  <include file="$(find google_chat_ros)/launch/google_chat.launch">
+    <arg name="receiving_mode" value="pubsub" />
+    <arg name="project_id" value="sparky-pdse" />
+    <arg name="subscription_id" value="chat-sub" />
+    <arg name="respawn" value="true" />
+    <arg name="google_cloud_credentials_json" value="$(arg google_chat_credentials_json)"/>
+    <arg name="to_dialogflow_client" value="true" />
+  </include>
+
+  <!-- Dialogflow Client ROS -->
+  <include file="$(find dialogflow_task_executive)/launch/dialogflow_ros.launch">
+    <arg name="credential" value="$(arg dialogflow_credentials_json)" />
+    <arg name="project_id" value="facialexpression-rpwe" />
+    <arg name="enable_hotword" value="false" />
+  </include>
+
+</launch>

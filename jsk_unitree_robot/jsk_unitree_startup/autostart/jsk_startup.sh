@@ -30,6 +30,7 @@ if [ "$ROS_IP" == "192.168.123.14" ];then
     while ! eval rostopic info /robotsound 2$toStartlog; do sleep 2; done
     sleep 2 # wait for a while...
     roslaunch jsk_unitree_startup unitree_bringup.launch network:=ethernet &
+    roslaunch jsk_unitree_startup google_chat_ros.launch &
 fi
 
 eval echo "[jsk_startup] done... " $toStartlog

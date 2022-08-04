@@ -1,0 +1,8 @@
+<launch>
+
+  <node name="emotion_talker"
+        pkg="jsk_unitree_startup" type="emotion_talker.py" />
+  <node name="emotion_subscriber"
+        pkg="jsk_unitree_startup" type="emotion_subscriber.l" />
+
+</launch>

@@ -39,6 +39,12 @@
         args="call --wait /robot/start_app 'name: jsk_unitree_startup/lead_teleop'"
         output="screen" />
 
+  <!-- start emotion_reaction.launch -->
+  <node name="rosservice"
+        pkg="rosservice" type="rosservice"
+        args="call --wait /robot/start_app 'name: jsk_unitree_startup/emotion_reaction'"
+        output="screen" />
+
   <!-- let people to know unitree is bringup -->
   <node pkg="jsk_unitree_startup" type="wakeup.l"
         name="wakeup" output="log" />

@@ -1,0 +1,46 @@
+#!/usr/bin/env roseus                                                                               \
+
+(ros::load-ros-manifest "roseus")
+(ros::roseus "unitree-affirmation")
+;;(load "package://unitreeeus/unitree-interface.l")
+
+;;down
+(defun affirmation-pose-1(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+         (send *ri* :body-pose '(0 0.2 0))
+         ))
+;;up
+(defun affirmation-pose-2(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+         (send *ri* :body-pose '(0 -0.2 0))
+         ))
+
+(defun reset-pose(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+         (send *go1* :angle-vector #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0))
+         (send *ri* :body-pose '(0 0 0))
+         ))
+
+(defun affirmation-main()
+  (print "affirmation")
+  ;;(go1-init)
+  (reset-pose 1000)
+  (affirmation-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (affirmation-pose-2 800)
+  (unix:usleep(* 1000 400))
+  (affirmation-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (affirmation-pose-2 800)
+  (unix:usleep(* 1000 600))
+
+  (reset-pose 1000)
+  (affirmation-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (affirmation-pose-2 800)
+  (unix:usleep(* 1000 400))
+  (affirmation-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (affirmation-pose-2 800)
+  (unix:usleep(* 1000 600))
+  )
