@@ -20,6 +20,10 @@ if [ "$ROS_IP" == "192.168.123.161" ];then
     roslaunch --screen respeaker_ros sample_respeaker.launch language:=ja-JP publish_tf:=false launch_soundplay:=false &
 fi
 
+if [ "$ROS_IP" == "192.168.123.13" ];then
+    roslaunch jsk_unitree_startup camera_image_publisher.launch &
+fi
+
 if [ "$ROS_IP" == "192.168.123.14" ];then
     # 192.168.123.14 is force updated within install.sh for Go1 Air
     if [ "$ROS_IP" == "192.168.123.13" ];then
