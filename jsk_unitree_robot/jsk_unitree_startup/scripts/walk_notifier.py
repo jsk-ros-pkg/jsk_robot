@@ -20,21 +20,29 @@ def send_mail(place, robot_name, sender_address, receiver_address, attachment=No
     Send mail with mailutils
     """
     mail_title = u"{}、お散歩中です。".format(robot_name)
-    message = u"お散歩してます。\\n今は{}を歩いているよ。".format(place)
-    cmd = u"echo -e '{}'".format(message)
-    cmd += u" | /usr/bin/mail -s '{}' -r {} {}".format(
+    message = u"お散歩してます。"
+    if place is not None:
+        message += u"\n今は{}を歩いているよ。".format(place)
+    cmd = u"mail -s '{}' -r {} {}".format(
         mail_title, sender_address, receiver_address)
     if attachment is not None:
         cmd += ' -A {}'.format(attachment)
-    rospy.logerr('Executing: {}'.format(cmd.encode('utf-8')))
-    exit_code = subprocess.call(cmd.encode('utf-8'), shell=True)
+    cmd = ['mail', '-s', mail_title.encode('utf-8'),
+           '-r', sender_address,
+           receiver_address]
+    rospy.loginfo('Executing: {}'.format(' '.join(cmd)))
+    process = subprocess.Popen(cmd,
+                               stdin=subprocess.PIPE,
+                               universal_newlines=True)
+    process.communicate(message.encode('utf-8'))
+    process.wait()
 
 
 class WalkNotifier(object):
 
     def __init__(self):
         self.bridge = cv_bridge.CvBridge()
-        self.robot_name = rospy.get_param('~robot_name').strip()
+        self.robot_name = rospy.get_param('~robot_name', 'unitree').strip()
         self.sub = rospy.Subscriber('~input_image',
                                     sensor_msgs.msg.Image,
                                     callback=self.callback,
@@ -56,11 +64,14 @@ class WalkNotifier(object):
             rospy.loginfo('[WalkMail] waiting image')
 
     def get_place(self):
-        response = rospy.ServiceProxy('~get_location', Trigger)()
-        address = json.loads(response.message)
-        a = address['results'][0]['formatted_address']
-        print_address = " ".join(a.split(' ')[1:])
-
+        try:
+            response = rospy.ServiceProxy('~get_location', Trigger)()
+            address = json.loads(response.message)
+            a = address['results'][0]['formatted_address']
+            print_address = " ".join(a.split(' ')[1:])
+        except Exception as e:
+            rospy.logerr('Error: {}'.format(str(e)))
+            print_address = None
         if self.img is not None:
             _, img_path = tempfile.mkstemp(suffix='.jpg')
             PIL.Image.fromarray(self.img[..., ::-1]).save(img_path)
@@ -77,7 +88,11 @@ class WalkNotifier(object):
         rate = rospy.Rate(10)
         while not rospy.is_shutdown():
             rate.sleep()
-            notifier.get_place()
+            try:
+                notifier.get_place()
+            except Exception as e:
+                rospy.logerr('Error: {}'.format(str(e)))
+                continue
             time.sleep(self.notify_interval)
 
 

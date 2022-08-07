@@ -3,3 +3,5 @@ apps:
     display: go1 watch dog
   - app: jsk_unitree_startup/lead_teleop
     display: go1 lead teleop
+  - app: jsk_unitree_startup/walk_notifier
+    display: go1 walk notifier

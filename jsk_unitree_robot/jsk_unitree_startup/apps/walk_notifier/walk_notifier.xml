@@ -1,0 +1,6 @@
+<launch>
+
+  <include file="$(find jsk_unitree_startup)/launch/walk_notifier.launch" >
+  </include>
+
+</launch>

@@ -1,31 +1,15 @@
 <launch>
 
-  <arg name="network_interface" default="wlan0" />
   <arg name="walk_notifier_info_path" default="/var/lib/robot/walk_notifier.yaml" />
   <arg name="notify_interval" default="180" />
   <arg name="input_image" default="/front_camera/output" />
-  <machine name="localhost" address="localhost" />
-  <machine name="nano2" user="unitree"
-           address='192.168.123.14'
-           env-loader="/opt/jsk/User/env.sh" />
-
-  <node name="location_node"
-        pkg="jsk_unitree_startup" type="location_node.py"
-        output="screen" >
-    <rosparam command="load" file="$(arg walk_notifier_info_path)"/>
-    <rosparam subst_value="true" >
-      network_interface: $(arg network_interface)
-    </rosparam>
-  </node>
 
   <node name="walk_notifier"
         pkg="jsk_unitree_startup" type="walk_notifier.py"
-        output="screen"
-        machine="nano2" >
+        output="screen" >
     <rosparam command="load" file="$(arg walk_notifier_info_path)"/>
     <remap from="~get_location" to="/location_node/get_location" />
     <remap from="~input_image" to="$(arg input_image)" />
-    <param name="~robot_name" command="python -c 'import socket; print(socket.gethostname())'" />
     <rosparam subst_value="true" >
       notify_interval: $(arg notify_interval)
     </rosparam>
