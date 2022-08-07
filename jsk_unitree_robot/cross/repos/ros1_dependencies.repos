@@ -203,3 +203,9 @@ repositories:
   festlex-poslex:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-poslex/festlex-poslex_2.4.orig.tar.gz
+  mailutils:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/mailutils/mailutils_3.4.orig.tar.xz
+  mailutils/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/mailutils/mailutils_3.4-1.debian.tar.xz
