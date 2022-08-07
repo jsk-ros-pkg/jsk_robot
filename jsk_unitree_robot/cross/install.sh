@@ -79,7 +79,7 @@ function copy_data () {
     echo "Check user id for /dev/ttyACM0 etc"
     echo "==="
     sshpass -p $PASS ssh -t ${user}@${hostname} bash -c 'id'
-    sshpass -p $PASS ssh -t ${user}@${hostname} bash -c "groups | grep dialout || (set -x; sudo usermod -a -G dialout ${user})"
+    sshpass -p $PASS ssh -t ${user}@${hostname} bash -c "groups | grep dialout || (set -x; echo $PASS | sudo -S usermod -a -G dialout ${user})"
     echo "==="
 
     # check if we have jsk_startup in .startlist
@@ -90,7 +90,7 @@ function copy_data () {
     # check if we have /opt/jsk
     set -x
     sshpass -p $PASS ssh -t ${user}@${hostname} "test -e /opt/jsk" || \
-        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo mkdir -p /opt/jsk && sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /opt/jsk && ls -al /opt/jsk"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S mkdir -p /opt/jsk && sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /opt/jsk && ls -al /opt/jsk"
 
     rsync --rsh="/usr/bin/sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded --exclude "*.pyc" --exclude "^logs/" ${TARGET_MACHINE}_${TARGET_DIRECTORY}/ ${hostname}:/opt/jsk/${TARGET_DIRECTORY}
     if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
@@ -104,15 +104,15 @@ function copy_data () {
 
         # update udev
         # respeaker_ros
-        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find respeaker_ros)/config/60-respeaker.rules /etc/udev/rules.d/60-respeaker.rules"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; echo $PASS | sudo -S cp -f \$(rospack find respeaker_ros)/config/60-respeaker.rules /etc/udev/rules.d/60-respeaker.rules"
         #
-        sshpass -p $PASS ssh -t ${user}@${hostname} "ls -al /etc/udev/rules.d/; sudo systemctl restart udev"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "ls -al /etc/udev/rules.d/; echo $PASS | sudo -S systemctl restart udev"
     fi
 
     # enable Internet with USB LTE module
     if [[ "${hostname}" == "192.168.123.161" ]]; then
-        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
-        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo systemctl restart dhcpcd"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; echo $PASS | sudo -S cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S systemctl restart dhcpcd"
 
         # enable wlan0
         sshpass -p $PASS ssh -t ${user}@${hostname} "sed -i 's/sudo ifconfig wlan0 down/# sudo ifconfig wlan0 down/g' /home/pi/Unitree/autostart/configNetwork/configNetwork.sh"
