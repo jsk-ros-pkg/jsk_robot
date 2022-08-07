@@ -14,6 +14,6 @@ done
 
 cd ${SOURCE_DIR}
 
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies --disable-python
 
 make install
