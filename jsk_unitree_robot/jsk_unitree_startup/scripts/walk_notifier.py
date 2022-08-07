@@ -30,6 +30,8 @@ def send_mail(place, robot_name, sender_address, receiver_address, attachment=No
     cmd = ['mail', '-s', mail_title.encode('utf-8'),
            '-r', sender_address,
            receiver_address]
+    if attachment is not None:
+        cmd += ['-A', attachment]
     rospy.loginfo('Executing: {}'.format(' '.join(cmd)))
     process = subprocess.Popen(cmd,
                                stdin=subprocess.PIPE,
