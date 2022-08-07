@@ -14,9 +14,9 @@ $ sudo usermod -aG docker $USER
 $ newgrp
 ```
 
-2. Install Qemu software
+2. Install Qemu software and other prerequisites
 ```
-$ sudo apt install -y qemu-user-static
+$ sudo apt install -y qemu-user-static sshpass python-vcstool
 ```
 
 ### Build ROS System on Docker  (Run only the fist time per host computer)
@@ -29,7 +29,7 @@ Caution!!! It will take more than a few hours !! So for JSK users, download the 
 
 Run following command to copy ROS1 base sytem to Go1 onboard computer. This should be done only in the first time. So normally user do not have to run this command
 ```
-./install.sh -p 123 -D System
+./install.sh -p 123 -d System
 ```
 
 ### Build `jsk_unitree_robot` software on Docker

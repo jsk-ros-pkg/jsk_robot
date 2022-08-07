@@ -37,15 +37,30 @@ done
 # add unitree repos
 [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import ${SOURCE_ROOT}/src < repos/unitree.repos
 
+# check if /proc/sys/fs/binfmt_misc/qemu-* is updated
+# See https://github.com/k-okada/jsk_robot/issues/61
+docker run -it --rm ros1-unitree:${TARGET_MACHINE} bash -c 'exit' ||  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+case ${OSTYPE} in
+    linux*)
+        OPTIONS="-u $(id -u $USER)"
+        ;;
+    darwin*)
+        OPTIONS=""
+        ;;
+esac
+
 # run on docker
 docker run -it --rm \
-  -u $(id -u $USER) \
+  ${OPTIONS} \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/Python:/opt/jsk/${INSTALL_ROOT}/Python:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
   -v ${HOST_INSTALL_ROOT}/system_setup.bash:/opt/jsk/${INSTALL_ROOT}/system_setup.bash:ro \
+  -v ${HOST_INSTALL_ROOT}/sitecustomize.py:/usr/lib/python2.7/sitecustomize.py:ro \
+  -v ${HOST_INSTALL_ROOT}/sitecustomize.py:/usr/lib/python3.6/sitecustomize.py:ro \
   -v ${PWD}/${SOURCE_ROOT}:/opt/jsk/User:rw \
   -v ${PWD}/rosinstall_generator_unreleased.py:/home/user/rosinstall_generator_unreleased.py:ro \
   ros1-unitree:${TARGET_MACHINE} \
@@ -55,7 +70,7 @@ docker run -it --rm \
     set -xeuf -o pipefail && \
     cd /opt/jsk/User && \
     [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || ROS_PACKAGE_PATH=src:\${ROS_PACKAGE_PATH} /home/user/rosinstall_generator_unreleased.py jsk_${TARGET_ROBOT}_startup ${TARGET_ROBOT}eus --rosdistro melodic --exclude RPP --exclude mongodb_store | tee user.repos && \
-    [ ${UPDATE_SOURCE_ROOT} -eq 0 -o -z \"\$(cat user.repos)\" ] || PYTHONPATH= vcs import src < user.repos && \
+    [ ${UPDATE_SOURCE_ROOT} -eq 0 -o -z \"\$(cat user.repos)\" ] || vcs import src < user.repos && \
     catkin build jsk_${TARGET_ROBOT}_startup ${TARGET_ROBOT}eus -s -vi \
         --cmake-args -DCATKIN_ENABLE_TESTING=FALSE \
     " 2>&1 | tee ${TARGET_MACHINE}_build_user.log

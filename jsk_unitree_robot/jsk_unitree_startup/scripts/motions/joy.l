@@ -1,0 +1,51 @@
+#!/usr/bin/env roseus                                                                               1;5202;0c\
+
+(ros::load-ros-manifest "roseus")
+(ros::roseus "unitree-joy")
+;;(load "package://unitreeeus/unitree-interface.l")
+
+;;down
+(defun joy-pose-1(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+         (send *ri* :body-pose (coords :pos #f(0 0 -90)))
+         ))
+;;up
+(defun joy-pose-2(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+         (send *ri* :body-pose (coords :pos #f(0 0 30)))
+         ))
+
+(defun reset-pose(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+         (send *go1* :angle-vector #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0))
+         (send *ri* :body-pose '(0 0 0))
+         ))
+
+(defun joy-main()
+  (print "joy")
+  ;;(go1-init)
+  (reset-pose 600)
+  (joy-pose-1 400)
+  (unix:usleep(* 1000 400))
+  (joy-pose-2 800)
+  (unix:usleep(* 1000 400))
+  (reset-pose 1000)
+  (unix:usleep(* 1000 400))
+  (joy-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (joy-pose-2 800)
+  (unix:usleep(* 1000 600))
+
+  (reset-pose 1000)
+  (joy-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (joy-pose-2 800)
+  (unix:usleep(* 1000 400))
+  (reset-pose)
+  (unix:usleep(* 1000 400))
+  (joy-pose-1 800)
+  (unix:usleep(* 1000 400))
+  (joy-pose-2 800)
+  (unix:usleep(* 1000 600))
+
+  )

@@ -1,0 +1,41 @@
+#!/usr/bin/env roseus
+
+(ros::load-ros-manifest "roseus")
+(ros::roseus "unitree-astonished")
+;;(load "package://unitreeeus/unitree-interface.l")
+
+(defun astonished-pose-1(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+	 (send *go1* :body-pose (coords :pos #f(0 0 30)))
+	 (send *ri* :body-pose (coords :pos #f(0 0 30)))
+	 ))
+
+(defun astonished-pose-2(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+	 (send *go1* :body-pose '(0 -0.4 0))
+	 (send *ri* :body-pose '(0 -0.4 0))
+	 ))
+
+(defun reset-pose(&optional (time 3000))
+  (progn (send *go1* :angle-vector (send *ri* :state :potentio-vector))
+	 (send *go1* :angle-vector #f(0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0 0.0 45.0 -90.0))
+	 (send *ri* :body-pose '(0 0 0))
+	 ))
+
+(defun astonished-main()
+  ;;(print "astonished")
+  ;;(go1-init)
+  ;;(make-irtviewer)
+  ;;(send *irtviewer* :draw-objects)
+  ;;(objects (list *go1*))
+  (reset-pose 1000)
+  (astonished-pose-1 800)
+  (unix:usleep (* 1000 1000))
+  (reset-pose 800)
+  (unix:usleep (* 1000 400))
+  (astonished-pose-2 800)
+  (unix:usleep (* 1000 1000))
+  (reset-pose 800)
+  (unix:usleep (* 1000 800))
+
+  )

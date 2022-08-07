@@ -5,3 +5,5 @@ apps:
     display: go1 lead teleop
   - app: jsk_unitree_startup/walk_notifier
     display: go1 walk notifier
+  - app: jsk_unitree_startup/emotion_reaction
+    display: go1 emotion reaction

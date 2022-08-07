@@ -1,0 +1,5 @@
+# needeed by catkin_virtualenv
+backports_abc
+catkin-pkg
+singledispatch
+virtualenv

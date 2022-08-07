@@ -4,6 +4,7 @@ TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
 SOURCE_ROOT=${TARGET_MACHINE}_ws_system
+MAKEFLAGS=${MAKEFLAGS:-'-j4'}
 
 UPDATE_SOURCE_ROOT=1  # TRUE
 if [ -e "${SOURCE_ROOT}" ]; then
@@ -32,7 +33,9 @@ mkdir -p ${HOST_INSTALL_ROOT}/ros1_inst
 if [ ${UPDATE_SOURCE_ROOT} -eq 1 ]; then
     vcs import --force --retry 3 --shallow ${SOURCE_ROOT}/src < repos/roseus_no_window.repos
     for dir in euslisp jskeus; do ls ${SOURCE_ROOT}/src/$dir/patches/; rsync -avz ${SOURCE_ROOT}/src/$dir/patches/ ${SOURCE_ROOT}/src/$dir; done
-    sed -i s@:{version}@0.0.0@ ${SOURCE_ROOT}/src/euslisp/package.xml ${SOURCE_ROOT}/src/jskeus/package.xml
+    # linux can use sed -i'.bak' and latest mac also supports same syntax.
+    # https://stackoverflow.com/questions/4247068/sed-command-with-i-option-failing-on-mac-but-works-on-linux/14813278#14813278
+    sed -i.bak s@:{version}@0.0.0@ ${SOURCE_ROOT}/src/euslisp/package.xml ${SOURCE_ROOT}/src/jskeus/package.xml
 fi
 wget https://patch-diff.githubusercontent.com/raw/PR2/pr2_mechanism/pull/346.diff -O ${SOURCE_ROOT}/pr2_mechanism-346.diff
 
@@ -45,11 +48,22 @@ JSK_ROBOT_UTILS="jsk_network_tools"
 DIAGNOSTIC_AGGREGATOR="diagnostic_aggregator"  # jsk_XXX_startup usually depends on diagnostic_aggregator
 PR2EUS="pr2eus"
 
+case ${OSTYPE} in
+    linux*)
+        OPTIONS="-u $(id -u $USER)"
+        ;;
+    darwin*)
+        OPTIONS=""
+        ;;
+esac
+
 docker run -it --rm \
-  -u $(id -u $USER) \
+  ${OPTIONS} \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
+  -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
+  -v ${PWD}/startup_scripts/sitecustomize.py:/usr/lib/python2.7/sitecustomize.py:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:rw \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/${SOURCE_ROOT}:rw \
   ros1-unitree:${TARGET_MACHINE} \
@@ -69,3 +83,4 @@ docker run -it --rm \
     " 2>&1 | tee ${TARGET_MACHINE}_build_ros1.log
 
 cp ${PWD}/startup_scripts/system_setup.bash ${HOST_INSTALL_ROOT}/
+cp ${PWD}/startup_scripts/sitecustomize.py ${HOST_INSTALL_ROOT}/
