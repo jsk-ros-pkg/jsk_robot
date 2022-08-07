@@ -60,3 +60,4 @@ docker run -it --rm \
         --cmake-args -DCATKIN_ENABLE_TESTING=FALSE \
     " 2>&1 | tee ${TARGET_MACHINE}_build_user.log
 cp ${PWD}/startup_scripts/user_setup.bash ${SOURCE_ROOT}/
+cp ${PWD}/startup_scripts/env.sh ${SOURCE_ROOT}/
