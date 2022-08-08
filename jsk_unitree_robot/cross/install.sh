@@ -68,8 +68,8 @@ function copy_data () {
 
     if [[ "${TARGET_DIRECTORY}" == "System" ]]; then
         sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/sitecustomize.py ${user}@${hostname}:/tmp/sitecustomize.py
-        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo cp -f /tmp/sitecustomize.py /usr/lib/python2.7/sitecustomize.py"
-        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo cp -f /tmp/sitecustomize.py /usr/lib/python3/sitecustomize.py"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S cp -f /tmp/sitecustomize.py /usr/lib/python2.7/sitecustomize.py"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S cp -f /tmp/sitecustomize.py /usr/lib/python3/sitecustomize.py"
     fi
 
     # cehck disk space
