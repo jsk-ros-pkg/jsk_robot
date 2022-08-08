@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>jsk_mycobot_startup</name>
+  <version>1.1.0</version>
+  <description>
+    jsk_mycobot_startup
+  </description>
+
+  <maintainer email="chou@jsk.imi.i.u-tokyo.ac.jp">Moju Zhao</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>jsk_robot_startup</exec_depend>
+  <exec_depend>mycobot_communication</exec_depend>
+  <exec_depend>mycoboteus</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>rviz</exec_depend>
+
+  <test_depend>roslaunch</test_depend>
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+  </export>
+</package>

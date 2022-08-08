@@ -1,0 +1,17 @@
+<launch>
+  <arg name="headless" default="False"/>
+
+  <!-- headless: False -->
+  <include file="$(find mycobot_280_moveit)/launch/demo_gazebo.launch" unless="$(arg headless)" />
+
+  <!-- headless: True -->
+  <include file="$(find mycobot_280_moveit)/launch/gazebo.launch" if="$(arg headless)" >
+    <arg name="gazebo_gui" value="false"/>
+  </include>
+  <include file="$(find mycobot_280_moveit)/launch/move_group.launch" if="$(arg headless)">
+    <arg name="info" value="true"/>
+  </include>
+
+
+  <test pkg="mycoboteus" type="test-mycobot-eus-moveit.l" test-name="mycobot_lisp" time-limit="300" />
+</launch>

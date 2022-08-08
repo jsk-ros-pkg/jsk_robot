@@ -53,3 +53,9 @@
 - git:
     local-name: UbiquityRobotics/magni_robot
     uri: https://github.com/UbiquityRobotics/magni_robot
+# jks_mycobot_startup requires mycobot_ros with following PR
+# https://github.com/elephantrobotics/mycobot_ros/pull/48
+- git:
+    local-name: mycobot_ros
+    uri: https://github.com/tongtybj/mycobot_ros.git
+    version: interface
