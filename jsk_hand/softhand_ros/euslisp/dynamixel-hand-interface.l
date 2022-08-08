@@ -25,7 +25,8 @@
               (format nil "~A/set_torque_limit" cname))
         (ros::advertise ctname std_msgs::Float64 1)
         (ros::subscribe stname dynamixel_msgs::JointState
-                        #'send self :finger-state-cb fid)
+                        `(lambda-closure nil 0 0 (msg)
+                                         (send ,self :finger-state-cb msg ,fid)))
         (send self :set-val (read-from-string (format nil "finger~A-calib-action-client" fid))
               (instance ros::simple-action-client :init
                         (format nil "~A/calib" cname)
