@@ -101,7 +101,7 @@ function copy_data () {
         sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S mkdir -p /opt/jsk && sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /opt/jsk && ls -al /opt/jsk"
 
     # check if we have /var/mail/${user}
-    sshpass -p $PASS ssh -t ${user}@${hostname} "touch /var/mail/${user}" && \
+    sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S touch /var/mail/${user}" && \
         sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /var/mail/${user}"
 
     rsync --rsh="sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded --exclude "*.pyc" --exclude "^logs/" ${TARGET_MACHINE}_${TARGET_DIRECTORY}/ ${hostname}:/opt/jsk/${TARGET_DIRECTORY}
