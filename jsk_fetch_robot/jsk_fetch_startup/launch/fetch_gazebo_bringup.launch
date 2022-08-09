@@ -39,5 +39,6 @@
     <arg name="boot_sound" value="false" />
     <arg name="launch_teleop" value="false" /> <!-- duplicates cmd_vel_mux nodes -->
     <arg name="launch_insta360" value="false" />
+    <arg name="fetch_switchbot" value="false" />
   </include>
 </launch>
