@@ -13,6 +13,7 @@ from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
 from smach_msgs.msg import SmachContainerStatus
+from std_msgs.msg import String
 
 
 class SmachToMail():
@@ -21,7 +22,8 @@ class SmachToMail():
         rospy.init_node('server_name')
         # it should be 'smach_to_mail', but 'server_name'
         # is the default name of smach_ros
-        self.pub = rospy.Publisher("/email", Email, queue_size=10)
+        self.pub_email = rospy.Publisher("email", Email, queue_size=10)
+        self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
             "~smach/container_status", SmachContainerStatus, self._status_cb)
         self.bridge = CvBridge()
@@ -106,6 +108,7 @@ class SmachToMail():
                     rospy.loginfo(" - At {}, Active state is {}{}".format(x['TIME'], x['STATE'],
                                   "({})".format(x['INFO']) if x['INFO'] else ''))
                 self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self.smach_state_list[caller_id] = None
 
     def _send_mail(self, subject, state_list):
@@ -140,7 +143,22 @@ class SmachToMail():
 
         rospy.loginfo("send '{}' email to {}".format(email_msg.subject, email_msg.receiver_address))
 
-        self.pub.publish(email_msg)
+        self.pub_email.publish(email_msg)
+
+    def _send_twitter(self, subject, state_list):
+        if subject:
+            self.pub_twitter.publish(String(subject))
+            rospy.loginfo("send '{}' to twitter".format(subject))
+
+        for x in state_list:
+            text = ""
+            if x.has_key('DESCRIPTION'):
+                text = x['DESCRIPTION']
+            if x.has_key('IMAGE') and x['IMAGE']:
+                text += x['IMAGE']
+            if len(text) > 1:
+                self.pub_twitter.publish(String(text))
+                rospy.loginfo("send '{}' to twitter".format(text[0:144]))
 
 
 if __name__ == '__main__':
