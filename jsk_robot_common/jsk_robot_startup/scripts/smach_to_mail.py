@@ -3,10 +3,8 @@
 import base64
 import cv2
 import datetime
-import imghdr
 import pickle
 import rospy
-import time
 import sys
 
 from cv_bridge import CvBridge
