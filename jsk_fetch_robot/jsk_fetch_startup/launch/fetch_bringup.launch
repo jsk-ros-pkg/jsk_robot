@@ -270,4 +270,18 @@
     <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
   </group>
 
+  <node name="audible_warning"
+        pkg="jsk_tools" type="audible_warning.py"
+        clear_params="true"
+        output="screen" >
+    <remap from="/robotsound" to="/sound_play" />
+    <rosparam command="load" file="$(find jsk_fetch_startup)/config/warning_blacklist.yaml" />
+    <rosparam>
+      run_stop_topic: robot_state
+      run_stop_condition: "m.runstopped is True"
+      seconds_to_start_speaking: 60
+      speak_interval: 600
+    </rosparam>
+  </node>
+
 </launch>
