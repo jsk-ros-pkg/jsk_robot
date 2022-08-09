@@ -1,0 +1,12 @@
+# we need following PRs:
+# https://github.com/arebgun/dynamixel_motor/pull/68
+# https://github.com/arebgun/dynamixel_motor/pull/78
+# https://github.com/arebgun/dynamixel_motor/pull/97
+# https://github.com/arebgun/dynamixel_motor/pull/98
+# https://github.com/arebgun/dynamixel_motor/pull/99
+# https://github.com/arebgun/dynamixel_motor/pull/100
+# https://github.com/arebgun/dynamixel_motor/pull/101
+- git:
+    local-name: pazeshun/dynamixel_motor
+    uri: https://github.com/pazeshun/dynamixel_motor.git
+    version: gripper-v6-devel

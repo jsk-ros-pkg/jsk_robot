@@ -3,6 +3,7 @@
   <arg name="launch_teleop" default="true" />
   <arg name="use_base_camera_mount" default="true" />
   <arg name="use_head_box" default="true" />
+  <arg name="launch_diagnostics_agg" default="false" />
   <arg name="use_realsense" default="true" />
   <arg name="use_fetch_description" default="false" />
 
@@ -148,6 +149,10 @@
     <arg name="depth_camera_info_url" value="$(arg depth_camera_info_url)"/>
   </include>
 
+  <!-- Set image_transport_plugins parameters (png_level and disable_pub_plugins) -->
+  <rosparam file="$(find jsk_fetch_startup)/config/image_transport_plugins_params.yaml"
+            command="load"/>
+
   <!-- Laser -->
   <include file="$(find fetch_bringup)/launch/include/laser.launch.xml"/>
 
@@ -162,6 +167,7 @@
   </include>
 
   <!-- Diagnostics Aggregator -->
-  <include file="$(find fetch_bringup)/launch/include/aggregator.launch.xml"/>
+  <include if="$(arg launch_diagnostics_agg)"
+           file="$(find fetch_bringup)/launch/include/aggregator.launch.xml"/>
 
 </launch>

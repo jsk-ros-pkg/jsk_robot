@@ -53,3 +53,9 @@
 - git:
     local-name: UbiquityRobotics/magni_robot
     uri: https://github.com/UbiquityRobotics/magni_robot
+# switchbot_ros is not correctly released.
+# see: https://github.com/jsk-ros-pkg/jsk_3rdparty/issues/356
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty 
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: f0ab7bba54523b8f9945ed4a3e9c0efec0c8dde9 

@@ -58,7 +58,7 @@ install(FILES speak_and_wait_plugin.xml
 )
 
 #
-# Testgin
+# Testing
 #
 if (CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)
