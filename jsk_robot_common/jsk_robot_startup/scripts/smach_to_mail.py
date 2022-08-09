@@ -74,7 +74,7 @@ class SmachToMail():
                 self.smach_state_subject[caller_id] = local_data_str['DESCRIPTION']
                 del local_data_str['DESCRIPTION']
             else:
-                self.smach_state_subject[celler_id] = None
+                self.smach_state_subject[caller_id] = None
 
         # Build status_dict for every status
         # expected keys are 'DESCRIPTION' , 'IMAGE', 'STATE', 'INFO', 'TIME'
