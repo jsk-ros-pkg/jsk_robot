@@ -1,3 +1,3 @@
 <launch>
-  <node name="run_welcome_to_jsk" pkg="welcome_to_jsk_fetch" type="welcome-to-jsk.l" args="&quot;(progn (init) (give-bag))&quot;"/>
+  <include file="$(find welcome_to_jsk_fetch)/launch/guide.launch" />
 </launch>

@@ -29,6 +29,7 @@ def goal_status(status):
 
 class NavSpeak(object):
     def __init__(self):
+        self.is_speaking = False
         self.move_base_goal_sub = rospy.Subscriber(
             "/move_base/goal", MoveBaseActionGoal,
             self.move_base_goal_callback, queue_size=1)
@@ -44,7 +45,6 @@ class NavSpeak(object):
         self.client = actionlib.SimpleActionClient(
             'robotsound_jp', SoundRequestAction)
         self.client.wait_for_server()
-        self.is_speaking = False
 
     def move_base_goal_callback(self, msg):
         self.sound.play(2, volume=self.volume)

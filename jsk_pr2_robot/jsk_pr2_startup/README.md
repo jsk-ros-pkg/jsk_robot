@@ -57,3 +57,43 @@ $ sudo setcap cap_fowner+ep /usr/bin/mongod
 - hark jsk installation: https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/hark_jsk_plugins/INSTALL
 - Microcone: http://www.hark.jp/wiki.cgi?page=SupportedHardware#p10
 
+
+### Bind rfcomm device
+
+By binding rfcomm device, we can connect bluetooth device via device file (e.g. `/dev/rfcomm1`). For example, rosserial with [this PR](https://github.com/ros-drivers/rosserial/pull/569) can be used over bluetooth connection.
+
+For detail, please see https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_robot_common/jsk_robot_startup/README.md#launchrfcomm_bindlaunch
+
+#### usage
+
+Save the bluetooth device MAC address to file like `/var/lib/robot/rfcomm_devices.yaml` in PR2.
+
+```
+- name: device1
+  address: XX:XX:XX:XX:XX:XX
+- name: device2
+  address: YY:YY:YY:YY:YY:YY
+```
+
+Then, bind rfcomm devices.
+
+```
+# login as root user in pr2
+ssh pr2
+su
+# Assume the bluetooth dongle is plugged into c2
+roslaunch jsk_pr2_startup pr2_rfcomm_bind.launch machine:=c2
+```
+
+To check how many devices are bound to rfcomm, use rfcomm command.
+```
+ssh pr2
+ssh c2
+rfcomm
+```
+
+#### management
+
+Currently in PR2, `pr2_rfcomm_bind.launch` is started automatically by upstart.
+
+The upstart config file is in `/etc/upstart/jsk-rfcomm-bind.conf` in PR2.

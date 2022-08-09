@@ -1,0 +1,131 @@
+# Check each node png_level by the following command
+# for f in $(rosparam list | grep png_level); do echo "$f: $(rosparam get $f)"; done
+
+# Set png_level to 5 according to the following information
+# https://github.com/start-jsk/jsk_apc/pull/2706
+# https://gist.github.com/iory/12dda33908024223be74cb03f19997b5
+
+dual_fisheye_to_panorama:
+  quater:
+    output:
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
+
+head_camera:
+  depth:
+    image:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+    image_rect:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+    image_rect_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+  depth_downsample:
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+  depth_registered:
+    hw_registered:
+      image_rect:
+        disable_pub_plugins:
+          - 'image_transport/compressed'
+          - 'image_transport/theora'
+        compressedDepth:
+          png_level: 5
+      image_rect_raw:
+        disable_pub_plugins:
+          - 'image_transport/compressed'
+          - 'image_transport/theora'
+        compressedDepth:
+          png_level: 5
+    image:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+  ir:
+    image:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/compressedDepth'
+        - 'image_transport/theora'
+  rgb:
+    half:
+      image_rect_color:
+        disable_pub_plugins:
+          - 'image_transport/compressedDepth'
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
+    image_rect_color:
+        disable_pub_plugins:
+          - 'image_transport/compressedDepth'
+    quater:
+      image_rect_color:
+        disable_pub_plugins:
+          - 'image_transport/compressedDepth'
+
+insta360:
+  image_raw:
+    disable_pub_plugins:
+      - 'image_transport/compressedDepth'
+
+l515_head:
+  aligned_depth_to_color:
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+  color:
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
+  confidence:
+    image_rect_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
+  depth:
+    image_rect_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressed'
+        - 'image_transport/theora'
+      compressedDepth:
+        png_level: 5
+  infra:
+    image_raw:
+      disable_pub_plugins:
+        - 'image_transport/compressedDepth'
+
+rviz:
+  image:
+    disable_pub_plugins:
+      - 'image_transport/compressedDepth'

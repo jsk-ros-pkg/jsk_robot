@@ -1,9 +1,14 @@
 <launch>
   <arg name="rosbag" doc="rosbag file path" />
   <arg name="compress" default="false" doc="whether compress rosbag or not." />
+  <arg name="other_topics" default=""/>
+  <arg name="use_regex" default="true" doc="whether include regex in topics or not." />
+  <arg name="other_options" default=""/>
 
   <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
   <arg unless="$(arg compress)" name="compress_flag" value="" />
+  <arg if="$(arg use_regex)" name="regex_flag" value="--regex" />
+  <arg unless="$(arg use_regex)" name="regex_flag" value="" />
 
   <node name="rosbag_record" pkg="rosbag" type="record"
       args="-q $(arg compress_flag) -O $(arg rosbag) -b 0 
@@ -15,9 +20,9 @@
           /odom
           /odom_combined
           /cmd_vel
-          /move_base/NavFnROS/plan
-          /move_base/TrajectoryPlannerROS/global_plan
-          /move_base/TrajectoryPlannerROS/local_plan
+          /move_base/navigation_plan_viz
+          /move_base/global_plan_viz
+          /move_base/local_plan_viz
           /move_base/global_costmap/footprint
           /spots_marker_array
           /spots_pictogram
@@ -30,7 +35,10 @@
           /head_camera/depth_registered/throttled/camera_info
           /head_camera/rgb/throttled/image_rect_color/compressed
           /head_camera/depth_registered/throttled/image_rect/compressedDepth
-          /audio"
+          /audio
+          $(arg other_topics)
+          $(arg regex_flag)
+          $(arg other_options)"
       output="screen" />
 
 </launch>

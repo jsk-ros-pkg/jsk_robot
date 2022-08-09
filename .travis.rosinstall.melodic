@@ -49,3 +49,13 @@
     local-name: jsk_control/jsk_ik_server
     uri: https://github.com/tork-a/jsk_control-release/archive/release/kinetic/jsk_ik_server/0.1.14-0.tar.gz
     version: jsk_control-release-release-kinetic-jsk_ik_server-0.1.14-0
+# magni_robot is not released on meldoic (https://github.com/UbiquityRobotics-release/magni_robot-release)
+- git:
+    local-name: UbiquityRobotics/magni_robot
+    uri: https://github.com/UbiquityRobotics/magni_robot
+# switchbot_ros is not correctly released.
+# see: https://github.com/jsk-ros-pkg/jsk_3rdparty/issues/356
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty 
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: f0ab7bba54523b8f9945ed4a3e9c0efec0c8dde9 

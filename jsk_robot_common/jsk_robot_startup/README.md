@@ -5,6 +5,40 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## scripts/email_topic.py
+
+This node sends email based on received rostopic (jsk_robot_startup/Email).
+Default values can be set by using `~email_info`
+There is [a client library](./euslisp/email-topic-client.l) and [sample program](./euslisp/sample-email-topic-client.l).
+If you want to see a demo. Please configure a smtp server and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
+
+```bash
+roslaunch jsk_robot_startup sample_email_topic.launch receiver_address:=<a mail address to send a mail to>
+```
+
+### Parameters
+
+- `~email_info` (type: `String`, default: `/var/lib/robot/email_info.yaml`)
+
+Default values of email configuration. Example of a yaml file is below.
+
+```yaml
+subject: hello
+body: world
+sender_address: hoge@test.com
+receiver_address: fuga@test.com
+smtp_server: test.com
+smtp_port: 25
+attached_files:
+  - /home/user/Pictures/test.png
+```
+
+### Subscriber
+
+- `email` (type: `jsk_robot_startup/Email`)
+
+Subscriber of email command.
+
 ## scripts/ConstantHeightFramePublisher.py
 ![pointcloud_to_scan_base_tf_squat.png](images/pointcloud_to_scan_base_tf_squat.png)
 ![pointcloud_to_scan_base_tf_stand.png](images/pointcloud_to_scan_base_tf_stand.png)
@@ -112,8 +146,97 @@ rosrun jsk_robot_startup mux_selector.py /joy1 'm.buttons[9]==1' /cmd_vel1 /joy2
 The topic specified in the argument is subscribed.
 
 
+## scripts/check_room_light.py
+
+This node publish the luminance calculated from input image and room light status.
+
+### Subscribing Topics
+
+* `~input` (`sensor_msgs/Image` or `sensor_msgs/CompressedImage`)
+
+  Input topic image
+
+### Publishing Topics
+
+* `~output` (`jsk_robot_startup/RoomLight`)
+
+  Room light status and room luminance
+
+
+### Parameters
+
+* `~luminance_threshold` (Float, default: 50)
+
+  Luminance threshold to deteremine whether room light is on or off
+
+* `~image_transport` (String, default: raw)
+
+  Image transport hint.
+
+## scripts/shutdown.py
+
+This node shuts down or reboots the robot itself according to the rostopic. Note that this node needs to be run with sudo privileges.
+
+### Subscribing Topics
+
+* `shutdown` (`std_msgs/Empty`)
+
+  Input topic that trigger shutdown
+
+* `reboot` (`std_msgs/Empty`)
+
+  Input topic that trigger reboot
+
+### Parameters
+
+* `~shutdown_command` (String, default: "/sbin/shutdown -h now")
+
+  Command to shutdown the system. You can specify the shutdown command according to your system.
+
+* `~reboot_command` (String, default: "/sbin/shutdown -r now")
+
+  Command to reboot the system. You can specify the reboot command according to your system.
+
+### Usage
+
+```
+# Launch node
+$ su [sudo user] -c ". [setup.bash]; rosrun jsk_robot_startup shutdown.py"
+# To shutdown robot
+rostopic pub /shutdown std_msgs/Empty
+# To restart robot
+rostopic pub /reboot std_msgs/Empty
+```
+
+
 ## launch/safe_teleop.launch
 
 This launch file provides a set of nodes for safe teleoperation common to mobile robots. Robot-specific nodes such as `/joy`, `/teleop` or `/cable_warning` must be included in the teleop launch file for each robot, such as [safe_teleop.xml for PR2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_move_base/safe_teleop.xml) or [safe_teleop.xml for fetch](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml).
 
 ![JSK teleop_base system](images/jsk_safe_teleop_system.png)
+
+## launch/rfcomm_bind.launch
+
+This script binds rfcomm device to remote bluetooth device. By binding rfcomm device, we can connect bluetooth device via device file (e.g. `/dev/rfcomm1`). For example, rosserial with [this PR](https://github.com/ros-drivers/rosserial/pull/569) can be used over bluetooth connection.
+
+### Usage
+
+Save the bluetooth device MAC address to file like `/var/lib/robot/rfcomm_devices.yaml`.
+
+```
+- name: device1
+  address: XX:XX:XX:XX:XX:XX
+- name: device2
+  address: YY:YY:YY:YY:YY:YY
+```
+
+Then, bind rfcomm devices.
+
+```
+roslaunch jsk_robot_startup rfcomm_bind.launch
+```
+
+To check how many devices are bound to rfcomm, use rfcomm command.
+```
+rfcomm
+```
