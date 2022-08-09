@@ -58,3 +58,9 @@
     local-name: DENSORobot/denso_cobotta_ros
     uri: https://github.com/DENSORobot/denso_cobotta_ros.git
     version: bb60e75adb8477ed3402561b4ec3ba687af3f397
+# switchbot_ros is not correctly released.
+# see: https://github.com/jsk-ros-pkg/jsk_3rdparty/issues/356
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty 
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: f0ab7bba54523b8f9945ed4a3e9c0efec0c8dde9 
