@@ -1,4 +1,8 @@
 <launch>
   <node name="go_to_kitchen" pkg="roseus" type="roseus"
         args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l"/>
+
+  <!-- launch rviz with throttle -->
+  <include file="$(find jsk_fetch_startup)/launch/rviz_record.launch" />
+
 </launch>

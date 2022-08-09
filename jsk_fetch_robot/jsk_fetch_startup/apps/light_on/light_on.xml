@@ -1,0 +1,4 @@
+<launch>
+  <node name="run_light_on" pkg="roseus" type="roseus"
+        args="$(find jsk_fetch_startup)/euslisp/light-on.l"/>
+</launch>

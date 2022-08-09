@@ -12,6 +12,7 @@
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
+  <arg name="fetch_switchbot" default="true" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -96,6 +97,11 @@
 
   <!-- twitter -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+
+  <!-- switchbot -->
+  <include file="$(find switchbot_ros)/launch/switchbot.launch" if="$(arg fetch_switchbot)">
+    <arg name="token" value="/var/lib/robot/switchbot_token.txt" />
+  </include>
 
   <!-- app manager -->
   <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
@@ -182,7 +188,11 @@
     </include>
 
     <!-- dock localization -->
-    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true" />
+    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true">
+      <rosparam>
+        vital_rate: 0.1
+      </rosparam>
+    </node>
 
     <!-- include fetch_navigation -->
     <include file="$(find fetch_navigation)/launch/fetch_nav.launch" unless="$(arg use_build_map)" >
@@ -254,5 +264,10 @@
       email_info: /var/lib/robot/email_topic.yaml
     </rosparam>
   </node>
+
+  <!-- Two robots cannot use one rosserial device at the same time -->
+  <group if="$(eval hostname == 'fetch1075')">
+    <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
+  </group>
 
 </launch>

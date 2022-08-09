@@ -1,0 +1,15 @@
+finger1_joint_controller:
+  controller:
+    package: softhand_ros
+    module: calib_required_joint_torque_controller
+    type: CalibRequiredJointTorqueController
+finger2_joint_controller:
+  controller:
+    package: softhand_ros
+    module: calib_required_joint_torque_controller
+    type: CalibRequiredJointTorqueController
+finger3_joint_controller:
+  controller:
+    package: softhand_ros
+    module: calib_required_joint_torque_controller
+    type: CalibRequiredJointTorqueController
