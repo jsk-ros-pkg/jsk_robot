@@ -1,94 +1,56 @@
 <?xml version="1.0" ?>
 <launch>
 
-  <arg name="rarm_ip" default="172.16.0.10"/>
-  <arg name="larm_ip" default="172.16.0.11"/>
-  <arg name="robot_id" default="dual_panda" />
-  <arg name="debug"    default="false" />
-  <arg name="rviz"     default="true" />
-  <arg name="load_gripper"  default="false" />
-  <arg name="gripper_homed" default="false" />
+  <!-- Arguments for panda controllers -->
+  <arg name="hw_config_file" default="$(find jsk_panda_startup)/config/dual_panda_control_node.yaml" />
+  <arg name="controllers_file" default="$(find jsk_panda_startup)/config/dual_panda_controllers.yaml" />
+  <arg name="controllers_to_start" default="rarm_state_controller larm_state_controller dual_panda_effort_joint_trajectory_controller" />
+  <arg name="joint_states_source_list" default="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]" />
+
+  <!-- Arguments for hand eye cameras -->
   <arg name="rarm_camera_serial_no" default="021222073873"/>
   <arg name="larm_camera_serial_no" default="017322070987"/>
 
-  <include file="$(find franka_control)/launch/franka_combined_control.launch" >
-    <arg name="robot"     value="$(find panda_eus)/models/dual_panda2.urdf.xacro" />
-    <arg name="robot_id"  value="$(arg robot_id)" />
-    <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
-    <arg name="hw_config_file"   value="$(find jsk_panda_startup)/config/dual_panda_control_node.yaml"/>
-    <arg name="controllers_file" value="$(find jsk_panda_startup)/config/dual_panda_controllers.yaml" />
-    <arg name="controllers_to_start"     value="rarm_state_controller larm_state_controller dual_panda_effort_joint_trajectory_controller"/>
-    <arg name="joint_states_source_list" value="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]"/>
+  <!-- Panda controllers -->
+  <include file="$(find jsk_panda_startup)/launch/dual_panda.xml">
+    <arg name="robot" value="$(find panda_eus)/models/dual_panda2.urdf.xacro" />
+    <arg name="hw_config_file" value="$(arg hw_config_file)" />
+    <arg name="controllers_file" value="$(arg controllers_file)" />
+    <arg name="controllers_to_start" value="$(arg controllers_to_start)" />
+    <arg name="joint_states_source_list" value="$(arg joint_states_source_list)" />
   </include>
 
-  <group ns="$(arg robot_id)">
-    <group ns="rarm">
-      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
-        <arg name="robot_ip" value="$(arg rarm_ip)" />
-        <arg name="stop_at_shutdown" value="true" />
-        <arg name="arm_id" value="rarm" />
-      </include>
-    </group>
-    <group ns="larm">
-      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
-        <arg name="robot_ip" value="$(arg larm_ip)" />
-        <arg name="stop_at_shutdown" value="true" />
-        <arg name="arm_id" value="larm" />
-      </include>
-    </group>
-  </group>
-
+  <!-- Hand eye cameras -->
   <group ns="rarm_vision">
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch" >
-      <arg name="device_type"       value="d435"/>
-      <arg name="serial_no"         value="$(arg rarm_camera_serial_no)"/>
-      <arg name='usb_port_id'       value=""/>
-      <arg name="tf_prefix"         value="rarm_camera"/>
-      <arg name="initial_reset"     value="true"/>
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+      <arg name="device_type"       value="d435" />
+      <arg name="serial_no"         value="$(arg rarm_camera_serial_no)" />
+      <arg name='usb_port_id'       value="" />
+      <arg name="tf_prefix"         value="rarm_camera" />
+      <arg name="initial_reset"     value="true" />
       <arg name='filters'           value='pointcloud' />
-      <arg name="color_width"       value="1920"/>
-      <arg name="color_height"      value="1080"/>
-      <arg name="depth_width"       value="1280"/>
-      <arg name="depth_height"      value="720"/>
-      <arg name="clip_distance"     value="-2"/>
+      <arg name="color_width"       value="1920" />
+      <arg name="color_height"      value="1080" />
+      <arg name="depth_width"       value="1280" />
+      <arg name="depth_height"      value="720" />
+      <arg name="clip_distance"     value="-2" />
     </include>
   </group>
 
   <group ns="larm_vision">
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch" >
-      <arg name="device_type"       value="d435"/>
-      <arg name="serial_no"         value="$(arg larm_camera_serial_no)"/>
-      <arg name='usb_port_id'       value=""/>
-      <arg name="tf_prefix"         value="larm_camera"/>
-      <arg name="initial_reset"     value="true"/>
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+      <arg name="device_type"       value="d435" />
+      <arg name="serial_no"         value="$(arg larm_camera_serial_no)" />
+      <arg name='usb_port_id'       value="" />
+      <arg name="tf_prefix"         value="larm_camera" />
+      <arg name="initial_reset"     value="true" />
       <arg name='filters'           value='pointcloud' />
-      <arg name="color_width"       value="1920"/>
-      <arg name="color_height"      value="1080"/>
-      <arg name="depth_width"       value="1280"/>
-      <arg name="depth_height"      value="720"/>
-      <arg name="clip_distance"     value="-2"/>
+      <arg name="color_width"       value="1920" />
+      <arg name="color_height"      value="1080" />
+      <arg name="depth_width"       value="1280" />
+      <arg name="depth_height"      value="720" />
+      <arg name="clip_distance"     value="-2" />
     </include>
   </group>
-
-  <!-- vision -->
-  <!-- 20220701 amabe "left to apply to realsense images" -->
-  <!-- <include file="$(find openni2_launch)/launch/openni2.launch" /> -->
-
-  <!-- <group ns="larm_marker"> -->
-  <!--   <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log"> -->
-  <!--     <remap from="image" to="/edgetpu_object_detector/output/image"/> -->
-  <!--     <remap from="camera_info" to="/camera/rgb/camera_info"/> -->
-  <!--     <param name="use_window" value="false"/> -->
-  <!--   </node> -->
-  <!-- </group> -->
-
-  <!-- <group ns="rarm_marker"> -->
-  <!--   <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log"> -->
-  <!--     <remap from="image" to="/larm_marker/image_marked"/> -->
-  <!--     <remap from="image_marked" to="/operator_view"/> -->
-  <!--     <remap from="camera_info" to="/camera/rgb/camera_info"/> -->
-  <!--     <param name="use_window" value="false"/> -->
-  <!--   </node> -->
-  <!-- </group> -->
 
 </launch>

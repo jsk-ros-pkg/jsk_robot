@@ -1,103 +1,59 @@
 <?xml version="1.0" ?>
 <launch>
-  <!-- uvc_cam -->
+
+  <!-- Arguments for panda controllers -->
+  <arg name="hw_config_file" default="$(find jsk_panda_startup)/config/dual_panda_control_node.yaml" />
+  <arg name="controllers_file" default="$(find jsk_panda_startup)/config/dual_panda_controllers.yaml" />
+  <arg name="controllers_to_start" default="rarm_state_controller larm_state_controller dual_panda_effort_joint_trajectory_controller" />
+  <arg name="joint_states_source_list" default="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]" />
+
+  <!-- Arguments for hand eye cameras -->
   <!-- TODO: Use udev rule -->
   <arg name="right_camera_dev" default="/dev/video0" />
   <arg name="left_camera_dev" default="/dev/video2" />
 
-  <arg name="rarm_ip" default="172.16.0.10"/>
-  <arg name="larm_ip" default="172.16.0.11"/>
-
-  <!-- Capturing Audio -->
-  <!-- USB microphone on right hand -->
+  <!-- Arguments for USB microphone on right hand -->
   <arg name="launch_audio_capture" default="true" doc="Launch audio_capture node to publish audio topic from microphone" />
   <arg name="n_channel" default="1" doc="Number of channels of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
   <arg name="depth" default="16" doc="Bit depth of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
-  <arg name="sample_rate" default="44100" doc="Frame rate of audio topic and microphone. '$ pactl list short sources' to check your hardware"/>
+  <arg name="sample_rate" default="44100" doc="Frame rate of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
   <arg name="audio_device" default="hw:2,0" doc="Card and device number of microphone (e.g. hw:0,0). you can check card number and device number by '$ arecord -l', then uses hw:[card number],[device number]" />
 
-  <arg name="robot_id" default="dual_panda" />
-  <arg name="debug"    default="false" />
-  <arg name="rviz"     default="true" />
-  <arg name="load_gripper"  default="false" />
-  <arg name="gripper_homed" default="false" />
-
-  <include file="$(find franka_control)/launch/franka_combined_control.launch" >
-    <arg name="robot"     value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
-    <arg name="robot_id"  value="$(arg robot_id)" />
-    <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
-    <arg name="hw_config_file"   value="$(find jsk_panda_startup)/config/dual_panda_control_node.yaml"/>
-    <arg name="controllers_file" value="$(find jsk_panda_startup)/config/dual_panda_controllers.yaml" />
-    <arg name="controllers_to_start"     value="rarm_state_controller larm_state_controller dual_panda_effort_joint_trajectory_controller"/>
-    <arg name="joint_states_source_list" value="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]"/>
+  <!-- Panda controllers -->
+  <include file="$(find jsk_panda_startup)/launch/dual_panda.xml">
+    <arg name="hw_config_file" value="$(arg hw_config_file)" />
+    <arg name="controllers_file" value="$(arg controllers_file)" />
+    <arg name="controllers_to_start" value="$(arg controllers_to_start)" />
+    <arg name="joint_states_source_list" value="$(arg joint_states_source_list)" />
   </include>
 
-  <group ns="$(arg robot_id)">
-    <group ns="rarm">
-      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
-        <arg name="robot_ip" value="$(arg rarm_ip)" />
-        <arg name="stop_at_shutdown" value="true" />
-        <arg name="arm_id" value="rarm" />
-      </include>
-    </group>
-    <group ns="larm">
-      <include file="$(find franka_gripper)/launch/franka_gripper.launch" >
-        <arg name="robot_ip" value="$(arg larm_ip)" />
-        <arg name="stop_at_shutdown" value="true" />
-        <arg name="arm_id" value="larm" />
-      </include>
-    </group>
-
-    <!--
-    <node name="rqt_reconfigure" pkg="rqt_reconfigure" type="rqt_reconfigure" required="false" if="$(eval arg('debug') or arg('load_gripper'))" />
-    <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find franka_example_controllers)/launch/rviz/teleop_joint_pd_example.rviz" if="$(arg rviz)" />
-    -->
-  </group>
-
-  <!-- vision -->
+  <!-- Head camera -->
   <include file="$(find openni2_launch)/launch/openni2.launch" />
 
-  <group ns="larm_marker">
-    <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
-      <remap from="image" to="/edgetpu_object_detector/output/image"/>
-      <remap from="camera_info" to="/camera/rgb/camera_info"/>
-      <param name="use_window" value="false"/>
-    </node>
-  </group>
-
-  <group ns="rarm_marker">
-    <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
-      <remap from="image" to="/larm_marker/image_marked"/>
-      <remap from="image_marked" to="/operator_view"/>
-      <remap from="camera_info" to="/camera/rgb/camera_info"/>
-      <param name="use_window" value="false"/>
-    </node>
-  </group>
-
-  <!-- hand eye cameras -->
+  <!-- Hand eye cameras -->
   <node name="uvc_camera_left" pkg="uvc_camera" type="uvc_camera_node" output="screen">
-    <remap from="image_raw" to="/left_camera/image_raw"/>
-    <remap from="image_raw/compressed" to="/left_camera/image_raw/compressed"/>
-    <remap from="camera_info" to="/left_camera/camera_info"/>
-    <param name="device" value="$(arg left_camera_dev)"/>
-    <param name="fps" value="30"/>
-    <param name="width" value="640"/>
-    <param name="height" value="360"/>
-    <param name="format" value="rgb"/>
+    <remap from="image_raw" to="/left_camera/image_raw" />
+    <remap from="image_raw/compressed" to="/left_camera/image_raw/compressed" />
+    <remap from="camera_info" to="/left_camera/camera_info" />
+    <param name="device" value="$(arg left_camera_dev)" />
+    <param name="fps" value="30" />
+    <param name="width" value="640" />
+    <param name="height" value="360" />
+    <param name="format" value="rgb" />
   </node>
 
   <node name="uvc_camera_right" pkg="uvc_camera" type="uvc_camera_node" output="screen">
-    <remap from="image_raw" to="/right_camera/image_raw"/>
-    <remap from="image_raw/compressed" to="/right_camera/image_raw/compressed"/>
-    <remap from="camera_info" to="/right_camera/camera_info"/>
-    <param name="device" value="$(arg right_camera_dev)"/>
-    <param name="fps" value="30"/>
-    <param name="width" value="640"/>
-    <param name="height" value="360"/>
-    <param name="format" value="rgb"/>
+    <remap from="image_raw" to="/right_camera/image_raw" />
+    <remap from="image_raw/compressed" to="/right_camera/image_raw/compressed" />
+    <remap from="camera_info" to="/right_camera/camera_info" />
+    <param name="device" value="$(arg right_camera_dev)" />
+    <param name="fps" value="30" />
+    <param name="width" value="640" />
+    <param name="height" value="360" />
+    <param name="format" value="rgb" />
   </node>
 
-  <!-- sound device -->
+  <!-- USB microphone on right hand -->
   <node name="audio_capture" pkg="audio_capture" type="audio_capture"
         if="$(arg launch_audio_capture)"
         respawn="true">
