@@ -1,26 +1,3 @@
-#roseus is not released on melodic
-- git:
-    local-name: euslisp-release
-    uri: https://github.com/tork-a/euslisp-release
-    version: release/melodic/euslisp
-- git:
-    local-name: jskeus-release
-    uri: https://github.com/tork-a/jskeus-release
-    version: release/melodic/jskeus
-- git:
-    local-name: jsk_roseus
-    uri: https://github.com/jsk-ros-pkg/jsk_roseus
-# find_package(collada_urdf) failed due to wrong collada_urdfConfig.cmake
-# - https://github.com/ros/collada_urdf/issues/43
-# - https://github.com/ros/collada_urdf/pull/44
-- git:
-    local-name: collada_urdf
-    uri: https://github.com/werner291/collada_urdf.git
-    version: patch-1
-# compile euscollada for installed collada_urdf
-- tar:
-    local-name: euscollada
-    uri: https://github.com/tork-a/jsk_model_tools-release/archive/refs/tags/rpm/ros-melodic-euscollada-0.4.3-0_28.tar.gz
 # jsk_robot_startup LightweightLogger requires mongodb_store
 # use package.xml format 3 to install python3-pymongo, see https://github.com/strands-project/mongodb_store/pull/269
 - git:
