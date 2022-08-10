@@ -28,3 +28,8 @@
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
     version: 0ad250a996a2ef68172fc064698f253bc9cf08d0
+# denso_cobotta_control, denso_cobotta_descriptions, denso_cobotta_driver, and denso_cobotta_gripper are not released
+- git:
+    local-name: DENSORobot/denso_cobotta_ros
+    uri: https://github.com/DENSORobot/denso_cobotta_ros.git
+    version: 1a4a74a92c763906c47eec574b5b3dbaa52f622e
