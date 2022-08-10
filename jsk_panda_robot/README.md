@@ -56,8 +56,12 @@
    ```
 
 2. Controlling Dual-Panda via roseus:
-   1. `rossetdualpanda  # Or rossetdualpanda2`
-   2. execute following script in roseus:
+   1. Setting up network:
+      ```bash
+      rossetmaster dual_panda.jsk.imi.i.u-tokyo.ac.jp  # Or rossetmaster dual_panda2.jsk.imi.i.u-tokyo.ac.jp
+      rossetip
+      ```
+   2. Execute following script in roseus:
       ```lisp
       (load "package://panda_eus/euslisp/dual_panda-interface.l")
       (dual_panda-init)
@@ -85,7 +89,8 @@
 
 2. Start user PC:
    ```bash
-   rossetdualpanda
+   rossetmaster dual_panda.jsk.imi.i.u-tokyo.ac.jp
+   rossetip
    rosrun jsk_panda_teleop start_master_side.sh
    ```
    Then you should see rviz popup like this:
