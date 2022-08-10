@@ -25,7 +25,7 @@
 ### Installation for Panda Controller PC
 1. Please see and follow installation written in: https://frankaemika.github.io/docs/installation_linux.html
    * Note that you need to install real-time kernel (`PREEMPT-PR` kernel) for real-time control.
-   * Ref: Current controller PC uses following kernel:  `dual_panda`: `5.4.19-rt11`, `dual_panda2`: `5.4.93-rt51`
+   * Ref: Current controller PC uses following kernel:  `dual_panda1`: `5.4.19-rt11`, `dual_panda2`: `5.4.93-rt51`
 2. Install librealsense2:
    https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md#installing-the-packages
 3. Install OpenHaptics and Touch Device Driver from here: https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
@@ -51,14 +51,14 @@
 ### Via roseus
 1. Start controller on controller PC:
    ```bash
-   ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp  # Or ssh leus@dual_panda2.jsk.imi.i.u-tokyo.ac.jp
-   roslaunch jsk_panda_startup dual_panda.launch  # Or roslaunch jsk_panda_startup dual_panda2.launch
+   ssh leus@dual_panda1.jsk.imi.i.u-tokyo.ac.jp  # Or ssh leus@dual_panda2.jsk.imi.i.u-tokyo.ac.jp
+   roslaunch jsk_panda_startup dual_panda1.launch  # Or roslaunch jsk_panda_startup dual_panda2.launch
    ```
 
 2. Controlling Dual-Panda via roseus:
    1. Setting up network:
       ```bash
-      rossetmaster dual_panda.jsk.imi.i.u-tokyo.ac.jp  # Or rossetmaster dual_panda2.jsk.imi.i.u-tokyo.ac.jp
+      rossetmaster dual_panda1.jsk.imi.i.u-tokyo.ac.jp  # Or rossetmaster dual_panda2.jsk.imi.i.u-tokyo.ac.jp
       rossetip
       ```
    2. Execute following script in roseus:
@@ -75,7 +75,7 @@
 #### Start program
 1. Start controller on controller PC:
    ```bash
-   ssh leus@dual_panda.jsk.imi.i.u-tokyo.ac.jp
+   ssh leus@dual_panda1.jsk.imi.i.u-tokyo.ac.jp
    roslaunch jsk_panda_teleop start_panda_teleop_follower_side.launch start_bilateral:=true
    ```
    `start_bilateral:=true` connects haptic device and dual_panda from the beginning, i.e. it moves the robot immediately after running leader (user) side.
@@ -89,7 +89,7 @@
 
 2. Start user PC:
    ```bash
-   rossetmaster dual_panda.jsk.imi.i.u-tokyo.ac.jp
+   rossetmaster dual_panda1.jsk.imi.i.u-tokyo.ac.jp
    rossetip
    rosrun jsk_panda_teleop start_master_side.sh
    ```
