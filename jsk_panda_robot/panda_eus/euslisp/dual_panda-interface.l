@@ -1,5 +1,5 @@
 (require :robot-interface "package://pr2eus/robot-interface.l")
-(require :dual_franka "package://panda_eus/models/dual_panda.l")
+(require :dual_panda "package://panda_eus/models/dual_panda.l")
 
 (ros::roseus-add-msgs "franka_msgs")
 (ros::roseus-add-msgs "franka_gripper")
