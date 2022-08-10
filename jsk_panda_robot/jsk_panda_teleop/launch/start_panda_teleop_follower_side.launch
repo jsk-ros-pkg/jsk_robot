@@ -10,8 +10,8 @@
   <!-- argments -->
   <arg name="robot_id" default="dual_panda" />
   <arg name="rviz" default="true" />
-  <arg name="rarm_ip" default="172.16.0.20"/>
-  <arg name="larm_ip" default="172.16.0.200"/>
+  <arg name="rarm_ip" default="172.16.0.10"/>
+  <arg name="larm_ip" default="172.16.0.11"/>
   <arg name="robot_ips" value="{rarm/robot_ip: $(arg rarm_ip), larm/robot_ip: $(arg larm_ip)}" />
   <arg name="start_bilateral" default="false" doc="Set this value True to immidiently start Teleop-connection"/>
   <!-- controller for arms -->
