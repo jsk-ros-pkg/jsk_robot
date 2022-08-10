@@ -34,3 +34,8 @@
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
     version: 2.2.12
+# denso_cobotta_control, denso_cobotta_descriptions, denso_cobotta_driver, and denso_cobotta_gripper are not released
+- git:
+    local-name: DENSORobot/denso_cobotta_ros
+    uri: https://github.com/DENSORobot/denso_cobotta_ros.git
+    version: 1a4a74a92c763906c47eec574b5b3dbaa52f622e
