@@ -234,7 +234,7 @@ tmuxinator log
 You can not run this on Firefox. Please use Google Chrome.
 
 ### Add fetch to rwt_app_chooser
-1. Access [http://tork-a.github.io/visualization_rwt/rwt_app_chooser](http://tork-a.github.io/visualization_rwt/rwt_app_chooser "website"). Note that this website is not available now. Access `http://fetch's IP address:8000/rwt_app_chooser/`.
+1. Access [http://tork-a.github.io/visualization_rwt/rwt_app_chooser](http://tork-a.github.io/visualization_rwt/rwt_app_chooser "website").
 1. Click `ADD A ROBOT` button
 1. Select `Fetch` at `Robot type`
 1. Type `fetch15` at `Robot name`
