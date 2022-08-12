@@ -15,17 +15,23 @@
 
   <run_depend>image_proc</run_depend>
   <run_depend>jsk_fetch_accessories</run_depend>
+  <run_depend>jsk_fetch_diagnosis</run_depend>
+  <run_depend>jsk_network_tools</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
+  <run_depend version_gte="2.2.12">jsk_tools</run_depend>
   <run_depend>jsk_maps</run_depend>
   <run_depend>fetcheus</run_depend>
   <run_depend>fetch_navigation</run_depend>
   <run_depend>fetch_moveit_config</run_depend>
   <run_depend>fetch_open_auto_dock</run_depend>
   <run_depend>fetch_driver_msgs</run_depend>
+  <run_depend>nodelet</run_depend>
   <run_depend>pr2_computer_monitor</run_depend>
   <run_depend>robot_pose_publisher</run_depend>
   <run_depend>rviz</run_depend>
+  <run_depend>tf</run_depend>
   <run_depend>touchegg</run_depend>
+  <run_depend>sound_play</run_depend>
   <run_depend>switchbot_ros</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>voice_text</run_depend>
