@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import actionlib
 import base64
 import cv2
 import datetime
@@ -10,6 +11,8 @@ import sys
 import yaml
 
 from cv_bridge import CvBridge
+from google_chat_ros.msg import SendMessageAction
+from google_chat_ros.msg import SendMessageActionGoal
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
@@ -51,7 +54,7 @@ class SmachToMail():
             else:
                 rospy.logerr("Please set rosparam {}/receiver_address".format(
                         rospy.get_name()))
-
+        self.chat_space = rospy.get_param("~google_chat_space")
 
     def _status_cb(self, msg):
         '''
@@ -186,6 +189,22 @@ class SmachToMail():
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
 
+    def _send_google_chat(self, state_list):
+        client = actionlib.SimpleActionClient("/google_chat_ros/send/goal", SendMessageAction)
+        client.wait_for_server()
+        goal = SendMessageActionGoal()
+        text = ""
+        for x in state_list:
+            if 'DESCRIPTION' in x:
+                text = x['DESCRIPTION']
+            if 'IMAGE' in x and x['IMAGE']:
+                text += x['IMAGE']
+        goal.goal.text = text
+        goal.goal.space = self.chat_space
+        client.send_goal(goal)
+        client.wait_for_result()
+        rospy.loginfo("Sending google chat messsage: {} to {} chat space".format(text, self.chat_space))
+        rospy.loginfo("Google Chat result: {}".format(client.get_result()))
 
 if __name__ == '__main__':
     stm = SmachToMail()
