@@ -317,51 +317,51 @@ Args:
   (ros::ros-error "failed auto-docking")
   (send *ri* :speak-jp "ドックに失敗しました。" :wait t))
 
-(defun report-move-to-dock-front
+(defun report-move-to-dock-front ()
   (ros::ros-info "take a picture in front of the dock")
   (send *ri* :speak-jp "ドックの前に到着しました" :wait t))
 
-(defun report-move-to-dock-front-failure
+(defun report-move-to-dock-front-failure ()
   (ros::ros-info "failed taking a picture in front of the dock")
   (send *ri* :speak-jp "ドックの前への移動に失敗しました" :wait t))
 
-(defun report-move-to-tv-front
+(defun report-move-to-tv-front ()
   (ros::ros-info "take a picture in front of the tv")
   (send *ri* :speak-jp "テレビの前に到着しました" :wait t))
 
-(defun report-move-to-tv-front-failure
+(defun report-move-to-tv-front-failure ()
   (ros::ros-info "failed taking a picture at in front of the tv")
   (send *ri* :speak-jp "テレビの前への移動に失敗しました" :wait t))
 
-(defun report-move-to-tv-desk
+(defun report-move-to-tv-desk ()
   (ros::ros-info "take a picture in front of the tv desk")
   (send *ri* :speak-jp "テレビの机の前に到着しました" :wait t))
 
-(defun report-move-to-tv-desk-failure
+(defun report-move-to-tv-desk-failure ()
   (ros::ros-info "failed taking a picture at in front of the tv desk")
   (send *ri* :speak-jp "テレビの机の前への移動に失敗しました" :wait t))
 
-(defun report-move-to-desk-back
+(defun report-move-to-desk-back ()
   (ros::ros-info "take a picture of tsukamoto-kun desk")
   (send *ri* :speak-jp "奥の机の写真を撮る位置に移動しました" :wait t))
 
-(defun report-move-to-desk-back-failure
+(defun report-move-to-desk-back-failure ()
   (ros::ros-info "failed taking a picture of tsukamoto-kun desk")
   (send *ri* :speak-jp "奥の机の写真を撮る位置への移動に失敗しました" :wait t))
 
-(defun report-move-to-desk-front
+(defun report-move-to-desk-front ()
   (ros::ros-info "take a picture of obinata desk")
   (send *ri* :speak-jp "手前の机の写真を撮る位置に移動しました" :wait t))
 
-(defun report-move-to-desk-front-failure
+(defun report-move-to-desk-front-failure ()
   (ros::ros-info "failed taking a picture of obinata desk")
   (send *ri* :speak-jp "手前の机の写真を撮る位置への移動に失敗しました" :wait t))
 
-(defun report-move-to-kitchen-door-front
+(defun report-move-to-kitchen-door-front ()
   (ros::ros-info "take a picture of kitchen in front of the door")
   (send *ri* :speak-jp "キッチンを斜めから撮る位置に移動しました" :wait t))
 
-(defun report-move-to-kitchen-door-front-failure
+(defun report-move-to-kitchen-door-front-failure ()
   (ros::ros-info "failed taking a picture of kitchen in front of the door")
   (send *ri* :speak-jp "キッチンを斜めから撮る位置への移動に失敗しました" :wait t))
 
@@ -401,7 +401,7 @@ Args:
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
-      (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+      (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
         (ros::publish "/photo_taken" img))
       (take-photo "kitchen_sink.jpg")
       (notify-recognition :location "kitchen sink"))
@@ -421,7 +421,7 @@ Args:
   (let ((success-move-to-dock-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-dock-front
-    (move-to (make-coords :pos (float-vector 5077.8 6763.237 30000.0) :rpy (float-vector 0.059 0 0)) :relative-pos offset))
+    (send *ri* :move-to (make-coords :pos (float-vector 5077.8 6763.237 30000.0) :rpy (float-vector 0.059 0 0)) :relative-pos offset))
       (when success-move-to-dock-front (return)))
     success-move-to-dock-front))
 
@@ -429,7 +429,7 @@ Args:
   (let ((success-move-to-tv-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-tv-front
-    (move-to (make-coords :pos (float-vector 5082.057 6800.628 30000.0) :rpy (float-vector 3.109 0 0)) :relative-pos offset))
+    (send *ri* :move-to (make-coords :pos (float-vector 5082.057 6800.628 30000.0) :rpy (float-vector 3.109 0 0)) :relative-pos offset))
       (when success-move-to-tv-front (return)))
     success-move-to-tv-front))
 
@@ -437,7 +437,7 @@ Args:
   (let ((success-move-to-tv-desk nil))
     (dotimes (i n-trial)
       (setq success-move-to-tv-desk
-    (move-to (make-coords :pos (float-vector 4035.759 7343.818 30000.0) :rpy (float-vector 1.753 0 0)) :relative-pos offset))
+    (send *ri* :move-to (make-coords :pos (float-vector 4035.759 7343.818 30000.0) :rpy (float-vector 1.753 0 0)) :relative-pos offset))
       (when success-move-to-tv-desk (return)))
     success-move-to-tv-desk))
 
@@ -445,7 +445,7 @@ Args:
   (let ((success-move-to-desk-back nil))
     (dotimes (i n-trial)
       (setq success-move-to-desk-back
-    (move-to (make-coords :pos (float-vector 4324.417 6121.184 30000.0) :rpy (float-vector -0.845 0 0)) :relative-pos offset))
+    (send *ri* :move-to (make-coords :pos (float-vector 4324.417 6121.184 30000.0) :rpy (float-vector -0.845 0 0)) :relative-pos offset))
       (when success-move-to-desk-back (return)))
     success-move-to-desk-back))
 
@@ -453,7 +453,7 @@ Args:
   (let ((success-move-to-desk-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-desk-front
-    (move-to (make-coords :pos (float-vector 4318.808 6108.146 30000.0) :rpy (float-vector -2.231 0 0)) :relative-pos offset))
+    (send *ri* :move-to (make-coords :pos (float-vector 4318.808 6108.146 30000.0) :rpy (float-vector -2.231 0 0)) :relative-pos offset))
       (when success-move-to-desk-front (return)))
     success-move-to-desk-front))
 
@@ -461,7 +461,7 @@ Args:
   (let ((success-move-to-kitchen-door-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-kitchen-door-front
-    (move-to (make-coords :pos (float-vector 1558.69 7230.57 30000.0) :rpy (float-vector 2.296 0 0)) :relative-pos offset))
+    (send *ri* :move-to (make-coords :pos (float-vector 1558.69 7230.57 30000.0) :rpy (float-vector 2.296 0 0)) :relative-pos offset))
       (when success-move-to-kitchen-door-front (return)))
     success-move-to-kitchen-door-front))
 
@@ -474,7 +474,7 @@ Args:
       (progn
         (tweet-string "I took a photo in front of the dock." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-tv-front (&key (tweet t))
@@ -486,7 +486,7 @@ Args:
       (progn
         (tweet-string "I took a photo in front of the tv." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-tv-desk (&key (tweet t))
@@ -498,7 +498,7 @@ Args:
       (progn
         (tweet-string "I took a photo in front of the tv." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-desk-back (&key (tweet t))
@@ -510,7 +510,7 @@ Args:
       (progn
         (tweet-string "I took a photo of desks." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-desk-front (&key (tweet t))
@@ -522,7 +522,7 @@ Args:
       (progn
         (tweet-string "I took a photo of desks." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-kitchen-door-front (&key (tweet t))
@@ -534,7 +534,7 @@ Args:
       (progn
         (tweet-string "I took a photo of kitchen." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-trashcan (&key (tweet t))
@@ -553,7 +553,7 @@ Args:
         (send *ri* :wait-interpolation)
         (tweet-string "I took a photo of 73B2 trash can inside." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw")))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img))
         (take-photo "trashcan_inside.jpg")
         (notify-recognition :location "trash cans inside")
@@ -721,6 +721,7 @@ Args:
           '((:init
               '(lambda (userdata)
                  (fetch-init)
+		 (undock)
                  (send *ri* :clear-costmap)
                  (store-params)
                  (inflation-loose)
@@ -755,6 +756,10 @@ Args:
              '(lambda (userdata)
                (inspect-dock-front :tweet (cdr (assoc 'tweet userdata)))
                t))
+            (:report-move-to-dock-front-failure
+             '(lambda (userdata)
+               (report-move-to-dock-front-failure)
+               t))
             (:move-to-tv-front
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-tv-front-trial userdata)))
@@ -764,6 +769,10 @@ Args:
             (:inspect-tv-front
              '(lambda (userdata)
                (inspect-tv-front :tweet (cdr (assoc 'tweet userdata)))
+               t))
+            (:report-move-to-tv-front-failure
+             '(lambda (userdata)
+               (report-move-to-tv-front-failure)
                t))
             (:move-to-tv-desk
              '(lambda (userdata)
@@ -775,6 +784,10 @@ Args:
              '(lambda (userdata)
                (inspect-tv-desk :tweet (cdr (assoc 'tweet userdata)))
                t))
+            (:report-move-to-tv-desk-failure
+             '(lambda (userdata)
+               (report-move-to-tv-desk-failure)
+               t))
             (:move-to-desk-back
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-desk-back-trial userdata)))
@@ -784,6 +797,10 @@ Args:
             (:inspect-desk-back
              '(lambda (userdata)
                (inspect-desk-back :tweet (cdr (assoc 'tweet userdata)))
+               t))
+            (:report-move-to-desk-back-failure
+             '(lambda (userdata)
+               (report-move-to-desk-back-failure)
                t))
             (:move-to-desk-front
              '(lambda (userdata)
@@ -795,6 +812,10 @@ Args:
              '(lambda (userdata)
                (inspect-desk-front :tweet (cdr (assoc 'tweet userdata)))
                t))
+            (:report-move-to-desk-front-failure
+             '(lambda (userdata)
+               (report-move-to-desk-front-failure)
+               t))
             (:move-to-kitchen-door-front
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-kitchen-door-front-trial userdata)))
@@ -804,6 +825,10 @@ Args:
             (:inspect-kitchen-door-front
              '(lambda (userdata)
                (inspect-kitchen-door-front :tweet (cdr (assoc 'tweet userdata)))
+               t))
+            (:report-move-to-kitchen-door-front-failure
+             '(lambda (userdata)
+               (report-move-to-kitchen-door-front-failure)
                t))
             (:move-to-sink-front
              '(lambda (userdata)
