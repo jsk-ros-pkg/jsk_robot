@@ -15,7 +15,7 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
   </group>
   <!-- cameras >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
-  <group ns="/camera/rgb">
+  <group ns="/head_camera/rgb">
     <node name="republish"
           pkg="image_transport" type="republish"
           args="compressed raw">

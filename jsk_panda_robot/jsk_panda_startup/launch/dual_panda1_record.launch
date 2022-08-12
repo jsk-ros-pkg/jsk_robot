@@ -29,10 +29,10 @@
     <arg if = "$(arg quiet)" name="other_options" value="-q"/>
     <arg name="other_topics" value="$(arg other_topics)
                                     /audio
-                                    /camera/depth/camera_info
-                                    /camera/depth/image_raw/compressedDepth
-                                    /camera/rgb/camera_info
-                                    /camera/rgb/image_raw/compressed
+                                    /head_camera/depth/camera_info
+                                    /head_camera/depth/image_raw/compressedDepth
+                                    /head_camera/rgb/camera_info
+                                    /head_camera/rgb/image_raw/compressed
                                     /right_camera/camera_info
                                     /right_camera/image_raw/compressed
                                     /left_camera/camera_info
@@ -59,7 +59,7 @@
                                     /tf_static
                                     /audio
                                     /synced/dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
-                                    /synced/camera/rgb/image_raw/compressed
+                                    /synced/head_camera/rgb/image_raw/compressed
                                     /synced/dual_panda/dual_arm_cartesian_pose_controller/left_frame
                                     /synced/dual_panda/dual_arm_cartesian_pose_controller/right_frame
                                     /synced/dual_panda/joint_states

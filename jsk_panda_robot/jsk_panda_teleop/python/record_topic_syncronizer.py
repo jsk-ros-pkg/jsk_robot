@@ -14,7 +14,7 @@ def callback(*msgs):
 
 subs = [
     message_filters.Subscriber('/right_camera/image_raw/compressed', CompressedImage),
-    message_filters.Subscriber('/camera/rgb/image_raw/compressed', CompressedImage),
+    message_filters.Subscriber('/head_camera/rgb/image_raw/compressed', CompressedImage),
     message_filters.Subscriber('/dual_panda/joint_states', JointState),
     message_filters.Subscriber('/dual_panda/dual_arm_cartesian_pose_controller/right_frame', PoseStamped),
     message_filters.Subscriber('/dual_panda/dual_arm_cartesian_pose_controller/left_frame', PoseStamped),
@@ -23,7 +23,7 @@ subs = [
 ]
 pubs = [
     rospy.Publisher('/synced/right_camera/image_raw/compressed', CompressedImage, queue_size=10),
-    rospy.Publisher('/synced/camera/rgb/image_raw/compressed', CompressedImage, queue_size=10),
+    rospy.Publisher('/synced/head_camera/rgb/image_raw/compressed', CompressedImage, queue_size=10),
     rospy.Publisher('/synced/dual_panda/joint_states', JointState, queue_size=10),
     rospy.Publisher('/synced/dual_panda/dual_arm_cartesian_pose_controller/right_frame', PoseStamped, queue_size=10),
     rospy.Publisher('/synced/dual_panda/dual_arm_cartesian_pose_controller/left_frame', PoseStamped, queue_size=10),

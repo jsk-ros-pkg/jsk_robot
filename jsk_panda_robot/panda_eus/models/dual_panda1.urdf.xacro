@@ -4,11 +4,11 @@
 
   <xacro:include filename="$(find panda_eus)/models/dual_panda.urdf.xacro" />
 
-  <!-- test xtion frame -->
-  <link name="camera_link" />
-  <joint name="camera_fixed_joint" type="fixed">
+  <!-- head camera -->
+  <link name="head_camera_link" />
+  <joint name="head_camera_fixed_joint" type="fixed">
     <parent link="dual_arm_base"/>
-    <child link="camera_link"/>
+    <child link="head_camera_link" />
     <origin xyz="-0.22 -0.0 1.46" rpy="0 0.88 0"/>
   </joint>
 

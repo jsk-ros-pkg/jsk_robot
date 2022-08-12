@@ -77,7 +77,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.009999999776482582
       Style: Flat Squares
-      Topic: /camera/depth_registered/points
+      Topic: /head_camera/depth_registered/points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -156,7 +156,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /camera/rgb/image_raw
+      Image Topic: /head_camera/rgb/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -278,10 +278,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         controller0:
           Alpha: 1
           Show Axes: false
@@ -307,6 +303,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         fixed_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        head_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
