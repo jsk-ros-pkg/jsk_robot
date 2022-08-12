@@ -1,7 +1,7 @@
 <launch>
   <arg name="bagfile_name" />
   <arg name="rosbag_option"  default="" />
-  <arg name="robot" value="$(find panda_eus)/models/dual_panda.urdf.xacro" />
+  <arg name="robot" value="$(find panda_eus)/models/dual_panda1.urdf.xacro" />
   <arg name="robot_id" default="dual_panda" />  
   <param name="robot_description" command="xacro --inorder $(arg robot)" />
 

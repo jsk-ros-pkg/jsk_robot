@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="dual_panda" >
+
+  <xacro:include filename="$(find panda_eus)/models/dual_panda.urdf.xacro" />
+
+  <!-- test xtion frame -->
+  <link name="camera_link" />
+  <joint name="camera_fixed_joint" type="fixed">
+    <parent link="dual_arm_base"/>
+    <child link="camera_link"/>
+    <origin xyz="-0.22 -0.0 1.46" rpy="0 0.88 0"/>
+  </joint>
+
+  <!-- create camera frame-->
+  <link name="fisheye_frame" />
+  <joint name="fisheye_fixed_joint" type="fixed">
+    <parent link="dual_arm_base"/>
+    <child link="fisheye_frame"/>
+    <origin xyz="0.07 0 1.9" rpy="0 1.3 0"/>
+  </joint>
+  <!-- camera -->
+  <gazebo reference="fisheye_frame">
+    <sensor name="fisheye_camera_sensor" type="wideanglecamera" >
+      <!--pose>${pose}</pose-->
+      <always_on>true</always_on>
+      <update_rate>15</update_rate>
+      <visualize>false</visualize>
+      <camera name="fisheye_camera">
+        <horizontal_fov>3.14</horizontal_fov>
+        <image>
+          <width>2048</width>
+          <height>2048</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <lens> <!-- for Fisheye -->
+          <!-- type: gnomonical, stereographic, equidistant, equisolid_angle, orthographic, custom -->
+          <!-- More information here: https://en.wikipedia.org/wiki/Fisheye_lens#Mapping_function -->
+          <!--type>equidistant</type-->
+          <type>custom</type>  <!-- manually defined mapping function r = c1*f*fun(theta/c2 + c3) -->
+          <custom_function>
+            <c1>2</c1>
+            <c2>2</c2>
+            <c3>0</c3>
+            <f>0.63661977</f> <!-- ( 2.0 / pi ) -->
+            <fun>id</fun> <!-- one of sin,tan,id -->
+          </custom_function>
+          <!-- if it is set to `true` your horizontal FOV will ramain as defined -->
+          <!-- othervise it depends on lens type and custom function, if there is one -->
+          <scale_to_hfov>false</scale_to_hfov>
+          <cutoff_angle>1.5707</cutoff_angle> <!-- clip everything that is outside of this angle -->
+          <!-- resolution of the cubemap texture, the highter it is - the sharper is your image -->
+          <env_texture_size>2048</env_texture_size>
+        </lens>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate><!-- ? -->
+        <cameraName>fisheye_camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>fisheye_frame</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

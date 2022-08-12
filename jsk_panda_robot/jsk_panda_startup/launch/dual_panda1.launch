@@ -21,6 +21,7 @@
 
   <!-- Panda controllers -->
   <include file="$(find jsk_panda_startup)/launch/dual_panda.xml">
+    <arg name="robot" value="$(find panda_eus)/models/dual_panda1.urdf.xacro" />
     <arg name="hw_config_file" value="$(arg hw_config_file)" />
     <arg name="controllers_file" value="$(arg controllers_file)" />
     <arg name="controllers_to_start" value="$(arg controllers_to_start)" />
