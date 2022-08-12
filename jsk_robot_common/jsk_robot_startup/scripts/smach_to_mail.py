@@ -54,7 +54,7 @@ class SmachToMail():
             else:
                 rospy.logerr("Please set rosparam {}/receiver_address".format(
                         rospy.get_name()))
-        self.chat_space = rospy.get_param("~google_chat_space")
+        self.chat_space = rospy.get_param("~google_chat_space", "space/AAAANt14uUE") # default: fetch space
 
     def _status_cb(self, msg):
         '''
