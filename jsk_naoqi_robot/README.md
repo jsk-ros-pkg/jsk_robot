@@ -122,27 +122,23 @@ source devel/setup.bash
 
 4. (optional) For NAO and Pepper developers
 
-Please add following source codes which you need for debugging.
+Confirm that you get the following output when you type `wstool info`
 
 ```
-cd  catkin_ws/src
-wstool set nao_robot --git https://github.com/ros-naoqi/nao_robot
-(if you use ROS >= melodic) wstool update nao_robot
-wstool set pepper_robot --git https://github.com/ros-naoqi/pepper_robot
-wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
-wstool update pepper_robot
-wstool update naoqi_driver
-wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
-wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-wstool update naoqi_bridge
-wstool update naoqi_bridge_msgs
-```
+$ cd ~/catkin_ws/src
+$ wstool info
+workspace: /home/leus/catkin_ws/src
 
-Please compile them.
-```
-cd ..  # catkin_ws
-catkin build --continue-on-failure
-source devel/setup.bash
+ Localname         S SCM Version (Spec)    UID  (Spec)  URI  (Spec) [http(s)://...]
+ ---------         - --- --------------    -----------  ---------------------------
+ pepper_robot        git master  (-)       efad3979b374 github.com/ros-naoqi/pepper_robot
+ naoqi_driver      M git kochigami-develop 98c0b678286a github.com/kochigami/naoqi_driver
+ naoqi_dashboard     git kochigami-develop 33962f146c77 github.com/kochigami/naoqi_dashboard
+ naoqi_bridge_msgs   git kochigami-develop d7417613690e github.com/kochigami/naoqi_bridge_msgs
+ naoqi_bridge        git kochigami-develop c28b727e1e9b github.com/kochigami/naoqi_bridge
+ nao_robot           git master  (-)       67476469a137 github.com/ros-naoqi/nao_robot
+ nao_interaction     git master  (-)       f97ad12f3896 github.com/ros-naoqi/nao_interaction
+ jsk_robot           git master            1f44c97c7855 github.com/jsk-ros-pkg/jsk_robot.git
 ```
 
 ## Interface when controlling NAO and Pepper via roseus
@@ -202,4 +198,13 @@ To control NAO and Pepper via gazebo simulator and roseus, please refer to [here
 
   ```
   $ roslaunch jsk_pepper_startup jsk_pepper_startup.launch network_interface:=enp0s31f6
+  ```
+
+* If the getting started wizard appears on Pepper's tablet, please try following methods.
+
+  `ssh nao@<Pepper's IP>` and
+
+  ```
+  $ qicli call ALBehaviorManager.isBehaviorRunning boot-config
+  $ qicli call ALBehaviorManager.stopBehavior boot-config
   ```
