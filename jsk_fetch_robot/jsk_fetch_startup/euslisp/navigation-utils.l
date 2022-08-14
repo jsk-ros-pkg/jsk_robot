@@ -459,7 +459,7 @@ Args:
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
-      (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+      (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
         (ros::publish "/photo_taken" img))
       (take-photo "kitchen_sink.jpg")
       (notify-recognition :location "kitchen sink"))
@@ -532,7 +532,7 @@ Args:
       (progn
         (tweet-string "I took a photo in front of the dock." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-tv-front (&key (tweet t))
@@ -544,7 +544,7 @@ Args:
       (progn
         (tweet-string "I took a photo in front of the tv." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-tv-desk (&key (tweet t))
@@ -556,7 +556,7 @@ Args:
       (progn
         (tweet-string "I took a photo in front of the tv." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-desk-back (&key (tweet t))
@@ -568,7 +568,7 @@ Args:
       (progn
         (tweet-string "I took a photo of desks." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-desk-front (&key (tweet t))
@@ -580,7 +580,7 @@ Args:
       (progn
         (tweet-string "I took a photo of desks." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-kitchen-door-front (&key (tweet t))
@@ -592,7 +592,7 @@ Args:
       (progn
         (tweet-string "I took a photo of kitchen." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-trashcan (&key (tweet t))
@@ -611,7 +611,7 @@ Args:
         (send *ri* :wait-interpolation)
         (tweet-string "I took a photo of 73B2 trash can inside." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
-        (let ((img (one-shot-subscribe "/head_camera/rgb/image_raw" sensor_msgs::Image)))
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
           (ros::publish "/photo_taken" img))
         (take-photo "trashcan_inside.jpg")
         (notify-recognition :location "trash cans inside")
