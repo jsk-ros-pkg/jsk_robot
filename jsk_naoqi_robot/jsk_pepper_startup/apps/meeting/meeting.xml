@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find naoqi_apps)/launch/tablet.launch" />
+  <include file="$(find naoqi_apps)/launch/basic_awareness.launch" />
+  <include file="$(find naoqi_apps)/launch/background_movement.launch" />
+  <node pkg="jsk_pepper_startup" name="meeting"
+        type="meeting.l" args="'(main)'" />
+</launch>

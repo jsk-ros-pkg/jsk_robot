@@ -28,6 +28,10 @@
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
     version: 0ad250a996a2ef68172fc064698f253bc9cf08d0
+- git:
+    local-name: visualization_rwt/rwt_app_chooser
+    uri: https://github.com/tork-a/visualization_rwt-release.git
+    version: release/melodic/rwt_app_chooser/0.1.1-1
 # Remove this dependency if jsk_common version 2.2.12 is released in kinetic
 # See https://github.com/jsk-ros-pkg/jsk_robot/pull/1481#issuecomment-1209544704
 - git:

@@ -1,0 +1,8 @@
+set -euf -o pipefail
+cd src/harfbuzz/harfbuzz-1.7.2/
+mkdir -p /home/nao/ros1_dependencies_sources/build/harfbuzz
+cd /home/nao/ros1_dependencies_sources/build/harfbuzz
+../../src/harfbuzz/harfbuzz-1.7.2/configure \
+  -prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-shared
+make -j4 install
