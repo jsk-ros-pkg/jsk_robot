@@ -9,7 +9,7 @@
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action moveit-robot fetch-controller-action)
+  :slots (gripper-action moveit-robot fetch-controller-action point-head-action)
   )
 
 (defmethod fetch-interface
@@ -38,6 +38,10 @@
            (instance ros::simple-action-client :init
                      "/query_controller_states"
                      robot_controllers_msgs::QueryControllerStatesAction))
+     (setq point-head-action
+           (instance ros::simple-action-client :init
+                     "/head_controller/point_head"
+                     control_msgs::PointHeadAction))
 
      (roseus_resume:install-interruption-handler self
          gripper-action
@@ -195,6 +199,17 @@ Example usage:
   (:stop-grasp
     (&rest args &key &allow-other-keys)
     (send* self :go-grasp :pos 0.1 args))
+  (:point-head (pos &key (frame-id "base_link") (wait t))
+    (let ((goal (instance control_msgs::PointHeadGoal :init)))
+      (send goal :target :header :stamp (ros::time-now))
+      (send goal :target :header :frame_id frame-id)
+      (send goal :target :point (ros::pos->tf-point pos))
+      (if wait
+          (send point-head-action :send-goal goal)
+        (send point-head-action :send-goal-and-wait goal)
+        )
+      )
+    )
   (:go-grasp
     (&key (pos 0) (effort 50) (wait t))
     (when (send self :simulation-modep)
