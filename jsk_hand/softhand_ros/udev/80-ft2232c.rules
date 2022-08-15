@@ -1,0 +1,5 @@
+# Create symlink /dev/{r/l}hand-ft2232c
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6010", ENV{ID_USB_INTERFACE_NUM}=="00", GROUP="dialout", MODE="0666", SYMLINK+="rhand-ft2232c"
+# SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6010", ATTR{bInterfaceNumber}=="00", GROUP="dialout", MODE="0666", SYMLINK+="lhand-ft2232c"
+# Set latency_timer to reduce communication latency
+SUBSYSTEM=="usb-serial", DRIVER=="ftdi_sio", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6010", ENV{ID_USB_INTERFACE_NUM}=="00", ATTR{latency_timer}="1"

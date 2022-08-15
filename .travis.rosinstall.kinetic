@@ -32,3 +32,14 @@
     local-name: visualization_rwt/rwt_app_chooser
     uri: https://github.com/tork-a/visualization_rwt-release.git
     version: release/melodic/rwt_app_chooser/0.1.1-1
+# Remove this dependency if jsk_common version 2.2.12 is released in kinetic
+# See https://github.com/jsk-ros-pkg/jsk_robot/pull/1481#issuecomment-1209544704
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: 2.2.12
+# denso_cobotta_control, denso_cobotta_descriptions, denso_cobotta_driver, and denso_cobotta_gripper are not released
+- git:
+    local-name: DENSORobot/denso_cobotta_ros
+    uri: https://github.com/DENSORobot/denso_cobotta_ros.git
+    version: 1a4a74a92c763906c47eec574b5b3dbaa52f622e
