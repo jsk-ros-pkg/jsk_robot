@@ -121,7 +121,7 @@ plugins:
     type: app_publisher/rostopic_publisher_plugin
     plugin_args:
       stop_topics:
-        - name: "/shutdown"
+        - name: "/shutdown_unchecked"
           pkg: std_msgs
           type: Empty
           cond:
