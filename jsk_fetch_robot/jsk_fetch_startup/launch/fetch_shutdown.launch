@@ -1,10 +1,17 @@
 <launch>
 
-  <arg name="shutdown_topic" default="/shutdown" />
-  <arg name="shutdown_unchecked_topic" default="/shutdown_unchecked" />
+  <arg name="shutdown_topic" default="/shutdown" doc="Original shutdown topic. When this topic is published, it do shutdown." />
+  <arg name="shutdown_unchecked_topic" default="/shutdown_unchecked" doc="Unchecked shutdown topic. When battery_state.is_charging is False and this topic is published, shutdown_topic is published and shutdown is executed." />
   <arg name="shutdown_dummy_topic" default="/shutdown_dummy" doc="Dummy input (no signal)." />
-  <arg name="battery_state_topic" default="/battery_state" />
+  <arg name="battery_state_topic" default="/battery_state" doc="battery_state_topic. If is_charging is True, the battery is charging." />
 
+  <!--
+    input: $(arg shutdown_unchecked_topic) ___
+                                              |
+                                              |___ output: $(arg shutdown_topic)
+                                              |
+    input: $(arg shutdown_dummy_topic) _______|
+  -->
   <node name="input_shutdown_mux"
         pkg="topic_tools" type="mux"
         respawn="true" clear_params="true"
@@ -12,6 +19,21 @@
     <remap from="mux" to="input_shutdown_mux" />
   </node>
 
+  <!--
+    When /battery_state/is_charging is True
+    input: $(arg shutdown_unchecked_topic)_  _
+                                              |
+                                              |___ output: $(arg shutdown_topic)
+                                              |
+    input: $(arg shutdown_dummy_topic) _______|
+
+    When /battery_state/is_charging is False
+    input: $(arg shutdown_unchecked_topic) ___
+                                              |
+                                              |___ output: $(arg shutdown_topic)
+                                              |
+    input: $(arg shutdown_dummy_topic) _     _|
+  -->
   <node name="input_shutdown_selector"
         pkg="jsk_robot_startup" type="mux_selector.py"
 	      respawn="true"
