@@ -1,0 +1,24 @@
+<launch>
+
+  <arg name="shutdown_topic" default="/shutdown" />
+  <arg name="shutdown_unchecked_topic" default="/shutdown_unchecked" />
+  <arg name="shutdown_dummy_topic" default="/shutdown_dummy" doc="Dummy input (no signal)." />
+  <arg name="battery_state_topic" default="/battery_state" />
+
+  <node name="input_shutdown_mux"
+        pkg="topic_tools" type="mux"
+        respawn="true" clear_params="true"
+	      args="$(arg shutdown_topic) $(arg shutdown_unchecked_topic) $(arg shutdown_dummy_topic)" >
+    <remap from="mux" to="input_shutdown_mux" />
+  </node>
+
+  <node name="input_shutdown_selector"
+        pkg="jsk_robot_startup" type="mux_selector.py"
+	      respawn="true"
+	      args="$(arg battery_state_topic) 'm.is_charging is True' $(arg shutdown_dummy_topic)
+              $(arg battery_state_topic) 'm.is_charging is False' $(arg shutdown_unchecked_topic)" >
+    <remap from="mux" to="input_shutdown_mux" />
+    <param name="wait" value="true" />
+  </node>
+
+</launch>
