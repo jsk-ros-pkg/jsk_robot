@@ -21,9 +21,7 @@ if [ $(hostname) = 'fetch15' ]; then
 
   export NETWORK_DEFAULT_WIFI_INTERFACE="wlan0";
   export NETWORK_DEFAULT_ROS_INTERFACE="fetch15";
-  # Comment out until Access point is back
-  #export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2";
-  export NETWORK_DEFAULT_PROFILE_ID="sanshiro-outside";
+  export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2";
 elif [ $(hostname) = 'fetch1075' ]; then
   export DEFAULT_SPEAKER=2;
   export DEFAULT_ENGLISH_SPEAKER=cmu_us_slt.flitevox;
@@ -44,7 +42,5 @@ elif [ $(hostname) = 'fetch1075' ]; then
 
   export NETWORK_DEFAULT_WIFI_INTERFACE="wlan1";
   export NETWORK_DEFAULT_ROS_INTERFACE="fetch1075";
-  # Comment out until Access point is back
-  #export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2";
-  export NETWORK_DEFAULT_PROFILE_ID="sanshiro-outside";
+  export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2";
 fi
