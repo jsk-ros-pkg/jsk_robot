@@ -1,7 +1,6 @@
 #!/bin/bash
 
 IFACE=wlan0
-OUTPATH=/var/log/wifi.log
 INTERVAL=10
 
 wifi_status(){
@@ -13,11 +12,6 @@ wifi_status(){
     local bitrate=$(iw $IFACE link | grep bitrate | cut -d':' -f2)
     echo "$(date -Iseconds),$ssid,$freq,$signal,$level,$noise,$bitrate"
 }
-
-OUTDIR=$(dirname $OUTPATH)
-if [ ! -d $OUTDIR ]; then
-    mkdir -p $OUTDIR
-fi
 
 print_help(){
     echo "Usage: $0 [-i INTERVAL (default: 10)] [-I IFACE (default: wlan0)]"
@@ -34,6 +28,6 @@ do
 done
 
 while true; do
-    wifi_status >> $OUTPATH
+    wifi_status
     sleep $INTERVAL
 done
