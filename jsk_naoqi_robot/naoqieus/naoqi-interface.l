@@ -265,7 +265,7 @@
        (send self :check-speak-status))
      ;; restore original volume and language
      (when master-volume
-       (send self :set-master-volume (round (* master-volume 100))))
+       (send self :set-master-volume master-volume))
      (when master-lang
        (send self :set-language master-lang))
      t))
