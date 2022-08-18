@@ -249,15 +249,20 @@
    (let ((speech_msg (instance std_msgs::String :init))
          (master-lang (and lang (send self :get-language)))
          (master-volume (and volume (send self :get-master-volume))))
-     ;; check if volume is updated
+     ;; restoring the original settings requires `wait' to be true
+     (when (or volume lang)
+       (setq wait t))
+     ;; set volume and language
      (when volume
        (send self :set-master-volume (round (* volume 100))))
      (when lang
        (send self :set-language lang))
+     ;; send speech request
      (send speech_msg :data str)
      (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
      (when wait
        (send self :check-speak-status))
+     ;; restore original volume and language
      (when master-volume
        (send self :set-master-volume (round (* master-volume 100))))
      (when master-lang
