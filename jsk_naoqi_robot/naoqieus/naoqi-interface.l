@@ -256,7 +256,8 @@
      (when volume
        (send self :set-master-volume (round (* volume 100))))
      (when lang
-       (send self :set-language lang))
+       (unless (send self :set-language lang)
+         (ros::ros-error ":speak :lang ~A must be English or Japanese" lang)))
      ;; send speech request
      (send speech_msg :data str)
      (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
