@@ -9,8 +9,7 @@
 
 (defclass naoqi-interface
   :super robot-interface
-  :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action body-pose-with-speed-action
-                          master-volume master-language)
+  :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action body-pose-with-speed-action)
   )
 
 (defmethod naoqi-interface
@@ -19,8 +18,6 @@
    (setq group-namespace gns)
    (setq naoqi-namespace ns)
    (setq dcm-namespace dns)
-   (setq master-volume 0.5)
-   (setq master-language "English")
    (print args)
    (send-super* :init :robot robot :type type :groupname "naoqi_interface" args)
    (ros::advertise (format nil "~A/move_base_simple/goal" group-namespace) geometry_msgs::PoseStamped 1)
@@ -248,24 +245,24 @@
    )
   ;;
   (:speak
-   (str &key (lang master-language) wait (volume master-volume))
-   (let ((speech_msg (instance std_msgs::String :init)))
+   (str &key lang wait volume)
+   (let ((speech_msg (instance std_msgs::String :init))
+         (master-lang (and lang (send self :get-language)))
+         (master-volume (and volume (send self :get-master-volume))))
      ;; check if volume is updated
-     (when (/= volume master-volume)
+     (when volume
        (send self :set-master-volume (round (* volume 100))))
-     (if (not (member lang '("English" "Japanese") :test #'equal))
-         (ros::ros-error ":speak :lang ~A must be English or Japanese" lang))
-     (when (not (equal lang master-language))
+     (when lang
        (send self :set-language lang))
      (send speech_msg :data str)
      (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
      (when wait
        (send self :check-speak-status))
-     (when (/= volume master-volume)
+     (when master-volume
        (send self :set-master-volume (round (* master-volume 100))))
-     (when (not (equal lang master-language))
-       (send self :set-language master-language))
-     ))
+     (when master-lang
+       (send self :set-language master-lang))
+     t))
   (:check-speak-status
    (&optional (wait 60))
    (let (speech_status tm)
@@ -344,18 +341,15 @@
    (let ((ret (instance nao_interaction_msgs::SetAudioMasterVolumeRequest :init)))
      (ros::wait-for-service (format nil "~A/naoqi_driver/set_volume" group-namespace))
      (send ret :master_volume :data volume)
-     (setq master-volume (/ volume 100.0))
      (ros::service-call (format nil "~A/naoqi_driver/set_volume" group-namespace) ret)
      ))
   (:get-master-volume
    ()
    (let ((ret (instance nao_interaction_msgs::GetAudioMasterVolumeRequest :init))
-	 res volume)
+	 res)
      (ros::wait-for-service (format nil "~A/naoqi_driver/get_volume" group-namespace))
      (setq res (ros::service-call (format nil "~A/naoqi_driver/get_volume" group-namespace) ret))
-     (setq volume (send res :master_volume :data))
-     (setq master-volume (/ volume 100.0))
-     volume))
+     (send res :master_volume :data)))
   (:enable-life () (call-empty-service (format nil "~A/~A/pose/life/enable" group-namespace naoqi-namespace)))
   (:disable-life () (call-empty-service (format nil "~A/~A/pose/life/disable" group-namespace naoqi-namespace)))
   (:get-life ()
@@ -422,7 +416,6 @@
    (let ((ret (instance naoqi_bridge_msgs::SetStringRequest :init))
 	 res)
      (ros::wait-for-service (format nil "~A/naoqi_driver/set_language" group-namespace))
-     (setq master-language language)
      (send ret :data language)
      (setq res (ros::service-call (format nil "~A/naoqi_driver/set_language" group-namespace) ret))
      (send res :success))
@@ -430,12 +423,10 @@
   (:get-language
    ()
    (let ((ret (instance naoqi_bridge_msgs::GetStringRequest :init))
-	 res language)
+	 res)
      (ros::wait-for-service (format nil "~A/naoqi_driver/get_language" group-namespace))
      (setq res (ros::service-call (format nil "~A/naoqi_driver/get_language" group-namespace) ret))
-     (setq language (send res :data))
-     (setq master-language language)
-     language)
+     (send res :data))
    )
   (:set-background-movement-enabled
    (status)
