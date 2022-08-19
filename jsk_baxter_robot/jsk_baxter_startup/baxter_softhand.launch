@@ -1,0 +1,40 @@
+<launch>
+  <arg name="moveit" default="true" />
+  <arg name="launch_realsense_torso" default="true"/>
+  <arg name="launch_spherical_kodak" default="false" />
+  <arg name="launch_spherical_stereo" default="false" />
+  <arg name="left_gripper_type" default="softhand" />
+  <arg name="right_gripper_type" default="softhand" />
+  <arg name="arm_interpolation" default="minjerk" />
+  <arg name="arm_control_mode" default="position_w_id" />
+
+  <include file="$(find jsk_baxter_startup)/baxter.launch">
+    <arg name="launch_servo" value="true"/>
+    <arg name="launch_joint_trajectory" value="true"/>
+    <arg name="launch_moveit" value="$(arg moveit)" />
+    <arg name="launch_robot_state_publisher" value="true" />
+    <arg name="launch_wrench" value="true" />
+    <arg name="load_robot_description" value="true" />
+    <arg name="sanity_check_joint_trajectory" value="false" />
+    <arg name="launch_openni" value="false"/>
+    <arg name="launch_kinect2" value="false"/>
+    <arg name="launch_realsense_torso" value="$(arg launch_realsense_torso)"/>
+    <arg name="launch_spherical_kodak" value="$(arg launch_spherical_kodak)" />
+    <arg name="launch_spherical_stereo" value="$(arg launch_spherical_stereo)" />
+    <arg name="start_openni" value="false"/>
+    <arg name="custom_xdisplay" value="true" />
+    <arg name="launch_xdisplay" value="true" />
+    <arg name="launch_gripper_action" value="false"/>
+    <arg name="left_gripper_type" value="$(arg left_gripper_type)" />
+    <arg name="right_gripper_type" value="$(arg right_gripper_type)" />
+    <arg name="arm_interpolation" value="$(arg arm_interpolation)" />
+    <arg name="arm_control_mode" value="$(arg arm_control_mode)" />
+    <arg name="launch_voice_echo" default="false"/>
+    <arg name="launch_respeaker" default="true"/>
+    <arg name="launch_teleop" default="false"/>
+    <arg name="launch_db" default="false" />
+    <arg name="launch_twitter" default="false" />
+    <arg name="launch_time_signal" default="false"/>
+    <arg name="launch_app_manager" default="true"/>
+  </include>
+</launch>
