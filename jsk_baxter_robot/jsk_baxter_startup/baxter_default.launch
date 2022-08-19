@@ -5,6 +5,7 @@
   <arg name="launch_spherical_stereo" default="false" />
   <arg name="arm_interpolation" default="minjerk" />
   <arg name="arm_control_mode" default="position_w_id" />
+  <arg name="launch_rviz" default="true" />
 
   <include file="$(find jsk_baxter_startup)/baxter.launch">
     <arg name="launch_servo" value="true"/>
@@ -34,5 +35,6 @@
     <arg name="launch_twitter" default="false" />
     <arg name="launch_time_signal" default="false"/>
     <arg name="launch_app_manager" default="true"/>
+    <arg name="launch_rviz" default="$(arg launch_rviz)"/>
   </include>
 </launch>

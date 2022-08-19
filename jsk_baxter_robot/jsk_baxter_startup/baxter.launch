@@ -60,6 +60,9 @@
   <arg name="launch_time_signal" default="true"/>
   <arg name="launch_app_manager" default="true"/>
 
+  <!-- gui -->
+  <arg name="launch_rviz" default="false"/>
+
   <!-- baxter default params -->
   <param name="/robot/name" value="baxter" />
   <param name="/robot/type" value="baxter" />
@@ -216,5 +219,9 @@
       max_height: $(arg xdisplay_max_height)
     </rosparam>
   </node>
+
+  <!-- launch rviz -->
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" if="$(arg launch_rviz)"
+        args="-d $(find jsk_baxter_startup)/config/baxter_default.rviz"/>
 
 </launch>
