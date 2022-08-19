@@ -75,7 +75,7 @@
   (let (username)
     (unix::system
      (format nil
-             "getent passwd `whoami` | cut -d ':' -f 1 > /tmp/username_~d.txt"
+             "whoami > /tmp/username_~d.txt"
              (unix::getpid)))
     (warn "Get PID ~A" (unix::getpid))
     (with-open-file
