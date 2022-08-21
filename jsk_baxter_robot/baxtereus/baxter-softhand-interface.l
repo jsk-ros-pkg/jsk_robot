@@ -196,6 +196,11 @@
         (if safe
           (setq *baxter* (instance baxter-robot-safe :init))
           (setq *baxter* (instance baxter-robot :init)))
+        ;; move end-coords for softhand
+        (if (equal lgripper :softhand)
+          (send (send *baxter* :larm :end-coords) :translate #f(20 10 0)))
+        (if (equal rgripper :softhand)
+          (send (send *baxter* :rarm :end-coords) :translate #f(20 -10 0)))
         (send *baxter* :angle-vector (send *ri* :state :potentio-vector))))
     (if (equal lgripper :parallel) (send *ri* :calib-grasp :larm))
     (if (equal rgripper :parallel) (send *ri* :calib-grasp :rarm))))
