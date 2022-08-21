@@ -81,6 +81,7 @@
     (with-open-file
         (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
       (setq username (read-line f)))
+    (unix::unlink "/tmp/username_~d.txt" (unix::getpid))
     username
     )
   )
@@ -95,6 +96,7 @@
     (with-open-file
         (f (format nil "/tmp/fullname_~d.txt" (unix::getpid)))
       (setq fullname (read-line f)))
+    (unix::unlink "/tmp/fullname_~d.txt" (unix::getpid))
     fullname
     )
   )
