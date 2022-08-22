@@ -8,6 +8,8 @@ blacklist:
   - name: "/Sensors/IMU/IMU.*"
   - name: "/SoundPlay/sound_play.*"
 run_stop_blacklist:
-  - name: "\\w*_(mcb|breaker)"
-  - name: "Mainboard"
+  - name: "/Motor Control Boards/.*_(mcb|breaker)"
+  - name: "/System/Mainboard/Mainboard"
     message: "Runstop pressed"
+  - name: "/Breakers/.*"
+    message: "Disabled."

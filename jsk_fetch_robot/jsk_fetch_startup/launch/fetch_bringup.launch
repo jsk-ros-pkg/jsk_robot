@@ -352,7 +352,9 @@
       run_stop_condition: "m.runstopped is True"
       seconds_to_start_speaking: 60
       speak_interval: 600
-      language: $(arg default_warning_speaker) 
+      language: $(arg default_warning_speaker)
+      ignore_time_after_runstop_is_enabled: 5.0  <!-- Time to ignore diagnostics after runstop is enabled (e.g. m.runstopped is True). -->
+      ignore_time_after_runstop_is_disabled: 5.0  <!-- Time to ignore diagnostics after runstop is enabled (e.g. m.runstopped is True). -->
     </rosparam>
   </node>
 
