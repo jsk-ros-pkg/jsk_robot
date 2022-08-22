@@ -3,10 +3,9 @@
 import base64
 import cv2
 import datetime
-import imghdr
 import pickle
 import rospy
-import time
+import sys
 
 from cv_bridge import CvBridge
 from jsk_robot_startup.msg import Email
@@ -50,8 +49,12 @@ class SmachToMail():
             return
 
         # Print received messages
-        status_str = ', '.join(msg.active_states);
-        local_data_str = pickle.loads(msg.local_data)
+        status_str = ', '.join(msg.active_states)
+        if sys.version_info.major < 3:
+            local_data_str = pickle.loads(msg.local_data)
+        else:
+            local_data_str = pickle.loads(
+                msg.local_data.encode('utf-8'), encoding='utf-8')
         info_str = msg.info
         if not type(local_data_str) is dict:
             rospy.logerr("local_data_str:({}) is not dictionary".format(local_data_str))
@@ -60,11 +63,11 @@ class SmachToMail():
 
         rospy.loginfo("- status -> {}".format(status_str))
         rospy.loginfo("- info_str -> {}".format(info_str))
-        if local_data_str.has_key('DESCRIPTION'):
+        if 'DESCRIPTION' in local_data_str:
             rospy.loginfo("- description_str -> {}".format(local_data_str['DESCRIPTION']))
         else:
             rospy.logwarn("smach does not have DESCRIPTION, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
-        if local_data_str.has_key('IMAGE') and local_data_str['IMAGE']:
+        if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
 
         # Store data for every callerid to self.smach_state_list[caller_id]
@@ -74,19 +77,19 @@ class SmachToMail():
         if status_str in ["START", "INIT"]:
             self.smach_state_list[caller_id] = []
             # DESCRIPTION of START is MAIL SUBJECT
-            if local_data_str.has_key('DESCRIPTION'):
+            if 'DESCRIPTION' in local_data_str:
                 self.smach_state_subject[caller_id] = local_data_str['DESCRIPTION']
                 del local_data_str['DESCRIPTION']
             else:
-                self.smach_state_subject[celler_id] = None
+                self.smach_state_subject[caller_id] = None
 
         # Build status_dict for every status
         # expected keys are 'DESCRIPTION' , 'IMAGE', 'STATE', 'INFO', 'TIME'
         status_dict = {}
-        if local_data_str.has_key('DESCRIPTION'):
+        if 'DESCRIPTION' in local_data_str:
             status_dict.update({'DESCRIPTION': local_data_str['DESCRIPTION']})
 
-        if local_data_str.has_key('IMAGE') and local_data_str['IMAGE']:
+        if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             imgmsg = CompressedImage()
             imgmsg.deserialize(base64.b64decode(local_data_str['IMAGE']))
             cv_image = self.bridge.compressed_imgmsg_to_cv2(imgmsg, "bgr8")
@@ -100,14 +103,15 @@ class SmachToMail():
         status_dict.update({'INFO': info_str})
         status_dict.update({'TIME': datetime.datetime.fromtimestamp(msg.header.stamp.to_sec())})
 
-        if ( not self.smach_state_list.has_key(caller_id) ) or self.smach_state_list[caller_id] == None:
+
+        if (caller_id not in self.smach_state_list) or self.smach_state_list[caller_id] is None:
             rospy.logwarn("received {}, but we did not find START node".format(status_dict))
         else:
             self.smach_state_list[caller_id].append(status_dict)
 
         # If we received END/FINISH status, send email, etc...
         if status_str in ["END", "FINISH"]:
-            if ( not self.smach_state_list.has_key(caller_id) ) or self.smach_state_list[caller_id] == None:
+            if (caller_id not in self.smach_state_list) or self.smach_state_list[caller_id] is None:
                 rospy.logwarn("received END node, but we did not find START node")
                 rospy.logwarn("failed to send {}".format(status_dict))
             else:
@@ -127,13 +131,13 @@ class SmachToMail():
         changeline.type = 'html'
         changeline.message = "<br>"
         for x in state_list:
-            if x.has_key('DESCRIPTION'):
+            if 'DESCRIPTION' in x:
                 description = EmailBody()
                 description.type = 'text'
                 description.message = x['DESCRIPTION']
                 email_msg.body.append(description)
                 email_msg.body.append(changeline)
-            if x.has_key('IMAGE') and x['IMAGE']:
+            if 'IMAGE' in x and x['IMAGE']:
                 image = EmailBody()
                 image.type = 'img'
                 image.img_size = 100
@@ -161,9 +165,9 @@ class SmachToMail():
 
         for x in state_list:
             text = ""
-            if x.has_key('DESCRIPTION'):
+            if 'DESCRIPTION' in x:
                 text = x['DESCRIPTION']
-            if x.has_key('IMAGE') and x['IMAGE']:
+            if 'IMAGE' in x and x['IMAGE']:
                 text += x['IMAGE']
             if len(text) > 1:
                 self.pub_twitter.publish(String(text))
