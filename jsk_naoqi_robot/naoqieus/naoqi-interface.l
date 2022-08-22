@@ -254,9 +254,11 @@
        (setq wait t))
      ;; set volume and language
      (when volume
-       (send self :set-master-volume (round (* volume 100))))
+       (unless (send self :set-master-volume (round (* volume 100)))
+         (error "Invalid volume argument")))
      (when lang
-       (send self :set-language lang))
+       (unless (send self :set-language lang)
+         (error "Invalid language argument")))
      ;; send speech request
      (send speech_msg :data str)
      (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
@@ -437,7 +439,7 @@
      (send ret :data language)
      (setq res (ros::service-call (format nil "~A/naoqi_driver/set_language" group-namespace) ret))
      (if (not (send res :success))
-	 (ros::ros-error ":speak :lang ~A must be English or Japanese" language))
+         (ros::ros-error ":speak :lang ~A must be English or Japanese" language))
      (send res :success))
    )
   (:get-language
