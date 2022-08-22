@@ -254,6 +254,8 @@
        (setq wait t))
      ;; set volume and language
      (when volume
+       (if (or (> volume 1.0) (< volume 0.0))
+	 (ros::ros-error ":speak :volume ~A must be between 0.0 and 1.0." volume))
        (send self :set-master-volume (round (* volume 100))))
      (when lang
        (unless (send self :set-language lang)
