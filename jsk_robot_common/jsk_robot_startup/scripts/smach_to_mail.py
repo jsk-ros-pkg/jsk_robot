@@ -172,16 +172,21 @@ class SmachToMail():
         self.pub_email.publish(email_msg)
 
     def _send_twitter(self, subject, state_list):
-        text = ""
+        text = u""
         if subject:
+            if isinstance(subject, bytes):
+                subject = subject.decode('utf-8')
             text += subject
         for x in state_list:
             if 'DESCRIPTION' in x and x['DESCRIPTION']:
-                text += '\n' + x['DESCRIPTION']
+                desc = x['DESCRIPTION']
+                if isinstance(desc, bytes):
+                    desc = desc.decode('utf-8')
+                text += '\n' + desc
             if 'IMAGE' in x and x['IMAGE']:
                 img_txt = x['IMAGE']
                 if isinstance(img_txt, bytes):
-                    img_txt = img_txt.decode('ascii')
+                    img_txt = img_txt.decode('utf-8')
                 text += img_txt
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
