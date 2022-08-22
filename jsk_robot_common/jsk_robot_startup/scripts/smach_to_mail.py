@@ -29,8 +29,17 @@ class SmachToMail():
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        self.sender_address = rospy.get_param("~sender_address")
-        self.receiver_address = rospy.get_param("~receiver_address")
+        if rospy.has_param("~sender_address"):
+            self.sender_address = rospy.get_param("~sender_address")
+        else:
+            rospy.logerr("Please set rosparam {}/sender_address".format(
+                rospy.get_name()))
+        if rospy.has_param("~receiver_address"):
+            self.receiver_address = rospy.get_param("~receiver_address")
+        else:
+            rospy.logerr("Please set rosparam {}/receiver_address".format(
+                    rospy.get_name()))
+
 
     def _status_cb(self, msg):
         '''
