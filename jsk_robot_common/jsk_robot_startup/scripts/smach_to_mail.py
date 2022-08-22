@@ -11,8 +11,10 @@ import sys
 import yaml
 
 from cv_bridge import CvBridge
+from google_chat_ros.msg import Card
 from google_chat_ros.msg import SendMessageAction
 from google_chat_ros.msg import SendMessageActionGoal
+from google_chat_ros.msg import WidgetMarkup
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
@@ -55,6 +57,7 @@ class SmachToMail():
                 rospy.logerr("Please set rosparam {}/receiver_address".format(
                         rospy.get_name()))
         self.chat_space = rospy.get_param("~google_chat_space", "space/AAAANt14uUE") # default: fetch space
+        self.gchat_image_path = rospy.get_param("~google_chat_tmp_image_path", "/tmp/smach_to_mail_google_chat.png")
 
     def _status_cb(self, msg):
         '''
@@ -193,13 +196,17 @@ class SmachToMail():
         client = actionlib.SimpleActionClient("/google_chat_ros/send/goal", SendMessageAction)
         client.wait_for_server()
         goal = SendMessageActionGoal()
-        text = ""
         for x in state_list:
             if 'DESCRIPTION' in x:
                 text = x['DESCRIPTION']
             if 'IMAGE' in x and x['IMAGE']:
-                text += x['IMAGE']
-        goal.goal.text = text
+                cv2.imwrite(self.gchat_image_path, x['IMAGE'])
+        card = Card()
+        card.header.title = text
+        widget = WidgetMarkup()
+        widget.image.localpath = self.gchat_image_path
+        card.sections.append([widget])
+        goal.goal.cards.append(card)
         goal.goal.space = self.chat_space
         client.send_goal(goal)
         client.wait_for_result()
