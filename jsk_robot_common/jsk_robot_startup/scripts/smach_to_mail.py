@@ -172,19 +172,19 @@ class SmachToMail():
         self.pub_email.publish(email_msg)
 
     def _send_twitter(self, subject, state_list):
+        text = ""
         if subject:
-            self.pub_twitter.publish(String(subject))
-            rospy.loginfo("send '{}' to twitter".format(subject))
-
+            text += subject
         for x in state_list:
-            text = ""
-            if 'DESCRIPTION' in x:
-                text = x['DESCRIPTION']
+            if 'DESCRIPTION' in x and x['DESCRIPTION']:
+                text += '\n' + x['DESCRIPTION']
             if 'IMAGE' in x and x['IMAGE']:
-                text += x['IMAGE']
-            if len(text) > 1:
-                self.pub_twitter.publish(String(text))
-                rospy.loginfo("send '{}' to twitter".format(text[0:144]))
+                img_txt = x['IMAGE']
+                if isinstance(img_txt, bytes):
+                    img_txt = img_txt.decode('ascii')
+                text += img_txt
+        if len(text) > 1:
+            self.pub_twitter.publish(String(text))
 
 
 if __name__ == '__main__':
