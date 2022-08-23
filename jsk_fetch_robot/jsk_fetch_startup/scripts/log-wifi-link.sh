@@ -19,11 +19,16 @@ wifi_status(){
     else
         local ping_result_duration=$(echo $ping_result_raw | cut -d " " -f 4 | cut -d "/" -f 2)
     fi
-    echo "$(date -Iseconds),$ssid,$freq,$signal,$level,$noise,$bitrate,$ping_result_duration"
+    echo "$(date -Iseconds),$ssid,$freq,$signal,$level,$noise,$bitrate, $ping_result_duration"
 }
 
 print_help(){
-    echo "Usage: $0 [-i INTERVAL (default: 10)] [-I IFACE (default: wlan0)]"
+    echo "Usage: log-wifi-link.sh [-h]"
+    echo "                        [-i INTERVAL (default: 10)]"
+    echo "                        [-I IFACE (default: wlan0)]"
+    echo "                        [-c PING_COUNT (default: 3)]"
+    echo "                        [-W PING_TIMEOUT (default: 1)]"
+    echo "                        [-t PING_TARGET (default: \"www.google.com\")]"
     exit 1
 }
 
