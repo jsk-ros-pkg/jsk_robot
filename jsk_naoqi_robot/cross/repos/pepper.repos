@@ -1,0 +1,53 @@
+repositories:
+  app_manager:
+    type: git
+    url: https://github.com/Affonso-Gui/app_manager
+    version: enable-parallel-run-apps
+  #
+  # fix qt> 5 (https://github.com/ros-naoqi/naoqi_dashboard/pull/3)
+  naoqi_dashboard:
+    type: git
+    url: https://github.com/kochigami/naoqi_dashboard
+    version: kochigami-develop
+  #
+  # wait for 0.5.16 release
+  nao_robot:
+    type: git
+    url: https://github.com/ros-naoqi/nao_robot
+  #
+  # wait for 0.1.11
+  pepper_robot:
+    type: git
+    url: https://github.com/ros-naoqi/pepper_robot
+  #
+  # add service to get/set volumes (https://github.com/ros-naoqi/naoqi_driver/pull/110)
+  # add play audio file service (https://github.com/ros-naoqi/naoqi_driver/pull/109)
+  # add fading/resetting leds services (https://github.com/ros-naoqi/naoqi_driver/pull/100)
+  # [ALChestButton] add chest button topic (pressed or not) (https://github.com/ros-naoqi/naoqi_driver/pull/99)
+  # for more info https://github.com/kochigami/naoqi_driver/issues/2
+  naoqi_driver:
+    type: git
+    url: https://github.com/kochigami/naoqi_driver
+    version: kochigami-develop
+  #
+  # add many nodes..... wait for 0.5.6
+  naoqi_bridge:
+    type: git
+    url: https://github.com/kochigami/naoqi_bridge
+    version: kochigami-develop
+  #
+  # add fade leds srv (https://github.com/ros-naoqi/naoqi_bridge_msgs/pull/41)
+  # [ALChestButton] add msg for ChestButtonPressed  (https://github.com/ros-naoqi/naoqi_bridge_msgs/pull/40)
+  naoqi_bridge_msgs:
+    type: git
+    url: https://github.com/kochigami/naoqi_bridge_msgs
+    version: kochigami-develop
+  #
+  # wait for 0.1.6 (https://github.com/ros-naoqi/nao_interaction/issues/12)
+  nao_interaction:
+    type: git
+    url: https://github.com/ros-naoqi/nao_interaction
+  #
+  pepper_meshes:
+    type: git
+    url: https://github.com/ros-naoqi/pepper_meshes

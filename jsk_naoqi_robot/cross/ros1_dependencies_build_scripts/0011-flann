@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/flann
+cd /home/nao/ros1_dependencies_sources/build/flann
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_TESTS=OFF \
+  -DBUILD_PYTHON_BINDINGS=OFF \
+  -DBUILD_MATLAB_BINDINGS=OFF \
+  -DBUILD_EXAMPLES=OFF \
+  ../../src/flann
+make -j4 install

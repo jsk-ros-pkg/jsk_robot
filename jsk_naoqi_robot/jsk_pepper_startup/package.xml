@@ -15,19 +15,27 @@
   <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>image_view</run_depend>
   <run_depend>joy</run_depend>
+  <run_depend>naoqi_apps</run_depend>
   <run_depend>naoqi_bridge_msgs</run_depend>
   <run_depend>naoqi_dashboard</run_depend>
   <run_depend>naoqi_pose</run_depend>
   <run_depend>nao_interaction_msgs</run_depend>
   <run_depend>pepper_bringup</run_depend>
   <run_depend>roseus</run_depend>
+  <run_depend>roseus_smach</run_depend>
   <run_depend>rostwitter</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
   <run_depend>teleop_twist_joy</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
+  <run_depend>rwt_app_chooser</run_depend>
+  <run_depend>app_manager</run_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>roslaunch</test_depend>
+
+  <export>
+    <app_manager app_dir="${prefix}/apps"/>
+  </export>
 </package>
