@@ -82,6 +82,11 @@ class SmachToMail():
             rospy.logwarn("smach does not have DESCRIPTION, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
         if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
+        if 'INFO' in local_data_str:
+            rospy.loginfo("- description_str -> {}".format(local_data_str['INFO']))
+        else:
+            rospy.logwarn("smach does not have INFO, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
+
 
         # Store data for every callerid to self.smach_state_list[caller_id]
         caller_id = msg._connection_header['callerid']
@@ -156,6 +161,12 @@ class SmachToMail():
                 image.img_size = 100
                 image.img_data = x['IMAGE']
                 email_msg.body.append(image)
+                email_msg.body.append(changeline)
+            if 'INFO' in x:
+                description = EmailBody()
+                description.type = 'text'
+                description.message = x['INFO']
+                email_msg.body.append(description)
                 email_msg.body.append(changeline)
         # rospy.loginfo("body:{}".format(email_msg.body))
 
