@@ -187,6 +187,15 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
   Input topic that trigger reboot
 
+* `shutdown_unchecked` (`std_msgs/Empty`)
+
+  Input topic that trigger shutdown. This is valid only when `~input_condition` param is set. If evaluated `~input_condition` is `True` and the node received this topic, shutdown will be executed.
+
+* `~input` (`AnyMsg`)
+
+  Input value for `shutdown_unchecked`.
+
+
 ### Parameters
 
 * `~shutdown_command` (String, default: "/sbin/shutdown -h now")
@@ -196,6 +205,24 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 * `~reboot_command` (String, default: "/sbin/shutdown -r now")
 
   Command to reboot the system. You can specify the reboot command according to your system.
+
+* `~input_condition` (String, default: ``None``)
+
+  Returning bool value condition using the given Python expression. The Python expression can access any of the Python builtins plus: ``topic`` (the topic of the message), ``m`` (the message) and ``t`` (time of message).
+
+  For example, ``~input`` topic is ``std_msgs/String`` and if you want to check whether a sentence is a ``hello``, you can do the following.
+
+  ```
+  input_condition: m.data == 'hello'
+  ```
+
+  If you want to check the frame id of the header, you can do the following.
+
+  ```
+  input1_condition: m.header.frame_id in ['base', 'base_link']
+  ```
+
+  Note that, use escape sequence when using the following symbols ``<(&lt;)``, ``>(&gt;)``, ``&(&amp;)``, ``'(&apos;)`` and ``"(&quot;)``.
 
 ### Usage
 
