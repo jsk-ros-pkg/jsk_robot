@@ -1,0 +1,37 @@
+<launch>
+
+  <arg name="shutdown_topic" default="/shutdown" doc="Original shutdown topic. When this topic is published, it do shutdown." />
+  <arg name="shutdown_unchecked_topic" default="/shutdown_unchecked" doc="Unchecked shutdown topic. When battery_state.is_charging is False and this topic is published, shutdown_topic is published and shutdown is executed." />
+  <arg name="battery_state_topic" default="/battery_state" doc="battery_state_topic. If is_charging is True, the battery is charging." />
+
+  <node name="shutdown_selector"
+        pkg="jsk_topic_tools" type="boolean_node.py"
+        output="screen"
+        clear_params="true"
+        respawn="true" >
+    <remap from="~input1" to="$(arg battery_state_topic)" />
+    <remap from="~input2" to="$(arg shutdown_unchecked_topic)" />
+    <remap from="~output/and" to="/execute_shutdown" />
+    <rosparam>
+      number_of_input: 2
+      input1_condition: "m.is_charging is False"
+      input2_condition: "(rospy.Time.now() - t).to_sec() &lt; 1.0"
+    </rosparam>
+  </node>
+
+  <group ns="shutdown_selector" >
+    <node name="filtered_relay"
+          pkg="jsk_topic_tools" type="filtered_relay.py"
+          output="screen"
+          clear_params="true" >
+      <remap from="~input" to="/execute_shutdown" />
+      <remap from="~output" to="$(arg shutdown_topic)" />
+      <rosparam>
+        output_type: std_msgs/Empty
+        import: [std_msgs]
+        filter: "m.data is True"
+      </rosparam>
+    </node>
+  </group>
+
+</launch>
