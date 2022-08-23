@@ -2,6 +2,25 @@
 
 The `jsk_baxter_startup` package.
 
+## Installation
+
+### Copy `env.sh` to home dir for `baxter-c1`
+
+Copy `env.sh` to home directory for machine tag in baxter-c1
+
+```bash
+ssh baxter-c1
+roscd jsk_baxter_startup/jsk_baxter_machine
+cp env.sh ~/
+```
+
+### Copy udev to `/etc/udev/rules.d`
+
+```bash
+roscd jsk_baxter_startup/jsk_baxter_udev
+sudo cp * /etc/udev/rules.d
+```
+
 ## ROS launch and euslisp
 
 ### Default gripper
