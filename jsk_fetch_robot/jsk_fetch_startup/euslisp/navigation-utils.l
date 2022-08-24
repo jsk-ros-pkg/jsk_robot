@@ -768,8 +768,6 @@ Args:
             (:report-light-on
               '(lambda (userdata)
                  (report-light-on)
-                 (set-alist 'description "電気がついていたよ" userdata)
-                 (set-alist 'image "" userdata)
                  t))
             (:room-light-on
               '(lambda (userdata)
