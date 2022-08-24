@@ -13,9 +13,10 @@ wifi_status(){
     local level=$(cat /proc/net/wireless | grep $IFACE | awk '{print $4}')
     local noise=$(cat /proc/net/wireless | grep $IFACE | awk '{print $5}')
     local bitrate=$(iw $IFACE link | grep bitrate | cut -d':' -f2)
-    local ping_result_raw=$(ping -I $IFACE $PING_TARGET -c $PING_COUNT -W $PING_TIMEOUT | tail -n 1)
+    local ping_result_raw=$(ping -I $IFACE $PING_TARGET -c $PING_COUNT -W $PING_TIMEOUT 2> /dev/null | tail -n 1)
     if [ -z "$ping_result_raw" ]; then
-        local ping_result_duration=999
+        # minus ping indicates ping fails
+        local ping_result_duration=-1000
     else
         local ping_result_duration=$(echo $ping_result_raw | cut -d " " -f 4 | cut -d "/" -f 2)
     fi
