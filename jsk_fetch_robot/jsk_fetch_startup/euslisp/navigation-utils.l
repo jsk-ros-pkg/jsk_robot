@@ -759,14 +759,14 @@ Args:
               '(lambda (userdata)
                  (let ((light-on (get-light-on)))
                    (setf (cdr (assoc 'initial-light-on userdata)) light-on)
-                   (set-alist 'description "電気がついているか確認したよ" userdata)
+                   (if light-on
+                       (set-alist 'description "電気がついていたよ" userdata)
+                       (set-alist 'description "電気がついていなかったよ" userdata))
                    (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                    light-on)))
             (:report-light-on
               '(lambda (userdata)
                  (report-light-on)
-                 (set-alist 'description "電気がついていたよ" userdata)
-                 (set-alist 'image "" userdata)
                  t))
             (:room-light-on
               '(lambda (userdata)
@@ -781,7 +781,9 @@ Args:
                  (let* ((n-trial (cdr (assoc 'n-dock-front-trial userdata)))
                         (success (move-to-dock-front :n-trial n-trial)))
                    (setf (cdr (assoc 'success-go-to-dock-front userdata)) success)
-                   (set-alist 'description "ドックの前に移動したよ" userdata)
+                   (if success
+                       (set-alist 'description "ドックの前に移動したよ" userdata)
+                       (set-alist 'description "ドックの前に移動しようとしたけど，迷子になっちゃった" userdata))
                    (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                    success)))
             (:inspect-dock-front
@@ -801,7 +803,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-tv-front-trial userdata)))
                       (success (move-to-tv-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-tv-front userdata)) success)
-                 (set-alist 'description "テレビの前に移動したよ" userdata)
+                 (if success
+                     (set-alist 'description "テレビの前に移動したよ" userdata)
+                     (set-alist 'description "テレビの前に移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-tv-front
@@ -821,7 +825,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-tv-desk-trial userdata)))
                       (success (move-to-tv-desk :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-tv-desk userdata)) success)
-                 (set-alist 'description "机の前に移動したよ" userdata)
+                 (if success
+                     (set-alist 'description "机の前に移動したよ" userdata)
+                     (set-alist 'description "机の前に移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-tv-desk
@@ -841,7 +847,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-desk-back-trial userdata)))
                       (success (move-to-desk-back :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-desk-back userdata)) success)
-                 (set-alist 'description "部屋の後ろに移動したよ" userdata)
+                 (if success
+                     (set-alist 'description "部屋の後ろに移動したよ" userdata)
+                     (set-alist 'description "部屋の後ろに移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-desk-back
@@ -861,7 +869,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-desk-front-trial userdata)))
                       (success (move-to-desk-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-desk-front userdata)) success)
-                 (set-alist 'description "部屋の前に移動したよ" userdata)
+                 (if success
+                     (set-alist 'description "部屋の前に移動したよ" userdata)
+                     (set-alist 'description "部屋の前に移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-desk-front
@@ -881,7 +891,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-kitchen-door-front-trial userdata)))
                       (success (move-to-kitchen-door-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-tv-desk userdata)) success)
-                 (set-alist 'description "ドアの前に移動したよ" userdata)
+                 (if success
+                     (set-alist 'description "ドアの前に移動したよ" userdata)
+                     (set-alist 'description "ドアの前に移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-kitchen-door-front
@@ -901,7 +913,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-kitchen-trial userdata)))
                       (success (move-to-sink-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-kitchen userdata)) success)
-                 (set-alist 'description "キッチンに向かったよ" userdata)
+                 (if success
+                     (set-alist 'description "キッチンに移動したよ" userdata)
+                     (set-alist 'description "キッチンに移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-kitchen
@@ -921,7 +935,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-trashcan-trial userdata)))
                       (success (move-to-trashcan-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-trashcan userdata)) success)
-                 (set-alist 'description "ゴミ箱の前に向かったよ" userdata)
+                 (if success
+                     (set-alist 'description "ゴミ箱の前に移動したよ" userdata)
+                     (set-alist 'description "ゴミ箱の前に移動しようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:inspect-trashcan
@@ -942,7 +958,9 @@ Args:
                (let* ((n-trial (cdr (assoc 'n-dock-trial userdata)))
                       (success (auto-dock :n-trial n-trial :clear-costmap nil)))
                  (setf (cdr (assoc 'success-auto-dock userdata)) success)
-                 (set-alist 'description "帰ってきたよ" userdata)
+                 (if success
+                     (set-alist 'description "帰ってきたよ" userdata)
+                     (set-alist 'description "帰ってこようとしたけど，迷子になっちゃった" userdata))
                  (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                  success)))
             (:auto-dock-failure
@@ -957,9 +975,10 @@ Args:
                      (initial-light-on (cdr (assoc 'initial-light-on userdata)))
                      (control-switchbot (cdr (assoc 'control-switchbot userdata))))
                  (if (and success-auto-dock (not initial-light-on))
-                     (room-light-off :control-switchbot control-switchbot))
-                 (set-alist 'description "電気を消したよ" userdata)
-                 (set-alist 'image "" userdata))
+                     (progn
+                       (room-light-off :control-switchbot control-switchbot)
+                       (set-alist 'description "電気を消したよ" userdata)
+                       (set-alist 'image "" userdata))))
                t))
             (:finish
              '(lambda (userdata)
