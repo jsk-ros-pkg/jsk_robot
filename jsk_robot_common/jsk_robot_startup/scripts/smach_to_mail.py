@@ -162,11 +162,12 @@ class SmachToMail():
                 image.img_data = x['IMAGE']
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
+        for x in state_list:
             if 'INFO' in x:
-                description = EmailBody()
-                description.type = 'text'
-                description.message = x['INFO']
-                email_msg.body.append(description)
+                info = EmailBody()
+                info.type = 'text'
+                info.message = x['INFO']
+                email_msg.body.append(info)
                 email_msg.body.append(changeline)
         # rospy.loginfo("body:{}".format(email_msg.body))
 
