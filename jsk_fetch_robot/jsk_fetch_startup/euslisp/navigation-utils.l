@@ -415,7 +415,8 @@ Args:
       (notify-app "object recognition"
                   (send msg :header :stamp)
                   location
-                  (format nil "~A is found" label-names)))))
+                  (format nil "~A is found" label-names))
+      label-names)))
 
 (defun notify-co2 (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/eco2" std_msgs::UInt16
@@ -920,9 +921,11 @@ Args:
                  success)))
             (:inspect-kitchen
              '(lambda (userdata)
-               (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
-               (set-alist 'description "キッチンの様子を見たよ" userdata)
-               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               (let ((label-names (notify-recognition :location "kitchen"))
+                     (notify-text (if label-names (format nil "~Aがあったよ" label-names) "")))
+                     (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
+                     (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                t))
             (:report-move-to-sink-front-failure
              '(lambda (userdata)
