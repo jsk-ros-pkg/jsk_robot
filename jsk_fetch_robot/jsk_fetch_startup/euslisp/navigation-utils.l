@@ -946,7 +946,7 @@ Args:
             (:inspect-trashcan
              '(lambda (userdata)
                (inspect-trashcan :tweet (cdr (assoc 'tweet userdata)))
-               (set-alist 'description "ゴミ箱の前に行けなかったよ" userdata)
+               (set-alist 'description "ゴミ箱の様子を確認したよ" userdata)
                (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                t))
             (:report-move-to-trashcan-front-failure
