@@ -1,0 +1,37 @@
+rarm:
+  - rarm_joint1 : rarm-collar-y
+  - rarm_joint2 : rarm-shoulder-p
+  - rarm_joint3 : rarm-shoulder-y
+  - rarm_joint4 : rarm-elbow-p
+  - rarm_joint5 : rarm-wrist-r
+  - rarm_joint6 : rarm-wrist-p
+  - rarm_joint7 : rarm-wrist-y
+larm:
+  - larm_joint1 : larm-collar-y
+  - larm_joint2 : larm-shoulder-p
+  - larm_joint3 : larm-shoulder-y
+  - larm_joint4 : larm-elbow-p
+  - larm_joint5 : larm-wrist-r
+  - larm_joint6 : larm-wrist-p
+  - larm_joint7 : larm-wrist-y
+
+#head:
+#  - pan_tilt_JOINT0 : head-neck-y
+#  - pan_tilt_JOINT1 : head-neck-p
+
+rarm-end-coords:
+  parent: rarm_link7
+  translate: [0, 0, 0.2]
+  rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
+larm-end-coords:
+  parent: larm_link7
+  translate: [0, 0, 0.2]
+  rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
+
+angle-vector:
+  reset-pose: [ 0.0, 15.0, 0.0, -135.0, 0.0, 150.0, 45.0,
+                0.0, 15.0, 0.0, -135.0, 0.0, 150.0, 45.0,
+                0.0, -75.0]
+  reset-manip-pose: [ -29.862, 22.5706,  6.95363, -118.83,  69.8182, 77.5441, 82.0761,
+                      37.506, 23.1119, -15.2759, -119.03, -67.9519, 80.0034,  7.1317,
+                      0.0,   -75.0 ]
