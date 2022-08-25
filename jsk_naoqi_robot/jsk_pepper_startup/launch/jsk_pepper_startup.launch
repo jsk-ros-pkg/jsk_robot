@@ -17,6 +17,13 @@
 
   <node pkg="jsk_pepper_startup" name="take_wakeup_pose" type="take_wakeup_pose.py" if="$(arg autonomous_wakeup)" />
 
+  <!-- node to publish compressed image -->
+  <node pkg="image_transport" type="republish"
+        name="front_image_rect_color_compress"
+        args="raw in:=/pepper_robot/camera/front/image_rect_color
+              compressed out:=/pepper_robot/camera/front/image_rect_color"
+        />
+
   <!-- <include file="$(find turtlebot_teleop)launch/keyboard_teleop.launch" /> -->
   <node pkg="joy" type="joy_node" name="joy_node" respawn="true" if="$(arg launch_joy)">
     <param name="dev" value="/dev/input/js0" />

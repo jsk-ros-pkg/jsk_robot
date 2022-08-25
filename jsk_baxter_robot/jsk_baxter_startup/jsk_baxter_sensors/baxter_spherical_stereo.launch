@@ -1,0 +1,32 @@
+<launch>
+  <arg name="spherical_left_camera_ns" default="elp_head_left" />
+  <arg name="spherical_right_camera_ns" default="elp_head_right" />
+
+  <!-- launch elp left camera on c1 -->
+  <node name="elp_left_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0.032 0.05 0.1 -1.5 -0.6 0.0 head_camera $(arg spherical_left_camera_ns)_link 100" />
+  <node name="elp_left_optical_frame_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 -1.57 0 -1.57 $(arg spherical_left_camera_ns)_link $(arg spherical_left_camera_ns)_optical_frame 100" />
+  <node name="elp_left_rviz_frame_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 3.14 0 0 $(arg spherical_left_camera_ns)_link $(arg spherical_left_camera_ns)_rviz_frame 100" />
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/elp_usb.launch">
+    <arg name="camera_name" value="$(arg spherical_left_camera_ns)" />
+    <arg name="machine" value="baxter-c1" />
+    <arg name="load_machinepath" value="true" />
+    <arg name="machinepath" value="$(find jsk_baxter_startup)/jsk_baxter_machine/baxter.machine" />
+  </include>
+
+  <!-- launch elp right camera on c4 -->
+  <node name="elp_right_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="-0.032 0.05 0.1 -1.5 -0.6 0.0 head_camera $(arg spherical_right_camera_ns)_link 100" />
+  <node name="elp_right_optical_frame_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 -1.57 0 -1.57 $(arg spherical_right_camera_ns)_link $(arg spherical_right_camera_ns)_optical_frame 100" />
+  <node name="elp_right_rviz_frame_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 3.14 0 0 $(arg spherical_right_camera_ns)_link $(arg spherical_right_camera_ns)_rviz_frame 100" />
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/elp_usb.launch">
+    <arg name="camera_name" value="$(arg spherical_right_camera_ns)" />
+    <arg name="machine" value="localhost" />
+    <arg name="load_machinepath" value="true" />
+    <arg name="machinepath" value="$(find jsk_baxter_startup)/jsk_baxter_machine/baxter.machine" />
+  </include>
+</launch>
