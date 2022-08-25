@@ -149,6 +149,10 @@
     <arg name="depth_camera_info_url" value="$(arg depth_camera_info_url)"/>
   </include>
 
+  <!-- Set image_transport_plugins parameters (png_level and disable_pub_plugins) -->
+  <rosparam file="$(find jsk_fetch_startup)/config/image_transport_plugins_params.yaml"
+            command="load"/>
+
   <!-- Laser -->
   <include file="$(find fetch_bringup)/launch/include/laser.launch.xml"/>
 

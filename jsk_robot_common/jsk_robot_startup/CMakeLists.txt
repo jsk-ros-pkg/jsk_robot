@@ -59,6 +59,7 @@ add_message_files(
   FILES
   RoomLight.msg
   Email.msg
+  EmailBody.msg
 )
 
 generate_messages(

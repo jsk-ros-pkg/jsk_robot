@@ -1,0 +1,15 @@
+finger1_joint_controller:
+  controller:
+    package: dynamixel_controllers
+    module: calib_required_joint_controller
+    type: CalibRequiredJointController
+finger2_joint_controller:
+  controller:
+    package: dynamixel_controllers
+    module: calib_required_joint_controller
+    type: CalibRequiredJointController
+finger3_joint_controller:
+  controller:
+    package: dynamixel_controllers
+    module: calib_required_joint_controller
+    type: CalibRequiredJointController

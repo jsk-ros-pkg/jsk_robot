@@ -34,7 +34,7 @@ message("cobotta_urdf: ${_cobotta_urdf}")
 message("collada2eus: ${_collada2eus}")
 
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/cobotta.urdf
-  COMMAND xacro ${_cobotta_urdf}/cobotta.urdf.xacro > ${PROJECT_BINARY_DIR}/cobotta.urdf
+  COMMAND xacro --inorder ${_cobotta_urdf}/cobotta.urdf.xacro > ${PROJECT_BINARY_DIR}/cobotta.urdf
   DEPENDS ${_cobotta_urdf}/cobotta.urdf.xacro)
 add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/cobotta.l
   COMMAND echo "${_collada2eus} ${PROJECT_BINARY_DIR}/cobotta.urdf cobotta.l"
