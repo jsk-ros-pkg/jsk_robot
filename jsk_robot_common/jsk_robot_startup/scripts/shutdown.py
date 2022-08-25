@@ -33,20 +33,17 @@ class Shutdown(object):
     def __init__(self):
         rospy.loginfo('Start shutdown node.')
 
-        condition = rospy.get_param(
+        self.condition = rospy.get_param(
             '~input_condition', None)
-        if condition is not None:
-            self.condition = condition
+        if self.condition is not None:
             self.topic_name = rospy.resolve_name('~input')
-            self.filter_fn = expr_eval(condition)
+            self.filter_fn = expr_eval(self.condition)
             self.last_received_topic = None
             self.sub_check_topic = rospy.Subscriber(
                 self.topic_name,
                 rospy.AnyMsg,
                 callback=self.callback,
                 queue_size=1)
-            self.sub_shutdown_unchecked = rospy.Subscriber(
-                'shutdown_unchecked', Empty, self.shutdown_unchecked)
 
         rospy.Subscriber('shutdown', Empty, self.shutdown)
         rospy.Subscriber('reboot', Empty, self.reboot)
@@ -68,21 +65,26 @@ class Shutdown(object):
         self.last_received_topic = self.topic_name, msg, rospy.Time.now()
 
     def shutdown(self, msg):
+        if self.condition is not None:
+            if self.last_received_topic is None:
+                rospy.loginfo(
+                    'received shutdown. '
+                    'However input topic "{}" has not been received.'
+                    .format(self.topic_name))
+                return
+            topic_name, m, t = self.last_received_topic
+            if self.filter_fn(topic_name, m, t) is False:
+                rospy.loginfo(
+                    'received shutdown. '
+                    'However condition "{}" is not satisfied.'
+                    .format(self.condition))
+                return
+
         rospy.loginfo('Shut down robot.')
         ret = os.system(self.shutdown_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(
                 self.shutdown_command))
-
-    def shutdown_unchecked(self, msg):
-        if self.last_received_topic is None:
-            return
-        topic_name, m, t = self.last_received_topic
-        if self.filter_fn(topic_name, m, t):
-            self.shutdown(msg)
-        else:
-            rospy.loginfo('received shutdown_unchecked. However condition {} is not satisfied.'
-                          .format(self.condition))
 
     def reboot(self, msg):
         rospy.loginfo('Reboot robot.')

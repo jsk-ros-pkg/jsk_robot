@@ -181,19 +181,19 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
 * `shutdown` (`std_msgs/Empty`)
 
-  Input topic that trigger shutdown
+  Input topic that trigger shutdown.
+
+  If `~input_condition` is set, evaluated `~input_condition` is `True` and this node received this topic, shutdown will be executed.
+
+  Even if you want to force shutdown, set `~input_condition` to `None` and send `shutdown` topic.
 
 * `reboot` (`std_msgs/Empty`)
 
   Input topic that trigger reboot
 
-* `shutdown_unchecked` (`std_msgs/Empty`)
-
-  Input topic that trigger shutdown. This is valid only when `~input_condition` param is set. If evaluated `~input_condition` is `True` and this node received this topic, shutdown will be executed.
-
 * `~input` (`AnyMsg`)
 
-  Input value for `shutdown_unchecked`.
+  Input ros message for `~input_condition`.
 
 
 ### Parameters
