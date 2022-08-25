@@ -114,6 +114,18 @@ Related nodes: `/joy_client`, `joy_node`, `/teleop_twist_joy`
 
 Related nodes: `/naoqi_dashboard`, `/naoqi_dashboard_aggregator`, `/tf_monitor`
 
+### Image
+
+To visualize compressed image.
+```
+rosrun image_view image_view image:=/pepper_robot/camera/front/image_rect_color _image_transport:=compressed
+```
+
+From roseus, you can subscribe compressed images using following code.
+```
+(ros::subscribe "/pepper_robot/camera/front/image_rect_color/compressed" sensor_msgs::CompressedImage #'image_cb)
+```
+
 ## Sample demo
 
 ```
