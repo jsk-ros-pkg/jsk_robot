@@ -16,13 +16,20 @@ macro(compile_naoqi_model robot_name urdf_version)
       COMMAND sed -i 's@juliettey20mp@${robot_name}@g' ${robot_name}.l
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       DEPENDS ${robot_name}.dae ${robot_name}.yaml)
-    add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/${robot_name}.dae
+    add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/${robot_name}-simple.l
+      COMMAND rosrun euscollada collada2eus --simple_geometry  ${robot_name}.dae ${robot_name}.yaml ${robot_name}-simple.l
+      COMMAND sed -i 's@JulietteY20MP@${robot_name}@g' ${robot_name}-simple.l
+      COMMAND sed -i 's@julietteY20MP@${robot_name}@g' ${robot_name}-simple.l
+      COMMAND sed -i 's@juliettey20mp@${robot_name}@g' ${robot_name}-simple.l
+      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+      DEPENDS ${robot_name}.dae ${robot_name}.yaml)
+  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/${robot_name}.dae
       COMMAND rosrun collada_urdf urdf_to_collada ${${robot_name}_urdf} ${robot_name}.dae || echo "ok?" # urdf_to_collada fail to exit program, but generated dae is ok.
       WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       DEPENDS ${${robot_name}_urdf})
     find_package(${robot_name}_meshes)
     if(${robot_name}_meshes_FOUND)
-      add_custom_target(generate_${robot_name}_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/${robot_name}.l)
+      add_custom_target(generate_${robot_name}_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/${robot_name}.l ${PROJECT_SOURCE_DIR}/${robot_name}-simple.l)
     else()
       message(WARNING "Please install ros-\$ROS_DISTRO-${robot_name}-meshes manually")
     endif()
