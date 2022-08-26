@@ -61,6 +61,10 @@
        doc="Deprecated. Please use launch_twitter instead." />
   <arg name="launch_twitter" default="$(arg launch_tweet)"
        doc="launch twitter" />
+  <arg if ="$(arg launch_spherical_stereo)"
+       name="twitter_image_topics" default="/$(arg spherical_left_camera_ns)/image_raw"/>
+  <arg unless ="$(arg launch_spherical_stereo)"
+       name="twitter_image_topics" default="/cameras/head_camera/image"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="launch_app_manager" default="true"/>
 
@@ -191,6 +195,7 @@
     </include>
     <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/db_client.launch" >
       <arg name="twitter" value="$(arg launch_twitter)"/>
+      <arg name="twitter_image_topics" value="$(arg twitter_image_topics)"/>
     </include>
   </group>
 
