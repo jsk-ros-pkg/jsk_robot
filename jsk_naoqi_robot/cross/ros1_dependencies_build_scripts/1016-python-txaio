@@ -1,0 +1,17 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/python-txaio/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/python-txaio/python-txaio-2.8.1
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(grep -v ^# series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+done
+
+cd ${SOURCE_DIR}
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages/
+PYTHONPATH="/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages" \
+          python \
+          setup.py install \
+          --prefix /home/nao/${INSTALL_ROOT}/ros1_dependencies

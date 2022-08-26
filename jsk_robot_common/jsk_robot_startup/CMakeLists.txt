@@ -22,6 +22,7 @@ else()
 endif()
 
 find_package(catkin COMPONENTS # remove REQUIRED for mongodb
+  angles
   dynamic_reconfigure
   jsk_topic_tools
   message_generation
@@ -58,6 +59,7 @@ add_message_files(
   FILES
   RoomLight.msg
   Email.msg
+  EmailBody.msg
 )
 
 generate_messages(

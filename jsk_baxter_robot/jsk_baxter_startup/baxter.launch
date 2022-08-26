@@ -1,11 +1,53 @@
 <launch>
   <arg name="launch_servo" default="true"/>
   <arg name="launch_joint_trajectory" default="true"/>
-  <arg name="launch_gripper_action" default="false"/>
+  <arg name="launch_moveit" default="true"/>
+  <arg name="launch_robot_state_publisher" default="false"/>
+  <arg name="launch_wrench" default="true"/>
+  <arg name="load_robot_description" default="false"/>
+  <arg name="sanity_check_joint_trajectory" default="true" />
+
+  <!-- camera-->
   <arg name="launch_openni" default="false"/>
   <arg name="launch_kinect2" default="false"/>
-  <arg name="launch_voice_echo" default="true"/>
-  <arg name="launch_moveit" default="true"/>
+  <arg name="launch_realsense_torso" default="false"/>
+  <arg name="launch_spherical_kodak" default="false" />
+  <arg name="launch_spherical_stereo" default="false" />
+  <arg name="start_openni" default="false"/>
+
+  <!-- xdisplay -->
+  <arg name="custom_xdisplay" default="true" />
+  <arg name="launch_xdisplay" default="false" />
+  <arg name="xdisplay_max_width" default="1024" unless="$(arg custom_xdisplay)" />
+  <arg name="xdisplay_max_width" default="1920" if="$(arg custom_xdisplay)" />
+  <arg name="xdisplay_max_height" default="600" unless="$(arg custom_xdisplay)" />
+  <arg name="xdisplay_max_height" default="1200" if="$(arg custom_xdisplay)" />
+
+  <!-- gripper -->
+  <arg name="launch_gripper_action" default="false"/>
+  <arg name="left_gripper_type" default="parallel" />
+  <arg name="right_gripper_type" default="parallel" />
+  <arg name="finger" default="standard_narrow" />
+  <arg name="finger_tip" default="paddle_tip" />
+  <arg name="left_electric_gripper" default="true"
+       if="$(eval arg('left_gripper_type') == 'parallel')" />
+  <arg name="left_electric_gripper" default="false"
+       if="$(eval arg('left_gripper_type') in ['softhand', 'softhand-v2'])" />
+  <arg name="right_electric_gripper" default="true"
+       if="$(eval arg('right_gripper_type') == 'parallel')" />
+  <arg name="right_electric_gripper" default="false"
+       if="$(eval arg('right_gripper_type') in ['softhand', 'softhand-v2'])" />
+
+  <!-- arm -->
+  <arg name="arm_interpolation" default="minjerk"
+       doc="Baxter arm trajectory interpolation method: minjerk or bezier (default: minjerk)"/>
+  <arg name="arm_control_mode" default="position_w_id"
+       doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
+  <arg name="USER_NAME" default="false"/>
+
+  <!-- jsk lifelog -->
+  <arg name="launch_voice_echo" default="false"/>
+  <arg name="launch_respeaker" default="false"/>
   <arg name="launch_teleop" default="false"/>
   <arg name="launch_mongodb" default="false"
        doc="Deprecated. Please use launch_db instead."/>
@@ -15,25 +57,24 @@
        doc="Deprecated. Please use launch_twitter instead." />
   <arg name="launch_twitter" default="$(arg launch_tweet)"
        doc="launch twitter" />
-  <arg name="launch_wrench" default="true"/>
   <arg name="launch_time_signal" default="true"/>
-  <arg name="sanity_check_joint_trajectory" default="true" />
-  <arg name="start_openni" default="false"/>
-  <arg name="load_robot_description" default="false"/>
-  <arg name="launch_robot_state_publisher" default="false"/>
-  <arg name="left_electric_gripper" default="false"/>
-  <arg name="right_electric_gripper" default="false"/>
-  <arg name="arm_interpolation" default="minjerk"
-       doc="Baxter arm trajectory interpolation method: minjerk or bezier (default: minjerk)"/>
-  <arg name="arm_control_mode" default="position_w_id"
-       doc="Baxter arm controller mode: positon_w_id, position or velocity (default: position_w_id)" />
-  <arg name="USER_NAME" default="false"/>
+  <arg name="launch_app_manager" default="true"/>
+
+  <!-- gui -->
+  <arg name="launch_rviz" default="false"/>
+
+  <!-- baxter default params -->
+  <param name="/robot/name" value="baxter" />
+  <param name="/robot/type" value="baxter" />
   <param name="/active_user/launch_user_name" value="$(arg USER_NAME)"/>
 
   <!-- custom baxter params -->
   <param if="$(arg load_robot_description)" name="/robot_description"
-         command="$(find xacro)/xacro --inorder $(find baxter_description)/urdf/baxter.urdf.xacro gazebo:=false
-         left_electric_gripper:=$(arg left_electric_gripper) right_electric_gripper:=$(arg right_electric_gripper)"/>
+         command="$(find xacro)/xacro --inorder $(find jsk_baxter_startup)/jsk_baxter_description/baxter.urdf.xacro
+                  gazebo:=false finger:=$(arg finger) finger_tip:=$(arg finger_tip)
+                  left_electric_gripper:=$(arg left_electric_gripper)
+                  right_electric_gripper:=$(arg right_electric_gripper)" />
+
   <!-- 
     NOTE: When baxter is booted up, baxter launches robot_state_publisher inside robot.
     However, that node is killed by roslaunch jsk_arc2017_baxter baxter.launch
@@ -66,7 +107,22 @@
     </group>
   </group>
 
+  <!-- launch defaulut gripper -->
   <node if="$(arg launch_gripper_action)" pkg="baxter_interface" name="baxter_gripper_action_server" type="gripper_action_server.py" args="" output="screen"/>
+
+  <!-- launch softhands -->
+  <group ns="lgripper" if="$(eval arg('left_gripper_type') in ['softhand', 'softhand-v2'])">
+    <include file="$(find softhand_ros)/launch/softhand_left.launch"
+             if="$(eval arg('left_gripper_type') == 'softhand')"/>
+    <include file="$(find softhand_ros)/launch/softhand_v2_left.launch"
+             if="$(eval arg('left_gripper_type') == 'softhand-v2')"/>
+  </group>
+  <group ns="rgripper" if="$(eval arg('right_gripper_type') in ['softhand', 'softhand-v2'])">
+    <include file="$(find softhand_ros)/launch/softhand_right.launch"
+             if="$(eval arg('right_gripper_type') == 'softhand')"/>
+    <include file="$(find softhand_ros)/launch/softhand_v2_right.launch"
+             if="$(eval arg('right_gripper_type') == 'softhand-v2')"/>
+  </group>
 
   <!-- Use Custom OpenNI-->
   <include if="$(arg launch_openni)"
@@ -80,6 +136,25 @@
     <arg name="launch_openni" value="$(arg start_openni)" />
   </include>
 
+  <!-- Use realsense L515 on torso -->
+  <include if="$(arg launch_realsense_torso)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_torso.launch">
+    <arg name="realsense_camera_ns" value="realsense_torso" />
+  </include>
+
+  <!-- Use spherical kodak on head -->
+  <include if="$(arg launch_spherical_kodak)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_spherical_kodak.launch">
+    <arg name="spherical_camera_ns" value="kodak_head" />
+  </include>
+
+  <!-- Use spherical stereo on head -->
+  <include if="$(arg launch_spherical_stereo)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_spherical_stereo.launch">
+    <arg name="spherical_left_camera_ns" value="elp_head_left" />
+    <arg name="spherical_right_camera_ns" value="elp_head_right" />
+  </include>
+
   <!-- Fix camera info -->
   <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/camera_info_fixer.launch" />
 
@@ -87,6 +162,10 @@
   <include if="$(arg launch_voice_echo)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/voice.launch" >
   </include>
+
+  <!-- launch respeaker on torso -->
+  <include if="$(arg launch_respeaker)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/respeaker.launch" />
 
   <include if="$(arg launch_moveit)"
            file="$(find jsk_baxter_startup)/jsk_baxter_moveit/moveit.launch" >
@@ -120,5 +199,29 @@
   <node if="$(arg launch_time_signal)"
 	pkg="roseus" type="roseus" name="time_signal" output="screen"
 	args="$(find jsk_robot_startup)/lifelog/time-signal.l" />
+
+  <!-- App manager -->
+  <include if="$(arg launch_app_manager)"
+           file="$(find jsk_robot_startup)/lifelog/app_manager.launch" >
+    <!-- use plugin -->
+    <arg name="use_applist" value="false" />
+    <arg name="respawn" value="false" />
+    <arg name="basic" value="false" />
+  </include>
+
+  <!-- xdisplay for baxter head -->
+  <node name="xdisplay_image_topic" if="$(arg launch_xdisplay)"
+        pkg="jsk_baxter_startup" type="xdisplay_image_topic.py"
+        args="/xdisplay_image_topic/input/image"
+        output="screen" >
+    <rosparam subst_value="true">
+      max_width: $(arg xdisplay_max_width)
+      max_height: $(arg xdisplay_max_height)
+    </rosparam>
+  </node>
+
+  <!-- launch rviz -->
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" if="$(arg launch_rviz)"
+        args="-d $(find jsk_baxter_startup)/config/baxter_default.rviz"/>
 
 </launch>

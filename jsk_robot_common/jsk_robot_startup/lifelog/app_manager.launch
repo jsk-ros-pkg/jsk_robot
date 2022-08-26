@@ -1,4 +1,8 @@
 <launch>
+  <arg name="master" default="true" doc="launch master if enabled"/>
+  <arg name="master_address" default="localhost" doc="address for app_manager master"/>
+  <arg name="master_port" default="11313" doc="port for app_manager master"/>
+
   <arg name="use_applist" default="false" doc="load apps from applist argument"/>
   <arg name="applist" default="" doc="app dirs (space separated)"/>
 
@@ -61,6 +65,9 @@
   NOTE: Ensure the param '/robot/type' and '/robot/name' are defined when the nodes below are started.
   -->
   <include file="$(find app_manager)/launch/app_manager.launch">
+    <arg name="master" value="$(arg master)"/>
+    <arg name="master_address" value="$(arg master_address)"/>
+    <arg name="master_port" value="$(arg master_port)"/>
     <arg name="use_applist" value="$(arg use_applist)"/>
     <arg name="applist" value="$(arg applist)"/>
     <arg name="respawn" value="$(arg respawn)"/>

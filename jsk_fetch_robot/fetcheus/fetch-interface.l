@@ -4,10 +4,11 @@
 
 (ros::load-ros-package "fetcheus")
 (ros::load-ros-package "fetch_driver_msgs")
+(ros::load-ros-package "robot_controllers_msgs")
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action moveit-robot)
+  :slots (gripper-action moveit-robot fetch-controller-action)
   )
 
 (defmethod fetch-interface
@@ -28,10 +29,16 @@
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
      (when (and (boundp '*co*) default-collision-object)
+       (send self :delete-headbox-collision-object)
        (send self :delete-keepout-collision-object)
        (send self :delete-ground-collision-object)
+       (send self :add-headbox-collision-object)
        (send self :add-keepout-collision-object)
        (send self :add-ground-collision-object))
+     (setq fetch-controller-action
+           (instance ros::simple-action-client :init
+                     "/query_controller_states"
+                     robot_controllers_msgs::QueryControllerStatesAction))
      ))
   (:state (&rest args)
    "We do not have :wait-until-update option for :state :worldcoords.
@@ -236,6 +243,18 @@ Example: (send self :gripper :position) => 0.00"
   (:delete-workspace ()
     (send *co* :delete-attached-object-by-id "workspace")
     (send *co* :delete-object-by-id "workspace"))
+  (:add-headbox-collision-object ()
+    (let ()
+      ;; fetch must be :reset-pose when we run this method
+      (setq *fetch-headbox* (make-cube 100 201 120))
+      (send *fetch-headbox* :move-coords (send robot :head_pan_link_lk :worldcoords)
+                                         (send robot :base_link_lk :worldcoords))
+      (send *fetch-headbox* :translate #f(33.75 0 150) (send robot :head_pan_link_lk :worldcoords))
+      (send *co* :add-attached-object *fetch-headbox* "head_pan_link"
+                 :frame_id "head_pan_link"
+                 :object_id "fetchheadbox")))
+  (:delete-headbox-collision-object ()
+    (send *co* :delete-attached-object-by-id "fetchheadbox"))
   (:add-keepout-collision-object ()
     (let ((cube (make-cube 200 350 10))
           (keepout (make-cylinder 300 10)))
@@ -265,7 +284,85 @@ Example: (send self :gripper :position) => 0.00"
             :touch-links nil)))
   (:delete-ground-collision-object ()
     (send *co* :delete-attached-object-by-id "ground")
-    (send *co* :delete-object-by-id "ground")))
+    (send *co* :delete-object-by-id "ground"))
+  (:servo-off (&key (arm t) (gripper t) (head t))
+    "
+    Turn servo off for arm/gripper/head motors
+    Args:
+      - key
+        - arm: If you do not want to servo off the arm, set nil (default: t)
+        - gripper: If you do not want to servo off the grippper, set nil (default: t)
+        - head: If you do not want to servo off the head, set nil (default: t)
+    Examples:
+      (send self :servo-off) ;; arm, gripper and  head servos off
+      (send self :servo-off :arm t :gripper nil :head nil) ;; arm servo off
+    "
+    (let ((goal-servo-off (instance robot_controllers_msgs::QueryControllerStatesGoal :init))
+          (goal-gripper-servo-off (instance control_msgs::GripperCommandGoal :init))
+          (state nil) (update-list nil)
+          (gravity-comp (list "arm_controller/gravity_compensation"))
+          (arm-controller (list "arm_controller/follow_joint_trajectory"
+                                "arm_with_torso_controller/follow_joint_trajectory"
+                                "torso_controller/follow_joint_trajectory"))
+          (head-controller (list "head_controller/follow_joint_trajectory"
+                                 "head_controller/point_head")))
+      (when (or arm head)
+        (setq update-list (send goal-servo-off :updates))
+        (when arm
+          (ros::ros-info "arm servo off")
+          ;; start gravity compensation
+          (dolist (controller gravity-comp)
+            (setq state (instance robot_controllers_msgs::ControllerState :init))
+            (send state :name controller)
+            (send state :state 1) ;; running
+            (push state update-list))
+          ;; stop arm controllers
+          (dolist (controller arm-controller)
+            (setq state (instance robot_controllers_msgs::ControllerState :init))
+            (send state :name controller)
+            (send state :state 0) ;; stopping
+            (push state update-list)))
+        (when head
+          ;; stop head controllers
+          (ros::ros-info "head servo off")
+          (dolist (controller head-controller)
+            (setq state (instance robot_controllers_msgs::ControllerState :init))
+            (send state :name controller)
+            (send state :state 0) ;; stopping
+            (push state update-list)))
+        (send goal-servo-off :updates update-list)
+        (send fetch-controller-action :send-goal goal-servo-off))
+      (when gripper
+        ;; disable gripper torque
+        (ros::ros-info "gripper servo off")
+        (send (send goal-gripper-servo-off :command) :max_effort -1.0)
+        (send gripper-action :send-goal goal-gripper-servo-off))))
+  (:servo-on (&key (arm t) (gripper t) (head t) (time 200))
+    "
+    Turn servo on for arm/gripper/head motors
+    Args:
+      - key:
+        - arm: If you do not want to servo on the arm, set nil (default: t)
+        - gripper: If you do not want to servo on the grippper, set nil (default: t)
+        - head: If you do not want to servo on the head, set nil (default: t)
+        - time: [msec] duration to turn servo on,
+                experimentally the minimal duration is about 60[msec] (default: 200)
+    Examples:
+      (send self :servo-on) ;; arm, gripper and  head servos on
+      (send self :servo-on :arm nil :gripper nil :head t :time 80) ;; head servo on in 80[msec]
+    "
+    ;; the reason why :servo-off and :servo-on has different implementation is in the following issue
+    ;; https://github.com/fetchrobotics/robot_controllers/issues/72
+    (when arm
+      (ros::ros-info "arm servo on")
+      (send self :angle-vector (send self :state :potentio-vector) time :arm-controller)
+      (send self :angle-vector (send self :state :potentio-vector) time :torso-controller))
+    (when head
+      (ros::ros-info "head servo on")
+      (send self :angle-vector (send self :state :potentio-vector) time :head-controller))
+    (when gripper
+      (ros::ros-info "gripper servo on")
+      (send self :go-grasp :pos (send self :gripper :position)))))
 
 ;; interface for simple base actions
 (defmethod fetch-interface

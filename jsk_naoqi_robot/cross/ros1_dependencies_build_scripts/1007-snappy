@@ -1,0 +1,30 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/snappy/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/snappy/snappy-1.1.7
+
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(cat series); do
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+    done
+    touch .patched
+fi
+
+mkdir -p /home/nao/ros1_dependencies_sources/build/snappy
+cd /home/nao/ros1_dependencies_sources/build/snappy
+
+cmake \
+  -DCMAKE_FIND_ROOT_PATH="/home/nao/ros1_dependencies;/home/nao/ctc" \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=on \
+  ${SOURCE_DIR}
+
+make -j4 install VERBOSE=1
+
+echo "
+  -DCMAKE_TOOLCHAIN_FILE=/home/nao/ctc-cmake-toolchain.cmake \
+  -DALDE_CTC_CROSS=/home/nao/ctc \
+"
