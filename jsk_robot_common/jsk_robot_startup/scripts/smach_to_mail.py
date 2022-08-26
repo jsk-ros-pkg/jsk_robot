@@ -12,6 +12,7 @@ import yaml
 
 from cv_bridge import CvBridge
 from google_chat_ros.msg import Card
+from google_chat_ros.msg import Section
 from google_chat_ros.msg import SendMessageAction
 from google_chat_ros.msg import SendMessageActionGoal
 from google_chat_ros.msg import WidgetMarkup
@@ -56,8 +57,10 @@ class SmachToMail():
             else:
                 rospy.logerr("Please set rosparam {}/receiver_address".format(
                         rospy.get_name()))
-        self.chat_space = rospy.get_param("~google_chat_space", "space/AAAANt14uUE") # default: fetch space
-        self.gchat_image_path = rospy.get_param("~google_chat_tmp_image_path", "/tmp/smach_to_mail_google_chat.png")
+        self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
+        self.chat_space = rospy.get_param("~google_chat_space", "spaces/AAAARE9CrfA") # default: fetch threaded space
+        self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
+        self._gchat_thread = None
 
     def _status_cb(self, msg):
         '''
@@ -141,6 +144,7 @@ class SmachToMail():
                                   "({})".format(x['INFO']) if x['INFO'] else ''))
                 self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                self._send_google_chat(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self.smach_state_list[caller_id] = None
 
     def _send_mail(self, subject, state_list):
@@ -192,26 +196,37 @@ class SmachToMail():
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
 
-    def _send_google_chat(self, state_list):
-        client = actionlib.SimpleActionClient("/google_chat_ros/send/goal", SendMessageAction)
-        client.wait_for_server()
+    def _send_google_chat(self, subject, state_list):
+        self.gchat_ac.wait_for_server()
         goal = SendMessageActionGoal()
-        for x in state_list:
+        if subject:
+            goal.goal.text = subject
+        card = Card()
+        for i, x in enumerate(state_list):
+            section = Section()
+            widget = WidgetMarkup()
             if 'DESCRIPTION' in x:
                 text = x['DESCRIPTION']
+                section.header = text
             if 'IMAGE' in x and x['IMAGE']:
-                cv2.imwrite(self.gchat_image_path, x['IMAGE'])
-        card = Card()
-        card.header.title = text
-        widget = WidgetMarkup()
-        widget.image.localpath = self.gchat_image_path
-        card.sections.append([widget])
+                path = os.path.join(self.gchat_image_dir, 'smach_gchat_{}.png'.format(i))
+                with open(path, "wb") as f:
+                    f.write(base64.b64decode(x['IMAGE']))
+                widget.image.localpath = path
+            if section.header and widget.image.localpath:
+                section.widgets.append(widget)
+                card.sections.append(section)
         goal.goal.cards.append(card)
         goal.goal.space = self.chat_space
-        client.send_goal(goal)
-        client.wait_for_result()
+        if self._gchat_thread:
+            goal.goal.thread_name = self._gchat_thread
+        self.gchat_ac.send_goal(goal.goal)
+        self.gchat_ac.wait_for_result()
+        result = self.gchat_ac.get_result()
+        if not self._gchat_thread:
+            self._gchat_thread = result.message_result.thread_name
         rospy.loginfo("Sending google chat messsage: {} to {} chat space".format(text, self.chat_space))
-        rospy.loginfo("Google Chat result: {}".format(client.get_result()))
+        rospy.logdebug("Google Chat result: {}".format(self.gchat_ac.get_result()))
 
 if __name__ == '__main__':
     stm = SmachToMail()
