@@ -17,23 +17,23 @@
   <arg name="right_electric_gripper" default="$(eval arg('rgripper_type') == 'parallel')" />
 
   <!-- realsense camera -->
-  <arg name="realsense_camera_ns" default="realsense_torso"/>
-  <arg name="REALSENSE_RGB_IMAGE" value="/$(arg realsense_camera_ns)/color/image_rect_color" />
-  <arg name="REALSENSE_RGB_CAMERA_INFO" value="/$(arg realsense_camera_ns)/color/camera_info" />
+  <arg name="REALSENSE_CAMERA_NS" value="realsense_torso"/>
+  <arg name="REALSENSE_RGB_IMAGE" value="/$(arg REALSENSE_CAMERA_NS)/color/image_rect_color" />
+  <arg name="REALSENSE_RGB_CAMERA_INFO" value="/$(arg REALSENSE_CAMERA_NS)/color/camera_info" />
   <arg name="REALSENSE_DEPTH_IMAGE"
-       value="/$(arg realsense_camera_ns)/aligned_depth_to_color/compressed/image_raw" />
+       value="/$(arg REALSENSE_CAMERA_NS)/aligned_depth_to_color/compressed/image_raw" />
   <arg name="REALSENSE_DEPTH_CAMERA_INFO"
-       value="/$(arg realsense_camera_ns)/aligned_depth_to_color/compressed/camera_info" />
+       value="/$(arg REALSENSE_CAMERA_NS)/aligned_depth_to_color/compressed/camera_info" />
 
   <!-- spherical camera -->
-  <arg name="spherical_camera_ns" default="kodak_head" />
-  <arg name="SPHERICAL_RGB_IMAGE" value="/$(arg spherical_camera_ns)/image_raw" />
+  <arg name="SPHERICAL_CAMERA_NS" value="kodak_head" />
+  <arg name="SPHERICAL_RGB_IMAGE" value="/$(arg SPHERICAL_CAMERA_NS)/image_raw" />
 
   <!-- spherical stereo camera -->
-  <arg name="spherical_left_camera_ns" default="elp_head_left" />
-  <arg name="spherical_right_camera_ns" default="elp_head_right" />
-  <arg name="SPHERICAL_LEFT_RGB_IMAGE" value="/$(arg spherical_left_camera_ns)/image_raw" />
-  <arg name="SPHERICAL_RIGHT_RGB_IMAGE" value="/$(arg spherical_right_camera_ns)/image_raw" />
+  <arg name="SPHERICAL_LEFT_CAMERA_NS" value="elp_head_left" />
+  <arg name="SPHERICAL_RIGHT_CAMERA_NS" value="elp_head_right" />
+  <arg name="SPHERICAL_LEFT_RGB_IMAGE" value="/$(arg SPHERICAL_LEFT_CAMERA_NS)/image_raw" />
+  <arg name="SPHERICAL_RIGHT_RGB_IMAGE" value="/$(arg SPHERICAL_RIGHT_CAMERA_NS)/image_raw" />
 
   <!-- baxter params -->
   <param name="/use_sim_time" value="true" />
@@ -68,7 +68,7 @@
     <remap from="rgb/camera_info" to="$(arg REALSENSE_RGB_CAMERA_INFO)" />
     <remap from="rgb/image_rect_color" to="$(arg REALSENSE_RGB_IMAGE)" />
     <remap from="depth_registered/image_rect" to="$(arg REALSENSE_DEPTH_IMAGE)" />
-    <remap from="depth_registered/points" to="/$(arg realsense_camera_ns)/depth_registered/points" />
+    <remap from="depth_registered/points" to="/$(arg REALSENSE_CAMERA_NS)/depth_registered/points" />
     <rosparam>
       queue_size: 100
     </rosparam>
