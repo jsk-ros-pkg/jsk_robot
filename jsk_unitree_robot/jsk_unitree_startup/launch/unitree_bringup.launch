@@ -34,13 +34,13 @@
   <include file="$(find app_manager)/launch/app_manager.launch" />
 
   <!-- start lead teleop.launch -->
-  <node name="rosservice"
+  <node name="rosservice_lead_teleop"
         pkg="rosservice" type="rosservice"
         args="call --wait /robot/start_app 'name: jsk_unitree_startup/lead_teleop'"
         output="screen" />
 
   <!-- start emotion_reaction.launch -->
-  <node name="rosservice"
+  <node name="rosservice_emotion_reaction"
         pkg="rosservice" type="rosservice"
         args="call --wait /robot/start_app 'name: jsk_unitree_startup/emotion_reaction'"
         output="screen" />

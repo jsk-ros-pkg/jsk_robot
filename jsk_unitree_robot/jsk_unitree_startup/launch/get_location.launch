@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="network_interface" default="wlan0" />
+  <arg name="google_map_location_key_path" default="/var/lib/robot/google_map_location_key.yaml" />
+
+  <node name="location_node"
+        pkg="jsk_unitree_startup" type="location_node.py"
+        output="screen" >
+    <rosparam command="load" file="$(arg google_map_location_key_path)"/>
+    <rosparam subst_value="true" >
+      network_interface: $(arg network_interface)
+    </rosparam>
+  </node>
+
+</launch>

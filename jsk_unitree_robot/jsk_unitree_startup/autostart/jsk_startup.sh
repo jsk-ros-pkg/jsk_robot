@@ -17,7 +17,12 @@ if [ "$ROS_IP" == "192.168.123.161" ];then
     roslaunch --screen sound_play soundplay_node.launch sound_play:=robotsound &
     roslaunch --screen jsk_unitree_startup rwt_app_chooser.launch &
     roslaunch --screen jsk_unitree_startup rosserial_node.launch &
+    roslaunch --screen jsk_unitree_startup get_location.launch &
     roslaunch --screen respeaker_ros sample_respeaker.launch language:=ja-JP publish_tf:=false launch_soundplay:=false &
+fi
+
+if [ "$ROS_IP" == "192.168.123.13" ];then
+    roslaunch jsk_unitree_startup camera_image_publisher.launch &
 fi
 
 if [ "$ROS_IP" == "192.168.123.14" ];then

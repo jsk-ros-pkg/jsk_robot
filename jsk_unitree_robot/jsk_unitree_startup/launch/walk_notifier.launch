@@ -1,0 +1,18 @@
+<launch>
+
+  <arg name="walk_notifier_info_path" default="/var/lib/robot/walk_notifier.yaml" />
+  <arg name="notify_interval" default="180" />
+  <arg name="input_image" default="/front_camera/output" />
+
+  <node name="walk_notifier"
+        pkg="jsk_unitree_startup" type="walk_notifier.py"
+        output="screen" >
+    <rosparam command="load" file="$(arg walk_notifier_info_path)"/>
+    <remap from="~get_location" to="/location_node/get_location" />
+    <remap from="~input_image" to="$(arg input_image)" />
+    <rosparam subst_value="true" >
+      notify_interval: $(arg notify_interval)
+    </rosparam>
+  </node>
+
+</launch>
