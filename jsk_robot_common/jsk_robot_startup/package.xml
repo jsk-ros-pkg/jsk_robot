@@ -22,7 +22,6 @@
   <run_depend>actionlib_msgs</run_depend>
   <run_depend>app_manager</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
-  <run_depend>gdrive_ros</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>gmapping</run_depend>
   <run_depend>google_chat_ros</run_depend>
