@@ -30,13 +30,13 @@
     <arg name="right_gripper_type" value="$(arg right_gripper_type)" />
     <arg name="arm_interpolation" value="$(arg arm_interpolation)" />
     <arg name="arm_control_mode" value="$(arg arm_control_mode)" />
-    <arg name="launch_voice_echo" default="false"/>
-    <arg name="launch_respeaker" default="true"/>
-    <arg name="launch_teleop" default="false"/>
-    <arg name="launch_db" default="false" />
-    <arg name="launch_twitter" default="false" />
-    <arg name="launch_time_signal" default="false"/>
-    <arg name="launch_app_manager" default="true"/>
-    <arg name="launch_rviz" default="$(arg launch_rviz)"/>
+    <arg name="launch_voice_echo" value="false"/>
+    <arg name="launch_respeaker" value="true"/>
+    <arg name="launch_teleop" value="false"/>
+    <arg name="launch_db" value="false" />
+    <arg name="launch_twitter" value="false" />
+    <arg name="launch_time_signal" value="false"/>
+    <arg name="launch_app_manager" value="true"/>
+    <arg name="launch_rviz" value="$(arg launch_rviz)"/>
   </include>
 </launch>
