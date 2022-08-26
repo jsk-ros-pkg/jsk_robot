@@ -3,9 +3,11 @@
 import base64
 import cv2
 import datetime
+import os
 import pickle
 import rospy
 import sys
+import yaml
 
 from cv_bridge import CvBridge
 from jsk_robot_startup.msg import Email
@@ -28,8 +30,28 @@ class SmachToMail():
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        self.sender_address = "tsukamoto@jsk.imi.i.u-tokyo.ac.jp"
-        self.receiver_address = "tsukamoto@jsk.imi.i.u-tokyo.ac.jp"
+        yaml_path = rospy.get_param(
+            '~email_info', "/var/lib/robot/email_info.yaml")
+        if os.path.exists(yaml_path):
+            with open(yaml_path) as yaml_f:
+                self.email_info = yaml.load(yaml_f)
+            rospy.loginfo(
+                "{} is loaded as email config file.".format(yaml_path))
+            rospy.loginfo(self.email_info)
+            self.sender_address = self.email_info['sender_address']
+            self.receiver_address = self.email_info['receiver_address']
+        else:
+            if rospy.has_param("~sender_address"):
+                self.sender_address = rospy.get_param("~sender_address")
+            else:
+                rospy.logerr("Please set rosparam {}/sender_address".format(
+                    rospy.get_name()))
+            if rospy.has_param("~receiver_address"):
+                self.receiver_address = rospy.get_param("~receiver_address")
+            else:
+                rospy.logerr("Please set rosparam {}/receiver_address".format(
+                        rospy.get_name()))
+
 
     def _status_cb(self, msg):
         '''
@@ -150,19 +172,19 @@ class SmachToMail():
         self.pub_email.publish(email_msg)
 
     def _send_twitter(self, subject, state_list):
+        text = ""
         if subject:
-            self.pub_twitter.publish(String(subject))
-            rospy.loginfo("send '{}' to twitter".format(subject))
-
+            text += subject
         for x in state_list:
-            text = ""
-            if 'DESCRIPTION' in x:
-                text = x['DESCRIPTION']
+            if 'DESCRIPTION' in x and x['DESCRIPTION']:
+                text += '\n' + x['DESCRIPTION']
             if 'IMAGE' in x and x['IMAGE']:
-                text += x['IMAGE']
-            if len(text) > 1:
-                self.pub_twitter.publish(String(text))
-                rospy.loginfo("send '{}' to twitter".format(text[0:144]))
+                img_txt = x['IMAGE']
+                if isinstance(img_txt, bytes):
+                    img_txt = img_txt.decode('ascii')
+                text += img_txt
+        if len(text) > 1:
+            self.pub_twitter.publish(String(text))
 
 
 if __name__ == '__main__':
