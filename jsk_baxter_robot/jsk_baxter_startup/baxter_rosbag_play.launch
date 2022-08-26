@@ -79,7 +79,7 @@
         args="compressed in:=$(arg SPHERICAL_RGB_IMAGE)
               raw out:=$(arg SPHERICAL_RGB_IMAGE)" />
 
-  <!-- spherical streo rgb -->
+  <!-- spherical stereo rgb -->
   <node name="spherical_left_rgb_decompress" pkg="image_transport" type="republish"
         args="compressed in:=$(arg SPHERICAL_LEFT_RGB_IMAGE)
               raw out:=$(arg SPHERICAL_LEFT_RGB_IMAGE)" />
