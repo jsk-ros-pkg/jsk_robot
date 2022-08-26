@@ -233,4 +233,18 @@
     </rosparam>
   </node>
 
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
+  <!-- send email, twitter with smach -->
+  <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
 </launch>
