@@ -188,6 +188,9 @@
     <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/db_client.launch" >
       <arg name="twitter" value="$(arg launch_twitter)"/>
     </include>
+    <include file="$(find influxdb_store)/sample/baxter_influxdb_logger.launch">
+      <arg name="robot_name" value="baxter"/>
+    </include>
   </group>
 
   <!-- Wrench -->
