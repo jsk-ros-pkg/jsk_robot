@@ -2,7 +2,7 @@
 set -xeu -o pipefail
 
 DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/mailutils/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/mailutils/mailutils-3.7
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/mailutils/mailutils-3.4
 
 #
 # constantly does not have patches
