@@ -29,6 +29,9 @@ class SmachToMail():
         rospy.init_node('server_name')
         # it should be 'smach_to_mail', but 'server_name'
         # is the default name of smach_ros
+        self.use_mail = rospy.get_param("~use_mail", True)
+        self.use_twitter = rospy.get_param("~use_twitter", True)
+        self.use_google_chat = rospy.get_param("~use_google_chat", True)
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
@@ -47,20 +50,14 @@ class SmachToMail():
             self.sender_address = self.email_info['sender_address']
             self.receiver_address = self.email_info['receiver_address']
         else:
-            if rospy.has_param("~sender_address"):
+            if self.use_mail:
                 self.sender_address = rospy.get_param("~sender_address")
-            else:
-                rospy.logerr("Please set rosparam {}/sender_address".format(
-                    rospy.get_name()))
-            if rospy.has_param("~receiver_address"):
                 self.receiver_address = rospy.get_param("~receiver_address")
-            else:
-                rospy.logerr("Please set rosparam {}/receiver_address".format(
-                        rospy.get_name()))
-        self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
-        self.chat_space = rospy.get_param("~google_chat_space", "spaces/AAAARE9CrfA") # default: fetch threaded space
-        self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
-        self._gchat_thread = None
+        if self.use_google_chat:
+            self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
+            self.chat_space = rospy.get_param("~google_chat_space")
+            self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
+            self._gchat_thread = None
 
     def _status_cb(self, msg):
         '''
@@ -142,9 +139,12 @@ class SmachToMail():
                 for x in self.smach_state_list[caller_id]:
                     rospy.loginfo(" - At {}, Active state is {}{}".format(x['TIME'], x['STATE'],
                                   "({})".format(x['INFO']) if x['INFO'] else ''))
-                self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
-                self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
-                self._send_google_chat(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                if self.use_mail:
+                    self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                if self.use_twitter:
+                    self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                if self.use_google_chat:
+                    self._send_google_chat(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self.smach_state_list[caller_id] = None
 
     def _send_mail(self, subject, state_list):

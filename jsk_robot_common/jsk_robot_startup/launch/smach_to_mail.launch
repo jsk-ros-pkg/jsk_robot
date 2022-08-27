@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <arg name="use_mail" default="true" />
+  <arg name="use_twitter" default="true" />
+  <arg name="use_google_chat" default="true" />
+  <arg name="email_sender_address" default="" />
+  <arg name="email_receiver_address" default="" />
+  <arg name="google_chat_space" default="" />
+  <arg name="namespace" default="smach_to_mail" />
+
+  <group if="$(arg use_mail)" ns="$(arg namespace)">
+    <param name="sender_address" value="$(arg email_sender_address)" />
+    <param name="receiver_address" value="$(arg email_reveiver_address)" />
+  </group>
+  <group if="$(arg use_google_chat)" ns="$(arg namespace)">
+    <param name="google_chat_space" value="$(arg google_chat_space)" />
+  </group>
+
+  <node name="$(arg namespace)" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <rosparam subst_value="true">
+      use_mail: $(arg use_mail)
+      use_twitter: $(arg use_twitter)
+      use_google_chat: $(arg use_google_chat)
+    </rosparam>
+  </node>
+
+</launch>
