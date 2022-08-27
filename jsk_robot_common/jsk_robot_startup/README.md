@@ -305,3 +305,15 @@ To check how many devices are bound to rfcomm, use rfcomm command.
 ```
 rfcomm
 ```
+
+## launch/smach_to_mail.launch
+
+The launch file for `smach_to_mail.py`
+
+### Usage
+
+To launch
+
+``` bash
+roslaunch jsk_robot_startup smach_to_mail.launch namespace:=server_name use_mail:=true use_twitter:=true email_sender_address:=<sender's mail address> email_receiver_address:=<receiver's mail address> google_chat_space:=<google chat space name>
+```
