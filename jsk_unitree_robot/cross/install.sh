@@ -137,6 +137,7 @@ function copy_data () {
 
 if [[ ${TYPE} == "Pro" ]] ; then
     copy_data pi 192.168.123.161
+    copy_data unitree 192.168.123.13
     copy_data unitree 192.168.123.14
     ## copy_data unitree 192.168.123.15 : Pro : No Space for auto start
 elif [[ ${TYPE} == "Air" ]] ; then
