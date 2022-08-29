@@ -84,6 +84,7 @@ class HumanPosePublisher(object):
 
             rospy.loginfo("Received `{}` from `{}` topic".format(msg.payload.decode(), msg.topic))
             poses_msg = PeoplePoseArray()
+            poses_msg.header.stamp = self.last_received
             for topic in eval(msg.payload.decode()):  # convert str to list by eval()
                 pose_msg = PeoplePose()
                 for limb, pos in topic.items():
