@@ -52,7 +52,7 @@ if [ $localIPAddr == $Nano3 ];then
 	echo "	MasterNano"
 	############### MasterNano doing things!!!!
 	gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd $mLRootPATH/mLComSystemFrame/bin; ./mqttControlNode ../config/mqMNConfig.yaml; exec bash"
-	# gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd $mLRootPATH/mLComSystemFrame/pyScripts; python3 live_human_pose.py; exec bash"
+	gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd $mLRootPATH/mLComSystemFrame/pyScripts; python3 live_human_pose.py; exec bash"
 
 elif [ $localIPAddr == $Nano2 ];then
 	echo "	SecNanoLeft"
@@ -65,7 +65,6 @@ elif [ $localIPAddr == $Nano1 ];then
 	############### SecNanoRight(1-2) doing things!!!!
 	gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd $mLRootPATH/mLComSystemFrame/bin; ./mqttControlNode ../config/mqSNNRConfig.yaml; exec bash"
 	gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd $mLRootPATH/mLComSystemFrame/bin; ./mqttControlNode ../config/mqSNNRConfig.yaml 1; exec bash"
-  gnome-terminal -- bash -c "export GST_PLUGIN_PATH=/home/unitree/Unitree/autostart/imageai/mLComSystemFrame/ThirdParty/webSinkPipe/build; cd $mLRootPATH/mLComSystemFrame/pyScripts; python3 live_human_pose.py; exec bash"
 else
 	echo "	Not Found $localIPAddr in IP-Clump!"
 fi

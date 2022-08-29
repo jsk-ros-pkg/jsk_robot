@@ -137,7 +137,6 @@ function copy_data () {
 
 if [[ ${TYPE} == "Pro" ]] ; then
     copy_data pi 192.168.123.161
-    copy_data unitree 192.168.123.13
     copy_data unitree 192.168.123.14
     ## copy_data unitree 192.168.123.15 : Pro : No Space for auto start
 elif [[ ${TYPE} == "Air" ]] ; then
@@ -148,10 +147,8 @@ else
 fi
 
 if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
-    cuda_ip="192.168.123.13"
     if [[ ${TYPE} == "Pro" ]] ; then
-        sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/autostart/imageai.sh unitree@192.168.123.13:/home/unitree/Unitree/autostart/imageai/imageai.sh
-        sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/autostart/imageai.sh unitree@192.168.123.15:/home/unitree/Unitree/autostart/imageai/imageai.sh
+        cuda_ip="192.168.123.15"
     elif [[ ${TYPE} == "Air" ]] ; then
         cuda_ip="192.168.123.13"
     fi
@@ -163,13 +160,8 @@ if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
     sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/src/jsk_robot/jsk_unitree_robot/jsk_unitree_startup/scripts/publish_human_pose.diff unitree@${cuda_ip}:/tmp/publish_human_pose.diff
     sshpass -p 123 ssh -t unitree@${cuda_ip} bash -c 'ls; OUT="$(patch -p0 --backup --forward /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py < /tmp/publish_human_pose.diff | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false);'
 
-    # launch live_human_pose.py on jetson nano (192.168.123.13)
-    sshpass -p 123 ssh -t unitree@${cuda_ip} "sed -i 's/192.168.123.15/192.168.123.13/g' /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py"
-    # replace 192.168.123.15 -> 192.168.123.13 because live_human_pose.py is running on jetson nano (192.168.123.13)
-    if [[ ${TYPE} == "Pro" ]] ; then
-        sshpass -p 123 ssh -t unitree@192.168.123.13 "sed -i 's/192.168.123.15/192.168.123.13/g' /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/config/mqSNNRConfig.yaml"
-        sshpass -p 123 ssh -t unitree@192.168.123.14 "sed -i 's/192.168.123.15/192.168.123.13/g' /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/config/mqSNNLConfig.yaml"
-        sshpass -p 123 ssh -t unitree@192.168.123.15 "sed -i 's/192.168.123.15/192.168.123.13/g' /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/config/mqMNConfig.yaml"
+    if [[ ${TYPE} == "Air" ]] ; then
+        sshpass -p 123 ssh -t unitree@${cuda_ip} "sed -i 's/192.168.123.15/192.168.123.13/g' /home/unitree/Unitree/autostart/imageai/mLComSystemFrame/pyScripts/live_human_pose.py"
     fi
 fi
 
