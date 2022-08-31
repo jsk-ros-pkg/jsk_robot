@@ -13,6 +13,7 @@
   <arg name="audio_play" default="false" />
   <arg name="audio_device" default="" />
   <arg name="rate" default="1.0" />
+  <arg name="rviz_config" default="$(find jsk_fetch_startup)/config/jsk_startup.rviz" />
 
   <arg name="RGB_CAMERA_INFO" value="/head_camera/rgb/throttled/camera_info" />
   <arg name="RGB_IMAGE" value="/head_camera/rgb/throttled/image_rect_color" />
@@ -108,5 +109,5 @@
         args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration) -r $(arg rate)" output="screen" />
 
   <node pkg="rviz" type="rviz" name="$(anon rviz)" if="$(arg gui)"
-        args="-d $(find jsk_fetch_startup)/config/jsk_startup.rviz" />
+        args="-d $(arg rviz_config)" />
 </launch>
