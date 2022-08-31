@@ -241,7 +241,7 @@
   </node>
 
   <!-- send email, twitter with smach -->
-  <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+  <node name="smach_to_mail_server" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
     <rosparam>
       email_info: /var/lib/robot/email_topic.yaml
     </rosparam>
