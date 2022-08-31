@@ -209,6 +209,12 @@ repositories:
   mailutils/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/m/mailutils/mailutils_3.4-1.debian.tar.xz
+  tcl:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/t/tcl8.5/tcl8.5_8.5.19.orig.tar.gz
+  tcl/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/t/tcl8.5/tcl8.5_8.5.19-4.debian.tar.xz
   expect:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45.4.orig.tar.gz
