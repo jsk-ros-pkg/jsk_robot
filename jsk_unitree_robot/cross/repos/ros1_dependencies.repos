@@ -209,6 +209,12 @@ repositories:
   mailutils/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/m/mailutils/mailutils_3.4-1.debian.tar.xz
+  expect:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45.4.orig.tar.gz
+  expect/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45.4-1.debian.tar.xz
   openssl:
     type: tar
     url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
