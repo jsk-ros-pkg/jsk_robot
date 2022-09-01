@@ -9,3 +9,6 @@ cd ${SOURCE_DIR}
 
 make
 make install
+
+# download pem (ssl.get_default_verify_paths)
+wget https://curl.haxx.se/ca/cacert.pem -O /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/openssl/cert.pem
