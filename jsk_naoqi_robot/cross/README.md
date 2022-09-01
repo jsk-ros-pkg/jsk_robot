@@ -1,8 +1,8 @@
 ## Introduction
 
-This project contains a set of patches and scripts to compile and run ROS1 on a Go1 robot, without the need of a tethered computer, based on https://github.com/esteve/ros2_pepper
+This project contains a set of patches and scripts to compile and run ROS1 on a Pepper robot, without the need of a tethered computer, based on https://github.com/esteve/ros2_pepper and https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/cross/README.md
 
-## Setup Go1 Robot
+## Setup Pepper Robot
 
 ### Prepare cross-compiling environment (Run only the fist time per host computer)
 
@@ -19,107 +19,96 @@ $ newgrp
 $ sudo apt install -y qemu-user-static
 ```
 
+3. Install Aldebaran's cross environment tool-chains
+
+Download and extract ctc-linux64-atom-2.5.10.7.zip (use [GoogleDrive](https://drive.google.com/drive/folders/1P49oBEobwyVI4TG1nxxXUftc9TLEYEc7) for JSK Users) in your home directory.
+
+Set environment variable to your `.bashrc`
+
+```
+export ALDE_CTC_CROSS=$HOME/ctc-linux64-atom-2.5.10.7
+```
+
+4. Install command used in scripts
+
+```
+apt install python-vcstool sshpass
+```
+
 ### Build ROS System on Docker  (Run only the fist time per host computer)
 
 ```
 make system
 ```
 
-Caution!!! It will take more than a few hours !! So for JSK users, download the `arm64v8_System.tgz` archive file from [here](https://drive.google.com/drive/u/2/folders/1SBA9oAwjfD84yRFEB-jsCH1m5Q8eEGSK) and extract under `jsk_unitree_robot/cross/` directory before run `make` command.
+Caution!!! It will take more than a few hours !!
 
-Run following command to copy ROS1 base sytem to Go1 onboard computer. This should be done only in the first time. So normally user do not have to run this command
+Run following command to copy ROS1 base sytem to Pepper onboard computer. This should be done only in the first time. So normally user do not have to run this command. You need to specify password by -p option.
 ```
-./install.sh -p 123 -D System
+./install.sh -p <robot password> -d System
 ```
 
-### Build `jsk_unitree_robot` software on Docker
+### Build `jsk_pepper_robot` software on Docker
 
-You can build your current `jsk_unitree_robot` workspace on Docker environment which is ready to copy into Go1 onboard computer.
+You can build your current `jsk_pepper_robot` workspace on Docker environment which is ready to copy into Pepper onboard computer.
 
 ```
 make user
 ```
 
-To copy your software to Go1 onboard computer, run following command
+To copy your software to Pepper onboard computer, run following command
 ```
-./install.sh -p 123
-```
-
-## Detailed information
-
-### Procedures not included in `make` process
-
-#### Setup CUDA environment
-
-nano3(192.168.123.15) of Pro robot does not contain CUDA environment. Please look at `pro_nano2_install_scripts` directory.
-
-#### copy `rosdep` cache file
-
-nano2(192.168.123.14) of Edu robot does not contain `rosdep` cache file, thus `app_manager.launch` outputs following warnings.
-
-```
-the rosdep view is empty: call 'sudo rosdep init' and 'rosdep update'
-[INFO] [1631952867.412752]: Loading from plugin definitions
-[WARN] [1631952867.416907]: No applist directory found.
-[INFO] [1631952867.426196]: Using apps for platform 'go1'
-[INFO] [1631952867.441346]: Starting app manager for robot
-[INFO] [1631952867.467832]: Waiting for foreign master [http://localhost:11313] to come up...
-[INFO] [1631952867.491849]: Foreign master is available
-```
-and you can also find find following error.
-```
-rospack export --lang=app_manager --attrib=app_manager jsk_unitree_startup
-[rospack] Error: the rosdep view is empty: call 'sudo rosdep init' and 'rosdep update'
+./install.sh -p <robot password>
 ```
 
-To fix this problem, go to `pro_nano2_install_scripts` directory and copy cache files.
+## Start `jsk_pepper_startup.launch`
+
+ssh to NAO_IP machine and run
 ```
-cd pro_nano2_install_scripts
-./copy.sh
+source User/user_setup.bash
+roslaunch --screen jsk_pepper_startup jsk_pepper_startup.launch network_interface:=eth0 launch_dashboard:=false launch_joy:=false
 ```
 
-#### List of software installed in Docker environment
-
-Create List of ROS packages to be installed
-```
-ssh pi@192.168.123.161 'source /opt/ros/melodic/setup.bash; rospack list' |tee 161-list.txt
-ssh unitree@192.168.123.13 'source /opt/ros/melodic/setup.bash; rospack list' |tee 13-list.txt
-ssh unitree@192.168.123.14 'source /opt/ros/melodic/setup.bash; rospack list' |tee 14-list.txt
-ssh unitree@192.168.123.15 'source /opt/ros/melodic/setup.bash; rospack list' |tee 15-list.txt
-cat 161-list.txt 13-list.txt 14-list.txt 15-list.txt  | sort | uniq -c | sort | egrep "^.*4" | sed 's/^\s*4\s*\(\S*\)\s.*$/ros-melodic-\1/' | sed 's/_/-/g' | tee ros-packages.txt
-```
-
-Create List of Debian packages to be installed
-```
-ssh pi@192.168.123.161 'dpkg --get-selections' | tee 161-select.txt
-ssh unitree@192.168.123.13 'dpkg --get-selections' | tee 13-select.txt
-ssh unitree@192.168.123.14 'dpkg --get-selections' | tee 14-select.txt
-ssh unitree@192.168.123.15 'dpkg --get-selections' | tee 15-select.txt
-cat 13-select.txt 14-select.txt 161-select.txt | sort | uniq -c | egrep "^\s+3\s" | sed 's/\s\s*/ /g' | cut -f 3 -d\  | sed 's/:arm64$//' | tee deb-packages.txt
-```
+You can connect to `app_chooser` by http://<$NAO_IP>:8000/rwt_app_chooser/#!robot
 
 ## Known Issues
 
-### Running python3
+### `./install.sh -d System` errors at the first time.
 
-Since `st-000-ros1.bash` set PYTHONPATH and we installed `python-futures` via pip, It breaks python3 execution.
-When you run python3, you need to unset PYTHONPATH, i.e `PYTHONPATH= vcs`
+./install.sh -d System` requires `User` environment, so it causes error at the first time. You need to re-run `./install.sh` after you installed User space.
 
-### Build time
+### `./build_user.sh build -c` fails
 
-Compile all System packages on aarch64 takes long time, It will take a whole day. You'd metter to obtain `arm64v8_System` directory from someone else.
+`./build_user.sh build -c` fails as follows. This is expected behavior and we recommend to combile all packages in the first time. `make user` runs `catkin build jsk_pepper_startup peppereus` and pacakages such as `pepepr_meshes` and `rosbash` is not compiled with this command.
 
+```
+ [    Failed] roseus_remote
+ [    Failed] speak_and_wait_recovery
+```
 
+### To comple `pepper.l` within the robot
+
+```
+cp -r /opt/ros/melodic/share/pepper_meshes/meshes/  ./i386_User/src/pepper_meshes/
+rm -fr i386_User/build/pepper_meshes/ i386_User/build/peppereus
+./build_user.sh build pepper_meshes peppereus
+```
 
 ### Development
 
-On development phase, users are expected to develop sofoware on remote machine. All codes are expected to add in jsk_unitree_startup package.
+On development phase, users are expected to develop sofoware on a remote machine. All codes are expected to add in `jsk_pepper_startup` package.
 
-### Deployment
 
-You can send all development files to robot and start them on boot time.
+You can send all development files to robot and start them on boot time. Note that this process requres `NAO_IP` environment variable.
 
 ```
 make user
 make install
 ```
+
+If you want to use wlan, you need to change from `eth0` to `wlan0` in `jsk_naoqi_robot/cross/startup_scripts/user_setup.bash` and run `make install`
+```
+export ROS_IP=$(ip addr show wlan0 | grep -Po '(?<= inet )([0-9]{1,3}.){3}[0-9]{1,3}')
+```
+
+If you add more dependencies to `package.xml`, you need to remove `i386_Users` and run `make user` again.

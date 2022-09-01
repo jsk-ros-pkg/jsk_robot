@@ -28,6 +28,7 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
   <run_depend>teleop_twist_joy</run_depend>
+  <run_depend>image_transport_plugins</run_depend>
   <run_depend>jsk_robot_startup</run_depend>
   <run_depend>rwt_app_chooser</run_depend>
   <run_depend>app_manager</run_depend>

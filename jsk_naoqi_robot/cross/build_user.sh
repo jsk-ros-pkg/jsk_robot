@@ -29,7 +29,7 @@ fi
 set -x
 # copy jsk_robot direcotry to jsk_catkin_ws/src
 mkdir -p ${SOURCE_ROOT}/src/jsk_robot
-rsync -avzh --delete --exclude 'jsk_naoqi_robot/cross*' --exclude "nao.l" --exclude "pepper.l" ../../../jsk_robot ${SOURCE_ROOT}/src/
+rsync -avzh --delete --exclude 'jsk_naoqi_robot/cross*' --exclude "nao.l" --exclude "pepper.l" --exclude "nao-simple.l" --exclude "pepper-simple.l" ../../../jsk_robot ${SOURCE_ROOT}/src/
 
 # ingore non-related packages
 for dir in $(find ${SOURCE_ROOT}/src/jsk_robot -maxdepth 1 -mindepth 1 -type d); do
