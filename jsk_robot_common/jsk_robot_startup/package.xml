@@ -36,6 +36,7 @@
   <run_depend>roseus_mongo</run_depend>
   <run_depend>rosgraph</run_depend>
   <run_depend>rospy</run_depend>
+  <run_depend>rostwitter</run_depend>
   <run_depend>roswww</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf</run_depend>
