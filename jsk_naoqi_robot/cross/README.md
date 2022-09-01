@@ -106,9 +106,9 @@ make user
 make install
 ```
 
-If you want to use wlan, you need to change from `eth0` to `wlan0` in `jsk_naoqi_robot/cross/startup_scripts/user_setup.bash` and run `make install`
+If you want to use ethernet, you need to change from `wlan0` to `eth0` in `jsk_naoqi_robot/cross/startup_scripts/user_setup.bash` and run `make install`
 ```
-export ROS_IP=$(ip addr show wlan0 | grep -Po '(?<= inet )([0-9]{1,3}.){3}[0-9]{1,3}')
+export ROS_IP=$(ip addr show eth0 | grep -Po '(?<= inet )([0-9]{1,3}.){3}[0-9]{1,3}')
 ```
 
 If you add more dependencies to `package.xml`, you need to remove `i386_Users` and run `make user` again.
