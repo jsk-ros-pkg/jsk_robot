@@ -189,17 +189,24 @@ class SmachToMail():
             if isinstance(subject, bytes):
                 subject = subject.decode('utf-8')
             text += subject
+        prev_text_type = ''
         for x in state_list:
             if 'DESCRIPTION' in x and x['DESCRIPTION']:
                 desc = x['DESCRIPTION']
                 if isinstance(desc, bytes):
                     desc = desc.decode('utf-8')
                 text += '\n' + desc
+                prev_text_type = 'DESCRIPTION'
             if 'IMAGE' in x and x['IMAGE']:
                 img_txt = x['IMAGE']
                 if isinstance(img_txt, bytes):
                     img_txt = img_txt.decode('utf-8')
+                if prev_text_type == 'IMAGE':
+                    # [rostwitter] Do not concatenate
+                    # multiple base64 images without spaces.
+                    text += ' '
                 text += img_txt
+                prev_text_type = 'IMAGE'
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
 
