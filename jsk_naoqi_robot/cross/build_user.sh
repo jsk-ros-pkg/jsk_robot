@@ -9,7 +9,7 @@ PYTHON2_VERSION=2.7.17
 
 TARGET_ROBOT="${TARGET_ROBOT:-pepper}"
 
-ARGS="${@:-build jsk_${TARGET_ROBOT}_startup ${TARGET_ROBOT}eus}"
+ARGS="${@:-build rosbash ${TARGET_ROBOT}_meshes jsk_${TARGET_ROBOT}_startup ${TARGET_ROBOT}eus}" # peppereus requres pepper_meshes
 
 set -euf -o pipefail
 
@@ -40,6 +40,17 @@ done
 
 # add unitree repos
 [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || vcs import ${SOURCE_ROOT}/src < repos/pepper.repos
+
+# force copy pepper_meshes
+if [ ! -e ${SOURCE_ROOT}/src/pepper_meshes/meshes ]; then
+    if [ ! -e /opt/ros/melodic/share/pepper_meshes/meshes/ ]; then
+        set +x
+        echo "ERROR: You need /opt/ros/melodic/share/pepper_meshes/meshes/ " 1>&2
+        echo "ERROR: run apt 'install ros-melodic-pepper-meshes'" 1>&2
+        exit -1
+    fi
+    cp -r /opt/ros/melodic/share/pepper_meshes/meshes/ ${SOURCE_ROOT}/src/pepper_meshes/
+fi
 
 ## UPDATE_SOURCE_ROOT=1  # TRUE
 
@@ -74,7 +85,9 @@ docker run -it --rm \
         -DPYTHON_LIBRARY=/home/nao/System/Python-2.7.17/lib/libpython2.7.so \
         --cmake-args -DCATKIN_ENABLE_TESTING=FALSE --make-args VERBOSE=1\
     " 2>&1 | tee ${TARGET_MACHINE}_build_user.log
-cp ${PWD}/startup_scripts/user_setup.bash ${SOURCE_ROOT}/
+cp -a ${PWD}/startup_scripts/user_setup.bash ${SOURCE_ROOT}/
+cp -a ${PWD}/startup_scripts/start.sh ${SOURCE_ROOT}/
+cp -a ${PWD}/startup_scripts/screenrc ${SOURCE_ROOT}/
 
 echo "
 
