@@ -318,3 +318,9 @@ repositories:
   libgpgme-dev/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/g/gpgme1.0/gpgme1.0_1.10.0-1ubuntu2.debian.tar.xz
+  screen:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/s/screen/screen_4.6.2.orig.tar.gz
+  screen/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/s/screen/screen_4.6.2-1.debian.tar.xz
