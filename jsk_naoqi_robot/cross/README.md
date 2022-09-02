@@ -112,3 +112,9 @@ export ROS_IP=$(ip addr show eth0 | grep -Po '(?<= inet )([0-9]{1,3}.){3}[0-9]{1
 ```
 
 If you add more dependencies to `package.xml`, you need to remove `i386_Users` and run `make user` again.
+
+
+You can restore from saved docker container. For JSK users, you can find latest data at [Google Drive](https://drive.google.com/drive/u/1/folders/10rINVGt1iDM2WNofmf0sZBX_iTnpXya6). You can also find backup of `i386_System`.
+```
+docker load < ros1-pepper.tar
+```
