@@ -324,3 +324,12 @@ repositories:
   screen/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/s/screen/screen_4.6.2-1.debian.tar.xz
+  libogg-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libo/libogg/libogg_1.3.2.orig.tar.gz
+  libtheora:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libt/libtheora/libtheora_1.1.1+dfsg.1.orig.tar.gz
+  libtheora/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libt/libtheora/libtheora_1.1.1+dfsg.1-14.debian.tar.xz
