@@ -27,7 +27,7 @@ public:
 private:
     bool initialized_;
 
-    dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig> dynamic_param_client_;
+    std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>> ptr_dynamic_param_client_;
     costmap_2d::InflationPluginConfig inflation_config_;
 };
 };

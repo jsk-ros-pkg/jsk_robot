@@ -7,8 +7,7 @@ PLUGINLIB_EXPORT_CLASS(shrink_inflation_recovery::ShrinkInflationRecovery, nav_c
 namespace shrink_inflation_recovery
 {
 ShrinkInflationRecovery::ShrinkInflationRecovery():
-    initialized_(false),
-    dynamic_param_client_(dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>(""))
+    initialized_(false)
 {
 }
 
@@ -21,10 +20,12 @@ void ShrinkInflationRecovery::initialize(
     if (not initialized_) {
         ros::NodeHandle private_nh("~/" + name);
         std::string parameter_name;
+        private_nh.param("parameter_name", parameter_name, std::string("/move_base/local_costmap/inflation_radius"));
+        ptr_dynamic_param_client_ = std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>>(new dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>(parameter_name));
         double inflation_radius;
         private_nh.param("inflation_radius", inflation_radius, 0.0);
         inflation_config_ = costmap_2d::InflationPluginConfig::__getDefault__();
-        dynamic_param_client_.getCurrentConfiguration(inflation_config_);
+        ptr_dynamic_param_client_->getCurrentConfiguration(inflation_config_);
         inflation_config_.inflation_radius = inflation_radius;
         initialized_ = true;
     } else {
@@ -44,7 +45,7 @@ void ShrinkInflationRecovery::runBehavior()
     return;
   }
 
-  dynamic_param_client_.setConfiguration(inflation_config_);
+  ptr_dynamic_param_client_->setConfiguration(inflation_config_);
 }
 
 };
