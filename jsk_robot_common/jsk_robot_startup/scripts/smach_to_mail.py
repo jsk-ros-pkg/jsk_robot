@@ -193,6 +193,7 @@ class SmachToMail():
     def _send_twitter(self, subject, state_list):
         text = u""
         if subject:
+            # In python2, str is byte object, so we need to decode it as utf-8
             if isinstance(subject, bytes):
                 subject = subject.decode('utf-8')
             text += subject
