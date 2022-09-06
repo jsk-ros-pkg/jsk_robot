@@ -83,7 +83,7 @@ class SmachToMail():
         if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
         if 'INFO' in local_data_str:
-            rospy.loginfo("- description_str -> {}".format(local_data_str['INFO']))
+            rospy.loginfo("- info_str -> {}".format(local_data_str['INFO']))
         else:
             rospy.logwarn("smach does not have INFO, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
 
