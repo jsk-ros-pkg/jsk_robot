@@ -148,6 +148,9 @@ class SmachToMail():
         changeline = EmailBody()
         changeline.type = 'html'
         changeline.message = "<br>"
+        separator = EmailBody()
+        separator.type = 'text'
+        separator.message = "---------------"
         for x in state_list:
             if 'DESCRIPTION' in x:
                 description = EmailBody()
@@ -162,6 +165,10 @@ class SmachToMail():
                 image.img_data = x['IMAGE']
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(separator)
+        email_msg.body.append(changeline)
         for x in state_list:
             if 'INFO' in x:
                 info = EmailBody()
