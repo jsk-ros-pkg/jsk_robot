@@ -245,11 +245,31 @@
    )
   ;;
   (:speak
-   (str)
-   (let ((speech_msg (instance std_msgs::String :init)))
+   (str &key lang wait volume)
+   (let ((speech_msg (instance std_msgs::String :init))
+         (master-lang (and lang (send self :get-language)))
+         (master-volume (and volume (send self :get-master-volume))))
+     ;; restoring the original settings requires `wait' to be true
+     (when (or volume lang)
+       (setq wait t))
+     ;; set volume and language
+     (when volume
+       (unless (send self :set-master-volume (round (* volume 100)))
+         (error "Invalid volume argument")))
+     (when lang
+       (unless (send self :set-language lang)
+         (error "Invalid language argument")))
+     ;; send speech request
      (send speech_msg :data str)
-     (ros::publish (format nil "~A/speech" group-namespace) speech_msg))
-   )
+     (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
+     (when wait
+       (send self :check-speak-status))
+     ;; restore original volume and language
+     (when master-volume
+       (send self :set-master-volume master-volume))
+     (when master-lang
+       (send self :set-language master-lang))
+     t))
   (:check-speak-status
    (&optional (wait 60))
    (let (speech_status tm)
@@ -326,10 +346,15 @@
   (:set-master-volume
    (volume)
    (let ((ret (instance nao_interaction_msgs::SetAudioMasterVolumeRequest :init)))
-     (ros::wait-for-service (format nil "~A/naoqi_driver/set_volume" group-namespace))
-     (send ret :master_volume :data volume)
-     (ros::service-call (format nil "~A/naoqi_driver/set_volume" group-namespace) ret)
-     ))
+     (if (<= 0 volume 100)
+	 (progn
+	   (ros::wait-for-service (format nil "~A/naoqi_driver/set_volume" group-namespace))
+	   (send ret :master_volume :data volume)
+	   (ros::service-call (format nil "~A/naoqi_driver/set_volume" group-namespace) ret)
+	   t)
+	 (progn
+	   (ros::ros-error ":set-master-volume ~A must be between 0 and 100." volume)
+	   nil))))
   (:get-master-volume
    ()
    (let ((ret (instance nao_interaction_msgs::GetAudioMasterVolumeRequest :init))
@@ -400,11 +425,21 @@
    )
   (:set-language
    (language)
+   (if (keywordp language) (setq language (string-downcase language)))
+   (if (or (string-equal language "english")
+           (string-equal language "en"))
+       (setq language "English"))
+   (if (or (string-equal language "japanese")
+           (string-equal language "ja")
+           (string-equal language "jp"))
+       (setq language "Japanese"))
    (let ((ret (instance naoqi_bridge_msgs::SetStringRequest :init))
 	 res)
      (ros::wait-for-service (format nil "~A/naoqi_driver/set_language" group-namespace))
      (send ret :data language)
      (setq res (ros::service-call (format nil "~A/naoqi_driver/set_language" group-namespace) ret))
+     (if (not (send res :success))
+         (ros::ros-error ":speak :lang ~A must be English or Japanese" language))
      (send res :success))
    )
   (:get-language

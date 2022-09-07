@@ -1,0 +1,4 @@
+<launch>
+  <machine name="baxter-c1" address="baxter-c1" env-loader="$(env HOME)/env.sh" />
+  <machine name="baxter-c4" address="baxter-c4" env-loader="$(env HOME)/env.sh" />
+</launch>

@@ -1,0 +1,22 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/libassuan/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/libassuan/libassuan-2.5.1
+
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(cat series); do
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+    done
+    touch .patched
+fi
+
+cd ${SOURCE_DIR}
+
+./configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-shared
+
+make -j4 install
+

@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/pcl
+cd /home/nao/ros1_dependencies_sources/build/pcl
+LDFLAGS="-lz -lbz2 -L/home/nao/ctc/icu/lib -licudata -licui18n -licuuc ${LDFLAGS}"
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_FIND_ROOT_PATH="/home/nao/${INSTALL_ROOT}/ros1_dependencies;/home/nao/ctc" \
+  -DBUILD_SHARED_LIBS=ON \
+  -DWITH_VTK=OFF \
+  -DWITH_QT=OFF \
+  -DWITH_OPENGL=OFF \
+  -DBUILD_segmentation=ON \
+  -DBUILD_surface=ON \
+  -DQHULL_USE_STATIC=OFF \
+  -DQHULL_ROOT=/home/nao/${INSTALL_ROOT}/ros1_dependencies/ \
+  -DPCL_ENABLE_SSE=OFF \
+  -DEIGEN_ROOT=${ALDE_CTC_CROSS}/eigen3 \
+  ../../src/pcl
+
+#LDFLAGS="-L/home/nao/ctc/idn/lib -L/home/nao/ctc/c_ares/lib -L/home/nao/ctc/curl/lib -lcurl -L/home/nao/ctc/icu/lib -licudata -licui18n -licuuc"
+make -j4 install VERBOSE=1
+
+echo '
+  -DCMAKE_TOOLCHAIN_FILE=/home/nao/ctc-cmake-toolchain.cmake \
+  -DALDE_CTC_CROSS=/home/nao/ctc \
+  -DCMAKE_C_FLAGS="-std=gnu11 -L/home/nao/ctc/icu/lib" \
+  -DCMAKE_CXX_FLAGS="-std=gnu++14 -L/home/nao/ctc/icu/lib" \
+  -DCMAKE_EXE_LINKER_FLAGS="-Wl,--as-needed -licudata -licui18n -licuuc" \
+  -DCMAKE_MODULE_LINKER_FLAGS="-Wl,--as-needed -licudata -licui18n -licuuc" \
+  -DCMAKE_SHARED_LINKER_FLAGS="-Wl,--as-needed -licudata -licui18n -licuuc" \
+
+'

@@ -209,8 +209,87 @@ rostopic pub /reboot std_msgs/Empty
 ```
 
 
+## scripts/smach_to_mail.py
+
+This node sends smach messages to `/email`, `/tweet`, etc... to notify robot state transition.
+
+```mermaid
+flowchart TB
+    subgraph S[Demo Code Running on SMACH]
+      START --> State_1
+      State_1 --> State_2
+      State_2 --> END
+    end
+   subgraph E[SMACH To Notification]
+      id1[(state list<br>DESCRIPTION / IMAGE<br>DESCRIPTION / IMAGE<br>...)]
+     id1 --> email[[pub /email jsk_robot_startup::Email]]
+     id1 --> tweet[[pub /tweet std_msgs::String]] 
+     id1 --> chat[[pub /google_chat_ros/send/goal<br>google_chat_ros::SendMessageAction]] 
+   end
+   S -->|"[{'DESCRIPTION': string, 'IMAGE': base64}]"| E
+   email --> email_body(["DESCRIPTION[0]<br>DESCRIPTION[1]<br>IMAGE[1]<br>DESCRIPTION[1]<br>IMAGE[1]<br>..."])
+   tweet --> tweet_body1(["DESCRIPTION[0]"])
+   tweet_body1 --> tweet_body2(["DESCRIPTION[1]<br>IMAGE[1]"])
+   tweet_body2 --> tweet_body3(["DESCRIPTION[2]<br>IMAGE[2]"])
+   chat --> chat_body1(["DESCRIPTION[0]"])
+   chat_body1 --> chat_body2(["DESCRIPTION[1]<br>IMAGE[1]"])
+   chat_body2 --> chat_body3(["DESCRIPTION[2]<br>IMAGE[2]"])
+```
+
+### Subscribing Topics
+
+* `~smach/container_status` (`smach_msgs/SmachContainerStatus`)
+
+  Input topic smach status
+
+### Publishing Topics
+
+* `/email` (`jsk_robot_startup/Email`)
+
+  Email message with description and image
+
+* `/tweet` (`std_msgs/String`)
+
+  Tweet message with description and image
+
+### Parameters
+
+* `~sender_address` (String)
+  
+  Sender address
+
+* `~receiver_address` (String)
+
+  Receiver address
+
 ## launch/safe_teleop.launch
 
 This launch file provides a set of nodes for safe teleoperation common to mobile robots. Robot-specific nodes such as `/joy`, `/teleop` or `/cable_warning` must be included in the teleop launch file for each robot, such as [safe_teleop.xml for PR2](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_pr2_robot/jsk_pr2_startup/jsk_pr2_move_base/safe_teleop.xml) or [safe_teleop.xml for fetch](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_fetch_robot/jsk_fetch_startup/launch/fetch_teleop.xml).
 
 ![JSK teleop_base system](images/jsk_safe_teleop_system.png)
+
+## launch/rfcomm_bind.launch
+
+This script binds rfcomm device to remote bluetooth device. By binding rfcomm device, we can connect bluetooth device via device file (e.g. `/dev/rfcomm1`). For example, rosserial with [this PR](https://github.com/ros-drivers/rosserial/pull/569) can be used over bluetooth connection.
+
+### Usage
+
+Save the bluetooth device MAC address to file like `/var/lib/robot/rfcomm_devices.yaml`.
+
+```
+- name: device1
+  address: XX:XX:XX:XX:XX:XX
+- name: device2
+  address: YY:YY:YY:YY:YY:YY
+```
+
+Then, bind rfcomm devices.
+
+```
+roslaunch jsk_robot_startup rfcomm_bind.launch
+```
+
+To check how many devices are bound to rfcomm, use rfcomm command.
+```
+rfcomm
+```

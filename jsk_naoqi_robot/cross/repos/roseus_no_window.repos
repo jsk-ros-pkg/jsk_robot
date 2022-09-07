@@ -1,0 +1,45 @@
+repositories:
+  euslisp:
+    type: git
+    url: https://github.com/euslisp/euslisp.git
+    version: support_nonx
+  euslisp/patches:
+    type: tar
+    url: https://github.com/tork-a/euslisp-release/archive/refs/heads/master.tar.gz
+    version: euslisp-release-master/patches
+  jskeus:
+    type: git
+    url: https://github.com/euslisp/jskeus.git
+    version: support_nonx
+  jskeus/patches:
+    type: tar
+    url: https://github.com/tork-a/jskeus-release/archive/refs/heads/master.tar.gz
+    version: jskeus-release-master/patches
+  # https://github.com/jsk-ros-pkg/jsk_roseus/pull/711
+  jsk_roseus:
+    type: git
+    url: https://github.com/k-okada/jsk_roseus.git
+    version: irteusg_embedded_roseus
+  # https://github.com/jsk-ros-pkg/jsk_model_tools/pull/245
+  # https://github.com/jsk-ros-pkg/jsk_model_tools/pull/246
+  jsk_model_tools/euscollada:
+    type: zip
+    url: https://github.com/k-okada/jsk_model_tools/archive/refs/heads/develop.zip
+    version: jsk_model_tools-develop/euscollada
+  # https://github.com/ros-planning/geometric_shapes/pull/224
+  geometric_shapes:
+    type: git
+    url: https://github.com/k-okada/geometric_shapes.git
+    version: eigen_3_1
+  # noetic branch drop depend to gtk
+  # version 1.16.0 is latest version that can compile on 10.04
+  image_pipeline:
+    type: git
+    url: https://github.com/ros-perception/image_pipeline.git
+    version: 1.16.0
+  # jsk_visualization with embedded support
+  # https://github.com/jsk-ros-pkg/jsk_visualization/pull/848
+  jsk_visualization:
+    type: git
+    url: https://github.com/k-okada/jsk_visualization.git
+    version: jsk_rviz_plugins_msgs

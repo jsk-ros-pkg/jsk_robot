@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/SDL_image
+export PATH=$PATH:/home/nao/${INSTALL_ROOT}/ros1_dependencies/bin
+cd /home/nao/ros1_dependencies_sources/build/SDL_image
+../../src/SDL_image/configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-shared
+make -j4 install

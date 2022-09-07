@@ -114,6 +114,18 @@ Related nodes: `/joy_client`, `joy_node`, `/teleop_twist_joy`
 
 Related nodes: `/naoqi_dashboard`, `/naoqi_dashboard_aggregator`, `/tf_monitor`
 
+### Image
+
+To visualize compressed image.
+```
+rosrun image_view image_view image:=/pepper_robot/camera/front/image_rect_color _image_transport:=compressed
+```
+
+From roseus, you can subscribe compressed images using following code.
+```
+(ros::subscribe "/pepper_robot/camera/front/image_rect_color/compressed" sensor_msgs::CompressedImage #'image_cb)
+```
+
 ## Sample demo
 
 ```
@@ -139,3 +151,22 @@ front_cameraMight be a NAOqi problem. Try to restart the ALVideoDevice.
 ## Some tips
 
 - If the getting started wizard appears on Pepper's tablet, it may be better to turn it off because some functions are blocked. (ref: [issue 926](https://github.com/jsk-ros-pkg/jsk_robot/issues/926))
+
+- You may encounter the getting started wizard on Pepper's tablet when you turn on the Pepper robot. If you cannot turn it off, please try this: `roslaunch naoqi_apps behavior_manager.launch`. (`behavior_manager.launch` should exist in `naoqi_bridge` package (`kochigami-develop` branch).)  
+
+If `rosservice call /behavior_manager/is_behavior_running "data: 'boot-config'"` => `success: True`,  
+Please try `rosservice call /behavior_manager/stop_behavior "data: 'boot-config'"`.  
+If `success: True` returns, you should turn off the wizard.  
+
+You can also try `ssh nao@<Pepper's IP>` and
+```
+qicli call ALBehaviorManager.isBehaviorRunning boot-config
+qicli call ALBehaviorManager.stopBehavior boot-config
+```
+
+- If you encounter the error below when you launch `naoqi_driver.launch`, please refer to [this issue](https://github.com/jsk-ros-pkg/jsk_robot/issues/1474).
+
+```
+what():	ALProxy::ALProxy
+Can't find service: ROS-Driver-Audio
+```
