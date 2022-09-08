@@ -181,11 +181,20 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
 * `shutdown` (`std_msgs/Empty`)
 
-  Input topic that trigger shutdown
+  Input topic that trigger shutdown.
+
+  If `~input_condition` is set, evaluated `~input_condition` is `True` and this node received this topic, shutdown will be executed.
+
+  If you want to force a shutdown in any case, set `~input_condition` to `None` and send `shutdown` topic.
 
 * `reboot` (`std_msgs/Empty`)
 
   Input topic that trigger reboot
+
+* `~input` (`AnyMsg`)
+
+  Input ros message for `~input_condition`.
+
 
 ### Parameters
 
@@ -196,6 +205,47 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 * `~reboot_command` (String, default: "/sbin/shutdown -r now")
 
   Command to reboot the system. You can specify the reboot command according to your system.
+
+* `~input_condition` (String, default: ``None``)
+
+  Specify condition to run `~shutdown_command` even if shutdown topic is received. Use a Python expression that returns a bool value.
+  In addition to a Python builtin functions, you can use ``topic`` (the topic of the message), ``m`` (the message) and ``t`` (time of message).
+
+  For example, ``~input`` topic is ``std_msgs/String`` and if you want to check whether a sentence is a ``hello``, you can do the following.
+
+  ```
+  input_condition: m.data == 'hello'
+  ```
+
+  If you want to check the frame id of the header, you can do the following.
+
+  ```
+  input1_condition: m.header.frame_id in ['base', 'base_link']
+  ```
+
+  For example, to prevent shutdown while the real Fetch is charging, write as follows.
+
+  ```
+  input_condition: 'm.is_charging is False'
+  ```
+
+  In this case, the `~input` is the `/battery_state` (`power_msgs/BatteryState`) topic.
+  `power_msgs/BatteryState` has the following values and `is_charging` is `True` if charging, `False` otherwise.
+
+  ```
+  $ rosmsg show power_msgs/BatteryState
+  string name
+  float32 charge_level
+  bool is_charging
+  duration remaining_time
+  float32 total_capacity
+  float32 current_capacity
+  float32 battery_voltage
+  float32 supply_voltage
+  float32 charger_voltage
+  ```
+
+  Note that, use escape sequence when using the following symbols ``<(&lt;)``, ``>(&gt;)``, ``&(&amp;)``, ``'(&apos;)`` and ``"(&quot;)``.
 
 ### Usage
 
