@@ -37,14 +37,10 @@
       recovery_behaviors:
         - name: "update_inflation_layer_local0"
           type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
-        - name: "update_inflation_layer_global0"
-          type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+        - name: "update_costmap_local0"
+          type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
         - name: "conservative_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
-        - name: "update_inflation_layer_local1"
-          type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
-        - name: "update_inflation_layer_global1"
-          type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
         - name: "aggressive_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
         - name: "all_reset"
@@ -52,17 +48,11 @@
       update_inflation_layer_local0:
         parameter_name: "/move_base_node/local_costmap/inflation_layer"
         inflation_radius: 0.1
-      update_inflation_layer_global0:
-        parameter_name: "/move_base_node/global_costmap/inflation_layer"
-        inflation_radius: 0.1
+      update_costmap_local0:
+        parameter_name: "/move_base_node/local_costmap"
+        footprint_padding: 0.01
       conservative_reset:
         reset_distance: 2.0
-      update_inflation_layer_local1:
-        parameter_name: "/move_base_node/local_costmap/inflation_layer"
-        inflation_radius: 0.05
-      update_inflation_layer_global1:
-        parameter_name: "/move_base_node/global_costmap/inflation_layer"
-        inflation_radius: 0.05
       aggressive_reset:
         reset_distance: 1.0 # 0.5
       all_reset:
