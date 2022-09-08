@@ -22,11 +22,11 @@ void ShrinkInflationRecovery::initialize(
         std::string parameter_name;
         private_nh.param("parameter_name", parameter_name, std::string("/move_base/local_costmap/inflation_radius"));
         ptr_dynamic_param_client_ = std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>>(new dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>(parameter_name));
-        double inflation_radius;
-        private_nh.param("inflation_radius", inflation_radius, 0.0);
+        ROS_ERROR_STREAM("parameter_name: " << parameter_name);
+        private_nh.param("inflation_radius", inflation_radius_, 0.0);
+        private_nh.param("timeout_duration", timeout_duration_, 5.0);
         inflation_config_ = costmap_2d::InflationPluginConfig::__getDefault__();
-        ptr_dynamic_param_client_->getCurrentConfiguration(inflation_config_);
-        inflation_config_.inflation_radius = inflation_radius;
+        ROS_INFO_STREAM("Initialize a plugin \"" << name << "\"");
         initialized_ = true;
     } else {
         ROS_ERROR("You should not call initialize twice on this object, doing nothing");
@@ -39,13 +39,20 @@ ShrinkInflationRecovery::~ShrinkInflationRecovery()
 
 void ShrinkInflationRecovery::runBehavior()
 {
-  if (not initialized_)
-  {
-    ROS_ERROR("This object must be initialized before runBehavior is called");
-    return;
-  }
+    if (not initialized_)
+    {
+        ROS_ERROR("This object must be initialized before runBehavior is called");
+        return;
+    }
 
-  ptr_dynamic_param_client_->setConfiguration(inflation_config_);
+    bool success = ptr_dynamic_param_client_->getCurrentConfiguration(inflation_config_, ros::Duration(timeout_duration_));
+    if ( success ) {
+        inflation_config_.inflation_radius = inflation_radius_;
+        ptr_dynamic_param_client_->setConfiguration(inflation_config_);
+        ROS_INFO_STREAM("Shrinked inflation radius to " << inflation_radius_);
+    } else {
+        ROS_ERROR("Failed to get Current Configuration.");
+    }
 }
 
 };
