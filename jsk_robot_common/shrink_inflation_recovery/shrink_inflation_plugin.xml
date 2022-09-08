@@ -1,7 +1,0 @@
-<library path="lib/libshrink_inflation_recovery">
-  <class name="shrink_inflation_recovery/ShrinkInflationRecovery" type="shrink_inflation_recovery::ShrinkInflationRecovery" base_class_type="nav_core::RecoveryBehavior">
-    <description>
-        A recovery behavior that inflation radius of costmap
-    </description>
-  </class>
-</library>

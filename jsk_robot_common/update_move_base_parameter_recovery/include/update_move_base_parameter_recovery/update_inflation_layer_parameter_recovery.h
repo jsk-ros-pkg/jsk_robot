@@ -1,18 +1,18 @@
-#ifndef SHRINK_INFLATION_RECOVERY_H
-#define SHRINK_INFLATION_RECOVERY_H
+#ifndef UPDATE_MOVE_BASE_PARAMETER_RECOVERY_H
+#define UPDATE_MOVE_BASE_PARAMETER_RECOVERY_H
 #include <nav_core/recovery_behavior.h>
 #include <costmap_2d/costmap_2d_ros.h>
 #include <tf2_ros/buffer.h>
 #include <dynamic_reconfigure/client.h>
 #include <costmap_2d/InflationPluginConfig.h>
 
-namespace shrink_inflation_recovery
+namespace update_move_base_parameter_recovery
 {
 
-class ShrinkInflationRecovery : public nav_core::RecoveryBehavior
+class UpdateInflationLayerRecovery : public nav_core::RecoveryBehavior
 {
 public:
-    ShrinkInflationRecovery();
+    UpdateInflationLayerRecovery();
 
     void initialize(
             std::string name,
@@ -22,7 +22,7 @@ public:
 
     void runBehavior();
 
-    ~ShrinkInflationRecovery();
+    ~UpdateInflationLayerRecovery();
 
 private:
     bool initialized_;

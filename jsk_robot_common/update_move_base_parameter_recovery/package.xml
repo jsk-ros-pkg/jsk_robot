@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>shrink_inflation_recovery</name>
+  <name>update_move_base_parameter_recovery</name>
   <version>1.1.0</version>
-  <description>The shrink_inflation_recovery package for shrink_inflation_plugin</description>
+  <description>The update_move_base_parameter_recovery package</description>
 
   <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
   <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
@@ -21,9 +21,8 @@
   <depend>tf2_ros</depend>
 
   <test_depend>rostest</test_depend>
-  <test_depend>sound_play</test_depend>
 
   <export>
-      <nav_core plugin="${prefix}/shrink_inflation_plugin.xml" />
+      <nav_core plugin="${prefix}/update_move_base_parameter_recovery_plugins.xml" />
   </export>
 </package>

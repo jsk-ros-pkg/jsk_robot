@@ -13,7 +13,7 @@
       pkg="stage_ros"
       type="stageros"
       name="stageros"
-      args="$(find shrink_inflation_recovery)/worlds/willow-pr2-5cm.world"
+      args="$(find update_move_base_parameter_recovery)/worlds/willow-pr2-5cm.world"
       respawn="false"
       >
     <param name="base_watchdog_timeout" value="0.2"/>
@@ -26,8 +26,8 @@
     <param name="oscillation_timeout" value="30.0" />
     <param name="oscillation_distance" value="0.5" />
 
-    <rosparam file="$(find shrink_inflation_recovery)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find shrink_inflation_recovery)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find update_move_base_parameter_recovery)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find update_move_base_parameter_recovery)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find navigation_stage)/move_base_config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find navigation_stage)/move_base_config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find navigation_stage)/move_base_config/base_local_planner_params.yaml" command="load" />
@@ -35,32 +35,32 @@
     <rosparam>
       recovery_behavior_enabled: true
       recovery_behaviors:
-        - name: "shrink_inflation_local0"
-          type: "shrink_inflation_recovery/ShrinkInflationRecovery"
-        - name: "shrink_inflation_global0"
-          type: "shrink_inflation_recovery/ShrinkInflationRecovery"
+        - name: "update_inflation_layer_local0"
+          type: "update_move_base_parameter_recovery/UpdateInflationLayerRecovery"
+        - name: "update_inflation_layer_global0"
+          type: "update_move_base_parameter_recovery/UpdateInflationLayerRecovery"
         - name: "conservative_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
-        - name: "shrink_inflation_local1"
-          type: "shrink_inflation_recovery/ShrinkInflationRecovery"
-        - name: "shrink_inflation_global1"
-          type: "shrink_inflation_recovery/ShrinkInflationRecovery"
+        - name: "update_inflation_layer_local1"
+          type: "update_move_base_parameter_recovery/UpdateInflationLayerRecovery"
+        - name: "update_inflation_layer_global1"
+          type: "update_move_base_parameter_recovery/UpdateInflationLayerRecovery"
         - name: "aggressive_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
         - name: "all_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
-      shrink_inflation_local0:
+      update_inflation_layer_local0:
         parameter_name: "/move_base_node/local_costmap/inflation_layer"
         inflation_radius: 0.1
-      shrink_inflation_global0:
+      update_inflation_layer_global0:
         parameter_name: "/move_base_node/global_costmap/inflation_layer"
         inflation_radius: 0.1
       conservative_reset:
         reset_distance: 2.0
-      shrink_inflation_local1:
+      update_inflation_layer_local1:
         parameter_name: "/move_base_node/local_costmap/inflation_layer"
         inflation_radius: 0.05
-      shrink_inflation_global1:
+      update_inflation_layer_global1:
         parameter_name: "/move_base_node/global_costmap/inflation_layer"
         inflation_radius: 0.05
       aggressive_reset:
@@ -81,7 +81,7 @@
       name="rviz"
       pkg="rviz"
       type="rviz"
-      args="-d $(find shrink_inflation_recovery)/config/single_robot.rviz"
+      args="-d $(find update_move_base_parameter_recovery)/config/single_robot.rviz"
       />
 
 </launch>

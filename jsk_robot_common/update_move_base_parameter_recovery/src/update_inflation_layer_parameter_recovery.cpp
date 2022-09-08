@@ -1,17 +1,17 @@
-#include <shrink_inflation_recovery/shrink_inflation_recovery.h>
+#include <update_move_base_parameter_recovery/update_inflation_layer_parameter_recovery.h>
 #include <pluginlib/class_list_macros.h>
 #include <actionlib/client/simple_action_client.h>
 
-PLUGINLIB_EXPORT_CLASS(shrink_inflation_recovery::ShrinkInflationRecovery, nav_core::RecoveryBehavior)
+PLUGINLIB_EXPORT_CLASS(update_move_base_parameter_recovery::UpdateInflationLayerRecovery, nav_core::RecoveryBehavior)
 
-namespace shrink_inflation_recovery
+namespace update_move_base_parameter_recovery
 {
-ShrinkInflationRecovery::ShrinkInflationRecovery():
+UpdateInflationLayerRecovery::UpdateInflationLayerRecovery():
     initialized_(false)
 {
 }
 
-void ShrinkInflationRecovery::initialize(
+void UpdateInflationLayerRecovery::initialize(
             std::string name,
             tf2_ros::Buffer*,
             costmap_2d::Costmap2DROS* global_costmap,
@@ -33,11 +33,11 @@ void ShrinkInflationRecovery::initialize(
     }
 }
 
-ShrinkInflationRecovery::~ShrinkInflationRecovery()
+UpdateInflationLayerRecovery::~UpdateInflationLayerRecovery()
 {
 }
 
-void ShrinkInflationRecovery::runBehavior()
+void UpdateInflationLayerRecovery::runBehavior()
 {
     if (not initialized_)
     {
