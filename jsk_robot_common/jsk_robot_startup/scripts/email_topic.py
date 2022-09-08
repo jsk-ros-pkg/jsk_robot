@@ -21,7 +21,8 @@ import base64
 class EmailTopic(object):
     """
     This node sends email based on received rostopic (jsk_robot_startup/Email).
-    Default values can be set by using `~email_info`
+    Default ~sender_address and ~receiver_address can be set from rosparam
+    Default values can be set by using `~email_info`(DEPRECATED)
 
     The yaml file is like the following:
     subject: hello
@@ -38,11 +39,18 @@ class EmailTopic(object):
         yaml_path = rospy.get_param(
             '~email_info', "/var/lib/robot/email_info.yaml")
         if os.path.exists(yaml_path):
+            rospy.logwarn("Using ~email_info as email config is deprecated.")
+            rospy.logwarn("Set ~sender_address and ~receiver_address directory as rosparam")
             with open(yaml_path) as yaml_f:
                 self.email_info = yaml.load(yaml_f)
             rospy.loginfo(
                 "{} is loaded as email config file.".format(yaml_path))
-            rospy.loginfo(self.email_info)
+        else:
+            self.email_info['sender_address'] = rospy.get_param(
+                "~sender_address", "jsk_robot@example.com")
+            self.email_info['receiver_address'] = rospy.get_param(
+                "~receiver_address", "jsk_robot@example.com")
+        rospy.loginfo(self.email_info)
         self.subscriber = rospy.Subscriber(
             'email', Email, self._cb, queue_size=1)
 
