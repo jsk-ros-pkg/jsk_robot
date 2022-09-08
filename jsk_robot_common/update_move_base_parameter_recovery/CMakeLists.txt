@@ -37,6 +37,7 @@ include_directories(
 
 add_library(update_move_base_parameter_recovery
     src/update_inflation_layer_parameter_recovery.cpp
+    src/update_costmap_parameter_recovery.cpp
 )
 add_dependencies(update_move_base_parameter_recovery
     ${${PROJECT_NAME}_EXPORTED_TARGETS}
