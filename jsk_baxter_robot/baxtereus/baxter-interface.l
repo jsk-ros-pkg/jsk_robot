@@ -400,7 +400,7 @@
    ))
 
 
-(defun baxter-init (&key (safe t) (type :default-controller) (moveit t))
+(defun baxter-init (&key (safe t) (type :default-controller) (moveit t) &allow-other-keys)
   (let (mvit-env mvit-rb)
     (when moveit
       (setq mvit-env (instance baxter-moveit-environment))

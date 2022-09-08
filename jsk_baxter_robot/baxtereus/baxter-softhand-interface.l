@@ -178,7 +178,7 @@
 
 (defun baxter-init
   (&key (safe t) (type :default-controller) (moveit t)
-        (lgripper :softhand) (rgripper :softhand))
+        (lgripper :softhand) (rgripper :softhand) &allow-other-keys)
   (let (mvit-env mvit-rb)
     (if moveit
       (progn
