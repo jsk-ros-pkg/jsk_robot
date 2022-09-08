@@ -52,8 +52,8 @@ window
 ( 
   size [ 960 1023 ] 
 
-  rotate [ 0.000 -1.560 ]
-  scale 139.170 
+  rotate [ 1.000 23.440 ]
+  scale 64.924 
 )
 
 # load an environment bitmap
@@ -66,6 +66,6 @@ floorplan
 )
 
 # throw in a robot
-pr2( pose [ -29.889 49.392 0.000 161.918 ] name "pr2" color "blue")
+pr2( pose [ -29.501 49.648 0.000 -140.786 ] name "pr2" color "blue")
 block( pose [ -31.827 48.229 0.000 137.028 ] color "red")
-block( pose [ -28.275 50.707 0.000 137.028 ] color "yellow")
+block( pose [ -27.912 50.995 0.000 -174.271 ] color "yellow")

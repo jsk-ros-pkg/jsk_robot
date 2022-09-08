@@ -19,12 +19,11 @@ max_obstacle_height: 2.0
 raytrace_range: 3.0
 
 #The footprint of the robot and associated padding
-#footprint: [[-0.34, -0.34], [-0.34, 0.34], [0.34, 0.34], [0.5, 0.0], [0.34, -0.34]]
-footprint: [[-0.50, -0.50], [-0.50, 0.50], [0.50, 0.50], [0.70, 0.0], [0.50, -0.50]]
+footprint: [[-0.34, -0.34], [-0.34, 0.34], [0.34, 0.34], [0.5, 0.0], [0.34, -0.34]]
 footprint_padding: 0.01
 
 #Cost function parameters
-inflation_radius: 0.8
+inflation_radius: 0.1
 cost_scaling_factor: 10.0
 
 #The cost at which a cell is considered an obstacle when a map is read from the map_server
