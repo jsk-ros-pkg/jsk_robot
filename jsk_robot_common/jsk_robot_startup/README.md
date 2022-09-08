@@ -10,7 +10,7 @@ see [lifelog/README.md](lifelog/README.md)
 This node sends email based on received rostopic (jsk_robot_startup/Email).
 Default values can be set by using `~email_info`
 There is [a client library](./euslisp/email-topic-client.l) and [sample program](./euslisp/sample-email-topic-client.l).
-If you want to see a demo. Please [configure a smtp server](https://github.com/tkmtnt7000/jsk_robot/blob/PR-update-switchbot-device-name/jsk_robot_common/jsk_robot_startup/README.md#configuring-a-smtp-server-with-gmail) and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
+If you want to see a demo. Please [configure a smtp server](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#configuring-a-smtp-server-with-gmail) and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
 
 ```bash
 roslaunch jsk_robot_startup sample_email_topic.launch receiver_address:=<a mail address to send a mail to>
