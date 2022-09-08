@@ -9,10 +9,10 @@
 namespace update_move_base_parameter_recovery
 {
 
-class UpdateInflationLayerRecovery : public nav_core::RecoveryBehavior
+class UpdateInflationLayerParameterRecovery : public nav_core::RecoveryBehavior
 {
 public:
-    UpdateInflationLayerRecovery();
+    UpdateInflationLayerParameterRecovery();
 
     void initialize(
             std::string name,
@@ -22,7 +22,7 @@ public:
 
     void runBehavior();
 
-    ~UpdateInflationLayerRecovery();
+    ~UpdateInflationLayerParameterRecovery();
 
 private:
     bool initialized_;

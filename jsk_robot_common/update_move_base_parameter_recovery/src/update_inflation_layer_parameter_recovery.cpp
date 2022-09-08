@@ -2,16 +2,19 @@
 #include <pluginlib/class_list_macros.h>
 #include <actionlib/client/simple_action_client.h>
 
-PLUGINLIB_EXPORT_CLASS(update_move_base_parameter_recovery::UpdateInflationLayerRecovery, nav_core::RecoveryBehavior)
+PLUGINLIB_EXPORT_CLASS(
+    update_move_base_parameter_recovery::UpdateInflationLayerParameterRecovery,
+    nav_core::RecoveryBehavior
+)
 
 namespace update_move_base_parameter_recovery
 {
-UpdateInflationLayerRecovery::UpdateInflationLayerRecovery():
+UpdateInflationLayerParameterRecovery::UpdateInflationLayerParameterRecovery():
     initialized_(false)
 {
 }
 
-void UpdateInflationLayerRecovery::initialize(
+void UpdateInflationLayerParameterRecovery::initialize(
             std::string name,
             tf2_ros::Buffer*,
             costmap_2d::Costmap2DROS* global_costmap,
@@ -33,11 +36,11 @@ void UpdateInflationLayerRecovery::initialize(
     }
 }
 
-UpdateInflationLayerRecovery::~UpdateInflationLayerRecovery()
+UpdateInflationLayerParameterRecovery::~UpdateInflationLayerParameterRecovery()
 {
 }
 
-void UpdateInflationLayerRecovery::runBehavior()
+void UpdateInflationLayerParameterRecovery::runBehavior()
 {
     if (not initialized_)
     {

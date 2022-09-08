@@ -35,21 +35,21 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(update_inflation_layer_parameter_recovery
+add_library(update_move_base_parameter_recovery
     src/update_inflation_layer_parameter_recovery.cpp
 )
-add_dependencies(update_inflation_layer_parameter_recovery
+add_dependencies(update_move_base_parameter_recovery
     ${${PROJECT_NAME}_EXPORTED_TARGETS}
     ${catkin_EXPORTED_TARGETS}
 )
-target_link_libraries(update_inflation_layer_parameter_recovery
+target_link_libraries(update_move_base_parameter_recovery
     ${catkin_LIBRARIES}
 )
 
 #
 # Install
 #
-install(TARGETS update_inflation_layer_parameter_recovery
+install(TARGETS update_move_base_parameter_recovery
        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
        RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}

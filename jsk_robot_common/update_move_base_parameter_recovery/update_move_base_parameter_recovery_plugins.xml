@@ -1,7 +1,7 @@
 <library path="lib/libupdate_move_base_parameter_recovery">
     <class
-        name="update_move_base_parameter_recovery/UpdateInflationLayerRecovery"
-        type="update_move_base_parameter_recovery::UpdateInflationLayerRecovery"
+        name="update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+        type="update_move_base_parameter_recovery::UpdateInflationLayerParameterRecovery"
         base_class_type="nav_core::RecoveryBehavior">
         <description>
             A recovery behavior that inflation radius of costmap
