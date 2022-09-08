@@ -13,17 +13,10 @@
       pkg="stage_ros"
       type="stageros"
       name="stageros"
-      args="$(find navigation_stage)/stage_config/worlds/willow-pr2-5cm.world"
+      args="$(find shrink_inflation_recovery)/worlds/willow-pr2-5cm.world"
       respawn="false"
       >
     <param name="base_watchdog_timeout" value="0.2"/>
-  </node>
-
-  <node
-      pkg="sound_play"
-      type="soundplay_node.py"
-      name="sound_play"
-      >
   </node>
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
@@ -48,18 +41,28 @@
           type: "shrink_inflation_recovery/ShrinkInflationRecovery"
         - name: "conservative_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
+        - name: "shrink_inflation_local1"
+          type: "shrink_inflation_recovery/ShrinkInflationRecovery"
+        - name: "shrink_inflation_global1"
+          type: "shrink_inflation_recovery/ShrinkInflationRecovery"
         - name: "aggressive_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
         - name: "all_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
-      conservative_reset:
-        reset_distance: 2.0
       shrink_inflation_local0:
-        parameter_name: "/move_base/local_costmap/inflation_radius"
+        parameter_name: "/move_base_node/local_costmap/inflation_layer"
         inflation_radius: 0.1
       shrink_inflation_global0:
-        parameter_name: "/move_base/global_costmap/inflation_radius"
+        parameter_name: "/move_base_node/global_costmap/inflation_layer"
         inflation_radius: 0.1
+      conservative_reset:
+        reset_distance: 2.0
+      shrink_inflation_local1:
+        parameter_name: "/move_base_node/local_costmap/inflation_layer"
+        inflation_radius: 0.05
+      shrink_inflation_global1:
+        parameter_name: "/move_base_node/global_costmap/inflation_layer"
+        inflation_radius: 0.05
       aggressive_reset:
         reset_distance: 1.0 # 0.5
       all_reset:
@@ -73,7 +76,7 @@
       name="rviz"
       pkg="rviz"
       type="rviz"
-      args="-d $(find navigation_stage)/single_robot.rviz"
+      args="-d $(find shrink_inflation_recovery)/config/single_robot.rviz"
       />
 
 </launch>
