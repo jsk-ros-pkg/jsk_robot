@@ -28,29 +28,41 @@
 
     <rosparam file="$(find update_move_base_parameter_recovery)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find update_move_base_parameter_recovery)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find navigation_stage)/move_base_config/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find navigation_stage)/move_base_config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find update_move_base_parameter_recovery)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find update_move_base_parameter_recovery)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find navigation_stage)/move_base_config/base_local_planner_params.yaml" command="load" />
 
     <rosparam>
       recovery_behavior_enabled: true
       recovery_behaviors:
-        - name: "update_inflation_layer_local0"
+        - name: "update_inflation_layer_global0"
           type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
         - name: "update_costmap_local0"
           type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+        - name: "update_costmap_global0"
+          type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+        #- name: "update_inflation_layer_local0"
+        #  type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
         - name: "conservative_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
         - name: "aggressive_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
         - name: "all_reset"
           type: "clear_costmap_recovery/ClearCostmapRecovery"
+      update_costmap_local0:
+        parameter_name: "/move_base_node/local_costmap"
+        footprint: "[[-0.34, -0.34], [-0.34, 0.34], [0.34, 0.34], [0.5, 0.0], [0.34, -0.34]]"
+        footprint_padding: 0.01
+      update_costmap_global0:
+        parameter_name: "/move_base_node/global_costmap"
+        footprint: "[[-0.34, -0.34], [-0.34, 0.34], [0.34, 0.34], [0.5, 0.0], [0.34, -0.34]]"
+        footprint_padding: 0.01
       update_inflation_layer_local0:
         parameter_name: "/move_base_node/local_costmap/inflation_layer"
         inflation_radius: 0.1
-      update_costmap_local0:
-        parameter_name: "/move_base_node/local_costmap"
-        footprint_padding: 0.01
+      update_inflation_layer_global0:
+        parameter_name: "/move_base_node/global_costmap/inflation_layer"
+        inflation_radius: 0.1
       conservative_reset:
         reset_distance: 2.0
       aggressive_reset:
