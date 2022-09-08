@@ -22,13 +22,14 @@ void UpdateCostmapParameterRecovery::initialize(
 {
     if (not initialized_) {
         ros::NodeHandle private_nh("~/" + name);
-        private_nh.param("parameter_name", parameter_name_, std::string("/move_base_node/local_costmap/inflation_radius"));
+        private_nh.param("parameter_name", parameter_name_, std::string(""));
         ptr_dynamic_param_client_ = \
             std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::Costmap2DConfig>>(
                     new dynamic_reconfigure::Client<costmap_2d::Costmap2DConfig>(parameter_name_)
                     );
 
         private_nh.param("timeout_duration", timeout_duration_, 5.0);
+        private_nh.param("footprint", footprint_, std::string(""));
         private_nh.param("footprint_padding", footprint_padding_, 5.0);
         costmap_config_ = costmap_2d::Costmap2DConfig::__getDefault__();
         ROS_INFO_STREAM("Initialize a plugin \"" << name << "\"");
@@ -53,8 +54,16 @@ void UpdateCostmapParameterRecovery::runBehavior()
     bool success = ptr_dynamic_param_client_->getCurrentConfiguration(costmap_config_, ros::Duration(timeout_duration_));
     if ( success ) {
         ptr_dynamic_param_client_->setConfiguration(costmap_config_);
+        costmap_config_.footprint = footprint_;
         costmap_config_.footprint_padding = footprint_padding_;
-        ROS_INFO_STREAM("Update parameter of \"" << parameter_name_ << "\".");
+        success = ptr_dynamic_param_client_->setConfiguration(costmap_config_);
+        if ( success ) {
+            ROS_INFO_STREAM("Update parameter of \"" << parameter_name_ << "\".");
+            ROS_INFO_STREAM("  footprint: " << footprint_);
+            ROS_INFO_STREAM("  footprint_padding: " << footprint_padding_);
+        } else {
+            ROS_ERROR("Failed to set Configuration.");
+        }
     } else {
         ROS_ERROR("Failed to get Current Configuration.");
     }

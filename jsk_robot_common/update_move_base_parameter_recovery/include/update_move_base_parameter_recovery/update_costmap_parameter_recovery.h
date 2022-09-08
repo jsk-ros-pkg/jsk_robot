@@ -28,6 +28,7 @@ private:
     bool initialized_;
     std::string parameter_name_;
     double timeout_duration_;
+    std::string footprint_;
     double footprint_padding_;
     std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::Costmap2DConfig>> ptr_dynamic_param_client_;
     costmap_2d::Costmap2DConfig costmap_config_;

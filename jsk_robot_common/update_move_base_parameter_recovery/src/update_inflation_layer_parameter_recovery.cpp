@@ -22,12 +22,12 @@ void UpdateInflationLayerParameterRecovery::initialize(
 {
     if (not initialized_) {
         ros::NodeHandle private_nh("~/" + name);
-        private_nh.param("parameter_name", parameter_name_, std::string("/move_base_node/local_costmap/inflation_radius"));
+        private_nh.param("parameter_name", parameter_name_, std::string(""));
         ptr_dynamic_param_client_ = std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>>(new dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>(parameter_name_));
 
-        private_nh.param("inflation_radius", inflation_radius_, 0.0);
-        private_nh.param("cost_scaling_factor", cost_scaling_factor_, 0.0);
         private_nh.param("timeout_duration", timeout_duration_, 5.0);
+        private_nh.param("inflation_radius", inflation_radius_, 5.5);
+        private_nh.param("cost_scaling_factor", cost_scaling_factor_, 10.0);
         inflation_config_ = costmap_2d::InflationPluginConfig::__getDefault__();
         ROS_INFO_STREAM("Initialize a plugin \"" << name << "\"");
         initialized_ = true;
@@ -52,8 +52,14 @@ void UpdateInflationLayerParameterRecovery::runBehavior()
     if ( success ) {
         inflation_config_.inflation_radius = inflation_radius_;
         inflation_config_.cost_scaling_factor = cost_scaling_factor_;
-        ptr_dynamic_param_client_->setConfiguration(inflation_config_);
-        ROS_INFO_STREAM("Update parameter of \"" << parameter_name_ << "\".");
+        success = ptr_dynamic_param_client_->setConfiguration(inflation_config_);
+        if ( success ) {
+            ROS_INFO_STREAM("Update parameter of \"" << parameter_name_ << "\".");
+            ROS_INFO_STREAM("  inflation_radius: " << inflation_radius_);
+            ROS_INFO_STREAM("  cost_scaling_factor: " << cost_scaling_factor_);
+        } else {
+            ROS_ERROR("Failed to set Configuration.");
+        }
     } else {
         ROS_ERROR("Failed to get Current Configuration.");
     }
