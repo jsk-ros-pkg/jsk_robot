@@ -4,7 +4,7 @@
 #include <nav_core/recovery_behavior.h>
 #include <costmap_2d/costmap_2d_ros.h>
 #include <tf2_ros/buffer.h>
-#include <actionlib/client/simple_action_client.h>
+#include <pluginlib/class_loader.hpp>
 
 namespace complex_recovery
 {
@@ -23,6 +23,9 @@ public:
 
 private:
     bool initialized_;
+    std::vector<boost::shared_ptr<nav_core::RecoveryBehavior> > recovery_behaviors_;
+    std::vector<std::string> recovery_behavior_names_;
+    pluginlib::ClassLoader<nav_core::RecoveryBehavior> recovery_loader_;
 };
 };
 
