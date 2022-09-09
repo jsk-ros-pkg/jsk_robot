@@ -33,8 +33,32 @@ void UpdateInflationLayerParameterRecovery::initialize(
         private_nh.param("duration_deadline", duration_deadline, 10.0);
         duration_deadline_ = ros::Duration(duration_deadline);
         private_nh.param("timeout_duration", timeout_duration_, 5.0);
-        private_nh.param("inflation_radius", inflation_radius_, 5.5);
-        private_nh.param("cost_scaling_factor", cost_scaling_factor_, 10.0);
+
+        if (private_nh.hasParam("enabled")) {
+            valid_enabled_ = true;
+            private_nh.getParam("enabled", enabled_);
+        } else {
+            valid_enabled_ = false;
+        }
+        if (private_nh.hasParam("cost_scaling_factor")) {
+            valid_cost_scaling_factor_ = true;
+            private_nh.getParam("cost_scaling_factor", cost_scaling_factor_);
+        } else {
+            valid_cost_scaling_factor_ = false;
+        }
+        if (private_nh.hasParam("inflation_radius")) {
+            valid_inflation_radius_ = true;
+            private_nh.getParam("inflation_radius", inflation_radius_);
+        } else {
+            valid_inflation_radius_ = false;
+        }
+        if (private_nh.hasParam("inflate_unknown")) {
+            valid_inflate_unknown_ = true;
+            private_nh.getParam("inflate_unknown", inflate_unknown_);
+        } else {
+            valid_inflate_unknown_ = false;
+        }
+
         inflation_config_ = costmap_2d::InflationPluginConfig::__getDefault__();
         ROS_INFO_STREAM("Initialize a plugin \"" << name << "\"");
         initialized_ = true;
@@ -62,13 +86,17 @@ void UpdateInflationLayerParameterRecovery::runBehavior()
             original_inflation_config_ = inflation_config_;
             store_original_ = true;
         }
-        inflation_config_.inflation_radius = inflation_radius_;
-        inflation_config_.cost_scaling_factor = cost_scaling_factor_;
+        if ( valid_enabled_ ) inflation_config_.enabled = enabled_;
+        if ( valid_cost_scaling_factor_ ) inflation_config_.cost_scaling_factor = cost_scaling_factor_;
+        if ( valid_inflation_radius_ ) inflation_config_.inflation_radius = inflation_radius_;
+        if ( valid_inflate_unknown_ ) inflation_config_.inflate_unknown = inflate_unknown_;
         success = ptr_dynamic_param_client_->setConfiguration(inflation_config_);
         if ( success ) {
             ROS_INFO_STREAM("Update parameter of \"" << parameter_name_ << "\".");
-            ROS_INFO_STREAM("  inflation_radius: " << inflation_radius_);
-            ROS_INFO_STREAM("  cost_scaling_factor: " << cost_scaling_factor_);
+            ROS_INFO_STREAM("  enabled: " << inflation_config_.enabled);
+            ROS_INFO_STREAM("  cost_scaling_factor: " << inflation_config_.cost_scaling_factor);
+            ROS_INFO_STREAM("  inflation_radius: " << inflation_config_.inflation_radius);
+            ROS_INFO_STREAM("  inflate_unknown: " << inflation_config_.inflate_unknown);
             deadline_ = ros::Time::now() + duration_deadline_;
             wait_for_deadline_ = true;
         } else {

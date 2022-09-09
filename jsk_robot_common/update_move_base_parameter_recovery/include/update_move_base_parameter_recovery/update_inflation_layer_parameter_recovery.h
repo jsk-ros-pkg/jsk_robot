@@ -28,8 +28,17 @@ public:
 
 private:
     bool initialized_;
-    double inflation_radius_;
+
+    // members for dynamic parameters
+    bool valid_enabled_;
+    bool enabled_;
+    bool valid_cost_scaling_factor_;
     double cost_scaling_factor_;
+    bool valid_inflation_radius_;
+    double inflation_radius_;
+    bool valid_inflate_unknown_;
+    bool inflate_unknown_;
+
     double timeout_duration_;
     std::string parameter_name_;
     std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>> ptr_dynamic_param_client_;

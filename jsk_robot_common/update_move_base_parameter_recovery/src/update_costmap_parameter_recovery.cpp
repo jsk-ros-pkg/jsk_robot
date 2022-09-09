@@ -36,8 +36,26 @@ void UpdateCostmapParameterRecovery::initialize(
         private_nh.param("duration_deadline", duration_deadline, 10.0);
         duration_deadline_ = ros::Duration(duration_deadline);
         private_nh.param("timeout_duration", timeout_duration_, 5.0);
-        private_nh.param("footprint", footprint_, std::string(""));
-        private_nh.param("footprint_padding", footprint_padding_, 5.0);
+
+        if (private_nh.hasParam("footprint")) {
+            valid_footprint_ = true;
+            private_nh.getParam("footprint", footprint_);
+        } else {
+            valid_footprint_ = false;
+        }
+        if (private_nh.hasParam("robot_radius")) {
+            valid_robot_radius_ = true;
+            private_nh.getParam("robot_radius", robot_radius_);
+        } else {
+            valid_robot_radius_ = false;
+        }
+        if (private_nh.hasParam("footprint_padding")) {
+            valid_footprint_padding_ = true;
+            private_nh.getParam("footprint_padding", footprint_padding_);
+        } else {
+            valid_footprint_padding_ = false;
+        }
+
         costmap_config_ = costmap_2d::Costmap2DConfig::__getDefault__();
         ROS_INFO_STREAM("Initialize a plugin \"" << name << "\"");
         initialized_ = true;
@@ -65,13 +83,15 @@ void UpdateCostmapParameterRecovery::runBehavior()
             original_costmap_config_ = costmap_config_;
             store_original_ = true;
         }
-        costmap_config_.footprint = footprint_;
-        costmap_config_.footprint_padding = footprint_padding_;
+        if ( valid_footprint_ ) costmap_config_.footprint = footprint_;
+        if ( valid_robot_radius_ ) costmap_config_.robot_radius = robot_radius_;
+        if ( valid_footprint_padding_ ) costmap_config_.footprint_padding = footprint_padding_;
         success = ptr_dynamic_param_client_->setConfiguration(costmap_config_);
         if ( success ) {
             ROS_INFO_STREAM("Update parameter of \"" << parameter_name_ << "\".");
-            ROS_INFO_STREAM("  footprint: " << footprint_);
-            ROS_INFO_STREAM("  footprint_padding: " << footprint_padding_);
+            ROS_INFO_STREAM("  footprint: " << costmap_config_.footprint);
+            ROS_INFO_STREAM("  robot_radius: " << costmap_config_.robot_radius);
+            ROS_INFO_STREAM("  footprint_padding: " << costmap_config_.footprint_padding);
             deadline_ = ros::Time::now() + duration_deadline_;
             wait_for_deadline_ = true;
         } else {

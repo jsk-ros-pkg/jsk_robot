@@ -28,10 +28,17 @@ public:
 
 private:
     bool initialized_;
+
+    // members for dynamic parameters
+    bool valid_footprint_;
+    std::string footprint_;
+    bool valid_robot_radius_;
+    double robot_radius_;
+    bool valid_footprint_padding_;
+    double footprint_padding_;
+
     std::string parameter_name_;
     double timeout_duration_;
-    std::string footprint_;
-    double footprint_padding_;
     std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::Costmap2DConfig>> ptr_dynamic_param_client_;
     costmap_2d::Costmap2DConfig costmap_config_;
     bool store_original_;
