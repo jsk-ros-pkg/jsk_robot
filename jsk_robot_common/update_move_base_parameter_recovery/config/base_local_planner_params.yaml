@@ -14,7 +14,7 @@ TrajectoryPlannerROS:
   min_in_place_rotational_vel: 0.4
 
   #The velocity the robot will command when trying to escape from a stuck situation
-  escape_vel: -0.1
+  escape_vel: 0.1
   
   #For this example, we'll use a holonomic robot
   holonomic_robot: true
