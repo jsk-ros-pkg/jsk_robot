@@ -53,10 +53,12 @@
         update_inflation_layer_local0:
           parameter_name: "/move_base_node/local_costmap/inflation_layer"
           inflation_radius: 0.1
+          duration_dealline: 9.0
         update_costmap_local0:
           parameter_name: "/move_base_node/local_costmap"
           footprint: "[[-0.34, -0.34], [-0.34, 0.34], [0.34, 0.34], [0.5, 0.0], [0.34, -0.34]]"
           footprint_padding: 0.05
+          duration_dealline: 9.0
       conservative_reset:
         reset_distance: 2.0
       aggressive_reset:
