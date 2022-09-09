@@ -923,9 +923,9 @@ Args:
              '(lambda (userdata)
                (let* ((label-names (notify-recognition :location "kitchen"))
                       (notify-text (if label-names (format nil "~Aがあったよ" label-names) "")))
-                     (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
-                     (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata))
-                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
+                 (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata))
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                t))
             (:report-move-to-sink-front-failure
              '(lambda (userdata)
