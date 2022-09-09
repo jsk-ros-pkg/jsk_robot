@@ -32,6 +32,14 @@ void SequentialComplexRecovery::initialize(
                     global_costmap,
                     local_costmap
                     );
+        if ( not success ) {
+            ROS_ERROR("Failed to load behaviors.");
+        } else {
+            ROS_INFO("Behaviors are loaded.");
+            for (auto behavior_name = recovery_behavior_names_.begin(); behavior_name != recovery_behavior_names_.end(); behavior_name++) {
+                ROS_INFO("behavior: %s", behavior_name->c_str());
+            }
+        }
 
         initialized_ = true;
     } else {
@@ -41,6 +49,7 @@ void SequentialComplexRecovery::initialize(
 
 SequentialComplexRecovery::~SequentialComplexRecovery()
 {
+  recovery_behaviors_.clear();
 }
 
 void SequentialComplexRecovery::runBehavior()
@@ -51,12 +60,11 @@ void SequentialComplexRecovery::runBehavior()
     return;
   }
 
+  ROS_INFO("Start executing behaviors sequentially.");
   for (auto index = 0; index < recovery_behaviors_.size(); index++) {
       ROS_INFO("executing behavior %s", recovery_behavior_names_[index].c_str());
       recovery_behaviors_[index]->runBehavior();
   }
-
-  // DO SOMETHING
 }
 
 };
