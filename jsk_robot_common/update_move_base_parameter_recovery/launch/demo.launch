@@ -70,9 +70,9 @@
 
   <include file="$(find navigation_stage)/move_base_config/amcl_node.xml"/>
   <rosparam>
-      /amcl/initial_pose_x: 49.613
-      /amcl/initial_pose_y: 29.441
-      /amcl/initial_pose_a: 2.245
+      /amcl/initial_pose_x: 50.596
+      /amcl/initial_pose_y: 26.944
+      /amcl/initial_pose_a: 1.536
   </rosparam>
 
   <node

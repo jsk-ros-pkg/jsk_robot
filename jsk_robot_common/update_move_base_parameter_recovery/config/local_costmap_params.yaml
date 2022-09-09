@@ -22,7 +22,7 @@ local_costmap:
   origin_x: 0.0
   origin_y: 0.0
 
-  footprint_padding: 0.5
-  inflation_radius: 1.0
+  footprint_padding: 0.2
+  inflation_radius: 0.7
   cost_scaling_factor: 10.0
   #footprint: [[-0.50, -0.50], [-0.50, 0.50], [0.50, 0.50], [0.70, 0.0], [0.50, -0.50]]
