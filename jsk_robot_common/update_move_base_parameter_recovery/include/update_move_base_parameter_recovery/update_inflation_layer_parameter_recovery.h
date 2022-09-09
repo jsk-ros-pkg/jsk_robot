@@ -5,6 +5,8 @@
 #include <tf2_ros/buffer.h>
 #include <dynamic_reconfigure/client.h>
 #include <costmap_2d/InflationPluginConfig.h>
+#include <thread>
+#include <mutex>
 
 namespace update_move_base_parameter_recovery
 {
@@ -32,6 +34,15 @@ private:
     std::string parameter_name_;
     std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::InflationPluginConfig>> ptr_dynamic_param_client_;
     costmap_2d::InflationPluginConfig inflation_config_;
+    bool store_original_;
+    costmap_2d::InflationPluginConfig original_inflation_config_;
+    ros::Duration duration_deadline_;
+    ros::Time deadline_;
+    bool wait_for_deadline_;
+    std::mutex mtx_;
+    std::thread spin_thread_;
+
+    void spinRestore();
 };
 };
 

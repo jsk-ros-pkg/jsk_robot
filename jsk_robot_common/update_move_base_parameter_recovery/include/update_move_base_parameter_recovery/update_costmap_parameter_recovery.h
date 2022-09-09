@@ -5,6 +5,8 @@
 #include <tf2_ros/buffer.h>
 #include <dynamic_reconfigure/client.h>
 #include <costmap_2d/Costmap2DConfig.h>
+#include <thread>
+#include <mutex>
 
 namespace update_move_base_parameter_recovery
 {
@@ -32,6 +34,15 @@ private:
     double footprint_padding_;
     std::shared_ptr<dynamic_reconfigure::Client<costmap_2d::Costmap2DConfig>> ptr_dynamic_param_client_;
     costmap_2d::Costmap2DConfig costmap_config_;
+    bool store_original_;
+    costmap_2d::Costmap2DConfig original_costmap_config_;
+    ros::Duration duration_deadline_;
+    ros::Time deadline_;
+    bool wait_for_deadline_;
+    std::mutex mtx_;
+    std::thread spin_thread_;
+
+    void spinRestore();
 };
 };
 
