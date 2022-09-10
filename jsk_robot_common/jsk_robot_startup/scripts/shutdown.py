@@ -57,19 +57,28 @@ class Shutdown(object):
             '~shutdown_command', '/sbin/shutdown -h now')
         self.reboot_command = rospy.get_param(
             '~reboot_command', '/sbin/shutdown -r now')
+        self.shutdown_sentence = rospy.get_param(
+            '~shutdown_sentence', 'シャットダウンします。')
+        self.reboot_sentence = rospy.get_param(
+            '~reboot_sentence', '再起動します。')
+        self.lang = rospy.get_param('~lang', 'jp')
         self.volume = rospy.get_param('~volume', 1.0)
+        self.timeout_server = rospy.get_param('~timeout_server', 1.0)
+        self.timeout_result = rospy.get_param('~timeout_result', 10.0)
 
-    def speak(self, text, lang='jp'):
-        if self.client.wait_for_server(timeout=rospy.Duration(1.0)):
+    def speak(self, text):
+        timeout_server = rospy.Duration(self.timeout_server)
+        timeout_result = rospy.Duration(self.timeout_result)
+        if self.client.wait_for_server(timeout=timeout_server):
             msg = SoundRequest()
             msg.sound = SoundRequest.SAY
             msg.command = SoundRequest.PLAY_ONCE
             msg.volume = max(0, min(1, self.volume))
             msg.arg = text
-            msg.arg2 = lang
+            msg.arg2 = self.lang
             goal = SoundRequestGoal(sound_request=msg)
             self.client.send_goal(goal)
-            self.client.wait_for_result(timeout=rospy.Duration(10.0))
+            self.client.wait_for_result(timeout=timeout_result)
             return self.client.get_result()
 
     def callback(self, msg):
@@ -101,7 +110,7 @@ class Shutdown(object):
                 return
 
         rospy.loginfo('Shut down robot.')
-        self.speak('シャットダウンします。')
+        self.speak(self.shutdown_sentence)
         ret = os.system(self.shutdown_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(
@@ -109,7 +118,7 @@ class Shutdown(object):
 
     def reboot(self, msg):
         rospy.loginfo('Reboot robot.')
-        self.speak('再起動します。')
+        self.speak(self.reboot_sentence)
         ret = os.system(self.reboot_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(
