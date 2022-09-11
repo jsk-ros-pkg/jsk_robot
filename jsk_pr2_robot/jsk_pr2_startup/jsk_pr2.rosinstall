@@ -69,7 +69,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_robot
     uri: https://github.com/jsk-ros-pkg/jsk_robot.git
-    version: pr1040
+    version: develop/pr2
 - git:
     local-name: jsk-ros-pkg/jsk_roseus
     uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
