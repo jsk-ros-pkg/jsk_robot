@@ -83,7 +83,7 @@ class SmachToMail():
         if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
         if 'INFO' in local_data_str:
-            rospy.loginfo("- description_str -> {}".format(local_data_str['INFO']))
+            rospy.loginfo("- info_str -> {}".format(local_data_str['INFO']))
         else:
             rospy.logwarn("smach does not have INFO, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
 
@@ -148,6 +148,9 @@ class SmachToMail():
         changeline = EmailBody()
         changeline.type = 'html'
         changeline.message = "<br>"
+        separator = EmailBody()
+        separator.type = 'text'
+        separator.message = "---------------"
         for x in state_list:
             if 'DESCRIPTION' in x:
                 description = EmailBody()
@@ -162,6 +165,10 @@ class SmachToMail():
                 image.img_data = x['IMAGE']
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(separator)
+        email_msg.body.append(changeline)
         for x in state_list:
             if 'INFO' in x:
                 info = EmailBody()
@@ -186,6 +193,7 @@ class SmachToMail():
     def _send_twitter(self, subject, state_list):
         text = u""
         if subject:
+            # In python2, str is byte object, so we need to decode it as utf-8
             if isinstance(subject, bytes):
                 subject = subject.decode('utf-8')
             text += subject

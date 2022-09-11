@@ -10,7 +10,7 @@ see [lifelog/README.md](lifelog/README.md)
 This node sends email based on received rostopic (jsk_robot_startup/Email).
 Default values can be set by using `~email_info`
 There is [a client library](./euslisp/email-topic-client.l) and [sample program](./euslisp/sample-email-topic-client.l).
-If you want to see a demo. Please configure a smtp server and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
+If you want to see a demo. Please [configure a smtp server](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#configuring-a-smtp-server-with-gmail) and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
 
 ```bash
 roslaunch jsk_robot_startup sample_email_topic.launch receiver_address:=<a mail address to send a mail to>
@@ -185,7 +185,7 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
   If `~input_condition` is set, evaluated `~input_condition` is `True` and this node received this topic, shutdown will be executed.
 
-  Even if you want to force shutdown, set `~input_condition` to `None` and send `shutdown` topic.
+  If you want to force a shutdown in any case, set `~input_condition` to `None` and send `shutdown` topic.
 
 * `reboot` (`std_msgs/Empty`)
 
@@ -208,7 +208,8 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
 * `~input_condition` (String, default: ``None``)
 
-  Returning bool value condition using the given Python expression. The Python expression can access any of the Python builtins plus: ``topic`` (the topic of the message), ``m`` (the message) and ``t`` (time of message).
+  Specify condition to run `~shutdown_command` even if shutdown topic is received. Use a Python expression that returns a bool value.
+  In addition to a Python builtin functions, you can use ``topic`` (the topic of the message), ``m`` (the message) and ``t`` (time of message).
 
   For example, ``~input`` topic is ``std_msgs/String`` and if you want to check whether a sentence is a ``hello``, you can do the following.
 
@@ -220,6 +221,28 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
   ```
   input1_condition: m.header.frame_id in ['base', 'base_link']
+  ```
+
+  For example, to prevent shutdown while the real Fetch is charging, write as follows.
+
+  ```
+  input_condition: 'm.is_charging is False'
+  ```
+
+  In this case, the `~input` is the `/battery_state` (`power_msgs/BatteryState`) topic.
+  `power_msgs/BatteryState` has the following values and `is_charging` is `True` if charging, `False` otherwise.
+
+  ```
+  $ rosmsg show power_msgs/BatteryState
+  string name
+  float32 charge_level
+  bool is_charging
+  duration remaining_time
+  float32 total_capacity
+  float32 current_capacity
+  float32 battery_voltage
+  float32 supply_voltage
+  float32 charger_voltage
   ```
 
   Note that, use escape sequence when using the following symbols ``<(&lt;)``, ``>(&gt;)``, ``&(&amp;)``, ``'(&apos;)`` and ``"(&quot;)``.
@@ -320,3 +343,35 @@ To check how many devices are bound to rfcomm, use rfcomm command.
 ```
 rfcomm
 ```
+
+## Tips
+### Configuring a smtp server with Gmail
+1. Setting postfix
+
+Add following codes to `/etc/postfix/main.cf`
+```
+relayhost = smtp.gmail.com:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/gmail_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
+smtp_use_tls = yes
+```
+2. Create and register a password file
+
+Create `/etc/postfix/gmail_passwd`
+```
+# /etc/postfix/gmail_passwd
+smtp.gmail.com:587 <example>@gmail.com:<login password or application password>
+```
+Register `/etc/postfix/gmail_passwd`
+```bash
+$ sudo postmap /etc/postfix/gmail_passwd
+```
+If you find `/etc/postfix/gmail_passwd.db`, it works well.
+
+3. Reload postfix
+```bash
+$ sudo postfix reload
+```
+
