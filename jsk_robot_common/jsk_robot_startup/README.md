@@ -206,6 +206,27 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
   Command to reboot the system. You can specify the reboot command according to your system.
 
+* `~shutdown_sentence` (String, default: `"シャットダウンします。"`)
+
+  Sentence spoken when shutdown.
+
+* `~reboot_sentence` (String, default: `"再起動します。"`)
+
+  Sentence spoken when reboot.
+
+* `~lang` (String, default: `"jp"`)
+
+  Language of `~shutdown_sentence` and `~reboot_sentence`.
+  If you use English, please set `""`.
+
+* `~timeout_server` (Float, default: `1.0`)
+
+  Max time to block before returning from `wait_for_server()` for speaking.
+
+* `~timeout_result` (Float, default: `10.0`)
+
+  Max time to block before returning from `wait_for_result()` for speaking.
+
 * `~input_condition` (String, default: ``None``)
 
   Specify condition to run `~shutdown_command` even if shutdown topic is received. Use a Python expression that returns a bool value.
