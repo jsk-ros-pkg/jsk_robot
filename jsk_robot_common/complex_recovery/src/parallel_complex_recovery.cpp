@@ -1,6 +1,7 @@
 #include <complex_recovery/parallel_complex_recovery.h>
 #include <complex_recovery/utils.h>
 #include <pluginlib/class_list_macros.h>
+#include <thread>
 
 PLUGINLIB_EXPORT_CLASS(complex_recovery::ParallelComplexRecovery, nav_core::RecoveryBehavior)
 
@@ -21,7 +22,6 @@ void ParallelComplexRecovery::initialize(
 {
     if (not initialized_) {
         ros::NodeHandle private_nh("~/" + name);
-        // DO SOMETHING
         bool success = loadRecoveryBehaviors(
                     name,
                     private_nh,
@@ -60,7 +60,25 @@ void ParallelComplexRecovery::runBehavior()
     return;
   }
 
-  // DO SOMETHING
+  std::vector<std::shared_ptr<std::thread>> threads;
+
+  ROS_INFO("Start executing behaviors in parallel.");
+  for (auto index = 0; index < recovery_behaviors_.size(); index++) {
+      ROS_INFO("start executing behavior %s", recovery_behavior_names_[index].c_str());
+      threads.push_back(
+              std::shared_ptr<std::thread>(
+                  new std::thread(
+                        &nav_core::RecoveryBehavior::runBehavior,
+                        recovery_behaviors_[index]
+                      )));
+  }
+
+  ROS_INFO("Waiting for behaviors to finish.");
+  for (auto thread = threads.begin(); thread != threads.end(); thread++) {
+      (*thread)->join();
+  }
+
+  ROS_INFO("All behaviors have finished.");
 }
 
 };
