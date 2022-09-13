@@ -8,11 +8,11 @@
         </description>
     </class>
     <class
-        name="complex_recovery/ConcurrentComplexRecovery"
-        type="complex_recovery::ConcurrentComplexRecovery"
+        name="complex_recovery/ParallelComplexRecovery"
+        type="complex_recovery::ParallelComplexRecovery"
         base_class_type="nav_core::RecoveryBehavior">
         <description>
-            A recovery behavior that runs other recovery behaviors concurrently.
+            A recovery behavior that runs other recovery behaviors in parallel.
         </description>
     </class>
 </library>
