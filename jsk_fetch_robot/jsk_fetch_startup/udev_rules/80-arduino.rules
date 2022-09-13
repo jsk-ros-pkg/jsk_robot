@@ -1,3 +1,4 @@
 # You can access arduino attached to fetch via /dev/arduino
 # https://github.com/start-jsk/jsk_apc/blob/16c004c511e864478aa6581a04c5a023e5fde391/jsk_arc2017_baxter/udev/90-rosserial.rules
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="arduino", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0058", SYMLINK+="arduino", MODE="0666"
