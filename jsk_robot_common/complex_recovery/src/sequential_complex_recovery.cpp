@@ -21,7 +21,6 @@ void SequentialComplexRecovery::initialize(
 {
     if (not initialized_) {
         ros::NodeHandle private_nh("~/" + name);
-        // DO SOMETHING
         bool success = loadRecoveryBehaviors(
                     name,
                     private_nh,
@@ -65,6 +64,8 @@ void SequentialComplexRecovery::runBehavior()
       ROS_INFO("executing behavior %s", recovery_behavior_names_[index].c_str());
       recovery_behaviors_[index]->runBehavior();
   }
+
+  ROS_INFO("All behaviors have finished.");
 }
 
 };
