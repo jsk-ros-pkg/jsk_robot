@@ -9,20 +9,23 @@
 namespace complex_recovery
 {
 
-class ConcurrentComplexRecovery : public nav_core::RecoveryBehavior
+class ParallelComplexRecovery : public nav_core::RecoveryBehavior
 {
 public:
-    ConcurrentComplexRecovery();
+    ParallelComplexRecovery();
     void initialize(
             std::string name,
-            tf2_ros::Buffer*,
+            tf2_ros::Buffer* tf_buffer,
             costmap_2d::Costmap2DROS* global_costmap,
             costmap_2d::Costmap2DROS* local_costmap);
     void runBehavior();
-    ~ConcurrentComplexRecovery();
+    ~ParallelComplexRecovery();
 
 private:
     bool initialized_;
+    std::vector<boost::shared_ptr<nav_core::RecoveryBehavior> > recovery_behaviors_;
+    std::vector<std::string> recovery_behavior_names_;
+    pluginlib::ClassLoader<nav_core::RecoveryBehavior> recovery_loader_;
 };
 };
 
