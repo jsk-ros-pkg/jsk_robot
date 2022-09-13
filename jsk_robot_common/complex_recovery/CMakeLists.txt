@@ -37,7 +37,7 @@ include_directories(
 
 add_library(complex_recovery
     src/sequential_complex_recovery.cpp
-    src/concurrent_complex_recovery.cpp
+    src/parallel_complex_recovery.cpp
     src/utils.cpp
 )
 add_dependencies(complex_recovery
