@@ -1,0 +1,34 @@
+<launch>
+    <node
+        pkg="complex_recovery"
+        type="parallel_complex_recovery_test_node"
+        name="parallel_complex_recovery_test_node"
+        >
+        <rosparam>
+          recovery:
+            recovery_behaviors:
+              - name: 'speak_and_wait0'
+                type: 'speak_and_wait_recovery/SpeakAndWaitRecovery'
+              - name: 'speak_and_wait1'
+                type: 'speak_and_wait_recovery/SpeakAndWaitRecovery'
+            speak_and_wait0:
+              speak_text: 'test0'
+              duration_wait: 2.0
+              duration_timeout: 2.0
+              result_timeout: 1.0
+            speak_and_wait1:
+              speak_text: 'test1'
+              duration_wait: 2.0
+              duration_timeout: 2.0
+              result_timeout: 1.0
+        </rosparam>
+    </node>
+
+    <test
+        test-name="test_parallel_complex_recovery"
+        pkg="complex_recovery"
+        type="test_parallel_complex_recovery.py"
+        name="parallel_complex_recovery_test"
+        time-limit="30"
+        />
+</launch>
