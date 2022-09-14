@@ -1,6 +1,5 @@
 #include <update_move_base_parameter_recovery/update_inflation_layer_parameter_recovery.h>
 #include <pluginlib/class_list_macros.h>
-#include <actionlib/client/simple_action_client.h>
 
 PLUGINLIB_EXPORT_CLASS(
     update_move_base_parameter_recovery::UpdateInflationLayerParameterRecovery,

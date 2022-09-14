@@ -14,11 +14,18 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>costmap_2d</depend>
+  <depend>dynamic_reconfigure</depend>
   <depend>nav_core</depend>
   <depend>pluginlib</depend>
   <depend>roscpp</depend>
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
+
+  <!-- for demo -->
+  <exec_depend>map_server</exec_depend>
+  <exec_depend>stage_ros</exec_depend>
+  <exec_depend>move_base</exec_depend>
+  <exec_depend>rviz</exec_depend>
 
   <test_depend>rostest</test_depend>
 
