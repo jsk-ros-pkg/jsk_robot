@@ -20,11 +20,9 @@
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
 
-  <exec_depend>speak_and_wait_recovery</exec_depend>
-  <exec_depend>clear_costmap_recovery</exec_depend>
-  <exec_depend>rotate_recovery</exec_depend>
-
   <test_depend>rostest</test_depend>
+  <test_depend>speak_and_wait_recovery</test_depend>
+  <test_depend>sound_play</test_depend>
 
   <export>
       <nav_core plugin="${prefix}/complex_recovery_plugins.xml" />
