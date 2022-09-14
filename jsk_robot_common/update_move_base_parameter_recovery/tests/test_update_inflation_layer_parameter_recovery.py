@@ -25,6 +25,8 @@ class TestUpdateInflationPluginParameterRecovery(unittest.TestCase):
     def callback(self, config, level):
         with self.lock_for_config:
             self.config = config
+        rospy.logwarn('Update parameters.')
+        return config
 
     def test_update_inflation_layer_parameter_recovery(self):
 
@@ -32,7 +34,7 @@ class TestUpdateInflationPluginParameterRecovery(unittest.TestCase):
         while not rospy.is_shutdown():
             with self.lock_for_config:
                 if 'inflate_unknown' in self.config and \
-                        not self.config['inflate_unknown']:
+                        self.config['inflate_unknown']:
                     break
             rate.sleep()
 
@@ -41,6 +43,8 @@ class TestUpdateInflationPluginParameterRecovery(unittest.TestCase):
             self.assertEqual(self.config['enabled'], False)
             self.assertEqual(self.config['inflate_unknown'], True)
             self.assertEqual(self.config['inflation_radius'], 1.0)
+
+        rospy.logwarn('finished.')
 
 
 if __name__ == '__main__':
