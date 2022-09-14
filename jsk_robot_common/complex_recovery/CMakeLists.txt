@@ -62,3 +62,19 @@ install(DIRECTORY include/${PROJECT_NAME}/
 install(FILES complex_recovery_plugins.xml
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+#
+# Testing
+#
+if (CATKIN_ENABLE_TESTING)
+    find_package(rostest REQUIRED)
+
+    catkin_add_executable_with_gtest(sequential_complex_recovery_test_node
+        tests/sequential_complex_recovery_test_node.cpp
+    )
+    target_link_libraries(sequential_complex_recovery_test_node
+        ${catkin_LIBRARIES}
+        ${PROJECT_NAME}
+    )
+    add_rostest(tests/sequential_complex_recovery.test)
+endif()
