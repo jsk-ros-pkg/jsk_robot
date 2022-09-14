@@ -64,3 +64,28 @@ install(DIRECTORY include/${PROJECT_NAME}/
 install(FILES update_move_base_parameter_recovery_plugins.xml
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+
+#
+# Testing
+#
+if (CATKIN_ENABLE_TESTING)
+    find_package(rostest REQUIRED)
+
+    catkin_add_executable_with_gtest(update_inflation_layer_parameter_recovery_test_node
+        tests/update_inflation_layer_parameter_recovery_test_node.cpp
+    )
+    target_link_libraries(update_inflation_layer_parameter_recovery_test_node
+        ${catkin_LIBRARIES}
+        ${PROJECT_NAME}
+    )
+#add_rostest(tests/update_inflation_layer_parameter_recovery.test)
+
+    catkin_add_executable_with_gtest(update_costmap_parameter_recovery_test_node
+        tests/update_costmap_parameter_recovery_test_node.cpp
+    )
+    target_link_libraries(update_costmap_parameter_recovery_test_node
+        ${catkin_LIBRARIES}
+        ${PROJECT_NAME}
+    )
+#add_rostest(tests/update_costmap_parameter_recovery.test)
+endif()
