@@ -77,4 +77,13 @@ if (CATKIN_ENABLE_TESTING)
         ${PROJECT_NAME}
     )
     add_rostest(tests/sequential_complex_recovery.test)
+
+    catkin_add_executable_with_gtest(parallel_complex_recovery_test_node
+        tests/parallel_complex_recovery_test_node.cpp
+    )
+    target_link_libraries(parallel_complex_recovery_test_node
+        ${catkin_LIBRARIES}
+        ${PROJECT_NAME}
+    )
+    add_rostest(tests/parallel_complex_recovery.test)
 endif()
