@@ -4,6 +4,7 @@
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "update_inflation_layer_parameter_recovery_test_node");
+    ros::NodeHandle nh;
 
     update_move_base_parameter_recovery::UpdateInflationLayerParameterRecovery recovery;
     recovery.initialize(std::string("recovery"),NULL,NULL,NULL);
