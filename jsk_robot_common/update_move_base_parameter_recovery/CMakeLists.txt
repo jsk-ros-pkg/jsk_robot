@@ -78,7 +78,7 @@ if (CATKIN_ENABLE_TESTING)
         ${catkin_LIBRARIES}
         ${PROJECT_NAME}
     )
-#add_rostest(tests/update_inflation_layer_parameter_recovery.test)
+    add_rostest(tests/update_inflation_layer_parameter_recovery.test)
 
     catkin_add_executable_with_gtest(update_costmap_parameter_recovery_test_node
         tests/update_costmap_parameter_recovery_test_node.cpp
@@ -87,5 +87,5 @@ if (CATKIN_ENABLE_TESTING)
         ${catkin_LIBRARIES}
         ${PROJECT_NAME}
     )
-#add_rostest(tests/update_costmap_parameter_recovery.test)
+    add_rostest(tests/update_costmap_parameter_recovery.test)
 endif()
