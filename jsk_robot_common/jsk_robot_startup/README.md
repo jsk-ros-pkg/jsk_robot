@@ -195,6 +195,11 @@ This node shuts down or reboots the robot itself according to the rostopic. Note
 
   Input ros message for `~input_condition`.
 
+### ActionClient
+
+* `/robotsound_jp` (`SoundRequestAction`)
+
+  Send text to say. Please remap the action acoording to sound_play node you use.
 
 ### Parameters
 
