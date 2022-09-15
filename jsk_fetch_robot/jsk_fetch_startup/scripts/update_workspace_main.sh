@@ -48,7 +48,7 @@ fi
 # Filename should end with .txt to preview the contents in a web browser
 LOGFILE=$WORKSPACE/update_workspace.txt
 
-MAIL_BODY=""
+TMP_MAIL_BODY_FILE=/tmp/update_workspace_mailbody.txt
 
 {
 set -x
@@ -87,17 +87,21 @@ catkin config -DCMAKE_BUILD_TYPE=Release
 catkin build --continue-on-failure
 CATKIN_BUILD_RESULT=$?
 # Send mail
+echo "" > $TMP_MAIL_BODY_FILE
 if [ $WSTOOL_UPDATE_RESULT -ne 0 ]; then
-    MAIL_BODY=$MAIL_BODY"Please wstool update workspace manually. "
+    echo "Please wstool update workspace manually.\n" >> $TMP_MAIL_BODY_FILE
 fi
 if [ $ROSDEP_INSTALL_RESULT -ne 0 ]; then
-    MAIL_BODY=$MAIL_BODY"Please install dependencies manually. "
+    echo "Please install dependencies manually.\n" >> $TMP_MAIL_BODY_FILE
 fi
 if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
-    MAIL_BODY=$MAIL_BODY"Please catkin build workspace manually."
+    echo "Please catkin build workspace manually.\n" >> $TMP_MAIL_BODY_FILE
 fi
 set +x
 } 2>&1 | tee $LOGFILE
+
+MAIL_BODY=$(cat $TMP_MAIL_BODY_FILE)
+echo "MAIL_BODY: $MAIL_BODY"
 
 if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
     echo "Sent a mail"
