@@ -110,7 +110,8 @@ if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
   stamp: {secs: 0, nsecs: 0}
   frame_id: ''
 subject: 'Daily workspace update fails'
-body: '$MAIL_BODY'
+body:
+- {type: 'text', message: '${MAIL_BODY}', file_path: '', img_data: '', img_size: 0}
 sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
 receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
 smtp_server: ''
