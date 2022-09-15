@@ -48,6 +48,8 @@ fi
 # Filename should end with .txt to preview the contents in a web browser
 LOGFILE=$WORKSPACE/update_workspace.txt
 
+MAIL_BODY=""
+
 {
 set -x
 # Update workspace
@@ -85,7 +87,6 @@ catkin config -DCMAKE_BUILD_TYPE=Release
 catkin build --continue-on-failure
 CATKIN_BUILD_RESULT=$?
 # Send mail
-MAIL_BODY=""
 if [ $WSTOOL_UPDATE_RESULT -ne 0 ]; then
     MAIL_BODY=$MAIL_BODY"Please wstool update workspace manually. "
 fi
@@ -97,6 +98,7 @@ if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
 fi
 set +x
 } 2>&1 | tee $LOGFILE
+
 if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
     echo "Sent a mail"
     rostopic pub -1 /email jsk_robot_startup/Email "header:
