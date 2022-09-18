@@ -100,6 +100,9 @@ fi
 set +x
 } 2>&1 | tee $LOGFILE
 
+# MAIL_BODY variable cannot be set directly in a subshell. So it is set from temporary mail body text file.
+# The mail body text is put as $TMP_MAIL_BODY_FILE.
+# See https://github.com/jsk-ros-pkg/jsk_robot/issues/1569
 MAIL_BODY=$(cat $TMP_MAIL_BODY_FILE)
 echo "MAIL_BODY: $MAIL_BODY"
 
