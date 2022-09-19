@@ -61,7 +61,7 @@ source devel/setup.bash
 mkdir -p catkin_ws/src
 cd  catkin_ws/src
 wstool init .
-wstool set --git jsk-ros-pkg/jsk_robot https://github.com/knorth55/jsk_robot.git -v fetch15 -y
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -v develop/fetch -y
 wstool update -t .
 wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_fetch_robot/jsk_fetch.rosinstall.$ROS_DISTRO
 wstool update -t .
