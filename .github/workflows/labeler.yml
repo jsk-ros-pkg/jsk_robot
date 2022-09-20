@@ -1,0 +1,29 @@
+name: PR Label
+
+on:
+  - pull_request_target
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+     # need 'Label PR based on base branch'
+     # https://github.com/actions/labeler/issues/54
+     - uses: actions/labeler@v4
+       if: github.base_ref == 'develop/fetch'
+       with:
+         repo-token: ${{ secrets.GITHUB_TOKEN }}
+         configuration-path: .github/labeler-fetch.yml
+     - uses: actions/labeler@v4
+       if: github.base_ref == 'develop/pr2'
+       with:
+         repo-token: ${{ secrets.GITHUB_TOKEN }}
+         configuration-path: .github/labeler-pr2.yml
+     - uses: actions/labeler@v4
+       if: github.base_ref == 'develop/baxter'
+       with:
+         repo-token: ${{ secrets.GITHUB_TOKEN }}
+         configuration-path: .github/labeler-baxter.yml
