@@ -1,0 +1,53 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/opencv/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/opencv/opencv-3.2.0+dfsg
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(cat series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+done
+
+mkdir -p /home/user/ros1_dependencies_sources/build/opencv
+cd /home/user/ros1_dependencies_sources/build/opencv
+
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=on \
+  -DCMAKE_VERBOSE_MAKEFILE=ON \
+  -DBUILD_EXAMPLES=ON \
+  -DINSTALL_C_EXAMPLES=ON \
+  -DINSTALL_PYTHON_EXAMPLES=ON \
+  -DWITH_FFMPEG=ON \
+  -DWITH_GSTREAMER=OFF \
+  -DWITH_GTK=ON \
+  -DWITH_JASPER=OFF \
+  -DWITH_JPEG=ON \
+  -DWITH_PNG=ON \
+  -DWITH_TIFF=ON \
+  -DWITH_PVAPI=ON \
+  -DWITH_UNICAP=OFF \
+  -DWITH_EIGEN=ON \
+  -DWITH_GDAL=ON \
+  -DWITH_GDCM=ON \
+  -DWITH_XINE=OFF \
+  -DWITH_IPP=OFF \
+  -DBUILD_TESTS=OFF \
+  -DCMAKE_SKIP_RPATH=ON \
+  -DWITH_CUDA=OFF \
+  -DENABLE_PRECOMPILED_HEADERS=OFF \
+  -DWITH_IPP=OFF \
+  -DWITH_CAROTENE=OFF \
+  \
+  -DBUILD_DOCS=OFF \
+  -DWITH_VTK=OFF \
+  -DWITH_OPENCL=OFF \
+  -DBUILD_opencv_java=OFF \
+  -DWITH_OPENEXR=OFF \
+  -DPYTHON2_PACKAGES_PATH=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages \
+  -DOPENCV_CONFIG_INSTALL_PATH=lib/cmake/OpenCV \
+  ${SOURCE_DIR}
+
+make -j4 install
