@@ -1,9 +1,17 @@
 move_base:
   recovery_behavior_enabled: true
   recovery_behaviors:
+    - name: "update_inflation_layer_local0"
+      type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+    - name: "update_costmap_local0"
+      type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+    - name: "update_inflation_layer_global0"
+      type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+    - name: "update_costmap_global0"
+      type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
     - name: "conservative_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
-    - name: "rotate_recovery0"
+    - name: "rotate_recovery"
       type: "rotate_recovery/RotateRecovery"
     - name: "speak_and_wait0"
       type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
@@ -19,16 +27,41 @@ move_base:
       type: "rotate_recovery/RotateRecovery"
     - name: "move_slow_and_clear"
       type: "move_slow_and_clear/MoveSlowAndClear"
+  update_inflation_layer_local0:
+    parameter_name: "/move_base/local_costmap/inflater"
+    inflation_radius: 0.1
+    duration_dealline: 15.0
+  update_costmap_local0:
+    parameter_name: "/move_base/local_costmap"
+    footprint_padding: 0.1
+    duration_dealline: 15.0
+  update_inflation_layer_global0:
+    parameter_name: "/move_base/global_costmap/inflater"
+    inflation_radius: 0.1
+    duration_dealline: 15.0
+  update_costmap_global0:
+    parameter_name: "/move_base/global_costmap"
+    footprint_padding: 0.1
+    duration_dealline: 15.0
+  conservative_reset:
+    reset_distance: 3.0
+    force_updating: true
   speak_and_wait0:
-    speak_text: "とおれません、みちをあけてください"
+    speak_text: "とおれません、ちょっとみちをあけてください"
     duration_wait: 5.0
     duration_timeout: 1.0
     sound_action: /robotsound_jp
+  aggressive_reset:
+    reset_distance: 1.0
+    force_updating: true
   speak_and_wait1:
     speak_text: "とおれません、みちをあけてください"
     duration_wait: 5.0
     duration_timeout: 1.0
     sound_action: /robotsound_jp
+  all_reset:
+    reset_distance: 0.0
+    force_updating: true
   move_slow_and_clear:
     planner_namespace: TrajectoryPlannerROS
     max_trans_param_name: max_vel_x
