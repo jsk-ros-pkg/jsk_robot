@@ -51,6 +51,7 @@
   <run_depend>librealsense2</run_depend>
   <run_depend>realsense2_camera</run_depend>
   <run_depend>realsense2_description</run_depend>
+  <run_depend>update_move_base_parameter_recovery</run_depend>
 
   <!-- for fetch teleop -->
   <run_depend>app_manager</run_depend>
