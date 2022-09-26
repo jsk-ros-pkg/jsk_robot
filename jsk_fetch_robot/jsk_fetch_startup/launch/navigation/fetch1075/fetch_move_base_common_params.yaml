@@ -30,15 +30,15 @@ move_base:
   update_inflation_layer_local0:
     parameter_name: "/move_base/local_costmap/inflater"
     inflation_radius: 0.1
-    duration_dealline: 15.0
+    duration_dealline: 30.0
   update_costmap_local0:
     parameter_name: "/move_base/local_costmap"
     footprint_padding: 0.1
-    duration_dealline: 15.0
+    duration_dealline: 25.0
   update_inflation_layer_global0:
     parameter_name: "/move_base/global_costmap/inflater"
     inflation_radius: 0.1
-    duration_dealline: 15.0
+    duration_dealline: 20.0
   update_costmap_global0:
     parameter_name: "/move_base/global_costmap"
     footprint_padding: 0.1
