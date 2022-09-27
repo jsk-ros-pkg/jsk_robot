@@ -6,6 +6,7 @@
 (ros::roseus-add-srvs "std_srvs")
 (ros::roseus-add-msgs "spot_msgs")
 (ros::roseus-add-srvs "spot_msgs")
+(ros::roseus-add-srvs "control_msgs")
 
 (defun call-trigger-service (srvname &key (wait nil))
   "Call std_srv/Trigger service"
@@ -68,7 +69,48 @@
                                         trajectory-cmd-action-name spot_msgs::TrajectoryAction
                                         :groupname groupname))
      ))
-  (:default-controller () ) ;; spot does not provide any JTA controllers
+  ;; (:default-controller  ()
+  ;;  (append
+  ;;   (send self :arm-controller)
+  ;;   (send self :dummy-controller)
+  ;;   ))
+  (:default-controller () (send self :arm-controller))
+  (:arm-controller ()
+   (list
+    (list
+     (cons :controller-action "spot/arm_controller/follow_joint_trajectory")
+     (cons :controller-state  "spot/arm_controller/follow_joint_trajectory/state")
+     (cons :action-type control_msgs::FollowJointTrajectoryAction)
+     (cons :joint-names (send-all (send robot :arm :joint-list) :name))
+     )))
+  (:set-impedance-param
+   (&key (linear-stiffness #f(500 500 500))
+	 (rotational-stiffness #f(60 60 60))
+	 (linear-damping #f(2.5 2.5 2.5))
+	 (rotational-damping #f(1.0 1.0 1.0)))
+   "X is up, Z is forward"
+   (let (m r)
+     (labels
+      ((v2v (v) (instance geometry_msgs::Vector3 :init :x (elt v 0) :y (elt v 1) :z (elt v 2))))
+      (setq m (instance spot_msgs::SetArmImpedanceParamsRequest :init
+			:linear_stiffness     (v2v linear-stiffness)
+			:rotational_stiffness (v2v rotational-stiffness)
+			:linear_damping       (v2v linear-damping)
+			:rotational_damping   (v2v rotational-damping)))
+      (setq r (ros::service-call "/spot/arm_impedance_parameters" m))
+      (send r :success))))
+  (:unstow-arm () (call-trigger-service "/spot/unstow_arm"))
+  (:stow-arm () (call-trigger-service "/spot/stow_arm"))
+  (:gripper-open () (call-trigger-service "/spot/gripper_open"))
+  (:gripper-close () (call-trigger-service "/spot/gripper_close"))
+  ;; (:dummy-controller ()
+  ;;  (list
+  ;;   (list
+  ;;    (cons :controller-action "spot/dummy_controller/follow_joint_trajectory")
+  ;;    (cons :controller-state  "spot/dummy_controller/follow_joint_trajectory/state")
+  ;;    (cons :action-type control_msgs::FollowJointTrajectoryAction)
+  ;;    (cons :joint-names (send-all (set-difference (send robot :joint-list) (send robot :arm :joint-list)) :name))
+  ;;    )))
   (:spot-status-metrics-callback
    (msg)
    (send self :set-robot-state1 :metrics-distance (send msg :distance))

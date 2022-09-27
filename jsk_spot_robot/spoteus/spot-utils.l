@@ -17,7 +17,21 @@
                     :_make_instance_rear_right_lower_leg_geom0))
      (rplacd (assoc b (send (class self) :methods))
              (cdr (subst '(list :diffuse #f(1.00 0.84 0.32 0))
-                         '(list :diffuse (float-vector 1.0 1.0 1.0 0.0))
+                         '(list :diffuse (float-vector 1.000000 1.000000 1.000000 1.000000))
+                         (assoc b (send  (class self) :methods)))))
+     )
+   (dolist (b (list :_make_instance_arm0.link_sh0_geom0
+                    :_make_instance_arm0.link_sh1_geom0
+                    :_make_instance_arm0.link_hr0_geom0
+;                    :_make_instance_arm0.link_el0_geom0
+                    :_make_instance_arm0.link_el1_geom0
+                    :_make_instance_arm0.link_wr0_geom0
+                    :_make_instance_arm0.link_wr1_geom0
+                    :_make_instance_arm0.link_fngr_geom0
+                    ))
+     (rplacd (assoc b (send (class self) :methods))
+             (cdr (subst '(list :diffuse #f(1.00 0.84 0.32 0))
+                         '(list :diffuse (float-vector 0.200000 0.200000 0.200000 1.000000))
                          (assoc b (send  (class self) :methods)))))
      )
    (dolist (b (list :_make_instance_front_left_hip_geom0
@@ -26,7 +40,7 @@
                     :_make_instance_rear_right_hip_geom0))
      (rplacd (assoc b (send (class self) :methods))
              (cdr (subst '(list :diffuse #f(0.1 0.1 0.1 0))
-                         '(list :diffuse (float-vector 1.0 1.0 1.0 0.0))
+                         '(list :diffuse (float-vector 1.000000 1.000000 1.000000 1.000000))
                          (assoc b (send  (class self) :methods)))))
      )
    (send* self :init-orig args))
