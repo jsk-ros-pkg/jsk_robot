@@ -39,17 +39,11 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot.urdf
   COMMAND xacro ${_spot_urdf}/spot.urdf.xacro > ${PROJECT_SOURCE_DIR}/spot.urdf
   DEPENDS ${_spot_urdf}/spot.urdf.xacro)
 
-if(NOT EXISTS ${PROJECT_SOURCE_DIR}/spot.l)
-  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot.dae
-    COMMAND echo "${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/spot.urdf spot.dae"
-    COMMAND ${_urdf_to_collada} ${PROJECT_SOURCE_DIR}/spot.urdf ${PROJECT_SOURCE_DIR}/spot.dae
-    DEPENDS ${PROJECT_SOURCE_DIR}/spot.urdf)
-  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot.l
-    COMMAND echo "${_collada2eus} spot.dae spot.l"
-    COMMAND ${_collada2eus} ${PROJECT_SOURCE_DIR}/spot.dae ${PROJECT_SOURCE_DIR}/spot.yaml ${PROJECT_SOURCE_DIR}/spot.l
-    DEPENDS ${PROJECT_SOURCE_DIR}/spot.dae ${PROJECT_SOURCE_DIR}/spot.yaml ${_collada2eus})
-  add_custom_target(compile_spot ALL DEPENDS ${PROJECT_SOURCE_DIR}/spot.l)
-endif()
+add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot.l
+  COMMAND echo "${_collada2eus} spot.urdf spot.l"
+  COMMAND ${_collada2eus} ${PROJECT_SOURCE_DIR}/spot.urdf ${PROJECT_SOURCE_DIR}/spot.yaml ${PROJECT_SOURCE_DIR}/spot.l
+  DEPENDS ${PROJECT_SOURCE_DIR}/spot.urdf ${PROJECT_SOURCE_DIR}/spot.yaml ${_collada2eus})
+add_custom_target(compile_spot ALL DEPENDS ${PROJECT_SOURCE_DIR}/spot.l)
 
 
 install(DIRECTORY euslisp test
