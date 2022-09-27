@@ -22,7 +22,6 @@ public:
         ros::param::param<int>("~button_claim", button_claim_, -1);
         ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
         ros::param::param<int>("~axe_dock", axe_dock_, -1);
-        ros::param::param<int>("~dock_id", dock_id_, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
         num_buttons_ = num_buttons_ < 0 ? 0 : num_buttons_;
@@ -51,6 +50,7 @@ public:
         client_claim_ = nh.serviceClient<std_srvs::Trigger>("claim");
         client_stair_mode_ = nh.serviceClient<std_srvs::SetBool>("stair_mode");
         client_undock_ = nh.serviceClient<std_srvs::Trigger>("undock");
+        client_dock_ = nh.serviceClient<std_srvs::Trigger>("dock");
 
         sub_joy_ = nh.subscribe<sensor_msgs::Joy, TeleopManager>("joy", 1, &TeleopManager::callbackJoy, this);
         ROS_DEBUG_STREAM("Subscribe : " << sub_joy_.getTopic());
@@ -336,6 +336,37 @@ public:
         } else {
             ROS_DEBUG_STREAM("Button " << client_stair_mode_.getService() << " is disabled.");
         }
+        //dock
+        if ( axe_dock_ >= 0
+             and axe_dock_ < num_buttons_ ){
+          if ( msg->axes[axe_dock_]==-1 ) {
+                if ( not pressed_axes_[axe_dock_] ) {
+                  this->say("dock calling");
+                  if (client_dock_.call(srv) && srv.response.success ){
+                    ROS_INFO_STREAM("Service '" << client_dock_.getService() << "' succeeded.");
+                  } else {
+                    ROS_ERROR_STREAM("Service '" << client_dock_.getService() << "' failed.");
+                  }
+                  pressed_axes_[axe_dock_] = true;
+                }
+          } else if (msg->axes[axe_dock_]==1) {
+            if (not pressed_axes_[axe_dock_]){
+              this->say("undock calling");
+              if (client_undock_.call(srv) && srv.response.success ){
+                ROS_INFO("Service 'undock' succeeded.");
+              } else {
+                ROS_ERROR("Service 'undock' failed.");
+              }
+              pressed_axes_[axe_dock_] = true;
+            }
+          } else {
+            if ( pressed_axes_[axe_dock_] ) {
+              pressed_axes_[axe_dock_] = false;
+            }
+          }
+        } else {
+          ROS_DEBUG("Axe 'dock' is disabled.");
+        }
     }
 
 private:
@@ -352,7 +383,6 @@ private:
     int button_stair_mode_;
     int button_locomotion_mode_;
     int axe_dock_;
-    int dock_id_;
 
     ros::ServiceClient client_estop_hard_;
     ros::ServiceClient client_estop_gentle_;
