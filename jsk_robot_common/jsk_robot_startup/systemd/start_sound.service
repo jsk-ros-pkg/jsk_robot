@@ -1,0 +1,9 @@
+[Unit]
+Description=Play sound at startup
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/jsk_robot_startup/start_sound.sh
+
+[Install]
+WantedBy=default.target

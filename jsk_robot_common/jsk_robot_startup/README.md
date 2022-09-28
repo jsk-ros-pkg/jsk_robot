@@ -1,6 +1,12 @@
 jsk_robot_startup
 ===
 
+## SetUp (Running following commands in the first time)
+
+### Install systemd services
+```bash
+rosrun jsk_robot_startup install_systemd.sh
+```
 ## lifelog
 
 see [lifelog/README.md](lifelog/README.md)
