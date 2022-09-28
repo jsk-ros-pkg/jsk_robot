@@ -1,7 +1,12 @@
 #!/bin/bash
 echo $0
-read device < <(aplay -L|grep sysdefault)
-echo $device
+if [ -n $device ]; then
+    echo $device
+else
+    echo "device is empty"
+    exit 1
+fi
+
 if (echo $0|grep 'stop_sound.sh' > /dev/null); then
     echo -n "Shutdown sound: "
     if type aplay &> /dev/null && [ -f "/usr/share/sounds/jsk_robot_startup/stop_sound.wav" ]; then

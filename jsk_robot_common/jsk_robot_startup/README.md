@@ -4,8 +4,13 @@ jsk_robot_startup
 ## SetUp (Running following commands in the first time)
 
 ### Install systemd services
+
+`start_sound.service` and `stop_sound.service` are installed to tell you when the robot starts and stops. If aplay is not available, beep command is used.  
+Synthesized Japanese voice is played by default(VOICEVOX:四国めたん). To play different sound, put your wave file in `/usr/share/sound/jsk_robot_startup` and update path written in `/usr/local/bin/jsk_robot_startup/playsound.sh`.
+
+You can get DEVICE_NAME by executing `aplay -L`(e.g. sysdefault:CARD=AUDIO).
 ```bash
-rosrun jsk_robot_startup install_systemd.sh
+rosrun jsk_robot_startup install_systemd.sh DEVICE_NAME
 ```
 ## lifelog
 

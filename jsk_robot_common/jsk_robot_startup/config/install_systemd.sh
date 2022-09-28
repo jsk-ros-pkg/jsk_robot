@@ -1,6 +1,10 @@
 #!/bin/bash
 
 jsk_robot_startup=$(builtin cd "`dirname "${BASH_SOURCE[0]}"`"/.. > /dev/null && pwd)
+if [ $# != 1 ]; then
+    echo "Invalid number of arguments"
+    exit 1
+fi
 
 # Copy scripts
 cd $jsk_robot_startup/systemd
@@ -13,6 +17,8 @@ for file in $(ls *.sh); do
     sudo chmod 755 /usr/local/bin/jsk_robot_startup/$file
     echo "copied jsk_robot_startup/systemd/$file to /usr/local/bin/jsk_robot_startup/$file"
 done
+echo "device: $1"
+echo 3idevice=$1|sudo xargs -i sed -i {} /usr/local/bin/jsk_robot_startup/playsound.sh
 sudo ln -sf /usr/local/bin/jsk_robot_startup/playsound.sh /usr/local/bin/jsk_robot_startup/start_sound.sh
 sudo ln -sf /usr/local/bin/jsk_robot_startup/playsound.sh /usr/local/bin/jsk_robot_startup/stop_sound.sh
 
