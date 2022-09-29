@@ -11,6 +11,8 @@
   <arg name="joystick_teleop_param_file" default="$(find jsk_robot_startup)/config/$(arg pad_type)_joystick_teleop.yaml" />
 
   <arg name="dock_service" default="dock" />
+  <arg name="tuck_service" default="tuck" />
+  <arg name="untuck_service" default="untuck" />
 
   <group if="$(arg launch_joy_node)" >
     <node
@@ -51,6 +53,8 @@
       >
       <remap from="joy" to="$(arg joy_topic)" />
       <remap from="dock" to="$(arg dock_service)" />
+      <remap from="tuck" to="$(arg tuck_service)" />
+      <remap from="untuck" to="$(arg untuck_service)" />
 
       <rosparam
           command="load"
