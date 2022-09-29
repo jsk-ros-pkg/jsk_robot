@@ -1,0 +1,21 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/festlex-poslex/festival
+
+#
+cd ${SOURCE_DIR}
+if [ ! -e festlex-poslex_2.4-1.diff ]; then
+    wget http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-poslex/festlex-poslex_2.4-1.diff.gz
+    gunzip festlex-poslex_2.4-1.diff.gz
+    patch -p1 < festlex-poslex_2.4-1.diff
+fi
+
+##
+
+cd ${SOURCE_DIR}
+
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts
+cp lib/dicts/wsj.*     /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/
+
+
