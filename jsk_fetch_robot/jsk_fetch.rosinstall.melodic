@@ -23,8 +23,8 @@
     version: melodic-devel
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
-    uri: https://github.com/knorth55/jsk_3rdparty.git
-    version: fetch15
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: develop/fetch 
 # we need to use the development branch until PR below are merged.
 #  - https://github.com/jsk-ros-pkg/jsk_common/pull/1719
 #  - https://github.com/jsk-ros-pkg/jsk_common/pull/1746
