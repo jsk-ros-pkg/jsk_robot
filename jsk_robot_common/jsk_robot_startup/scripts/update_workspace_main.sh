@@ -93,7 +93,7 @@ WSTOOL_UPDATE_RESULT=$?
 if [ "${ROSDEP_INSTALL}" == "true" ]; then
   sudo apt-get update -y;
   rosdep update;
-  rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys $SKIP_KEYS;
+  rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys "$SKIP_KEYS";
   ROSDEP_INSTALL_RESULT=$?;
 else
   ROSDEP_INSTALL_RESULT=0;
