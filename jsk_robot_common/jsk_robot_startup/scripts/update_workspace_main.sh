@@ -2,11 +2,14 @@
 
 function usage()
 {
-    echo "Usage: $0 [-w workspace_directory] [-h] [-l]
+    echo "Usage: $0 [-w workspace_directory] [-r rosinstall_path] [-t robot_type] [-s skip keys] [-h] [-l]
 
 optional arguments:
     -h                  show this help
     -w WORKSPACE_PATH   specify target workspace
+    -r ROSINTALL_PATH   rosinstall path
+    -t ROBOT            robot type
+    -s SKIP_KEYS        rosdep install skip keys
     -l                  do not send a mail
 "
 }
@@ -17,13 +20,22 @@ function get_full_path()
 }
 
 SEND_MAIL=true
-WORKSPACE=$(get_full_path $HOME/ros/melodic)
+WORKSPACE=$(get_full_path $HOME/ros/$ROS_DISTRO)
 
-while getopts hlw: OPT
+while getopts w:r:t:s:lh OPT
 do
     case $OPT in
         w)
             WORKSPACE=$(get_full_path $OPTARG)
+            ;;
+        r)
+            ROSINSTALL=$(get_full_path $OPTARG)
+            ;;
+        t)
+            ROBOT_TYPE=$OPTARG
+            ;;
+        s)
+            SKIP_KEYS=$OPTARG
             ;;
         l)
             SEND_MAIL=false
@@ -39,10 +51,19 @@ do
     esac
 done
 
-if [ ! -e $WORKSPACE ]; then
-    echo "No workspace $WORKSPACE"
+if [ "$WORKSPACE" = "" ]; then
+    echo "Please set valid workspace -w $WORKSPACE"
     exit 1
 fi
+if [ "$ROSINSTALL" = "" ]; then
+    echo "Please set valid rosinstall -r $ROSINSTALL"
+    exit 1
+fi
+if [ "$ROBOT_TYPE" = "" ]; then
+    echo "Please set valid robot type -t $ROBOT_TYPE"
+    exit 1
+fi
+
 
 . $WORKSPACE/devel/setup.bash
 # Filename should end with .txt to preview the contents in a web browser
@@ -57,7 +78,7 @@ set -x
 wstool foreach -t $WORKSPACE/src --git 'git stash'
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
 wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot
-ln -sf $(rospack find jsk_fetch_startup)/../jsk_fetch.rosinstall.$ROS_DISTRO $WORKSPACE/src/.rosinstall
+ln -sf $ROSINSTALL $WORKSPACE/src/.rosinstall
 wstool update -t $WORKSPACE/src --delete-changed-uris
 # Forcefully checkout specified branch
 wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
@@ -66,18 +87,7 @@ WSTOOL_UPDATE_RESULT=$?
 # Rosdep Install
 sudo apt-get update -y
 rosdep update
-# jsk_footstep_planner is not released for melodic
-# jsk_footstep_controller is not released for melodic
-# librealsense2 should not be installed from ROS repository
-# realsense-ros should not be installed from ROS repository
-rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys \
-"\
-jsk_footstep_controller \
-jsk_footstep_planner \
-librealsense2 \
-realsense2_camera \
-realsense2_description \
-"
+rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys $SKIP_KEYS
 ROSDEP_INSTALL_RESULT=$?
 # Build workspace
 cd $WORKSPACE
@@ -116,7 +126,7 @@ subject: 'Daily workspace update fails'
 body:
 - {type: 'text', message: '${MAIL_BODY}', file_path: '', img_data: '', img_size: 0}
 sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
-receiver_address: 'fetch@jsk.imi.i.u-tokyo.ac.jp'
+receiver_address: '$ROBOT_TYPE@jsk.imi.i.u-tokyo.ac.jp'
 smtp_server: ''
 smtp_port: ''
 attached_files: ['$LOGFILE']"
