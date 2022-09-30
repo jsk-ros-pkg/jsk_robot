@@ -53,7 +53,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
-    version: pr1040
+    version: master
 - git:
     local-name: jsk-ros-pkg/jsk_planning
     uri: https://github.com/jsk-ros-pkg/jsk_planning.git
