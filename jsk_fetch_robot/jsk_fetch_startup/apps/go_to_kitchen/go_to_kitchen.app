@@ -47,6 +47,7 @@ plugins:
         - /server_name/smach/container_structure
         - /audio
         - /rviz/throttled/image/compressed
+        - /smach_image_publisher/image/compressed
   - name: head_camera_converter_plugin
     type: app_recorder/rosbag_video_converter_plugin
     plugin_args:
@@ -85,6 +86,14 @@ plugins:
       image_topic_name: /rviz/throttled/image/compressed
       image_fps: 5
       video_path: /tmp/go_to_kitchen_rviz.mp4
+  - name: smach_converter_plugin
+    type: app_recorder/rosbag_video_converter_plugin
+    plugin_args:
+      rosbag_path: /tmp
+      rosbag_title: go_to_kitchen_rosbag.bag
+      image_topic_name: /smach_image_publisher/image/compressed
+      image_fps: 2
+      video_path: /tmp/go_to_kitchen_smach.mp4
   - name: respeaker_audio_converter_plugin
     type: app_recorder/rosbag_audio_converter_plugin
     plugin_args:
@@ -108,6 +117,7 @@ plugins:
         - /tmp/go_to_kitchen_object_detection.mp4
         - /tmp/go_to_kitchen_panorama.mp4
         - /tmp/go_to_kitchen_rviz.mp4
+        - /tmp/go_to_kitchen_smach.mp4
         - /tmp/go_to_kitchen_audio.wav
         - /tmp/go_to_kitchen_rosbag.bag
         - /tmp/trashcan_inside.jpg
@@ -117,6 +127,7 @@ plugins:
         - go_to_kitchen_object_detection.mp4
         - go_to_kitchen_panorama.mp4
         - go_to_kitchen_rviz.mp4
+        - go_to_kitchen_smach.mp4
         - go_to_kitchen_audio.wav
         - go_to_kitchen_rosbag.bag
         - trashcan_inside.jpg
@@ -166,6 +177,7 @@ plugin_order:
     - object_detection_converter_plugin
     - panorama_converter_plugin
     - rviz_converter_plugin
+    - smach_converter_plugin
     - respeaker_audio_converter_plugin
     - result_recorder_plugin
     - gdrive_uploader_plugin
@@ -182,6 +194,7 @@ plugin_order:
     - object_detection_converter_plugin
     - panorama_converter_plugin
     - rviz_converter_plugin
+    - smach_converter_plugin
     - respeaker_audio_converter_plugin
     - result_recorder_plugin
     - gdrive_uploader_plugin
