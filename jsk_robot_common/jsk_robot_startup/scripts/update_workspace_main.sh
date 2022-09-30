@@ -82,7 +82,7 @@ set -x
 
 wstool foreach -t $WORKSPACE/src --git 'git stash'
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
-wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot
+wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot --delete-changed-uris
 ln -sf $ROSINSTALL $WORKSPACE/src/.rosinstall
 wstool update -t $WORKSPACE/src --delete-changed-uris
 # Forcefully checkout specified branch
