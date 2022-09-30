@@ -1,6 +1,8 @@
 <launch>
   <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
+  <arg name="launch_peripheral" default="false" />
+  <arg name="launch_interaction" default="false" />
 
   <arg name="use_driver" default="true" />
 
@@ -14,13 +16,11 @@
   </include>
 
   <!-- peripheral devices -->
-  <include
-      file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
-      />
+  <include file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+	   if="$(arg launch_peripheral)" />
 
   <!-- interaction nodes -->
-  <include
-      file="$(find jsk_spot_startup)/launch/include/interaction.launch"
-      />
+  <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+	   if="$(arg launch_interaction)" />
 
 </launch>
