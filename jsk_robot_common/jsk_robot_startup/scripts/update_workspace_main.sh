@@ -2,7 +2,7 @@
 
 function usage()
 {
-    echo "Usage: $0 [-w workspace_directory] [-r rosinstall_path] [-t robot_type] [-s skip keys] [-h] [-l]
+    echo "Usage: $0 [-w workspace_directory] [-r rosinstall_path] [-t robot_type] [-s skip keys] [-h] [-u] [-l]
 
 optional arguments:
     -h                  show this help
@@ -10,6 +10,7 @@ optional arguments:
     -r ROSINTALL_PATH   rosinstall path
     -t ROBOT            robot type
     -s SKIP_KEYS        rosdep install skip keys
+    -u                  do not run apt-get upgrade and rosdep install
     -l                  do not send a mail
 "
 }
@@ -19,10 +20,11 @@ function get_full_path()
     echo "$(cd $(dirname $1) && pwd)/$(basename $1)"
 }
 
+ROSDEP_INSTALL=true
 SEND_MAIL=true
 WORKSPACE=$(get_full_path $HOME/ros/$ROS_DISTRO)
 
-while getopts w:r:t:s:lh OPT
+while getopts w:r:t:s:ulh OPT
 do
     case $OPT in
         w)
@@ -36,6 +38,9 @@ do
             ;;
         s)
             SKIP_KEYS=$OPTARG
+            ;;
+        u)
+            ROSDEP_INSTALL=false
             ;;
         l)
             SEND_MAIL=false
@@ -85,10 +90,14 @@ wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abb
 wstool update -t $WORKSPACE/src
 WSTOOL_UPDATE_RESULT=$?
 # Rosdep Install
-sudo apt-get update -y
-rosdep update
-rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys $SKIP_KEYS
-ROSDEP_INSTALL_RESULT=$?
+if [ "${ROSDEP_INSTALL}" == "true" ]; then
+  sudo apt-get update -y;
+  rosdep update;
+  rosdep install --from-paths $WORKSPACE/src --ignore-src -y -r --skip-keys $SKIP_KEYS;
+  ROSDEP_INSTALL_RESULT=$?;
+else
+  ROSDEP_INSTALL_RESULT=0;
+fi
 # Build workspace
 cd $WORKSPACE
 catkin clean aques_talk collada_urdf_jsk_patch libcmt -y
