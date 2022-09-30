@@ -15,6 +15,11 @@
     local-name: spot-ros
     uri: https://github.com/k-okada/spot_ros.git
     version: effea91835cf11411854f472c0ed5f00bf6d87b4
+## to support custom limb name, we need https://github.com/jsk-ros-pkg/jsk_model_tools/pull/249
+- git:
+    local-name: jsk_model_tools
+    uri: https://github.com/k-okada/jsk_model_tools.git
+    version: custom_limb
 #
 # geometry2 have to be built for python3
 - git:
