@@ -4,6 +4,7 @@
 (require :state-machine "package://roseus_smach/src/state-machine.l")
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
 (require :state-machine-utils "package://roseus_smach/src/state-machine-utils.l")
+(require :base64 "lib/llib/base64.l")
 
 (ros::load-ros-manifest "fetch_auto_dock_msgs")
 (ros::load-ros-manifest "jsk_robot_startup")
@@ -15,6 +16,7 @@
 (defparameter *spots* nil)
 (defparameter *tfl* (instance ros::transform-listener :init))
 
+(ros::advertise "/photo_taken" sensor_msgs::Image 1)
 
 (let ((robot-name (ros::get-param "/robot/name")))
   (defparameter *dock-spot*
@@ -284,11 +286,9 @@ Args:
   (ros::ros-info "start going back to the dock.")
   (send *ri* :speak-jp "ドックに戻ります。" :wait t))
 
-
 (defun report-move-to-sink-front-success ()
   (ros::ros-info "arrived at the kitchen stove.")
   (send *ri* :speak-jp "キッチンのコンロの前につきました。" :wait t))
-
 
 (defun report-move-to-sink-front-failure ()
   (ros::ros-error "failed going to the kitchen.")
@@ -306,15 +306,77 @@ Args:
   (ros::ros-info "start going to the kitchen.")
   (send *ri* :speak-jp "キッチンに向かいます。" :wait t))
 
-
 (defun report-light-on ()
   (ros::ros-info "room light is already on.")
   (send *ri* :speak-jp "すでに電気がついています。" :wait t))
 
-
 (defun report-light-off ()
   (ros::ros-info "room light is off.")
   (send *ri* :speak-jp "電気が消えています。" :wait t))
+
+(defun report-auto-dock-failure ()
+  (ros::ros-error "failed auto-docking")
+  (send *ri* :speak-jp "ドックに失敗しました。" :wait t))
+
+(defun report-move-to-dock-front ()
+  (ros::ros-info "take a picture in front of the dock")
+  (send *ri* :speak-jp "ドックの前に到着しました" :wait t))
+
+(defun report-move-to-dock-front-failure ()
+  (ros::ros-info "failed taking a picture in front of the dock")
+  (send *ri* :speak-jp "ドックの前への移動に失敗しました" :wait t))
+
+(defun report-move-to-tv-front ()
+  (ros::ros-info "take a picture in front of the tv")
+  (send *ri* :speak-jp "テレビの前に到着しました" :wait t))
+
+(defun report-move-to-tv-front-failure ()
+  (ros::ros-info "failed taking a picture at in front of the tv")
+  (send *ri* :speak-jp "テレビの前への移動に失敗しました" :wait t))
+
+(defun report-move-to-tv-desk ()
+  (ros::ros-info "take a picture in front of the tv desk")
+  (send *ri* :speak-jp "テレビの机の前に到着しました" :wait t))
+
+(defun report-move-to-tv-desk-failure ()
+  (ros::ros-info "failed taking a picture at in front of the tv desk")
+  (send *ri* :speak-jp "テレビの机の前への移動に失敗しました" :wait t))
+
+(defun report-move-to-desk-back ()
+  (ros::ros-info "take a picture of tsukamoto-kun desk")
+  (send *ri* :speak-jp "奥の机の写真を撮る位置に移動しました" :wait t))
+
+(defun report-move-to-desk-back-failure ()
+  (ros::ros-info "failed taking a picture of tsukamoto-kun desk")
+  (send *ri* :speak-jp "奥の机の写真を撮る位置への移動に失敗しました" :wait t))
+
+(defun report-move-to-desk-front ()
+  (ros::ros-info "take a picture of obinata desk")
+  (send *ri* :speak-jp "手前の机の写真を撮る位置に移動しました" :wait t))
+
+(defun report-move-to-desk-front-failure ()
+  (ros::ros-info "failed taking a picture of obinata desk")
+  (send *ri* :speak-jp "手前の机の写真を撮る位置への移動に失敗しました" :wait t))
+
+(defun report-move-to-kitchen-door-front ()
+  (ros::ros-info "take a picture of kitchen in front of the door")
+  (send *ri* :speak-jp "キッチンを斜めから撮る位置に移動しました" :wait t))
+
+(defun report-move-to-kitchen-door-front-failure ()
+  (ros::ros-info "failed taking a picture of kitchen in front of the door")
+  (send *ri* :speak-jp "キッチンを斜めから撮る位置への移動に失敗しました" :wait t))
+
+(defun take-photo (file-name
+                   &optional (image-topic "/edgetpu_object_detector/output/image"))
+  (let ((img nil))
+    (unix::system (format nil "rm -f /tmp/~A" file-name))
+    (setq img (one-shot-subscribe image-topic sensor_msgs::Image :timeout 1000))
+    (if img
+        (progn
+          (write-image-file (format nil "/tmp/~A" file-name)
+                            (ros::sensor_msgs/Image->image img))
+          (ros::ros-info "taking a photo ~A" file-name))
+        (ros::ros-error "fail saving image"))))
 
 (defun notify-recognition (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/edgetpu_object_detector/output/class"
@@ -325,7 +387,8 @@ Args:
       (notify-app "object recognition"
                   (send msg :header :stamp)
                   location
-                  (format nil "~A is found" label-names)))))
+                  (format nil "~A is found" label-names))
+      label-names)))
 
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
@@ -335,14 +398,17 @@ Args:
       (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
       (notify-recognition :location "kitchen stove")
+      (take-photo "kitchen_stove.jpg")
       (send *ri* :go-pos-unsafe 0 0 -45)
       ;; sink
       (tweet-string "I took a photo at 73B2 Kitchen sink." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
+      (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+        (ros::publish "/photo_taken" img))
+      (take-photo "kitchen_sink.jpg")
       (notify-recognition :location "kitchen sink"))
     (progn
       (notify-recognition :location "kitchen"))))
-
 
 (defun move-to-sink-front (&key (n-trial 1) (offset #f(400 -500 0)))
   (let ((success-move-to-sink-front nil))
@@ -352,6 +418,126 @@ Args:
                         :relative-pos offset :undock-rotate t))
       (when success-move-to-sink-front (return)))
     success-move-to-sink-front))
+
+(defun move-to-dock-front (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-dock-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-dock-front
+    (send *ri* :move-to (make-coords :pos (float-vector 5077.8 6763.237 30000.0) :rpy (float-vector 0.059 0 0)) :relative-pos offset))
+      (when success-move-to-dock-front (return)))
+    success-move-to-dock-front))
+
+(defun move-to-tv-front (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-tv-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-tv-front
+    (send *ri* :move-to (make-coords :pos (float-vector 5082.057 6800.628 30000.0) :rpy (float-vector 3.109 0 0)) :relative-pos offset))
+      (when success-move-to-tv-front (return)))
+    success-move-to-tv-front))
+
+(defun move-to-tv-desk (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-tv-desk nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-tv-desk
+    (send *ri* :move-to (make-coords :pos (float-vector 4035.759 7343.818 30000.0) :rpy (float-vector 1.753 0 0)) :relative-pos offset))
+      (when success-move-to-tv-desk (return)))
+    success-move-to-tv-desk))
+
+(defun move-to-desk-back (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-desk-back nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-desk-back
+    (send *ri* :move-to (make-coords :pos (float-vector 4324.417 6121.184 30000.0) :rpy (float-vector -0.845 0 0)) :relative-pos offset))
+      (when success-move-to-desk-back (return)))
+    success-move-to-desk-back))
+
+(defun move-to-desk-front (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-desk-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-desk-front
+    (send *ri* :move-to (make-coords :pos (float-vector 4318.808 6108.146 30000.0) :rpy (float-vector -2.231 0 0)) :relative-pos offset))
+      (when success-move-to-desk-front (return)))
+    success-move-to-desk-front))
+
+(defun move-to-kitchen-door-front (&key (n-trial 1) (offset #f(400 -500 0)))
+  (let ((success-move-to-kitchen-door-front nil))
+    (dotimes (i n-trial)
+      (setq success-move-to-kitchen-door-front
+    (send *ri* :move-to (make-coords :pos (float-vector 1558.69 7230.57 30000.0) :rpy (float-vector 2.296 0 0)) :relative-pos offset))
+      (when success-move-to-kitchen-door-front (return)))
+    success-move-to-kitchen-door-front))
+
+(defun inspect-dock-front (&key (tweet t))
+  (report-move-to-dock-front)
+  (send *fetch* :angle-vector #f(20.0 75.6304 80.2141 -11.4592 98.5487 0.0 95.111 0.0 0.0 0.0))
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+        (tweet-string "I took a photo in front of the dock." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img)))))
+
+(defun inspect-tv-front (&key (tweet t))
+  (report-move-to-tv-front)
+  (send *fetch* :angle-vector #f(21.5608 75.5393 80.1877 -11.5039 93.586 -0.069474 95.2016 -0.006954 -47.2843 7.53289))
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+        (tweet-string "I took a photo in front of the tv." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img)))))
+
+(defun inspect-tv-desk (&key (tweet t))
+  (report-move-to-tv-desk)
+  (send *fetch* :angle-vector #f(21.5684 75.5612 80.1877 -11.4819 93.608 -0.091436 95.2235 -0.006954 -2.16963 19.5739))
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+        (tweet-string "I took a photo in front of the tv." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img)))))
+
+(defun inspect-desk-back (&key (tweet t))
+  (report-move-to-tv-desk)
+  (send *fetch* :angle-vector #f(21.5684 75.5832 80.1877 -11.4819 93.608 -0.04749 95.2016 -0.072829 -1.45585 10.8727))
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+        (tweet-string "I took a photo of desks." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img)))))
+
+(defun inspect-desk-front (&key (tweet t))
+  (report-move-to-tv-desk)
+  (send *fetch* :angle-vector #f(21.5761 75.5173 80.2097 -11.5478 93.6519 -0.04749 95.1796 -0.006954 -1.11597 10.8288))
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+        (tweet-string "I took a photo of desks." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img)))))
+
+(defun inspect-kitchen-door-front (&key (tweet t))
+  (report-move-to-tv-desk)
+  (send *fetch* :angle-vector #f(21.5608 75.5612 80.2316 -11.5039 93.586 -0.04749 95.1576 -0.050857 3.17796 16.3219))
+  (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
+  (send *ri* :wait-interpolation)
+  (if tweet
+      (progn
+        (tweet-string "I took a photo of kitchen." :warning-time 3
+                      :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img)))))
 
 (defun inspect-trashcan (&key (tweet t))
   (report-move-to-trashcan-front)
@@ -369,6 +555,9 @@ Args:
         (send *ri* :wait-interpolation)
         (tweet-string "I took a photo of 73B2 trash can inside." :warning-time 3
                       :with-image "/edgetpu_object_detector/output/image" :speak t)
+        (let ((img (one-shot-subscribe "/head_camera/rgb/image_rect_color" sensor_msgs::Image)))
+          (ros::publish "/photo_taken" img))
+        (take-photo "trashcan_inside.jpg")
         (notify-recognition :location "trash cans inside")
         (send *ri* :go-pos-unsafe -0.2 0 0))
     (progn
@@ -385,6 +574,8 @@ Args:
     (send *ri* :go-pos-unsafe 0 0 -80) ;; face the front against the trash can
     success-move-to-trashcan-front))
 
+(defun image-cb (msg)
+  (setq *image* msg))
 
 (defun go-to-kitchen (&key (tweet t) (n-dock-trial 1) (n-kitchen-trial 1)
                            (control-switchbot :api))
@@ -428,6 +619,7 @@ Args:
       (room-light-off :control-switchbot control-switchbot))
     ;; change the inflation_radius
     (restore-params)
+    (send-kitchen-mail)
     (setq success-battery-charging (equal (get-battery-charging-state) :charging))
     (and success-go-to-kitchen success-auto-dock success-battery-charging)))
 
@@ -439,8 +631,39 @@ Args:
             (:report-start-go-to-kitchen -> :get-light-on)
             (:get-light-on -> :report-light-on)
             (:get-light-on !-> :room-light-on)
-            (:report-light-on -> :move-to-sink-front)
-            (:room-light-on -> :move-to-sink-front)
+            (:report-light-on -> :move-to-dock-front)
+            (:room-light-on -> :move-to-dock-front)
+
+            (:move-to-dock-front -> :inspect-dock-front)
+            (:move-to-dock-front !-> :report-move-to-dock-front-failure)
+            (:inspect-dock-front -> :move-to-tv-front)
+            (:report-move-to-dock-front-failure -> :move-to-tv-front)
+
+            (:move-to-tv-front -> :inspect-tv-front)
+            (:move-to-tv-front !-> :report-move-to-tv-front-failure)
+            (:inspect-tv-front -> :move-to-tv-desk)
+            (:report-move-to-tv-front-failure -> :move-to-tv-desk)
+
+            (:move-to-tv-desk -> :inspect-tv-desk)
+            (:move-to-tv-desk !-> :report-move-to-tv-desk-failure)
+            (:inspect-tv-desk -> :move-to-desk-back)
+            (:report-move-to-tv-desk-failure -> :move-to-desk-back)
+
+            (:move-to-desk-back -> :inspect-desk-back)
+            (:move-to-desk-back !-> :report-move-to-desk-back-failure)
+            (:inspect-desk-back -> :move-to-desk-front)
+            (:report-move-to-desk-back-failure -> :move-to-desk-front)
+
+            (:move-to-desk-front -> :inspect-desk-front)
+            (:move-to-desk-front !-> :report-move-to-desk-front-failure)
+            (:inspect-desk-front -> :move-to-kitchen-door-front)
+            (:report-move-to-desk-front-failure -> :move-to-kitchen-door-front)
+
+            (:move-to-kitchen-door-front -> :inspect-kitchen-door-front)
+            (:move-to-kitchen-door-front !-> :report-move-to-kitchen-door-front-failure)
+            (:inspect-kitchen-door-front -> :move-to-sink-front)
+            (:report-move-to-kitchen-door-front-failure -> :move-to-sink-front)
+
             (:move-to-sink-front -> :inspect-kitchen)
             (:move-to-sink-front !-> :report-move-to-sink-front-failure)
             ;;(:inspect-kitchen -> :auto-dock)
@@ -457,19 +680,28 @@ Args:
           '((:init
               '(lambda (userdata)
                  (fetch-init)
+		 (undock)
                  (send *ri* :clear-costmap)
                  (store-params)
                  (inflation-loose)
                  (clear-app-notification)
+                 (ros::subscribe "/edgetpu_object_detector/output/image/compressed"
+                                 sensor_msgs::CompressedImage #'image-cb)
                  t))
             (:report-start-go-to-kitchen
               '(lambda (userdata)
                  (report-start-go-to-kitchen)
+                 (set-alist 'description "キッチンを見に行くよ" userdata)
+                 (set-alist 'image "" userdata)
                  t))
             (:get-light-on
               '(lambda (userdata)
                  (let ((light-on (get-light-on)))
                    (setf (cdr (assoc 'initial-light-on userdata)) light-on)
+                   (if light-on
+                       (set-alist 'description "電気がついていたよ" userdata)
+                       (set-alist 'description "電気がついていなかったよ" userdata))
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                    light-on)))
             (:report-light-on
               '(lambda (userdata)
@@ -480,58 +712,226 @@ Args:
                  (let ((control-switchbot (cdr (assoc 'control-switchbot userdata))))
                    (report-light-off)
                    (room-light-on :control-switchbot control-switchbot)
+                   (set-alist 'description "電気をつけたよ" userdata)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                    t)))
+            (:move-to-dock-front
+             '(lambda (userdata)
+                 (let* ((n-trial (cdr (assoc 'n-dock-front-trial userdata)))
+                        (success (move-to-dock-front :n-trial n-trial)))
+                   (setf (cdr (assoc 'success-go-to-dock-front userdata)) success)
+                   (if success
+                       (set-alist 'description "ドックの前に移動したよ" userdata)
+                       (set-alist 'description "ドックの前に移動しようとしたけど，迷子になっちゃった" userdata))
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   success)))
+            (:inspect-dock-front
+             '(lambda (userdata)
+               (inspect-dock-front :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "ドックの前の様子を見たよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:report-move-to-dock-front-failure
+             '(lambda (userdata)
+               (report-move-to-dock-front-failure)
+               (set-alist 'description "ドックの前に移動できなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:move-to-tv-front
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-tv-front-trial userdata)))
+                      (success (move-to-tv-front :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-tv-front userdata)) success)
+                 (if success
+                     (set-alist 'description "テレビの前に移動したよ" userdata)
+                     (set-alist 'description "テレビの前に移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
+            (:inspect-tv-front
+             '(lambda (userdata)
+               (inspect-tv-front :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "テレビの前の様子を見たよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:report-move-to-tv-front-failure
+             '(lambda (userdata)
+               (report-move-to-tv-front-failure)
+               (set-alist 'description "テレビの前に移動できなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:move-to-tv-desk
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-tv-desk-trial userdata)))
+                      (success (move-to-tv-desk :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-tv-desk userdata)) success)
+                 (if success
+                     (set-alist 'description "机の前に移動したよ" userdata)
+                     (set-alist 'description "机の前に移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
+            (:inspect-tv-desk
+             '(lambda (userdata)
+               (inspect-tv-desk :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "机の様子を確認したよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:report-move-to-tv-desk-failure
+             '(lambda (userdata)
+               (report-move-to-tv-desk-failure)
+               (set-alist 'description "机の前に移動できなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:move-to-desk-back
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-desk-back-trial userdata)))
+                      (success (move-to-desk-back :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-desk-back userdata)) success)
+                 (if success
+                     (set-alist 'description "部屋の後ろに移動したよ" userdata)
+                     (set-alist 'description "部屋の後ろに移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
+            (:inspect-desk-back
+             '(lambda (userdata)
+               (inspect-desk-back :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "部屋の後ろを確認したよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:report-move-to-desk-back-failure
+             '(lambda (userdata)
+               (report-move-to-desk-back-failure)
+               (set-alist 'description "部屋の後ろに移動できなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:move-to-desk-front
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-desk-front-trial userdata)))
+                      (success (move-to-desk-front :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-desk-front userdata)) success)
+                 (if success
+                     (set-alist 'description "部屋の前に移動したよ" userdata)
+                     (set-alist 'description "部屋の前に移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
+            (:inspect-desk-front
+             '(lambda (userdata)
+               (inspect-desk-front :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "部屋の前を確認したよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:report-move-to-desk-front-failure
+             '(lambda (userdata)
+               (report-move-to-desk-front-failure)
+               (set-alist 'description "部屋の前に移動できなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:move-to-kitchen-door-front
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-kitchen-door-front-trial userdata)))
+                      (success (move-to-kitchen-door-front :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-tv-desk userdata)) success)
+                 (if success
+                     (set-alist 'description "ドアの前に移動したよ" userdata)
+                     (set-alist 'description "ドアの前に移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
+            (:inspect-kitchen-door-front
+             '(lambda (userdata)
+               (inspect-kitchen-door-front :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "ドアの前からキッチンの様子を見たよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
+            (:report-move-to-kitchen-door-front-failure
+             '(lambda (userdata)
+               (report-move-to-kitchen-door-front-failure)
+               (set-alist 'description "ドアの前に移動できなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
             (:move-to-sink-front
-              '(lambda (userdata)
-                 (let* ((n-trial (cdr (assoc 'n-kitchen-trial userdata)))
-                        (success (move-to-sink-front :n-trial n-trial)))
-                   (setf (cdr (assoc 'success-go-to-kitchen userdata)) success)
-                   success)))
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-kitchen-trial userdata)))
+                      (success (move-to-sink-front :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-kitchen userdata)) success)
+                 (if success
+                     (set-alist 'description "キッチンに移動したよ" userdata)
+                     (set-alist 'description "キッチンに移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
             (:inspect-kitchen
-              '(lambda (userdata)
-                 (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
-                 t))
+             '(lambda (userdata)
+               (let ((label-names (notify-recognition :location "kitchen"))
+                     (notify-text (if label-names (format nil "~Aがあったよ" label-names) "")))
+                     (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
+                     (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
             (:report-move-to-sink-front-failure
-              '(lambda (userdata)
-                 (report-move-to-sink-front-failure)
-                 t))
+             '(lambda (userdata)
+               (report-move-to-sink-front-failure)
+               (set-alist 'description "キッチンに行けなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
             (:move-to-trashcan-front
-              '(lambda (userdata)
-                 (let* ((n-trial (cdr (assoc 'n-trashcan-trial userdata)))
-                        (success (move-to-trashcan-front :n-trial n-trial)))
-                   (setf (cdr (assoc 'success-go-to-trashcan userdata)) success)
-                   success)))
+             '(lambda (userdata)
+               (let* ((n-trial (cdr (assoc 'n-trashcan-trial userdata)))
+                      (success (move-to-trashcan-front :n-trial n-trial)))
+                 (setf (cdr (assoc 'success-go-to-trashcan userdata)) success)
+                 (if success
+                     (set-alist 'description "ゴミ箱の前に移動したよ" userdata)
+                     (set-alist 'description "ゴミ箱の前に移動しようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
             (:inspect-trashcan
-              '(lambda (userdata)
-                 (inspect-trashcan :tweet (cdr (assoc 'tweet userdata)))
-                 t))
+             '(lambda (userdata)
+               (inspect-trashcan :tweet (cdr (assoc 'tweet userdata)))
+               (set-alist 'description "ゴミ箱の様子を確認したよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
             (:report-move-to-trashcan-front-failure
-              '(lambda (userdata)
-                 (report-move-to-trashcan-front-failure)
-                 t))
+             '(lambda (userdata)
+               (report-move-to-trashcan-front-failure)
+               (set-alist 'description "ゴミ箱の前に行けなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
             (:auto-dock
-              '(lambda (userdata)
-                 (report-auto-dock)
-                 (let* ((n-trial (cdr (assoc 'n-dock-trial userdata)))
-                        (success (auto-dock :n-trial n-trial :clear-costmap nil)))
-                   (setf (cdr (assoc 'success-auto-dock userdata)) success)
-                   success)))
+             '(lambda (userdata)
+               (report-auto-dock)
+               (let* ((n-trial (cdr (assoc 'n-dock-trial userdata)))
+                      (success (auto-dock :n-trial n-trial :clear-costmap nil)))
+                 (setf (cdr (assoc 'success-auto-dock userdata)) success)
+                 (if success
+                     (set-alist 'description "帰ってきたよ" userdata)
+                     (set-alist 'description "帰ってこようとしたけど，迷子になっちゃった" userdata))
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 success)))
+            (:auto-dock-failure
+             '(lambda (userdata)
+               (report-auto-dock-failure)
+               (set-alist 'description "帰ってこられなかったよ" userdata)
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               t))
             (:room-light-off
-              '(lambda (userdata)
-                 (let ((success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
-                       (initial-light-on (cdr (assoc 'initial-light-on userdata)))
-                       (control-switchbot (cdr (assoc 'control-switchbot userdata))))
-                   (if (and success-auto-dock (not initial-light-on))
-                     (room-light-off :control-switchbot control-switchbot)))
-                 t))
+             '(lambda (userdata)
+               (let ((success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
+                     (initial-light-on (cdr (assoc 'initial-light-on userdata)))
+                     (control-switchbot (cdr (assoc 'control-switchbot userdata))))
+                 (if (and success-auto-dock (not initial-light-on))
+                     (progn
+                       (room-light-off :control-switchbot control-switchbot)
+                       (set-alist 'description "電気を消したよ" userdata)
+                       (set-alist 'image "" userdata))))
+               t))
             (:finish
-              '(lambda (userdata)
-                 (let ((success-battery-charging
-                         (equal (get-battery-charging-state) :charging))
-                       (success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
-                       (success-go-to-kitchen
-                         (cdr (assoc 'success-go-to-kitchen userdata))))
-                   (restore-params)
-                   (and success-go-to-kitchen success-auto-dock success-battery-charging)))))
+             '(lambda (userdata)
+               (let ((success-battery-charging
+                      (progn (wait-until-is-charging)
+                             (equal (get-battery-charging-state) :charging)))
+                     (success-auto-dock (cdr (assoc 'success-auto-dock userdata)))
+                     (success-go-to-kitchen
+                      (cdr (assoc 'success-go-to-kitchen userdata))))
+                 (restore-params)
+                 (set-alist 'description "キッチンデモを終えるよ" userdata)
+                 (set-alist 'image "" userdata)
+                 (and success-go-to-kitchen success-auto-dock success-battery-charging)))))
           '(:init)
           '(t nil))))

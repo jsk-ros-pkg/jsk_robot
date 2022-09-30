@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -xeuf -o pipefail
+
+mkdir -p /home/user/ros1_dependencies_sources/build/urdfdom-headers
+cd /home/user/ros1_dependencies_sources/build/urdfdom-headers
+
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  ../../src/urdfdom-headers/urdfdom_headers-1.0.0
+
+make -j4 install

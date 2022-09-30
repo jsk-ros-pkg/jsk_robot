@@ -1,0 +1,37 @@
+<launch>
+  <arg name="output_prefix" default="baxter" />
+  <arg name="compress" default="false" doc="whether compress rosbag or not." />
+
+  <arg name="realsense_camera_ns" default="realsense_torso" />
+  <arg name="spherical_camera_ns" default="kodak_head" />
+  <arg name="spherical_left_camera_ns" default="elp_head_left" />
+  <arg name="spherical_right_camera_ns" default="elp_head_right" />
+
+  <!-- compress flag-->
+  <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
+  <arg unless="$(arg compress)" name="compress_flag" value="" />
+
+  <!-- rosbag -->
+  <node name="baxter_rosbag_record" pkg="rosbag" type="record"
+        args="/rosout
+              /robot/joint_states
+              /diagnostics_agg
+              /tf
+              /tf_static
+              /audio
+              /$(arg realsense_camera_ns)/color/image_rect_color/compressed
+              /$(arg realsense_camera_ns)/color/camera_info
+              /$(arg realsense_camera_ns)/depth/compressed/image_rect_raw/compressedDepth
+              /$(arg realsense_camera_ns)/depth/compressed/camera_info
+              /$(arg realsense_camera_ns)/aligned_depth_to_color/compressed/image_raw/compressedDepth
+              /$(arg realsense_camera_ns)/aligned_depth_to_color/compressed/camera_info
+              /$(arg spherical_camera_ns)/image_raw/compressed
+              /$(arg spherical_camera_ns)/camera_info
+              /$(arg spherical_left_camera_ns)/image_raw/compressed
+              /$(arg spherical_left_camera_ns)/camera_info
+              /$(arg spherical_right_camera_ns)/image_raw/compressed
+              /$(arg spherical_right_camera_ns)/camera_info
+              -q $(arg compress_flag) -b 0
+              --output-prefix $(arg output_prefix)"
+        output="screen" />
+</launch>

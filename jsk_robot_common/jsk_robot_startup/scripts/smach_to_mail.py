@@ -3,11 +3,9 @@
 import base64
 import cv2
 import datetime
-import os
 import pickle
 import rospy
 import sys
-import yaml
 
 from cv_bridge import CvBridge
 from jsk_robot_startup.msg import Email
@@ -30,27 +28,16 @@ class SmachToMail():
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        yaml_path = rospy.get_param(
-            '~email_info', "/var/lib/robot/email_info.yaml")
-        if os.path.exists(yaml_path):
-            with open(yaml_path) as yaml_f:
-                self.email_info = yaml.load(yaml_f)
-            rospy.loginfo(
-                "{} is loaded as email config file.".format(yaml_path))
-            rospy.loginfo(self.email_info)
-            self.sender_address = self.email_info['sender_address']
-            self.receiver_address = self.email_info['receiver_address']
+        if rospy.has_param("~sender_address"):
+            self.sender_address = rospy.get_param("~sender_address")
         else:
-            if rospy.has_param("~sender_address"):
-                self.sender_address = rospy.get_param("~sender_address")
-            else:
-                rospy.logerr("Please set rosparam {}/sender_address".format(
+            rospy.logerr("Please set rosparam {}/sender_address".format(
+                rospy.get_name()))
+        if rospy.has_param("~receiver_address"):
+            self.receiver_address = rospy.get_param("~receiver_address")
+        else:
+            rospy.logerr("Please set rosparam {}/receiver_address".format(
                     rospy.get_name()))
-            if rospy.has_param("~receiver_address"):
-                self.receiver_address = rospy.get_param("~receiver_address")
-            else:
-                rospy.logerr("Please set rosparam {}/receiver_address".format(
-                        rospy.get_name()))
 
 
     def _status_cb(self, msg):
@@ -82,6 +69,11 @@ class SmachToMail():
             rospy.logwarn("smach does not have DESCRIPTION, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
         if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
+        if 'INFO' in local_data_str:
+            rospy.loginfo("- info_str -> {}".format(local_data_str['INFO']))
+        else:
+            rospy.logwarn("smach does not have INFO, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
+
 
         # Store data for every callerid to self.smach_state_list[caller_id]
         caller_id = msg._connection_header['callerid']
@@ -143,6 +135,9 @@ class SmachToMail():
         changeline = EmailBody()
         changeline.type = 'html'
         changeline.message = "<br>"
+        separator = EmailBody()
+        separator.type = 'text'
+        separator.message = "---------------"
         for x in state_list:
             if 'DESCRIPTION' in x:
                 description = EmailBody()
@@ -156,6 +151,17 @@ class SmachToMail():
                 image.img_size = 100
                 image.img_data = x['IMAGE']
                 email_msg.body.append(image)
+                email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(separator)
+        email_msg.body.append(changeline)
+        for x in state_list:
+            if 'INFO' in x:
+                info = EmailBody()
+                info.type = 'text'
+                info.message = x['INFO']
+                email_msg.body.append(info)
                 email_msg.body.append(changeline)
         # rospy.loginfo("body:{}".format(email_msg.body))
 
@@ -172,17 +178,30 @@ class SmachToMail():
         self.pub_email.publish(email_msg)
 
     def _send_twitter(self, subject, state_list):
-        text = ""
+        text = u""
         if subject:
+            # In python2, str is byte object, so we need to decode it as utf-8
+            if isinstance(subject, bytes):
+                subject = subject.decode('utf-8')
             text += subject
+        prev_text_type = ''
         for x in state_list:
             if 'DESCRIPTION' in x and x['DESCRIPTION']:
-                text += '\n' + x['DESCRIPTION']
+                desc = x['DESCRIPTION']
+                if isinstance(desc, bytes):
+                    desc = desc.decode('utf-8')
+                text += '\n' + desc
+                prev_text_type = 'DESCRIPTION'
             if 'IMAGE' in x and x['IMAGE']:
                 img_txt = x['IMAGE']
                 if isinstance(img_txt, bytes):
-                    img_txt = img_txt.decode('ascii')
+                    img_txt = img_txt.decode('utf-8')
+                if prev_text_type == 'IMAGE':
+                    # [rostwitter] Do not concatenate
+                    # multiple base64 images without spaces.
+                    text += ' '
                 text += img_txt
+                prev_text_type = 'IMAGE'
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
 
