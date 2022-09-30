@@ -342,6 +342,14 @@
     </rosparam>
   </node>
 
+  <!-- publish smach image -->
+  <node name="smach_image_publisher" pkg="smach_viewer" type="smach_image_publisher.py"
+	output="screen">
+    <rosparam>
+      duration: 0.5
+    </rosparam>
+  </node>
+
   <!-- Two robots cannot use one rosserial device at the same time -->
   <group if="$(eval hostname == 'fetch1075')">
     <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
