@@ -60,6 +60,7 @@
      (ros::subscribe "/spot/status/feet" spot_msgs::FootStateArray #'send self :spot-status-feet-callback :groupname groupname)
      (ros::subscribe "/spot/status/estop" spot_msgs::EStopStateArray #'send self :spot-status-estop-callback :groupname groupname)
      (ros::subscribe "/spot/status/wifi" spot_msgs::WiFiState #'send self :spot-status-wifi-callback :groupname groupname)
+     (ros::subscribe "/spot/status/manipulator_state" spot_msgs::ManipulatorState #'send self :spot-status-manipulator-state-callback :groupname groupname)
      (ros::subscribe "/spot/status/power_state" spot_msgs::PowerState #'send self :spot-status-power-state-callback :groupname groupname)
      (ros::subscribe "/spot/status/battery_states" spot_msgs::BatteryStateArray #'send self :spot-status-battery-states-callback :groupname groupname)
      (ros::subscribe "/spot/status/behavior_faults" spot_msgs::BehaviorFaultState #'send self :spot-status-behavior-faults-callback :groupname groupname)
@@ -155,6 +156,26 @@
          (case (send msg :current_mode)
                (0 'unknown) (1 'access-point) (2 'client)))
    (send self :set-robot-state1 :wifi-essid (send msg :essid)))
+  (:spot-status-manipulator-state-callback
+   (msg)
+   (send self :set-robot-state1 :manipulator-state-gripper-open-percentage (send msg :gripper_open_percentage))
+   (send self :set-robot-state1 :manipulator-state-is-gripper-holding-item (send msg :is_gripper_holding_item))
+   (send self :set-robot-state1 :manipulator-state-estimated-end-effector-force-in-hand
+	 (let ((m (send msg :estimated_end_effector_force_in_hand)))
+	   (float-vector (send m :x) (send m :y) (send m :z))))
+   (send self :set-robot-state1 :manipulator-state-stow-state
+         (case (send msg :stow_state) (0 'unknown) (1 'stowed) (2 'deployed)))
+   (send self :set-robot-state1 :manipulator-state-velocity-of-hand-in-vision
+	 (let ((m (send msg :velocity_of_hand_in_vision)))
+	   (float-vector (send m :linear :x) (send m :linear :y) (send m :linear :z)
+			 (send m :angular :x) (send m :angular :y) (send m :angular :z))))
+   (send self :set-robot-state1 :manipulator-state-velocity-of-hand-in-odom
+	 (let ((m (send msg :velocity_of_hand_in_odom)))
+	   (float-vector (send m :linear :x) (send m :linear :y) (send m :linear :z)
+			 (send m :angular :x) (send m :angular :y) (send m :angular :z))))
+   (send self :set-robot-state1 :manipulator-carry-state
+	 (case (send msg :carry_state) (0 'unknown) (1 'not-carriable) (2 'carriable) (3 'carriable-and-stowable)))
+   )
   (:spot-status-power-state-callback
    (msg)
    (send self :set-robot-state1 :power-state-motor-power-state
@@ -235,6 +256,7 @@
        ;; (:feet    (return-from :state (gen-status :feet)))
        (:estop  (return-from :state (gen-status :estop)))
        (:wifi   (return-from :state (gen-status :wifi)))
+       (:manipulator-state     (return-from :state (gen-status :manipulator-state)))
        (:power-state     (return-from :state (gen-status :power-state)))
        (:battery-states  (return-from :state (gen-status :battery-states)))
        ;; (:behavior-faults (return-from :state (gen-status :behavior-faults)))
