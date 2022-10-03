@@ -1,8 +1,8 @@
 #!/bin/bash
-set -xeuf -o pipefail
+set -xeu -o pipefail
 
-DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/liblcm/debian/debian
-SOURCE_DIR=/home/user/ros1_dependencies_sources/src/liblcm/lcm-1.3.1
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/expect/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/expect/expect5.45.4
 
 #
 # constantly does not have patches
@@ -14,10 +14,7 @@ done
 
 cd ${SOURCE_DIR}
 
-aclocal
-libtoolize
-automake --add-missing
-autoconf
-./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies --build=arm --verbose --enable-shared --exec-prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
+make
 make install

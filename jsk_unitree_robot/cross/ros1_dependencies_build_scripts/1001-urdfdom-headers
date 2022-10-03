@@ -10,4 +10,4 @@ cmake \
   -DCMAKE_BUILD_TYPE=Release \
   ../../src/urdfdom-headers/urdfdom_headers-1.0.0
 
-make -j4 install
+make install

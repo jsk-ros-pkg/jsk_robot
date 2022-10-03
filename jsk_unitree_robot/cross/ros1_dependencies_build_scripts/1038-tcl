@@ -1,0 +1,19 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/tcl/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/tcl/tcl8.5.19/unix
+
+#
+# constantly does not have patches
+#
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(grep -v ^# series); do
+OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+done
+
+cd ${SOURCE_DIR}
+
+./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+
+make install
