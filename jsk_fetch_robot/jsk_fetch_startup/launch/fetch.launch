@@ -7,6 +7,12 @@
   <arg name="use_realsense" default="true" />
   <arg name="use_fetch_description" default="false" />
 
+  <!-- realsense serial numbers -->
+  <arg name="RS_SERIAL_NO_T265" default="$(optenv RS_SERIAL_NO_T265)" />
+  <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="$(optenv RS_SERIAL_NO_D435_FRONTRIGHT)" />
+  <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="$(optenv RS_SERIAL_NO_D435_FRONTLEFT)" />
+  <arg name="RS_SERIAL_NO_L515_HEAD" default="$(optenv RS_SERIAL_NO_L515_HEAD)" />
+
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
   <arg unless="$(arg debug)" name="launch_prefix" value=""/>
@@ -25,6 +31,10 @@
   <!-- Launch realsense cameras -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
       <arg name="respawn" value="true" />
+      <arg name="RS_SERIAL_NO_T265" value="$(arg RS_SERIAL_NO_T265)" />
+      <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" value="$(arg RS_SERIAL_NO_D435_FRONTRIGHT)" />
+      <arg name="RS_SERIAL_NO_D435_FRONTLEFT" value="$(arg RS_SERIAL_NO_D435_FRONTLEFT)" />
+      <arg name="RS_SERIAL_NO_L515_HEAD" value="$(arg RS_SERIAL_NO_L515_HEAD)" />
   </include>
 
   <!-- Odometry -->
