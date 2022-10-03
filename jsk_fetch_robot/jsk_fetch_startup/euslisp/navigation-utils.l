@@ -390,6 +390,17 @@ Args:
                   (format nil "~A is found" label-names))
       label-names)))
 
+(defun notify-co2 (&key (location "kitchen"))
+  (let* ((msg (one-shot-subscribe "/eco2" std_msgs::UInt16
+                                  :timeout 3000)))
+    (when msg
+      (ros::ros-info
+       (format nil "Notify app that co2 concentration is measured."))
+      (notify-app "CO2 concentration"
+                  (ros::time-now)
+                  location
+                  (format nil "CO2 concentration is ~A ppm" (send msg :data))))))
+
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
   (if tweet
@@ -398,6 +409,7 @@ Args:
       (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
       (notify-recognition :location "kitchen stove")
+      (notify-co2 :location "kitchen stove")
       (take-photo "kitchen_stove.jpg")
       (send *ri* :go-pos-unsafe 0 0 -45)
       ;; sink
