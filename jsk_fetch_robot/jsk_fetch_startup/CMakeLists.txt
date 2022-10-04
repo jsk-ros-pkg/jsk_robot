@@ -90,10 +90,24 @@ macro(configure_dialogflow_hotword_yaml dname)
   endif()
 endmacro(configure_dialogflow_hotword_yaml)
 
+macro(configure_email_topic_yaml rname)
+  cmake_host_system_information(RESULT FETCH_NAME QUERY HOSTNAME)
+  if (${FETCH_NAME} MATCHES ^${rname})
+    set(RECEIVER_MAIL ${rname})
+    set(EMAIL_SENDER_ADDRESS ${FETCH_NAME}@jsk.imi.i.u-tokyo.ac.jp)
+    set(EMAIL_RECEIVER_ADDRESS ${RECEIVER_MAIL}@jsk.imi.i.u-tokyo.ac.jp)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/email_topic.yaml.in
+                   ${CMAKE_CURRENT_SOURCE_DIR}/config/${FETCH_NAME}_email_topic.yaml)
+  endif()
+endmacro(configure_email_topic_yaml)
+
+
 configure_icon_files(blue fetch15)
 configure_icon_files(red fetch1075)
 configure_dialogflow_hotword_yaml(fetch15)
 configure_dialogflow_hotword_yaml(fetch1075)
+configure_email_topic_yaml(fetch)
+
 
 #############
 ## Testing ##
