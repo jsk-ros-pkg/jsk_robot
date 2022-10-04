@@ -1,0 +1,2 @@
+sender_address: @EMAIL_SENDER_ADDRESS@
+receiver_address: @EMAIL_RECEIVER_ADDRESS@
