@@ -20,3 +20,17 @@ endforeach()
 
 install(FILES install_pr1040_description.sh jsk_pr2.machine plugin.xml startup.app
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+# Create email config for PR2
+macro(configure_email_topic_yaml rname)
+  cmake_host_system_information(RESULT PR2_NAME QUERY HOSTNAME)
+  if (${PR2_NAME} MATCHES ^${rname})
+    set(RECEIVER_MAIL ${rname})
+    set(EMAIL_SENDER_ADDRESS ${PR2_NAME}@jsk.imi.i.u-tokyo.ac.jp)
+    set(EMAIL_RECEIVER_ADDRESS ${RECEIVER_MAIL}@jsk.imi.i.u-tokyo.ac.jp)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config/email_topic.yaml.in
+                   ${CMAKE_CURRENT_SOURCE_DIR}/config/${PR2_NAME}_email_topic.yaml)
+  endif()
+endmacro(configure_email_topic_yaml)
+
+configure_email_topic_yaml(pr)
