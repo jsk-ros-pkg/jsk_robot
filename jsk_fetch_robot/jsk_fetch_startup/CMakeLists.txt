@@ -51,8 +51,10 @@ macro(configure_icon_files icol iname)
   endif()
 endmacro(configure_icon_files)
 
+# Create email config for fetch
 macro(configure_email_topic_yaml rname)
   cmake_host_system_information(RESULT FETCH_NAME QUERY HOSTNAME)
+  # If HOSTNAME is "fetchxxx", create email config
   if (${FETCH_NAME} MATCHES ^${rname})
     set(RECEIVER_MAIL ${rname})
     set(EMAIL_SENDER_ADDRESS ${FETCH_NAME}@jsk.imi.i.u-tokyo.ac.jp)
