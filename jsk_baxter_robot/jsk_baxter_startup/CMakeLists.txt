@@ -23,3 +23,14 @@ install(DIRECTORY config jsk_baxter_joy jsk_baxter_lifelog jsk_baxter_moveit jsk
 
 install(FILES baxter.launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
+# Create email config for baxter
+macro(configure_email_topic_yaml rname baxter_name)
+  set(BAXTER_NAME ${baxter_name})
+  set(RECEIVER_MAIL ${rname})
+  set(EMAIL_SENDER_ADDRESS ${BAXTER_NAME}@jsk.imi.i.u-tokyo.ac.jp)
+  set(EMAIL_RECEIVER_ADDRESS ${RECEIVER_MAIL}@jsk.imi.i.u-tokyo.ac.jp)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../jsk_robot_common/jsk_robot_startup/config/email_topic.yaml.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/${BAXTER_NAME}_email_topic.yaml)
+endmacro(configure_email_topic_yaml)
+
+configure_email_topic_yaml(baxter baxter)
