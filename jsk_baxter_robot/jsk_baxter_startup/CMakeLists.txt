@@ -33,4 +33,4 @@ macro(configure_email_topic_yaml rname baxter_name)
     ${CMAKE_CURRENT_SOURCE_DIR}/config/${BAXTER_NAME}_email_topic.yaml)
 endmacro(configure_email_topic_yaml)
 
-configure_email_topic_yaml(baxter baxter)
+configure_email_topic_yaml(baxter baxter-c4)
