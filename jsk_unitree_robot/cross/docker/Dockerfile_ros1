@@ -1,0 +1,48 @@
+#
+# Install Ubuntu
+#
+ARG TARGET_MACHINE=arm64v8
+FROM $TARGET_MACHINE/ubuntu:bionic
+MAINTAINER k-okada@jsk.t.u-tokyo.ac.jp
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends locales
+RUN locale-gen en_US en_US.UTF-8
+RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8
+RUN apt-get install -y --no-install-recommends lsb-release software-properties-common
+RUN apt-get install -y --no-install-recommends apt-transport-https
+#
+# Install ROS
+#
+RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/ros-latest.list
+RUN apt-get install -y --no-install-recommends curl gnupg2
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+RUN apt-get update -y
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+COPY deb-packages.txt .
+COPY ros-packages.txt .
+RUN apt install -y --no-install-recommends $(cat deb-packages.txt | grep -v ^#)
+RUN apt install -y --no-install-recommends $(cat ros-packages.txt | grep -v ^#)
+#
+# Package required for cross environment
+#
+RUN apt install -y python-pip
+RUN git clone https://github.com/k-okada/rosinstall_generator /tmp/rosinstall_generator -b add_depend_type
+RUN pip install /tmp/rosinstall_generator
+RUN apt install -y python3-vcstool
+#
+# Setup Users
+#
+RUN apt-get install -y sudo
+RUN useradd -ms /bin/bash -G sudo user
+RUN newgrp
+RUN echo user:user | chpasswd
+#
+# Remove packages is not found on 161
+#
+RUN dpkg -r --force-depends cython gir1.2-gstreamer-1.0 libtinyxml-dev python-attr python-autobahn python-automat python-cbor python-concurrent.futures python-constantly python-constantly python-incremental python-lz4 python-nacl python-pyasn1 python-pyasn1-modules python-qrcode python-service-identity python-snappy python-trie python-trollius python-twisted-bin python-twisted-core python-twisted python-txaio python-ubjson python-u-msgpack python-wsaccel python-zope.interface
+#
+#
+#
+WORKDIR /home/user
+USER user

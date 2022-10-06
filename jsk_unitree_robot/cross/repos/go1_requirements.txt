@@ -1,0 +1,10 @@
+# provdie catkin command
+catkin-tools
+
+# paho is installed under ~/.local/lib/python2.7/site-packages nano2 of Pro, but not instaled on Edu(?)
+paho-mqtt==1.6.1
+
+# https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/respeaker_ros/package.xml
+speechrecognition==3.8.1
+pyusb==1.1.1
+pixel-ring==0.1.0
