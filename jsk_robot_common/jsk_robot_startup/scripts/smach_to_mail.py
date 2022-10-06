@@ -72,6 +72,7 @@ class SmachToMail():
         self.email_level = config.email_level
         self.twitter_level = config.twitter_level
         self.chat_level = config.chat_level
+        return config
 
     def _status_cb(self, msg):
         '''
