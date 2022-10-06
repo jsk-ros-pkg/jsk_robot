@@ -6,20 +6,30 @@ import cv2
 import datetime
 import pickle
 import rospy
+import os
 import sys
 
 from cv_bridge import CvBridge
+from dynamic_reconfigure.server import Server
 from google_chat_ros.msg import Card
 from google_chat_ros.msg import Section
 from google_chat_ros.msg import SendMessageAction
 from google_chat_ros.msg import SendMessageActionGoal
 from google_chat_ros.msg import WidgetMarkup
+from jsk_robot_startup.cfg import SmachNotificationLevelConfig as Config
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
 from smach_msgs.msg import SmachContainerStatus
 from std_msgs.msg import String
 
+NOTIFICATION_LEVELS = {
+    "DEBUG": 0,
+    "INFO": 1,
+    "NOTICE": 2,
+    "CRITICAL": 3,
+    "EMERGENCY": 4
+}
 
 class SmachToMail():
 
@@ -30,6 +40,11 @@ class SmachToMail():
         self.use_mail = rospy.get_param("~use_mail", True)
         self.use_twitter = rospy.get_param("~use_twitter", True)
         self.use_google_chat = rospy.get_param("~use_google_chat", True)
+        # Dynamic Reconfigure
+        self.reconfigure_srv = Server(Config, self.reconfigure_cb)
+        self.email_level = Config.SmachNotificationLevel_INFO
+        self.twitter_level = Config.SmachNotificationLevel_INFO
+        self.chat_level = Config.SmachNotificationLevel_NOTICE
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
@@ -52,6 +67,11 @@ class SmachToMail():
             self.chat_space = rospy.get_param("~google_chat_space")
             self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
             self._gchat_thread = None
+
+    def reconfigure_cb(self, config, level):
+        self.email_level = config.email_level
+        self.twitter_level = config.twitter_level
+        self.chat_level = config.chat_level
 
     def _status_cb(self, msg):
         '''
@@ -86,6 +106,8 @@ class SmachToMail():
             rospy.loginfo("- info_str -> {}".format(local_data_str['INFO']))
         else:
             rospy.logwarn("smach does not have INFO, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
+        if 'NOTIFICATION-LEVEL' in local_data_str:
+            rospy.loginfo("- notification_level -> {}".format(local_data_str['NOTIFICATION_LEVEL']))
 
 
         # Store data for every callerid to self.smach_state_list[caller_id]
@@ -102,7 +124,7 @@ class SmachToMail():
                 self.smach_state_subject[caller_id] = None
 
         # Build status_dict for every status
-        # expected keys are 'DESCRIPTION' , 'IMAGE', 'STATE', 'INFO', 'TIME'
+        # expected keys are 'DESCRIPTION' , 'IMAGE', 'STATE', 'INFO', 'TIME', 'NOTIFICATION_LEVEL'
         status_dict = {}
         if 'DESCRIPTION' in local_data_str:
             status_dict.update({'DESCRIPTION': local_data_str['DESCRIPTION']})
@@ -120,6 +142,12 @@ class SmachToMail():
         status_dict.update({'STATE': status_str})
         status_dict.update({'INFO': info_str})
         status_dict.update({'TIME': datetime.datetime.fromtimestamp(msg.header.stamp.to_sec())})
+        if ('NOTIFICATION_LEVEL' in local_data_str) and (local_data_str['NOTIFICATION_LEVEL'] in NOTIFICATION_LEVELS.keys()):
+            status_dict.update({'NOTIFICATION_LEVEL': NOTIFICATION_LEVELS[local_data_str['NOTIFICATION_LEVEL']]})
+        else:
+            # set notification_level INFO by default
+            rospy.loginfo("Notification level is not set or invalid. Set INFO by default")
+            status_dict.update({'NOTIFICATION_LEVEL': NOTIFICATION_LEVELS["INFO"]})
 
 
         if (caller_id not in self.smach_state_list) or self.smach_state_list[caller_id] is None:
@@ -156,19 +184,20 @@ class SmachToMail():
         separator.type = 'text'
         separator.message = "---------------"
         for x in state_list:
-            if 'DESCRIPTION' in x:
-                description = EmailBody()
-                description.type = 'text'
-                description.message = x['DESCRIPTION']
-                email_msg.body.append(description)
-                email_msg.body.append(changeline)
-            if 'IMAGE' in x and x['IMAGE']:
-                image = EmailBody()
-                image.type = 'img'
-                image.img_size = 100
-                image.img_data = x['IMAGE']
-                email_msg.body.append(image)
-                email_msg.body.append(changeline)
+            if x["NOTIFICATION_LEVEL"] >= self.email_level:
+                if 'DESCRIPTION' in x:
+                    description = EmailBody()
+                    description.type = 'text'
+                    description.message = x['DESCRIPTION']
+                    email_msg.body.append(description)
+                    email_msg.body.append(changeline)
+                if 'IMAGE' in x and x['IMAGE']:
+                    image = EmailBody()
+                    image.type = 'img'
+                    image.img_size = 100
+                    image.img_data = x['IMAGE']
+                    email_msg.body.append(image)
+                    email_msg.body.append(changeline)
         email_msg.body.append(changeline)
         email_msg.body.append(changeline)
         email_msg.body.append(separator)
@@ -203,22 +232,23 @@ class SmachToMail():
             text += subject
         prev_text_type = ''
         for x in state_list:
-            if 'DESCRIPTION' in x and x['DESCRIPTION']:
-                desc = x['DESCRIPTION']
-                if isinstance(desc, bytes):
-                    desc = desc.decode('utf-8')
-                text += '\n' + desc
-                prev_text_type = 'DESCRIPTION'
-            if 'IMAGE' in x and x['IMAGE']:
-                img_txt = x['IMAGE']
-                if isinstance(img_txt, bytes):
-                    img_txt = img_txt.decode('utf-8')
-                if prev_text_type == 'IMAGE':
-                    # [rostwitter] Do not concatenate
-                    # multiple base64 images without spaces.
-                    text += ' '
-                text += img_txt
-                prev_text_type = 'IMAGE'
+            if x["NOTIFICATION_LEVEL"] >= self.twitter_level:
+                if 'DESCRIPTION' in x and x['DESCRIPTION']:
+                    desc = x['DESCRIPTION']
+                    if isinstance(desc, bytes):
+                        desc = desc.decode('utf-8')
+                    text += '\n' + desc
+                    prev_text_type = 'DESCRIPTION'
+                if 'IMAGE' in x and x['IMAGE']:
+                    img_txt = x['IMAGE']
+                    if isinstance(img_txt, bytes):
+                        img_txt = img_txt.decode('utf-8')
+                    if prev_text_type == 'IMAGE':
+                        # [rostwitter] Do not concatenate
+                        # multiple base64 images without spaces.
+                        text += ' '
+                    text += img_txt
+                    prev_text_type = 'IMAGE'
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
 
@@ -229,19 +259,20 @@ class SmachToMail():
             goal.goal.text = subject
         card = Card()
         for i, x in enumerate(state_list):
-            section = Section()
-            widget = WidgetMarkup()
-            if 'DESCRIPTION' in x:
-                text = x['DESCRIPTION']
-                section.header = text
-            if 'IMAGE' in x and x['IMAGE']:
-                path = os.path.join(self.gchat_image_dir, 'smach_gchat_{}.png'.format(i))
-                with open(path, "wb") as f:
-                    f.write(base64.b64decode(x['IMAGE']))
-                widget.image.localpath = path
-            if section.header and widget.image.localpath:
-                section.widgets.append(widget)
-                card.sections.append(section)
+            if x["NOTIFICATION_LEVEL"] >= self.twitter_level:
+                section = Section()
+                widget = WidgetMarkup()
+                if 'DESCRIPTION' in x:
+                    text = x['DESCRIPTION']
+                    section.header = text
+                if 'IMAGE' in x and x['IMAGE']:
+                    path = os.path.join(self.gchat_image_dir, 'smach_gchat_{}.png'.format(i))
+                    with open(path, "wb") as f:
+                        f.write(base64.b64decode(x['IMAGE']))
+                    widget.image.localpath = path
+                if section.header and widget.image.localpath:
+                    section.widgets.append(widget)
+                    card.sections.append(section)
         goal.goal.cards.append(card)
         goal.goal.space = self.chat_space
         if self._gchat_thread:
