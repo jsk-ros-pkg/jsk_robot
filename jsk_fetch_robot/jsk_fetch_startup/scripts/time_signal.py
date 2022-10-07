@@ -20,6 +20,7 @@ class TimeSignal(object):
             '/robotsound_jp', SoundRequestAction)
         self.now_time = datetime.now()
         self.now_hour = self.now_time.hour
+        self.now_minute = self.now_time.minute
         self.day = self.now_time.strftime('%a')
         reload(sys)
         sys.setdefaultencoding('utf-8')
@@ -43,7 +44,8 @@ class TimeSignal(object):
 
     def speak_jp(self):
         # time signal
-        speech_text = str(self.now_hour) + 'じです。'
+        speech_text = self._get_time_text(
+            self.now_hour, self.now_minute, lang='ja')
         if self.now_hour == 0:
             speech_text += '早く帰りましょう。'
         if self.now_hour == 12:
@@ -70,7 +72,8 @@ class TimeSignal(object):
         self.speak(self.client_jp, speech_text, lang='jp')
 
     def speak_en(self):
-        speech_text = self._get_text(self.now_hour)
+        speech_text = self._get_time_text(
+            self.now_hour, self.now_minute, lang='en')
         # time signal
         if self.now_hour == 0:
             speech_text += " Let's go home."
@@ -97,18 +100,30 @@ class TimeSignal(object):
         rospy.logdebug(speech_text)
         self.speak(self.client_en, speech_text)
 
-    def _get_text(self, hour):
-        if hour == 0:
-            text = 'midnight'
-        elif hour == 12:
-            text = 'noon'
-        else:
-            if hour > 12:
-                text = str(hour % 12) + ' P.M.'
+    def _get_time_text(self, hour, minute, lang='en'):
+        if lang == 'ja':
+            if hour == 0 and minute == 0:
+                time_text = '正午'
             else:
-                text = str(hour % 12) + ' A.M.'
-        text = "It's " + text + "."
-        return text
+                time_text = '{}時'.format(hour)
+                if minute != 0:
+                    time_text += '{}分'.format(minute)
+            time_text += 'です。'
+        else:
+            if hour == 0 and minute == 0:
+                time_text = 'midnight'
+            elif hour == 12 and minute == 0:
+                time_text = 'noon'
+            else:
+                time_text = str(hour % 12)
+                if minute != 0:
+                    time_text += ' {}'.format(minute)
+                if hour > 12:
+                    time_text += ' P.M.'
+                else:
+                    time_text += ' A.M.'
+            time_text = "It's {}.".format(time_text)
+        return time_text
 
     def _get_weather_forecast(self, lang='en'):
         url = 'http://api.openweathermap.org/data/2.5/weather?q=tokyo&lang={}&units=metric&appid={}'.format(lang, self.appid)  # NOQA
