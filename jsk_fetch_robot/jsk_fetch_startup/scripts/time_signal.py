@@ -56,10 +56,8 @@ class TimeSignal(object):
             speech_text += 'そろそろ輪講です。'
         if self.day == 'Tue' and self.now_hour == 15:
             speech_text += '掃除の時間です。'
-        if self.day == 'Fri' and self.now_hour == 14:
+        if self.day == 'Fri' and self.now_hour == 15:
             speech_text += '創造輪講の時間です。'
-        if self.day == 'Fri' and self.now_hour == 16:
-            speech_text += '掃除の時間です。'
 
         # weather forecast
         if self.now_hour in [0, 7, 12, 19]:
@@ -80,6 +78,14 @@ class TimeSignal(object):
             speech_text += " Let's go to lunch."
         if self.now_hour == 19:
             speech_text += " Let's go to dinner."
+        if self.day == 'Mon' and self.now_hour == 12:
+            speech_text += ' The lab meeting will start soon.'
+        if self.day == 'Tue' and self.now_hour == 12:
+            speech_text += ' The lab meeting will start soon.'
+        if self.day == 'Tue' and self.now_hour == 15:
+            speech_text += ' It is cleaning time now.'
+        if self.day == 'Fri' and self.now_hour == 15:
+            speech_text += ' Rinko will start soon. '
 
         # weather forecast
         if self.now_hour in [0, 7, 12, 19]:
