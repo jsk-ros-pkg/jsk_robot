@@ -113,6 +113,7 @@ plugins:
     plugin_args:
       mail_title: Fetch kitchen patrol demo
       use_timestamp_title: true
+      use_app_start_time: true
     plugin_arg_yaml: /var/lib/robot/fetch_mail_notifier_plugin.yaml
   - name: move_base_cancel_plugin
     type: app_publisher/rostopic_publisher_plugin
