@@ -45,10 +45,14 @@ class SmachToMail():
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
             "~smach/container_status", SmachContainerStatus, self._status_cb)
+        rospy.Timer(rospy.Duration(
+            rospy.get_param("~stop_duration", 3600)), self._stop_timer_cb)
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        if rospy.has_param("~sender_address"):
+        self.smach_start_time = {}
+        self.timeout = rospy.get_param("~timeout", 1200)
+        try:
             self.sender_address = rospy.get_param("~sender_address")
         else:
             rospy.logerr("Please set rosparam {}/sender_address".format(
@@ -68,6 +72,22 @@ class SmachToMail():
             self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
             self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
             self._gchat_thread = None
+
+    def _stop_timer_cb(self, event):
+        now = rospy.Time.now()
+        rospy.loginfo("stop timer")
+        if (self.smach_state_list and
+            self.smach_state_subject and
+            self.timeout is not None and
+            self.smach_start_time is not None):
+            for key in self.smach_state_list.keys():
+                if (now - self.smach_start_time[key]).to_sec() > self.timeout:
+                    self._send_mail(
+                        self.smach_state_subject[key], self.smach_state_list[key])
+                    self._send_twitter(
+                        self.smach_state_subject[key], self.smach_state_list[key])
+                rospy.logwarn(
+                    "SmachToMail timer publishes stop signal. Send Notification.")
 
     def _status_cb(self, msg):
         '''
@@ -109,6 +129,7 @@ class SmachToMail():
 
         # If we received START/INIT status, restart storing smach_state_list
         if status_str in ["START", "INIT"]:
+            self.smach_start_time[caller_id] = rospy.Time.now()
             self.smach_state_list[caller_id] = []
             # DESCRIPTION of START is MAIL SUBJECT
             if 'DESCRIPTION' in local_data_str:
