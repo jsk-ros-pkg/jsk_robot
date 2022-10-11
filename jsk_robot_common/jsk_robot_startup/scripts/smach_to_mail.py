@@ -54,14 +54,12 @@ class SmachToMail():
         self.timeout = rospy.get_param("~timeout", 1200)
         try:
             self.sender_address = rospy.get_param("~sender_address")
-        else:
-            rospy.logerr("Please set rosparam {}/sender_address".format(
-                rospy.get_name()))
-        if rospy.has_param("~receiver_address"):
             self.receiver_address = rospy.get_param("~receiver_address")
-        else:
-            rospy.logerr("Please set rosparam {}/receiver_address".format(
-                    rospy.get_name()))
+        except KeyError as e:
+            rospy.logerr(e)
+            rospy.logerr(
+                "Please set rosparam ~sender_address or ~receiver_address")
+            sys.exit()
 
         self.chat_space = rospy.get_param("~google_chat_space", None)
         if self.use_google_chat and self.chat_space is None:
