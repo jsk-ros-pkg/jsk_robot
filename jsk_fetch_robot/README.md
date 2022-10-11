@@ -41,7 +41,7 @@ Please make sure your ROS Distribution is indigo, kinetic or melodic.
 ```bash
 mkdir -p catkin_ws/src
 cd  catkin_ws/src
-wstool init .     
+wstool init .
 wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -v develop/fetch -y
 wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
 wstool merge -t . https://gist.githubusercontent.com/Affonso-Gui/25518fef9dc7af0051147bdd2a94b116/raw/e3fcbf4027c876329801a25e32f4a4746200ddae/guiga_system.rosinstall
@@ -53,6 +53,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep install -y -r --from-paths . --ignore-src
 cd ../
 catkin build fetcheus jsk_fetch_startup roseus_resume
+source devel/setup.bash
 ```
 
 #### Setup Environment (For Robot Internal PC, only for advanced developer)
