@@ -19,6 +19,7 @@ class TimeSignal(object):
         self.client_jp = actionlib.SimpleActionClient(
             '/robotsound_jp', SoundRequestAction)
         self.now_time = datetime.now()
+        self.now_date = self.now_time.date()
         self.now_hour = self.now_time.hour
         self.now_minute = self.now_time.minute
         self.day = self.now_time.strftime('%a')
@@ -45,7 +46,8 @@ class TimeSignal(object):
     def speak_jp(self):
         # time signal
         speech_text = self._get_time_text(
-            self.now_hour, self.now_minute, lang='ja')
+            self.now_date, self.now_hour, self.now_minute,
+            lang='ja')
         if self.now_hour == 0:
             speech_text += '早く帰りましょう。'
         if self.now_hour == 12:
@@ -73,7 +75,8 @@ class TimeSignal(object):
 
     def speak_en(self):
         speech_text = self._get_time_text(
-            self.now_hour, self.now_minute, lang='en')
+            self.now_date, self.now_hour, self.now_minute,
+            lang='en')
         # time signal
         if self.now_hour == 0:
             speech_text += " Let's go home."
@@ -100,9 +103,12 @@ class TimeSignal(object):
         rospy.logdebug(speech_text)
         self.speak(self.client_en, speech_text)
 
-    def _get_time_text(self, hour, minute, lang='en'):
+    def _get_time_text(self, date, hour, minute, lang='en'):
         if lang == 'ja':
             if hour == 0 and minute == 0:
+                time_text = '{}年{}月{}日'.format(
+                    date.year, date.month, date.day)
+            elif hour == 12 and minute == 0:
                 time_text = '正午'
             else:
                 time_text = '{}時'.format(hour)
@@ -111,7 +117,7 @@ class TimeSignal(object):
             time_text += 'です。'
         else:
             if hour == 0 and minute == 0:
-                time_text = 'midnight'
+                time_text = date.strftime('%Y %B %d')
             elif hour == 12 and minute == 0:
                 time_text = 'noon'
             else:
