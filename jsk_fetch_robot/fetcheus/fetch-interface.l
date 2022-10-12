@@ -1,7 +1,15 @@
 (require "package://fetcheus/fetch-utils.l")
 (require "package://pr2eus/robot-interface.l")
 (require "package://pr2eus_moveit/euslisp/robot-moveit.l")
-(require "package://roseus_resume/euslisp/interruption-handler.l")
+(defvar *enable-roseus-resume* (ros::rospack-find "roseus_resume"))
+(if *enable-roseus-resume*
+  (progn
+    (require :roseus_resume "package://roseus_resume/euslisp/interruption-handler.l")
+    (warning-message 2 "roseus_resume is enabled.~%"))
+  (progn
+    ;; make dummy package to avoid symbol search error
+    (unless (find-package "ROSEUS_RESUME") (make-package "ROSEUS_RESUME"))
+    (warning-message 3 "roseus_resume is disabled.~%")))
 
 (ros::load-ros-package "fetcheus")
 (ros::load-ros-package "fetch_driver_msgs")
@@ -43,11 +51,16 @@
                      "/head_controller/point_head"
                      control_msgs::PointHeadAction))
 
-     (roseus_resume:install-interruption-handler self
-         gripper-action
-         move-base-action
-         move-base-trajectory-action)
-     (roseus_resume:install-default-intervention self)))
+     (if *enable-roseus-resume*
+       (progn
+         (warning-message 3 "Installing interruption handler...~%")
+         (roseus_resume::install-interruption-handler self
+             gripper-action
+             move-base-action
+             move-base-trajectory-action)
+         (roseus_resume::install-default-intervention self)
+         (warning-message 3 "...done.~%")))
+     ))
   (:state (&rest args)
    "We do not have :wait-until-update option for :state :worldcoords.
 In other cases, :state calls with :wait-until-update by default, since Fetch publishes /joint_states from body and gripper at almost same frequency.
