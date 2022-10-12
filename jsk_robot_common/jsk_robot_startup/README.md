@@ -302,15 +302,27 @@ flowchart TB
 
   Tweet message with description and image
 
+* `/google_chat_ros/send/goal` (`google_chat_ros/SendMessageActionGoal`)
+
+  Send google chat message with description and image.
+
 ### Parameters
 
 * `~sender_address` (String)
-  
+
   Sender address
 
 * `~receiver_address` (String)
 
   Receiver address
+
+* `~google_chat_space` (String)
+
+  Receiver Google Chat space name
+
+* `~google_chat_tmp_image_dir` (String)
+
+  Directory where images are temporarily stored for google_chat_ros
 
 ## launch/safe_teleop.launch
 
