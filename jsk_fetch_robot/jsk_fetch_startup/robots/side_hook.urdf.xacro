@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+<robot name="base_camera_mount" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link name="side_hook_base">
+        <inertial>
+          <origin rpy="0 0 0" xyz="0 0 0" />
+          <mass value="0.1" />
+          <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1" />
+        </inertial>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="package://jsk_fetch_accessories/hook/fetch_hook.STL" scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="">
+                <color rgba="0 0 0 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh filename="package://jsk_fetch_accessories/hook/fetch_hook.STL" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="torso_hook_joint" type="fixed">
+        <origin rpy="1.57 0 1.57" xyz="-0.05 0.17 0.35" />
+        <parent link="torso_lift_link" />
+        <child link="side_hook_base" />
+        <axis xyz="0 0 1" />
+    </joint>
+    <link name="side_hook_top"/>
+    <joint name="side_hook_top_joint" type="fixed">
+        <origin rpy="1.57 0 3.1415" xyz="0.09 0 0.02" />
+        <parent link="side_hook_base" />
+        <child link="side_hook_top" />
+        <axis xyz="0 0 1" />
+    </joint>
+</robot>
