@@ -72,6 +72,10 @@ class SmachToMail():
             self._gchat_thread = None
 
     def _stop_timer_cb(self, event):
+        '''
+        If smach does not go to finish/end state,
+        this is forced to send notification.
+        '''
         now = rospy.Time.now()
         rospy.logdebug("SmachToMail stop timer called")
         if (self.smach_state_list and
