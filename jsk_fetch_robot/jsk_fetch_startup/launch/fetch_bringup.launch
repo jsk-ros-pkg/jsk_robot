@@ -5,8 +5,11 @@
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_insta360" default="true" />
+  <arg name="launch_twitter" default="true" />
   <arg name="use_voice_text" default="true" />
   <arg name="boot_sound" default="false" />
+  <arg name="check_board_info" default="true" />
+  <arg name="correct_position" default="true" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
@@ -96,7 +99,7 @@
   </node>
 
   <!-- twitter -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" if="$(arg launch_twitter)" />
 
   <!-- switchbot -->
   <include file="$(find switchbot_ros)/launch/switchbot.launch" if="$(arg fetch_switchbot)">
@@ -188,7 +191,7 @@
     </include>
 
     <!-- dock localization -->
-    <node pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true">
+    <node if="$(arg boot_sound)" pkg="jsk_fetch_startup" type="correct_position.py" name="correct_position" respawn="true">
       <rosparam>
         vital_rate: 0.1
       </rosparam>
@@ -255,7 +258,7 @@
   </node>
 
   <!-- Check fetch's boards in a constant period -->
-  <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
+  <node if="$(arg check_board_info)" name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
   </node>
 
   <!-- send email by rostopic -->
