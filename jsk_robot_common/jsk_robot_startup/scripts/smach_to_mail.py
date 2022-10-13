@@ -73,11 +73,11 @@ class SmachToMail():
 
     def _stop_timer_cb(self, event):
         now = rospy.Time.now()
-        rospy.loginfo("stop timer")
+        rospy.logdebug("SmachToMail stop timer called")
         if (self.smach_state_list and
-            self.smach_state_subject and
-            self.timeout is not None and
-            self.smach_start_time is not None):
+                self.smach_state_subject and
+                self.timeout is not None and
+                self.smach_start_time is not None):
             for key in self.smach_state_list.keys():
                 if (now - self.smach_start_time[key]).to_sec() > self.timeout:
                     self._send_mail(
