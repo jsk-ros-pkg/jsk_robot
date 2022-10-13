@@ -7,6 +7,7 @@
   <xacro:arg name="head_l515" default="true" />
   <xacro:arg name="insta360_stand" default="true" />
   <xacro:arg name="side_hook" default="true" />
+  <xacro:arg name="finger_tip" default="true" />
 
   <xacro:if value="$(arg use_fetch_description)">
     <xacro:include filename="$(find fetch_description)/robots/fetch.urdf" />
@@ -28,5 +29,8 @@
   </xacro:if>
   <xacro:if value="$(arg side_hook)">
     <xacro:include filename="$(find jsk_fetch_startup)/robots/side_hook.urdf.xacro" />
+  </xacro:if>
+  <xacro:if value="$(arg finger_tip)">
+    <xacro:include filename="$(find jsk_fetch_startup)/robots/finger_tip.urdf.xacro" />
   </xacro:if>
 </robot>
