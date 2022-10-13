@@ -4,6 +4,9 @@
   <arg name="launch_moveit" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
+  <arg name="launch_english_speech" default="true" />
+  <arg name="launch_japanese_speech" default="false" />
+
   <arg name="paused" default="false" />
   <arg name="world" default="worlds/empty.world" />
   <arg name="map_frame" default="eng2" />
@@ -31,13 +34,51 @@
     </include>
   </group>
 
+  <!-- include fetch moveit -->
+  <group if="$(arg launch_moveit)">
+    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+    <!-- overwrite fetch.srdf -->
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="robot_description_semantic"
+	   command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro head_l515:=false" />
+  </group>
+
   <include file="$(find jsk_fetch_startup)/launch/fetch_bringup.launch">
     <arg name="launch_move_base" value="$(arg launch_move_base)" />
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="launch_english_speech" value="$(arg launch_english_speech)" />
+    <arg name="launch_japanese_speech" value="$(arg launch_japanese_speech)" />
     <arg name="map_frame" value="$(arg map_frame)" />
-    <arg name="boot_sound" value="false" />
-    <arg name="launch_teleop" value="false" /> <!-- duplicates cmd_vel_mux nodes -->
-    <arg name="launch_insta360" value="false" />
-    <arg name="fetch_switchbot" value="false" />
+    <arg name="launch_teleop" default="false" />
+    <arg name="launch_correct_position" default="false" />
+    <arg name="launch_build_map" default="false" />
+    <arg name="launch_nav_speak" default="false" />
+    <arg name="launch_fetch_sensors" default="false" />
+    <arg name="launch_insta360" default="false" />
+    <arg name="launch_edgetpu_human_pose_estimator" default="false" />
+    <arg name="launch_edgetpu_object_detector" default="false" />
+    <arg name="launch_check_room_light" default="false" />
+    <arg name="launch_boot_sound" default="false" />
+    <arg name="launch_speech_recognition" default="false" />
+    <arg name="launch_tweet" default="false" />
+    <arg name="launch_dialogflow" default="false" />
+    <arg name="launch_google_chat" default="false" />
+    <arg name="launch_gdrive_server" default="false" />
+    <arg name="launch_roswww" default="false" />
+    <arg name="launch_websocket" default="false" />
+    <arg name="launch_rwt_image_view" default="false" />
+    <arg name="launch_robot_pose_publisher" default="false" />
+    <arg name="launch_app_manager" default="false" />
+    <arg name="launch_app_scheduler" default="false" />
+    <arg name="launch_smach_image_publisher" default="false" />
+    <arg name="launch_mail_notification" default="false" />
+    <arg name="launch_battery_warning" default="false" />
+    <arg name="launch_network_detector" default="false" />
+    <arg name="launch_network_status" default="false" />
+    <arg name="launch_audible_warning" default="false" />
+    <arg name="launch_check_driver_boards" default="false" />
+    <arg name="launch_rosserial" default="false" />
+    <arg name="launch_switchbot" default="false" />
+    <arg name="launch_fetch_lifelog" default="false" />
   </include>
 </launch>
