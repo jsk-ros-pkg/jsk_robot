@@ -13,7 +13,9 @@
   (:init
     (&rest args)
     (prog1
-      (send-super* :init :robot cobotta-robot :joint-states-topic "/cobotta/joint_states"
+      (send-super* :init :robot cobotta-robot
+                   :joint-states-topic "/cobotta/joint_states"
+                   :joint-states-queue-size 2  ;; joint_states of arm and gripper are separated
                    :groupname "cobotta_oss_interface" args)
       (send self :add-controller :rarm-controller)
       (ros::subscribe "/cobotta/gripper_state" std_msgs::Bool
