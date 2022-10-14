@@ -249,4 +249,12 @@
     </rosparam>
   </node>
 
+  <!-- publish smach image -->
+  <node name="smach_image_publisher" pkg="smach_viewer" type="smach_image_publisher.py"
+        output="screen">
+    <rosparam>
+      duration: 0.5
+    </rosparam>
+  </node>
+
 </launch>
