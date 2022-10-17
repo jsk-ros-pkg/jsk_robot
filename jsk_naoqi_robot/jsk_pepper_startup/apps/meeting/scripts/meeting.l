@@ -209,8 +209,21 @@
 ;; https://github.com/jsk-ros-pkg/jsk_roseus/pull/717
 ;; did not work, when we subscribe image data ???
 
+(defun end ()
+  (let ()
+    (send *ri* :angle-vector-sequence (list #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0) #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 -30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)) (list 1000 1000 1000 1000))
+    (send *ri* :speak "\\vct=120\\\\rspd=80\\みなさん")
+    (send *ri* :wait-interpolation)
+    (send *ri* :angle-vector-sequence (list *a* *d* *a* *d* *a* *d* *a* *d* *a* *e* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
+    (send *ri* :speak "\\vct=120\\\\rspd=80\\おつかれさまでしたッ！\\rspd=100\\")
+    (send *ri* :wait-interpolation)
+    (send *ri* :hide-image)
+    (send *ri* :set-language "English")
+    ))
+
 (defun ros::roseus-sigint-handler (sig code)
   (ros::ros-warn (format nil "ros::roseus-sigint-handler ~A" sig))
+  (end)
   (setq *continue* nil))
 (unix:signal unix::sigint 'ros::roseus-sigint-handler)
 
