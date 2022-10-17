@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 
+import actionlib
 import base64
 import cv2
 import datetime
-import os
 import pickle
 import rospy
 import sys
-import yaml
 
 from cv_bridge import CvBridge
+from google_chat_ros.msg import Card
+from google_chat_ros.msg import Section
+from google_chat_ros.msg import SendMessageAction
+from google_chat_ros.msg import SendMessageActionGoal
+from google_chat_ros.msg import WidgetMarkup
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
@@ -23,6 +27,9 @@ class SmachToMail():
         rospy.init_node('server_name')
         # it should be 'smach_to_mail', but 'server_name'
         # is the default name of smach_ros
+        self.use_mail = rospy.get_param("~use_mail", True)
+        self.use_twitter = rospy.get_param("~use_twitter", True)
+        self.use_google_chat = rospy.get_param("~use_google_chat", True)
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
@@ -30,28 +37,21 @@ class SmachToMail():
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        yaml_path = rospy.get_param(
-            '~email_info', "/var/lib/robot/email_info.yaml")
-        if os.path.exists(yaml_path):
-            with open(yaml_path) as yaml_f:
-                self.email_info = yaml.load(yaml_f)
-            rospy.loginfo(
-                "{} is loaded as email config file.".format(yaml_path))
-            rospy.loginfo(self.email_info)
-            self.sender_address = self.email_info['sender_address']
-            self.receiver_address = self.email_info['receiver_address']
+        if rospy.has_param("~sender_address"):
+            self.sender_address = rospy.get_param("~sender_address")
         else:
-            if rospy.has_param("~sender_address"):
-                self.sender_address = rospy.get_param("~sender_address")
-            else:
-                rospy.logerr("Please set rosparam {}/sender_address".format(
+            rospy.logerr("Please set rosparam {}/sender_address".format(
+                rospy.get_name()))
+        if rospy.has_param("~receiver_address"):
+            self.receiver_address = rospy.get_param("~receiver_address")
+        else:
+            rospy.logerr("Please set rosparam {}/receiver_address".format(
                     rospy.get_name()))
-            if rospy.has_param("~receiver_address"):
-                self.receiver_address = rospy.get_param("~receiver_address")
-            else:
-                rospy.logerr("Please set rosparam {}/receiver_address".format(
-                        rospy.get_name()))
-
+        if self.use_google_chat:
+            self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
+            self.chat_space = rospy.get_param("~google_chat_space")
+            self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
+            self._gchat_thread = None
 
     def _status_cb(self, msg):
         '''
@@ -82,6 +82,11 @@ class SmachToMail():
             rospy.logwarn("smach does not have DESCRIPTION, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
         if 'IMAGE' in local_data_str and local_data_str['IMAGE']:
             rospy.loginfo("- image_str -> {}".format(local_data_str['IMAGE'][:64]))
+        if 'INFO' in local_data_str:
+            rospy.loginfo("- info_str -> {}".format(local_data_str['INFO']))
+        else:
+            rospy.logwarn("smach does not have INFO, see https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#smach_to_mailpy for more info")
+
 
         # Store data for every callerid to self.smach_state_list[caller_id]
         caller_id = msg._connection_header['callerid']
@@ -133,8 +138,12 @@ class SmachToMail():
                 for x in self.smach_state_list[caller_id]:
                     rospy.loginfo(" - At {}, Active state is {}{}".format(x['TIME'], x['STATE'],
                                   "({})".format(x['INFO']) if x['INFO'] else ''))
-                self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
-                self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                if self.use_mail:
+                    self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                if self.use_twitter:
+                    self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
+                if self.use_google_chat:
+                    self._send_google_chat(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self.smach_state_list[caller_id] = None
 
     def _send_mail(self, subject, state_list):
@@ -143,6 +152,9 @@ class SmachToMail():
         changeline = EmailBody()
         changeline.type = 'html'
         changeline.message = "<br>"
+        separator = EmailBody()
+        separator.type = 'text'
+        separator.message = "---------------"
         for x in state_list:
             if 'DESCRIPTION' in x:
                 description = EmailBody()
@@ -156,6 +168,17 @@ class SmachToMail():
                 image.img_size = 100
                 image.img_data = x['IMAGE']
                 email_msg.body.append(image)
+                email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(changeline)
+        email_msg.body.append(separator)
+        email_msg.body.append(changeline)
+        for x in state_list:
+            if 'INFO' in x:
+                info = EmailBody()
+                info.type = 'text'
+                info.message = x['INFO']
+                email_msg.body.append(info)
                 email_msg.body.append(changeline)
         # rospy.loginfo("body:{}".format(email_msg.body))
 
@@ -172,20 +195,64 @@ class SmachToMail():
         self.pub_email.publish(email_msg)
 
     def _send_twitter(self, subject, state_list):
-        text = ""
+        text = u""
         if subject:
+            # In python2, str is byte object, so we need to decode it as utf-8
+            if isinstance(subject, bytes):
+                subject = subject.decode('utf-8')
             text += subject
+        prev_text_type = ''
         for x in state_list:
             if 'DESCRIPTION' in x and x['DESCRIPTION']:
-                text += '\n' + x['DESCRIPTION']
+                desc = x['DESCRIPTION']
+                if isinstance(desc, bytes):
+                    desc = desc.decode('utf-8')
+                text += '\n' + desc
+                prev_text_type = 'DESCRIPTION'
             if 'IMAGE' in x and x['IMAGE']:
                 img_txt = x['IMAGE']
                 if isinstance(img_txt, bytes):
-                    img_txt = img_txt.decode('ascii')
+                    img_txt = img_txt.decode('utf-8')
+                if prev_text_type == 'IMAGE':
+                    # [rostwitter] Do not concatenate
+                    # multiple base64 images without spaces.
+                    text += ' '
                 text += img_txt
+                prev_text_type = 'IMAGE'
         if len(text) > 1:
             self.pub_twitter.publish(String(text))
 
+    def _send_google_chat(self, subject, state_list):
+        self.gchat_ac.wait_for_server()
+        goal = SendMessageActionGoal()
+        if subject:
+            goal.goal.text = subject
+        card = Card()
+        for i, x in enumerate(state_list):
+            section = Section()
+            widget = WidgetMarkup()
+            if 'DESCRIPTION' in x:
+                text = x['DESCRIPTION']
+                section.header = text
+            if 'IMAGE' in x and x['IMAGE']:
+                path = os.path.join(self.gchat_image_dir, 'smach_gchat_{}.png'.format(i))
+                with open(path, "wb") as f:
+                    f.write(base64.b64decode(x['IMAGE']))
+                widget.image.localpath = path
+            if section.header and widget.image.localpath:
+                section.widgets.append(widget)
+                card.sections.append(section)
+        goal.goal.cards.append(card)
+        goal.goal.space = self.chat_space
+        if self._gchat_thread:
+            goal.goal.thread_name = self._gchat_thread
+        self.gchat_ac.send_goal(goal.goal)
+        self.gchat_ac.wait_for_result()
+        result = self.gchat_ac.get_result()
+        if not self._gchat_thread:
+            self._gchat_thread = result.message_result.thread_name
+        rospy.loginfo("Sending google chat messsage: {} to {} chat space".format(text, self.chat_space))
+        rospy.logdebug("Google Chat result: {}".format(self.gchat_ac.get_result()))
 
 if __name__ == '__main__':
     stm = SmachToMail()
