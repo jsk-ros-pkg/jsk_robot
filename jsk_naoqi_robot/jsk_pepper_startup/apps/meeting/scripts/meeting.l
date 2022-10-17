@@ -86,14 +86,6 @@
 
 (ros::roseus "online-meeting-enhancement-main")
 
-(ros::subscribe "joy" sensor_msgs::Joy
-                #'(lambda (msg)
-                    (let ((button (send msg :buttons)))
-                      (ros::ros-info "received joy button ~A" button)
-                      (when (eq (elt button 3) 1)
-                        (send *ri* :speak "はい")
-                        (setq *continue* nil)))))
-
 (defun start-func (args)
   (let ()
     (setq *last-tm* (ros::time-now))
