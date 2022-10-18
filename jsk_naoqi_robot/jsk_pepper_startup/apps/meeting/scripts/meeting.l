@@ -204,7 +204,6 @@
 
 (defun ros::roseus-sigint-handler (sig code)
   (ros::ros-warn (format nil "ros::roseus-sigint-handler ~A" sig))
-  (end-func)
   (setq *continue* nil))
 (unix:signal unix::sigint 'ros::roseus-sigint-handler)
 
