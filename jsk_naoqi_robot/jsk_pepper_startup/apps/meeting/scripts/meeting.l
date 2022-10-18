@@ -53,11 +53,10 @@
 (defvar *pose6* (list #f(2.0 -2.0 -5.0 110.0 35.0 -40.0 -60.0 -40.0 110.0 -35.0 40.0 60.0 40.0 0.0 15.0) #f(2.0 -2.0 -5.0 110.0 35.0 -40.0 -60.0 -40.0 110.0 -35.0 40.0 60.0 40.0 0.0 15.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)))
 (defvar *time6* (list 2000 3000 1000))
 
-;;
+;; poses for byebye
 (defvar *reset* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0))
-(defvar *a* #f(2.0 -2.0 -5.0 0.0 10.0 -100.0 -70.0 60.0 0.0 -10.0 100.0 70.0 -60.0 0.0 0.0))
-(defvar *d* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
-(defvar *e* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
+(defvar *byebye-close* #f(2.0 -2.0 -5.0 0.0 10.0 -100.0 -70.0 60.0 0.0 -10.0 100.0 70.0 -60.0 0.0 0.0))
+(defvar *byebye-open* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
 
 (defvar *img-list*
   (list
@@ -115,7 +114,7 @@
     (send *ri* :speak "\\vct=120\\\\rspd=80\\みなさん")
     (send *ri* :wait-interpolation)
 
-    (send *ri* :angle-vector-sequence (list *a* *d* *a* *d* *a* *d* *a* *d* *a* *e* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
+    (send *ri* :angle-vector-sequence (list *byebye-close* *byebye-open* *byebye-close* *byebye-open* *byebye-close* *byebye-open* *byebye-close* *byebye-open* *byebye-close* *byebye-open* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
     (send *ri* :speak "\\vct=120\\\\rspd=80\\おつかれさまでしたッ！\\rspd=100\\")
     (send *ri* :wait-interpolation)
     (send *ri* :hide-image)
