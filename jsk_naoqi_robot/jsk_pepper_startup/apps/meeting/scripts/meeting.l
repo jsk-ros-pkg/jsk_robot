@@ -109,6 +109,8 @@
 (defun end-func (&rest args)
   (let ()
     (send *ri* :show-image "golden-saying-by-pepper-7.png")
+    (send *ri* :set-basic-awareness-enabled nil)
+    (send *ri* :set-background-movement-enabled nil)
     (send *ri* :angle-vector-sequence (list #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0) #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 -30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)) (list 1000 1000 1000 1000))
     (send *ri* :speak "\\vct=120\\\\rspd=80\\みなさん")
     (send *ri* :wait-interpolation)
