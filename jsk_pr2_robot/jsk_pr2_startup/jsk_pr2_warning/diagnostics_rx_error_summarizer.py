@@ -51,9 +51,10 @@ class DiagnosticsRxErrorSummarizer():
             self.count += 1
         else:
             flag = False
-            max_val = 0
-            max_key = None
-            max_s_name = None
+            thre_val = 0
+            s_name_list = []
+            key_list = []
+            value_list = []
             for s in status:
                 if 'values' not in dir(s):
                     continue
@@ -62,19 +63,16 @@ class DiagnosticsRxErrorSummarizer():
                         print(s.name + " " + v.key + ": {}".format(v.value))
                         if not ('Master' in s.name):
                             flag = True
-                            if int(v.value) > max_val:
-                                max_val = int(v.value)
-                                max_key = [v.key]
-                                max_s_name = [s.name]
-                            elif int(v.value) == max_val and max_val != 0:
-                                max_key.append(v.key)
-                                max_s_name.append(s.name)
+                            if int(v.value) > thre_val:
+                                s_name_list.append(s.name)
+                                value_list.append(v.value)
+                                key_list.append(v.key)
 
             if flag:
-                if max_val > 0:
-                    print("[Max Device]")
-                    for s_name, key in zip(max_s_name, max_key):
-                        print(s_name + " " + key + ": {}".format(max_val))
+                if len(s_name_list) > 0:
+                    print("[Eroor Exist Dvice]")
+                    for s_name, key, value in zip(s_name_list, key_list, value_list):
+                        print(s_name + " " + key + ": {}".format(value))
                 print("--------------------------------------------")
 
 
