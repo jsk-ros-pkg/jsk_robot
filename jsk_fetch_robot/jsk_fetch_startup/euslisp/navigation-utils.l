@@ -742,7 +742,7 @@ Args:
           '((:init
               '(lambda (userdata)
                  (fetch-init)
-		 (undock)
+                 (undock)
                  (send *ri* :clear-costmap)
                  (store-params)
                  (inflation-loose)
@@ -768,7 +768,7 @@ Args:
                    light-on)))
             (:report-light-on
               '(lambda (userdata)
-                 (report-light-on)
+                (report-light-on)
                 (set-alist 'description "" userdata)
                 (set-alist 'image "" userdata)
                  t))
