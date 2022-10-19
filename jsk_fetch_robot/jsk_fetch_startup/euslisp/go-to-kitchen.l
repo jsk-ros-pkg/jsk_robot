@@ -29,7 +29,11 @@
                                      (success-go-to-kitchen . nil)
                                      (success-go-to-trashcan . nil)
                                      (success-auto-dock . nil))
-                              :hz 2.0)))
+                              :hz 2.0
+                              :before-hook-func
+                              '(lambda ()
+                                (set-alist 'description "" mydata)
+                                (set-alist 'image "" mydata)))))
     (send result-state :name)))
 
 
