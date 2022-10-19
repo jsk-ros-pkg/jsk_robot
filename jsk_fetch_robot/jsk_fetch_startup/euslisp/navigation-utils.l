@@ -771,6 +771,8 @@ Args:
             (:report-light-on
               '(lambda (userdata)
                  (report-light-on)
+                (set-alist 'description "" userdata)
+                (set-alist 'image "" userdata)
                  t))
             (:room-light-on
               '(lambda (userdata)
