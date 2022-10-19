@@ -174,10 +174,29 @@ rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 1000000 -p
 ```python
 from dynamixel_driver import dynamixel_io
 
-# for softhand v1
 dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-e160", 1000000)
 dxl_io.write(<MOTOR_ID>, 17, (4,))
 dxl_io.write(<MOTOR_ID>, 18, (4,))
+```
+
+#### Set max torque as 0 in EEPROM
+
+Dynamixel motor's max torque is set in volatile memory (RAM)
+only when roslaunch is called.
+When we disconnect dynamixel while roslaunch is running,
+the max torque value in non-volatile memory (EEPROM) is used,
+and its default value is `1023` (Max torque).
+
+In this section, we set the max torque value in non-volatile memory (EEPROM) as `0`.
+The effect is that the max torque will be set as `0` and the motor does not move,
+when we disconnect dynamixel motor while roslaunch is running.
+So, users need to stop and re-launch the roslaunch again to set correct max torque.
+
+```python
+from dynamixel_driver import dynamixel_io
+
+dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-e160", 1000000)
+dxl_io.write(<MOTOR_ID>, 14, (0, 0))
 ```
 
 ### Softhand v2 dynamixel setup
@@ -212,10 +231,29 @@ rosrun dynamixel_driver change_id.py <OLD_MOTOR_ID> <NEW_MOTOR_ID> -b 57600 -p /
 ```python
 from dynamixel_driver import dynamixel_io
 
-# for softhand v2
 dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-v2-e160", 57600)
 dxl_io.write(<MOTOR_ID>, 17, (4,))
 dxl_io.write(<MOTOR_ID>, 18, (4,))
+```
+
+#### Set max torque as 0 in EEPROM
+
+Dynamixel motor's max torque is set in volatile memory (RAM)
+only when roslaunch is called.
+When we disconnect dynamixel while roslaunch is running,
+the max torque value in non-volatile memory (EEPROM) is used,
+and its default value is `1023` (Max torque).
+
+In this section, we set the max torque value in non-volatile memory (EEPROM) as `0`.
+The effect is that the max torque will be set as `0` and the motor does not move,
+when we disconnect dynamixel motor while roslaunch is running.
+So, users need to stop and re-launch the roslaunch again to set correct max torque.
+
+```python
+from dynamixel_driver import dynamixel_io
+
+dxl_io = dynamixel_io.DynamixelIO("/dev/{l/r}hand-v2-e160", 57600)
+dxl_io.write(<MOTOR_ID>, 14, (0, 0))
 ```
 
 ### Change `product` to distinguish E160 board

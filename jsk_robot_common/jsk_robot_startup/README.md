@@ -10,7 +10,7 @@ see [lifelog/README.md](lifelog/README.md)
 This node sends email based on received rostopic (jsk_robot_startup/Email).
 Default values can be set by using `~email_info`
 There is [a client library](./euslisp/email-topic-client.l) and [sample program](./euslisp/sample-email-topic-client.l).
-If you want to see a demo. Please configure a smtp server and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
+If you want to see a demo. Please [configure a smtp server](https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_robot_common/jsk_robot_startup#configuring-a-smtp-server-with-gmail) and setup your email_info yaml at /var/lib/robot/email_info.yaml and run.
 
 ```bash
 roslaunch jsk_robot_startup sample_email_topic.launch receiver_address:=<a mail address to send a mail to>
@@ -302,15 +302,27 @@ flowchart TB
 
   Tweet message with description and image
 
+* `/google_chat_ros/send/goal` (`google_chat_ros/SendMessageActionGoal`)
+
+  Send google chat message with description and image.
+
 ### Parameters
 
 * `~sender_address` (String)
-  
+
   Sender address
 
 * `~receiver_address` (String)
 
   Receiver address
+
+* `~google_chat_space` (String)
+
+  Receiver Google Chat space name
+
+* `~google_chat_tmp_image_dir` (String)
+
+  Directory where images are temporarily stored for google_chat_ros
 
 ## launch/safe_teleop.launch
 
@@ -343,3 +355,35 @@ To check how many devices are bound to rfcomm, use rfcomm command.
 ```
 rfcomm
 ```
+
+## Tips
+### Configuring a smtp server with Gmail
+1. Setting postfix
+
+Add following codes to `/etc/postfix/main.cf`
+```
+relayhost = smtp.gmail.com:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/gmail_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
+smtp_use_tls = yes
+```
+2. Create and register a password file
+
+Create `/etc/postfix/gmail_passwd`
+```
+# /etc/postfix/gmail_passwd
+smtp.gmail.com:587 <example>@gmail.com:<login password or application password>
+```
+Register `/etc/postfix/gmail_passwd`
+```bash
+$ sudo postmap /etc/postfix/gmail_passwd
+```
+If you find `/etc/postfix/gmail_passwd.db`, it works well.
+
+3. Reload postfix
+```bash
+$ sudo postfix reload
+```
+

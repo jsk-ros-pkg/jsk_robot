@@ -1,0 +1,11 @@
+--- live_human_pose.py	2022-05-26 00:17:04.634784206 +0900
++++ live_human_pose_jsk.py	2022-05-26 00:17:18.102931810 +0900
+@@ -169,6 +169,8 @@
+     if 39 - 39: o00ooo0 - II111iiii * OoO0O00 % o0oOOo0O0Ooo * II111iiii % II111iiii
+     cv2 . circle ( src , ( i1I1iI , o0O ) , 8 , I1i1I1II , - 1 )
+  iI1Ii11111iIi . write ( src )
++ # add by k-okada 2022.4.7
++ O0ii1ii1ii.publish("vision/human_pose", str([{ooO0O['keypoints'][i[0]]: (i[1]*II11iiii1Ii*O00oO,i[2]*OooO0*oo0OooOOo0) for i in filter(lambda i: i[1], I11i1i11i1I(OoOo,i,iIo00O)) } for i in range(oOO00oOO [ 0 ])]))
+ # cv2 . imshow ( "ai" , src )
+ # cv2 . waitKey ( 1 )
+  if 59 - 59: iIii1I11I1II1 + I1IiiI - o0oOOo0O0Ooo - I1IiiI + Oo / I1ii11iIi11i

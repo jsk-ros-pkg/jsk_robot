@@ -1,0 +1,9 @@
+axis_linear:
+  x: 1
+scale_linear:
+  x: 0.8
+axis_angular:
+  yaw: 0
+scale_angular:
+  yaw: 0.5
+enable_button: 6
