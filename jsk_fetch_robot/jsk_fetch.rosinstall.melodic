@@ -11,11 +11,15 @@
 - git:
     local-name: RoboticMaterials/FA-I-sensor
     uri: https://github.com/RoboticMaterials/FA-I-sensor.git
-# Waiting 0.8.3 release
+# In order to avoid issue https://github.com/jsk-ros-pkg/jsk_robot/issues/1665,
+# we need to use development branch until PR below are merged
+# https://github.com/ZebraDevs/fetch_ros/pull/162
+# https://github.com/ZebraDevs/fetch_ros/pull/163
+# https://github.com/ZebraDevs/fetch_ros/pull/164
 - git:
     local-name: fetchrobotics/fetch_ros
-    uri: https://github.com/fetchrobotics/fetch_ros.git
-    version: melodic-devel
+    uri: https://github.com/knorth55/fetch_ros.git
+    version: develop/fetch
 # Waiting 0.6.1 release
 - git:
     local-name: fetchrobotics/robot_controllers
