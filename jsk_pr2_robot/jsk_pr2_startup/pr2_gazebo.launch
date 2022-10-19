@@ -154,6 +154,8 @@
     <arg name="launch_twitter" value="false" />
     <arg name="launch_visualize_log" value="false" />
     <arg name="slow_camera_framerate" value="false" />
+    <arg name="launch_gdrive_server_c1" value="false" />
+    <arg name="launch_gdrive_server_c2" value="false" />
   </include>
 
 </launch>

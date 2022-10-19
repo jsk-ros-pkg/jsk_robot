@@ -1,0 +1,10 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/libsasl/cyrus-sasl-2.1.27
+
+cd ${SOURCE_DIR}
+
+./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+
+make install
