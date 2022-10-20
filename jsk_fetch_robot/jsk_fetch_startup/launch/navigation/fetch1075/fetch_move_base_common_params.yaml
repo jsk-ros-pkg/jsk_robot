@@ -25,6 +25,10 @@ move_base:
         type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
       - name: "update_costmap_local0"
         type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+      - name: "update_inflation_layer_global0"
+        type: "update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+      - name: "update_costmap_global0"
+        type: "update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
       - name: "conservative_reset"
         type: "clear_costmap_recovery/ClearCostmapRecovery"
     update_inflation_layer_local0:
