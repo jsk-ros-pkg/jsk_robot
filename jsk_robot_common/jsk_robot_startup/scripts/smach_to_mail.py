@@ -47,9 +47,14 @@ class SmachToMail():
         else:
             rospy.logerr("Please set rosparam {}/receiver_address".format(
                     rospy.get_name()))
+
+        self.chat_space = rospy.get_param("~google_chat_space", None)
+        if self.use_google_chat and self.chat_space is None:
+            rospy.logerr("Please set rosparam ~google_chat_space")
+            self.use_google_chat = False
+
         if self.use_google_chat:
             self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
-            self.chat_space = rospy.get_param("~google_chat_space")
             self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
             self._gchat_thread = None
 
