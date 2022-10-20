@@ -1,6 +1,11 @@
 <launch>
   <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
+  <arg name="launch_sound_play" default="true" />
+
+  <arg name="use_voice_text" default="false" doc="voice_text needs license" />
+  <arg name="use_app_manager" default="true" />
+
 
   <group if="$(arg launch_robot_state_publisher)">
     <include file="$(find spot_description)/launch/description.launch" />
@@ -41,21 +46,9 @@
     <remap from="cmd_vel_out" to="spot/cmd_vel_unsmoothed"/>
   </node>
 
-  <!-- head teleop nodes
-     1. subscribe spot/manipulator_state and publish joy_head/joy_raw, using estimated_end_effector_force_in_hand
-     2. subscribe joy_head/joy_raw and publish joy_head/joy_complemented, see Tukamoto RSJ 2022 paper
-     3. subscribe joy_head/joy_complemented and publish joy_head/cmd_vel
-  -->
-  <node pkg="jsk_spot_startup" type="end_effector_to_joy.py" name="end_effector_to_joy"/>
-  <node pkg="jsk_robot_startup" type="head_teleop_joy_completion.py" name="head_teleop_joy_completion">
-    <remap from="~joy_input" to="joy_head/joy_raw" />
-    <remap from="~joy_output" to="joy_head/joy_complemented" />
-
-    <param name="~pass_through" value="false" />
-    <rosparam command="load" file="$(find jsk_robot_startup)/config/head_teleop_twist_joy.yaml" />
-  </node>
+  <!-- teleop -->
   <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy_head" >
-    <remap from="joy" to="joy_head/joy_complemented" />
+    <remap from="joy" to="joy_head/joy_complemented" />  <!-- apps/head_lead_demo.xml -->
     <remap from="cmd_vel" to="joy_head/cmd_vel" />
     <rosparam command="load" file="$(find jsk_robot_startup)/config/head_teleop_twist_joy.yaml" />
   </node>
@@ -76,30 +69,58 @@
     <remap from="~dock_id" to="/spot/spot_ros/dock_id" />
   </node>
 
+  <!-- Sound/Camera -->
+
   <!-- republish compressed image -->
   <node pkg="image_transport"
 	type="republish"
-	name="hand_camera_compress"
+	name="hand_color_compress"
 	args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image" />
+  <node pkg="image_transport"
+	type="republish"
+	name="hand_depth_compress"
+	args="raw in:=/spot/camera/hand_depth/image compressedDepth out:=/spot/camera/hand_depth/image" />
 
-  <node
-      pkg="laptop_battery_monitor"
-      type="laptop_battery.py"
-      name="laptop_battery"
-      >
+  <!-- english speach node -->
+  <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
+  <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
+  <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
+        respawn="true" if="$(arg launch_sound_play)" >
+    <param name="device" value="hw:0,0" />
   </node>
 
+
+  <!-- japanese speech node -->
+  <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
+  <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+    <arg name="sound_play_respawn" value="true" />
+  </include>
+
+  <!-- Notifier/Visualization -->
+
+  <!-- <node -->
+  <!--     pkg="laptop_battery_monitor" -->
+  <!--     type="laptop_battery.py" -->
+  <!--     name="laptop_battery" -->
+  <!--     > -->
+  <!-- </node> -->
+
   <node
-      pkg="jsk_spot_startup"
-      type="battery_visualizer.py"
+      pkg="topic_tools"
+      type="transform"
+      args="--wait-for-start /spot/status/battery_states /spot/status/battery_percentage std_msgs/Float64 'm.battery_states[0].charge_percentage'"
       name="battery_visualizer"
       />
 
-  <node
-      pkg="jsk_spot_startup"
-      type="laptop_battery_visualizer.py"
-      name="laptop_battery_visualizer"
-      />
+  <!-- <node -->
+  <!--     pkg="jsk_spot_startup" -->
+  <!--     type="laptop_battery_visualizer.py" -->
+  <!--     name="laptop_battery_visualizer" -->
+  <!--     /> -->
 
   <node
       pkg="jsk_spot_startup"
@@ -116,11 +137,20 @@
       <remap from="~start_app" to="/robot/start_app" />
   </node>
 
-  <node
-      pkg="jsk_spot_plug_server"
-      type="plug_server.py"
-      name="plug_server"
+  <!-- <node -->
+  <!--     pkg="jsk_spot_plug_server" -->
+  <!--     type="plug_server.py" -->
+  <!--     name="plug_server" -->
+  <!--     > -->
+  <!-- </node> -->
+
+  <!-- app manager -->
+  <include
+      file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+      if="$(arg use_app_manager)"
       >
-  </node>
+    <arg name="use_applist" value="false" />
+    <arg name="respawn" value="false" />
+  </include>
 
 </launch>
