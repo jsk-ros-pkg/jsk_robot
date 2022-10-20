@@ -6,6 +6,10 @@
 
   <arg name="use_driver" default="true" />
 
+  <param name="robot/type" value="spot" />
+  <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
+  <node pkg="jsk_spot_startup" type="start-spot.l" name="start_spot" />
+
   <!-- spot driver -->
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
