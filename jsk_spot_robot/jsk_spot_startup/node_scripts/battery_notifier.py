@@ -46,12 +46,21 @@ class SpotBatteryNotifier(object):
         threshold_estop_spot = float(
             rospy.get_param('~threshold_estop_spot', 5))
 
+        notification_duration = float(
+            rospy.get_param('~notification_duration', 300))
+
         rate = rospy.Rate(0.1)
+        last_notified = rospy.Time.now()
         while not rospy.is_shutdown():
 
             rate.sleep()
 
             if not self._is_connected:
+
+                if (rospy.Time.now() - last_notified).to_sec() > notification_duration:
+                    sound_client.say('バッテリー残量、{}、パーセントです。'.format(
+                        int(self._battery_spot)), volume=0.3)
+                    last_notified = rospy.Time.now()
 
                 if (self._battery_spot is not None and self._battery_spot < threshold_estop_spot):
                     rospy.logerr('Battery is low. Estop.')
