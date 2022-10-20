@@ -13,7 +13,7 @@
     <remap from="~joy_output" to="joy_head/joy_complemented" />
 
     <param name="~pass_through" value="false" />
-    <rosparam command="load" file="$(find jsk_robot_startup)/config/head_teleop_twist_joy.yaml" />
+    <rosparam command="load" file="$(find jsk_spot_startup)/config/head_teleop_twist_joy.yaml" />
   </node>
 
   <!-- -->
