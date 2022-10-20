@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find jsk_spot_startup)/launch/rosbag_record.launch" >
+    <arg name="rosbag" value="$(env HOME)/hello_world" />
+  </include>
+  <node pkg="jsk_spot_startup" type="hello-world.l" name="hello_world"/>
+</launch>
