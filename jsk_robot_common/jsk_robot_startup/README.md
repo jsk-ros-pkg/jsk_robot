@@ -276,7 +276,7 @@ flowchart TB
      id1 --> tweet[[pub /tweet std_msgs::String]] 
      id1 --> chat[[pub /google_chat_ros/send/goal<br>google_chat_ros::SendMessageAction]] 
    end
-   S -->|"[{'DESCRIPTION': string, 'IMAGE': base64}]"| E
+   S -->|"[{'DESCRIPTION': string, 'IMAGE': base64, 'NOTIFICATION_LEVEL': enum}]"| E
    email --> email_body(["DESCRIPTION[0]<br>DESCRIPTION[1]<br>IMAGE[1]<br>DESCRIPTION[1]<br>IMAGE[1]<br>..."])
    tweet --> tweet_body1(["DESCRIPTION[0]"])
    tweet_body1 --> tweet_body2(["DESCRIPTION[1]<br>IMAGE[1]"])
