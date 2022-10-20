@@ -10,29 +10,69 @@ TODO
 
 ### Setup wifi interfaces
 
-TODO
+Use [AKEIE](https://www.amazon.co.jp/gp/product/B08NB64TMH/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) and (Calm USB L Cable (Up side))[https://www.amazon.co.jp/gp/product/B094DGRC9Q/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&th=1]
+```
+$ lsusb
+Bus 001 Device 003: ID 0bda:b812 Realtek Semiconductor Corp.
+```
 
+```
+$ git clone https://github.com/cilynx/rtl88x2bu.git
+cd rtl88x2bu
+./deply.sh
+sudo nmtui  # to configure network
+```
+
+### Setup Joystick
+
+[Push PS and (left-top small) create button to enter pairing mode](https://www.playstation.com/en-us/support/hardware/pair-dualsense-controller-bluetooth/#blue)
+```
+$ hcitool dev
+Devices:
+        hci0    00:1B:DC:0D:D0:AD
+$ hcitool -i hci0 scan
+Scanning ...
+        D0:BC:C1:CB:48:37       Wireless Controller
+$ sudo bluetoothctl
+[bluetooth]# pair D0:BC:C1:CB:48:37
+[bluetooth]# trust D0:BC:C1:CB:48:37
+[bluetooth]# connect D0:BC:C1:CB:48:37
+```
 
 ## How to set up the spot user
 
-First, create a `spot` user to your PC if it does not exist.
+First, create your user account to internal PC.
 
 ```
-TODO
+ssh spot-BD-xxxxxxxx-p.jsk.imi.i.u-tokyo.ac.jp -l spot -p 20022
+sudo adduser k-okada
+sudo adduser k-okada spot
+
 ```
 
-And add `spot` user to sudo group.
+If you are the first user to use spotcore, add `spot` user to sudo group. If someone already using the spotcore, you can skip this section
 
 ```
 sudo gpasswd -a spot sudo
 ```
 
+To install systemd service, run following commands. Note that this script start launch file of user's workspace, so usually we expect to run from spot users.
+```
+rosrun robot_upstart install --provider supervisor --supervisor-priority 10 --roscore
+rosrun robot_upstart install --provider supervisor --supervisor-priority 300 --symlink --wait --job jsk_spot_startup jsk_spot_startup/launch/jsk_spot_bringup.launch credential_config:=$(rospack find jsk_spot_startup)/auth/spot_credential.yaml
+```
+
+To check output of roslaunch output, please try
+```
+sudo supervisorctl tail -f jsk_spot_startup stdout
+sudo supervisorctl tail -f jsk_spot_startup stderr
+``
+
+You can connect to the supervisor console from https://spotcore.jsk.imi.i.u-tokyo.ac.jp:9001/
+
 systemd services of JSK Spot system use workspaces in `spot` user.
-`spot` user should have 3 workspaces for this use.
 
 - `spot_driver_ws`: a workspace to run driver.launch. which requires python3 build version of geometry3
-- `spot_coral_ws`: a workspace to run object_detection.launch ( which includes coral_usb_ros node ) which requires python3 build version of opencv_brindge
-- `spot_ws`: a workspace to run other launch ( python2 )
 
 ### Prerequities
 
@@ -53,7 +93,7 @@ source /opt/ros/melodic/setup.bash
 mkdir ~/spot_driver_ws/src -p
 cd ~/spot_driver_ws/src
 wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool set jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git --git
 wstool update
 wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_driver.rosinstall
 wstool update
@@ -75,173 +115,25 @@ git update-index --skip-worktree auth/spot_credential.yaml
 ```
 
 
-### setting up `spot_coral_ws`
+## Troubleshootig
 
-First, follow [Edge TPU dependencies installation section of coral_usb_ros](https://github.com/knorth55/coral_usb_ros#edge-tpu-dependencies-installation)
-Then, create a workspace for coral_usb.
+### Joystick did not respond
 
-```bash
-source /opt/ros/melodic/setup.bash
-mkdir ~/spot_coral_ws/src -p
-cd ~/spot_coral_ws/src
-wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
-wstool set coral_usb_ros https://github.com/knorth55/coral_usb_ros.git --git
-wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_coral.rosinstall
-wstool merge -t . coral_usb_ros/fc.rosinstall.melodic
-wstool update
-rosdep update
-rosdep install -y -r --from-paths . --ignore-src
-cd ~/spot_coral_ws
-catkin init
-catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
-catkin build -j4 -c
+Check `Setup Joystick` section and reconnet bluetooth
+
+### Wifi did not connec
+
+Check [roaming aggressiveness configuration](https://github.com/jsk-ros-pkg/jsk_robot/issues/1598)
+```
+$ wpa_cli get_network 0 bgscan
 ```
 
-After that, please download models for coral_usb_ros.
-
+This tells roaming configuation, for example below setting means it scan every 5 seconds when the signal is weak (below -50), and every 3600 seconds otherwise.
 ```
-source /opt/ros/melodic/setup.bash
-source ~/spot_coral_ws/devel/setup.bash
-rosrun coral_usb download_models.py
+$ wpa_cli set_network 0 bgscan "\"simple:5:-50:3000\""
 ```
 
-
-### setting up `spot_ws`
-
-Create `spot_ws`
-
-```bash
-source /opt/ros/melodic/setup.bash
-mkdir ~/spot_ws/src -p
-cd ~/spot_ws/src
-wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
-wstool update
-wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_dev.rosinstall
-wstool update
-rosdep update
-rosdep install -y -r --from-paths . --ignore-src
-pip3 install -r jsk-ros-pkg/jsk_robot/jsk_spot_robot/requirements.txt
-cd ~/spot_ws
-catkin init
-catkin build -j4 -c
+You can also check the output of wpa_supplicant.
 ```
-
-If you want to use switchbot_ros with spot_basic_behaviors, please add switch_bot token.
-
+$ journalctl -u wpa_supplicant -f
 ```
-roscd spot_basic_behaviors
-# modify config/switchbot_ros/token.yaml
-git update-index --skip-worktree config/switchbot_ros/token.yaml
-```
-
-
-### Setup Google Service Clients
-
-In order to use `dialogflow_task_executive` and `gdrive_ros`, please prepair authentication files.
-
-- [dialogflow_task_executive](https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/dialogflow_task_executive/README.md) 
-  + Please download a service account key JSON file of your dialogflow project and put it under `/var/lib/robot/`.
-- [gdrive_ros](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/gdrive_ros)
-  + Please download client config file, create `settings.yaml` and put them under `/var/lib/robot/`.
-
-
-### Install scripts and systemd services
-
-Install scripts and systemd services
-
-```
-source /opt/ros/melodic/setup.bash
-source ~/spot_ws/devel/setup.bash
-rosrun jsk_spot_startup deploy-scripts-and-services.sh
-```
-
-
-### Set environmental variables
-
-Modify `/var/lib/robot/config.bash` to set environmental variables.
-
-Set `IF_ETH`, `IF_WIFI`, `IF_LTE` to your network interface names to use `jsk-spot-utils-network.service`
-
-```
-export IF_ETH="noethernetdevice"
-export IF_WIFI="nowifidevice"
-export IF_LTE="noltedevice"
-```
-
-Set your `ROS_IP` to WiFi AP address to ip address of your wifi AP interface.
-
-```
-WIFI_AP_IP=10.42.0.1
-rossetmaster $WIFI_AP_IP
-rossetip $WIFI_AP_IP
-```
-
-Add environmental variables for [dialogflow_task_executive](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/dialogflow_task_executive) and [gdrive_ros](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/gdrive_ros)
-Please see them for more details.
-
-```
-export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account_json_file # for dialogflow
-export DIALOGFLOW_PROJECT_ID=<your dialogflow project id> # for dialogflow
-export GOOGLE_DRIVE_SETTINGS_YAML=/path/to/pyDrive_setting_yaml # for pydrive
-```
-
-
-### Setting up udev files
-
-Create udev rule for insta360air, spot spinal.
-
-```bash
-roscd jsk_spot_startup
-sudo cp udev_rules/* /etc/udev/rules.d/
-```
-
-Create udev rules for joy pads
-
-```bash
-roscd jsk_spot_teleop
-sudo cp config/udev/* /etc/udev/rules.d/
-```
-
-And reload them
-
-```bash
-sudo udevadm control --reload-rules
-```
-
-Please modify each udev rule according to your configuration.
-
-
-### Add the user to groups
-
-Add spot user to groups
-
-```bash
-sudo gpasswd -a <your user> dialout
-sudo gpasswd -a <your user> audio
-sudo gpasswd -a <your user> plugdev
-sudo gpasswd -a <your user> video
-```
-
-#### Setup cockpit
-
-Cockpit is server management tool. If you use Spot CORE cockpit is already setup.
-
-```
-sudo apt install cockpit
-```
-
-```
-roscd jsk_spot_startup
-sudo cp -r config/cockpit.socket.d /etc/systemd/system/cockpit.socket.d
-sudo systemctl daemon-reload
-sudo systemctl start cockpit.socket
-```
-
-Then you can access cockpit by `https://<robot ip>:21443`
-
-#### Setup postfix with gmail
-
-TODO
