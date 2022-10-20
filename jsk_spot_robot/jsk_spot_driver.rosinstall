@@ -13,8 +13,8 @@
 ## use https://github.com/cst0/spot_ros/pull/4 for Arm and gripper
 - git:
     local-name: spot-ros
-    uri: https://github.com/k-okada/spot_ros.git
-    version: effea91835cf11411854f472c0ed5f00bf6d87b4
+    uri: https://github.com/k-okada/spot_ros-arm.git
+    version: 0a8c4b29768ae946d7c84aec9a2ae2d185ed97a9
 ## to support custom limb name, we need https://github.com/jsk-ros-pkg/jsk_model_tools/pull/249
 - git:
     local-name: jsk_model_tools
