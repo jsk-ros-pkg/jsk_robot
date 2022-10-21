@@ -7,7 +7,10 @@
      2. head_teleop_joy_completion.py: subscribe joy_head/joy_raw and publish joy_head/joy_complemented, see Tukamoto RSJ 2022 paper
      3. subscribe joy_head/joy_complemented and publish joy_head/cmd_vel
   -->
-  <node pkg="jsk_spot_startup" type="end_effector_to_joy.py" name="end_effector_to_joy"/>
+  <node pkg="jsk_spot_startup" type="end_effector_to_joy.py" name="end_effector_to_joy">
+    <param name="~deadzone" value="5" />
+    <param name="~maxrange" value="10" />
+  </node>
   <node pkg="jsk_robot_startup" type="head_teleop_joy_completion.py" name="head_teleop_joy_completion">
     <remap from="~joy_input" to="joy_head/joy_raw" />
     <remap from="~joy_output" to="joy_head/joy_complemented" />
