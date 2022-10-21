@@ -16,7 +16,9 @@ class EndEffectorToJoy(object):
             '/joy_head/joy_raw',
             Joy)
         self._deadzone = float(rospy.get_param('~deadzone', 4.0))
-        self._maxrange = int(rospy.get_param('~maxrange', 10.0))
+        self._maxrange = float(rospy.get_param('~maxrange', 10.0))
+        self._offset_x = float(rospy.get_param('~offset_x', 1.0))
+        self._offset_y = float(rospy.get_param('~offset_y', 0.0))
 
     def _cb(self, msg):
         joy = Joy()
@@ -32,8 +34,8 @@ class EndEffectorToJoy(object):
         else:
             sign_x = cmp(x, 0)
             sign_y = cmp(y, 0)
-            x = abs(x)
-            y = abs(y)
+            x = abs(x) + self._offset_x
+            y = abs(y) + self._offset_y
             if x > self._maxrange: x = self._maxrange
             if y > self._maxrange: y = self._maxrange
             x = 0 if x < self._deadzone else x - self._deadzone
