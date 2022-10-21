@@ -31,6 +31,7 @@ class CheckOpenNINode:
             msg.sound = SoundRequest.SAY
             msg.command = SoundRequest.PLAY_ONCE
             msg.arg = speak_str
+            msg.volume = 1.0
             self.speak_pub.publish(msg)
 
     def restart_service_callback(self, req):
