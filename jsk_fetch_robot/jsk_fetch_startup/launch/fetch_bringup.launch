@@ -384,7 +384,8 @@
     </node>
   
     <!-- send email, twitter with smach -->
-    <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+      <remap from="~smach/container_status" to="/server_name/smach/container_status" />
       <rosparam command="load"
                 file="$(find jsk_fetch_startup)/config/$(arg hostname)_email_topic.yaml" />
     </node>
