@@ -3,7 +3,7 @@
 
 import rospy
 from std_msgs.msg import Bool
-from std_srvs.srv import Trigger
+from std_srvs.srv import Trigger, TriggerRequest
 from spot_msgs.msg import BatteryStateArray
 from sensor_msgs.msg import BatteryState
 
@@ -65,8 +65,8 @@ class SpotBatteryNotifier(object):
                 if (self._battery_spot is not None and self._battery_spot < threshold_estop_spot):
                     rospy.logerr('Battery is low. Estop.')
                     sound_client.say('バッテリー残量が少ないため、動作を停止します')
-                    spot_client.estop_gentle()
-                    spot_client.estop_hard()
+                    rospy.ServiceProxy('/spot/estop/gentle', Trigger)(TriggerRequest())
+                    rospy.ServiceProxy('/spot/estop/hard', Trigger)(TriggerRequest())
 
                 elif (self._battery_spot is not None and self._battery_spot < threshold_return_spot):
                     rospy.logerr('Battery is low. Returning to home.')
