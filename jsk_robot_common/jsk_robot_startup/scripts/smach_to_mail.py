@@ -4,6 +4,7 @@ import actionlib
 import base64
 import cv2
 import datetime
+import os
 import pickle
 import rospy
 import sys
