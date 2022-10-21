@@ -143,7 +143,7 @@ class SmachToMail():
             self.smach_state_list[caller_id].append(status_dict)
 
         # If we received END/FINISH status, send email, etc...
-        if status_str in ["END", "FINISH"]:
+        if status_str in ["END", "FINISH", "FINISH-SUCCESS", "FINISH-FAILURE"]:
             if (caller_id not in self.smach_state_list) or self.smach_state_list[caller_id] is None:
                 rospy.logwarn("received END node, but we did not find START node")
                 rospy.logwarn("failed to send {}".format(status_dict))
