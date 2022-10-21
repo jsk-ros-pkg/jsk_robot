@@ -244,6 +244,7 @@
 
   <!-- send email, twitter with smach -->
   <node name="smach_to_mail_server" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <remap from="~smach/container_status" to="/server_name/smach/container_status" />
     <rosparam command="load" file="/var/lib/robot/email_topic.yaml" />
   </node>
 
