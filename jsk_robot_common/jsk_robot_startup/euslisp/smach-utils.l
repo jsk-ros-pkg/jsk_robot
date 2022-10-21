@@ -1,5 +1,8 @@
 (defmacro def-state-func (name args &rest body)
-  `(defun ,name ,args
-     (set-alist 'description "" ,(car args))
-     (set-alist 'image "" ,(car args))
-     ,@body))
+  (let ((userdata (cond ((eq (car args) '&optional) (cadr args))
+                      ((eq (car args) '&rest) (cadr args))
+                      (t (car args)))))
+    `(defun ,name ,args
+       (set-alist 'description "" ,userdata)
+       (set-alist 'image "" ,userdata)
+       ,@body)))
