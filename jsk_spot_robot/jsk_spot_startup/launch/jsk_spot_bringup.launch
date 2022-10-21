@@ -5,6 +5,7 @@
   <arg name="launch_interaction" default="false" />
 
   <arg name="use_driver" default="true" />
+  <arg name="use_app_manager" default="true" />
 
   <param name="robot/type" value="spot" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -14,9 +15,7 @@
   <include
       file="$(find jsk_spot_startup)/launch/include/driver.launch"
       if="$(arg use_driver)"
-      >
-      <arg name="credential_config" value="$(arg credential_config)" />
-      <arg name="launch_robot_state_publisher" value="$(arg launch_robot_state_publisher)" />
+      pass_all_args="true" >
   </include>
 
   <!-- peripheral devices -->
