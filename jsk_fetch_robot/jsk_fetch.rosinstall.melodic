@@ -132,3 +132,9 @@
     local-name: ros-planning/navigation
     uri: https://github.com/708yamaguchi/navigation.git
     version: fetch15
+# headless smach_viewer
+# https://github.com/ros-visualization/executive_smach_visualization/pull/46
+- git:
+    local-name: ros-visualization/executive_smach_visualization
+    uri: https://github.com/knorth55/executive_smach_visualization.git
+    version: develop/fetch
