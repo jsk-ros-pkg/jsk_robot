@@ -81,10 +81,10 @@ class CheckOpenNINode:
             # 2. pkill
             self.speak("killing child processes")
             retcode = subprocess.call('pkill -f %s_nodelet_manager' % self.camera, shell=True)
-            time.sleep(10)
+            # time.sleep(10)
             # 3 restarting
-            self.speak("restarting processes")
-            retcode = subprocess.call('roslaunch openni_launch openni.launch camera:=%s publish_tf:=false depth_registration:=true rgb_processing:=false ir_processing:=false depth_processing:=false depth_registered_processing:=false disparity_processing:=false disparity_registered_processing:=false hw_registered_processing:=true sw_registered_processing:=false rgb_frame_id:=/head_mount_kinect_rgb_optical_frame depth_frame_id:=/head_mount_kinect_ir_optical_frame' % self.camera, shell=True)
+            # self.speak("restarting processes")
+            # retcode = subprocess.call('roslaunch openni_launch openni.launch camera:=%s publish_tf:=false depth_registration:=true rgb_processing:=false ir_processing:=false depth_processing:=false depth_registered_processing:=false disparity_processing:=false disparity_registered_processing:=false hw_registered_processing:=true sw_registered_processing:=false rgb_frame_id:=/head_mount_kinect_rgb_optical_frame depth_frame_id:=/head_mount_kinect_ir_optical_frame' % self.camera, shell=True)
         except Exception as e:
             rospy.logerr('[%s] Unable to kill kinect node, caught exception:\n%s', self.__class__.__name__, traceback.format_exc())
 
