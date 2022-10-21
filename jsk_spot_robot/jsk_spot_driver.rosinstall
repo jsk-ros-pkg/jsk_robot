@@ -38,7 +38,7 @@
     version: develop
 # aques_talk needs to be compiled from source
 - tar:
-    local-name: aques_atlk
+    local-name: aques_talk
     uri: https://github.com/tork-a/jsk_3rdparty-release/archive/refs/tags/release/melodic/aques_talk/2.1.24-2.tar.gz
 # use parallel app_manager
 - git:
