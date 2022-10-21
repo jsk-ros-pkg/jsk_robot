@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import actionlib
 import base64
 import cv2
@@ -9,16 +11,23 @@ import rospy
 import sys
 
 from cv_bridge import CvBridge
-from google_chat_ros.msg import Card
-from google_chat_ros.msg import Section
-from google_chat_ros.msg import SendMessageAction
-from google_chat_ros.msg import SendMessageActionGoal
-from google_chat_ros.msg import WidgetMarkup
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
 from smach_msgs.msg import SmachContainerStatus
 from std_msgs.msg import String
+
+_enable_google_chat = False
+try:
+    from google_chat_ros.msg import Card
+    from google_chat_ros.msg import Section
+    from google_chat_ros.msg import SendMessageAction
+    from google_chat_ros.msg import SendMessageActionGoal
+    from google_chat_ros.msg import WidgetMarkup
+    _enable_google_chat = True
+except ImportError as e:
+    print('Google chat ROS is not installed.', file=sys.stderr) 
+    print('Disable Google chat ROS', file=sys.stderr)
 
 
 class SmachToMail():
@@ -29,7 +38,8 @@ class SmachToMail():
         # is the default name of smach_ros
         self.use_mail = rospy.get_param("~use_mail", True)
         self.use_twitter = rospy.get_param("~use_twitter", True)
-        self.use_google_chat = rospy.get_param("~use_google_chat", True)
+        self.use_google_chat = rospy.get_param(
+            "~use_google_chat", _enable_google_chat)
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
@@ -47,9 +57,14 @@ class SmachToMail():
         else:
             rospy.logerr("Please set rosparam {}/receiver_address".format(
                     rospy.get_name()))
+
+        self.chat_space = rospy.get_param("~google_chat_space", None)
+        if self.use_google_chat and self.chat_space is None:
+            rospy.logerr("Please set rosparam ~google_chat_space")
+            self.use_google_chat = False
+
         if self.use_google_chat:
             self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
-            self.chat_space = rospy.get_param("~google_chat_space")
             self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
             self._gchat_thread = None
 

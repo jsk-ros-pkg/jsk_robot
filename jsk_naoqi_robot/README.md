@@ -178,7 +178,7 @@ To control NAO and Pepper via gazebo simulator and roseus, please refer to [here
 
 ## Troubleshooting
 
-* If you use Ubuntu18.04, you need to set audio `false` in `~/catkin_ws/src/naoqi_driver/share/boot_config.json`
+* [Pepper Only] If you use Ubuntu 18.04, it is possible that you can't run `jsk_pepper_startup.launch` as reported in [this issue](https://github.com/jsk-ros-pkg/jsk_robot/issues/1474#issuecomment-1110768907). In that case, you may need to set audio `false` in `~/catkin_ws/src/naoqi_driver/share/boot_config.json`. Note that this means you can't subscribe audio topic.
 
   ```
   "audio":
