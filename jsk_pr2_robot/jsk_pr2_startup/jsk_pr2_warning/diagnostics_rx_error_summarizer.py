@@ -70,7 +70,7 @@ class DiagnosticsRxErrorSummarizer():
 
             if flag:
                 if len(s_name_list) > 0:
-                    print("[Eroor Exist Dvice]")
+                    print("[Devices with errors]")
                     for s_name, key, value in zip(s_name_list, key_list, value_list):
                         print(s_name + " " + key + ": {}".format(value))
                 print("--------------------------------------------")
