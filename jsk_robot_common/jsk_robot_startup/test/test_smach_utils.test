@@ -1,0 +1,5 @@
+<launch>
+  <test test-name="test_smach_utils" pkg="roseus" type="roseus"
+        args="$(find jsk_robot_startup)/test/test-smach-utils.l"
+        time-limit="60" />
+</launch>
