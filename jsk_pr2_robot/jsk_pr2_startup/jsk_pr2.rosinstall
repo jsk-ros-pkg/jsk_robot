@@ -144,6 +144,11 @@
     version: common_msgs-release-release-kinetic-visualization_msgs-1.12.7-0
 # we need to install from source because pr2 is indigo
 - git:
+    local-name: ros-visualization/executive_smach_visualization
+    uri: https://github.com/ros-visualization/executive_smach_visualization.git
+    version: melodic-devel
+# we need to install from source because pr2 is indigo
+- git:
     local-name: ros-visualization/interactive_markers
     uri: https://github.com/ros-visualization/interactive_markers.git
     version: noetic-devel
