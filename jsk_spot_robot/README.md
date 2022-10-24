@@ -10,7 +10,7 @@ jsk_spot_robot
 
 To setup a new internal PC and spot user, Please see [this page](./SetupInternalPCAndSpotUser.md).
 
-### How to set up a catkin workspace for a remove PC
+### How to set up a catkin workspace for a remote PC
 
 Create a workspace
 
@@ -19,7 +19,7 @@ source /opt/ros/melodic/setup.bash
 mkdir ~/spot_ws/src -p
 cd ~/spot_ws/src
 wstool init .
-wstool set jsk-ros-pkg/jsk_robot https://github.com/sktometometo/jsk_robot.git --git -v develop/spot
+wstool set jsk-ros-pkg/jsk_robot https://github.com/k-okada/jsk_robot.git --git -v spot_arm
 wstool update
 wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_spot_robot/jsk_spot_user.rosinstall
 wstool update
@@ -27,7 +27,7 @@ rosdep update
 rosdep install -y -r --from-paths . --ignore-src
 cd $HOME/spot_ws
 catkin init
-catkin build -j4 -c
+catkin build -j4 jsk_spot_startup spoteus
 ```
 
 ## How to run
@@ -38,55 +38,14 @@ First, please turn on spot and turn on motors according to [the OPERATION sectio
 
 Basically, ros systemd services will start automatically. So you can use spot now.
 
-#### Start basic roslaunch manually
 
-If you want to launch basic ROS launches manually for some reason, please login `spot` user and follow this instruction.
+#### superviosur
 
-##### for spot_driver
-
-```bash
-source $HOME/spot_driver_ws/devel/setup.bash
-roslaunch jsk_spot_startup driver.launch
-```
-
-##### for object detection
-
-```bash
-source $HOME/spot_coral_ws/devel/setup.bash
-roslaunch jsk_spot_startup object_detection.launch
-```
-
-##### for other programs
-
-```
-source $HOME/spot_ws/deve/setup.bash
-roslaunch jsk_spot_startup jsk_spot_bringup.launch use_driver:=false use_object_detection:=false
-```
-
-This launch includes
-- bringup launch for additional peripheral devices (Respeaker, insta 360 air and ublox GPS module)
-- teleoperation launch
-- interaction launch with Speech-To-Text and Text-To-Speech
-- so on.
-
-### Teleoperation
-
-You can control spot with DualSense controller. Please see [jsk_spot_teleop](./jsk_spot_teleop/README.md) for more details.
-
-
-### Web UI
-
-Spot have some web UI.
-
-#### cockpit
-
-URI: https://<robot_ip>:21443
-
-TODO
+URI: https://<robot_ip>:9001
 
 #### rwt_app_chooser
 
-TODO
+URI: https://<robot_ip>:8000/rwt_app_chooser
 
 ### Development with a remote PC
 
@@ -97,39 +56,10 @@ First, connect your development PC's wifi adapter to Access point of the robot.
 And for every terminals in this section, Set your ROS_IP and ROS_MASTER_URI and source spot_ws.
 
 ```
-rossetip
 rossetmaster <robot ip address or robot_name.local>
+rossetip
 source ~/spot_ws/devel/setup.bash
 ```
-
-#### Visualization
-
-For visualization, you can run RViz with jsk configuration.
-
-```bash
-source $HOME/spot_ws/devel/setup.bash
-roslaunch jsk_spot_startup rviz.launch
-```
-
-#### rosbag record and play
-
-For development, `rosbag_record.launch` and `rosbag_play.launch` are useful for rosbag recording and playing.
-
-```bash
-source $HOME/spot_ws/devel/setup.bash
-# Record a rosbag file
-roslaunch jsk_spot_startup rosbag_record.launch rosbag:=<absolute file path to rosbag file>
-# Play a rosbag file ( don't run this with setting ros_master_uri to the robot )
-roslaunch jsk_spot_startup rosbag_play.launch rosbag:=<absolute file path to rosbag file>
-```
-
-#### Control API
-
-If you want to control Spot, there are basically 3 options.
-
-- Use spoteus ( roseus client, recommended )
-- Use python client ( spot_ros_client, experimental )
-- Use raw ROS interface
 
 ##### spoteus
 
@@ -148,13 +78,45 @@ You can now control spot from roseus.
 for example, when you want to move spot 1m forward, type.
 
 ```
-send *ri* :go-pose 1 0
+(send *ri* :undock)   ;; undock robot
+(send *spot* :reset-pose)  ;; change robot pose, use (objects (list *spot*)) to visuailze
+(send *ri* :angle-vector (send *spot* :angle-vector) 2000 :default-controller)  ;; send to real robot
+(send *ri* :stow-arm)  ;; contorl onbody-api
+(send *ri* :sit)
 ```
 
-And there are some examples in `spoteus/demo`.
+### How to set up a catkin workspace in on-bodyPC
 
-- `sample_basics.l`
-  + example of basic usage of Spot
-- `sample_navigate_to.l`
-  + example of autowalk client
-- `sample_visualization.l`
+First create user account into internal PC
+```
+ssh spotcore -l spot
+sudo adduser k-okada
+sudo adduser k-okada spot
+sudo adduser k-okada sudo
+```
+
+Create a workspace. Make sure that you need to login to spotcore with your account
+
+```bash
+ssh spotcore -l k-okada
+source /opt/ros/melodic/setup.bash
+source ~spot/spot_driver_ws/devel/setup.bash
+mkdir ~/spot_ws/src -p
+cd ~/spot_ws/src
+cd $HOME/spot_ws
+catkin init
+catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.6m.so
+catkin build -j4 jsk_spot_startup spoteus
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+echo "source ~/spot_ws/devel/setup.bash" >> ~/.bashrc
+```
+
+#### Run apps
+
+You can run apps manually, this is good for debugging your applications.
+```bash
+roscd jsk_spot_startup/apps/head_lead_demo                                                                       roslaunch head_lead_demo.xml
+```
+
+#### Install apps
+If you would like to call your apps from rwt_app_chooser, you can 
