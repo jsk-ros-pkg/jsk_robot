@@ -77,10 +77,11 @@ class CheckOpenNINode:
             # 1. kill nodelet manager
             self.speak("something wrong with kinect, I'll restart it, killing nodelet manager")
             retcode = subprocess.call('rosnode kill /%s/%s_nodelet_manager' % (self.camera, self.camera), shell=True)
-            time.sleep(10)
-            # 2. pkill
-            self.speak("killing child processes")
             retcode = subprocess.call('pkill -f %s_nodelet_manager' % self.camera, shell=True)
+            # time.sleep(10)
+            # 2. pkill
+            # self.speak("killing child processes")
+            # retcode = subprocess.call('pkill -f %s_nodelet_manager' % self.camera, shell=True)
             # time.sleep(10)
             # 3 restarting
             # self.speak("restarting processes")
