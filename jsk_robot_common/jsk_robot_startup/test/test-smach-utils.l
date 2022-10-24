@@ -2,12 +2,22 @@
 (require :smach-utils "package://jsk_robot_startup/euslisp/smach-utils.l")
 
 
-(defmacro def-state-func-test (func-name result)
-  `(deftest ,(intern (format nil "~A-test" func-name)) ()
-     (let* ((func '(,func-name '((description . "hoge") (image . "fuga"))))
-            (output (eval func)))
-       (assert (equal output ,result)
-               (format nil "~%func: ~A error, output: ~A~%" ,(format nil "~A" func-name) output)))))
+(defmacro def-state-func-test (func-name)
+  `(deftest ,(intern (string-upcase (format nil "~A-test" func-name))) ()
+     ,@(mapcar #'(lambda (out expected)
+                   `(let ((output (,func-name ',out)))
+                      (assert (equal output ',expected)
+                              (format nil ,(format nil "~~%func: ~A error, output: ~~S~~%" func-name) output))))
+               (list '((description . "hoge") (image . "fuga"))
+                     '((description . "hoge") (image . "fuga") (other . "value"))
+                     '((description . "hoge"))
+                     '((image . "fuga"))
+                     nil)
+               (list '((description . "") (image . ""))
+                     '((description . "") (image . "") (other . "value"))
+                     '((description . ""))
+                     '((image . ""))
+                     nil))))
 
 
 (def-state-func state-func (userdata) userdata)
@@ -19,10 +29,10 @@
 (init-unit-test)
 
 
-(def-state-func-test state-func '((description . "") (image . "")))
-(def-state-func-test state-func-rest '((description . "") (image . "")))
-(def-state-func-test state-func-optional '((description . "") (image . "")))
-(def-state-func-test state-func-optional-default '((description . "") (image . "")))
+(def-state-func-test state-func)
+(def-state-func-test state-func-rest)
+(def-state-func-test state-func-optional)
+(def-state-func-test state-func-optional-default)
 
 
 (run-all-tests)
