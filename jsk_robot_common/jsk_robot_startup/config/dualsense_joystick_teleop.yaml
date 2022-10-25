@@ -11,7 +11,7 @@ button_stair_mode: 3
 button_locomotion_mode: -1
 num_buttons: 14
 axe_dock: 7
-# tuck/untuck need "Unlock button"
+button_enable: 4
+# tuck/untuck need "enable button"
 button_tuck: 4
 axe_tuck: 6
-button_enable: 4

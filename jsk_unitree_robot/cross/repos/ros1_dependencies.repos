@@ -203,3 +203,30 @@ repositories:
   festlex-poslex:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/f/festlex-poslex/festlex-poslex_2.4.orig.tar.gz
+  mailutils:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/mailutils/mailutils_3.4.orig.tar.xz
+  mailutils/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/mailutils/mailutils_3.4-1.debian.tar.xz
+  tcl:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/t/tcl8.5/tcl8.5_8.5.19.orig.tar.gz
+  tcl/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/t/tcl8.5/tcl8.5_8.5.19-4.debian.tar.xz
+  expect:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45.4.orig.tar.gz
+  expect/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/e/expect/expect_5.45.4-1.debian.tar.xz
+  openssl:
+    type: tar
+    url: https://www.openssl.org/source/openssl-1.1.1q.tar.gz
+  libsasl:
+    type: tar
+    url: https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.27/cyrus-sasl-2.1.27.tar.gz
+  postfix:
+    type: tar
+    url: http://mirror.postfix.jp/postfix-release/official/postfix-3.4.3.tar.gz

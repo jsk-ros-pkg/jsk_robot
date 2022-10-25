@@ -5,4 +5,13 @@
   <!-- launch rviz with throttle -->
   <include file="$(find jsk_fetch_startup)/launch/rviz_record.launch" />
 
+  <!-- Use m5stack_ros -->
+  <!-- See https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/289 -->
+  <node name="rosserial_m5stack" pkg="rosserial_python" type="serial_node.py">
+    <rosparam>
+      port: /dev/rfcomm0 <!-- See /var/lib/robot/rfcomm_devices.yaml -->
+      baud: 115200
+    </rosparam>
+  </node>
+
 </launch>
