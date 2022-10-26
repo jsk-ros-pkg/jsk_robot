@@ -390,6 +390,17 @@ Args:
                   (format nil "~A is found" label-names))
       label-names)))
 
+(defun notify-co2 (&key (location "kitchen"))
+  (let* ((msg (one-shot-subscribe "/eco2" std_msgs::UInt16
+                                  :timeout 3000)))
+    (when msg
+      (ros::ros-info
+       (format nil "Notify app that co2 concentration is measured."))
+      (notify-app "CO2 concentration"
+                  (ros::time-now)
+                  location
+                  (format nil "CO2 concentration is ~A ppm" (send msg :data))))))
+
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
   (if tweet
@@ -398,6 +409,7 @@ Args:
       (tweet-string "I took a photo at 73B2 Kitchen stove." :warning-time 3
                     :with-image "/edgetpu_object_detector/output/image" :speak t)
       (notify-recognition :location "kitchen stove")
+      (notify-co2 :location "kitchen stove")
       (take-photo "kitchen_stove.jpg")
       (send *ri* :go-pos-unsafe 0 0 -45)
       ;; sink
@@ -504,7 +516,7 @@ Args:
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-desk-back (&key (tweet t))
-  (report-move-to-tv-desk)
+  (report-move-to-desk-back)
   (send *fetch* :angle-vector #f(21.5684 75.5832 80.1877 -11.4819 93.608 -0.04749 95.2016 -0.072829 -1.45585 10.8727))
   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
   (send *ri* :wait-interpolation)
@@ -516,7 +528,7 @@ Args:
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-desk-front (&key (tweet t))
-  (report-move-to-tv-desk)
+  (report-move-to-desk-front)
   (send *fetch* :angle-vector #f(21.5761 75.5173 80.2097 -11.5478 93.6519 -0.04749 95.1796 -0.006954 -1.11597 10.8288))
   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
   (send *ri* :wait-interpolation)
@@ -528,7 +540,7 @@ Args:
           (ros::publish "/photo_taken" img)))))
 
 (defun inspect-kitchen-door-front (&key (tweet t))
-  (report-move-to-tv-desk)
+  (report-move-to-kitchen-door-front)
   (send *fetch* :angle-vector #f(21.5608 75.5612 80.2316 -11.5039 93.586 -0.04749 95.1576 -0.050857 3.17796 16.3219))
   (send *ri* :angle-vector-raw (send *fetch* :angle-vector) 3000 :head-controller)
   (send *ri* :wait-interpolation)
@@ -859,11 +871,11 @@ Args:
                  success)))
             (:inspect-kitchen
              '(lambda (userdata)
-               (let ((label-names (notify-recognition :location "kitchen"))
-                     (notify-text (if label-names (format nil "~Aがあったよ" label-names) "")))
-                     (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
-                     (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata))
-                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               (let* ((label-names (notify-recognition :location "kitchen"))
+                      (notify-text (if label-names (format nil "~Aがあったよ" label-names) "")))
+                 (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
+                 (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata))
+               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
                t))
             (:report-move-to-sink-front-failure
              '(lambda (userdata)

@@ -22,7 +22,8 @@ public:
         ros::param::param<int>("~button_claim", button_claim_, -1);
         ros::param::param<int>("~button_stair_mode", button_stair_mode_, -1);
         ros::param::param<int>("~axe_dock", axe_dock_, -1);
-        ros::param::param<int>("~dock_id", dock_id_, -1);
+        ros::param::param<int>("~button_tuck", button_tuck_, -1);
+        ros::param::param<int>("~axe_tuck", axe_tuck_, -1);
 
         ros::param::param<int>("~num_buttons", num_buttons_, 0);
         num_buttons_ = num_buttons_ < 0 ? 0 : num_buttons_;
@@ -51,6 +52,9 @@ public:
         client_claim_ = nh.serviceClient<std_srvs::Trigger>("claim");
         client_stair_mode_ = nh.serviceClient<std_srvs::SetBool>("stair_mode");
         client_undock_ = nh.serviceClient<std_srvs::Trigger>("undock");
+        client_dock_ = nh.serviceClient<std_srvs::Trigger>("dock");
+        client_tuck_ = nh.serviceClient<std_srvs::Trigger>("tuck");
+        client_untuck_ = nh.serviceClient<std_srvs::Trigger>("untuck");
 
         sub_joy_ = nh.subscribe<sensor_msgs::Joy, TeleopManager>("joy", 1, &TeleopManager::callbackJoy, this);
         ROS_DEBUG_STREAM("Subscribe : " << sub_joy_.getTopic());
@@ -336,6 +340,73 @@ public:
         } else {
             ROS_DEBUG_STREAM("Button " << client_stair_mode_.getService() << " is disabled.");
         }
+
+        //dock
+        if ( axe_dock_ >= 0
+             and axe_dock_ < num_buttons_ ){
+          if ( msg->axes[axe_dock_]==-1 ) {
+                if ( not pressed_axes_[axe_dock_] ) {
+                  this->say("dock calling");
+                  if (client_dock_.call(srv) && srv.response.success ){
+                    ROS_INFO_STREAM("Service '" << client_dock_.getService() << "' succeeded.");
+                  } else {
+                    ROS_ERROR_STREAM("Service '" << client_dock_.getService() << "' failed.");
+                  }
+                  pressed_axes_[axe_dock_] = true;
+                }
+          } else if (msg->axes[axe_dock_]==1) {
+            if (not pressed_axes_[axe_dock_]){
+              this->say("undock calling");
+              if (client_undock_.call(srv) && srv.response.success ){
+                ROS_INFO("Service 'undock' succeeded.");
+              } else {
+                ROS_ERROR("Service 'undock' failed.");
+              }
+              pressed_axes_[axe_dock_] = true;
+            }
+          } else {
+            if ( pressed_axes_[axe_dock_] ) {
+              pressed_axes_[axe_dock_] = false;
+            }
+          }
+        } else {
+          ROS_DEBUG("Axe 'dock' is disabled.");
+        }
+
+        // tuck
+        if ( button_tuck_ >= 0
+             and button_tuck_ < num_buttons_
+	     and axe_tuck_ >= 0
+             and axe_tuck_ < num_axes_ ){
+          if ( msg->axes[axe_tuck_]==-1 ) {
+                if ( not pressed_axes_[axe_tuck_] ) {
+                  this->say("tuck calling");
+                  if (client_tuck_.call(srv) && srv.response.success ){
+                    ROS_INFO_STREAM("Service '" << client_tuck_.getService() << "' succeeded.");
+                  } else {
+                    ROS_ERROR_STREAM("Service '" << client_tuck_.getService() << "' failed.");
+                  }
+                  pressed_axes_[axe_tuck_] = true;
+                }
+          } else if (msg->axes[axe_tuck_]==1) {
+            if (not pressed_axes_[axe_tuck_]){
+              this->say("untuck calling");
+              if (client_untuck_.call(srv) && srv.response.success ){
+                ROS_INFO_STREAM("Service '" << client_untuck_.getService() << "' succeeded.");
+              } else {
+                ROS_ERROR_STREAM("Service '" << client_untuck_.getService() << "' failed.");
+              }
+              pressed_axes_[axe_tuck_] = true;
+            }
+          } else {
+            if ( pressed_axes_[axe_tuck_] ) {
+              pressed_axes_[axe_tuck_] = false;
+            }
+          }
+        } else {
+          ROS_DEBUG("Axe 'tuck' is disabled.");
+        }
+
     }
 
 private:
@@ -352,7 +423,8 @@ private:
     int button_stair_mode_;
     int button_locomotion_mode_;
     int axe_dock_;
-    int dock_id_;
+    int button_tuck_;
+    int axe_tuck_;
 
     ros::ServiceClient client_estop_hard_;
     ros::ServiceClient client_estop_gentle_;
@@ -368,6 +440,8 @@ private:
     ros::ServiceClient client_locomotion_mode_;
     ros::ServiceClient client_dock_;
     ros::ServiceClient client_undock_;
+    ros::ServiceClient client_tuck_;
+    ros::ServiceClient client_untuck_;
 
     ros::Publisher pub_sound_play_;
 

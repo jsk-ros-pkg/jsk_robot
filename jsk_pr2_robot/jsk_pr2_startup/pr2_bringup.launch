@@ -6,6 +6,7 @@
   <arg name="launch_wifi_ddwrt" default="false" />
   <arg name="launch_network_detector" default="true" />
   <arg name="launch_sound_play" default="true"/>
+  <arg name="use_voice_text" default="true"/>
   <arg name="launch_network_status" default="true" />
   <arg name="launch_audio_play" default="true"/>
   <arg name="launch_app_manager" default="true" />
@@ -145,10 +146,15 @@
     </node>
 
     <!-- japanese speech node -->
-    <include file="$(find voice_text)/launch/voice_text.launch">
+    <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
       <arg name="use_machine" value="false" />
       <arg name="sound_play_machine" value="c1" />
       <arg name="voice_text_machine" value="c1" />
+      <arg name="sound_play_respawn" value="true" />
+    </include>
+    <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
+      <arg name="use_machine" value="false" />
+      <arg name="sound_play_machine" value="c1" />
       <arg name="sound_play_respawn" value="true" />
     </include>
   </group>

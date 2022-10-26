@@ -20,4 +20,4 @@ cmake \
   -DCMAKE_BUILD_TYPE=Release \
   ${SOURCE_DIR}
 
-make -j4 install
+make install

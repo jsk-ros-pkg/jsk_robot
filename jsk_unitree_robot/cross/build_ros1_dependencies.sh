@@ -4,6 +4,7 @@ TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
 SOURCE_ROOT=${TARGET_MACHINE}_ws_ros1_dependencies_sources
+MAKEFLAGS=${MAKEFLAGS:-'-j4'}
 
 if [ -e "${SOURCE_ROOT}" ]; then
     echo "WARNING: Source directory is found ${SOURCE_ROOT}" 1>&2
@@ -28,6 +29,7 @@ cp repos/go1_requirements.txt ${SOURCE_ROOT}/go1_requirements.txt
 docker run -it --rm \
   -u $(id -u $USER) \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
+  -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${PWD}/ros1_dependencies_build_scripts:/home/user/ros1_dependencies_build_scripts:ro \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/ros1_dependencies_sources:rw \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk//${INSTALL_ROOT}/ros1_dependencies:rw \
