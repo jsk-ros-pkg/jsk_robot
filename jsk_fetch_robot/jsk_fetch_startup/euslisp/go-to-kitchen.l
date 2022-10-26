@@ -32,8 +32,8 @@
                               :hz 2.0
                               :before-hook-func
                               '(lambda ()
-                                (set-alist 'description "" mydata)
-                                (set-alist 'image "" mydata)))))
+                                (set-alist 'description "" userdata)
+                                (set-alist 'image "" userdata)))))
     (send result-state :name)))
 
 
