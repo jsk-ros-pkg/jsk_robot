@@ -84,10 +84,15 @@ class SmachToMail():
                 self.smach_start_time is not None):
             for key in self.smach_state_list.keys():
                 if (now - self.smach_start_time[key]).to_sec() > self.timeout:
-                    self._send_mail(
-                        self.smach_state_subject[key], self.smach_state_list[key])
-                    self._send_twitter(
-                        self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_mail:
+                        self._send_mail(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_twitter:
+                        self._send_twitter(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_google_chat:
+                        self._send_google_chat(
+                            self.smach_state_subject[key], self.smach_state_list[key])
                     self.smach_state_subject[key] = None
                     rospy.logwarn(
                         "SmachToMail timer publishes stop signal. Send Notification.")
