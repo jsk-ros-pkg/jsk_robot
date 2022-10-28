@@ -43,3 +43,11 @@
     local-name: DENSORobot/denso_cobotta_ros
     uri: https://github.com/DENSORobot/denso_cobotta_ros.git
     version: 1a4a74a92c763906c47eec574b5b3dbaa52f622e
+# Following error is output at about 25Hz for about 4 hours
+# [ERROR] [1653231340.987602] [/replicator_node:rosout]: [mongorestore] - E11000 duplicate key error collection: jsk_robot_lifelog.fetch1075 index: _id_ dup key: { : ObjectId('6243af9651998d10f0c7787c') }
+# Errors are now output once per hour
+# Wait for merging PR: https://github.com/strands-project/mongodb_store/pull/271
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/708yamaguchi/mongodb_store.git
+    version: fetch15
