@@ -94,6 +94,7 @@ class SmachToMail():
                         self._send_google_chat(
                             self.smach_state_subject[key], self.smach_state_list[key])
                     self.smach_state_subject[key] = None
+                    self.smach_state_list[key] = None
                     rospy.logwarn(
                         "SmachToMail timer publishes stop signal. Send Notification.")
 
@@ -190,6 +191,7 @@ class SmachToMail():
                 if self.use_google_chat:
                     self._send_google_chat(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self.smach_state_list[caller_id] = None
+                self.smach_state_subject[caller_id] = None
 
     def _send_mail(self, subject, state_list):
         email_msg = Email()
