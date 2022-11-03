@@ -41,11 +41,11 @@ Basically, ros systemd services will start automatically. So you can use spot no
 
 #### superviosur
 
-URI: https://<robot_ip>:9001
+URI: http://<robot_ip>:9001
 
 #### rwt_app_chooser
 
-URI: https://<robot_ip>:8000/rwt_app_chooser
+URI: http://<robot_ip>:8000/rwt_app_chooser
 
 ### Development with a remote PC
 
