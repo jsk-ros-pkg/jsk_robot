@@ -1,0 +1,16 @@
+# spot-ros is required for spot
+## use https://github.com/cst0/spot_ros/pull/4 for Arm and gripper
+- git:
+    local-name: spot-ros
+    uri: https://github.com/k-okada/spot_ros-arm.git
+    version: 0a8c4b29768ae946d7c84aec9a2ae2d185ed97a9
+## to support custom limb name, we need https://github.com/jsk-ros-pkg/jsk_model_tools/pull/249
+- git:
+    local-name: jsk_model_tools
+    uri: https://github.com/k-okada/jsk_model_tools.git
+    version: custom_limb
+# wait for https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/443 (add volume key arg for robot-interface :speak) to be released
+- git:
+    local-name: jsk_pr2eus
+    uri:     https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master

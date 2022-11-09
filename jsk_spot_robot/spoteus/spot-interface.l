@@ -104,6 +104,24 @@
   (:stow-arm () (call-trigger-service "/spot/stow_arm"))
   (:gripper-open () (call-trigger-service "/spot/gripper_open"))
   (:gripper-close () (call-trigger-service "/spot/gripper_close"))
+  (:start-grasp
+   ()
+   (let (p s)
+     (send self :gripper-close)
+     (setq p (send *ri* :state :manipulator-state-gripper-open-percentage)
+	   s (send *ri* :state :manipulator-state-is-gripper-holding-item))
+     (ros::ros-info "gripper-open-percentage ~A" p)
+     (ros::ros-info "manipulator-state-is-gripper-holding-item ~A" s)
+     s))
+  (:stop-grasp
+   ()
+   (let (p s)
+     (send self :gripper-open)
+     (setq p (send *ri* :state :manipulator-state-gripper-open-percentage)
+	   s (send *ri* :state :manipulator-state-is-gripper-holding-item))
+     (ros::ros-info "gripper-open-percentage ~A" p)
+     (ros::ros-info "manipulator-state-is-gripper-holding-item ~A" s)
+     s))
   ;; (:dummy-controller ()
   ;;  (list
   ;;   (list
