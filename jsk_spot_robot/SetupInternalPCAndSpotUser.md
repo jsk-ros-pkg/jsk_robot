@@ -77,7 +77,7 @@ To check output of roslaunch output, please try
 ```
 sudo supervisorctl tail -f jsk_spot_startup stdout
 sudo supervisorctl tail -f jsk_spot_startup stderr
-``
+```
 
 You can connect to the supervisor console from https://spotcore.jsk.imi.i.u-tokyo.ac.jp:9001/
 
@@ -90,8 +90,8 @@ systemd services of JSK Spot system use workspaces in `spot` user.
 Install necessary packages for workspace building
 
 ```
-sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy
-sudo apt-get install ros-melodic-catkin
+sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy python3-opencv
+sudo apt-get install ros-melodic-catkin ros-melodic-vision-msgs
 ```
 
 
