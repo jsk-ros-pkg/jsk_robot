@@ -13,7 +13,10 @@ from .logger_base import LoggerBase
 
 class TFLogger(LoggerBase):
     def __init__(self):
-        LoggerBase.__init__(self)
+        db_name = rospy.get_param('~database', 'jsk_robot_lifelog')
+        col_name = rospy.get_param('~collection', None)
+
+        super(TFLogger, self).__init__(db_name=db_name, col_name=col_name)
 
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
