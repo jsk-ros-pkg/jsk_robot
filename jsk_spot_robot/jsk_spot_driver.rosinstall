@@ -31,6 +31,25 @@
     local-name: vision_opencv
     uri: https://github.com/ros-perception/vision_opencv.git
     version: 1.13.0
+#
+# pykdl have to be built for python3
+- git:
+    local-name: orocos_kinematics_dynamics
+    uri: https://github.com/orocos/orocos_kinematics_dynamics.git
+    version: v1.4.0
+#
+# mongodb_store need to be built for python3
+- git:
+    local-name: mongodb_store
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: noetic-devel
+#
+# to avtivate python_catkin_install, we need newer catkin
+- git:
+    local-name: catkin
+    uri:     https://github.com/ros/catkin.git
+    version: 0.8.10
+#
 # use robot_upstart to install supervisor (https://github.com/clearpathrobotics/robot_upstart/pull/113)
 - git:
     local-name: robot_upstart
