@@ -31,7 +31,11 @@ def diff_pose(p1, p2):
 
 class BaseTrajectoryLogger(LoggerBase):
     def __init__(self):
-        LoggerBase.__init__(self)
+        db_name = rospy.get_param('~database', 'jsk_robot_lifelog')
+        col_name = rospy.get_param('~collection', None)
+
+        super(BaseTrajectoryLogger, self).__init__(db_name=db_name, col_name=col_name)
+
         self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.use_amcl = rospy.get_param("~use_amcl", True)
         self.persistent = rospy.get_param("~persistent", True)
