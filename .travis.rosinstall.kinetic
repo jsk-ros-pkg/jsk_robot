@@ -21,6 +21,9 @@
 - git:
    uri: https://github.com/ros-naoqi/nao_interaction.git
    local-name: ros-naoqi/nao_interaction
+- git: # use naoqi_apps launch files, which are only available in kochigami-develop.
+   uri: https://github.com/kochigami/naoqi_bridge.git
+   version: kochigami-develop
 # jsk_fetch_startup requires fetch_ros with following PRs.
 # https://github.com/fetchrobotics/fetch_ros/pull/144
 # https://github.com/fetchrobotics/fetch_ros/pull/146
