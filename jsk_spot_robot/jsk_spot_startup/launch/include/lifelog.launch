@@ -1,0 +1,90 @@
+<launch>
+  <arg name="min_percent" default="5" />
+  <arg name="max_percent" default="15" />
+
+  <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen" >
+  </node>
+
+  <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <remap from="~smach/container_status" to="/server_name/smach/container_status" />
+    <param name="sender_address" command='python -c "import rospy;print(rospy.get_param(\"robot/name\")+\"@jsk.imi.i.u-tokyo.ac.jp\")"' />
+    <param name="receiver_address" command='python -c "import rospy;print(rospy.get_param(\"robot/type\")+\"@jsk.imi.i.u-tokyo.ac.jp\")"' />
+  </node>
+
+  <!-- EDIT: rosparam for all robots -->
+  <param name="robot/database" value="jsk_robot_lifelog"/>
+
+  <!-- logging database -->
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+    <arg name="use_daemon" value="true"/>
+    <arg name="port" value="27017" />
+    <arg name="repl_set_mode" value="false" />
+    <arg name="replicate" default="true" />
+  </include>
+
+  <include file="$(find jsk_perception)/launch/video_to_scene.launch" >
+    <arg name="INPUT_IMAGE" value="/spot/camera/hand_color/image" />
+    <arg name="IMAGE_TRANSPORT" default="compressed" />
+    <arg name="launch_manager" value="true" />
+    <arg name="manager" value="vidoe_to_scene_nodelet_manager" />
+    <arg name="min_percent" value="$(arg min_percent)" />
+    <arg name="max_percent" value="$(arg max_percent)" />
+  </include>
+
+  <arg name="map_frame" default="odom" />
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+    <arg name="save_rgb" value="true" />
+    <arg name="camera_ns" default="/spot/camera" />
+    <arg name="rgb_ns" default="hand_color" />
+    <arg name="rgb_topic" default="image" />
+    <!-- <arg name="rgb_suffix" default="/compressed"/> -->
+    <arg name="rgb_suffix" default="/output/compressed"/> <!-- use video to scene -->
+    <arg name="save_depth" value="false" />
+    <!-- <arg name="save_tf" value="true" /> -->
+    <!-- <arg name="save_joint_states" value="true" /> -->
+    <arg name="save_tf" value="false" />
+    <arg name="save_joint_states" value="false" />
+    <arg name="save_base_trajectory" value="false" />
+    <arg name="save_object_detection" value="false" />
+    <arg name="save_action" value="true" />
+    <arg name="save_smach" value="true" />
+    <arg name="save_faces" value="true" />
+    <arg name="save_dialogflow" value="true" />
+    <arg name="save_app" value="false" />
+    <arg name="enable_monitor" value="false" />
+    <arg name="log_rate" value="1.0" />
+    <arg name="launch_manager" value="true" />
+    <arg name="map_frame_id" value="$(arg map_frame)" />
+    <arg name="approximate_sync" value="true"/>
+  </include>
+
+  <rosparam ns="lifelog/joint_states_throttle">
+    periodic: false
+    threshold: 0.01
+  </rosparam>
+
+  <rosparam ns="lifelog/action_logger">
+    white_list:
+      type:
+      - control_msgs/FollowJointTrajectoryActionFeedback
+      - control_msgs/FollowJointTrajectoryActionGoal
+      - control_msgs/FollowJointTrajectoryActionResult
+      - pr2_common_action_msgs/TuckArmsActionFeedback
+      - pr2_common_action_msgs/TuckArmsActionGoal
+      - pr2_common_action_msgs/TuckArmsActionResult
+      - pr2_controllers_msgs/PointHeadActionFeedback
+      - pr2_controllers_msgs/PointHeadActionGoal
+      - pr2_controllers_msgs/PointHeadActionResult
+      - pr2_controllers_msgs/Pr2GripperCommandActionFeedback
+      - pr2_controllers_msgs/Pr2GripperCommandActionGoal
+      - pr2_controllers_msgs/Pr2GripperCommandActionResult
+      - sound_play/SoundRequestActionResult
+      - sound_play/SoundRequestActionGoal
+  </rosparam>
+
+  <rosparam ns="lifelog/speech_logger">
+    topics:
+      - /sound_play/goal
+  </rosparam>
+
+</launch>
