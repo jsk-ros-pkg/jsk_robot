@@ -540,7 +540,7 @@ Visualization Manager:
           Shaft Length: 1
           Shaft Radius: 0.05000000074505806
           Shape: Axes
-          Topic: /dual_panda/dual_arm_cartesian_pose_controller/right_frame
+          Topic: /dual_panda/rarm_ee_frame
           Unreliable: false
           Value: true
         - Alpha: 1
@@ -555,7 +555,7 @@ Visualization Manager:
           Shaft Length: 1
           Shaft Radius: 0.05000000074505806
           Shape: Axes
-          Topic: /dual_panda/dual_arm_cartesian_pose_controller/rarm_target_pose
+          Topic: /phantom_to_panda/rarm_target_pose
           Unreliable: false
           Value: true
         - Alpha: 1
@@ -570,7 +570,7 @@ Visualization Manager:
           Shaft Length: 1
           Shaft Radius: 0.05000000074505806
           Shape: Axes
-          Topic: /dual_panda/dual_arm_cartesian_pose_controller/larm_target_pose
+          Topic: /phantom_to_panda/larm_target_pose
           Unreliable: false
           Value: true
         - Alpha: 1
@@ -585,7 +585,7 @@ Visualization Manager:
           Shaft Length: 1
           Shaft Radius: 0.05000000074505806
           Shape: Axes
-          Topic: /dual_panda/dual_arm_cartesian_pose_controller/left_frame
+          Topic: /dual_panda/larm_ee_frame
           Unreliable: false
           Value: true
         - Align Bottom: false

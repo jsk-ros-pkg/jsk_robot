@@ -5,6 +5,7 @@ from absl import flags
 import rospy
 import numpy as np
 import actionlib
+import tf
 import franka_gripper.msg
 from franka_gripper.msg import GraspEpsilon
 import franka_msgs.msg
@@ -14,7 +15,6 @@ from geometry_msgs.msg import (
     Pose, PoseStamped, Point, Quaternion, WrenchStamped)
 from jsk_rviz_plugins.msg import OverlayText
 from std_msgs.msg import Header, Bool
-from franka_example_controllers.msg import ArmsTargetPose
 from jsk_panda_teleop.srv import ControlBilateral,  ControlBilateralResponse
 
 FLAGS = flags.FLAGS
@@ -94,33 +94,36 @@ class SingleArmHandler(object):
         self.q_m_p = panda_initial_q * master_initial_q.inv()
         self.target_force = OmniFeedback()
         self.zero_force = None  # for initializatoin
-        self.current_frame = None
         self.is_gripper_closed = False
         self.has_error = False
         self.moving = False
+        self.tf_listener = None
+        self.current_frame_id = '{}_EE'.format(arm_name)
         self.setup_ros()
 
         # open gripper
         self.open_gripper()
 
     def setup_ros(self):
-        current_frame_topic = '/{}/dual_arm_cartesian_pose_controller/{}_frame'.format(
-            self.robot_id, self.side)
         dev_topic = "/{}/phantom/state".format(self.master_dev_name)
         force_topic = "{}/{}_state_controller/F_ext".format(
             self.robot_id, self.arm_name)
         force_pub_topic = "/{}/phantom/force_feedback".format(
             self.master_dev_name)
-        pose_target_pub_topic = '/{}/dual_arm_cartesian_pose_controller/{}_target_pose'.format(
-            self.robot_id, self.arm_name)
+        pose_target_pub_topic = '{}/{}_target_pose'.format(
+            rospy.get_name(), self.arm_name)
         gripper_topic = '/{}/{}/franka_gripper/grasp'.format(
             self.robot_id, self.arm_name)
         error_topic = '/{}/{}/has_error'.format(self.robot_id, self.arm_name)
         status_overlay_topic = '/{}/{}/status_overlay'.format(
             self.robot_id, self.arm_name)
-        self.current_arm_frame_sub = rospy.Subscriber(
-            current_frame_topic, PoseStamped, self.current_frame_cb)
-        rospy.wait_for_message(current_frame_topic, PoseStamped)
+        self.tf_listener = tf.TransformListener()
+        self.tf_listener.waitForTransform(
+            '{}_link0'.format(self.arm_name),
+            self.current_frame_id,
+            rospy.Time(),
+            rospy.Duration(3600)
+        )
 
         self.device_state_sub = rospy.Subscriber(
             dev_topic, OmniState, self.device_state_sub)
@@ -139,9 +142,6 @@ class SingleArmHandler(object):
         self.gripper_client = actionlib.SimpleActionClient(
             gripper_topic, franka_gripper.msg.GraspAction)
         self.gripper_client.wait_for_server()
-
-    def current_frame_cb(self, msg):
-        self.current_frame = msg
 
     def device_state_sub(self, msg):
         # control gripper
@@ -173,6 +173,7 @@ class SingleArmHandler(object):
             self.target_pose.pose.orientation.y = tar_q.as_quat()[1]
             self.target_pose.pose.orientation.z = -tar_q.as_quat()[2]
             self.target_pose.pose.orientation.w = tar_q.as_quat()[3]
+        self.target_pose.header.stamp = rospy.Time.now()
         # publish target pose
         self.single_target_pose_pub.publish(self.target_pose)
 
@@ -193,8 +194,22 @@ class SingleArmHandler(object):
             res = input(
                 'Press Enter to set this {} pose as initial position'.format(
                     self.arm_name))
-        self.current_frame.header.frame_id = '{}_link0'.format(self.arm_name)
-        return self.current_frame
+        current_frame = PoseStamped()
+        (trans, rot) = self.tf_listener.lookupTransform(
+            '{}_link0'.format(self.arm_name),
+            self.current_frame_id,
+            rospy.Time(0)
+        )
+        current_frame.pose.position.x = trans[0]
+        current_frame.pose.position.y = trans[1]
+        current_frame.pose.position.z = trans[2]
+        current_frame.pose.orientation.x = rot[0]
+        current_frame.pose.orientation.y = rot[1]
+        current_frame.pose.orientation.z = rot[2]
+        current_frame.pose.orientation.w = rot[3]
+        current_frame.header.stamp = rospy.Time.now()
+        current_frame.header.frame_id = '{}_link0'.format(self.arm_name)
+        return current_frame
 
     def open_gripper(self):
         # TODO
@@ -235,17 +250,23 @@ class DualArmHandler(object):
             arm_name='larm', master_dev_name='left_device',
             vel_scale=vel_scale)
         self.arms = [self.rarm_handler, self.larm_handler]
-        self.target_pub = rospy.Publisher(
-            '/dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose',
-            ArmsTargetPose, queue_size=1)
+        self.rarm_target_pub = rospy.Publisher(
+            '/dual_panda/rarm_cartesian_impedance_controller/equilibrium_pose',
+            PoseStamped, queue_size=1)
+        self.larm_target_pub = rospy.Publisher(
+            '/dual_panda/larm_cartesian_impedance_controller/equilibrium_pose',
+            PoseStamped, queue_size=1)
         self.recover_error_server = actionlib.SimpleActionClient(
             '/dual_panda/error_recovery', franka_msgs.msg.ErrorRecoveryAction)
-        r_initial_pose, l_initial_pose = self.set_initial_pose()
-        self.target_pose = ArmsTargetPose(
-            right_target=r_initial_pose, left_target=l_initial_pose)
         self.control_bilateral_srv = rospy.Service(
             '/dual_panda/control_bilateral',
             ControlBilateral, self.control_bilateral)
+
+    def set_initial_pose(self):
+        self.rarm_handler.target_pose = self.rarm_handler.set_initial_pose(
+            no_ask=True)
+        self.larm_handler.target_pose = self.larm_handler.set_initial_pose(
+            no_ask=True)
 
     def control_bilateral(self, req):
         rospy.loginfo(
@@ -255,26 +276,16 @@ class DualArmHandler(object):
         self.pose_connecting = req.pose_connecting
         self.force_connecting = req.force_connecting
         if req.reset_phantom:
-            r_initial_pose, l_initial_pose = self.set_initial_pose()
-            self.target_pose = ArmsTargetPose(
-                right_target=r_initial_pose, left_target=l_initial_pose)
+            self.set_initial_pose()
         return ControlBilateralResponse(True)
-
-    def set_initial_pose(self):
-        return (self.rarm_handler.set_initial_pose(no_ask=True),
-                self.larm_handler.set_initial_pose(no_ask=True))
 
     def loop_call(self):
         # send target pose for both arm if connected
         if self.pose_connecting:
-            self.target_pose.right_target = self.rarm_handler.target_pose
-            self.target_pose.left_target = self.larm_handler.target_pose
-            self.target_pub.publish(self.target_pose)
+            self.rarm_target_pub.publish(self.rarm_handler.target_pose)
+            self.larm_target_pub.publish(self.larm_handler.target_pose)
         else:
-            self.rarm_handler.target_pose = self.rarm_handler.set_initial_pose(
-                no_ask=True)
-            self.larm_handler.target_pose = self.larm_handler.set_initial_pose(
-                no_ask=True)
+            self.set_initial_pose()
 
         # apply force feedback if connected
         if self.force_connecting:

@@ -13,7 +13,7 @@
   <include file="$(find jsk_panda_startup)/launch/dual_panda1.launch">
     <arg name="hw_config_file" value="$(find jsk_panda_teleop)/config/dual_panda_control_node.yaml" />
     <arg name="controllers_file" value="$(find jsk_panda_teleop)/config/dual_panda_controllers.yaml" />
-    <arg name="controllers_to_start" value="rarm_state_controller larm_state_controller dual_arm_cartesian_pose_controller" />
+    <arg name="controllers_to_start" value="rarm_state_controller larm_state_controller larm_cartesian_impedance_controller rarm_cartesian_impedance_controller" />
     <arg name="n_channel" value="$(arg n_channel)" />
     <arg name="depth" value="$(arg depth)" />
     <arg name="sample_rate" value="$(arg sample_rate)" />
@@ -35,4 +35,7 @@
   <node pkg="jsk_panda_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--connect_pose --connect_force" if="$(arg start_bilateral)"/>
   <node pkg="jsk_panda_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--noconnect_pose --noconnect_force" unless="$(arg start_bilateral)"/>
   
+  <!-- Publish end effector frames for easy synchronization -->
+  <node pkg="jsk_panda_teleop" type="end_effector_frames_publisher.py" name="end_effector_frames_publisher" output="screen"/>
+
 </launch>

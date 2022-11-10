@@ -41,9 +41,10 @@
                                     /dual_panda/rarm/status_overlay
                                     /dual_panda/larm/franka_gripper/joint_states
                                     /dual_panda/rarm/franka_gripper/joint_states
-                                    /dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
-                                    /dual_panda/dual_arm_cartesian_pose_controller/left_frame
-                                    /dual_panda/dual_arm_cartesian_pose_controller/right_frame
+                                    /dual_panda/larm_cartesian_impedance_controller/equilibrium_pose
+                                    /dual_panda/rarm_cartesian_impedance_controller/equilibrium_pose
+                                    /dual_panda/larm_ee_frame
+                                    /dual_panda/rarm_ee_frame
                                     /dual_panda/end_coords/rarm
                                     /dual_panda/end_coords/larm
                                     /dual_panda/joint_states
@@ -58,10 +59,11 @@
                                     /tf
                                     /tf_static
                                     /audio
-                                    /synced/dual_panda/dual_arm_cartesian_pose_controller/arms_target_pose
+                                    /synced/dual_panda/larm_cartesian_impedance_controller/equilibrium_pose
+                                    /synced/dual_panda/rarm_cartesian_impedance_controller/equilibrium_pose
+                                    /synced/dual_panda/larm_ee_frame
+                                    /synced/dual_panda/rarm_ee_frame
                                     /synced/head_camera/rgb/image_raw/compressed
-                                    /synced/dual_panda/dual_arm_cartesian_pose_controller/left_frame
-                                    /synced/dual_panda/dual_arm_cartesian_pose_controller/right_frame
                                     /synced/dual_panda/joint_states
                                     /synced/dual_panda/larm_state_controller/F_ext
                                     /synced/dual_panda/rarm_state_controller/F_ext
