@@ -51,7 +51,7 @@ namespace jsk_robot_startup
       // settings for database
       if (ros::param::has("~database"))
       {
-        pnh_->param<std::string>("~database", db_name_, "jsk_robot_lifelog");
+        pnh_->param<std::string>("database", db_name_, "jsk_robot_lifelog");
       }
       else
       {
@@ -59,7 +59,7 @@ namespace jsk_robot_startup
       }
       if (ros::param::has("~collection"))
       {
-        pnh_->param<std::string>("~collection", col_name_, std::string());
+        pnh_->param<std::string>("collection", col_name_, std::string());
       }
       else
       {
