@@ -15,7 +15,7 @@
 - git:
     local-name: PR2/pr2_controllers
     uri: https://github.com/PR2/pr2_controllers.git
-    version: melodic-devel
+    version: 1.10.18
 # we need to install from source because pr2 is indigo
 - git:
     local-name: PR2/pr2_self_test
