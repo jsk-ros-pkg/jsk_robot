@@ -90,7 +90,7 @@ systemd services of JSK Spot system use workspaces in `spot` user.
 Install necessary packages for workspace building
 
 ```
-sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy python3-opencv
+sudo apt-get install python3-catkin-pkg-modules python3-rospkg-modules python3-venv python3-empy python3-opencv python3-sip-dev python3-defusedxml
 sudo apt-get install ros-melodic-catkin ros-melodic-vision-msgs
 ```
 
@@ -125,6 +125,66 @@ roscd jsk_spot_startup
 git update-index --skip-worktree auth/spot_credential.yaml
 ```
 
+Note that `rosdep install ...` did not install all dependencies, you need to install `python3-` modules manualy. or run `ROS_PYTHON_VERSION=3 rosdep install ...`. But this will install `python3-catkin-pkg` which remove `python2-catkin-pkg` package and all `ros-melodic-*` packages.
+
+Workaround is to install only jsk_robot direcotry. (But you still re-install `ros-melodic-jsk-tools`)
+```
+ROS_PYTHON_VERSION=3 rosdep install -r --from-paths ~/spot_driver_ws/src/jsk_robot --ignore-src
+```
+or create dummy package that did not conflict each other.
+
+```
+#!/bin/bash
+
+set -x
+set -e
+
+TMPDIR=/tmp/tmp-$$
+
+mkdir ${TMPDIR}
+cd ${TMPDIR}
+apt download python3-catkin-pkg
+dpkg-deb -R python3-catkin-pkg_0.5.2-100_all.deb ${TMPDIR}/src-python3-catkin-pkg
+rm -fr ${TMPDIR}/src-python3-catkin-pkg/usr/bin/
+sed -i /^Conflicts:/d ${TMPDIR}/src-python3-catkin-pkg/DEBIAN/control
+sed -i '/^Version:/ s/$/0/' ${TMPDIR}/src-python3-catkin-pkg/DEBIAN/control
+cat ${TMPDIR}/src-python3-catkin-pkg/DEBIAN/control
+# edit DEBIAN/postinst
+dpkg-deb -b ${TMPDIR}/src-python3-catkin-pkg python3-catkin-pkg-dummy.deb
+
+apt download python-catkin-pkg
+dpkg-deb -R python-catkin-pkg_0.5.2-100_all.deb ${TMPDIR}/src-python2-catkin-pkg
+rm -fr ${TMPDIR}/src-python2-catkin-pkg/usr/bin/
+sed -i 's/, python3-catkin-pkg//' ${TMPDIR}/src-python2-catkin-pkg/DEBIAN/control
+sed -i '/^Version:/ s/$/0/' ${TMPDIR}/src-python2-catkin-pkg/DEBIAN/control
+cat ${TMPDIR}/src-python2-catkin-pkg/DEBIAN/control
+# edit DEBIAN/postinst
+dpkg-deb -b ${TMPDIR}/src-python2-catkin-pkg python2-catkin-pkg-no-conflict.deb
+
+apt download python3-rosdep
+dpkg-deb -R python3-rosdep_0.22.1-1_all.deb ${TMPDIR}/src-python3-rosdep
+rm -fr ${TMPDIR}/src-python3-rosdep/usr/bin/
+sed -i /^Conflicts:/d ${TMPDIR}/src-python3-rosdep/DEBIAN/control
+sed -i '/^Version:/ s/$/0/' ${TMPDIR}/src-python3-rosdep/DEBIAN/control
+cat ${TMPDIR}/src-python3-rosdep/DEBIAN/control
+# edit DEBIAN/postinst
+dpkg-deb -b ${TMPDIR}/src-python3-rosdep python3-rosdep-dummy.deb
+
+apt download python-rosdep
+dpkg-deb -R python-rosdep_0.22.1-1_all.deb ${TMPDIR}/src-python-rosdep
+rm -fr ${TMPDIR}/src-python-rosdep/usr/bin/
+sed -i 's/, python3-rosdep//' ${TMPDIR}/src-python-rosdep/DEBIAN/control
+sed -i '/^Version:/ s/$/0/' ${TMPDIR}/src-python-rosdep/DEBIAN/control
+cat ${TMPDIR}/src-python-rosdep/DEBIAN/control
+# edit DEBIAN/postinst
+dpkg-deb -b ${TMPDIR}/src-python-rosdep python-rosdep-no-conflict.deb
+
+set +x
+echo "scp ${TMPDIR}/python2-catkin-pkg-no-conflict.deb to your environment"
+echo "scp ${TMPDIR}/python3-catkin-pkg-dummy.deb to your environment"
+echo "scp ${TMPDIR}/python-rosdep-no-conflict.deb to your environment"
+echo "scp ${TMPDIR}/python3-rosdep-dummy.deb to your environment"
+```
 
 ## Troubleshootig
 
