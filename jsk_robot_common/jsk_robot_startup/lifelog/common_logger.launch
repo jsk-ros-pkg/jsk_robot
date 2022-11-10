@@ -1,4 +1,8 @@
 <launch>
+  <!-- mongo setting -->
+  <arg name="database" default="jsk_robot_lifelog" />
+  <arg name="collection" default="null" />
+
   <!-- options -->
   <arg name="save_rgb" default="true" />
   <arg name="save_depth" default="true" />
@@ -33,8 +37,9 @@
   <machine if="$(arg localhost)" name="localhost" address="localhost" />
 
   <!-- nodelet -->
+  <arg name="ns" default="lifelog" />
   <arg name="launch_manager" default="true" />
-  <arg     if="$(arg launch_manager)" name="manager" default="mongodb_record_nodelet_manager" />
+  <arg     if="$(arg launch_manager)" name="manager" default="mongodb_$(arg ns)_nodelet_manager" />
   <arg unless="$(arg launch_manager)" name="manager" />
 
   <!-- others -->
@@ -53,7 +58,7 @@
         pkg="nodelet" type="nodelet" args="manager" machine="$(arg machine)"
         output="screen" respawn="$(arg respawn)" launch-prefix="$(arg launch-prefix)"/>
 
-  <group ns="lifelog">
+  <group ns="$(arg ns)">
     <!-- image throttle -->
     <group if="$(arg save_rgb)">
       <group if="$(arg save_depth)">
@@ -132,6 +137,8 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="rgb/$(arg rgb_topic)$(arg rgb_suffix)" />
         <rosparam subst_value="true">
+          database: $(arg database)
+          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
           vital_check: $(arg vital_check)
@@ -144,6 +151,8 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="rgb/$(arg camera_info_topic)" />
         <rosparam subst_value="true">
+          database: $(arg database)
+          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
           vital_check: $(arg vital_check)
@@ -158,6 +167,8 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="depth/$(arg depth_topic)$(arg depth_suffix)" />
         <rosparam subst_value="true">
+          database: $(arg database)
+          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
           vital_check: $(arg vital_check)
@@ -170,6 +181,8 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="depth/$(arg camera_info_topic)" />
         <rosparam subst_value="true">
+          database: $(arg database)
+          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
           vital_check: $(arg vital_check)
@@ -184,6 +197,8 @@
           respawn="$(arg respawn)"
           if="$(arg save_tf)">
       <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
         update_rate: $(arg log_rate)
       </rosparam>
     </node>
@@ -205,6 +220,8 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="joint_states_throttle/output" />
         <rosparam subst_value="true">
+          database: $(arg database)
+          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg joint_states_topic)
           vital_check: $(arg vital_check)
@@ -243,6 +260,8 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
         update_rate: $(arg log_rate)
         map_frame: $(arg map_frame_id)
         robot_frame: $(arg base_frame_id)
@@ -256,6 +275,8 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
         map_frame: $(arg map_frame_id)
         robot_frame: $(arg base_frame_id)
       </rosparam>
@@ -266,7 +287,12 @@
           name="action_logger"
           pkg="jsk_robot_startup" type="action_logger.py"
           machine="$(arg machine)"
-          respawn="$(arg respawn)" />
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
+      </rosparam>
+    </node>
 
     <!-- app manager -->
     <node if="$(arg save_app)"
@@ -275,6 +301,8 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
         subst_param: true
         topics:
         - /${param /robot/name}/app_list
