@@ -2,8 +2,20 @@
 
 (ros::roseus "twitter_client_warning")
 
+(load "package://roseus/euslisp/dynamic-reconfigure-server.l")
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 (ros::load-ros-manifest "diagnostic_msgs")
+
+(setq *volume* (ros::get-param "~volume" 1.0))
+(setq *reconfigure-server*
+      (def-dynamic-reconfigure-server
+        ;;; ((name type level description (default) (min) (max) (edit_method)) ... )
+        (("volume"  double_t  0  "tweet speak volume" 1.0  0.0 1.0))
+        ;; use lamda-closure to avoid memory error
+        '(lambda-closure nil 0 0 (cfg level)
+            (setq *volume* (cdr (assoc "volume" cfg :test #'equal)))
+            (ros::ros-warn "Volume changed to: ~A" *volume*)
+            cfg)))
 
 (defun diagnostics-cb (msg)
   (let ((diagnostics (make-hash-table :test #'equal))
@@ -34,7 +46,7 @@
       (setq id (random (length status)))
       (when (= (mod (round (send tm :sec)) 1000) 0)
         (tweet-string (format nil "Warning!! ~A is ~A at ~0,3f" (car (elt status id)) (cdr (elt status id)) (send tm :to-sec))
-                      :warning-time 1 :with-image t)
+                      :warning-time 1 :with-image t :volume *volume*)
 	)) ;; when
     )) ;; let
 
