@@ -42,17 +42,26 @@
     <arg name="save_depth" value="false" />
     <arg name="save_tf" value="true" />
     <arg name="save_joint_states" value="true" />
-    <arg name="save_base_trajectory" value="false" />
+    <arg name="save_base_trajectory" value="true" />
     <arg name="save_object_detection" value="false" />
+    <arg name="save_speech" value="true" />
     <arg name="save_action" value="true" />
     <arg name="save_smach" value="true" />
     <arg name="save_app" value="true" />
+    <arg name="save_human_pose" default="true" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="launch_manager" value="true" />
     <arg name="map_frame_id" value="$(arg map_frame)" />
     <arg name="approximate_sync" value="true"/>
     <arg name="base_frame_id" value="base_link" />
+    <arg name="vital_check" value="true" />
   </include>
+
+  <rosparam ns="go_to_kitchen/speech_logger">
+    topics:
+    - /sound_play/goal
+    - /speech_to_text
+  </rosparam>
 
 </launch>
