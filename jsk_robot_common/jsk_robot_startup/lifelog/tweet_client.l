@@ -34,7 +34,8 @@
  (t
   (setq *waking-target-second* *waking-tweet-second*)))
 
-(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t))
+(defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t)
+                              (volume 1.0))
   (let (prev-image-topic img)
   (when warning-time
     (unless (numberp warning-time)
@@ -53,7 +54,8 @@
                           (8 "はち")
                           (9 "きゅう")
                           (10 "じゅう")
-                          (t "じゅういじょう")))))
+                          (t "じゅういじょう")))
+                :volume volume))
     (unix::sleep warning-time))
 
   (cond
@@ -89,5 +91,5 @@
       (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic)))
     (t
       (ros::publish "/tweet" (instance std_msgs::String :init :data twit-str))))
-  (when speak (speak-jp "ついーとしました" :wait t))))
+  (when speak (speak-jp "ついーとしました" :wait t :volume volume))))
 
