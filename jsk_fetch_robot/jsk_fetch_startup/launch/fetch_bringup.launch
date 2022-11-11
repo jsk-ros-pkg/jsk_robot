@@ -49,6 +49,7 @@
 
   <!-- lifelog -->
   <arg name="launch_fetch_lifelog" default="true" />
+  <arg name="extra_collections" default="[go_to_kitchen]" />
 
   <arg name="hostname" default="fetch15" />
   <arg name="use_voice_text" default="false" />
@@ -137,6 +138,7 @@
            if="$(arg launch_fetch_lifelog)">
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="vital_check" value="false" />
+    <arg name="extra_collections" value="$(arg extra_collections)" />
   </include>
 
   <!-- diagnostic aggregator -->
