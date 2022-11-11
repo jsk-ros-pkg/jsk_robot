@@ -12,6 +12,12 @@
     uri: https://github.com/pazeshun/Geomagic_Touch_ROS_Drivers.git
     version: dual-phantom-readme
 
+# Wait https://github.com/frankaemika/franka_ros/pull/298 to be released.
+- git:
+    local-name: franka_ros
+    uri: https://github.com/pazeshun/franka_ros.git
+    version: install-FrankaCombinableHW
+
 # Wait sound_classification to be released.
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
