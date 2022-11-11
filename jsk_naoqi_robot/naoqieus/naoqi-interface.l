@@ -270,6 +270,12 @@
      (when master-lang
        (send self :set-language master-lang))
      t))
+  (:speak-jp (str &key wait volume)
+     (send self :speak str :lang "Japanese"
+                :wait wait :volume volume))
+  (:speak-en (str &key wait volume)
+     (send self :speak str :lang "English"
+                :wait wait :volume volume))
   (:check-speak-status
    (&optional (wait 60))
    (let (speech_status tm)
