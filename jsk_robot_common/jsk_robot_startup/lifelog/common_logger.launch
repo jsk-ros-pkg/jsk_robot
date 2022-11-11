@@ -1,7 +1,7 @@
 <launch>
   <!-- mongo setting -->
   <arg name="database" default="jsk_robot_lifelog" />
-  <arg name="collection" default="null" />
+  <arg name="collection" default="" />
 
   <!-- options -->
   <arg name="save_rgb" default="true" />
@@ -141,10 +141,12 @@
         <remap from="~input" to="rgb/$(arg rgb_topic)$(arg rgb_suffix)" />
         <rosparam subst_value="true">
           database: $(arg database)
-          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
           vital_check: $(arg vital_check)
+        </rosparam>
+        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+          collection: $(arg collection)
         </rosparam>
       </node>
       <node name="rgb_camera_info_logger"
@@ -155,10 +157,12 @@
         <remap from="~input" to="rgb/$(arg camera_info_topic)" />
         <rosparam subst_value="true">
           database: $(arg database)
-          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg rgb_ns)/$(arg rgb_topic)
           vital_check: $(arg vital_check)
+        </rosparam>
+        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+          collection: $(arg collection)
         </rosparam>
       </node>
     </group>
@@ -171,10 +175,12 @@
         <remap from="~input" to="depth/$(arg depth_topic)$(arg depth_suffix)" />
         <rosparam subst_value="true">
           database: $(arg database)
-          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
           vital_check: $(arg vital_check)
+        </rosparam>
+        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+          collection: $(arg collection)
         </rosparam>
       </node>
       <node name="depth_camera_info_logger"
@@ -185,10 +191,12 @@
         <remap from="~input" to="depth/$(arg camera_info_topic)" />
         <rosparam subst_value="true">
           database: $(arg database)
-          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg camera_ns)/$(arg depth_ns)/$(arg depth_topic)
           vital_check: $(arg vital_check)
+        </rosparam>
+        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+          collection: $(arg collection)
         </rosparam>
       </node>
     </group>
@@ -201,8 +209,10 @@
           if="$(arg save_tf)">
       <rosparam subst_value="true">
         database: $(arg database)
-        collection: $(arg collection)
         update_rate: $(arg log_rate)
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
@@ -215,8 +225,10 @@
         <remap from="~input" to="/$(arg joint_states_topic)" />
         <rosparam subst_value="true">
           database: $(arg database)
-          collection: $(arg collection)
           periodic_rate: $(arg log_rate)
+        </rosparam>
+        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+          collection: $(arg collection)
         </rosparam>
       </node>
       <node name="joint_states_logger"
@@ -226,10 +238,12 @@
         <remap from="~input" to="joint_states_throttle/output" />
         <rosparam subst_value="true">
           database: $(arg database)
-          collection: $(arg collection)
           enable_monitor: $(arg enable_monitor)
           monitor_topic: /$(arg joint_states_topic)
           vital_check: $(arg vital_check)
+        </rosparam>
+        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+          collection: $(arg collection)
         </rosparam>
       </node>
     </group>
@@ -241,11 +255,13 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         database: $(arg database)
-        collection: $(arg collection)
         topics:
         - /server_name/smach/container_init
         - /server_name/smach/container_status
         - /server_name/smach/container_structure
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
@@ -256,9 +272,11 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         database: $(arg database)
-        collection: $(arg collection)
         topics:
         - /Tablet/voice
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
@@ -312,10 +330,12 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         database: $(arg database)
-        collection: $(arg collection)
         update_rate: $(arg log_rate)
         map_frame: $(arg map_frame_id)
         robot_frame: $(arg base_frame_id)
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
@@ -327,9 +347,11 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         database: $(arg database)
-        collection: $(arg collection)
         map_frame: $(arg map_frame_id)
         robot_frame: $(arg base_frame_id)
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
@@ -341,6 +363,8 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         database: $(arg database)
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
         collection: $(arg collection)
       </rosparam>
     </node>
@@ -353,10 +377,12 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         database: $(arg database)
-        collection: $(arg collection)
         subst_param: true
         topics:
         - /${param /robot/name}/app_list
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
