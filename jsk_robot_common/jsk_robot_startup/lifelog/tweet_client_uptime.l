@@ -2,6 +2,7 @@
 
 (ros::roseus "twitter_client_uptime")
 
+(load "package://roseus/euslisp/dynamic-reconfigure-server.l")
 (load "package://jsk_robot_startup/lifelog/tweet_client.l")
 
 (setq *src-lines* nil)
@@ -36,6 +37,17 @@
              *waking-tweet-second*))))
  (t
   (setq *waking-target-second* *waking-tweet-second*)))
+
+(setq *volume* (ros::get-param "~volume" 1.0))
+(setq *reconfigure-server*
+      (def-dynamic-reconfigure-server
+        ;;; ((name type level description (default) (min) (max) (edit_method)) ... )
+        (("volume"  double_t  0  "tweet speak volume" 1.0  0.0 1.0))
+        ;; use lamda-closure to avoid memory error
+        '(lambda-closure nil 0 0 (cfg level)
+            (setq *volume* (cdr (assoc "volume" cfg :test #'equal)))
+            (ros::ros-warn "Volume changed to: ~A" *volume*)
+            cfg)))
 
 (ros::advertise "/tweet" std_msgs::String 1)
 (ros::rate 0.1)
@@ -81,8 +93,10 @@
                 (incf pos (length s))
                 (if (< pos (- ln 2)) (setf (elt dt pos) 10))
                 (incf pos))
-              (tweet-string dt :warning-time 1 :with-image t)
+              (tweet-string dt :warning-time 1 :with-image t
+                            :volume *volume*)
               ))
           ))))
+  (ros::spin-once)
   (ros::sleep)
   )
