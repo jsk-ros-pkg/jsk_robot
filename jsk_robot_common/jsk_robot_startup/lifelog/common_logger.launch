@@ -15,6 +15,7 @@
   <arg name="save_smach" default="true" />
   <arg name="save_base_trajectory" default="false" />
   <arg name="save_object_detection" default="false" />
+  <arg name="save_human_pose" default="false" />
   <arg name="save_action" default="false" />
   <arg name="save_app" default="true" />
 
@@ -349,6 +350,22 @@
         database: $(arg database)
         map_frame: $(arg map_frame_id)
         robot_frame: $(arg base_frame_id)
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
+      </rosparam>
+    </node>
+
+    <!-- human pose logger -->
+    <node if="$(arg save_human_pose)"
+          name="human_pose_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        database: $(arg database)
+        topics:
+        - /edgetpu_human_pose_estimator/output/poses
       </rosparam>
       <rosparam subst_value="true" if="$(eval arg('collection') != '')">
         collection: $(arg collection)
