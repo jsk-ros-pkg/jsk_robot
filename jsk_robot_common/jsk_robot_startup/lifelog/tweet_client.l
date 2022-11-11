@@ -7,7 +7,7 @@
 (load "package://pr2eus/speak.l")
 
 (defun tweet-string (twit-str &key (warning-time) (with-image) (image-wait 30) (speak t)
-                              (tweet-topic-name "/tweet"))
+                              (tweet-topic-name "/tweet") (volume 1.0))
   (if (null (ros::get-num-subscribers tweet-topic-name))
     (ros::advertise tweet-topic-name std_msgs::String 1))
   (let (prev-image-topic img)
@@ -28,7 +28,8 @@
                           (8 "はち")
                           (9 "きゅう")
                           (10 "じゅう")
-                          (t "じゅういじょう")))))
+                          (t "じゅういじょう")))
+                :volume volume))
     (unix::sleep warning-time))
 
   (cond
@@ -64,5 +65,5 @@
       (ros::service-call "/tweet_image_mux/select" (instance topic_tools::muxselectrequest :init :topic prev-image-topic)))
     (t
       (ros::publish tweet-topic-name (instance std_msgs::String :init :data twit-str))))
-  (when speak (speak-jp "ついーとしました" :wait t))))
+  (when speak (speak-jp "ついーとしました" :wait t :volume volume))))
 
