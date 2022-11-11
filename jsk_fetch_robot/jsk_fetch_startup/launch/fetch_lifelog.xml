@@ -31,6 +31,7 @@
     <arg name="save_object_detection" value="false" />
     <arg name="save_speech" value="true" />
     <arg name="save_action" value="true" />
+    <arg name="save_human_pose" default="true" />
     <arg name="camera_ns" value="head_camera" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
