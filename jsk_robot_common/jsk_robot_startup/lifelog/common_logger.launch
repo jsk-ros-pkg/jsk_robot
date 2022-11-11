@@ -214,6 +214,8 @@
             respawn="$(arg respawn)">
         <remap from="~input" to="/$(arg joint_states_topic)" />
         <rosparam subst_value="true">
+          database: $(arg database)
+          collection: $(arg collection)
           periodic_rate: $(arg log_rate)
         </rosparam>
       </node>
@@ -238,6 +240,8 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
         topics:
         - /server_name/smach/container_init
         - /server_name/smach/container_status
@@ -251,6 +255,8 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
+        collection: $(arg collection)
         topics:
         - /Tablet/voice
       </rosparam>
