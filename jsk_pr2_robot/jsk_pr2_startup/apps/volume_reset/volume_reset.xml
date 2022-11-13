@@ -1,0 +1,3 @@
+<launch>
+  <node name="run_volume_lower" pkg="jsk_pr2_startup" type="pr2_speak_volume_reset.l" />
+</launch>

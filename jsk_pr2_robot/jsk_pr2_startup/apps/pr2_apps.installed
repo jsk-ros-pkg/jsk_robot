@@ -5,3 +5,9 @@ apps:
     display: PR2 hello world
   - app: jsk_pr2_startup/tweet
     display: PR2 tweet
+  - app: jsk_pr2_startup/volume_lower
+    display: PR2 volume_lower
+  - app: jsk_pr2_startup/volume_reset
+    display: PR2 volume_reset
+  - app: jsk_pr2_startup/volume_zero
+    display: PR2 volume_zero
