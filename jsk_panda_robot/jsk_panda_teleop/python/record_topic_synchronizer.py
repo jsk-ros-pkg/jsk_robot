@@ -34,10 +34,10 @@ pubs = [
     rospy.Publisher('/synced/dual_panda/larm_cartesian_impedance_controller/equilibrium_pose', PoseStamped, queue_size=10),
 ]
 
-rospy.init_node("record_topic_syncronizer")
+rospy.init_node("record_topic_synchronizer")
 ts = message_filters.ApproximateTimeSynchronizer(subs, 100, 0.1, allow_headerless=True)
 ts.registerCallback(callback)
-rospy.loginfo("Starting topics syncronizing node...")
+rospy.loginfo("Starting topics synchronizing node...")
 rospy.spin()
-rospy.loginfo("Finishing topics syncronizing node...")
+rospy.loginfo("Finishing topics synchronizing node...")
 exit()
