@@ -28,6 +28,7 @@
   <run_depend>python-numpy</run_depend>
   <run_depend>python-absl-py-pip</run_depend>
 
+  <run_depend>jsk_panda_startup</run_depend>
   <run_depend>jsk_teleop_joy</run_depend>
   <run_depend>jsk_teleop_joy</run_depend>
   
