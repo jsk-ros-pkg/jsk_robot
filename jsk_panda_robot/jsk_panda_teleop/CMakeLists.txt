@@ -3,24 +3,15 @@ project(jsk_panda_teleop)
 
 
 find_package(catkin REQUIRED
-  roscpp
-  rospy
-  std_msgs
-  sensor_msgs
   message_generation
   )
 
 add_service_files(
   FILES
   ControlBilateral.srv
-  CommandImitationAgent.srv
   )
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  sensor_msgs
-  )
+generate_messages()
 
 catkin_package()
 
