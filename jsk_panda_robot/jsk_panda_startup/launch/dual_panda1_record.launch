@@ -1,5 +1,4 @@
 <launch>
-  <!-- for Panda Teleop -->
   <arg name="save_dir" default="/tmp/panda_rosbag"/>
   <arg name="bagfile_prefix" default="data" />
   <arg name="camera_namespace" default="camera" />
@@ -10,14 +9,6 @@
   <arg name="other_topics" default=""/>
   <arg name="quiet" default="true"/>
   <arg name="machine" default="localhost" />
-
-  <!-- for audio play -->
-  <arg name="play_device" default="hw:6,0"/>
-  <arg name="dst" default="alsasink"/>
-  <arg name="format" default="wave"/>
-  <arg name="n_channels" default="1"/>
-  <arg name="sample_rate" default="16000"/>
-  <arg name="sample_format" default="S16LE"/>
 
   <include file="$(find jsk_data)/launch/common_record.launch">
     <arg name="camera_namespace" value="$(arg camera_namespace)" />
@@ -74,16 +65,5 @@
     <arg name="bagfile_prefix" value="$(arg bagfile_prefix)" />
     <arg name="machine" value="$(arg machine)" />
   </include>
-
-  <!-- sound play -->
-  <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
-    <param name="device" value="$(arg play_device)"/>
-    <param name="dst" value="$(arg dst)"/>
-    <param name="do_timestamp" value="true"/>
-    <param name="format" value="$(arg format)"/>
-    <param name="channels" value="$(arg n_channels)"/>
-    <param name="sample_rate" value="$(arg sample_rate)"/>
-    <param name="sample_format" value="$(arg sample_format)"/>
-  </node>
 
 </launch>

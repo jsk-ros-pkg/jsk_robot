@@ -1,23 +1,23 @@
 <?xml version="1.0" ?>
 <launch>
 
-  <!-- argments -->
+  <!-- Arguments for visualization -->
   <arg name="rviz" default="true" />
 
-  <!-- Haptics Dive -->
+  <!-- Arguments for TouchUSB -->
   <arg name="reference_frame" default="/map"/>
   <arg name="units" default="mm"/>
   <arg name="publish_rate" default="1000"/>
 
-  <!-- Audio Play -->
-  <arg name="play_device" default="hw:6,0"/>
+  <!-- Arguments for USB speaker -->
+  <arg name="play_device" default="hw:3,0"/>
   <arg name="dst" default="alsasink"/>
   <arg name="format" default="wave"/>
-  <arg name="n_channels" default="1"/>
-  <arg name="sample_rate" default="16000"/>
+  <arg name="n_channels" default="2"/>
+  <arg name="sample_rate" default="44100"/>
   <arg name="sample_format" default="S16LE"/>
 
-  <!-- start touch usb -->
+  <!-- TouchUSB -->
   <group ns="left_device">
     <node name="omni_state" pkg="omni_common" type="omni_state" output="screen">
       <param name="device_name" value="Left Device"/>
@@ -37,18 +37,14 @@
     </node>
   </group>
 
-
-  <!-- visualization -->
-  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find jsk_panda_teleop)/config/rviz/dual_panda1.rviz" if="$(arg rviz)" />
-
-  <!-- start MIDI controller-->
+  <!-- MIDI controller -->
   <node pkg="jsk_teleop_joy" type="midi_config_player.py"
         output="screen" name="midi_controller"
         args="$(find jsk_teleop_joy)/configs/b_control.yaml">
     <remap from="/joy" to="/midi_controller/joy" />
   </node>
 
-  <!-- sound play -->
+  <!-- USB speaker -->
   <node name="audio_play" pkg="audio_play" type="audio_play" output="screen">
     <param name="device" value="$(arg play_device)"/>
     <param name="dst" value="$(arg dst)"/>
@@ -62,6 +58,8 @@
   <!-- record topic syncronizer -->
   <node pkg="jsk_panda_teleop" type="record_topic_syncronizer.py" name="record_topic_syncronizer" output="screen"/>
 
+  <!-- Visualization -->
+  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find jsk_panda_teleop)/config/rviz/dual_panda1.rviz" if="$(arg rviz)" />
   <node pkg="image_view" type="image_view" name="spectrogram_view"  >
     <remap from="image" to="/preprocess_gray_image/output_normalized" />
     <rosparam>
