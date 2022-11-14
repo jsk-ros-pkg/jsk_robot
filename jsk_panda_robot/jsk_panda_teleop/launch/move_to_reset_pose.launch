@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<launch>
-
-  <include file="$(find jsk_panda_startup)/launch/dual_panda.xml" />
-  
-  <node pkg="jsk_panda_teleop" type="move_to_initial.l" name="move_to_initial" output="log" />
-  
-</launch>
