@@ -1,207 +1,108 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro"
        name="dual_panda" >
-  <!-- panda -->
+  <!-- load macros -->
   <xacro:include filename="$(find franka_description)/robots/common/franka_arm.xacro" />
   <xacro:include filename="$(find franka_description)/robots/common/franka_hand.xacro"/>
 
-  <!-- arm -->
+  <!-- arguments -->
   <xacro:arg name="arm_id_1" default="rarm" />
   <xacro:arg name="arm_id_2" default="larm" />
-  <!-- test dual arm distance = 0.68 m (2021/03/10)-->
-  <!-- right arm with gripper -->
-  <xacro:franka_arm arm_id="$(arg arm_id_1)" connected_to="fixed_base"  xyz="-0.02 -0.34 0.0" safety_distance="0.03" joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}"/>
-  <xacro:franka_hand arm_id="$(arg arm_id_1)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_1)_link8" safety_distance="0.03"/>
+  <!-- test dual arm distance = 0.68 m (2021/03/10) -->
+  <xacro:arg name="arm_distance" default="0.68" />
+  <xacro:property name="arm_id_1_xyz" value="-0.02 ${$(arg arm_distance)/-2.0} 0.0" />
+  <xacro:property name="arm_id_2_xyz" value="-0.02 ${$(arg arm_distance)/2.0} 0.0" />
 
-  <!-- left arm with gripper -->
-  <xacro:franka_arm arm_id="$(arg arm_id_2)" connected_to="fixed_base"  xyz="-0.02  0.34 0.0" safety_distance="0.03" joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}"/>
-  <xacro:franka_hand arm_id="$(arg arm_id_2)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_2)_link8" safety_distance="0.03"/>
+  <link name="dual_arm_base" />
 
   <link name="fixed_base" />
-
-  <link name="dual_arm_base" >
-    <!--
-    <visual>
-      <origin xyz="0 -0.4 0" rpy="1.5707963267949 0.0 0.0" />
-      <geometry>
-        <mesh filename="package://franka_description/meshes/dual_franka_base.dae" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="misumi">
-        <color rgba="0.75 0.75 0.75 1.0"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 -0.4 0" rpy="1.5707963267949 0.0 0.0" />
-      <geometry>
-        <mesh filename="package://franka_description/meshes/dual_franka_base.dae" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-    -->
-    <visual>
-      <origin xyz="0.3 0 0.71" />
-      <geometry>
-        <box size="0.6 1.2 0.02" />
-      </geometry>
-      <material name="table">
-        <color rgba="0.7 0.6 0.5 1.0"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0.3 0 0.71" />
-      <geometry>
-        <box size="0.6 1.2 0.02" />
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="1000" />
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.2"/>
-      <inertia ixx="10.0" ixy="0.0" ixz="0.0"
-               iyy="10.0" iyz="0.0" izz="10.0" />
-    </inertial>
-  </link>
   <joint name="base_to_fixed" type="fixed">
     <parent link="dual_arm_base" />
     <child  link="fixed_base" />
     <origin xyz="-0.08 0.0 0.8" rpy="0.0 0.0 0.0" />
   </joint>
 
-  <!--link name="table_plane">
-    <visual>
-      <origin xyz="0.3 0 0.01" />
-      <geometry>
-        <box size="0.6 1.2 0.02" />
-      </geometry>
-      <material name="table">
-        <color rgba="0.7 0.6 0.5 1.0"/>
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0.3 0 0.01" />
-      <geometry>
-        <box size="0.6 1.2 0.02" />
-      </geometry>
-    </collision>
-  </link-->
-  <link name="controller_plane0">
-    <visual>
-      <origin xyz="0.3 0 0.01" />
-      <geometry>
-        <box size="0.6 0.8 0.02" />
-      </geometry>
-      <material name="plane">
-        <color rgba="0.6 0.6 0.6 1.0"/>
-      </material>
-    </visual>
-  </link>
-  <!--link name="controller_plane1">
-    <visual>
-      <origin xyz="0.3 0 0.01" />
-      <geometry>
-        <box size="0.6 0.8 0.02" />
-      </geometry>
-      <material  name="plane" />
-    </visual>
-  </link-->
+  <!-- right arm with gripper -->
+  <xacro:franka_arm arm_id="$(arg arm_id_1)" connected_to="fixed_base"  xyz="${arm_id_1_xyz}" safety_distance="0.03" joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}"/>
+  <xacro:franka_hand arm_id="$(arg arm_id_1)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_1)_link8" safety_distance="0.03"/>
 
-  <!--joint name="base_to_table_plane" type="fixed">
-    <parent link="dual_arm_base" />
-    <child  link="table_plane" />
-    <origin xyz="0.0 0.0 0.8" rpy="0.0 0.0 0.0" />
-  </joint-->
-  <joint name="base_to_c_plane0" type="fixed">
-    <parent link="dual_arm_base" />
-    <child  link="controller_plane0" />
-    <origin xyz="0.0 0.0 0.2" rpy="0.0 0.0 0.0" />
-  </joint>
-  <!--joint name="base_to_c_plane1" type="fixed">
-    <parent link="dual_arm_base" />
-    <child  link="controller_plane1" />
-    <origin xyz="0.0 0.0 0.5" rpy="0.0 0.0 0.0" />
-  </joint-->
+  <!-- left arm with gripper -->
+  <xacro:franka_arm arm_id="$(arg arm_id_2)" connected_to="fixed_base"  xyz="${arm_id_2_xyz}" safety_distance="0.03" joint_limits="${xacro.load_yaml('$(find franka_description)/robots/panda/joint_limits.yaml')}"/>
+  <xacro:franka_hand arm_id="$(arg arm_id_2)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id_2)_link8" safety_distance="0.03"/>
 
-  <link name="controller0">
-    <visual>
-      <origin xyz="0.3 0 0.134" />
-      <geometry>
-        <box size="0.475 0.423 0.268" />
-      </geometry>
-      <material name="controller">
-        <color rgba="0.5 0.5 0.6 1.0"/>
-      </material>
-    </visual>
-  </link>
-  <!--link name="controller1">
-    <visual>
-      <origin xyz="0.3 0 0.134" />
-      <geometry>
-        <box size="0.475 0.423 0.268" />
-      </geometry>
-      <material name="controller"/>
-    </visual>
-  </link-->
-  <joint name="base_to_c0" type="fixed">
-    <parent link="dual_arm_base" />
-    <child  link="controller0" />
-    <origin xyz="0.0 0.0 0.22" rpy="0.0 0.0 0.0" />
-  </joint>
-  <!--joint name="base_to_c1" type="fixed">
-    <parent link="dual_arm_base" />
-    <child  link="controller1" />
-    <origin xyz="0.0 0.0 0.52" rpy="0.0 0.0 0.0" />
-  </joint-->
-  
-  <!--link name="dual_arm_booth">
-    <visual>
-      <origin rpy="1.5707963267949 0.0 0.0" xyz="0 -0.75 0"/>
-      <geometry>
-        <mesh filename="package://franka_description/meshes/dual_franka_booth.stl"
-              scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="misumi">
-        <color rgba="0.75 0.75 0.75 1.0"/>
-      </material>
-    </visual>
-    <collision>
-      <origin rpy="1.5707963267949 0.0 0.0" xyz="0 -0.75 0"/>
-      <geometry>
-        <mesh filename="package://franka_description/meshes/dual_franka_booth.stl"
-              scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
+  <!-- pedestals -->
+  <xacro:property name="arm_to_pedestal_x" value="-0.0445" />  <!-- Based on pedestal's CAD and panda's footprint (https://www.generationrobots.com/media/panda-franka-emika-datasheet.pdf) -->
+  <xacro:macro name="pedestal" params="arm_id">
+    <link name="${arm_id}_pedestal">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        <geometry>
+          <mesh filename="package://panda_eus/meshes/pedestal.stl" scale="0.001 0.001 0.001" />
+        </geometry>
+        <material name="metal">
+          <color rgba="0.75 0.75 0.75 1.0" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 -0.252" rpy="0.0 0.0 0.0" />
+        <geometry>
+          <cylinder radius="0.115" length="0.504" />
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.10675 0.0 -0.652" rpy="0.0 0.0 0.0" />
+        <geometry>
+          <box size="0.7135 0.68 0.296" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${arm_id}_pedestal_joint" type="fixed">
+      <parent link="${arm_id}_link0" />
+      <child  link="${arm_id}_pedestal" />
+      <origin xyz="${arm_to_pedestal_x} 0.0 0.0" rpy="0.0 0.0 0.0" />
+    </joint>
     <inertial>
-      <mass value="1000"/>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.8"/>
-      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+      <!-- We do not know true inertial parameters -->
+      <mass value="1000" />
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.4" />
+      <inertia ixx="10.0" ixy="0.0" ixz="0.0"
+               iyy="10.0" iyz="0.0" izz="10.0" />
     </inertial>
-  </link>
-  <joint name="base_to_booth" type="fixed">
-    <parent link="dual_arm_base"/>
-    <child link="dual_arm_booth"/>
-    <origin rpy="0.0 0.0 0.0" xyz="-0.11 0.0 0.0"/>
-  </joint-->
+  </xacro:macro>
+  <xacro:pedestal arm_id="$(arg arm_id_1)" />
+  <xacro:pedestal arm_id="$(arg arm_id_2)" />
 
-  <link name="display">
-   <visual>
-     <geometry>
-       <!--box size="0.03 0.817 0.342"/--> <!-- 34inch wide -->
-       <box size="0.015 0.165 0.150"/> <!-- 12inch -->
-     </geometry>
-     <material name="Display">
-       <color rgba="0.15 0.15 0.15 1.0"/>
-     </material>
-   </visual>
-   <collision>
-     <geometry>
-       <!--box size="0.03 0.817 0.342"/-->
-       <box size="0.015 0.165 0.150"/> <!-- 12inch -->
-     </geometry>
-   </collision>
-  </link>
-  <joint name="base_to_dispaly" type="fixed">
-    <parent link="dual_arm_base"/>
-    <child  link="display"/>
-    <origin rpy="0.0 0.2 0.0" xyz="0.0 0.0 1.66"/>
-  </joint>
+  <!-- Controls (panda's control box) -->
+  <xacro:property name="pedestal_to_control_xyz" value="0.2715 0.0 -0.5515" />
+  <xacro:macro name="control" params="arm_id">
+    <link name="${arm_id}_control">
+      <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        <geometry>
+          <box size="0.357 0.444 0.089" />
+        </geometry>
+        <material name="black">
+          <!-- Unable to see in default irtviewer
+          <color rgba="0.0 0.0 0.0 1.0" />
+          -->
+          <color rgba="0.15 0.15 0.15 1.0" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        <geometry>
+          <box size="0.357 0.444 0.089" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${arm_id}_control_joint" type="fixed">
+      <parent link="${arm_id}_pedestal" />
+      <child  link="${arm_id}_control" />
+      <origin xyz="${pedestal_to_control_xyz}" rpy="0.0 0.0 0.0" />
+    </joint>
+  </xacro:macro>
+  <xacro:control arm_id="$(arg arm_id_1)" />
+  <xacro:control arm_id="$(arg arm_id_2)" />
 
   <!-- eus end effector link -->
   <link name="$(arg arm_id_1)_end_effector" >

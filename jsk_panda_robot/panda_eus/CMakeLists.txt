@@ -34,7 +34,7 @@ endif()
 ## Install ##
 #############
 
-install(DIRECTORY models euslisp
+install(DIRECTORY euslisp meshes models
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
