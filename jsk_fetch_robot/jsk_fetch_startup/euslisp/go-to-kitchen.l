@@ -197,16 +197,13 @@
             (:move-to-tv-front
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-tv-front-trial userdata)))
-                      (success (move-to-tv-front :n-trial n-trial))
-                      (label-names (notify-recognition :location "on the way to kitchen")))
+                      (success (move-to-tv-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-tv-front userdata)) success)
                  (ros::spin-once)
                  (if success
                      (set-alist 'description "テレビの前に移動したよ" userdata)
                      (set-alist 'description "テレビの前に移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                  success)))
             (:inspect-tv-front
              '(lambda (userdata)
@@ -238,9 +235,7 @@
                  (if success
                      (set-alist 'description "机の前に移動したよ" userdata)
                      (set-alist 'description "机の前に移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                  success)))
             (:inspect-tv-desk
              '(lambda (userdata)
@@ -272,9 +267,7 @@
                  (if success
                      (set-alist 'description "部屋の後ろに移動したよ" userdata)
                      (set-alist 'description "部屋の後ろに移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                  success)))
             (:inspect-desk-back
              '(lambda (userdata)
@@ -299,16 +292,13 @@
             (:move-to-desk-front
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-desk-front-trial userdata)))
-                      (success (move-to-desk-front :n-trial n-trial))
-                      (label-names (notify-recognition :location "on the way to desk-front")))
+                      (success (move-to-desk-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-desk-front userdata)) success)
                  (ros::spin-once)
                  (if success
                      (set-alist 'description "部屋の前に移動したよ" userdata)
                      (set-alist 'description "部屋の前に移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                  success)))
             (:inspect-desk-front
              '(lambda (userdata)
@@ -333,16 +323,13 @@
             (:move-to-kitchen-door-front
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-kitchen-door-front-trial userdata)))
-                      (success (move-to-kitchen-door-front :n-trial n-trial))
-                      (label-names (notify-recognition :location "on the way to kitchen")))
+                      (success (move-to-kitchen-door-front :n-trial n-trial)))
                  (setf (cdr (assoc 'success-go-to-tv-desk userdata)) success)
                  (ros::spin-once)
                  (if success
                      (set-alist 'description "ドアの前に移動したよ" userdata)
                      (set-alist 'description "ドアの前に移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                      success)))
             (:inspect-kitchen-door-front
              '(lambda (userdata)
@@ -356,13 +343,11 @@
                  t)))
             (:report-move-to-kitchen-door-front-failure
              '(lambda (userdata)
-               (let* (label-names (notify-recognition :location "on the way to kitchen"))
-                 (report-move-to-kitchen-door-front-failure)
-                 (ros::spin-once)
-                 (set-alist 'description "ドアの前に移動できなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata))
-                 t)))
+               (report-move-to-kitchen-door-front-failure)
+               (ros::spin-once)
+               (set-alist 'description "ドアの前に移動できなかったよ" userdata)
+               (set-alist 'image "" userdata)
+               t))
             (:move-to-sink-front
              '(lambda (userdata)
                (let* ((n-trial (cdr (assoc 'n-kitchen-trial userdata)))
@@ -373,9 +358,7 @@
                  (if success
                      (set-alist 'description "キッチンに移動したよ" userdata)
                      (set-alist 'description "キッチンに移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                  success)))
             (:inspect-kitchen
              '(lambda (userdata)
@@ -407,9 +390,7 @@
                  (if success
                      (set-alist 'description "ゴミ箱の前に移動したよ" userdata)
                    (set-alist 'description "ゴミ箱の前に移動しようとしたけど，迷子になっちゃった" userdata))
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                   (set-alist 'image "" userdata))
+                 (set-alist 'image "" userdata)
                  success)))
             (:inspect-trashcan
              '(lambda (userdata)
