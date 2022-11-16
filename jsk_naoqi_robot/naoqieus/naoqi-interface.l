@@ -8,7 +8,7 @@
 (ros::load-ros-package "nao_interaction_msgs")
 
 (defclass naoqi-interface
-  :super robot-interface
+  :super robot-move-base-interface
   :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action body-pose-with-speed-action)
   )
 
