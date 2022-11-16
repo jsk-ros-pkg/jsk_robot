@@ -8,8 +8,10 @@
      3. subscribe joy_head/joy_complemented and publish joy_head/cmd_vel
   -->
   <node pkg="jsk_spot_startup" type="end_effector_to_joy.py" name="end_effector_to_joy">
-    <param name="~deadzone" value="5" />
-    <param name="~maxrange" value="10" />
+    <param name="~deadzone_x" value="0.03" />
+    <param name="~deadzone_y" value="0.02" />
+    <param name="~maxrange_x" value="0.1" />
+    <param name="~maxrange_y" value="0.07" />
   </node>
   <node pkg="jsk_robot_startup" type="head_teleop_joy_completion.py" name="head_teleop_joy_completion">
     <remap from="~joy_input" to="joy_head/joy_raw" />
