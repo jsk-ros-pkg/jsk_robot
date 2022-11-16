@@ -63,6 +63,7 @@
     <arg name="dock_service" default="dock_fixed_id" />
     <arg name="tuck_service" default="stow_arm" />
     <arg name="untuck_service" default="unstow_arm" />
+    <arg name="teleop_twist_joy_param_file" default="$(find jsk_spot_startup)/config/dualsense_teleop_twist_joy.yaml" />
   </include>
   <!-- node to receive /spot/dock_fixed_no and calls /spot/dock -->
   <node pkg="jsk_spot_startup" type="call_spot_dock_with_id.py" name="call_spot_dock_with_id">
