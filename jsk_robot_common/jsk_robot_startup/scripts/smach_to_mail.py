@@ -89,6 +89,7 @@ class SmachToMail():
                     self._send_twitter(
                         self.smach_state_subject[key], self.smach_state_list[key])
                     self.smach_state_subject[key] = None
+                    self.smach_state_list[key] = None
                     rospy.logwarn(
                         "SmachToMail timer publishes stop signal. Send Notification.")
 
