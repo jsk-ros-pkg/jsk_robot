@@ -41,9 +41,10 @@
   :finished)
 
 (defun walk-func (args)
-  (ros::rate 0.1)
+  (ros::rate 2)
   (do-until-key
    (if (null *continue*) (return-from walk-func :finished))
+   (ros::spin-once)
    (ros::sleep))
   :finished)
 ;;
@@ -83,6 +84,14 @@
   (ros::ros-warn (format nil "ros::roseus-sigint-handler ~A" sig))
   (setq *continue* nil))
 (unix:signal unix::sigint 'ros::roseus-sigint-handler)
+
+;; send start-func (set-impedance) when R Stick button is pressed
+(ros::subscribe "/joy_dualsense" sensor_msgs::Joy
+               #'(lambda (msg)
+                   (if (and (> (length (send msg :buttons)) 11)
+                            (= (elt (send msg :buttons) 11) 1))
+                       (start-func nil)))
+               20)
 
 ;; state machine
 (exec-state-machine (walk-sm) '((description . "お散歩しました！")(image . "")))
