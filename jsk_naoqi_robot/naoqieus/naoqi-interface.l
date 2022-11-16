@@ -311,13 +311,15 @@
     the robot moves relative to current position.
     using [m] and [degree] is historical reason from original hrpsys code"
    ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/master/pr2eus/robot-interface.l#L867
-   (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
-     (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
-			  :rpy (float-vector (deg2rad d) 0 0)))
-     (send pose_msg :header :frame_id "base_footprint")
-     (send pose_msg :pose (ros::coords->tf-pose c))
-     (ros::publish (format nil "~A/move_base_simple/goal" group-namespace) pose_msg)
-     ))
+   (if (send self :simulation-modep)
+     (send-super :go-pos x y d)
+     (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
+       (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
+             :rpy (float-vector (deg2rad d) 0 0)))
+       (send pose_msg :header :frame_id "base_footprint")
+       (send pose_msg :pose (ros::coords->tf-pose c))
+       (ros::publish (format nil "~A/move_base_simple/goal" group-namespace) pose_msg)
+       )))
 
   (:go-velocity
    (x y d &optional (msec 1000) &key (stop t)) ;; [m/sec] [m/sec] [rad/sec]
