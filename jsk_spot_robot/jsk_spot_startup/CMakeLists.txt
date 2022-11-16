@@ -18,14 +18,14 @@ install(DIRECTORY auth config launch scripts services udev_rules template
    USE_SOURCE_PERMISSIONS
 )
 
-catkin_install_python(PROGRAMS
-    node_scripts/battery_notifier.py
-    node_scripts/battery_visualizer.py
-    node_scripts/cable_connection_detector.py
-    node_scripts/laptop_battery_visualizer.py
-    node_scripts/static_tf_republisher.py
-    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+file(GLOB_RECURSE SCRIPT_PROGRAMS node_scripts/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  endif()
+endforeach()
 
 
 #############
