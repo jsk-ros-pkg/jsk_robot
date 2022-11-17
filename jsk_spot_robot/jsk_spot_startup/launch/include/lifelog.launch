@@ -22,6 +22,7 @@
     <arg name="replicate" default="true" />
   </include>
 
+  <!-- outputs /spot/camera/hand_color/image/output/ when new scene found -->
   <include file="$(find jsk_perception)/launch/video_to_scene.launch" >
     <arg name="INPUT_IMAGE" value="/spot/camera/hand_color/image" />
     <arg name="IMAGE_TRANSPORT" default="compressed" />
@@ -33,12 +34,7 @@
 
   <arg name="map_frame" default="odom" />
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
-    <arg name="save_rgb" value="true" />
-    <arg name="camera_ns" default="/spot/camera" />
-    <arg name="rgb_ns" default="hand_color" />
-    <arg name="rgb_topic" default="image" />
-    <!-- <arg name="rgb_suffix" default="/compressed"/> -->
-    <arg name="rgb_suffix" default="/output/compressed"/> <!-- use video to scene -->
+    <arg name="save_rgb" value="false" />
     <arg name="save_depth" value="false" />
     <!-- <arg name="save_tf" value="true" /> -->
     <!-- <arg name="save_joint_states" value="true" /> -->
@@ -54,9 +50,61 @@
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="launch_manager" value="true" />
+    <arg name="manager" value="mongodb_record_nodelet_manager" />
     <arg name="map_frame_id" value="$(arg map_frame)" />
     <arg name="approximate_sync" value="true"/>
   </include>
+
+  <!-- republish image data only when /spot/camera/hand_color/image/output/compressed is published -->
+  <node name="camera_throttle_nodelet"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_topic_tools/SynchronizedThrottle mongodb_record_nodelet_manager" >
+    <rosparam subst_value="true">
+      approximate_sync: true
+      topics:
+      - /spot/camera/hand_color/image/output/compressed
+      - /spot/camera/hand_color/image/compressed
+      - /spot/camera/frontleft/image/compressed
+      - /spot/camera/frontright/image/compressed
+      - /spot/camera/left/image/compressed
+      - /spot/camera/right/image/compressed
+      - /spot/camera/back/image/compressed
+    </rosparam>
+  </node>
+
+  <!-- store thottled image -->
+  <group ns="lifelog">
+    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="hand_color_logger" />
+      <arg name="image" value="/spot/camera/hand_color/image/compressed/throttled" />
+      <arg name="manager" value="mongodb_record_nodelet_manager" />
+    </include>
+    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="frontleft_logger" />
+      <arg name="image" value="/spot/camera/frontleft/image/compressed/throttled" />
+      <arg name="manager" value="mongodb_record_nodelet_manager" />
+    </include>
+    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="frontright_logger" />
+      <arg name="image" value="/spot/camera/frontright/image/compressed/throttled" />
+      <arg name="manager" value="mongodb_record_nodelet_manager" />
+    </include>
+    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="left_logger" />
+      <arg name="image" value="/spot/camera/left/image/compressed/throttled" />
+      <arg name="manager" value="mongodb_record_nodelet_manager" />
+    </include>
+    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="right_logger" />
+      <arg name="image" value="/spot/camera/right/image/compressed/throttled" />
+      <arg name="manager" value="mongodb_record_nodelet_manager" />
+    </include>
+    <include file="$(find jsk_spot_startup)/launch/include/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="back_logger" />
+      <arg name="image" value="/spot/camera/back/image/compressed/throttled" />
+      <arg name="manager" value="mongodb_record_nodelet_manager" />
+    </include>
+  </group>
 
   <rosparam ns="lifelog/joint_states_throttle">
     periodic: false
@@ -85,6 +133,11 @@
   <rosparam ns="lifelog/speech_logger">
     topics:
       - /sound_play/goal
+      - /robotsound/goal
+      - /robotsound_jp/goal
+      - /sound_play
+      - /robotsound
+      - /robotsound_jp
   </rosparam>
 
 </launch>
