@@ -1,0 +1,23 @@
+<launch>
+  <arg name="bagfile_name" />
+  <arg name="rosbag_option" default="" />
+  <arg name="robot" default="$(find panda_eus)/models/dual_panda1.urdf.xacro" />
+  <arg name="robot_id" default="dual_panda" />
+  <arg name="rviz" default="true" />
+  <arg name="rvizconfig" default="$(find jsk_panda_startup)/config/rviz/dual_panda1_play.rviz" />
+
+  <param name="/use_sim_time" value="true" />
+  <node name="rosbag_play"
+        pkg="rosbag" type="play"
+        args="$(arg bagfile_name) --l --clock $(arg rosbag_option)">
+  </node>
+
+  <group ns="$(arg robot_id)">
+    <param name="robot_description" command="xacro --inorder $(arg robot)" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
+  </group>
+
+  <group if="$(arg rviz)">
+    <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(arg rvizconfig)" />
+  </group>
+</launch>

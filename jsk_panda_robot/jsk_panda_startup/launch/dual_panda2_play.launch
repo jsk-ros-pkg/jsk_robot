@@ -1,27 +1,30 @@
 <launch>
   <arg name="bagfile_name" />
-  <arg name="rosbag_option"  default="" />
-  <arg name="robot" value="$(find panda_eus)/models/dual_panda2.urdf.xacro" />
-  <arg name="robot_id" default="dual_panda" />
-  <arg name="RARM_VISION_RGB_IMAGE" default="/rarm_vision/camera/color/image_raw"/>
-  <arg name="LARM_VISION_RGB_IMAGE" default="/larm_vision/camera/color/image_raw"/>
-  <param name="robot_description" command="xacro --inorder $(arg robot)" />
-  <arg name="args" default="" />
-  <param name="/use_sim_time" value="true" />
-  <node name="rosbag_play"
-        pkg="rosbag" type="play"
-        args="$(arg bagfile_name) --l --clock $(arg rosbag_option)">
-  </node>
+  <arg name="rosbag_option" default="" />
+  <arg name="rviz" default="true" />
 
-  <group ns="$(arg robot_id)">
-    <param name="robot_description" command="xacro --inorder $(arg robot) $(arg args)" />
+  <include file="$(find jsk_panda_startup)/launch/dual_panda_play.xml">
+    <arg name="bagfile_name" value="$(arg bagfile_name)" />
+    <arg name="rosbag_option" value="$(arg rosbag_option)" />
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="robot" value="$(find panda_eus)/models/dual_panda2.urdf.xacro" />
+    <arg name="rvizconfig" value="$(find jsk_panda_startup)/config/rviz/dual_panda2_play.rviz" />
+  </include>
+
+  <group ns="/rarm_vision/camera/color">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
   </group>
-
-  <node name="rarm_vision_rgb_decompress" pkg="image_transport" type="republish"
-	args="compressed in:=$(arg RARM_VISION_RGB_IMAGE) raw out:=$(arg RARM_VISION_RGB_IMAGE)" />
-  <node name="larm_vision_rgb_decompress" pkg="image_transport" type="republish"
-	args="compressed in:=$(arg LARM_VISION_RGB_IMAGE) raw out:=$(arg LARM_VISION_RGB_IMAGE)" />
-
-  <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find jsk_panda_startup)/config/rviz/dual_panda2_play.rviz" />
-
+  <group ns="/larm_vision/camera/color">
+    <node name="republish"
+          pkg="image_transport" type="republish"
+          args="compressed raw">
+      <remap from="in" to="image_raw" />
+      <remap from="out" to="image_raw" />
+    </node>
+  </group>
 </launch>
