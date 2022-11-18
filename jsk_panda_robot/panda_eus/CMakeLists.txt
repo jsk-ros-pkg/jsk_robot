@@ -8,7 +8,7 @@ find_package(catkin REQUIRED
   )
 find_package(franka_description)  # Just in case when description is not released. Avoid compile failing
 
-catkin_package(CATKIN_DEPENDS pr2eus)
+catkin_package()
 
 ###
 ### dual_panda.l generation
