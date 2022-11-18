@@ -36,8 +36,9 @@
     (with-image
       (unix::system (format nil "rm -f /tmp/tweet_image.jpg"))
       ;; camera shot sound
-      (play-sound (pathname (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav"))
-                  :topic-name "robotsound_jp" :wait t)
+      (when speak
+        (play-sound (pathname (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav"))
+                    :topic-name "robotsound_jp" :wait t))
       ;; specify camera
       (when (stringp with-image)
         (ros::wait-for-service "/tweet_image_mux/list")
