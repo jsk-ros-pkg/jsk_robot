@@ -9,6 +9,7 @@ import datetime
 import os
 import pickle
 import rospy
+import rosnode
 import sys
 
 from cv_bridge import CvBridge
@@ -50,7 +51,6 @@ class SmachToMail():
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        self.smach_start_time = {}
         self.timeout = rospy.get_param("~timeout", 1200)
         if rospy.has_param("~sender_address"):
             self.sender_address = rospy.get_param("~sender_address")
@@ -78,22 +78,25 @@ class SmachToMail():
         If smach does not go to finish/end state,
         this is forced to send notification.
         '''
-        now = rospy.Time.now()
         rospy.logdebug("SmachToMail stop timer called")
-        if (self.smach_state_list and
-                self.smach_state_subject and
-                self.timeout is not None and
-                self.smach_start_time is not None):
+        if (self.smach_state_list and self.smach_state_subject):
             for key in self.smach_state_list.keys():
-                if (now - self.smach_start_time[key]).to_sec() > self.timeout:
-                    self._send_mail(
-                        self.smach_state_subject[key], self.smach_state_list[key])
-                    self._send_twitter(
-                        self.smach_state_subject[key], self.smach_state_list[key])
-                    self.smach_state_subject[key] = None
-                    self.smach_state_list[key] = None
+                # Check node status and force to send notification
+                if not rosnode.rosnode_ping(
+                        key, max_count=30, verbose=False):
                     rospy.logwarn(
                         "SmachToMail timer publishes stop signal. Send Notification.")
+                    if self.use_mail:
+                        self._send_mail(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_twitter:
+                        self._send_twitter(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_google_chat:
+                        self._send_google_chat(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    del self.smach_state_subject[key]
+                    del self.smach_state_list[key]
 
     def _status_cb(self, msg):
         '''
@@ -135,7 +138,6 @@ class SmachToMail():
 
         # If we received START/INIT status, restart storing smach_state_list
         if status_str in ["START", "INIT"]:
-            self.smach_start_time[caller_id] = rospy.Time.now()
             self.smach_state_list[caller_id] = []
             # DESCRIPTION of START is MAIL SUBJECT
             if 'DESCRIPTION' in local_data_str:
