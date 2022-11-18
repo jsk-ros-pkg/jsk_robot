@@ -11,8 +11,6 @@
 
   <!-- Controllers of panda and devices -->
   <include file="$(find jsk_panda_startup)/launch/dual_panda1.launch">
-    <arg name="hw_config_file" value="$(find jsk_panda_teleop)/config/dual_panda_control_node.yaml" />
-    <arg name="controllers_file" value="$(find jsk_panda_teleop)/config/dual_panda_controllers.yaml" />
     <arg name="controllers_to_start" value="rarm_state_controller larm_state_controller larm_cartesian_impedance_controller rarm_cartesian_impedance_controller" />
     <arg name="n_channel" value="$(arg n_channel)" />
     <arg name="depth" value="$(arg depth)" />
