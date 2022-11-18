@@ -23,20 +23,4 @@
   <run_depend>franka_control</run_depend>
   <run_depend>pr2eus</run_depend>
 
-  <!--
-  <build_depend>franka_msgs</build_depend>
-  <build_depend>franka_gripper</build_depend>
-  <build_depend>gazebo_ros</build_depend>
-
-  <run_depend>gazebo_ros</run_depend>
-  <run_depend>gazebo_plugins</run_depend>
-  <run_depend>gazebo_ros_control</run_depend>
-  <run_depend>controller_manager</run_depend>
-  <run_depend>hardware_interface</run_depend>
-  <run_depend>transmission_interface</run_depend>
-  <run_depend>joint_limits_interface</run_depend>
-  <run_depend>joint_trajectory_controller</run_depend>
-  <run_depend>joint_state_controller</run_depend>
-  <run_depend>velocity_controllers</run_depend>
-  -->
 </package>

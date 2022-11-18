@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro"
        name="dual_panda" >
+
   <!-- load macros -->
   <xacro:include filename="$(find franka_description)/robots/common/franka_arm.xacro" />
   <xacro:include filename="$(find franka_description)/robots/common/franka_hand.xacro"/>
@@ -121,43 +122,4 @@
     <origin xyz="0 0 0.2" rpy="0 -1.570796327 -0.785398163"/>
   </joint>
 
-  <!-- gazebo -->
-  <xacro:macro name="gazebo_transmission" params="joint_name" >
-    <transmission name="${joint_name}_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${joint_name}">
-        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${joint_name}_motor">
-        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  </xacro:macro>
-  <xacro:gazebo_transmission joint_name="right_joint1" />
-  <xacro:gazebo_transmission joint_name="right_joint2" />
-  <xacro:gazebo_transmission joint_name="right_joint3" />
-  <xacro:gazebo_transmission joint_name="right_joint4" />
-  <xacro:gazebo_transmission joint_name="right_joint5" />
-  <xacro:gazebo_transmission joint_name="right_joint6" />
-  <xacro:gazebo_transmission joint_name="right_joint7" />
-  <xacro:gazebo_transmission joint_name="left_joint1" />
-  <xacro:gazebo_transmission joint_name="left_joint2" />
-  <xacro:gazebo_transmission joint_name="left_joint3" />
-  <xacro:gazebo_transmission joint_name="left_joint4" />
-  <xacro:gazebo_transmission joint_name="left_joint5" />
-  <xacro:gazebo_transmission joint_name="left_joint6" />
-  <xacro:gazebo_transmission joint_name="left_joint7" />
-  <xacro:gazebo_transmission joint_name="right_finger_joint1" />
-  <xacro:gazebo_transmission joint_name="right_finger_joint2" />
-  <xacro:gazebo_transmission joint_name="left_finger_joint1" />
-  <xacro:gazebo_transmission joint_name="left_finger_joint2" />
-
-  <gazebo>
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <!--robotNamespace>/</robotNamespace-->
-      <legacyModeNS>false</legacyModeNS>
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
-  </gazebo>
 </robot>
