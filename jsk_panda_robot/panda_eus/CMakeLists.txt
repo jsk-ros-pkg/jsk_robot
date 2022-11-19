@@ -13,7 +13,10 @@ catkin_package()
 ###
 ### dual_panda.l generation
 ###
-if(franka_description_FOUND)
+if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic")))
+  # xacro.load_yaml cannot be recognized under melodic, while it is recommended on melodic and upper.
+  # PR introducing xacro.load_yaml: https://github.com/ros/xacro/pull/283
+  # Related issue: https://github.com/ros/xacro/issues/298
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/dual_panda.l
     COMMAND rosrun euscollada collada2eus -I dual_panda.urdf -C dual_panda.yaml -O dual_panda.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
@@ -26,7 +29,7 @@ if(franka_description_FOUND)
 
   add_custom_target(generate_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.l)
 else()
-  message(WARNING "franka_description is not found, so skip generating dual_panda.l")
+  message(WARNING "Dependency is not met, so skip generating dual_panda.l")
 endif()
 
 
