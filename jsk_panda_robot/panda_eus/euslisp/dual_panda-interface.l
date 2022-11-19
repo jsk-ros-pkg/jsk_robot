@@ -76,6 +76,7 @@
      )))
   (:set-joint-pd-gain
    (joint-name pgain dgain)
+   "Set P gain and D gain of each joint"
    (let ((req (instance dynamic_reconfigure::ReconfigureRequest :init)))
      (send req :config :doubles
            (list (instance dynamic_reconfigure::DoubleParameter :init
@@ -88,26 +89,37 @@
      ))
   (:set-all-joint-pd-gain
    (pgain dgain)
+   "Set P gain and D gain of all joints"
    (dolist (j (send robot :joint-list))
      (send self :set-joint-pd-gain (send j :name) pgain dgain))
    )
-  (:check-error ()
-                (ros::spin-once "error_group")
-                (or r-error l-error)
-                )
-  (:callback-rarm-error (msg)
-                        (setq r-error (send msg :data))
-                        )
-  (:callback-larm-error (msg)
-                        (setq l-error (send msg :data))
-                        )
+  (:check-error
+   ()
+   "Check if the robot has error.
+If this method returns T, you must call :recover-error to move the robot.
+"
+   (ros::spin-once "error_group")
+   (or r-error l-error)
+   )
+  (:callback-rarm-error
+   (msg)
+   (setq r-error (send msg :data))
+   )
+  (:callback-larm-error
+   (msg)
+   (setq l-error (send msg :data))
+   )
   (:wait-recover-error () (send error-recovery-act :wait-for-result))
-  (:recover-error (&key (wait t))
-                  (let ((goal (instance franka_msgs::ErrorRecoveryActionGoal :init)))
-                    (send goal :header :stamp (ros::time-now))
-                    (send error-recovery-act :send-goal goal)
-                    (if wait (send self :wait-recover-error))
-                    ))
+  (:recover-error
+   (&key (wait t))
+   "Recover from errors and reflexes.
+Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka_ros.html#franka-control
+"
+   (let ((goal (instance franka_msgs::ErrorRecoveryActionGoal :init)))
+     (send goal :header :stamp (ros::time-now))
+     (send error-recovery-act :send-goal goal)
+     (if wait (send self :wait-recover-error))
+     ))
   ;; gripper action for real-controller
   (:send-gripper-grasp-action
    (act width speed force &key (wait t) (inner 0.005) (outer 0.07))
@@ -150,6 +162,9 @@
      ))
   (:stop-gripper
    (arm &key (wait nil))
+   "Abort a running gripper action. This can be used to stop applying forces after grasping.
+Details: `StopAction` part of https://frankaemika.github.io/docs/franka_ros.html#franka-gripper
+"
    (let (acts)
      (case
       arm
@@ -159,12 +174,14 @@
       )
      (when acts
        (dolist (act acts)
-         (send self :send-gripper-stop-action act
-               pos (/ (* 1000 0.08) tm) :wait nil))
+         (send self :send-gripper-stop-action act :wait nil))
        (if wait (mapcar #'(lambda (act) (send act :wait-for-result)) acts))
        )))
   (:homing-gripper
    (arm &key (wait nil))
+   "Home the gripper and update the maximum width given the mounted fingers (i.e., calibrate & initialize the gripper).
+Details: `HomingAction` part of https://frankaemika.github.io/docs/franka_ros.html#franka-gripper
+"
    (let (acts)
      (case
       arm
@@ -174,12 +191,23 @@
       )
      (when acts
        (dolist (act acts)
-         (send self :send-gripper-homing-action act
-               pos (/ (* 1000 0.08) tm) :wait nil))
+         (send self :send-gripper-homing-action act :wait nil))
        (if wait (mapcar #'(lambda (act) (send act :wait-for-result)) acts))
        )))
   (:start-grasp
-   (arm &key (width 0.0)(effort 80.0) (tm 500) (wait nil) (inner 0.005) (outer 0.06)) ;; TODO :arms is not implemented
+   (arm &key (width 0.0) (effort 80.0) (tm 500) (wait nil) (inner 0.005) (outer 0.06))
+   "Try to grasp at the desired `width` with the desired `effort` while closing with the desired speed calculated from `tm`.
+Arguments:
+- arm : :rarm, :larm, or :arms
+- width : target distance between the fingers [m]
+- effort : target effort [N]
+- tm : time to target [ms]. This will be converted to the movement speed
+- wait : if this argument is T, this method waits until the movement finishes
+- inner : lower admissible error of width. If this is violated, the gripper stops applying forces
+- outer : upper admissible error of width. If this is violated, the gripper stops applying forces
+          Details: https://github.com/ykawamura96/jsk_robot/pull/1#issuecomment-860324988
+Details: `GraspAction` part of https://frankaemika.github.io/docs/franka_ros.html#franka-gripper
+"
    (let (acts)
      (case
       arm
@@ -194,14 +222,18 @@
        (if wait (mapcar #'(lambda (act) (send act :wait-for-result)) acts))
        )))
   (:stop-grasp
-   (arm &key (wait nil) (width 0.08)) ;; TODO :arms is not implemented
+   (arm &key (wait nil) (width 0.08))
+   "Open the gripper to the target `width` [m]"
    (unless (memq arm '(:larm :rarm :arms))
      (error "you must specify arm ~A from ~A" (car args) '(:larm :rarm :arms))
      (return-from :stop-grasp nil))
    (send self :move-gripper arm width :tm 500 :wait wait)
    )
   (:move-gripper
-   (arm pos &key (effort 25) (tm 500) (timeout 5000) (wait nil))  ;; TODO :arms is not implemented
+   (arm width &key (tm 500) (wait nil))
+   "Move the gripper to the target `width` [m] while closing with the desired speed calculated from `tm` [ms].
+Details: `MoveAction` part of https://frankaemika.github.io/docs/franka_ros.html#franka-gripper
+"
    (let (acts)
      (case
       arm
@@ -212,7 +244,7 @@
      (when acts
        (dolist (act acts)
          (send self :send-gripper-move-action act
-               pos (/ (* 1000 0.08) tm) :wait nil))
+               width (/ (* 1000 0.08) tm) :wait nil))
        (if wait (mapcar #'(lambda (act) (send act :wait-for-result)) acts))
        )))
   )
