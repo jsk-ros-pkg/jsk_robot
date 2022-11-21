@@ -85,8 +85,8 @@
 # we need this for eus10 and roseus_resume
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
-    uri: https://github.com/knorth55/jsk_pr2eus.git
-    version: pr1040
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master 
 # we need to install from source because pr2 is indigo
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
