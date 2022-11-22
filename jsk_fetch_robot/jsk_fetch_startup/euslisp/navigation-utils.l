@@ -153,6 +153,7 @@
   ;; while dock succeeds, the result will not be correct,
   ;; so wait for a certain time when docking.
   """
+  (if (send *ri* :simulation-modep) (return-from wait-until-is-charging nil))
   (let* ((msg nil)
          (is-charging nil)
          (duration 0)
@@ -174,6 +175,7 @@
     - key
       timeout: Set waiting time for topic.
   """
+   (if (send *ri* :simulation-modep) (return-from get-battery-charging-state nil))
    (let* ((msg (one-shot-subscribe "/battery_state" power_msgs::batterystate :timeout timeout))
           (is-charging (if msg (send msg :is_charging))))
      ;; You may fail to subscribe /battery_state
