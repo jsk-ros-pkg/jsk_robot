@@ -405,8 +405,9 @@ Args:
 
 (defun notify-recognition (&key (location "kitchen"))
   (let* ((msg (one-shot-subscribe "/edgetpu_object_detector/output/class"
-                                  jsk_recognition_msgs::ClassificationResult))
-         (label-names (send msg :label_names)))
+                                  jsk_recognition_msgs::ClassificationResult
+                                  :timeout 3000))
+         (label-names (if msg (send msg :label_names))))
     (when label-names
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
       (notify-app "object recognition"
