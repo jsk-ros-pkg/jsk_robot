@@ -487,10 +487,13 @@ Args:
     success-move-to-sink-front))
 
 (defun move-to-dock-front (&key (n-trial 1) (offset #f(400 -500 0)))
-  (let ((success-move-to-dock-front nil))
+  (let ((success-move-to-dock-front nil)
+        (goal-coords (make-coords :pos (float-vector 5077.8 6763.237 30000.0)
+                                  :rpy (float-vector 0.059 0 0))))
     (dotimes (i n-trial)
       (setq success-move-to-dock-front
-    (send *ri* :move-to (make-coords :pos (float-vector 5077.8 6763.237 30000.0) :rpy (float-vector 0.059 0 0)) :relative-pos offset))
+            (go-to-spot *dock-spot*
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-dock-front (return)))
     success-move-to-dock-front))
 
@@ -498,15 +501,19 @@ Args:
   (let ((success-move-to-tv-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-tv-front
-    (send *ri* :move-to (make-coords :pos (float-vector 5082.057 6800.628 30000.0) :rpy (float-vector 3.109 0 0)) :relative-pos offset))
+            (go-to-spot "/eng2/7f/room73B2-tv-front"
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-tv-front (return)))
     success-move-to-tv-front))
 
 (defun move-to-tv-desk (&key (n-trial 1) (offset #f(400 -500 0)))
-  (let ((success-move-to-tv-desk nil))
+  (let ((success-move-to-tv-desk nil)
+        (goal-coords (make-coords :pos (float-vector 4035.759 7343.818 30000.0)
+                                  :rpy (float-vector 1.753 0 0))))
     (dotimes (i n-trial)
       (setq success-move-to-tv-desk
-    (send *ri* :move-to (make-coords :pos (float-vector 4035.759 7343.818 30000.0) :rpy (float-vector 1.753 0 0)) :relative-pos offset))
+            (go-to-spot "/eng2/7f/room73B2-tv-desk"
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-tv-desk (return)))
     success-move-to-tv-desk))
 
@@ -514,7 +521,8 @@ Args:
   (let ((success-move-to-desk-back nil))
     (dotimes (i n-trial)
       (setq success-move-to-desk-back
-    (send *ri* :move-to (make-coords :pos (float-vector 4324.417 6121.184 30000.0) :rpy (float-vector -0.845 0 0)) :relative-pos offset))
+            (go-to-spot "/eng2/7f/room73B2-desk-back"
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-desk-back (return)))
     success-move-to-desk-back))
 
@@ -522,15 +530,19 @@ Args:
   (let ((success-move-to-desk-front nil))
     (dotimes (i n-trial)
       (setq success-move-to-desk-front
-    (send *ri* :move-to (make-coords :pos (float-vector 4318.808 6108.146 30000.0) :rpy (float-vector -2.231 0 0)) :relative-pos offset))
+            (go-to-spot "/eng2/7f/room73B2-desk-front"
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-desk-front (return)))
     success-move-to-desk-front))
 
 (defun move-to-kitchen-door-front (&key (n-trial 1) (offset #f(400 -500 0)))
-  (let ((success-move-to-kitchen-door-front nil))
+  (let ((success-move-to-kitchen-door-front nil)
+        (goal-coords (make-coords :pos (float-vector 1558.69 7230.57 30000.0)
+                                  :rpy (float-vector 2.296 0 0))))
     (dotimes (i n-trial)
       (setq success-move-to-kitchen-door-front
-    (send *ri* :move-to (make-coords :pos (float-vector 1558.69 7230.57 30000.0) :rpy (float-vector 2.296 0 0)) :relative-pos offset))
+            (go-to-spot "/eng2/7f/room73B2-kitchen-door-front"
+                        :relative-pos offset :undock-rotate t))
       (when success-move-to-kitchen-door-front (return)))
     success-move-to-kitchen-door-front))
 
