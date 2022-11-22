@@ -40,6 +40,7 @@
                     :speak *speak-enable*
                     :volume *volume*))))
 
+(ros::advertise "/tweet" std_msgs::String 1)
 (ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
 
 (ros::spin)
