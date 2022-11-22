@@ -259,7 +259,6 @@ Details: `MoveAction` part of https://frankaemika.github.io/docs/franka_ros.html
   )
 
 #|
-(send *ri* :set-all-joint-pd-gain 1000.0 5.0) ;; default
-(send *ri* :set-all-joint-pd-gain  300.0 5.0) ;; hard
-(send *ri* :set-all-joint-pd-gain   30.0 0.5) ;; soft
+You can check current gains with rqt_reconfigure.
+Be careful changing them with :set-joint-pd-gain or :set-all-joint-pd-gain
 |#
