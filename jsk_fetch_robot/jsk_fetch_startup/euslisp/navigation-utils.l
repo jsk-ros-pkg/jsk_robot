@@ -235,7 +235,7 @@ Args:
                         :relative-pos #f(-800 0 0)
                         :clear-costmap clear-costmap)
         (ros::ros-info "arrived at the dock.")
-        (setq success (dock))
+        (setq success (if (send *ri* :simulation-modep) t (dock)))
         (when success (return-from auto-dock success))))
     success))
 
