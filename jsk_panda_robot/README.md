@@ -71,6 +71,12 @@
       (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
       ```
       `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
+#### Record/play rosbag
+```bash
+roslaunch jsk_panda_startup dual_panda1_record.launch  # Or roslaunch jsk_panda_startup dual_panda2_record.launch
+# Generated bag file: /tmp/panda_rosbag/data_*.bag
+roslaunch jsk_panda_startup dual_panda1_play.launch bagfile_name:=/path/to/bagfile  # Or roslaunch jsk_panda_startup dual_panda2_play.launch bagfile_name:=/path/to/bagfile
+```
 ### Teleop
 #### Start program
 1. Start controller on controller PC:
@@ -101,6 +107,13 @@
 2. Press gripper switch to close / open gripper.
 
 ![image](https://user-images.githubusercontent.com/43567489/159150507-75122802-121e-4a22-abd1-b9540890950b.png)
+
+#### Record/play rosbag
+```bash
+roslaunch jsk_panda_teleop panda_teleop_record.launch
+# Generated bag file: /tmp/panda_rosbag/data_*.bag
+roslaunch jsk_panda_teleop panda_teleop_play.launch bagfile_name:=/path/to/bagfile
+```
 
 #### Trouble Shooting
 1. `Failed to initialize haptic device`  -> Please give access to haptic devices, i.e `sudo chmod 777 /dev/ttyACM[0-1]`
