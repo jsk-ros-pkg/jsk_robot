@@ -40,8 +40,8 @@
         (play-sound (pathname (ros::resolve-ros-path "package://jsk_pr2_startup/jsk_pr2_lifelog/camera.wav"))
                     :topic-name "robotsound_jp" :wait t :volume volume))
       ;; specify camera
-      (when (stringp with-image)
-        (ros::wait-for-service "/tweet_image_mux/list")
+      (when (and (stringp with-image)
+                 (ros::wait-for-service "/tweet_image_mux/list" 1))
         (let ((current-image-list
                (send (ros::service-call "/tweet_image_mux/list" (instance topic_tools::muxlistrequest :init)) :topics)))
           (unless (find with-image current-image-list :test #'string=)
