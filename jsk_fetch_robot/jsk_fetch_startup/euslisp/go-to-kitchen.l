@@ -8,6 +8,7 @@
 
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
 
+(ros::advertise "/tweet" std_msgs::String 1)
 (ros::advertise "/photo_taken" sensor_msgs::Image 1)
 (setq *image* nil)
 
