@@ -58,17 +58,26 @@
 
 
 (defun get-spot-coords (name)
-  (unless *spots*
-    (setq *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
-  (let ((spot-coords nil) (frame-id nil))
-    (dolist (x (send *spots* :markers))
-      (if (equal (send x :text) name)
-        (progn
-          (setq spot-coords (send x :pose))
-          (setq frame-id (send (send x :header) :frame_id)))))
-    (send (send spot-coords :position) :z 0)
-    (setq spot-coords (ros::tf-pose->coords spot-coords))
-    (cons spot-coords frame-id)))
+  (if (send *ri* :simulation-modep)
+    (let ((base-coords (send *scene* :spot *base-spot*))
+          (spot-coords (send *scene* :spot name))
+          (goal-coords nil))
+      (if (and base-coords spot-coords)
+        (setq goal-coords (send base-coords :transformation spot-coords)))
+      (cons goal-coords nil))
+    (progn
+      (unless *spots*
+        (setq *spots* (one-shot-subscribe "/spots_marker_array" visualization_msgs::MarkerArray)))
+      (let ((spot-coords nil) (frame-id nil))
+        (dolist (x (send *spots* :markers))
+          (if (equal (send x :text) name)
+            (progn
+              (setq spot-coords (send x :pose))
+              (setq frame-id (send (send x :header) :frame_id)))))
+        (send (send spot-coords :position) :z 0)
+        (setq spot-coords (ros::tf-pose->coords spot-coords))
+        (cons spot-coords frame-id))
+      )))
 
 
 (defun simple-dock (&key (use-pose t))
@@ -210,7 +219,9 @@ Args:
       (setq goal-pose (send goal-pose :translate relative-pos :world)))
     (when relative-rot
       (setq goal-pose (send goal-pose :rotate relative-rot :z :local)))
-    (send *ri* :move-to goal-pose :frame-id frame-id)))
+    (if frame-id
+      (send *ri* :move-to goal-pose :frame-id frame-id)
+      (send *ri* :move-to goal-pose))))
 
 
 (defun auto-dock (&key (n-trial 1) (clear-costmap t))
