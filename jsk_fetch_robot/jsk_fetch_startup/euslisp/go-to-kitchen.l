@@ -119,6 +119,11 @@
           '((:init
               '(lambda (userdata)
                  (fetch-init)
+                 (if (send *ri* :simulation-modep)
+                   (progn
+                     (load "models/room73b2-scene.l")
+                     (room73b2)
+                     (send *ri* :objects (send *room73b2* :objects))))
                  (undock)
                  (send *ri* :clear-costmap)
                  (store-params)
