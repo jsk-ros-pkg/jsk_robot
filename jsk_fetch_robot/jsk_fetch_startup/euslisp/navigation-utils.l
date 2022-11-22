@@ -87,7 +87,7 @@
                     "/dock" fetch_auto_dock_msgs::DockAction)))
   (unless (send *dock-action* :wait-for-server 5)
     (ros::ros-error "/dock action server is not started")
-    (return-from dock nil))
+    (return-from simple-dock nil))
   (let ((dock-action-goal (instance fetch_auto_dock_msgs::DockActionGoal :init)))
     (when use-pose
       (let* ((timestamp (ros::time-now))
