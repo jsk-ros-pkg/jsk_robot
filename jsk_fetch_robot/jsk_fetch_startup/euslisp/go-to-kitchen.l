@@ -9,6 +9,7 @@
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
 
 (ros::advertise "/photo_taken" sensor_msgs::Image 1)
+(setq *image* nil)
 
 (defun image-cb (msg)
   (setq *image* msg))
@@ -140,7 +141,9 @@
                    (if light-on
                        (set-alist 'description "電気がついていたよ" userdata)
                        (set-alist 'description "電気がついていなかったよ" userdata))
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (if *image*
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'image "" userdata))
                    light-on)))
             (:report-light-on
               '(lambda (userdata)
@@ -156,9 +159,9 @@
                    (room-light-on :control-switchbot control-switchbot)
                    (ros::spin-once)
                    (set-alist 'description "電気をつけたよ" userdata)
-                   (if label-names
-                       (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                       (set-alist 'image "" userdata))
+                   (if (and *image* label-names)
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'image "" userdata))
                    t)))
             (:move-to-dock-front
              '(lambda (userdata)
@@ -170,9 +173,9 @@
                    (if success
                        (set-alist 'description "ドックの前に移動したよ" userdata)
                        (set-alist 'description "ドックの前に移動しようとしたけど，迷子になっちゃった" userdata))
-                   (if label-names
-                       (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                       (set-alist 'image "" userdata))
+                   (if (and *image* label-names)
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'image "" userdata))
                    success)))
             (:inspect-dock-front
              '(lambda (userdata)
@@ -180,9 +183,9 @@
                  (inspect-dock-front :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description "ドックの前の様子を見たよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-dock-front-failure
              '(lambda (userdata)
@@ -190,9 +193,9 @@
                  (report-move-to-dock-front-failure)
                  (ros::spin-once)
                  (set-alist 'description "ドックの前に移動できなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:move-to-tv-front
              '(lambda (userdata)
@@ -211,9 +214,9 @@
                  (inspect-tv-front :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description "テレビの前の様子を見たよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-tv-front-failure
              '(lambda (userdata)
@@ -221,9 +224,9 @@
                  (report-move-to-tv-front-failure)
                  (ros::spin-once)
                  (set-alist 'description "テレビの前に移動できなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:move-to-tv-desk
              '(lambda (userdata)
@@ -243,9 +246,9 @@
                  (inspect-tv-desk :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description "机の様子を確認したよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-tv-desk-failure
              '(lambda (userdata)
@@ -253,9 +256,9 @@
                  (report-move-to-tv-desk-failure)
                  (ros::spin-once)
                  (set-alist 'description "机の前に移動できなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:move-to-desk-back
              '(lambda (userdata)
@@ -275,9 +278,9 @@
                  (inspect-desk-back :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description "部屋の後ろを確認したよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-desk-back-failure
              '(lambda (userdata)
@@ -285,9 +288,9 @@
                  (report-move-to-desk-back-failure)
                  (ros::spin-once)
                  (set-alist 'description "部屋の後ろに移動できなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:move-to-desk-front
              '(lambda (userdata)
@@ -306,9 +309,9 @@
                  (inspect-desk-front :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description "部屋の前を確認したよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-desk-front-failure
              '(lambda (userdata)
@@ -316,9 +319,9 @@
                  (report-move-to-desk-front-failure)
                  (ros::spin-once)
                  (set-alist 'description "部屋の前に移動できなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:move-to-kitchen-door-front
              '(lambda (userdata)
@@ -337,9 +340,9 @@
                  (inspect-kitchen-door-front :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description "ドアの前からキッチンの様子を見たよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'image "" userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-kitchen-door-front-failure
              '(lambda (userdata)
@@ -367,18 +370,19 @@
                  (inspect-kitchen :tweet (cdr (assoc 'tweet userdata)))
                  (ros::spin-once)
                  (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata)
-               (if label-names
+                 (if (and *image* label-names)
                    (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                   (set-alist 'image "" userdata)))
-               t))
+                   (set-alist 'image "" userdata))
+                 t)))
             (:report-move-to-sink-front-failure
              '(lambda (userdata)
                (let* ((label-names (notify-recognition :location "on the way to sink-front")))
                  (report-move-to-sink-front-failure)
                  (ros::spin-once)
                  (set-alist 'description "キッチンに行けなかったよ" userdata)
-                 (if label-names
-                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata))
+                 (if (and *image* label-names)
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  t)))
             (:move-to-trashcan-front
              '(lambda (userdata)
@@ -397,14 +401,18 @@
                (inspect-trashcan :tweet (cdr (assoc 'tweet userdata)))
                (ros::spin-once)
                (set-alist 'description "ゴミ箱の様子を確認したよ" userdata)
-               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               (if *image*
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 (set-alist 'image "" userdata))
                t))
             (:report-move-to-trashcan-front-failure
              '(lambda (userdata)
                (report-move-to-trashcan-front-failure)
                (ros::spin-once)
                (set-alist 'description "ゴミ箱の前に行けなかったよ" userdata)
-               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               (if *image*
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 (set-alist 'image "" userdata))
                t))
             (:auto-dock
              '(lambda (userdata)
@@ -416,14 +424,18 @@
                  (if success
                      (set-alist 'description "帰ってきたよ" userdata)
                      (set-alist 'description "帰ってこようとしたけど，迷子になっちゃった" userdata))
-                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 (if *image*
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'image "" userdata))
                  success)))
             (:auto-dock-failure
              '(lambda (userdata)
                (report-auto-dock-failure)
                (ros::spin-once)
                (set-alist 'description "帰ってこられなかったよ" userdata)
-               (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+               (if *image*
+                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 (set-alist 'image "" userdata))
                t))
             (:room-light-off
              '(lambda (userdata)
