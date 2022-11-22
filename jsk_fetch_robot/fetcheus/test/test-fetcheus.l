@@ -126,6 +126,23 @@
             (format nil ":go-velocity returns t with argument ~A" go-vel-arg))
     ))
 
+;; test for kinematics simulation
+(deftest fetch-go-pos
+  (let (go-pos-arg)
+    (setq go-pos-arg (list 0.1 0.1 0.5))
+    (assert (send* *ri* :go-pos go-pos-arg)
+            (format nil ":go-pos doesn't return t with argument ~A" go-pos-arg))
+    ))
+
+;; test for kinematics simulation
+(deftest fetch-go-pos-unsafe
+  (let (go-pos-arg)
+    (setq go-pos-arg (list 0.1 0.1 0.5))
+    ;; :go-pos-unsafe returns nil
+    (assert (null (send* *ri* :go-pos-unsafe go-pos-arg))
+            (format nil ":go-pos-unsafe doesn't return t with argument ~A" go-pos-arg))
+    ))
+
 (deftest fetch-use-torso
   (let ()
     (setq *ri* (instance fetch-interface :init))
