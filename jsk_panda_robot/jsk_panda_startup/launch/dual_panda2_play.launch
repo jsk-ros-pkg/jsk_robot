@@ -2,6 +2,8 @@
   <arg name="bagfile_name" />
   <arg name="rosbag_option" default="" />
   <arg name="rviz" default="true" />
+  <arg name="rarm_camera_ns" default="rarm_camera" />
+  <arg name="larm_camera_ns" default="larm_camera" />
   <arg name="republish_cloud" default="true" />
 
   <include file="$(find jsk_panda_startup)/launch/dual_panda_play.xml">
@@ -12,14 +14,12 @@
     <arg name="rvizconfig" value="$(find jsk_panda_startup)/config/rviz/dual_panda2_play.rviz" />
   </include>
 
-  <group ns="/rarm_vision">
-    <include file="$(find jsk_panda_startup)/launch/realsense_play.xml">
-      <arg name="republish_cloud" value="$(arg republish_cloud)" />
-    </include>
-  </group>
-  <group ns="/larm_vision">
-    <include file="$(find jsk_panda_startup)/launch/realsense_play.xml">
-      <arg name="republish_cloud" value="$(arg republish_cloud)" />
-    </include>
-  </group>
+  <include file="$(find jsk_panda_startup)/launch/realsense_play.xml">
+    <arg name="camera" value="$(arg rarm_camera_ns)" />
+    <arg name="republish_cloud" value="$(arg republish_cloud)" />
+  </include>
+  <include file="$(find jsk_panda_startup)/launch/realsense_play.xml">
+    <arg name="camera" value="$(arg larm_camera_ns)" />
+    <arg name="republish_cloud" value="$(arg republish_cloud)" />
+  </include>
 </launch>

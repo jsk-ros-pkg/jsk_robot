@@ -11,14 +11,14 @@
     <arg name="quiet" value="$(arg quiet)" />
     <arg name="machine" value="$(arg machine)" />
     <arg name="other_topics" value="$(arg other_topics)
-                                    /larm_vision/camera/color/camera_info
-                                    /larm_vision/camera/color/image_raw/compressed
-                                    /larm_vision/camera/depth/camera_info
-                                    /larm_vision/camera/depth/image_rect_raw/compressedDepth
-                                    /rarm_vision/camera/color/camera_info
-                                    /rarm_vision/camera/color/image_raw/compressed
-                                    /rarm_vision/camera/depth/camera_info
-                                    /rarm_vision/camera/depth/image_rect_raw/compressedDepth
+                                    /larm_camera/color/camera_info
+                                    /larm_camera/color/image_raw/compressed
+                                    /larm_camera/depth/camera_info
+                                    /larm_camera/depth/image_rect_raw/compressedDepth
+                                    /rarm_camera/color/camera_info
+                                    /rarm_camera/color/image_raw/compressed
+                                    /rarm_camera/depth/camera_info
+                                    /rarm_camera/depth/image_rect_raw/compressedDepth
                                     " />
   </include>
 </launch>

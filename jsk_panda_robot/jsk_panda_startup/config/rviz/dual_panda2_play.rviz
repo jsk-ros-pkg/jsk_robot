@@ -458,7 +458,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /rarm_vision/camera/color/image_raw
+      Image Topic: /rarm_camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -664,7 +664,7 @@ Visualization Manager:
       Name: panda_status
     - Class: rviz/Image
       Enabled: false
-      Image Topic: /larm_vision/camera/color/image_raw
+      Image Topic: /larm_camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -691,7 +691,7 @@ Visualization Manager:
       Color Transformer: RGB8
       Color Transport Hint: raw
       Decay Time: 0
-      Depth Map Topic: /rarm_vision/camera/depth/image_rect_raw
+      Depth Map Topic: /rarm_camera/depth/image_rect_raw
       Depth Map Transport Hint: raw
       Enabled: true
       Invert Rainbow: false
@@ -727,7 +727,7 @@ Visualization Manager:
       Color Transformer: RGB8
       Color Transport Hint: raw
       Decay Time: 0
-      Depth Map Topic: /larm_vision/camera/depth/image_rect_raw
+      Depth Map Topic: /larm_camera/depth/image_rect_raw
       Depth Map Transport Hint: raw
       Enabled: true
       Invert Rainbow: false
@@ -748,7 +748,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: true
-      Image Topic: /larm_vision/camera/color/image_raw
+      Image Topic: /larm_camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0
@@ -760,7 +760,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Image
       Enabled: false
-      Image Topic: /larm_vision/camera/color/image_raw
+      Image Topic: /larm_camera/color/image_raw
       Max Value: 1
       Median window: 5
       Min Value: 0

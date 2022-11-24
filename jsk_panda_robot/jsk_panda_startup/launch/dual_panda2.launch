@@ -8,8 +8,16 @@
   <arg name="joint_states_source_list" default="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]" />
 
   <!-- Arguments for hand eye cameras -->
-  <arg name="rarm_camera_serial_no" default="021222073873"/>
-  <arg name="larm_camera_serial_no" default="017322070987"/>
+  <arg name="rarm_camera_ns" default="rarm_camera" />
+  <arg name="larm_camera_ns" default="larm_camera" />
+  <arg name="rarm_camera_serial_no" default="021222073873" />
+  <arg name="larm_camera_serial_no" default="017322070987" />
+  <arg name="arm_camera_color_width" default="-1" />
+  <arg name="arm_camera_color_height" default="-1" />
+  <arg name="arm_camera_color_fps" default="-1" />  <!-- You must also specify fps if you want to specify resolution -->
+  <arg name="arm_camera_depth_width" default="-1" />
+  <arg name="arm_camera_depth_height" default="-1" />
+  <arg name="arm_camera_depth_fps" default="-1" />  <!-- You must also specify fps if you want to specify resolution -->
 
   <!-- Panda controllers -->
   <include file="$(find jsk_panda_startup)/launch/dual_panda.xml">
@@ -21,46 +29,48 @@
   </include>
 
   <!-- Hand eye cameras -->
-  <group ns="rarm_vision">
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-      <arg name="device_type"       value="d435" />
-      <arg name="serial_no"         value="$(arg rarm_camera_serial_no)" />
-      <arg name='usb_port_id'       value="" />
-      <arg name="tf_prefix"         value="rarm_camera" />
-      <arg name="initial_reset"     value="true" />
-      <arg name='filters'           value='pointcloud' />
-      <arg name="color_width"       value="1920" />
-      <arg name="color_height"      value="1080" />
-      <arg name="depth_width"       value="1280" />
-      <arg name="depth_height"      value="720" />
-      <arg name="clip_distance"     value="-2" />
-    </include>
-    <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 5.      -->
-    <!--        CPU usage of compressedDepth creation seems too high.                                     -->
-    <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
-    <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
-    <param name="camera/depth/image_rect_raw/compressedDepth/png_level" value="5" />
-  </group>
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="camera"            value="$(arg rarm_camera_ns)" />
+    <arg name="tf_prefix"         value="$(arg rarm_camera_ns)" />
+    <arg name="device_type"       value="d435" />
+    <arg name="serial_no"         value="$(arg rarm_camera_serial_no)" />
+    <arg name='usb_port_id'       value="" />
+    <arg name="initial_reset"     value="true" />
+    <arg name='filters'           value='pointcloud' />
+    <arg name="color_width"       value="$(arg arm_camera_color_width)" />
+    <arg name="color_height"      value="$(arg arm_camera_color_height)" />
+    <arg name="color_fps"         value="$(arg arm_camera_color_fps)" />
+    <arg name="depth_width"       value="$(arg arm_camera_depth_width)" />
+    <arg name="depth_height"      value="$(arg arm_camera_depth_height)" />
+    <arg name="depth_fps"         value="$(arg arm_camera_depth_fps)" />
+    <arg name="clip_distance"     value="-2" />
+  </include>
+  <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 5.      -->
+  <!--        CPU usage of compressedDepth creation seems too high.                                     -->
+  <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
+  <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
+  <param name="$(arg rarm_camera_ns)/depth/image_rect_raw/compressedDepth/png_level" value="5" />
 
-  <group ns="larm_vision">
-    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
-      <arg name="device_type"       value="d435" />
-      <arg name="serial_no"         value="$(arg larm_camera_serial_no)" />
-      <arg name='usb_port_id'       value="" />
-      <arg name="tf_prefix"         value="larm_camera" />
-      <arg name="initial_reset"     value="true" />
-      <arg name='filters'           value='pointcloud' />
-      <arg name="color_width"       value="1920" />
-      <arg name="color_height"      value="1080" />
-      <arg name="depth_width"       value="1280" />
-      <arg name="depth_height"      value="720" />
-      <arg name="clip_distance"     value="-2" />
-    </include>
-    <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 5.      -->
-    <!--        CPU usage of compressedDepth creation seems too high.                                     -->
-    <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
-    <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
-    <param name="camera/depth/image_rect_raw/compressedDepth/png_level" value="5" />
-  </group>
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+    <arg name="camera"            value="$(arg larm_camera_ns)" />
+    <arg name="tf_prefix"         value="$(arg larm_camera_ns)" />
+    <arg name="device_type"       value="d435" />
+    <arg name="serial_no"         value="$(arg larm_camera_serial_no)" />
+    <arg name='usb_port_id'       value="" />
+    <arg name="initial_reset"     value="true" />
+    <arg name='filters'           value='pointcloud' />
+    <arg name="color_width"       value="$(arg arm_camera_color_width)" />
+    <arg name="color_height"      value="$(arg arm_camera_color_height)" />
+    <arg name="color_fps"         value="$(arg arm_camera_color_fps)" />
+    <arg name="depth_width"       value="$(arg arm_camera_depth_width)" />
+    <arg name="depth_height"      value="$(arg arm_camera_depth_height)" />
+    <arg name="depth_fps"         value="$(arg arm_camera_depth_fps)" />
+    <arg name="clip_distance"     value="-2" />
+  </include>
+  <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 5.      -->
+  <!--        CPU usage of compressedDepth creation seems too high.                                     -->
+  <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
+  <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
+  <param name="$(arg larm_camera_ns)/depth/image_rect_raw/compressedDepth/png_level" value="5" />
 
 </launch>
