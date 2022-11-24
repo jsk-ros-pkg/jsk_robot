@@ -22,6 +22,10 @@
    catkin build jsk_panda_startup jsk_panda_teleop
    source devel/setup.bash
    ```
+3. If you want to use TouchUSBs (haptic devices), see [this README](https://github.com/pazeshun/Geomagic_Touch_ROS_Drivers/tree/dual-phantom-readme#use-multiple-devices) to setup devices.
+   * Note that this README was written for old Ubuntu.
+     - On Ubuntu 18.04, run `Touch_Setup` instead of `/opt/geomagic_touch_device_driver/Geomagic_Touch_Setup`. If you want to check device status, run `Touch_Diagnostic` instead of `/opt/geomagic_touch_device_driver/Geomagic_Touch_Diagnostic`.
+
 ### Installation for Panda Controller PC
 1. Please see and follow installation written in: https://frankaemika.github.io/docs/installation_linux.html
    * Note that you need to install real-time kernel (`PREEMPT-PR` kernel) for real-time control.
