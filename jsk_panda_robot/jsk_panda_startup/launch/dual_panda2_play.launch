@@ -2,6 +2,7 @@
   <arg name="bagfile_name" />
   <arg name="rosbag_option" default="" />
   <arg name="rviz" default="true" />
+  <arg name="republish_cloud" default="true" />
 
   <include file="$(find jsk_panda_startup)/launch/dual_panda_play.xml">
     <arg name="bagfile_name" value="$(arg bagfile_name)" />
@@ -11,20 +12,14 @@
     <arg name="rvizconfig" value="$(find jsk_panda_startup)/config/rviz/dual_panda2_play.rviz" />
   </include>
 
-  <group ns="/rarm_vision/camera/color">
-    <node name="republish"
-          pkg="image_transport" type="republish"
-          args="compressed raw">
-      <remap from="in" to="image_raw" />
-      <remap from="out" to="image_raw" />
-    </node>
+  <group ns="/rarm_vision">
+    <include file="$(find jsk_panda_startup)/launch/realsense_play.xml">
+      <arg name="republish_cloud" value="$(arg republish_cloud)" />
+    </include>
   </group>
-  <group ns="/larm_vision/camera/color">
-    <node name="republish"
-          pkg="image_transport" type="republish"
-          args="compressed raw">
-      <remap from="in" to="image_raw" />
-      <remap from="out" to="image_raw" />
-    </node>
+  <group ns="/larm_vision">
+    <include file="$(find jsk_panda_startup)/launch/realsense_play.xml">
+      <arg name="republish_cloud" value="$(arg republish_cloud)" />
+    </include>
   </group>
 </launch>

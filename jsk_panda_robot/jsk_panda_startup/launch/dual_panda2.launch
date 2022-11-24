@@ -35,6 +35,11 @@
       <arg name="depth_height"      value="720" />
       <arg name="clip_distance"     value="-2" />
     </include>
+    <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 5.      -->
+    <!--        CPU usage of compressedDepth creation seems too high.                                     -->
+    <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
+    <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
+    <param name="camera/depth/image_rect_raw/compressedDepth/png_level" value="5" />
   </group>
 
   <group ns="larm_vision">
@@ -51,6 +56,11 @@
       <arg name="depth_height"      value="720" />
       <arg name="clip_distance"     value="-2" />
     </include>
+    <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 5.      -->
+    <!--        CPU usage of compressedDepth creation seems too high.                                     -->
+    <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
+    <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
+    <param name="camera/depth/image_rect_raw/compressedDepth/png_level" value="5" />
   </group>
 
 </launch>

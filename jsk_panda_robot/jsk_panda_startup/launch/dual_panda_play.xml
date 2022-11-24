@@ -14,8 +14,13 @@
 
   <group ns="$(arg robot_id)">
     <param name="robot_description" command="xacro --inorder $(arg robot)" />
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
   </group>
+  <node name="static_tf_republisher" pkg="jsk_topic_tools" type="static_tf_republisher.py" output="screen">
+    <rosparam subst_value="true">
+        file: $(arg bagfile_name)
+        mode_static: true
+    </rosparam>
+  </node>
 
   <group if="$(arg rviz)">
     <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(arg rvizconfig)" />

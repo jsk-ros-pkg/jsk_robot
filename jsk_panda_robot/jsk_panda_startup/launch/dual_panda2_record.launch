@@ -13,8 +13,12 @@
     <arg name="other_topics" value="$(arg other_topics)
                                     /larm_vision/camera/color/camera_info
                                     /larm_vision/camera/color/image_raw/compressed
+                                    /larm_vision/camera/depth/camera_info
+                                    /larm_vision/camera/depth/image_rect_raw/compressedDepth
                                     /rarm_vision/camera/color/camera_info
                                     /rarm_vision/camera/color/image_raw/compressed
+                                    /rarm_vision/camera/depth/camera_info
+                                    /rarm_vision/camera/depth/image_rect_raw/compressedDepth
                                     " />
   </include>
 </launch>
