@@ -55,6 +55,8 @@
 ### Via roseus
 1. Start controller on controller PC:
    ```bash
+   # dual_panda1: robot having Xtion camera on head, web cameras on both hands, microphone on right hand
+   # dual_panda2: robot having RealSense D435 on both hands
    ssh leus@dual-panda1.jsk.imi.i.u-tokyo.ac.jp  # Or ssh leus@dual-panda2.jsk.imi.i.u-tokyo.ac.jp
    roslaunch jsk_panda_startup dual_panda1.launch  # Or roslaunch jsk_panda_startup dual_panda2.launch
    ```
