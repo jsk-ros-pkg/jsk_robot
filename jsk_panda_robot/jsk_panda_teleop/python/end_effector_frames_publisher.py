@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # This node extracts end effector frame from TF and publishes to single topic.
 # This enables message_filters.ApproximateTimeSynchronizer

@@ -1,4 +1,5 @@
-#! /usr/bin/python
+#!/usr/bin/env python
+
 import rospy
 import message_filters
 from std_msgs.msg import Int32, Float32
