@@ -120,7 +120,7 @@
   <node
       pkg="topic_tools"
       type="transform"
-      args="--wait-for-start /spot/status/battery_states /spot/status/battery_percentage std_msgs/Float64 'm.battery_states[0].charge_percentage'"
+      args="--wait-for-start /spot/status/battery_states /spot/status/battery_percentage std_msgs/Float32 'm.battery_states[0].charge_percentage'"
       name="battery_visualizer"
       />
 
