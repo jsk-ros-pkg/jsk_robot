@@ -43,7 +43,39 @@
                          '(list :diffuse (float-vector 1.000000 1.000000 1.000000 1.000000))
                          (assoc b (send  (class self) :methods)))))
      )
-   (send* self :init-orig args))
+   (prog1
+     (send* self :init-orig args)
+     ;; add head-end-coords (camera coords)
+     (let ((head-end-coords (make-cascoords :coords (send arm-end-coords :copy-worldcoords))))
+       (send head-end-coords :rotate pi/2 :y)
+       (send (send arm-end-coords :parent) :assoc head-end-coords)
+       (send self :put :head-end-coords head-end-coords))))
+  ;; add head method so that (send *spot* :head :look-at) works
+  (:head
+   (&rest args)
+   (unless args (setq args (list nil)))
+   (case (car args)
+	 (:end-coords
+	  (user::forward-message-to (send self :get :head-end-coords) (cdr args)))
+	 (:look-at
+	  (let ((target-coords
+		 (orient-coords-to-axis ;; orient target-coords to look-at direction
+		  (make-coords :pos (cadr args))
+		  (v- (cadr args) (send self :head :end-coords :worldpos))))
+		(head-coords (send self :head :end-coords :copy-worldcoords)))
+	    ;; align target-coords x (image-y) direction to head direction
+	    (send target-coords :rotate
+		  (acos (v. (send target-coords :axis :x)
+			    (send head-coords :axis :x))) :z)
+	    (send* self :head :inverse-kinematics target-coords
+		   :move-target (send self :head :end-coords)
+		   :rotation-axis t
+		   :translation-axis nil
+		   :target-coords target-coords ;; for debug-view
+		   (cddr args))))
+	  ;;(send* self :inverse-kinematics-loop-for-look-at :head (cdr args)))
+	 (t
+	  (send* self :limb :arm args))))
   (:legs ;; support legs for all limbs
    (&rest args)
    (case (car args)

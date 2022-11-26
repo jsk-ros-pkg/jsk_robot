@@ -51,4 +51,4 @@ rrleg-end-coords:
 arm-end-coords:
   parent: arm0.link_wr1
   translate : [0.175, 0, -0.03]
-  rotate : [1, 0, 0, 90]
+  rotate : [1, 0, 0, 0]
