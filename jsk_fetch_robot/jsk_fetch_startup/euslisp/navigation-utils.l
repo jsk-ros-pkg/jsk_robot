@@ -21,7 +21,7 @@
        "/eng2/7f/room73B2-fetch-dock-front")
       ((equal robot-name "fetch1075")
        "/eng2/7f/room73B2-fetch-dock2-front")
-      (t "/eng2/7f/room73B2-fetch-dock2-front")))
+      (t "/eng2/7f/room73B2-fetch-dock2-front"))))
 
 
 (defun store-params ()
