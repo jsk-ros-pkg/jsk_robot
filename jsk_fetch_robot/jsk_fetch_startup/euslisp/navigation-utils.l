@@ -328,7 +328,7 @@ Args:
   (ros::ros-info "start going back to the dock.")
   (send *ri* :speak-jp "ドックに戻ります。" :wait t))
 
-(defun report-move-to-sink-front-success ()
+(defun report-move-to-sink-front ()
   (ros::ros-info "arrived at the kitchen stove.")
   (send *ri* :speak-jp "キッチンのコンロの前につきました。" :wait t))
 
@@ -463,7 +463,7 @@ Args:
                               occupancy)))))
 
 (defun inspect-kitchen (&key (tweet t))
-  (report-move-to-sink-front-success)
+  (report-move-to-sink-front)
   (if tweet
     (progn
       ;; stove
