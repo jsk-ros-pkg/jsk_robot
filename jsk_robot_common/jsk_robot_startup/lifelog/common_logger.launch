@@ -359,7 +359,7 @@
         <rosparam subst_value="true">
           database: $(arg database)
           topics:
-          - /edgetpu_human_pose_estimator/output/class
+          - /edgetpu_object_detector/output/class
         </rosparam>
         <rosparam subst_value="true" if="$(eval arg('collection') != '')">
           collection: $(arg collection)
