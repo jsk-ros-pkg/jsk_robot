@@ -198,7 +198,9 @@ namespace jsk_robot_startup
       const boost::shared_ptr<topic_tools::ShapeShifter const>& msg = event.getConstMessage();
       jsk_topic_tools::StealthRelay::inputCallback(msg);
 
-      vital_checker_->poke();
+      if (vital_checker_ != nullptr) {
+        vital_checker_->poke();
+      }
 
       bool on_the_fly = initialized_ && buffer_.empty();
       if (!wait_for_insert_ && msg_store_->getNumInsertSubscribers() == 0) {
@@ -246,7 +248,7 @@ namespace jsk_robot_startup
       } else if (!initialized_) {
         stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
                      getName() + " is taking too long to be initialized");
-      } else if (vital_check_ && !vital_checker_->isAlive()) {
+      } else if (vital_checker_ != nullptr && vital_check_ && !vital_checker_->isAlive()) {
         jsk_topic_tools::addDiagnosticErrorSummary(getName(), vital_checker_, stat);
       } else if (insert_error_count_ != prev_insert_error_count_) {
         stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
@@ -259,7 +261,9 @@ namespace jsk_robot_startup
 
       stat.add("Inserted", inserted_count_);
       stat.add("Insert Failure", insert_error_count_);
-      vital_checker_->registerStatInfo(stat, "Last Insert");
+      if (vital_checker_ != nullptr) {
+        vital_checker_->registerStatInfo(stat, "Last Insert");
+      }
     }
   } // lifelog
 } // jsk_robot_startup
