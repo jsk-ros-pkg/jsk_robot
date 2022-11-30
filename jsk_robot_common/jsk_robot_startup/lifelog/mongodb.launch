@@ -19,12 +19,14 @@
   <!-- Replication -->
   <group if="$(arg replicate)">
     <rosparam command="load" file="$(arg replicator_param_path)" />
-    <rosparam subst_value="true" if="$(eval arg('extra_collections') != '')">
-      extra_collections: $(arg extra_collections)
-    </rosparam>
+
     <node name="replication_client"
           pkg="jsk_robot_startup" type="periodic_replicator_client.py"
-          output="screen" machine="$(arg machine)"/>
+          output="screen" machine="$(arg machine)">
+      <rosparam subst_value="true" if="$(eval arg('extra_collections') != '')">
+        extra_collections: $(arg extra_collections)
+      </rosparam>
+    </node>
   </group>
 
   <!-- MongoDB -->
