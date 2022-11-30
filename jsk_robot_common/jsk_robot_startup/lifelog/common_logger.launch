@@ -288,9 +288,13 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
         topics:
         - /aws_auto_checkin_app/class
         - /aws_detect_faces/attributes
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
@@ -301,9 +305,13 @@
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
+        database: $(arg database)
         topics:
         - /dialogflow_client/text_action/goal
         - /dialogflow_client/text_action/result
+      </rosparam>
+      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+        collection: $(arg collection)
       </rosparam>
     </node>
 
