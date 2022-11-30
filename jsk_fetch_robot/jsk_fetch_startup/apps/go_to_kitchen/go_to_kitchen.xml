@@ -43,7 +43,8 @@
     <arg name="save_tf" value="true" />
     <arg name="save_joint_states" value="true" />
     <arg name="save_base_trajectory" value="true" />
-    <arg name="save_object_detection" value="false" />
+    <arg name="save_object_detection" value="true" />
+    <arg name="save_edgetpu_object_detector" value="true" />
     <arg name="save_speech" value="true" />
     <arg name="save_action" value="true" />
     <arg name="save_smach" value="true" />
