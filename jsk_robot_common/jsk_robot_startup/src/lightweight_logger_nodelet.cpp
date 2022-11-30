@@ -49,7 +49,7 @@ namespace jsk_robot_startup
       jsk_topic_tools::StealthRelay::onInit();
 
       // settings for database
-      if (ros::param::has("~database"))
+      if (ros::param::has(pnh_->resolveName("database")))
       {
         pnh_->param<std::string>("database", db_name_, "jsk_robot_lifelog");
       }
@@ -57,7 +57,7 @@ namespace jsk_robot_startup
       {
         pnh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
       }
-      if (ros::param::has("~collection"))
+      if (ros::param::has(pnh_->resolveName("collection")))
       {
         pnh_->param<std::string>("collection", col_name_, std::string());
       }
