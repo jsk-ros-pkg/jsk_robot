@@ -39,7 +39,7 @@
     <arg name="rgb_ns" value="rgb/half" />
     <arg name="rgb_topic" default="image_rect_color" />
     <arg name="rgb_suffix" default="/compressed"/>
-    <arg name="save_depth" value="false" />
+    <arg name="save_depth" value="true" />
     <arg name="save_tf" value="true" />
     <arg name="save_joint_states" value="true" />
     <arg name="save_base_trajectory" value="true" />
