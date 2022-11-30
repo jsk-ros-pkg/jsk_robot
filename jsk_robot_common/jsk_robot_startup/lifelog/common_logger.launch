@@ -360,6 +360,7 @@
           database: $(arg database)
           topics:
           - /edgetpu_object_detector/output/class
+          - /edgetpu_object_detector/output/rects
         </rosparam>
         <rosparam subst_value="true" if="$(eval arg('collection') != '')">
           collection: $(arg collection)
@@ -392,6 +393,7 @@
         topics:
         - /edgetpu_human_pose_estimator/output/class
         - /edgetpu_human_pose_estimator/output/poses
+        - /edgetpu_human_pose_estimator/output/rects
       </rosparam>
       <rosparam subst_value="true" if="$(eval arg('collection') != '')">
         collection: $(arg collection)
