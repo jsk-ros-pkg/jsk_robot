@@ -136,7 +136,7 @@
                  (store-params)
                  (inflation-loose)
                  (clear-app-notification)
-                 (ros::subscribe "/edgetpu_object_detector/output/image/compressed"
+                 (ros::subscribe "/head_camera/rgb/image_rect_color/compressed"
                                  sensor_msgs::CompressedImage #'image-cb)
                  t))
             (:report-start-go-to-kitchen
