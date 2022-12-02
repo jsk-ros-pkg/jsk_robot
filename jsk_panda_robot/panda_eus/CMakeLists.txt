@@ -13,7 +13,17 @@ catkin_package()
 ###
 ### dual_panda.l generation
 ###
-if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic")))
+
+if(EXISTS ${franka_description_SOURCE_PREFIX}/robots)
+  set(_franka_urdf ${franka_description_SOURCE_PREFIX}/robots)
+else()
+  set(_franka_urdf ${franka_description_PREFIX}/share/franka_description/robots)
+endif()
+
+message(WARNING "franka_urdf: ${_franka_urdf}")
+
+if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic"))
+    AND (EXISTS "${_franka_urdf}/common") AND (EXISTS "${_franka_urdf}/panda"))
   # xacro.load_yaml cannot be recognized under melodic, while it is recommended on melodic and upper.
   # PR introducing xacro.load_yaml: https://github.com/ros/xacro/pull/283
   # Related issue: https://github.com/ros/xacro/issues/298
@@ -21,11 +31,14 @@ if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic")))
     COMMAND rosrun euscollada collada2eus -I dual_panda.urdf -C dual_panda.yaml -O dual_panda.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
     DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf ${PROJECT_SOURCE_DIR}/models/dual_panda.yaml)
-
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf
     COMMAND rosrun xacro xacro --inorder dual_panda.urdf.xacro > dual_panda.urdf
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
-    DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf.xacro)
+    DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf.xacro
+            ${_franka_urdf}/common/franka_arm.xacro
+            ${_franka_urdf}/common/franka_hand.xacro
+            ${_franka_urdf}/panda/joint_limits.yaml
+    )
 
   add_custom_target(generate_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.l)
 else()
