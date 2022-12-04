@@ -74,4 +74,21 @@
     <param name="device" value="$(arg audio_device)" />
   </node>
 
+  <group ns="larm_marker">
+    <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
+      <remap from="image" to="/edgetpu_object_detector/output/image"/>
+      <remap from="camera_info" to="/head_camera/rgb/camera_info"/>
+      <param name="use_window" value="false"/>
+    </node>
+  </group>
+
+  <group ns="rarm_marker">
+    <node pkg="image_view2" type="image_view2" name="image_view2_for_draw_force_on_image" output="log">
+      <remap from="image" to="/larm_marker/image_marked"/>
+      <remap from="image_marked" to="/operator_view"/>
+      <remap from="camera_info" to="/head_camera/rgb/camera_info"/>
+      <param name="use_window" value="false"/>
+    </node>
+  </group>
+
 </launch>
