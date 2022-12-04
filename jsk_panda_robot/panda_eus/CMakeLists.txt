@@ -13,15 +13,20 @@ catkin_package()
 ###
 ### dual_panda.l generation
 ###
-if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic")))
-  # xacro.load_yaml cannot be recognized under melodic, while it is recommended on melodic and upper.
-  # PR introducing xacro.load_yaml: https://github.com/ros/xacro/pull/283
-  # Related issue: https://github.com/ros/xacro/issues/298
+set(_franka_description_min_ver "0.10.0")
+if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic"))
+   AND (NOT ("${franka_description_VERSION}" VERSION_LESS "${_franka_description_min_ver}")))
+  # Why ROS_DISTRO >= melodic:
+  #   xacro.load_yaml cannot be recognized under melodic, while it is recommended on melodic and upper.
+  #   PR introducing xacro.load_yaml: https://github.com/ros/xacro/pull/283
+  #   Related issue: https://github.com/ros/xacro/issues/298
+  # Why franka_description >= 0.10.0:
+  #   dual_panda.urdf.xacro assumes file structure of franka_description >= 0.10.0.
+  #   See https://github.com/frankaemika/franka_ros/compare/0.9.1...0.10.0 for details.
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/dual_panda.l
     COMMAND rosrun euscollada collada2eus -I dual_panda.urdf -C dual_panda.yaml -O dual_panda.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
     DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf ${PROJECT_SOURCE_DIR}/models/dual_panda.yaml)
-
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf
     COMMAND rosrun xacro xacro --inorder dual_panda.urdf.xacro > dual_panda.urdf
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
@@ -30,6 +35,8 @@ if(franka_description_FOUND AND (NOT ("$ENV{ROS_DISTRO}" STRLESS "melodic")))
   add_custom_target(generate_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.l)
 else()
   message(WARNING "Dependency is not met, so skip generating dual_panda.l")
+  message(WARNING "ROS_DISTRO: $ENV{ROS_DISTRO}, must be >= melodic")
+  message(WARNING "franka_description version: ${franka_description_VERSION}, must be >= ${_franka_description_min_ver}")
 endif()
 
 
