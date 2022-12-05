@@ -183,7 +183,7 @@
   <!-- app scheduler -->
   <include if="$(arg launch_app_scheduler)"
            file="$(find app_scheduler)/launch/app_scheduler.launch">
-    <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
+    <arg name="yaml_path" value="$(find jsk_fetch_startup)/config/$(arg hostname)_app_schedule.yaml" />
   </include>
 
   <!-- dialogflow task executive -->

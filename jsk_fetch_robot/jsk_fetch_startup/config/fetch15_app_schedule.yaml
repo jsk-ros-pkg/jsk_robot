@@ -1,0 +1,33 @@
+# time signal
+- name: time_signal
+  app_name: jsk_fetch_startup/time_signal
+  app_schedule:
+    start: every(1).hour.at(":00")
+# upload notification
+- name: upload_notification
+  app_name: jsk_fetch_startup/upload_notification
+  app_schedule:
+    start: every(1).day.at("03:50")
+# check use_sim_time
+- name: check_use_sim_time
+  app_name: jsk_robot_startup/check_use_sim_time
+  app_schedule:
+    start: every().hour.at(":00")
+# volume for monday meeting
+- name: volume_zero_monday
+  app_name: jsk_robot_startup/volume_zero
+  app_schedule:
+    start: every().monday.at("12:00")
+- name: volume_reset_monday
+  app_name: jsk_robot_startup/volume_reset
+  app_schedule:
+    start: every().monday.at("16:00")
+# volume for tuesday meeting
+- name: volume_zero_tuesday
+  app_name: jsk_robot_startup/volume_zero
+  app_schedule:
+    start: every().tuesday.at("12:00")
+- name: volume_reset_tuesday
+  app_name: jsk_robot_startup/volume_reset
+  app_schedule:
+    start: every().tuesday.at("16:00")
