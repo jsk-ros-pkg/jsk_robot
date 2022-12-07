@@ -69,3 +69,20 @@
     local-name: jsk_pr2eus
     uri:     https://github.com/jsk-ros-pkg/jsk_pr2eus.git
     version: master
+#
+#
+# need to add following code to  ublox_gps/config/zed_f9p.yaml
+#config_on_startup: true
+#
+#rate: 0.016
+## TMODE3 Config
+#tmode3: 1                   # Survey-In Mode
+#sv_in:
+#  reset: false              # True: disables and re-enables survey-in (resets)
+#                            # False: Disables survey-in only if TMODE3 is
+#                            # disabled
+#  min_dur: 300              # Survey-In Minimum Duration [s]
+#  acc_lim: 3.0              # Survey-In Accuracy Limit [m]
+- git:
+    local-name: ublox
+    uri: https://github.com:KumarRobotics/ublox.git
