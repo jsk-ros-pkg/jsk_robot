@@ -1,0 +1,80 @@
+<launch>
+  <arg name="start_ncb_provider" default="true" />
+  <arg name="start_aws_detect_faces" default="false" />
+  <arg name="start_aws_auto_checkin_app" default="false" />
+    
+  <arg name="spot_credential_config" default="$(find jsk_spot_startup)/auth/spot_credential.yaml" />
+  <arg name="aws_credential_config" default="$(find jsk_spot_startup)/auth/aws_credential.yaml" />
+
+  <!-- use spot-ros ML recognition server -->
+  <arg name="image_sources" default="[hand_color_image, frontleft_fisheye_image, frontright_fisheye_image, left_fisheye_image, right_fisheye_image, back_fisheye_image]" />
+  <arg name="ml_service" default="ssd-resnet-coco-server" />
+  <arg name="ml_models" default="[dogtoy-model, ssd_resnet50_v1_fpn_640x640_coco17_tpu-8]" />
+  <arg name="ml_confidence" default="0.6" />
+  <arg name="use_gui" default="false" />
+
+  <node pkg="spot_driver" type="ncb_provider" name="ncb_provider" ns="spot" output="screen"
+        if="$(arg start_ncb_provider)" >
+    <rosparam file="$(arg spot_credential_config)" command="load" />
+    <rosparam subst_value="true">
+      image_sources: $(arg image_sources)
+      ml_service: $(arg ml_service)
+      ml_models: $(arg ml_models)
+      ml_confidence: $(arg ml_confidence)
+      use_gui: $(arg use_gui)
+    </rosparam>
+  </node>
+
+  <!-- use aws recognition -->
+  <node name="aws_detect_faces"
+        pkg="jsk_perception" type="aws_detect_faces.py"
+        output="screen"
+        clear_params="true"
+        if="$(arg start_aws_detect_faces)" >
+    <remap from="image" to="/spot/camera/hand_color/image" />
+    <remap from="~faces" to="/aws_detect_faces/faces" />
+    <rosparam subst_value="true">
+      use_window: $(arg use_gui)
+      aws_credentials_path: $(arg aws_credential_config)
+      always_publish: false
+      attributes: ALL
+    </rosparam>
+  </node>
+
+  <node name="aws_auto_checkin_app"
+        pkg="jsk_perception" type="aws_auto_checkin_app.py"
+        output="screen"
+        clear_params="true"
+        if="$(arg start_aws_auto_checkin_app)" >
+    <remap from="image" to="/spot/camera/hand_color/image" />
+    <remap from="face_roi" to="/aws_detect_faces/faces" />
+    <rosparam subst_value="true">
+      use_window: $(arg use_gui)
+      env_path: $(arg aws_credential_config)
+      aws_credentials_path: $(arg aws_credential_config)
+      always_publish: false
+      approximate_sync: true
+      queue_size: 1
+      image_transport: compressed
+    </rosparam>
+  </node>
+
+  <node name="aws_auto_checkin_draw_rects"
+        pkg="jsk_perception" type="draw_rects.py"
+        output="screen"
+        clear_params="true"
+        if="$(arg start_aws_auto_checkin_app)" >
+    <remap from="~input" to="/spot/camera/hand_color/image" />
+    <remap from="~input/rects" to="/aws_auto_checkin_app/output/rects" />
+    <remap from="~input/class" to="/aws_auto_checkin_app/output/class" />
+    <rosparam subst_value="true">
+      font_path: $(find jsk_recognition_utils)/font_data/NotoSansJP-Regular.otf
+      use_classification_result: true
+      label_size: 16
+      approximate_sync: true
+      queue_size: 30
+      image_transport: compressed
+    </rosparam>
+  </node>
+  
+</launch>
