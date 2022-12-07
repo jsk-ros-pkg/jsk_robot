@@ -6,6 +6,20 @@
 (ros::load-ros-package "fetch_driver_msgs")
 (ros::load-ros-package "robot_controllers_msgs")
 
+(when (null (assoc :delete-object-by-id (send collision-object-publisher :methods)))
+  (ros::ros-warn ";;")
+  (ros::ros-warn ";;")
+  (ros::ros-warn ";; jsk-ros-pkg/jsk_pr2eus <0.3.14 does not have :delete-object-by-id method")
+  (ros::ros-warn ";;   If you need full features of latest fetcheus, please use jsk_pr2eus from source")
+  (ros::ros-warn ";;   See https://github.com/jsk-ros-pkg/jsk_demos/pull/1375#issuecomment-1292943531")
+  (ros::ros-warn ";;")
+  (ros::ros-warn ";;")
+  (defmethod collision-object-publisher
+    (:delete-attached-object-by-id (object-id)
+      (ros::ros-warn ";; did not delete attached object \"~A\"" object-id))
+    (:delete-object-by-id (object-id)
+      (ros::ros-warn ";; did not delete object \"~A\"" object-id))))
+
 (defclass fetch-interface
   :super robot-move-base-interface
   :slots (gripper-action moveit-robot fetch-controller-action)
