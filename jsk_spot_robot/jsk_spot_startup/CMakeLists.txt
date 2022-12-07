@@ -21,9 +21,9 @@ install(DIRECTORY auth config launch scripts services udev_rules template
 file(GLOB_RECURSE SCRIPT_PROGRAMS node_scripts/*)
 foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
   if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
-    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/node_scripts)
   else()
-    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/node_scripts)
   endif()
 endforeach()
 
