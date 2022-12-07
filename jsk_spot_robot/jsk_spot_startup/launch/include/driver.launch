@@ -141,6 +141,7 @@
       pkg="jsk_spot_startup"
       type="battery_notifier.py"
       name="battery_notifier"
+      respawn="true"
       >
       <remap from="~start_app" to="/robot/start_app" />
   </node>
