@@ -42,7 +42,7 @@
 
 (defclass spot-interface
   :super robot-move-base-interface
-  :slots (trajectory-cmd-action)
+  :slots (trajectory-cmd-action pick-object-in-image-client pick-object-in-image-feedback-msg)
   )
 
 (defmethod spot-interface
@@ -69,6 +69,8 @@
      (setq trajectory-cmd-action (instance ros::simple-action-client :init
                                         trajectory-cmd-action-name spot_msgs::TrajectoryAction
                                         :groupname groupname))
+     (setq pick-object-in-image-client (instance ros::simple-action-client :init
+                                                 "/spot/pick_object_in_image" spot_msgs::PickObjectInImageAction))
      ))
   ;; (:default-controller  ()
   ;;  (append
@@ -122,6 +124,28 @@
      (ros::ros-info "gripper-open-percentage ~A" p)
      (ros::ros-info "manipulator-state-is-gripper-holding-item ~A" s)
      s))
+  (:pick-object-in-image
+   (image-source x y &optional (max-duration 15))
+   (let ((goal (instance spot_msgs::PickObjectInImageActionGoal :init)))
+     (print (list image-source x y max-duration))
+     (send goal :goal :image_source image-source)
+     (send goal :goal :center (instance geometry_msgs::Point :init :x x :y y))
+     (send goal :goal :max_duration (instance ros::duration :init max-duration))
+     (send pick-object-in-image-client :send-goal goal :feedback-cb `(lambda (msg) (send ,self :pick-object-in-image-feedback-cb msg)))
+     ))
+  (:pick-object-in-image-feedback-cb
+   (msg)
+   (setq pick-object-in-image-feedback-msg msg))
+  (:pick-object-in-image-feedback-msg
+   (&rest args)
+   (forward-message-to pick-object-in-image-feedback-msg args))
+  (:pick-object-in-image-wait-for-result
+   ()
+   (send pick-object-in-image-client :wait-for-result)
+   (send pick-object-in-image-client :get-result))
+  (:pick-object-in-image-get-state
+   ()
+   (send pick-object-in-image-client :get-state))
   ;; (:dummy-controller ()
   ;;  (list
   ;;   (list
