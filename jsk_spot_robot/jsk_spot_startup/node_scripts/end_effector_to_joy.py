@@ -33,10 +33,10 @@ class EndEffectorToJoy(object):
         if req.data:
             self._center_x = float(rospy.get_param('~center_x', 0.576))
             self._center_y = float(rospy.get_param('~center_0', 0))
-            rospy.loginfo("Enabled end_effector_to_joy with center ({}, {})".format(self._center_x, self._center_y))
+            rospy.logwarn("Enabled end_effector_to_joy with center ({}, {})".format(self._center_x, self._center_y))
             self._sub = rospy.Subscriber('/spot/status/manipulator_state', ManipulatorState, self._cb)
         else:
-            rospy.loginfo("Disabled end_effector_to_joy with center")
+            rospy.logwarn("Disabled end_effector_to_joy with center")
             if self._sub:
                 self._sub.unregister()
                 self._sub = None
@@ -54,7 +54,6 @@ class EndEffectorToJoy(object):
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             rospy.logerr(e)
             return None
-        rospy.logerr([trans.transform.translation.x, trans.transform.translation.y, trans.transform.translation.z, x, y])
         x = trans.transform.translation.x - self._center_x
         y = trans.transform.translation.y - self._center_y
         rospy.loginfo_throttle(10, "end_effector_froce_in_hand = ({:4.1f}, {:4.1f}, {:4.1f}), stow_state = {}".format(x, y, z, msg.stow_state))
