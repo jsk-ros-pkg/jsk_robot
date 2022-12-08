@@ -1,0 +1,18 @@
+[Unit]
+Description=Coco object detection container
+After=docker.service
+Wants=network-online.target docker.socket
+Requires=docker.socket
+
+[Service]
+Restart=always
+User=root
+ExecStartPre=/bin/bash -c "/usr/bin/docker container inspect object_detection_coco 2> /dev/null || /usr/bin/docker load < /opt/object_detection_coco.tar.gz;"
+ExecStartPre=-/usr/bin/docker stop object_detection_coco
+ExecStartPre=-/usr/bin/docker rm object_detection_coco
+ExecStart=/usr/bin/docker run --name object_detection_coco --network host --rm -v /opt/payload_credentials/payload_guid_and_secret:/opt/payload_credentials/payload_guid_and_secret object_detection_coco -m /data/dogtoy-model/saved_model /data/dogtoy-model/label_map.pbtxt -m /data/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8/saved_model /data/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8/mscoco_label_map.pbtxt --payload-credentials-file /opt/payload_credentials/payload_guid_and_secret --name ssd-resnet-coco-server --port 50055 192.168.50.3
+ExecStop=/usr/bin/docker stop -t 10 object_detection_coco
+TimeoutSec=900
+
+[Install]
+WantedBy=multi-user.target
