@@ -182,12 +182,13 @@ class SmachToMail():
         else:
             self.smach_state_list[caller_id].append(status_dict)
 
-        if self.send_every_transition:
-            if (self.use_google_chat
-                    and not self.smach_state_list[caller_id] is None):
-                rospy.loginfo("Send every transition called")
-                self._send_google_chat(
-                    self.smach_state_subject[caller_id], [status_dict])
+        # send notification every transition
+        if (self.send_every_transition
+                and self.use_google_chat
+                and not self.smach_state_list[caller_id] is None):
+            rospy.loginfo("Send every transition called")
+            self._send_google_chat(
+                self.smach_state_subject[caller_id], [status_dict])
 
         # If we received END/FINISH status, send email, etc...
         if status_str in ["END", "FINISH", "FINISH-SUCCESS", "FINISH-FAILURE"]:
