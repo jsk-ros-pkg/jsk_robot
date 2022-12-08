@@ -331,7 +331,7 @@ class SmachToMail():
         result = self.gchat_ac.get_result()
         if not self._gchat_thread:
             self._gchat_thread = result.message_result.thread_name
-        rospy.loginfo("Sending google chat messsage:{} chat space".format(self.chat_space))
+        rospy.loginfo("Sending google chat messsage:{} chat space, {} thread".format(self.chat_space, self._gchat_thread))
         rospy.logdebug("Google Chat result: {}".format(self.gchat_ac.get_result()))
 
 if __name__ == '__main__':
