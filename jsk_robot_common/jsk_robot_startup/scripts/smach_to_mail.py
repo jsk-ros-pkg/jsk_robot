@@ -40,12 +40,6 @@ class SmachToMail():
         rospy.init_node('server_name')
         # it should be 'smach_to_mail', but 'server_name'
         # is the default name of smach_ros
-        self.use_mail = rospy.get_param("~use_mail", True)
-        self.use_twitter = rospy.get_param("~use_twitter", True)
-        self.use_google_chat = rospy.get_param(
-            "~use_google_chat", _enable_google_chat)
-        self.send_every_transition = rospy.get_param(
-            "~send_every_transition", False)
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         self.reconfigure_server = Server(
