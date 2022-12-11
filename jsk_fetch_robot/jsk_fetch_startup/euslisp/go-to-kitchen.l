@@ -8,9 +8,23 @@
 
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
 
+(ros::roseus-add-msgs "jsk_recognition_msgs")
+
 (ros::advertise "/tweet" std_msgs::String 1)
 (ros::advertise "/photo_taken" sensor_msgs::Image 1)
 (setq *image* nil)
+
+(setq *vqa-client* (instance ros::simple-action-client :init
+                             "/vqa/caption_server"
+                             jsk_recognition_msgs::VQATaskAction))
+
+(defun vqa-request (image)
+  (let* ((goal (instance jsk_recognition_msgs::VQATaskActionGoal :init)))
+    (send (send goal :goal) :image image)
+    (send *vqa-client* :send-goal goal)
+    (send *vqa-client* :wait-for-result)
+    (send *vqa-client* :get-result)
+    (send (send *vqa-client* :result) :result)))
 
 (defun image-cb (msg)
   (setq *image* msg))
