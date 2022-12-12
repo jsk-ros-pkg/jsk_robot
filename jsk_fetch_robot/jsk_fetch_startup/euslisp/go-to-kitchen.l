@@ -18,13 +18,12 @@
                              "/vqa/caption_server"
                              jsk_recognition_msgs::VQATaskAction))
 
-(defun vqa-request (image)
+(defun vqa-request (compressed-image)
   (let* ((goal (instance jsk_recognition_msgs::VQATaskActionGoal :init)))
-    (send (send goal :goal) :image image)
+    (send (send goal :goal) :compressed_image compressed-image)
     (send *vqa-client* :send-goal goal)
     (send *vqa-client* :wait-for-result)
-    (send *vqa-client* :get-result)
-    (send (send *vqa-client* :result) :result)))
+    (send (send *vqa-client* :get-result) :result)))
 
 (defun image-cb (msg)
   (setq *image* msg))
@@ -210,7 +209,9 @@
                  (ros::spin-once)
                  (set-alist 'description "ドックの前の様子を見たよ" userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-dock-front-failure
@@ -241,7 +242,9 @@
                  (ros::spin-once)
                  (set-alist 'description "テレビの前の様子を見たよ" userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-tv-front-failure
@@ -273,7 +276,9 @@
                  (ros::spin-once)
                  (set-alist 'description "机の様子を確認したよ" userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-tv-desk-failure
@@ -305,7 +310,9 @@
                  (ros::spin-once)
                  (set-alist 'description "部屋の後ろを確認したよ" userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-desk-back-failure
@@ -336,7 +343,9 @@
                  (ros::spin-once)
                  (set-alist 'description "部屋の前を確認したよ" userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-desk-front-failure
@@ -367,7 +376,9 @@
                  (ros::spin-once)
                  (set-alist 'description "ドアの前からキッチンの様子を見たよ" userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-kitchen-door-front-failure
@@ -397,7 +408,9 @@
                  (ros::spin-once)
                  (set-alist 'description (format nil "キッチンの様子を見たよ。~A" notify-text) userdata)
                  (if *image*
-                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (progn
+                     (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                     (set-alist 'vqa (vqa-request *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-sink-front-failure
@@ -428,7 +441,9 @@
                (ros::spin-once)
                (set-alist 'description "ゴミ箱の様子を確認したよ" userdata)
                (if *image*
-                 (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                 (progn
+                   (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
+                   (set-alist 'vqa (vqa-request *image*) userdata))
                  (set-alist 'image "" userdata))
                t))
             (:report-move-to-trashcan-front-failure
