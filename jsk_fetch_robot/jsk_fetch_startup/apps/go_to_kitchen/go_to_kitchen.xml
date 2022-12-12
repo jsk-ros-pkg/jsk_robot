@@ -67,6 +67,7 @@
     <arg name="approximate_sync" value="true"/>
     <arg name="base_frame_id" value="base_link" />
     <arg name="vital_check" value="true" />
+    <arg name="save_vqa" value="true" />
   </include>
 
   <rosparam ns="go_to_kitchen/speech_logger">
