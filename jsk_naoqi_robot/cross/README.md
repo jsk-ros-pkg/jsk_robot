@@ -75,11 +75,11 @@ You can connect to `app_chooser` by http://<$NAO_IP>:8000/rwt_app_chooser/#!robo
 
 ### `./install.sh -d System` errors at the first time.
 
-./install.sh -d System` requires `User` environment, so it causes error at the first time. You need to re-run `./install.sh` after you installed User space.
+`./install.sh -d System` requires `User` environment, so it causes error at the first time. You need to re-run `./install.sh` after you installed User space.
 
 ### `./build_user.sh build -c` fails
 
-`./build_user.sh build -c` fails as follows. This is expected behavior and we recommend to combile all packages in the first time. `make user` runs `catkin build jsk_pepper_startup peppereus` and pacakages such as `pepepr_meshes` and `rosbash` is not compiled with this command.
+`./build_user.sh build -c` fails as follows. This is expected behavior and we recommend to combile all packages in the first time. `make user` runs `catkin build jsk_pepper_startup peppereus` and pacakages such as `pepper_meshes` and `rosbash` is not compiled with this command.
 
 ```
  [    Failed] roseus_remote
