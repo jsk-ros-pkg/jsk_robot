@@ -1,0 +1,64 @@
+!!python/object/new:dynamic_reconfigure.encoding.Config
+dictitems:
+  groups: !!python/object/new:dynamic_reconfigure.encoding.Config
+    dictitems:
+      groups: !!python/object/new:dynamic_reconfigure.encoding.Config
+        state: []
+      id: 0
+      name: Default
+      parameters: !!python/object/new:dynamic_reconfigure.encoding.Config
+        state: []
+      parent: 0
+      questions: what does it describe?;what does this image describe?;what does the
+        image describe?;what does a image describe?;what does this scene describe?;what
+        does the scene describe?;what does a scene describe?;what does this room look
+        like?;what does the room look like?;what does this place look like?;what does
+        the place look like?;what does it look like?;what does this look like?;what
+        is being done?;what is going on?;what is unnatural?;what unusual things can
+        be seen?;what kind of unusual things can be seen?;what is the atmosphere of
+        this place?;what is the ambiance of this place?;how messy is it?;how rough
+        is this place?;what objects are seen?;what object is seen?;what objects are
+        there?;what object is there?;what kind of objects are seen?;what kind of object
+        is seen?;what kind of objects are there?;what kind of object is there?;what
+        kind of unusual items are seen?;what kind of unusual item is seen?;what kind
+        of unusual items are there?;what kind of unusual item is there?;what is on
+        it?;what is the situation on it?;what is on this plane?;what is the situation
+        on this plane?;what is on this table?;what is the situation on this table?;what
+        is under it?;what is the situation under it?;what is under this plane?;what
+        is the situation under this plane?;what is under this table?;what is the situation
+        under this table?;what is in it?;what is the situation in it?;what is in the
+        box?;what is in this box?;what is the situation in this box?;what is the situation
+        in the box?;what is in the container?;what is in this container?;what is in
+        this shelf?;what is the situation in this shelf?;how many people?;what are
+        people doing?;what are people in this image doing?;what are people in the
+        image doing?;what about the people?;what about these people?;how are the monitors?;what
+        about the monitors?;how much is in a container?;how much is in the container?;how
+        much is inside the container?
+      state: true
+      type: ''
+    state: []
+  questions: what does it describe?;what does this image describe?;what does the image
+    describe?;what does a image describe?;what does this scene describe?;what does
+    the scene describe?;what does a scene describe?;what does this room look like?;what
+    does the room look like?;what does this place look like?;what does the place look
+    like?;what does it look like?;what does this look like?;what is being done?;what
+    is going on?;what is unnatural?;what unusual things can be seen?;what kind of
+    unusual things can be seen?;what is the atmosphere of this place?;what is the
+    ambiance of this place?;how messy is it?;how rough is this place?;what objects
+    are seen?;what object is seen?;what objects are there?;what object is there?;what
+    kind of objects are seen?;what kind of object is seen?;what kind of objects are
+    there?;what kind of object is there?;what kind of unusual items are seen?;what
+    kind of unusual item is seen?;what kind of unusual items are there?;what kind
+    of unusual item is there?;what is on it?;what is the situation on it?;what is
+    on this plane?;what is the situation on this plane?;what is on this table?;what
+    is the situation on this table?;what is under it?;what is the situation under
+    it?;what is under this plane?;what is the situation under this plane?;what is
+    under this table?;what is the situation under this table?;what is in it?;what
+    is the situation in it?;what is in the box?;what is in this box?;what is the situation
+    in this box?;what is the situation in the box?;what is in the container?;what
+    is in this container?;what is in this shelf?;what is the situation in this shelf?;how
+    many people?;what are people doing?;what are people in this image doing?;what
+    are people in the image doing?;what about the people?;what about these people?;how
+    are the monitors?;what about the monitors?;how much is in a container?;how much
+    is in the container?;how much is inside the container?
+state: []

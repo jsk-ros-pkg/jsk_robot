@@ -18,6 +18,7 @@
   <arg name="save_human_pose" default="false" />
   <arg name="save_action" default="false" />
   <arg name="save_app" default="true" />
+  <arg name="save_vqa" default="false" />
 
   <!-- namespace -->
   <arg name="camera_ns" default="kinect_head" />
@@ -312,6 +313,20 @@
       </rosparam>
       <rosparam subst_value="true" if="$(eval arg('collection') != '')">
         collection: $(arg collection)
+      </rosparam>
+    </node>
+
+    <!-- save vqa data -->
+    <node if="$(arg save_vqa)"
+          name="vqa_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /vqa/caption_result
+        - /vqa/caption_server/goal
+        - /vqa/caption_server/result
       </rosparam>
     </node>
 
