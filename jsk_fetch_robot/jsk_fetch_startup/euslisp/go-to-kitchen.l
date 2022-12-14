@@ -5,6 +5,7 @@
 (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
 (require :state-machine-utils "package://roseus_smach/src/state-machine-utils.l")
 (require :base64 "lib/llib/base64.l")
+(require :json-encode "package://roseus_mongo/euslisp/json/json-encode.l")
 
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
 
@@ -18,12 +19,16 @@
                              "/vqa/caption_server"
                              jsk_recognition_msgs::VQATaskAction))
 
-(defun vqa-request (compressed-image)
-  (let* ((goal (instance jsk_recognition_msgs::VQATaskActionGoal :init)))
+(defun vqa-to-json (compressed-image)
+  (let* (goal results vqa-pairs)
+    (setq goal (instance jsk_recognition_msgs::VQATaskActionGoal :init))
     (send (send goal :goal) :compressed_image compressed-image)
     (send *vqa-client* :send-goal goal)
     (send *vqa-client* :wait-for-result)
-    (send (send *vqa-client* :get-result) :result)))
+    (setq results (send (send (send *vqa-client* :get-result) :result) :result))
+    (dolist (pair results)
+      (push (cons (send pair :question) (send pair :answer)) vqa-pairs))
+    (json::stream->string #'json::encode-alist vqa-pairs)))
 
 (defun image-cb (msg)
   (setq *image* msg))
@@ -211,7 +216,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-dock-front-failure
@@ -244,7 +249,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-tv-front-failure
@@ -278,7 +283,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-tv-desk-failure
@@ -312,7 +317,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-desk-back-failure
@@ -345,7 +350,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-desk-front-failure
@@ -378,7 +383,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-kitchen-door-front-failure
@@ -410,7 +415,7 @@
                  (if *image*
                    (progn
                      (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                     (set-alist 'vqa (vqa-request *image*) userdata))
+                     (set-alist 'vqa (vqa-to-json *image*) userdata))
                    (set-alist 'image "" userdata))
                  t)))
             (:report-move-to-sink-front-failure
@@ -443,7 +448,7 @@
                (if *image*
                  (progn
                    (set-alist 'image (remove #\newline (base64encode (send *image* :serialize))) userdata)
-                   (set-alist 'vqa (vqa-request *image*) userdata))
+                   (set-alist 'vqa (vqa-to-json *image*) userdata))
                  (set-alist 'image "" userdata))
                t))
             (:report-move-to-trashcan-front-failure
