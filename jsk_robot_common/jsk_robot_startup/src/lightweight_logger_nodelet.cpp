@@ -57,11 +57,9 @@ namespace jsk_robot_startup
       {
         pnh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
       }
-      if (ros::param::has(pnh_->resolveName("collection")))
-      {
-        pnh_->param<std::string>("collection", col_name_, std::string());
-      }
-      else
+
+      pnh_->param<std::string>("collection", col_name_, std::string());
+      if (col_name_.empty() || col_name_=="USE_DEFAULT_VALUE")
       {
         pnh_->param<std::string>("/robot/name", col_name_, std::string());
       }
