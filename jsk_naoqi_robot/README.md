@@ -132,13 +132,13 @@ workspace: /home/leus/catkin_ws/src
  Localname         S SCM Version (Spec)    UID  (Spec)  URI  (Spec) [http(s)://...]
  ---------         - --- --------------    -----------  ---------------------------
  pepper_robot        git master  (-)       efad3979b374 github.com/ros-naoqi/pepper_robot
- naoqi_driver      M git kochigami-develop 98c0b678286a github.com/kochigami/naoqi_driver
- naoqi_dashboard     git kochigami-develop 33962f146c77 github.com/kochigami/naoqi_dashboard
+ naoqi_driver        git kochigami-develop 98c0b678286a github.com/kochigami/naoqi_driver
+ naoqi_dashboard     git kochigami-develop 7f32005e08e0 github.com/kochigami/naoqi_dashboard
  naoqi_bridge_msgs   git kochigami-develop d7417613690e github.com/kochigami/naoqi_bridge_msgs
  naoqi_bridge        git kochigami-develop c28b727e1e9b github.com/kochigami/naoqi_bridge
  nao_robot           git master  (-)       67476469a137 github.com/ros-naoqi/nao_robot
  nao_interaction     git master  (-)       f97ad12f3896 github.com/ros-naoqi/nao_interaction
- jsk_robot           git master            1f44c97c7855 github.com/jsk-ros-pkg/jsk_robot.git
+ jsk_robot           git master            d551865511c3 github.com/jsk-ros-pkg/jsk_robot.git
 ```
 
 ## Interface when controlling NAO and Pepper via roseus
