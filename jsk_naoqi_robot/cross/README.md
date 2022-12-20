@@ -8,6 +8,10 @@ This project contains a set of patches and scripts to compile and run ROS1 on a 
 
 We're going to use Docker to set up a container that will compile all the tools for cross-compiling ROS and all of its dependencies. Go to https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository to install it for your Linux distribution.
 
+Please make sure you meet the prerequisites at https://docs.docker.com/engine/install/ubuntu/#prerequisites
+
+Also, when you verify that the Docker Engine installation is successful by running the hello-world image, it is recommended to add `-rm` option like `sudo docker run --rm hello-world`.
+
 1. Add your user to docker group
 ```
 $ sudo usermod -aG docker $USER
