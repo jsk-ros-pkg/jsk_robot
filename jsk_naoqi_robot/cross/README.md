@@ -4,11 +4,21 @@ This project contains a set of patches and scripts to compile and run ROS1 on a 
 
 ## Setup Pepper Robot
 
+### Prerequisites
+
+- Pepper robot running NAOqi OS 2.5.X (Robot version 1.6)
+
+Note that this project does not cover NAOqi OS 2.9 (Robot version 1.8).
+
+As for robot version, please refer to http://doc.aldebaran.com/2-8/family/pepper_technical/pepper_versions.html
+
+- Linux PC which meets the prerequisites at https://docs.docker.com/engine/install/ubuntu/#prerequisites to prepare cros-compiling environment and copy system to Pepper.
+
+- (Recommendation) Linux PC (OS 16.04 + ROS kinetic, and lower) which has environment for NAOqi robot for developping programs for Pepper. For further information, please refer to https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#setup-environment.
+
 ### Prepare cross-compiling environment (Run only the fist time per host computer)
 
 We're going to use Docker to set up a container that will compile all the tools for cross-compiling ROS and all of its dependencies. Go to https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository to install it for your Linux distribution.
-
-Please make sure you meet the prerequisites at https://docs.docker.com/engine/install/ubuntu/#prerequisites
 
 Also, when you verify that the Docker Engine installation is successful by running the hello-world image, it is recommended to add `-rm` option like `sudo docker run --rm hello-world`.
 
