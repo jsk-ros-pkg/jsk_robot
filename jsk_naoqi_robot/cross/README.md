@@ -46,7 +46,7 @@ export ALDE_CTC_CROSS=$HOME/ctc-linux64-atom-2.5.10.7
 4. Install command used in scripts
 
 ```
-sudo apt install python-vcstools sshpass
+sudo apt install python-vcstool sshpass
 ```
 
 ### Build ROS System on Docker  (Run only the fist time per host computer)
