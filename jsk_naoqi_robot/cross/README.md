@@ -111,6 +111,9 @@ You can connect to `app_chooser` by http://<$NAO_IP>:8000/rwt_app_chooser/#!robo
 
 ### To comple `pepper.l` within the robot
 
+Note: This issue was solved by https://github.com/kochigami/jsk_robot/commit/1a0cfe08e51421a2378bc2938ea3014b62e788fb
+
+Please refer to this comment: https://github.com/jsk-ros-pkg/jsk_robot/pull/1583#issuecomment-1235043472
 ```
 cp -r /opt/ros/melodic/share/pepper_meshes/meshes/  ./i386_User/src/pepper_meshes/
 rm -fr i386_User/build/pepper_meshes/ i386_User/build/peppereus
