@@ -132,9 +132,13 @@ make user
 make install
 ```
 
-If you want to use ethernet, you need to change from `wlan0` to `eth0` in `jsk_naoqi_robot/cross/startup_scripts/user_setup.bash` and run `make install`
+If you want to use ethernet, you need to change from `wlan0` to `eth0` in `jsk_naoqi_robot/cross/startup_scripts/user_setup.bash` and `jsk_naoqi_robot/cross/startup_scripts/start.sh`, and run `make install`
 ```
 export ROS_IP=$(ip addr show eth0 | grep -Po '(?<= inet )([0-9]{1,3}.){3}[0-9]{1,3}')
+```
+
+```
+screen -c User/screenrc -S session -p 0 -X stuff "roslaunch jsk_pepper_startup jsk_pepper_startup.launch launch_dashboard:=false network_interface:=eth0
 ```
 
 If you add more dependencies to `package.xml`, you need to remove `i386_Users` and run `make user` again.
