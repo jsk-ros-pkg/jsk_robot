@@ -57,7 +57,16 @@ make system
 
 Caution!!! It will take more than a few hours !!
 
-Run following command to copy ROS1 base sytem to Pepper onboard computer. This should be done only in the first time. So normally user do not have to run this command. You need to specify password by -p option.
+For JSK users, you can find latest backup of `i386_System.tgz` at [Google Drive](https://drive.google.com/drive/u/1/folders/10rINVGt1iDM2WNofmf0sZBX_iTnpXya6).
+
+You can unzip this by:
+```
+gzip -d i386_System.tgz
+tar -xvf i386_System.tar
+```
+For further information, please see https://github.com/jsk-ros-pkg/jsk_robot/pull/1583#issuecomment-1235043472
+
+Run following command to copy ROS1 base system to Pepper onboard computer. This should be done only in the first time. So normally user do not have to run this command. You need to specify password by -p option.
 ```
 ./install.sh -p <robot password> -d System
 ```
