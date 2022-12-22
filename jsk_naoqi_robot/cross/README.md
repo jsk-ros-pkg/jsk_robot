@@ -86,13 +86,18 @@ To copy your software to Pepper onboard computer, run following command
 
 ## Start `jsk_pepper_startup.launch`
 
-ssh to NAO_IP machine and run
+ssh to NAO_IP machine and run this command directly under the home directory.
 ```
-source User/user_setup.bash
-roslaunch --screen jsk_pepper_startup jsk_pepper_startup.launch network_interface:=eth0 launch_dashboard:=false launch_joy:=false
+./User/start.sh
 ```
 
+`C-t d` enables you to detach a session from a terminal.
+
+If you want to attach the session again, please execute `./User/attach.sh`.
+
 You can connect to `app_chooser` by http://<$NAO_IP>:8000/rwt_app_chooser/#!robot
+
+Also, you can access to running ROS process on Pepper from your remote PC by typing `rossetmaster <$NAO_IP>`
 
 ## Known Issues
 
