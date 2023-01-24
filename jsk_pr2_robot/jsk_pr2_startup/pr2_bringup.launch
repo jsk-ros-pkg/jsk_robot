@@ -70,7 +70,7 @@
   </node>
 
   <!-- Base Laser -->
-  <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
+  <node machine="c2" pkg="urg_node" type="urg_node" name="base_hokuyo_node" args="scan:=base_scan">
     <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
     <param name="frame_id" type="string" value="base_laser_link" />
     <param name="min_ang" type="double" value="-2.2689" />
@@ -80,7 +80,7 @@
   </node>
 
   <!-- Tilt Laser -->
-  <node  machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="tilt_hokuyo_node" args="scan:=tilt_scan">
+  <node  machine="c2" pkg="urg_node" type="urg_node" name="tilt_hokuyo_node" args="scan:=tilt_scan">
     <param name="port" type="string" value="/etc/ros/sensors/tilt_hokuyo" />
     <param name="frame_id" type="string" value="laser_tilt_link" />
     <param name="min_ang" type="double" value="-0.829" />
