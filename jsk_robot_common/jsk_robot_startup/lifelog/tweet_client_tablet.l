@@ -10,6 +10,8 @@
     (tweet-string twit-str
                   :warning-time nil
                   :with-image "/tablet/marked/image_rect_color")))
+
+(ros::advertise "/tweet" std_msgs::String 1)
 (ros::subscribe "/pr2twit_from_tablet" roseus::StringStamped #'twit-cb)
 
 (ros::spin)

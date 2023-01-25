@@ -247,7 +247,7 @@
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
         topics:
-        - /aws_auto_checkin_app/output/class
+        - /aws_auto_checkin_app/class
         - /aws_detect_faces/attributes
       </rosparam>
     </node>
