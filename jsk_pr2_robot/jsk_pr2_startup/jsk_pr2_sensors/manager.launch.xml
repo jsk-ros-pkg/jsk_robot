@@ -1,3 +1,7 @@
+<!-- this file is copied and modified from $(find rgbd_launch)/launch/includes/manager.launch.xml -->
+<!-- this file is modified from original to add respawn arguments -->
+<!-- see https://github.com/ros-drivers/rgbd_launch/pull/40 -->
+
 <!-- Start nodelet manager -->
 <launch>
 

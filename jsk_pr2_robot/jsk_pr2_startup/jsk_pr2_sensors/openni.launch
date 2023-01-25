@@ -1,3 +1,7 @@
+<!-- this file is copied and modified from $(find openni_launch)/launch/openni.launch -->
+<!-- this launch is modified from original to add manager_respawn arguments -->
+<!-- see https://github.com/ros-drivers/openni_camera/pull/78 -->
+
 <!-- Entry point for using OpenNI devices -->
 <launch>
 
