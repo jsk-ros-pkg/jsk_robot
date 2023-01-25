@@ -25,10 +25,6 @@
 - git: # https://github.com/ros-naoqi/nao_robot/issues/40
    uri: https://github.com/ros-naoqi/nao_robot.git
    local-name: nao_robot
-- git: # use naoqi_pose, wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
-   uri: https://github.com/ros-naoqi/naoqi_bridge-release.git
-   local-name: naoqi_pose
-   version: release/kinetic/naoqi_pose
 # jsk_fetch_startup requires fetch_ros with following PRs.
 # https://github.com/fetchrobotics/fetch_ros/pull/144
 # https://github.com/fetchrobotics/fetch_ros/pull/146

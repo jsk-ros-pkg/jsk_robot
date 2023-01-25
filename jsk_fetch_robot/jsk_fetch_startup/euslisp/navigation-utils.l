@@ -227,7 +227,9 @@ Args:
 
 (defun get-light-on ()
   (let* ((room-light-msg
-           (one-shot-subscribe "/check_room_light/output" jsk_robot_startup::RoomLight))
+          (one-shot-subscribe "/check_room_light/output"
+                              jsk_robot_startup::RoomLight
+                              :timeout 1000))
          (light-on (if room-light-msg (send room-light-msg :light_on))))
     light-on))
 
