@@ -6,9 +6,9 @@ This project contains a set of patches and scripts to compile and run ROS1 on a 
 
 ### Prerequisites
 
-- Pepper robot running NAOqi OS 2.5.X (Robot version 1.6)
+- Pepper robot running NAOqi OS 2.5.X
 
-Note that this project does not cover NAOqi OS 2.9 (Robot version 1.8).
+Note that this project does not cover NAOqi OS 2.9.
 
 As for robot version, please refer to http://doc.aldebaran.com/2-8/family/pepper_technical/pepper_versions.html
 
