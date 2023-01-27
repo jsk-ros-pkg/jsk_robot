@@ -1,6 +1,7 @@
 <launch>
   <arg name="use_microcone" default="false"/>
   <arg name="use_respeaker" default="true"/>
+  <arg name="respawn" default="false"/>
 
   <arg name="language" default="ja-JP"/>
 
@@ -20,7 +21,7 @@
   <!-- respeaker -->
   <group if="$(arg use_respeaker)">
     <node name="respeaker_node" pkg="respeaker_ros" type="respeaker_node.py"
-          machine="$(arg machine)" output="screen">
+          machine="$(arg machine)" output="screen" respawn="$(arg respawn)">
       <rosparam>
         sensor_frame_id: head_mount_link
       </rosparam>

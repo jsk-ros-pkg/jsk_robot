@@ -88,6 +88,7 @@ docker run -it --rm \
 cp -a ${PWD}/startup_scripts/user_setup.bash ${SOURCE_ROOT}/
 cp -a ${PWD}/startup_scripts/start.sh ${SOURCE_ROOT}/
 cp -a ${PWD}/startup_scripts/screenrc ${SOURCE_ROOT}/
+cp -a ${PWD}/startup_scripts/attach.sh ${SOURCE_ROOT}/
 
 echo "
 

@@ -136,7 +136,9 @@
 
   <!-- for microphone -->
   <include if="$(arg launch_microphone)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_microphone.launch"/>
+           file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_microphone.launch">
+    <arg name="respawn" value="true" />
+  </include>
 
   <!-- joy mux -->
   <node machine="c2" pkg="topic_tools" type="mux" name="multiple_joystick_mux"

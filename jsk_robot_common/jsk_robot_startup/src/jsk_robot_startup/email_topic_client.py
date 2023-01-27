@@ -1,6 +1,6 @@
 import rospy
 from jsk_robot_startup.msg import Email
-
+from jsk_robot_startup.msg import EmailBody
 
 class EmailTopicClient:
 
@@ -20,7 +20,10 @@ class EmailTopicClient:
         msg = Email()
         msg.header.stamp = rospy.Time.now()
         msg.subject = subject
-        msg.body = body
+        email_body = EmailBody()
+        email_body.type = "text"
+        email_body.message = body
+        msg.body.append(email_body)
         msg.receiver_address = receiver_address
         if sender_address is not None:
             msg.sender_address = sender_address

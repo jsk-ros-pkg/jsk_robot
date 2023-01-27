@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
   <name>jsk_robot_startup</name>
   <version>1.1.0</version>
   <description>The jsk_robot_startup package</description>
@@ -19,33 +19,39 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>dynamic_reconfigure</build_depend>
   <build_depend>urdf</build_depend>
-  <run_depend>actionlib_msgs</run_depend>
-  <run_depend>app_manager</run_depend>
-  <run_depend>dynamic_reconfigure</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>gmapping</run_depend>
-  <run_depend>google_chat_ros</run_depend>
-  <run_depend>jsk_recognition_msgs</run_depend>
-  <run_depend version_gte="2.2.7">jsk_topic_tools</run_depend>
-  <run_depend>message_runtime</run_depend>
-  <run_depend>mongodb_store</run_depend>
-  <run_depend>nodelet</run_depend>
-  <run_depend>pointcloud_to_laserscan</run_depend>
-  <run_depend>posedetection_msgs</run_depend>
-  <run_depend>rosbridge_server</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>roseus_mongo</run_depend>
-  <run_depend>rosgraph</run_depend>
-  <run_depend>rospy</run_depend>
-  <run_depend>rostwitter</run_depend>
-  <run_depend>roswww</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>tf</run_depend>
-  <run_depend>tf2_ros</run_depend>
-  <run_depend>tf2_py</run_depend>
-  <run_depend>tf2_geometry_msgs</run_depend>
-  <run_depend>urdf</run_depend>
-  <run_depend>jsk_tilt_laser</run_depend>
+  <exec_depend>actionlib_msgs</exec_depend>
+  <exec_depend>app_manager</exec_depend>
+  <exec_depend>dynamic_reconfigure</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>gmapping</exec_depend>
+  <exec_depend>google_chat_ros</exec_depend>
+  <exec_depend>jsk_recognition_msgs</exec_depend>
+  <exec_depend version_gte="2.2.7">jsk_topic_tools</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>mongodb_store</exec_depend>
+  <exec_depend>nodelet</exec_depend>
+  <exec_depend>pointcloud_to_laserscan</exec_depend>
+  <exec_depend>posedetection_msgs</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-bson</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-bson</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-pymongo</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-pymongo</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-tz</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-tz</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>roseus_mongo</exec_depend>
+  <exec_depend>rosgraph</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rostwitter</exec_depend>
+  <exec_depend>roswww</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf2_py</exec_depend>
+  <exec_depend>tf2_geometry_msgs</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>jsk_tilt_laser</exec_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>pr2_gazebo</test_depend>
