@@ -102,7 +102,8 @@ There are several suitable screens on:
 	29334.session	(04/04/14 12:26:33)	(Detached)
 Use -S to specify a session.
 ```
-Please specify a session like `creen -c User/screenrc -r 31164` and it is recommended to close all sessions one by one.
+
+Please specify a session like `screen -c User/screenrc -r 31164` and it is recommended to close all sessions one by one.
 
 You can connect to `app_chooser` by http://<$NAO_IP>:8000/rwt_app_chooser/#!robot
 
