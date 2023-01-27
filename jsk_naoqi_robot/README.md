@@ -57,6 +57,8 @@ If this happens, please connect Pepper to network with DHCP and exit Setting.
 For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation).
 For ros melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation).
 
+% As mentioned in https://github.com/ros-naoqi/naoqi_driver#launch, naoqi_driver for ROS melodic and greater have to be used for robots running NAOqi 2.9 and greater. Using ROS melodic on Pepper running NAOqi OS 2.5 has some known issue like this: https://github.com/ros-naoqi/naoqi_driver/issues/96
+
 1. Install ``Python NAOqi SDK``
 You can download it (version = 2.5.5) from [here](https://drive.google.com/file/d/1xHuYREDa78xGiikEpsjxfZQ7Gfvo1E9D/view?usp=sharing).  
 Please unzip the downloaded file.  
@@ -124,6 +126,8 @@ source devel/setup.bash
 
 Confirm that you get the following output when you type `wstool info`
 
+% UID of jsk_robot may change from below, but there is no problem. That is because this package is in active developpment.
+
 ```
 $ cd ~/catkin_ws/src
 $ wstool info
@@ -132,13 +136,13 @@ workspace: /home/leus/catkin_ws/src
  Localname         S SCM Version (Spec)    UID  (Spec)  URI  (Spec) [http(s)://...]
  ---------         - --- --------------    -----------  ---------------------------
  pepper_robot        git master  (-)       efad3979b374 github.com/ros-naoqi/pepper_robot
- naoqi_driver      M git kochigami-develop 98c0b678286a github.com/kochigami/naoqi_driver
- naoqi_dashboard     git kochigami-develop 33962f146c77 github.com/kochigami/naoqi_dashboard
+ naoqi_driver        git kochigami-develop 98c0b678286a github.com/kochigami/naoqi_driver
+ naoqi_dashboard     git kochigami-develop 7f32005e08e0 github.com/kochigami/naoqi_dashboard
  naoqi_bridge_msgs   git kochigami-develop d7417613690e github.com/kochigami/naoqi_bridge_msgs
  naoqi_bridge        git kochigami-develop c28b727e1e9b github.com/kochigami/naoqi_bridge
  nao_robot           git master  (-)       67476469a137 github.com/ros-naoqi/nao_robot
  nao_interaction     git master  (-)       f97ad12f3896 github.com/ros-naoqi/nao_interaction
- jsk_robot           git master            1f44c97c7855 github.com/jsk-ros-pkg/jsk_robot.git
+ jsk_robot           git master            d551865511c3 github.com/jsk-ros-pkg/jsk_robot.git
 ```
 
 ## Interface when controlling NAO and Pepper via roseus
