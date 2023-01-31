@@ -502,6 +502,7 @@
                                      (success-go-to-kitchen . nil)
                                      (success-go-to-trashcan . nil)
                                      (success-auto-dock . nil))
+                              :after-hook-func 'after-state-interrupt
                               :hz 2.0)))
     (send result-state :name)))
 
