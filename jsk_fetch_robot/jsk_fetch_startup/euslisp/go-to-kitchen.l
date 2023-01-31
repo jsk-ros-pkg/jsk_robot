@@ -7,6 +7,7 @@
 (require :base64 "lib/llib/base64.l")
 
 (load "package://jsk_fetch_startup/euslisp/navigation-utils.l")
+(load "package://jsk_fetch_startup/euslisp/interrupt-utils.l")
 
 (ros::advertise "/tweet" std_msgs::String 1)
 (ros::advertise "/photo_taken" sensor_msgs::Image 1)
@@ -502,7 +503,7 @@
                                      (success-go-to-kitchen . nil)
                                      (success-go-to-trashcan . nil)
                                      (success-auto-dock . nil))
-                              :after-hook-func 'after-state-interrupt
+                              :after-hook-func '(lambda () 'after-state-interrupt)
                               :hz 2.0)))
     (send result-state :name)))
 

@@ -76,7 +76,7 @@
     )
   )
 
-(defun after-state-interrupt (args)
+(defun after-state-interrupt ()
   (ros::ros-info "after-state")
   (let* ((reaction (wait-reaction :timeout 10000)))
     (unix::sleep 1)
