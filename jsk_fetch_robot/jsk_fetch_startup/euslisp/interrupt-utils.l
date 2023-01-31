@@ -84,7 +84,7 @@
     (ros::ros-info "reaction: ~A" reaction)
     (cond
       ((eql reaction :yes) (return-from after-state-interrupt t))
-      ((eql reaction :stop) (sys::exit 0))
+      ((eql reaction :stop) (sys::exit 1))
       ((eql reaction :interrupt)
        (unix::sleep 1)
        (if (eql (wait-reaction :timeout 1000000) :yes) (return-from after-state-interrupt t)))
