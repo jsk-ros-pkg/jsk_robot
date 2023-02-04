@@ -105,7 +105,8 @@
 
   <!-- Prosilica camera -->
   <!-- Camera isn't robust to dropped links, so it should respawn -->
-  <arg name="no-prosilica" default="false" />
+  <!-- FIXME: prosilica device cannot be found, broken? -->
+  <arg name="no-prosilica" default="true" />
   <group unless="$(arg no-prosilica)" >
     <group ns="prosilica" >
       <node name="prosilica_nodelet_manager"
@@ -136,8 +137,9 @@
            if="$(arg launch_stereo_camera)"/>
 
   <!-- Forearm Camera -->
-  <include file="$(find pr2_bringup)/config/r_forearm_cam.launch" />
-  <include file="$(find pr2_bringup)/config/l_forearm_cam.launch" />
+  <!-- FIXME: runnning forearm camera causes to stop head stereo cameras  -->
+  <!--include file="$(find pr2_bringup)/config/r_forearm_cam.launch" /-->
+  <!--include file="$(find pr2_bringup)/config/l_forearm_cam.launch" /-->
 
   <!-- Sound -->
   <group if="$(arg launch_sound_play)">
