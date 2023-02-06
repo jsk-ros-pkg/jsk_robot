@@ -31,6 +31,5 @@ else
     ret=`timeout 30.0 rostopic echo /calibrated/data -n1 | grep True`
     sleep 1
     echo "Waiting for topic /calibrated is advertised"
-    timeout 10.0 rosrun sound_play say.py 'Robot is not calibrated. Please enable the run-stop.'
   done
 fi
