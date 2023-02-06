@@ -141,6 +141,7 @@
   <!-- for microphone -->
   <include if="$(arg launch_microphone)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_microphone.launch">
+    <arg name="machine" value="c1" />
     <arg name="respawn" value="true" />
   </include>
 
