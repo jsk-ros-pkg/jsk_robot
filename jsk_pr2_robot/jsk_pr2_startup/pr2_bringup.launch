@@ -143,7 +143,7 @@
 
   <!-- Sound -->
   <group if="$(arg launch_sound_play)">
-    <node pkg="sound_play" type="soundplay_node.py" machine="c1" name="sound_play" respawn="true">
+    <node pkg="sound_play" type="soundplay_node.py" machine="c1" name="sound_play" respawn="true" output="screen">
       <remap from="sound_play" to="robotsound" />
     </node>
 
