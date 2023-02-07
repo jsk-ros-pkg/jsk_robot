@@ -31,5 +31,10 @@ else
     ret=`timeout 30.0 rostopic echo /calibrated/data -n1 | grep True`
     sleep 1
     echo "Waiting for topic /calibrated is advertised"
+    ret=`rosnode list`
+    if [ "$ret" != '' ]
+    then
+      break
+    fi
   done
 fi
