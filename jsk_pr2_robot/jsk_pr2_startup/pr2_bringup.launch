@@ -137,9 +137,8 @@
            if="$(arg launch_stereo_camera)"/>
 
   <!-- Forearm Camera -->
-  <!-- FIXME: runnning forearm camera causes to stop head stereo cameras  -->
-  <!--include file="$(find pr2_bringup)/config/r_forearm_cam.launch" /-->
-  <!--include file="$(find pr2_bringup)/config/l_forearm_cam.launch" /-->
+  <include file="$(find pr2_bringup)/config/r_forearm_cam.launch" />
+  <include file="$(find pr2_bringup)/config/l_forearm_cam.launch" />
 
   <!-- Sound -->
   <group if="$(arg launch_sound_play)">
