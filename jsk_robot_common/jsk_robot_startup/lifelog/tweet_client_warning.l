@@ -65,6 +65,7 @@
       )))
 
 (ros::advertise "/tweet" std_msgs::String 1)
+(ros::advertise "/tweet_image_server/tweet/goal" rostwitter::TweetActionGoal 1)
 (ros::subscribe "/diagnostics_agg" diagnostic_msgs::DiagnosticArray #'diagnostics-cb)
 (ros::rate (/ 1.0 3.0))
 (while (ros::ok)
