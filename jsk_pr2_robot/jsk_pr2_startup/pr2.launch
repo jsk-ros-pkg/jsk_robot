@@ -34,6 +34,8 @@
        doc="whether launch gdrive_server on c2 or not."/>
   <arg name="launch_app_scheduler" default="true"
        doc="whether launch app_scheduler or not." />
+  <arg name="launch_coral" default="false"
+       doc="whether launch coral or not." />
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -263,6 +265,15 @@
   <include if="$(arg launch_app_scheduler)"
            file="$(find app_scheduler)/launch/app_scheduler.launch">
     <arg name="yaml_path" value="$(find jsk_pr2_startup)/config/pr2_app_schedule.yaml" />
+  </include>
+
+  <!-- coral -->
+  <include if="$(arg launch_coral)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_coral.launch">
+    <arg name="input_image" value="/kinect_head/rgb/image_rect_color" />
+    <arg name="launch_edgetpu_human_pose_estimator" value="true" />
+    <arg name="launch_edgetpu_object_detector" value="true" />
+    <arg name="machine" value="c2" />
   </include>
 
 </launch>

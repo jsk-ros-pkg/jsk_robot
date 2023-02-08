@@ -7,5 +7,5 @@ echo "ROS_IP: $ROS_IP";
 echo "ROS_MASTER_URI: $ROS_MASTER_URI";
 echo "ROS_RUN_ID: $ROS_RUN_ID";
 echo "ROS_ENV_LOADER: $ROS_ENV_LOADER";
-$ROS_ENV_LOADER roslaunch jsk_pr2_startup pr2.launch --screen --wait map_frame:=$MAP_FRAME
+$ROS_ENV_LOADER roslaunch jsk_pr2_startup pr2.launch --screen --wait map_frame:=$MAP_FRAME launch_coral:=true
 set +x
