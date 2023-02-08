@@ -61,6 +61,7 @@
             cfg)))
 
 (ros::advertise "/tweet" std_msgs::String 1)
+(ros::advertise "/tweet_image_server/tweet/goal" rostwitter::TweetActionGoal 1)
 (ros::rate 0.1)
 (do-until-key
   (if *enable*
