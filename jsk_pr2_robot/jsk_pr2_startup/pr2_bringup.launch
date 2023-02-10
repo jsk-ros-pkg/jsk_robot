@@ -40,10 +40,17 @@
 
   <!-- PS3 joystick for A2 servers -->
   <node machine="c2" pkg="joy" type="joy_node" name="joy_node" >
-    <remap from="joy" to="joy_org" />
+    <remap from="joy" to="joy_org_ds3" />
     <param name="deadzone" value="0.12" />
     <param name="dev" value="/etc/ros/sensors/ps3joy" />
     <param name="autorepeat_rate" value="10" />
+  </node>
+
+  <!-- remapping joy for noetic -->
+  <node name="joy_remap" pkg="joy" type="joy_remap.py" output="screen" respawn="true">
+    <remap from="joy_in" to="joy_org_ds3" />
+    <remap from="joy_out" to="joy_org" />
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_move_base/ds3joy_$(env ROS_DISTRO).yaml" />
   </node>
 
   <!-- Run stop auto restart -->
