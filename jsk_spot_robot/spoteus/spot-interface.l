@@ -47,7 +47,7 @@
 
 (defmethod spot-interface
   (:init
-   (&rest args &key (trajectory-cmd-action-name "/spot/trajectory"))
+   (&rest args &key (trajectory-cmd-action-name "/spot/trajectory") &allow-other-keys)
    (prog1
        (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      ;; check if spot_ros/driver.launch started
