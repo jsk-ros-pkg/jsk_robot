@@ -85,4 +85,4 @@
 #  acc_lim: 3.0              # Survey-In Accuracy Limit [m]
 - git:
     local-name: ublox
-    uri: https://github.com:KumarRobotics/ublox.git
+    uri: https://github.com/KumarRobotics/ublox.git
