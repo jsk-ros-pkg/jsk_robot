@@ -76,8 +76,9 @@
     )
   )
 
-(defun after-state-interrupt ()
+(defun after-state-interrupt (args)
   (ros::ros-info "after-state")
+  (send *ri* :speak-jp "中断します" :wait t)
   (let* ((reaction (wait-reaction :timeout 10000)))
     (unix::sleep 1)
     (ros::ros-info "wait")
@@ -85,6 +86,7 @@
     (cond
       ((eql reaction :yes) (return-from after-state-interrupt t))
       ((eql reaction :stop) (sys::exit 1))
+      ;; temporary
       ((eql reaction :interrupt)
        (unix::sleep 1)
        (if (eql (wait-reaction :timeout 1000000) :yes) (return-from after-state-interrupt t)))
