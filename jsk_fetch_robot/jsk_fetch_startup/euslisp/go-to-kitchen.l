@@ -503,7 +503,7 @@
                                      (success-go-to-kitchen . nil)
                                      (success-go-to-trashcan . nil)
                                      (success-auto-dock . nil))
-                              :after-hook-func '(lambda (userdata) 'after-state-interrupt)
+                              :after-hook-func '(lambda (userdata) (after-state-interrupt))
                               :hz 2.0)))
     (send result-state :name)))
 
