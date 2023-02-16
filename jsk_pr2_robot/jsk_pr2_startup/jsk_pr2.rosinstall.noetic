@@ -131,6 +131,10 @@
     uri: https://github.com/ros-visualization/executive_smach_visualization.git
     version: melodic-devel
 - git:
+    local-name: ros/collada_urdf
+    uri: https://github.com/werner291/collada_urdf.git
+    version: patch-1
+- git:
     local-name: strands-project/mongodb_store
     uri: https://github.com/knorth55/mongodb_store.git
     version: pr1040-noetic
