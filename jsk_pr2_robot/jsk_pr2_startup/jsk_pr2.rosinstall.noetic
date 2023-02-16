@@ -1,0 +1,144 @@
+- git:
+    local-name: Affonso-Gui/euslime
+    uri: https://github.com/Affonso-Gui/euslime.git
+    version: eus10
+- git:
+    local-name: Affonso-Gui/roseus_resume
+    uri: https://github.com/Affonso-Gui/roseus_resume.git
+    version: eus10
+- git:
+    local-name: BehaviorTree/behaviortree_ros
+    uri: https://github.com/BehaviorTree/BehaviorTree.ROS.git
+    version: master
+- git:
+    local-name: PR2/app_manager
+    uri: https://github.com/PR2/app_manager.git
+    version: kinetic-devel
+- git:
+    local-name: PR2/pr2_apps
+    uri: https://github.com/pr2/pr2_apps.git
+    version: melodic-devel 
+- git:
+    local-name: PR2/pr2_gripper_sensor
+    uri: https://github.com/pr2/pr2_gripper_sensor.git
+    version: hydro-devel 
+- git:
+    local-name: PR2/pr2_navigation
+    uri: https://github.com/PR2/pr2_navigation.git
+    version: kinetic-devel 
+- git:
+    local-name: PR2/pr2_robot
+    uri: https://github.com/PR2/pr2_robot.git
+    version: noetic-devel 
+- git:
+    local-name: PR2/rqt_pr2_dashboard
+    uri: https://github.com/PR2/rqt_pr2_dashboard.git
+    version: kinetic-devel 
+- git:
+    local-name: SharedAutonomyToolkit/shared_autonomy_manipulation
+    uri: https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation.git
+    version: hydro-devel 
+- git:
+    local-name: euslisp/Euslisp
+    uri: https://github.com/Affonso-Gui/EusLisp.git
+    version: eus10
+- git:
+    local-name: euslisp/jskeus
+    uri: https://github.com/euslisp/jskeus.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/coral_usb_ros
+    uri: https://github.com/jsk-ros-pkg/coral_usb_ros.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/geneus
+    uri: https://github.com/jsk-ros-pkg/geneus.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_3rdparty
+    uri: https://github.com/knorth55/jsk_3rdparty.git
+    version: pr1040-noetic 
+- git:
+    local-name: jsk-ros-pkg/jsk_common
+    uri: https://github.com/jsk-ros-pkg/jsk_common.git
+    version: develop/pr2
+- git:
+    local-name: jsk-ros-pkg/jsk_control
+    uri: https://github.com/jsk-ros-pkg/jsk_control.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_demos
+    uri: https://github.com/knorth55/jsk_demos.git
+    version: develop/pr2
+- git:
+    local-name: jsk-ros-pkg/jsk_model_tools
+    uri: https://github.com/jsk-ros-pkg/jsk_model_tools.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_planning
+    uri: https://github.com/jsk-ros-pkg/jsk_planning.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_pr2eus
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_recognition
+    uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
+    version: master
+- git:
+    local-name: jsk-ros-pkg/jsk_robot
+    uri: https://github.com/knorth55/jsk_robot.git
+    version: pr1040-noetic
+- git:
+    local-name: jsk-ros-pkg/jsk_roseus
+    uri: https://github.com/knorth55/jsk_roseus.git
+    version: pr1040
+- git:
+    local-name: jsk-ros-pkg/jsk_visualization
+    uri: https://github.com/jsk-ros-pkg/jsk_visualization.git
+    version: master
+- git:
+    local-name: knorth55/app_manager_utils
+    uri: https://github.com/knorth55/app_manager_utils.git
+    version: master
+- git:
+    local-name: ros-drivers/audio_common
+    uri: https://github.com/ros-drivers/audio_common.git
+    version: master
+- git:
+    local-name: ros-drivers/hokuyo_node
+    uri: https://github.com/ros-drivers/hokuyo_node.git
+    version: indigo-devel
+- git:
+    local-name: ros-drivers/joystick_drivers
+    uri: https://github.com/knorth55/joystick_drivers.git
+    version: pr1040-noetic 
+- git:
+    local-name: ros-drivers/prosilica_driver
+    uri: https://github.com/ros-drivers/prosilica_driver.git
+    version: plugin-install-fix 
+- git:
+    local-name: ros-drivers/wge100_driver
+    uri: https://github.com/ros-drivers/wge100_driver.git
+    version: hydro-devel 
+- git:
+    local-name: ros-drivers/wifi_ddwrt
+    uri: https://github.com/TAMS-Group/wifi_ddwrt.git
+    version: noetic-devel 
+- git:
+    local-name: ros-visualization/executive_smach_visualization
+    uri: https://github.com/ros-visualization/executive_smach_visualization.git
+    version: melodic-devel
+- git:
+    local-name: strands-project/mongodb_store
+    uri: https://github.com/knorth55/mongodb_store.git
+    version: pr1040-noetic 
+- git:
+    local-name: tork-a/roswww
+    uri: https://github.com/tork-a/roswww.git
+    version: develop 
+- git:
+    local-name: tork-a/visualization_rwt
+    uri: https://github.com/tork-a/visualization_rwt.git
+    version: kinetic-devel 
