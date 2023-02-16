@@ -63,7 +63,7 @@ class CheckOpenNINode:
             self.speak("resetting u s b")
             p = subprocess.Popen("lsusb", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()
-            lines = stdout.split("\n")
+            lines = stdout.decode('utf-8').split("\n")
             ms_line = [l for l in lines if "Microsoft" in l][0]
             # it should be like Bus 002 Device 013: ID 045e:02ad Microsoft Corp. Xbox NUI Audio
             bus_id = ms_line.split(' ')[1]
