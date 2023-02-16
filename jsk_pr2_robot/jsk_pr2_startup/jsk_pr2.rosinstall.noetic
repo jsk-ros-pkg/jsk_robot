@@ -17,27 +17,27 @@
 - git:
     local-name: PR2/pr2_apps
     uri: https://github.com/pr2/pr2_apps.git
-    version: melodic-devel 
+    version: melodic-devel
 - git:
     local-name: PR2/pr2_gripper_sensor
     uri: https://github.com/pr2/pr2_gripper_sensor.git
-    version: hydro-devel 
+    version: hydro-devel
 - git:
     local-name: PR2/pr2_navigation
     uri: https://github.com/PR2/pr2_navigation.git
-    version: kinetic-devel 
+    version: kinetic-devel
 - git:
     local-name: PR2/pr2_robot
     uri: https://github.com/PR2/pr2_robot.git
-    version: noetic-devel 
+    version: noetic-devel
 - git:
     local-name: PR2/rqt_pr2_dashboard
     uri: https://github.com/PR2/rqt_pr2_dashboard.git
-    version: kinetic-devel 
+    version: kinetic-devel
 - git:
     local-name: SharedAutonomyToolkit/shared_autonomy_manipulation
     uri: https://github.com/SharedAutonomyToolkit/shared_autonomy_manipulation.git
-    version: hydro-devel 
+    version: hydro-devel
 - git:
     local-name: euslisp/Euslisp
     uri: https://github.com/Affonso-Gui/EusLisp.git
@@ -57,7 +57,7 @@
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
     uri: https://github.com/knorth55/jsk_3rdparty.git
-    version: pr1040-noetic 
+    version: pr1040-noetic
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
@@ -113,19 +113,19 @@
 - git:
     local-name: ros-drivers/joystick_drivers
     uri: https://github.com/knorth55/joystick_drivers.git
-    version: pr1040-noetic 
+    version: pr1040-noetic
 - git:
     local-name: ros-drivers/prosilica_driver
-    uri: https://github.com/ros-drivers/prosilica_driver.git
-    version: plugin-install-fix 
+    uri: https://github.com/knorth55/prosilica_driver.git
+    version: plugin-install-fix
 - git:
     local-name: ros-drivers/wge100_driver
     uri: https://github.com/ros-drivers/wge100_driver.git
-    version: hydro-devel 
+    version: hydro-devel
 - git:
     local-name: ros-drivers/wifi_ddwrt
     uri: https://github.com/TAMS-Group/wifi_ddwrt.git
-    version: noetic-devel 
+    version: noetic-devel
 - git:
     local-name: ros-visualization/executive_smach_visualization
     uri: https://github.com/ros-visualization/executive_smach_visualization.git
@@ -133,12 +133,12 @@
 - git:
     local-name: strands-project/mongodb_store
     uri: https://github.com/knorth55/mongodb_store.git
-    version: pr1040-noetic 
+    version: pr1040-noetic
 - git:
     local-name: tork-a/roswww
     uri: https://github.com/tork-a/roswww.git
-    version: develop 
+    version: develop
 - git:
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
-    version: kinetic-devel 
+    version: kinetic-devel
