@@ -6,6 +6,20 @@
 (ros::load-ros-package "fetch_driver_msgs")
 (ros::load-ros-package "robot_controllers_msgs")
 
+(when (null (assoc :delete-object-by-id (send collision-object-publisher :methods)))
+  (ros::ros-warn ";;")
+  (ros::ros-warn ";;")
+  (ros::ros-warn ";; jsk-ros-pkg/jsk_pr2eus <0.3.14 does not have :delete-object-by-id method")
+  (ros::ros-warn ";;   If you need full features of latest fetcheus, please use jsk_pr2eus from source")
+  (ros::ros-warn ";;   See https://github.com/jsk-ros-pkg/jsk_demos/pull/1375#issuecomment-1292943531")
+  (ros::ros-warn ";;")
+  (ros::ros-warn ";;")
+  (defmethod collision-object-publisher
+    (:delete-attached-object-by-id (object-id)
+      (ros::ros-warn ";; did not delete attached object \"~A\"" object-id))
+    (:delete-object-by-id (object-id)
+      (ros::ros-warn ";; did not delete object \"~A\"" object-id))))
+
 (defclass fetch-interface
   :super robot-move-base-interface
   :slots (gripper-action moveit-robot fetch-controller-action)
@@ -401,11 +415,15 @@ Example: (send self :gripper :position) => 0.00"
     t)
   (:go-pos-unsafe
     (x y d &rest args) ;; [m] [m] [degree]
+    (if (send self :simulation-modep)
+      (return-from :go-pos-unsafe (send-super* :go-pos-unsafe x y d args)))
     (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
     (send* self :go-pos-unsafe-wait args)
     t)
   (:go-pos-unsafe-no-wait
     (x y &optional (d 0)) ;; [m] [m] [degree]
+    (if (send self :simulation-modep)
+      (return-from :go-pos-unsafe-no-wait (send-super :go-pos-unsafe-no-wait x y d)))
     (ros::ros-warn ":go-pos-unsafe-no-wait is not supported for this robot.")
     (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
     t)
@@ -413,6 +431,8 @@ Example: (send self :gripper :position) => 0.00"
     (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
           (translation-gain 1.0) (rotation-gain 1.0)
           (min-translation-abs-vel 0.3) (min-rotation-abs-vel 0.8))
+    (if (send self :simulation-modep)
+      (return-from :go-pos-unsafe-wait (send-super :go-pos-unsafe-wait)))
     (unless (send self :get :go-pos-unsafe-no-wait-goal)
       (ros::ros-error ":go-pos-unsafe-wait is called without goal")
       (return-from :go-pos-unsafe-wait nil))

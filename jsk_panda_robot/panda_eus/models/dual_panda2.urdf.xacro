@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="dual_panda" >
+
+  <xacro:include filename="$(find panda_eus)/models/dual_panda.urdf.xacro" />
+
+  <!-- realsense -->
+  <link name="$(arg arm_id_1)_camera_link"/>
+  <joint name="$(arg arm_id_1)_camera_joint" type="fixed">
+    <parent link="$(arg arm_id_1)_link7"/>
+    <child link="$(arg arm_id_1)_camera_link"/>
+    <origin xyz="0.049497475 -0.02828421 0.12375" rpy="1.57079632 -1.57079632 0.78539816"/>
+  </joint>
+  <link name="$(arg arm_id_2)_camera_link"/>
+  <joint name="$(arg arm_id_2)_camera_joint" type="fixed">
+    <parent link="$(arg arm_id_2)_link7"/>
+    <child link="$(arg arm_id_2)_camera_link"/>
+    <origin xyz="0.049497475 -0.02828421 0.12375" rpy="1.57079632 -1.57079632 0.78539816"/>
+  </joint>
+
+  <!-- mesh model of realsense -->
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro" />
+  <xacro:sensor_d435 parent="$(arg arm_id_1)_link7" name="rarm_camera_mesh" use_nominal_extrinsics="true">
+    <origin xyz="0.053 -0.007 0.113" rpy="2.356 -1.570796326 0"/>
+  </xacro:sensor_d435>
+  <xacro:sensor_d435 parent="$(arg arm_id_2)_link7" name="larm_camera_mesh" use_nominal_extrinsics="true">
+    <origin xyz="0.053 -0.007 0.113" rpy="2.356 -1.570796326 0"/>
+  </xacro:sensor_d435>
+
+</robot>
