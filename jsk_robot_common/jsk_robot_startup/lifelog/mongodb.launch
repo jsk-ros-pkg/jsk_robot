@@ -1,6 +1,6 @@
 <launch>
   <arg name="db_path" default="/var/lib/robot/mongodb_store"/>
-  <arg name="host" default="localhost" />
+  <arg name="mongodb_host" default="localhost" />
   <arg name="port" default="62345" />
   <arg name="repl_set_mode" default="false" />
   <arg name="use_daemon" default="false" />
@@ -27,7 +27,7 @@
   <!-- MongoDB -->
   <include file="$(find mongodb_store)/launch/mongodb_store_inc.launch">
     <arg name="db_path" value="$(arg db_path)" />
-    <arg name="host" value="$(arg host)" />
+    <arg name="mongodb_host" value="$(arg mongodb_host)" />
     <arg name="port" value="$(arg port)" />
     <arg name="use_daemon" value="$(arg use_daemon)" />
     <arg name="machine" value="$(arg machine)" />
