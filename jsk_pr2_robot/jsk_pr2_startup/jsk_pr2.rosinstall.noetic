@@ -136,8 +136,8 @@
     version: patch-1
 - git:
     local-name: strands-project/mongodb_store
-    uri: https://github.com/knorth55/mongodb_store.git
-    version: pr1040-noetic
+    uri: https://github.com/strands-project/mongodb_store.git
+    version: noetic-devel
 - git:
     local-name: tork-a/roswww
     uri: https://github.com/tork-a/roswww.git
