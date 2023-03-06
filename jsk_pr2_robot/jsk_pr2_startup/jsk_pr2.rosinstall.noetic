@@ -28,8 +28,8 @@
     version: kinetic-devel
 - git:
     local-name: PR2/pr2_robot
-    uri: https://github.com/PR2/pr2_robot.git
-    version: kinetic-devel
+    uri: https://github.com/TAMS-Group/pr2_robot.git
+    version: pr-various 
 - git:
     local-name: PR2/rqt_pr2_dashboard
     uri: https://github.com/PR2/rqt_pr2_dashboard.git
