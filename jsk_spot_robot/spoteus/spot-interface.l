@@ -470,6 +470,14 @@
                                 (instance spot_msgs::SetLocalizationWaypointRequest :init :waypoint_id init-waypoint)))
      (ros::ros-info "Call \"/spot/set_localization_waypoint\" returns \"~A\"" (send r :message))
      t))
+  (:start-recording
+    ()
+    "Start AutoWalk recording"
+    (call-trigger-service "/spot/start-recording"))
+  (:stop-recording
+    ()
+    "Stop AutoWalk recording"
+    (call-trigger-service "/spot/stop-recording"))
   (:upload-graph
     (path &key (initial-localization-fiducial t) (wait nil))
     "upload graph for autowalk"
@@ -504,7 +512,7 @@
   (:clear-graph
     ()
     "Clear the AutoWalk graph in the robot."
-    (let (r)
+    (let ()
       (call-trigger-service "/spot/clear_graph")
       ))
   (:navigate-to
