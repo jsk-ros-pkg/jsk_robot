@@ -450,7 +450,7 @@
      (if (< index (length ids))
 	 (setq ret (elt ids index)))
      ret))
-  (:initial-localization-fiducial
+  (:set-localization-fiducial
    ()
    "initial the localization for autowalk based on the fiducial marker"
    (let (r)
@@ -458,7 +458,7 @@
                                 (instance spot_msgs::SetLocalizationFiducialRequest :init)))
      (ros::ros-info "Call \"/spot/set_localization_fiducial\" returns \"~A\"" (send r :message))
      t))
-  (:initial-localization-waypoint
+  (:set-localization-waypoint
    (init-waypoint)
    "initial the localization for waypoint id in the graph"
    (let (r)
