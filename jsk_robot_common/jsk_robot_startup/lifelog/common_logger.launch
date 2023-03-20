@@ -236,6 +236,7 @@
       <rosparam subst_value="true">
         topics:
         - /Tablet/voice
+        - /speech_to_text
       </rosparam>
     </node>
 
