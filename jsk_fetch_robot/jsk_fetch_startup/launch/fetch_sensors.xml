@@ -78,6 +78,15 @@
         <remap from="~output" to="throttled/image_rect/compressedDepth" />
         <param name="update_rate" value="$(arg throttled_rate)" />
       </node>
+      <node name="throttle_image_zdepth"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
+            if="$(arg throttle_head_depth)"
+            respawn="true">
+        <remap from="~input" to="image_rect/zdepth" />
+        <remap from="~output" to="throttled/image_rect/zdepth" />
+        <param name="update_rate" value="$(arg throttled_rate)" />
+      </node>
       <node name="throttle_camera_info"
             pkg="nodelet" type="nodelet"
             args="load jsk_topic_tools/LightweightThrottle /$(arg manager)"
