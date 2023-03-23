@@ -40,7 +40,7 @@ plugins:
         - /head_camera/rgb/throttled/camera_info
         - /head_camera/depth_registered/throttled/camera_info
         - /head_camera/rgb/throttled/image_rect_color/compressed
-        - /head_camera/depth_registered/throttled/image_rect/compressedDepth
+        - /head_camera/depth_registered/throttled/image_rect/zdepth
         - /photo_taken
         - /server_name/smach/container_init
         - /server_name/smach/container_status
