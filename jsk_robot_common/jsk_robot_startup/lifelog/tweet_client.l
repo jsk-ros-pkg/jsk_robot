@@ -10,6 +10,8 @@
                               (tweet-topic-name "/tweet") (volume 1.0))
   (if (null (ros::get-num-subscribers tweet-topic-name))
     (ros::advertise tweet-topic-name std_msgs::String 1))
+  (if (null (ros::get-num-subscribers "/tweet_image_server/tweet/goal"))
+    (ros::advertise "/tweet_image_server/tweet/goal" rostwitter::TweetActionGoal 1))
   (let (prev-image-topic img)
   (when warning-time
     (unless (numberp warning-time)
