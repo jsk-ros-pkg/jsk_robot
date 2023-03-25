@@ -1,6 +1,7 @@
 #!/usr/bin/env roseus
 
 (ros::roseus-add-srvs "topic_tools")
+(ros::roseus-add-msgs "rostwitter")
 (ros::roseus-add-msgs "std_msgs")
 (ros::roseus-add-msgs "sensor_msgs")
 
