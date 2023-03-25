@@ -88,8 +88,8 @@
     version: master
 - git:
     local-name: jsk-ros-pkg/jsk_robot
-    uri: https://github.com/knorth55/jsk_robot.git
-    version: pr1040-noetic
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: develop/pr2-noetic 
 - git:
     local-name: jsk-ros-pkg/jsk_roseus
     uri: https://github.com/knorth55/jsk_roseus.git
@@ -140,8 +140,8 @@
     version: noetic-devel
 - git:
     local-name: tork-a/roswww
-    uri: https://github.com/tork-a/roswww.git
-    version: develop
+    uri: https://github.com/knorth55/roswww.git
+    version: fix-python3
 - git:
     local-name: tork-a/visualization_rwt
     uri: https://github.com/tork-a/visualization_rwt.git
