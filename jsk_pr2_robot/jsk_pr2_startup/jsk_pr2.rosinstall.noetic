@@ -56,8 +56,8 @@
     version: master
 - git:
     local-name: jsk-ros-pkg/jsk_3rdparty
-    uri: https://github.com/knorth55/jsk_3rdparty.git
-    version: pr1040-noetic
+    uri: https://github.com/jsk-ros-pkg/jsk_3rdparty.git
+    version: develop/pr2 
 - git:
     local-name: jsk-ros-pkg/jsk_common
     uri: https://github.com/jsk-ros-pkg/jsk_common.git
