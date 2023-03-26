@@ -182,7 +182,10 @@ class SmachToMail():
                 image = EmailBody()
                 image.type = 'img'
                 image.img_size = 100
-                image.img_data = x['IMAGE']
+                img_txt = x['IMAGE']
+                if isinstance(img_txt, bytes):
+                    img_txt = img_txt.decode('utf-8')
+                image.img_data = img_txt
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
         email_msg.body.append(changeline)
