@@ -36,6 +36,8 @@
        doc="whether launch app_scheduler or not." />
   <arg name="launch_coral" default="false"
        doc="whether launch coral or not." />
+  <arg name="launch_google_chat" default="true"
+       doc="whether launch google chat or not."/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -251,6 +253,12 @@
   <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
     <remap from="~smach/container_status" to="/server_name/smach/container_status" />
     <rosparam command="load" file="/var/lib/robot/email_topic.yaml" />
+    <rosparam subst_value="true">
+      use_mail: true
+      use_twitter: $(arg launch_twitter)
+      use_google_chat: $(arg launch_google_chat)
+      google_chat_space: spaces/AAAAT_OCXCw
+    </rosparam>
   </node>
 
   <!-- publish smach image -->
@@ -265,6 +273,17 @@
   <include if="$(arg launch_app_scheduler)"
            file="$(find app_scheduler)/launch/app_scheduler.launch">
     <arg name="yaml_path" value="$(find jsk_pr2_startup)/config/pr2_app_schedule.yaml" />
+  </include>
+
+  <!-- google chat -->
+  <include if="$(arg launch_google_chat)"
+           file="$(find google_chat_ros)/launch/google_chat.launch">
+    <arg name="use_yaml" value="true" />
+    <arg name="receiving_mode" value="pubsub" />
+    <arg name="project_id" value="pr2-yeusde" />
+    <arg name="subscription_id" value="chat-sub" />
+    <arg name="yaml_file" value="/var/lib/robot/google_chat.yaml" />
+    <arg name="gdrive_upload_service" value="/gdrive_server/upload" />
   </include>
 
   <!-- coral -->
