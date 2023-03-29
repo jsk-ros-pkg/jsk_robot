@@ -128,8 +128,8 @@
     version: noetic-devel
 - git:
     local-name: ros-visualization/executive_smach_visualization
-    uri: https://github.com/ros-visualization/executive_smach_visualization.git
-    version: melodic-devel
+    uri: https://github.com/knorth55/executive_smach_visualization.git
+    version: fix-python3 
 - git:
     local-name: ros/collada_urdf
     uri: https://github.com/werner291/collada_urdf.git
