@@ -1,0 +1,7 @@
+{
+    "description": "object_detection_coco",
+    "version": "3.2.0",
+    "images": [
+        "object_detection_coco_image.tar.gz"
+    ]
+}
