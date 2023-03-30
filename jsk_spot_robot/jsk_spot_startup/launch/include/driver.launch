@@ -5,6 +5,7 @@
 
   <arg name="use_voice_text" default="false" doc="voice_text needs license" />
   <arg name="use_app_manager" default="true" />
+  <arg name="use_gps" default="true" />
 
 
   <group if="$(arg launch_robot_state_publisher)">
@@ -163,7 +164,7 @@
   </include>
 
   <!-- gps -->
-  <include file="$(find ublox_gps)/launch/ublox_device.launch" >
+  <include if="$(arg use_gps)" file="$(find ublox_gps)/launch/ublox_device.launch" >
     <arg name="param_file_name" value="zed_f9p" />
   </include>
 
