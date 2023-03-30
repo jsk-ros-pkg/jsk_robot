@@ -30,7 +30,7 @@ import threading
 from google.protobuf import wrappers_pb2
 from object_detection.utils import label_map_util
 
-kServiceAuthority = "fetch-tutorial-worker.spot.robot"
+kServiceAuthority = "object-detection-coco-worker.spot.robot"
 
 
 class TensorFlowObjectDetectionModel:
@@ -67,6 +67,11 @@ def process_thread(args, request_queue, response_queue):
             out_proto = network_compute_bridge_pb2.ListAvailableModelsResponse()
             for model_name in models:
                 out_proto.available_models.append(model_name)
+                if models[model_name].category_index is not None:
+                    labels_msg = out_proto.labels.add()
+                    labels_msg.model_name = model_name
+                    for n in models[model_name].category_index.keys():
+                        labels_msg.available_labels.append(models[model_name].category_index[n]['name'])
             response_queue.put(out_proto)
             continue
         else:
@@ -232,7 +237,11 @@ def register_with_robot(options):
     robot = sdk.create_robot(options.hostname)
 
     # Authenticate robot before being able to use it
-    bosdyn.client.util.authenticate(robot)
+    if options.payload_credentials_file:
+        robot.authenticate_from_payload_credentials(
+            *bosdyn.client.util.get_guid_and_secret(options))
+    else:
+        bosdyn.client.util.authenticate(robot)
 
     directory_client = robot.ensure_client(
         bosdyn.client.directory.DirectoryClient.default_service_name)
@@ -261,7 +270,8 @@ def main(argv):
     parser.add_argument('-p', '--port', help='Server\'s port number, default: ' + default_port,
                         default=default_port)
     parser.add_argument('-d', '--no-debug', help='Disable writing debug images.', action='store_true')
-    parser.add_argument('-n', '--name', help='Service name', default='fetch-server')
+    parser.add_argument('-n', '--name', help='Service name', default='object-detection-coco')
+    bosdyn.client.util.add_payload_credentials_arguments(parser, required=False)
     bosdyn.client.util.add_base_arguments(parser)
 
     options = parser.parse_args(argv)
