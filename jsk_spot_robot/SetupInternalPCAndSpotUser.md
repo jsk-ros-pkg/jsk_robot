@@ -2,29 +2,53 @@
 
 This page describes how to setup a internal pc and spot user.
 
-## How to setup a PC
+## How to setup a [CORE I/O](https://dev.bostondynamics.com/docs/payload/coreio_documentation)
 
-### Install Ubuntu and ROS
+The CORE I/O is desgined to use filesystem  is read only and user Docekr or Spot Extensions for user applications.
 
-TODO
+
+### Setup core-io users
+
+login with default password (ex: ssh -p 20022 10.0.0.3 -el spot)
+
+```
+# better to reboot on every command ????
+core-io$ passwd ...                       # change password
+core-io$ sudo usermod -a -G docker spot   # add spot to docker group
+```
+
+### Setup development environment
+
+```
+core-io$ mkdir ~/spot_driver_ws/src -p
+core-io$ cd ~/spot_driver_ws/src
+core-io$ git clone https://github.com/k-okada/jsk_robot.git -b spot_arm
+core-io$ cd ~/spot_driver_ws/src/jsk_robot/jsk_spot_robot/coreio/base
+core-io$ make pre_build catkin_build dev_build all
+```
+This procedure create `~/bash.sh`. Please use this script when you start development.
 
 ### Setup wifi interfaces
 
-Use [AKEIE](https://www.amazon.co.jp/gp/product/B08NB64TMH/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1) and (Calm USB L Cable (Up side))[https://www.amazon.co.jp/gp/product/B094DGRC9Q/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&th=1]
+Use [TP-Link AC600 wireless Realtek RTL8811AU Archer T2U Nano](https://www.amazon.co.jp/gp/product/B07MXHJ6KB/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
 ```
+$ dmesg
+[    7.305827] usb 1-2.1.1: new high-speed USB device number 5 using tegra-xusb
+[    7.326404] usb 1-2.1.1: New USB device found, idVendor=2357, idProduct=011e
+[    7.326553] usb 1-2.1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[    7.326681] usb 1-2.1.1: Product: 802.11ac WLAN Adapter
+[    7.326781] usb 1-2.1.1: Manufacturer: Realtek
 $ lsusb
-Bus 001 Device 003: ID 0bda:b812 Realtek Semiconductor Corp.
+Bus 001 Device 005: ID 2357:011e
 ```
 
+Make sure that the roming configuration works correctly (from core-io)
 ```
-$ git clone https://github.com/cilynx/rtl88x2bu.git
-cd rtl88x2bu
-./deply.sh
-echo 88x2bu | sudo tee /etc/modules-load.d/88x2bu.conf  # to startup on boot time
-echo 'install 88x2bu /sbin/modprobe -i 88x2bu && { /sbin/wpa_cli set_network 0 bgscan "\\"simple:5:-50:3000\\"";}' | sudo tee /etc/modprobe.d/88x2bu.conf  # run set_network when load module
-
-sudo nmtui  # to configure network
+core-io$ sudo wpa_cli get_network 0 bgscan
+Selected interface 'wlxac15a246e382'
+"simple:30:-80:86400"
 ```
+This scan every 30 seconds, when signal is below -80, and 86400 seconds (24 hours) otherwise.
 
 ### Setup Joystick
 
@@ -40,6 +64,22 @@ $ sudo bluetoothctl
 [bluetooth]# pair D0:BC:C1:CB:48:37
 [bluetooth]# trust D0:BC:C1:CB:48:37
 [bluetooth]# connect D0:BC:C1:CB:48:37
+
+```
+
+
+## Settings for SPOT CORE (x86_64)
+
+## wifi settings [Wi-Fi roaming aggressiveness configuration](https://github.com/jsk-ros-pkg/jsk_robot/issues/1598#issuecomment-1247533330)
+
+```
+$ git clone https://github.com/cilynx/rtl88x2bu.git
+cd rtl88x2bu
+./deply.sh
+echo 88x2bu | sudo tee /etc/modules-load.d/88x2bu.conf  # to startup on boot time
+echo 'install 88x2bu /sbin/modprobe -i 88x2bu && { /sbin/wpa_cli set_network 0 bgscan "\\"simple:5:-50:3000\\"";}' | sudo tee /etc/modprobe.d/88x2bu.conf  # run set_network when load module
+
+sudo nmtui  # to configure network
 ```
 
 ### Setup timezone
