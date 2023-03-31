@@ -74,5 +74,7 @@ RUN chmod u+x /home/spot/ros_entrypoint.sh
 ### FIXME ros_entrypoint did not work with roscd
 RUN echo "source /opt/ros/melodic/share/rosbash/rosbash" >> ~/.bashrc
 
+ENV TZ=Asia/Tokyo
+
 ENTRYPOINT ["/home/spot/ros_entrypoint.sh"]
 CMD ["bash"]
