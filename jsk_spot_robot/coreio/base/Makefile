@@ -9,13 +9,15 @@ $(HOME)/bash.sh:
 WS_ROOT=$(abspath $(CURDIR)/../../../../../)
 
 define run
-docker run --rm --privileged --hostname strelka --add-host strelka:133.11.216.166 --add-host strelka.jsk.imi.i.u-tokyo.ac.jp:133.11.216.166 --network=host --device=/dev/input -v $(WS_ROOT):/home/spot/ws -w /home/spot/ws -ti dev_env ${1};
+docker run --rm --privileged --hostname strelka --add-host strelka:133.11.216.166 --add-host strelka.jsk.imi.i.u-tokyo.ac.jp:133.11.216.166 --network=host --device=/dev/input -v $(WS_ROOT):/home/spot/ws -v $(HOME)/.ros:/home/spot/.ros -w /home/spot/ws -ti dev_env ${1};
 endef
 define docker_run
 ${1}
 endef
 
 pre_build:
+	# make .ros file
+	mkdir -p ~/.ros
 	# build base file
 	cp Dockerfile $(WS_ROOT)
 	cd $(WS_ROOT); DOCKER_BUILDKIT=1 docker build --target base_build --progress=plain --network=host -t dev_env -f Dockerfile .
