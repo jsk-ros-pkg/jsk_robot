@@ -101,11 +101,11 @@
 (defun end-func (args)
   (ros::ros-info "end-func")
   (send *ri* :speak "Thank You")  
+  (send *ri* :stow-arm)
   (unless (ros::wait-for-service "end_effector_to_joy/set_enabled" 10)
     (ros::ros-error "end_effector_to_joy/set_enabled not found, so quitting")
     (return-from end-func :finished))
   (ros::service-call "end_effector_to_joy/set_enabled" (instance std_srvs::SetBoolRequest :init :data nil))
-  (send *ri* :stow-arm)
   :finished)
 
 ;; *cmd-vel* is (cons (ros::time-now) msg)
