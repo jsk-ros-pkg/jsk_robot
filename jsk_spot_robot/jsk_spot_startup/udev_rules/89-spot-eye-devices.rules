@@ -1,0 +1,4 @@
+# M5Stamp
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d4", ATTRS{serial}=="5319011411", SYMLINK+="right_eye", GROUP="dialout"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d4", ATTRS{serial}=="537A013618", SYMLINK+="left_eye", GROUP="dialout"
+
