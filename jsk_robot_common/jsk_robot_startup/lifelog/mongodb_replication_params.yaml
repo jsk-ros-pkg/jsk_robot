@@ -1,4 +1,4 @@
-mongodb_store_extras: [["robot-database.jsk.imi.i.u-tokyo.ac.jp", 27017],["musca.jsk.imi.i.u-tokyo.ac.jp",27017]]
+mongodb_store_extras: [["robot-database.jsk.imi.i.u-tokyo.ac.jp", 27017]]
 replication_client:
   interval: 3600
   delete_after_move: true
