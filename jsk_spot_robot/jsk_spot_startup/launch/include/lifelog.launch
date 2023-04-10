@@ -15,6 +15,7 @@
   <param name="robot/database" value="jsk_robot_lifelog"/>
 
   <!-- logging database -->
+  <param name="mongodb_replicate_on_write" value="true" /> <!-- need to set True to query from extra serveres, otherwise it only query from local server -->
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
@@ -87,6 +88,12 @@
   <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_dialogflow_client"
         args="--wait-for-start /dialogflow_client/text_action/result /publish_trigger_mongodb_event std_msgs/Header
               'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
+  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_google_chat_ros_send_goal"
+        args="--wait-for-start /google_chat_ros/send/goal /publish_trigger_mongodb_event std_msgs/Header
+              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
+  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_google_chat_ros_message_activity"
+        args="--wait-for-start /google_chat_ros/message_activity /publish_trigger_mongodb_event std_msgs/Header
+              'std_msgs.msg.Header(stamp=rospy.Time.now(), frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs rospy" />
 
   <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
   <node name="camera_throttle_nodelet"
