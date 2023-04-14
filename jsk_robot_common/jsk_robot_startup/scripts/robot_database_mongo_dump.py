@@ -18,6 +18,16 @@ import rospy
 import sys
 import yaml
 
+# https://answers.ros.org/question/196365/is-there-a-general-way-to-convert-ros-messages-into-json-format/
+import rosbridge_library.internal.message_conversion
+from rosbridge_library.util import string_types, bson
+rosbridge_library.internal.message_conversion.bson_only_mode = False
+rosbridge_library.internal.message_conversion.binary_encoder = bson.Binary
+
+# https://stackoverflow.com/questions/10971033/backporting-python-3-openencoding-utf-8-to-python-2
+from io import open
+
+
 from cv_bridge import CvBridge
 from dateutil import tz
 from sensor_msgs.msg import Image, CompressedImage
@@ -120,9 +130,20 @@ def main(argv):
             cv2.imwrite(os.path.join(dirname, filename), image)
         else:
             filename = "{}{}.json".format(ros_time.to_nsec(), input_topic.replace('/','-'))
-            with open(os.path.join(dirname, filename), "wb") as f:
+            with open(os.path.join(dirname, filename), "w", encoding="utf-8") as f:
                 # f.write(yaml.dump(yaml.load(str(message)), allow_unicode=True))
-                f.write(json.dumps(yaml.load(str(message)), indent=4, ensure_ascii=False))
+                ##
+                # data = yaml.load(str(message)) does not work because of containing ':' in value.
+                # > yaml.scanner.ScannerError: mapping values are not allowed here
+                # > in "<unicode string>", line 26, column 41: ... meters: b'{\n  "sentence-ending": "\\u305f\\u3088\\u306d", \n  " ...
+                yaml_data = rosbridge_library.internal.message_conversion.extract_values(message)
+                json_data = json.dumps(yaml_data, default=lambda o: o.decode('utf-8') if isinstance(o, bytes) else o, indent=4, ensure_ascii=False)
+                try:
+                    json_data = json_data.decode('utf-8')  # Python2 need to decode to use write
+                except:
+                    pass  # Python3 does not have decode()
+                # convert bytes objects to strings before serializing to JSON
+                f.write(json_data)
         print("Writing.. {} ({})".format(filename, inserted_at))
 
 
