@@ -90,8 +90,7 @@ if __name__ == '__main__':
     print("> sample program for robot database")
     print("> 1: get latest smach data")
     print("> 2: get last 1 hours image data")
-    #key = int(input("> {1, 2, 3..} : "))
-    key = 2
+    key = int(input("> {1, 2, 3..} : "))
 
     if key == 1:
         msgs = query_latest_smach()
