@@ -35,6 +35,7 @@
   <arg name="launch_google_chat" default="true" />
   <arg name="launch_mail_notification" default="true" />
   <arg name="launch_smach_image_publisher" default="true" />
+  <arg name="launch_google_analyze_text" default="true" />
 
   <!-- hardware -->
   <arg name="launch_battery_warning" default="true" />
@@ -407,6 +408,11 @@
       duration: 0.5
     </rosparam>
   </node>
+
+  <include if="$(arg launch_google_analyze_text)"
+           file="$(find ros_google_cloud_language)/launch/analyze_text.launch">
+    <arg name="google_cloud_credentials_json" value="/var/lib/robot/eternal-byte-236613-4bc6962824d1.json" />
+  </include>
 
   <!-- Two robots cannot use one rosserial device at the same time -->
   <group if="$(arg launch_rosserial)">
