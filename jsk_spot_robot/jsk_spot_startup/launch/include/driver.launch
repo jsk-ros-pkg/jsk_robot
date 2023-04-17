@@ -1,57 +1,64 @@
 <launch>
-  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
-  <arg name="launch_robot_state_publisher" default="true" />
-  <arg name="launch_sound_play" default="true" />
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml"/>
+  <arg name="launch_robot_state_publisher" default="true"/>
+  <arg name="launch_sound_play" default="true"/>
 
-  <arg name="use_voice_text" default="false" doc="voice_text needs license" />
-  <arg name="use_app_manager" default="true" />
-  <arg name="use_gps" default="true" />
+  <arg name="use_voice_text" default="false" doc="voice_text needs license"/>
+  <arg name="use_app_manager" default="true"/>
+  <arg name="use_gps" default="true"/>
 
 
   <group if="$(arg launch_robot_state_publisher)">
-    <include file="$(find spot_description)/launch/description.launch" />
+    <include file="$(find spot_description)/launch/description.launch"/>
   </group>
 
   <node
-      pkg="spot_driver"
-      type="spot_ros"
-      name="spot_ros"
-      ns="spot"
-      output="screen"
-      respawn="true"
-      >
-    <rosparam file="$(find spot_driver)/config/spot_ros.yaml" command="load" />
-    <rosparam file="$(arg credential_config)" command="load" />
+    pkg="spot_driver"
+    type="spot_ros"
+    name="spot_ros"
+    ns="spot"
+    output="screen"
+    respawn="true"
+  >
+    <rosparam file="$(find spot_driver)/config/spot_ros.yaml" command="load"/>
+    <rosparam file="$(arg credential_config)" command="load"/>
     <remap from="joint_states" to="/joint_states"/>
     <remap from="tf" to="/tf"/>
   </node>
 
-  <node name="cmd_vel_smoother" pkg="cmd_vel_smoother" type="cmd_vel_smoother">
-    <remap from="input" to="spot/cmd_vel_unsmoothed" />
-    <remap from="output" to="spot/cmd_vel" />
+  <node
+    pkg="tf"
+    type="static_transform_publisher"
+    name="insta360_link_publisher"
+    args="-0.5 0 0.5 0 0 0 base_link insta360_link 100"
+  />
 
-    <param name="desired_rate" value="10.0" />
-    <param name="x_acc_lim" value="1.0" />
-    <param name="y_acc_lim" value="0.5" />
-    <param name="yaw_acc_lim" value="0.1" />
-    <param name="decel_factor" value="0.8" />
-    <param name="max_count" value="5" />
+  <node name="cmd_vel_smoother" pkg="cmd_vel_smoother" type="cmd_vel_smoother">
+    <remap from="input" to="spot/cmd_vel_unsmoothed"/>
+    <remap from="output" to="spot/cmd_vel"/>
+
+    <param name="desired_rate" value="10.0"/>
+    <param name="x_acc_lim" value="1.0"/>
+    <param name="y_acc_lim" value="0.5"/>
+    <param name="yaw_acc_lim" value="0.1"/>
+    <param name="decel_factor" value="0.8"/>
+    <param name="max_count" value="5"/>
   </node>
 
   <node
-      pkg="twist_mux"
-      type="twist_mux"
-      name="twist_mux"
-      >
-    <rosparam command="load" file="$(find jsk_spot_startup)/config/twist_mux.yaml" />
+    pkg="twist_mux"
+    type="twist_mux"
+    name="twist_mux"
+  >
+    <rosparam command="load" file="$(find jsk_spot_startup)/config/twist_mux.yaml"/>
     <remap from="cmd_vel_out" to="spot/cmd_vel_unsmoothed"/>
   </node>
 
   <!-- teleop -->
-  <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy_head" >
-    <remap from="joy" to="joy_head/joy_complemented" />  <!-- apps/head_lead_demo.xml -->
-    <remap from="cmd_vel" to="joy_head/cmd_vel" />
-    <rosparam command="load" file="$(find jsk_robot_startup)/config/head_teleop_twist_joy.yaml" />
+  <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy_head">
+    <remap from="joy" to="joy_head/joy_complemented"/>  <!-- apps/head_lead_demo.xml -->
+    <remap from="cmd_vel" to="joy_head/cmd_vel"/>
+    <rosparam command="load" file="$(find jsk_robot_startup)/config/head_teleop_twist_joy.yaml"/>
   </node>
 
 
@@ -69,45 +76,45 @@
   </include>
   <!-- node to receive /spot/dock_fixed_no and calls /spot/dock -->
   <node pkg="jsk_spot_startup" type="call_spot_dock_with_id.py" name="call_spot_dock_with_id">
-    <remap from="~dock_id" to="/spot/spot_ros/dock_id" />
+    <remap from="~dock_id" to="/spot/spot_ros/dock_id"/>
   </node>
 
   <!-- Sound/Camera -->
 
   <!-- republish compressed image -->
   <node pkg="image_transport" type="republish" name="hand_color_compress"
-	args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image" />
+    args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image"/>
   <node pkg="image_transport" type="republish" name="hand_depth_compress"
-	args="raw in:=/spot/camera/hand_depth/image compressedDepth out:=/spot/camera/hand_depth/image" />
+    args="raw in:=/spot/camera/hand_depth/image compressedDepth out:=/spot/camera/hand_depth/image"/>
 
   <node pkg="image_transport" type="republish" name="frontleft_compress"
-	args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image" />
+    args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image"/>
   <node pkg="image_transport" type="republish" name="frontright_compress"
-	args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image" />
+    args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image"/>
   <node pkg="image_transport" type="republish" name="left_compress"
-	args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image" />
+    args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image"/>
   <node pkg="image_transport" type="republish" name="right_compress"
-	args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image" />
+    args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image"/>
   <node pkg="image_transport" type="republish" name="back_compress"
-	args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image" />
+    args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image"/>
 
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
-        respawn="true" if="$(arg launch_sound_play)" >
-    <param name="device" value="hw:0,0" />
+    respawn="true" if="$(arg launch_sound_play)">
+    <param name="device" value="hw:0,0"/>
   </node>
 
 
   <!-- japanese speech node -->
   <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)"/>
+    <arg name="sound_play_respawn" value="true"/>
   </include>
   <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
+    <arg name="launch_sound_play" value="$(arg launch_sound_play)"/>
+    <arg name="sound_play_respawn" value="true"/>
   </include>
 
   <!-- Notifier/Visualization -->
@@ -120,11 +127,11 @@
   <!-- </node> -->
 
   <node
-      pkg="topic_tools"
-      type="transform"
-      args="--wait-for-start /spot/status/battery_states /spot/status/battery_percentage std_msgs/Float32 'm.battery_states[0].charge_percentage'"
-      name="battery_visualizer"
-      />
+    pkg="topic_tools"
+    type="transform"
+    args="--wait-for-start /spot/status/battery_states /spot/status/battery_percentage std_msgs/Float32 'm.battery_states[0].charge_percentage'"
+    name="battery_visualizer"
+  />
 
   <!-- <node -->
   <!--     pkg="jsk_spot_startup" -->
@@ -133,19 +140,19 @@
   <!--     /> -->
 
   <node
-      pkg="jsk_spot_startup"
-      type="cable_connection_detector.py"
-      name="cable_connection_detector"
-      >
+    pkg="jsk_spot_startup"
+    type="cable_connection_detector.py"
+    name="cable_connection_detector"
+  >
   </node>
 
   <node
-      pkg="jsk_spot_startup"
-      type="battery_notifier.py"
-      name="battery_notifier"
-      respawn="true"
-      >
-      <remap from="~start_app" to="/robot/start_app" />
+    pkg="jsk_spot_startup"
+    type="battery_notifier.py"
+    name="battery_notifier"
+    respawn="true"
+  >
+    <remap from="~start_app" to="/robot/start_app"/>
   </node>
 
   <!-- <node -->
@@ -157,16 +164,16 @@
 
   <!-- app manager -->
   <include
-      file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
-      if="$(arg use_app_manager)"
-      >
-    <arg name="use_applist" value="false" />
-    <arg name="respawn" value="false" />
+    file="$(find jsk_robot_startup)/lifelog/app_manager.launch"
+    if="$(arg use_app_manager)"
+  >
+    <arg name="use_applist" value="false"/>
+    <arg name="respawn" value="false"/>
   </include>
 
   <!-- gps -->
-  <include if="$(arg use_gps)" file="$(find ublox_gps)/launch/ublox_device.launch" >
-    <arg name="param_file_name" value="zed_f9p" />
+  <include if="$(arg use_gps)" file="$(find ublox_gps)/launch/ublox_device.launch">
+    <arg name="param_file_name" value="zed_f9p"/>
   </include>
 
 </launch>
