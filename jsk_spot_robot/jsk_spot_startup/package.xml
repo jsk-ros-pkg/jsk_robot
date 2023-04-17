@@ -21,6 +21,7 @@
   <exec_depend>audio_capture</exec_depend>
   <exec_depend>cmd_vel_smoother</exec_depend>
   <exec_depend>compressed_image_transport</exec_depend>
+  <exec_depend>coral_usb</exec_depend>
   <exec_depend>image_transport</exec_depend>
   <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>jsk_perception</exec_depend>
@@ -50,6 +51,6 @@
   <test_depend>rostest</test_depend>
 
   <export>
-    <app_manager app_dir="${prefix}/apps" />
+    <app_manager app_dir="${prefix}/apps"/>
   </export>
 </package>
