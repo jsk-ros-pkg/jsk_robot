@@ -1,6 +1,11 @@
 #!/usr/bin/env roseus
 
+(ros::roseus-add-msgs "std_msgs")
+
 (setq *continue* t)
+;; control head-lead
+(setq *head-lead* t)
+;; (setq *head-lead* nil)
 (load "package://spoteus/spot-interface.l")
 (spot-init)
 (if (eq (send *ri* :state :power-state-shore-power-state) 'on-shore-power)
@@ -8,9 +13,12 @@
 ;; (send *ri* :set-impedance-param :linear-stiffness #f(250 250 250) :rotational-stiffness #f(30 30 30) :linear-damping #f(1.5 1.5 1.5) :rotational-damping #f(0.5 0.5 0.5))
 ;; (send *ri* :set-impedance-param :linear-stiffness #f(250 25 25) :rotational-stiffness #f(30 5 5) :linear-damping #f(1.5 1.5 1.5) :rotational-damping #f(0.5 0.5 0.5))
 
+(setq *default-av* #f(0.0 -130.0 120.0 0.0 10.0 0.0))
+
 ;; sample
 (setq *person* nil)
 (setq *ball* nil)
+(setq *ball-name* nil)
 (setq *last-detected-time* (ros::time-now))
 (defclass ncb-result-synchronizer
   :super exact-time-message-filter)
@@ -33,8 +41,11 @@
                             (string= (elt (send result :label_names) i) "pokemon ball")
                             (string= (elt (send result :label_names) i) "dice"))
                         (send *ri* :speak "ball")
-                        (push (list (send result :header :frame_id) (elt (send rects :rects) i) (elt (send bbox :boxes) i)) *ball*)))
-                 )
+                        (push (list (send result :header :frame_id)
+				    (elt (send rects :rects) i)
+				    (elt (send bbox :boxes) i)
+				    (elt (send result :label_names) i))
+			      *ball*))))
                ;; results are (list image rect box); to get box user (elt x 2) or (third x)
                (setq *person* (sort *person* #'< #'(lambda (x) (send (elt x 2) :value))))
                (setq *ball* (sort *ball* #'< #'(lambda (x) (send (elt x 2) :value))))
@@ -67,7 +78,7 @@
   (unless (ros::wait-for-service "end_effector_to_joy/set_enabled" 10)
     (ros::ros-error "end_effector_to_joy/set_enabled not found, so quitting")
     (return-from init-walk-arm-setting :finished))
-  (ros::service-call "end_effector_to_joy/set_enabled" (instance std_srvs::SetBoolRequest :init :data t))
+  (ros::service-call "end_effector_to_joy/set_enabled" (instance std_srvs::SetBoolRequest :init :data *head-lead*))
   )
 
 (defun start-func (args)
@@ -77,17 +88,24 @@
     ;(return-from start-func :finished)
     )
   (send *ri* :speak "Hello, let's start walking")
-  (init-walk-arm-setting)
+  (if *head-lead*
+    (init-walk-arm-setting)
+    (progn 
+      (send *spot* :arm :angle-vector #f(0 -180 180 90 0 -90))
+      (send *ri* :angle-vector (send *spot* :angle-vector) 2000)
+      (send *ri* :stow-arm)
+      (send *ri* :stop-grasp)
+      (send *ri* :wait-interpolation)))
   :started)
 
 (defun end-func (args)
   (ros::ros-info "end-func")
   (send *ri* :speak "Thank You")  
+  (send *ri* :stow-arm)
   (unless (ros::wait-for-service "end_effector_to_joy/set_enabled" 10)
     (ros::ros-error "end_effector_to_joy/set_enabled not found, so quitting")
     (return-from end-func :finished))
   (ros::service-call "end_effector_to_joy/set_enabled" (instance std_srvs::SetBoolRequest :init :data nil))
-  (send *ri* :stow-arm)
   :finished)
 
 ;; *cmd-vel* is (cons (ros::time-now) msg)
@@ -118,7 +136,6 @@
 (setq *distance-thre* 2000)
 (defun ball-play-func (args)
   (ros::ros-info "ball-play")
-  (setq *default-av* #f(0.0 -130.0 120.0 0.0 10.0 0.0))
   (ros::spin-once)
   (block
    :cond
@@ -130,19 +147,30 @@
           (ros::ros-info "found ball ~A" *ball*)
           (ros::ros-info "found      ~A" (mapcar #'ros::tf-pose->coords (send-all (mapcar #'third *ball*) :pose)))
           (ros::ros-info "           ~A" (mapcar #'second *ball*))
+          (ros::ros-info "           ~A" (mapcar #'fourth *ball*))
           (send *ri* :stow-arm)
           (let ((image-source (first (car *ball*)))
                 (bbox (third (car *ball*)))
                 (rect (second (car *ball*)))
+		(ball-name (fourth (car *ball*)))
                 result)
             (ros::ros-info "distance   ~A (< ~A)" (norm (send (ros::tf-pose->coords (send bbox :pose)) :worldpos)) *distance-thre*)
             (when (> (norm (send (ros::tf-pose->coords (send bbox :pose)) :worldpos)) *distance-thre*)
               (send *ri* :speak "too far")
               (setq *ball* nil)
               (return-from :cond nil))
+            ;; look at the ball
+            (send *spot* :head :look-at 
+  		(v+ (float-vector 0 0 (/ (send bbox :dimensions :z) 2))
+  		    (send (ros::tf-pose->coords (send bbox :pose)) :worldpos)))
+            (send *ri* :angle-vector (send *spot* :angle-vector) 1000)
+	    (send *ri* :wait-interpolation)
+            (unix::sleep 1)
             (send *ri* :pick-object-in-image image-source
                   (+ (send rect :x) (/ (send rect :width) 2))
                   (+ (send rect :y) (/ (send rect :height) 2)))
+            (ros::publish "/spot/pick_object_in_image/pick_object"
+                          (instance std_msgs::String :init :data ball-name))
             (while (= (send *ri* :pick-object-in-image-get-state) actionlib_msgs::GoalStatus::*active*)
               (ros::ros-info "wait for pick... ~A"
                              (if (send *ri* :pick-object-in-image-feedback-msg)
@@ -159,17 +187,27 @@
                 (send *ri* :stop-grasp)
                 ;;(unix::sleep 2) ;; ?? prevent from walking????
                 ))
-            (send *spot* :arm :angle-vector *default-av*)
-            (send *ri* :angle-vector (send *spot* :angle-vector) 1000)
-            (send *ri* :wait-interpolation)
+	    (if *head-lead*
+              (progn
+                (send *spot* :arm :angle-vector *default-av*)
+       	        (send *ri* :angle-vector (send *spot* :angle-vector) 1000)
+                (send *ri* :wait-interpolation)
+              )
+              (progn 
+                (send *spot* :arm :angle-vector #f(0 -180 180 90 0 -90))
+       	        (send *ri* :angle-vector (send *spot* :angle-vector) 2000)
+                (send *ri* :wait-interpolation)
+	        (send *ri* :stow-arm)
+              ))
             (when (send result :success)
               (send *ri* :go-pos -0.5 0 0)
-              (send *spot* :arm :wrist-p :joint-angle 30)
-              (send *ri* :angle-vector (send *spot* :angle-vector) 500)
+	      (when *head-lead*
+                (send *spot* :arm :wrist-p :joint-angle 30)
+                (send *ri* :angle-vector (send *spot* :angle-vector) 500))
               (send *ri* :stop-grasp))
             (setq *ball* nil)
             (ros::rate 1)
-            (init-walk-arm-setting)
+	    (if *head-lead* (init-walk-arm-setting))
             ))
          (*person*
           (send *ri* :speak "found person")
@@ -184,17 +222,19 @@
           (send *ri* :angle-vector (send *spot* :angle-vector) 500)
           (setq *person* nil)
           (send *ri* :wait-interpolation)
-          (init-walk-arm-setting))
+	  (if *head-lead* (init-walk-arm-setting)))
          (t
           (ros::ros-info (format nil "nothing found ..... last detected object is ~A sec ago" (send (ros::time- (ros::time-now) *last-detected-time*) :to-sec)))
-          (when (and
+	  (when (and 
+                 *head-lead*
                  (> (send (ros::time- (ros::time-now) *last-detected-time*) :to-sec) 10)
                  (> (norm (v- (coerce (mapcar #'(lambda (x) (elt (send *ri* :state :angle-vector) x)) (mapcar #'(lambda (x) (position x (send *spot* :joint-list))) (send *spot* :arm :joint-list))) float-vector) *default-av*)) 10))
             (ros::service-call "end_effector_to_joy/set_enabled" (instance std_srvs::SetBoolRequest :init :data nil))
             (send *spot* :arm :angle-vector *default-av*)
             (send *ri* :angle-vector (send *spot* :angle-vector) 500)
             (send *ri* :wait-interpolation)
-            (init-walk-arm-setting)))
+	    (init-walk-arm-setting)
+	    ))
          )) ;; cond
   :walk)
 ;;
@@ -249,6 +289,8 @@
 (setq *cmd-vel* (cons (ros::time-now) (instance geometry_msgs::Twist :init)))
 (ros::subscribe "/spot/cmd_vel" geometry_msgs::Twist
                 #'(lambda (msg) (setq *cmd-vel* (cons (ros::time-now) msg))) 20)
+
+(ros::advertise "/spot/pick_object_in_image/pick_object" std_msgs::String 1 t)
 
 ;; state machine
 (exec-state-machine (walk-sm) '((description . "お散歩しました！")(image . "")))
