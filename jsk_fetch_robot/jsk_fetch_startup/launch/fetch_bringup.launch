@@ -412,6 +412,7 @@
   <include if="$(arg launch_google_analyze_text)"
            file="$(find ros_google_cloud_language)/launch/analyze_text.launch">
     <arg name="google_cloud_credentials_json" value="/var/lib/robot/eternal-byte-236613-4bc6962824d1.json" />
+    <!-- JSK members can download this credential from https://drive.google.com/file/d/1VxniytpH9J12ii9jphtBylydY1_k5nXf/view?usp=sharing -->
   </include>
 
   <!-- Two robots cannot use one rosserial device at the same time -->
