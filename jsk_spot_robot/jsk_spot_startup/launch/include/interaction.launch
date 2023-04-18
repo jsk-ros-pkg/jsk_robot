@@ -17,7 +17,7 @@
     <arg name="respawn" value="true" />
     <arg name="google_cloud_credentials_json" value="$(arg google_chat_credentials_json)"/>
     <arg name="to_dialogflow_client" value="true" />
-    <arg name="send_dialogflow_resonse_to_google_chat" value="false" />
+    <arg name="send_dialogflow_response_to_google_chat" value="false" />
   </include>
 
   <!-- Dialogflow Client ROS -->
