@@ -58,7 +58,8 @@
   <!-- joystick teleop nodes -->
   <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
     <arg name="pad_type" value="dualsense" />
-    <arg name="joy_dev" value="/dev/input/js0" />
+    <!--arg name="joy_dev" value="/dev/input/js0" /-->
+    <arg name="joy_dev" value="/dev/dualsense" />
     <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
     <arg name="joy_name_space" default="/spot/" />
     <arg name="dock_service" default="dock_fixed_id" />

@@ -23,8 +23,8 @@
   <!-- Dialogflow Client ROS -->
   <include file="$(find dialogflow_task_executive)/launch/dialogflow_ros.launch">
     <arg name="credential" value="$(arg dialogflow_credentials_json)" />
-    <!-- <arg name="project_id" value="facialexpression-rpwe" /> -->
-    <arg name="project_id" value="collaborative-remembering-kwit" />
+    <arg name="project_id" value="facialexpression-rpwe" />
+    <!-- <arg name="project_id" value="collaborative-remembering-kwit" /> -->
     <arg name="enable_hotword" value="false" />
   </include>
 
