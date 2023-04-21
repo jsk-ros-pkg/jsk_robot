@@ -2,15 +2,19 @@
   <include file="$(find jsk_spot_startup)/launch/rosbag_record.launch" >
     <arg name="rosbag" value="$(env HOME)/head_lead_demo" />
   </include>
-  <include file="$(find jsk_spot_startup)/launch/include/lifelog.launch" >
-  </include>
+  <!--include file="$(find jsk_spot_startup)/launch/include/lifelog.launch" >
+  </include-->
   <include file="$(find jsk_spot_startup)/launch/include/interaction.launch" >
   </include>
   <include file="$(find jsk_spot_startup)/launch/include/perception.launch" >
-    <arg name="start_aws_detect_faces" default="true" />
-    <arg name="start_aws_auto_checkin_app" default="true" />
-    <arg name="image_sources" default="[frontleft_fisheye_image, frontright_fisheye_image, left_fisheye_image, right_fisheye_image]" />
-    <arg name="ml_confidence" default="0.7" />
+    <!--arg name="start_aws_detect_faces" value="true" /-->
+    <!--arg name="start_aws_auto_checkin_app" value="true" /-->
+    <arg name="start_aws_detect_faces" value="false" />
+    <arg name="start_aws_auto_checkin_app" value="false" />
+    <!--arg name="image_sources" value="[frontleft_fisheye_image, frontright_fisheye_image, left_fisheye_image, right_fisheye_image]" /-->
+    <arg name="image_sources" value="[frontleft_fisheye_image, frontright_fisheye_image]" />
+    <arg name="ml_models" value="[dogtoy-model]" />
+    <arg name="ml_confidence" value="0.7" />
   </include>
   <!-- head teleop nodes
      1. end_effector_to_joy.py: subscribe spot/manipulator_state and publish joy_head/joy_raw, using estimated_end_effector_force_in_hand
