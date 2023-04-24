@@ -5,6 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Diagnostics1/Power1
+        - /Vision1/NarrowStereoLeft1
+        - /Planning1/SmachImage1
       Splitter Ratio: 0.557554007
     Tree Height: 1855
   - Class: rviz/Selection
@@ -899,9 +901,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
-          Max Intensity: 1.08762002
+          Max Intensity: 4096
           Min Color: 0; 0; 0
-          Min Intensity: 0.190980002
+          Min Intensity: 0
           Name: TiltScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -976,6 +978,23 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: Vision
+    - Class: rviz/Group
+      Displays:
+        - Class: jsk_rviz_plugin/OverlayImage
+          Enabled: true
+          Name: SmachImage
+          Topic: /smach_image_publisher/image
+          Value: true
+          alpha: 0.850000024
+          height: 200
+          keep aspect ratio: true
+          left: 2700
+          overwrite alpha value: false
+          top: 50
+          transport hint: compressed
+          width: 600
+      Enabled: true
+      Name: Planning
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -1003,25 +1022,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10.3789015
+      Distance: 8.56335258
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.27238953
-        Y: -0.646221399
-        Z: 1.45365202
+        X: 1.20282674
+        Y: 0.220421076
+        Z: 1.34202754
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.449796855
+      Pitch: 0.429796875
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 0.113857321
+      Yaw: 0.71885699
     Saved: ~
 Window Geometry:
   Displays:
