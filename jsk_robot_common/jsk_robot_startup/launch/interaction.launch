@@ -1,0 +1,50 @@
+<launch>
+  <!-- strelka -->
+  <arg name="google_chat_credentials_json" default="$(find jsk_robot_startup)/auth/tribal-quasar-343006-1025e6fc703f.json" />
+
+  <!-- common settings -->
+  <arg name="openai_credentials_json" default="$(find jsk_robot_startup)/auth/openai_credentials.json" />
+
+  <arg name="google_credentials_json" default="$(find jsk_robot_startup)/auth/eternal-byte-236613-4bc6962824d1.json" />
+
+  <arg name="chat_use_helper" default="true" doc="set false when your program respond to chat" />
+
+  <!-- Google Chat ROS -->
+  <include file="$(find google_chat_ros)/launch/google_chat.launch">
+    <arg name="receiving_mode" value="pubsub" />
+    <arg name="project_id" value="tribal-quasar-343006" />
+    <arg name="subscription_id" value="chat-sub" />
+    <arg name="respawn" value="true" />
+    <arg name="google_cloud_credentials_json" value="$(arg google_chat_credentials_json)"/>
+    <arg name="to_dialogflow_client" value="false" />
+    <arg name="use_helper" value="$(arg chat_use_helper)" />
+  </include>
+
+  <!-- Dialogflow Client ROS -->
+  <include file="$(find dialogflow_task_executive)/launch/dialogflow_ros.launch">
+    <arg name="credential" value="$(arg google_credentials_json)" />
+    <arg name="project_id" value="collaborative-remembering-kwit" />
+    <arg name="enable_hotword" value="false" />
+  </include>
+
+  <!-- Google Cloud Language -->
+  <include file="$(find ros_google_cloud_language)/launch/analyze_text.launch">
+    <arg name="google_cloud_credentials_json" value="$(arg google_credentials_json)" />
+  </include>
+
+  <!-- gdrive_ros -->
+  <include file="$(find gdrive_ros)/launch/gdrive_server.launch">
+    <arg name="settings_yaml" value="$(find jsk_robot_startup)/auth/pydrive_settings.yaml" />
+    <arg name="respawn" value="true" />
+    <arg name="node_name" value="gdrive_ros" />
+  </include>
+
+  <!-- openai_ros -->
+  <group ns="openai">
+    <node pkg="openai_ros" type="openai_node.py" name="openai" output="screen">
+      <rosparam command="load" file="$(arg openai_credentials_json)" />
+    </node>
+  </group>
+
+
+</launch>
