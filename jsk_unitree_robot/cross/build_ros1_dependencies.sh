@@ -45,5 +45,6 @@ docker run -it --rm \
     pip install -U --user pip && \
     export PYTHONPATH=\"/opt/jsk/System/ros1_dependencies/lib/python2.7/site-packages\" && \
     export PKG_CONFIG_PATH=\"/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig\" && \
+    pip install spidev==3.5 pixel-ring==0.1.0 && \
     ~/.local/bin/pip install --prefix=/opt/jsk/${INSTALL_ROOT}/Python -r /home/user/ros1_dependencies_sources/go1_requirements.txt \
     " 2>&1 | tee ${TARGET_MACHINE}_build_ros1_dependencies.log
