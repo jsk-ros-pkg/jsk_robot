@@ -11,6 +11,7 @@ done
 
 mkdir -p /home/user/ros1_dependencies_sources/build/libfcl-dev
 cd /home/user/ros1_dependencies_sources/build/libfcl-dev
+LD_LIBRARY_PATH=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib:${LD_LIBRARY_PATH}
 cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
   -DCMAKE_BUILD_TYPE=Release \
