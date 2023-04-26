@@ -230,3 +230,17 @@ repositories:
   postfix:
     type: tar
     url: http://mirror.postfix.jp/postfix-release/official/postfix-3.4.3.tar.gz
+  libfcl-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/fcl/fcl_0.5.0.orig.tar.gz
+  libfcl-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/fcl/fcl_0.5.0-5.debian.tar.xz
+    # geometric_shapes depends on fcl
+  libccd-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/libc/libccd/libccd_2.0.orig.tar.gz
+  libccd-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/libc/libccd/libccd_2.0-1.debian.tar.xz
+    # fcl depends on ccd
