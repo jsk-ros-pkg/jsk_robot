@@ -1,0 +1,19 @@
+larm:
+  - panda_joint1 : larm-collar-y
+  - panda_joint2 : larm-shoulder-p
+  - panda_joint3 : larm-shoulder-y
+  - panda_joint4 : larm-elbow-p
+  - panda_joint5 : larm-wrist-r
+  - panda_joint6 : larm-wrist-p
+  - panda_joint7 : larm-wrist-y
+
+larm-end-coords:
+  parent: panda_link8
+  translate: [0, 0, 0.1]
+  rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
+
+angle-vector:
+  reset-pose: [ 0.0, -45.0, 0.0, -135.0, 0.0, 90.0, 45.0,
+                0.0, -75.0 ]
+  reset-manip-pose: [ 0.0, -45.0, 0.0, -135.0, 0.0, 90.0, 45.0,
+                      0.0, -75.0 ]
