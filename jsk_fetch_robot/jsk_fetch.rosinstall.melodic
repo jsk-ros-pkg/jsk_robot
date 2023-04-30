@@ -70,7 +70,7 @@
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: master
-# we need to use the development branch (fetch15 branch in knorth55's fork)
+# we need to use the development branch (develop/fetch branch in jsk-ros-pkg)
 # until it is merged to master
 - git:
     local-name: jsk-ros-pkg/jsk_robot
