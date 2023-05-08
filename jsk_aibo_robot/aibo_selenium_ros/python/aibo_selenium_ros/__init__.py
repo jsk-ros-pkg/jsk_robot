@@ -156,7 +156,7 @@ class AIBOBrowserInterface(object):
           By.TAG_NAME, value='video').screenshot_as_base64
       cv_image_array_rgb = imread(io.BytesIO(base64.b64decode(raw_data_image)))
       return cv_image_array_rgb
-    except selenium.common.exceptions.NoSuchElementException:
+    except (selenium.common.exceptions.NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
       return None
 
   def get_error_message(self):
