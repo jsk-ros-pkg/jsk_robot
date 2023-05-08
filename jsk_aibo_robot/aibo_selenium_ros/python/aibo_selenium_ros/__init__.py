@@ -116,11 +116,15 @@ class AIBOBrowserInterface(object):
 
   def start_watching(self, timeout=5.):
 
-    for b in self.driver.find_elements(By.TAG_NAME, value='button'):
-      if b.accessible_name == '今なに見てる？' and b.is_displayed():
-        b.click()
-        break
-    time.sleep(10.)
+    try:
+      for b in self.driver.find_elements(By.TAG_NAME, value='button'):
+        if b.accessible_name == '今なに見てる？' and b.is_displayed():
+          b.click()
+          break
+      time.sleep(10.)
+    except Exception as e:
+      logger.logwarn('Got an error {}'.format(e))
+      return False
 
     deadline = time.perf_counter() + timeout
     while time.perf_counter() < deadline:
@@ -133,21 +137,25 @@ class AIBOBrowserInterface(object):
 
   def continue_watching(self, timeout=5.):
 
-    for b in self.driver.find_elements(By.TAG_NAME, value='button'):
-      if b.accessible_name == 'OK':
-        b.click()
-        break
-    time.sleep(3.)
-    for b in self.driver.find_elements(By.TAG_NAME, value='button'):
-      if b.accessible_name == '閉じる':
-        b.click()
-        break
-    time.sleep(3.)
-    for b in self.driver.find_elements(By.TAG_NAME, value='button'):
-      if b.accessible_name == '今なに見てる？' and b.is_displayed():
-        b.click()
-        break
-    time.sleep(10.)
+    try:
+      for b in self.driver.find_elements(By.TAG_NAME, value='button'):
+        if b.accessible_name == 'OK':
+          b.click()
+          break
+      time.sleep(3.)
+      for b in self.driver.find_elements(By.TAG_NAME, value='button'):
+        if b.accessible_name == '閉じる':
+          b.click()
+          break
+      time.sleep(3.)
+      for b in self.driver.find_elements(By.TAG_NAME, value='button'):
+        if b.accessible_name == '今なに見てる？' and b.is_displayed():
+          b.click()
+          break
+      time.sleep(10.)
+    except Exception as e:
+      logger.warn('Got an error: {}'.format(e))
+      return False
 
     deadline = time.perf_counter() + timeout
     while time.perf_counter() < deadline:
