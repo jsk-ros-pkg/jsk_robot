@@ -7,7 +7,7 @@ import time
 import cv2
 import rospy
 from cv_bridge import CvBridge
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage, Image
 
 from aibo_selenium_ros import AIBOBrowserInterface
 
@@ -15,7 +15,8 @@ if __name__ == '__main__':
 
   rospy.init_node('aibo_selenium_ros')
 
-  pub = rospy.Publisher('~image', Image, queue_size=1)
+  pub_raw = rospy.Publisher('~image', Image, queue_size=1)
+  pub_compressed = rospy.Publisher('~image/compressed', CompressedImage, queue_size=1)
   cv_bridge = CvBridge()
 
   logging.basicConfig(level=logging.INFO)
@@ -50,7 +51,13 @@ if __name__ == '__main__':
       ret = interface.continue_watching()
       rospy.loginfo('Restarted watching.')
     else:
-      msg = cv_bridge.cv2_to_imgmsg(cv2.cvtColor(image_rgb, cv2.COLOR_RGBA2RGB),
-                                    encoding='rgb8')
-      rospy.loginfo('Publish a message')
-      pub.publish(msg)
+      if pub_raw.get_num_connections() > 0:
+        msg_raw = cv_bridge.cv2_to_imgmsg(cv2.cvtColor(image_rgb, cv2.COLOR_RGBA2RGB),
+                                      encoding='rgb8')
+        pub_raw.publish(msg_raw)
+        rospy.loginfo('Publish a raw message')
+
+      if pub_compressed.get_num_connections() > 0:
+        msg_compressed = cv_bridge.cv2_to_compressed_imgmsg(cv2.cvtColor(image_rgb, cv2.COLOR_RGBA2RGB), dst_format='jpg')
+        pub_compressed.publish(msg_compressed)
+        rospy.loginfo('Publish a compressed message')
