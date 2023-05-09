@@ -39,19 +39,20 @@ rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver>
 
 This script shows up a selenium controlled webbrowser window.
 
-<TODO Image>
+![aibo_login](https://user-images.githubusercontent.com/9410362/237017652-29c64750-a3a6-4008-a197-9c2cc5ba5bdb.png)
 
 Please sign in to myaibo manually and open the dashboard page below.
 
-<TODO Image>
+![dashboard](https://user-images.githubusercontent.com/9410362/237017806-9f85e696-1f1c-4362-b1cc-22b0fe0e7635.png)
 
 Then hit Enter key on the `main.py` window. So it will start to control browser and publish image.
 
-<TODO Movie>
+![output](https://user-images.githubusercontent.com/9410362/237018221-13d6a118-6ec2-44ff-86eb-eecf75cfe218.gif)
+
 
 ## How to run (Auto-login mode)
 
-You may be able to use `auto_login` mode.
+You may be able to use `auto_login` mode. **This mode is unstable**
 
 ```bash
 rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver> _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true
