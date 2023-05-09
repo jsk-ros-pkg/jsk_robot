@@ -34,7 +34,7 @@ roscore
 Then run `main.py`
 
 ```bash
-rosrun aibo_selenium_ros main.py
+rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver>
 ```
 
 This script shows up a selenium controlled webbrowser window.
@@ -54,7 +54,11 @@ Then hit Enter key on the `main.py` window. So it will start to control browser 
 You may be able to use `auto_login` mode.
 
 ```bash
-rosrun aibo_selenium_ros main.py TODO
+rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver> _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true
 ```
 
 You can also use headless mode. by setting parameter.
+
+```bash
+rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver> _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true _headless:=true
+```
