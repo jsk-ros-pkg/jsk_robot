@@ -4,15 +4,13 @@
 <!-- https://github.com/frankaemika/franka_ros/blob/30e598aa6fb703cc80a203481e6427f397337b4c/franka_control/launch/franka_control.launch -->
 
 <launch>
-  <arg name="robot_ip" default="192.168.0.2"/>
+  <arg name="robot_ip" default="192.168.0.2"/>  <!-- add ip -->
   <arg name="robot" default="panda" doc="choose your robot. Possible values: [panda, fr3]"/>
   <arg name="arm_id" default="$(arg robot)" />
   <arg name="load_gripper" default="true" />
   <arg name="xacro_args" default="" />
-  <arg name="controllers" default="franka_state_controller position_joint_trajectory_controller" />
-  <arg name="robot_xacro" default="$(find panda_eus)/models/panda.urdf.xacro" />
 
-  <param name="robot_description" command="$(find xacro)/xacro $(arg robot_xacro) hand:=$(arg load_gripper) arm_id:=$(arg arm_id) $(arg xacro_args)"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(find panda_eus)/models/panda.urdf.xacro hand:=$(arg load_gripper) arm_id:=$(arg arm_id) $(arg xacro_args)"/>  <!-- change xacro -->
 
   <include file="$(find franka_gripper)/launch/franka_gripper.launch" if="$(arg load_gripper)">
     <arg name="robot_ip" value="$(arg robot_ip)" />
@@ -24,7 +22,7 @@
     <param name="robot_ip" value="$(arg robot_ip)" />
   </node>
   <rosparam command="load" file="$(find franka_control)/config/default_controllers.yaml" subst_value="true" />
-  <node name="state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="$(arg controllers)" />
+  <node name="state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="franka_state_controller position_joint_trajectory_controller" />  <!-- add controller -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen"/>
   <node name="joint_state_publisher" type="joint_state_publisher" pkg="joint_state_publisher" output="screen">
     <rosparam if="$(arg load_gripper)" param="source_list">[franka_state_controller/joint_states, franka_gripper/joint_states] </rosparam>
