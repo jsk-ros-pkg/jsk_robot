@@ -4,6 +4,8 @@ This package provides a ROS Node which retieve head camera images from web brows
 
 ## How to setup
 
+**Currently this node is only tested with ROS noetic.**
+
 First, Install [Google chrome](https://www.google.com/intl/ja_jp/chrome/) to your PC.
 
 Second, Download [suitable version of chrome webdriver to Google chrome installed](https://chromedriver.chromium.org/downloads) and place it somewhere.
