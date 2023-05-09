@@ -34,7 +34,9 @@ roscore
 Then run `main.py`
 
 ```bash
-rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver>
+$ rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver>
+
+Press Enter when logging if completed.
 ```
 
 This script shows up a selenium controlled webbrowser window.
