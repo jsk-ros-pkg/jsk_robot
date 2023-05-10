@@ -6,15 +6,14 @@ This package provides a ROS Node which retieve head camera images from web brows
 
 **Currently this node is only tested with ROS noetic.**
 
-First, Install [Google chrome](https://www.google.com/intl/ja_jp/chrome/) to your PC.
+First, Download [suitable version of chrome webdriver to Google chrome installed](https://chromedriver.chromium.org/downloads) and place it somewhere.
 
-Second, Download [suitable version of chrome webdriver to Google chrome installed](https://chromedriver.chromium.org/downloads) and place it somewhere.
-
-And install pip dependencies
+And install catkin and pip dependencies
 
 ```bash
 cd <directory of aibo_selenium_ros>
-pip install -r .
+rosdep install --from-paths . --ignore-src -y -r
+pip install -r requirements.txt
 ```
 
 Build

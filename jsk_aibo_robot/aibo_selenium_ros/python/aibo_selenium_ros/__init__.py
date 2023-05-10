@@ -22,7 +22,8 @@ user_agent = [
 class AIBOBrowserInterface(object):
 
   def __init__(self,
-               executable_path='',
+               webdriver_path='/usr/bin/chromedriver',
+               chrome_executable_path=None,
                login_page_url='https://myaibo.aibo.sony.jp/#/',
                login_id='',
                login_pw='',
@@ -38,8 +39,10 @@ class AIBOBrowserInterface(object):
                          user_agent[random.randrange(0, len(user_agent), 1)])
     if headless:
       options.add_argument('--headless')
+    if chrome_executable_path is not None:
+      options.binary_location = chrome_executable_path
 
-    self.driver = webdriver.Chrome(executable_path=executable_path,
+    self.driver = webdriver.Chrome(executable_path=webdriver_path,
                                    options=options)
 
     if not auto_login:

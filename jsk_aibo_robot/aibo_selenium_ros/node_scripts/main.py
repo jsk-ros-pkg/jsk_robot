@@ -16,7 +16,9 @@ if __name__ == '__main__':
   rospy.init_node('aibo_selenium_ros')
 
   pub_raw = rospy.Publisher('~image', Image, queue_size=1)
-  pub_compressed = rospy.Publisher('~image/compressed', CompressedImage, queue_size=1)
+  pub_compressed = rospy.Publisher('~image/compressed',
+                                   CompressedImage,
+                                   queue_size=1)
   cv_bridge = CvBridge()
 
   logging.basicConfig(level=logging.INFO)
@@ -29,11 +31,13 @@ if __name__ == '__main__':
   auto_login = bool(rospy.get_param('~auto_login', False))
   headless = bool(rospy.get_param('~headless', False))
 
-  interface = AIBOBrowserInterface(executable_path=webdriver,
-                                   login_id=login_id,
-                                   login_pw=login_password,
-                                   auto_login=auto_login,
-                                   headless=headless)
+  interface = AIBOBrowserInterface(
+      webdriver_path=webdriver,
+      chrome_executable_path="/usr/bin/chromium-browser",
+      login_id=login_id,
+      login_pw=login_password,
+      auto_login=auto_login,
+      headless=headless)
   if not auto_login:
     input('Press Enter when logging if completed.')
     interface.initialized = True
@@ -52,12 +56,15 @@ if __name__ == '__main__':
       rospy.loginfo('Restarted watching.')
     else:
       if pub_raw.get_num_connections() > 0:
-        msg_raw = cv_bridge.cv2_to_imgmsg(cv2.cvtColor(image_rgb, cv2.COLOR_RGBA2RGB),
-                                      encoding='rgb8')
+        msg_raw = cv_bridge.cv2_to_imgmsg(cv2.cvtColor(image_rgb,
+                                                       cv2.COLOR_RGBA2RGB),
+                                          encoding='rgb8')
         pub_raw.publish(msg_raw)
         rospy.loginfo('Publish a raw message')
 
       if pub_compressed.get_num_connections() > 0:
-        msg_compressed = cv_bridge.cv2_to_compressed_imgmsg(cv2.cvtColor(image_rgb, cv2.COLOR_RGBA2RGB), dst_format='jpg')
+        msg_compressed = cv_bridge.cv2_to_compressed_imgmsg(cv2.cvtColor(
+            image_rgb, cv2.COLOR_RGBA2RGB),
+                                                            dst_format='jpg')
         pub_compressed.publish(msg_compressed)
         rospy.loginfo('Publish a compressed message')

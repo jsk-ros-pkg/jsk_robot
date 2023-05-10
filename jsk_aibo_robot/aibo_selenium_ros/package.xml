@@ -13,6 +13,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <exec_depend>chromium-browser</exec_depend>
   <export>
   </export>
 </package>
