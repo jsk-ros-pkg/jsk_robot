@@ -16,24 +16,18 @@ if __name__ == '__main__':
 
   parser = argparse.ArgumentParser()
 
-  parser.add_argument('webdriver')
   parser.add_argument('--login-id', default='')
   parser.add_argument('--login-password', default='')
-  parser.add_argument('--chrome-executable',
-                      default='/usr/bin/chromium-browser')
 
   parser.add_argument('--auto-login', action='store_true')
   parser.add_argument('--headless', action='store_true')
 
   args = parser.parse_args()
 
-  interface = AIBOBrowserInterface(
-      webdriver_path=args.webdriver,
-      chrome_executable_path=args.chrome_executable,
-      login_id=args.login_id,
-      login_pw=args.login_password,
-      auto_login=args.auto_login,
-      headless=args.headless)
+  interface = AIBOBrowserInterface(login_id=args.login_id,
+                                   login_pw=args.login_password,
+                                   auto_login=args.auto_login,
+                                   headless=args.headless)
   if not args.auto_login:
     input('Press Enter when logging if completed.')
     interface.initialized = True

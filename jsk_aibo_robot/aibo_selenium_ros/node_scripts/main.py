@@ -24,20 +24,16 @@ if __name__ == '__main__':
   logging.basicConfig(level=logging.INFO)
   logger = logging.getLogger(__name__)
 
-  webdriver = rospy.get_param('~webdriver')
   login_id = rospy.get_param('~login_id', '')
   login_password = rospy.get_param('~login_password', '')
 
   auto_login = bool(rospy.get_param('~auto_login', False))
   headless = bool(rospy.get_param('~headless', False))
 
-  interface = AIBOBrowserInterface(
-      webdriver_path=webdriver,
-      chrome_executable_path="/usr/bin/chromium-browser",
-      login_id=login_id,
-      login_pw=login_password,
-      auto_login=auto_login,
-      headless=headless)
+  interface = AIBOBrowserInterface(login_id=login_id,
+                                   login_pw=login_password,
+                                   auto_login=auto_login,
+                                   headless=headless)
   if not auto_login:
     input('Press Enter when logging if completed.')
     interface.initialized = True

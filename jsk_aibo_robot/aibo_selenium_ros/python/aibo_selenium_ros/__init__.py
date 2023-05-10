@@ -23,7 +23,7 @@ class AIBOBrowserInterface(object):
 
   def __init__(self,
                webdriver_path='/usr/bin/chromedriver',
-               chrome_executable_path=None,
+               chrome_executable_path='/usr/bin/chromium-browser',
                login_page_url='https://myaibo.aibo.sony.jp/#/',
                login_id='',
                login_pw='',
