@@ -14,7 +14,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>chromium-browser</exec_depend>
-  <exec_depend>chromium-chromedriver</exec_depend>
+  <exec_depend>chromedriver</exec_depend>
   <export>
   </export>
 </package>
