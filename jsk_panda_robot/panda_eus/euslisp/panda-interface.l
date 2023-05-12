@@ -6,7 +6,7 @@
 
 (defclass panda-robot-interface
   :super robot-interface
-  :slots (gripper-action gazebop
+  :slots (gripper-action
           error-recovery-act error
           gripper-grasp-action gripper-move-action gripper-homing-action gripper-stop-action
           )
@@ -18,26 +18,6 @@
        (send-super* :init :robot panda-robot
                     :joint-states-topic "joint_states"
                     :controller-timeout ct args)
-     ;; check whather the environement is Gazebo
-     (setq gazebop (numberp (ros::get-param "/gazebo/time_step")))
-     (if gazebop (ros::ros-warn "Using Gazebo environment"))
-
-     ;; Controller setting for Gazebo environment
-     (when gazebop
-       (ros::subscribe "/hand_controller/state" control_msgs::JointTrajectoryControllerState
-                       #'send self :gripper-state-callback :arm :groupname groupname)
-       (setq gripper-action (instance ros::simple-action-client :init
-                                        "/hand_controller/follow_joint_trajectory"
-                                        control_msgs::FollowJointTrajectoryAction))
-       (dolist (action (list gripper-action))
-         (unless (and joint-action-enable (send action :wait-for-server 3))
-           (setq joint-action-enable nil)
-           (ros::ros-warn "~A is not respond" action)
-           (return)))
-       ) ;; when gazebo
-     (unless gazebop
-       (ros::ros-warn "real franka environemt interface is not impelemented")) ;; TODO
-
      ;; for error recovery
      (ros::create-nodehandle "error_group")
      (ros::subscribe "/panda/arm/has_error" std_msgs::Bool
