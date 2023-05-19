@@ -15,6 +15,5 @@
     <arg name="xacro_args"   value="$(arg xacro_args)" />
   </include>
 
-  <param name="robot_description" command="$(find xacro)/xacro $(find panda_eus)/models/panda.urdf.xacro hand:=$(arg load_gripper) arm_id:=$(arg arm_id) $(arg xacro_args)"/>
   <node name="position_joint_trajectory_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="position_joint_trajectory_controller" />
 </launch>
