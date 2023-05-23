@@ -54,17 +54,17 @@
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names (send-all (send robot :joint-list) :name))
      )))
-  (:larm-controller
+  (:rarm-controller
    ()
    (list
     (list
-     (cons :controller-action "/larm_controller/follow_joint_trajectory")
+     (cons :controller-action "/rarm_controller/follow_joint_trajectory")
      (cons :controller-state  "/position_joint_trajectory_controller/follow_joint_trajectory")
      (cons :action-type control_msgs::FollowJointTrajectoryAction)
      (cons :joint-names
            (remove-if #'(lambda (jn) (substringp "finger" jn))
                       (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n))
-                              (send-all (send robot :larm :joint-list) :name)))))))
+                              (send-all (send robot :rarm :joint-list) :name)))))))
   (:hand-controller
    ()
    (list

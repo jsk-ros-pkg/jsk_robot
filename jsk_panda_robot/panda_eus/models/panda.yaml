@@ -1,13 +1,13 @@
-larm:
-  - panda_joint1 : larm-collar-y
-  - panda_joint2 : larm-shoulder-p
-  - panda_joint3 : larm-shoulder-y
-  - panda_joint4 : larm-elbow-p
-  - panda_joint5 : larm-wrist-r
-  - panda_joint6 : larm-wrist-p
-  - panda_joint7 : larm-wrist-y
+rarm:
+  - panda_joint1 : rarm-collar-y
+  - panda_joint2 : rarm-shoulder-p
+  - panda_joint3 : rarm-shoulder-y
+  - panda_joint4 : rarm-elbow-p
+  - panda_joint5 : rarm-wrist-r
+  - panda_joint6 : rarm-wrist-p
+  - panda_joint7 : rarm-wrist-y
 
-larm-end-coords:
+rarm-end-coords:
   parent: panda_link8
   translate: [0, 0, 0.1]
   rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
