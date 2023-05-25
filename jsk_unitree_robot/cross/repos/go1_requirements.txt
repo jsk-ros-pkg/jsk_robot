@@ -7,4 +7,5 @@ paho-mqtt==1.6.1
 # https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/respeaker_ros/package.xml
 speechrecognition==3.8.1
 pyusb==1.1.1
+spidev==3.5  # pixel-ring requires spidev and spidev >=3.6 requires setuptools>=61.0
 pixel-ring==0.1.0
