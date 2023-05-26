@@ -103,13 +103,13 @@ Arguments specific to panda:
   (:set-joint-pd-gain
    (joint-name pgain dgain &key (type :default-controller))
    "Set P gain and D gain of each joint.
-This method works only when `type` comes from effort_controllers/JointTrajectoryController and includes `joint-name`.
+This method works only when `type` includes a controller coming from effort_controllers/JointTrajectoryController and including `joint-name`.
 "
    (if (send self :simulation-modep)
      (progn
        (ros::ros-warn ":set-joint-pd-gain is not implemented on simulation mode, always returns t")
        (return-from :set-joint-pd-gain t)))
-   (let ((req (instance dynamic_reconfigure::ReconfigureRequest :init)))
+   (let ((req (instance dynamic_reconfigure::ReconfigureRequest :init)) (set-p nil))
      (send req :config :doubles
            (list (instance dynamic_reconfigure::DoubleParameter :init
                            :name "p" :value pgain)
@@ -118,19 +118,27 @@ This method works only when `type` comes from effort_controllers/JointTrajectory
      (dolist (fjt-name (mapcar #'(lambda (joint-param)
                                 (cdr (assoc :controller-action joint-param)))
                             (send self type)))
-       (let ((cname (subseq fjt-name 0 (- (length fjt-name)
-                                          (position #\/ (reverse fjt-name))
-                                          1))))
+       (let* ((cname (subseq fjt-name 0 (- (length fjt-name)
+                                           (position #\/ (reverse fjt-name))
+                                           1)))
+              (srv-name (format nil "~a/gains/~a/set_parameters" cname joint-name)))
          ;; If fjt-name is "/dual_panda/dual_panda_effort_joint_trajectory_controller/follow_joint_trajectory",
          ;; cname will be "/dual_panda/dual_panda_effort_joint_trajectory_controller"
-         (ros::service-call
-           (format nil "~a/gains/~a/set_parameters" cname joint-name)
-           req)))
+         (if (ros::wait-for-service srv-name 0)
+           (progn
+             (ros::service-call srv-name req)
+             (setq set-p t)))))
+     (if (not set-p)
+       (progn
+         (ros::ros-error "Setting PD gains of ~a via ~a failed" joint-name type)
+         (ros::ros-error
+           "~a may not include a controller coming from effort_controllers/JointTrajectoryController and including ~a"
+           type joint-name)))
      ))
   (:set-all-joint-pd-gain
    (pgain dgain &key (type :default-controller))
    "Set P gain and D gain of all joints.
-This method fully works only when `type` comes from effort_controllers/JointTrajectoryController and includes all joints.
+This method fully works only when each joint is included by a controller in `type` coming from effort_controllers/JointTrajectoryController.
 "
    (dolist (j (send robot :joint-list))
      (send self :set-joint-pd-gain (send j :name) pgain dgain :type type))
