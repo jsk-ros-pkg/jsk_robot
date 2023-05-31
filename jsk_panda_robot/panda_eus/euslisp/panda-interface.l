@@ -25,9 +25,6 @@
         (cons :controller-state  "/position_joint_trajectory_controller/state")
         (cons :action-type control_msgs::FollowJointTrajectoryAction)
         (cons :joint-names (send-all (send robot :joint-list) :name)))))
-  (:gripper-grasp-action
-   ()
-   (gethash :rarm gripper-grasp-actions))
   )
 
 (defun panda-init ()
