@@ -27,7 +27,7 @@
         (cons :joint-names (send-all (send robot :joint-list) :name)))))
   (:gripper-grasp-action
    ()
-   (gethash :rarm gripper-grasp-actions)
+   (gethash :rarm gripper-grasp-actions))
   )
 
 (defun panda-init ()
