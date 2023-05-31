@@ -257,16 +257,30 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
      (:arms all-arms)
      (t (list arm))
      ))
+  (:send-gripper-action-method
+   (arm actions method &rest args)
+   (let ((action (gethash (send self :expand-arm-alias arm) actions)))
+     (if action (send* action method args) nil))
+   )
+  (:gripper-action-postprocess
+   (actions arm arms wait)
+   (if wait
+     (dolist (a arms)
+       (send self :send-gripper-action-method a actions :wait-for-result)))
+   (case arm
+     (:arms
+       (mapcar #'(lambda (a)
+                   (send self :send-gripper-action-method a actions :get-result))
+               arms))
+     (t
+       (send self :send-gripper-action-method arm actions :get-result)))
+   )
   (:gripper-method-helper
    (action-sender actions arm wait)
    (let ((arms (send self :arm2arms arm)))
      (dolist (a arms)
        (send self action-sender a :wait nil))
-     (if wait
-       (mapcar #'(lambda (a)
-                   (let ((action (gethash (send self :expand-arm-alias a) actions)))
-                     (if action (send action :wait-for-result) nil)))
-               arms))
+     (send self :gripper-action-postprocess actions arm arms wait)
      ))
   (:stop-gripper
    (arm &key (wait nil))
@@ -328,11 +342,7 @@ Example: (send self :gripper :rarm :position) => 0.00
               (/ (abs (- (send self :gripper a :position) width))
                  (/ tm 1000.0))
               (append args (list :wait nil))))
-     (if wait
-       (mapcar #'(lambda (a)
-                   (let ((action (gethash (send self :expand-arm-alias a) actions)))
-                     (if action (send action :wait-for-result) nil)))
-               arms))
+     (send self :gripper-action-postprocess actions arm arms wait)
      ))
   (:start-grasp
    (arm &key (width 0.0) (effort 80.0) (tm 500) (wait nil) (inner 0.005) (outer 0.06))
