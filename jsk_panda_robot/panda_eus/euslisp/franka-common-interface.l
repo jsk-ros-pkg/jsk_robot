@@ -3,14 +3,14 @@
 (ros::roseus-add-msgs "franka_msgs")
 (ros::roseus-add-msgs "franka_gripper")
 
-(defclass panda-common-interface
+(defclass franka-common-interface
   :super robot-interface
   :slots (all-arms all-arm-aliases
           arm-error-p error-recovery-act
           gripper-grasp-actions gripper-move-actions gripper-homing-actions gripper-stop-actions
           )
   )
-(defmethod panda-common-interface
+(defmethod franka-common-interface
   (:init
    (&rest args &key (robot nil)
           (joint-states-topic nil)
@@ -21,8 +21,8 @@
           (error-recovery-action nil)
           (gripper-action-prefixes nil)
           &allow-other-keys)
-   "Create robot interface for panda
-Arguments specific to panda:
+   "Create robot interface for franka robot
+Arguments specific to franka robot:
 - all-arms : names of all arms (e.g., (list :rarm))
 - all-arm-aliases : aliases of all arms (e.g., (list :arm))
 - error-topics : topics used for getting error states of arms (e.g., (list \"/franka_state_controller/franka_states\"))
@@ -407,7 +407,7 @@ Details: `MoveAction` part of https://frankaemika.github.io/docs/franka_ros.html
    )
   )
 
-(provide :panda-common-interface)
+(provide :franka-common-interface)
 
 #|
 You can check current joint gains with rqt_reconfigure when you use effort_controllers/JointTrajectoryController.

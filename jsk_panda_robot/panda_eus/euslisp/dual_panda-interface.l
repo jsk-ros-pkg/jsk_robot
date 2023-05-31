@@ -1,8 +1,8 @@
-(require :panda-common-interface "package://panda_eus/euslisp/panda-common-interface.l")
+(require :franka-common-interface "package://panda_eus/euslisp/franka-common-interface.l")
 (require :dual_panda-utils "package://panda_eus/euslisp/dual_panda-utils.l")
 
 (defclass dual_panda-robot-interface
-  :super panda-common-interface
+  :super franka-common-interface
   :slots ())
 
 (defmethod dual_panda-robot-interface
