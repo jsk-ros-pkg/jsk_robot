@@ -1,0 +1,27 @@
+<launch>
+  
+  <include file="$(find jsk_robot_startup)/launch/lifelog.launch" >
+    <arg name="logger_save_action" value="true" />
+    <arg name="logger_save_smach" value="true" />
+    <!-- <arg name="logger_save_faces" value="true" /> -->
+    <arg name="logger_save_dialogflow" value="true" />
+    <arg name="image" value="/head_camera/rgb/image_rect_color" />
+    <arg name="launch_mongodb" value="false" />
+  </include>
+  <include file="$(find jsk_robot_startup)/launch/interaction.launch" >
+    <arg name="chat_use_helper" value="false" />
+    <arg name="launch_google_chat" value="false" />
+    <arg name="launch_gdrive_server" value="false" />
+  </include>
+  <include file="$(find jsk_perception)/launch/vqa.launch" >
+    <arg name="host" value="133.11.216.160" />
+    <arg name="port" value="8888" />
+    <arg name="run_api" value="false" />
+  </include>
+  <include file="$(find jsk_perception)/launch/classification.launch" >
+    <arg name="host" value="133.11.216.160" />
+    <arg name="port" value="9999" />
+    <arg name="run_api" value="false" />
+  </include>
+
+</launch>

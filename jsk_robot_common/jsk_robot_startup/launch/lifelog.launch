@@ -18,11 +18,14 @@
 
   <arg name="image" default="usb_cam/image_raw" />
 
+  <arg name="launch_mongodb" default="true" />
+
   <param name="robot/database" value="jsk_robot_lifelog"/>
+
 
   <!-- logging database -->
   <param name="mongodb_replicate_on_write" value="true" /> <!-- need to set True to query from extra serveres, otherwise it only query from local server -->
-  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch" if="$(arg launch_mongodb)">
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
@@ -75,12 +78,12 @@
         args="--wait-for-start $(arg image)/output/compressed /publish_trigger_mongodb_event std_msgs/Header
               'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
 
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_auto_checkin"
-        args="--wait-for-start /aws_auto_checkin_app/output/class /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
-  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_detect_faces"
-        args="--wait-for-start /aws_detect_faces/attributes /publish_trigger_mongodb_event std_msgs/Header
-              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
+  <!-- <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_auto_checkin" -->
+  <!--       args="-\-wait-for-start /aws_auto_checkin_app/output/class /publish_trigger_mongodb_event std_msgs/Header -->
+  <!--             'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' -\-import std_msgs" /> -->
+  <!-- <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_detect_faces" -->
+  <!--       args="-\-wait-for-start /aws_detect_faces/attributes /publish_trigger_mongodb_event std_msgs/Header -->
+  <!--             'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' -\-import std_msgs" /> -->
   <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_dialogflow_client"
         args="--wait-for-start /dialogflow_client/text_action/result /publish_trigger_mongodb_event std_msgs/Header
               'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
