@@ -263,24 +263,25 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
      (if action (send* action method args) nil))
    )
   (:gripper-action-postprocess
-   (actions arm arms wait)
-   (if wait
-     (dolist (a arms)
-       (send self :send-gripper-action-method a actions :wait-for-result)))
-   (case arm
-     (:arms
-       (mapcar #'(lambda (a)
-                   (send self :send-gripper-action-method a actions :get-result))
-               arms))
-     (t
-       (send self :send-gripper-action-method arm actions :get-result)))
-   )
+   (arm actions wait)
+   (let ((arms (send self :arm2arms arm)))
+     (if wait
+       (dolist (a arms)
+         (send self :send-gripper-action-method a actions :wait-for-result)))
+     (case arm
+       (:arms
+         (mapcar #'(lambda (a)
+                     (send self :send-gripper-action-method a actions :get-result))
+                 arms))
+       (t
+         (send self :send-gripper-action-method arm actions :get-result)))
+     ))
   (:gripper-method-helper
    (action-sender actions arm wait)
    (let ((arms (send self :arm2arms arm)))
      (dolist (a arms)
        (send self action-sender a :wait nil))
-     (send self :gripper-action-postprocess actions arm arms wait)
+     (send self :gripper-action-postprocess arm actions wait)
      ))
   (:stop-gripper
    (arm &key (wait nil))
@@ -294,6 +295,11 @@ Details: `StopAction` part of https://frankaemika.github.io/docs/franka_ros.html
    (send self :gripper-method-helper
          :send-gripper-stop-action gripper-stop-actions arm wait)
    )
+  (:get-stop-gripper-result
+   (arm)
+   "Return result of :stop-gripper (`franka_gripper::StopActionResult`)"
+   (send self :gripper-action-postprocess arm gripper-stop-actions t)
+   )
   (:homing-gripper
    (arm &key (wait nil))
    "Home the gripper and update the maximum width given the mounted fingers (i.e., calibrate & initialize the gripper).
@@ -304,6 +310,11 @@ Details: `HomingAction` part of https://frankaemika.github.io/docs/franka_ros.ht
      (send self :gripper-method-helper
            :send-gripper-homing-action gripper-homing-actions arm wait)
      ))
+  (:get-homing-gripper-result
+   (arm)
+   "Return result of :homing-gripper (`franka_gripper::HomingActionResult`)"
+   (send self :gripper-action-postprocess arm gripper-homing-actions t)
+   )
   (:gripper
    (&rest args)
    "Get information of gripper
@@ -342,7 +353,7 @@ Example: (send self :gripper :rarm :position) => 0.00
               (/ (abs (- (send self :gripper a :position) width))
                  (/ tm 1000.0))
               (append args (list :wait nil))))
-     (send self :gripper-action-postprocess actions arm arms wait)
+     (send self :gripper-action-postprocess arm actions wait)
      ))
   (:start-grasp
    (arm &key (width 0.0) (effort 80.0) (tm 500) (wait nil) (inner 0.005) (outer 0.06))
@@ -364,10 +375,20 @@ Details: `GraspAction` part of https://frankaemika.github.io/docs/franka_ros.htm
            :send-gripper-grasp-action gripper-grasp-actions arm wait width tm
            effort :inner inner :outer outer)
      ))
+  (:get-start-grasp-result
+   (arm)
+   "Return result of :start-grasp (`franka_gripper::GraspActionResult`)"
+   (send self :gripper-action-postprocess arm gripper-grasp-actions t)
+   )
   (:stop-grasp
    (arm &key (wait nil) (width 0.08))
    "Open the gripper to the target `width` [m]"
    (send self :move-gripper arm width :tm 500 :wait wait)
+   )
+  (:get-stop-grasp-result
+   (arm)
+   "Return result of :stop-gripper (`franka_gripper::MoveActionResult`)"
+   (send self :get-move-gripper-result arm)
    )
   (:move-gripper
    (arm width &key (tm 500) (wait nil))
@@ -379,6 +400,11 @@ Details: `MoveAction` part of https://frankaemika.github.io/docs/franka_ros.html
      (send self :gripper-method-with-width-helper
            :send-gripper-move-action gripper-move-actions arm wait width tm)
      ))
+  (:get-move-gripper-result
+   (arm)
+   "Return result of :move-gripper (`franka_gripper::MoveActionResult`)"
+   (send self :gripper-action-postprocess arm gripper-move-actions t)
+   )
   )
 
 (provide :panda-common-interface)
