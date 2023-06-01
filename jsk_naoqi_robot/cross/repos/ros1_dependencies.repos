@@ -333,3 +333,9 @@ repositories:
   libtheora/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/libt/libtheora/libtheora_1.1.1+dfsg.1-14.debian.tar.xz
+  libjpeg-turbo:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo_1.5.2.orig.tar.gz
+  libjpeg-turbo/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo_1.5.2-0ubuntu5.18.04.6.debian.tar.xz
