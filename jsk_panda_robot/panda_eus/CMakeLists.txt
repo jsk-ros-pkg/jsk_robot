@@ -16,7 +16,7 @@ if(franka_description_FOUND
    AND (NOT ("${franka_description_VERSION}" VERSION_LESS "${_franka_description_min_ver}"))
    AND (NOT ("${xacro_VERSION}" VERSION_LESS "${_xacro_min_ver}")))
   # Why franka_description >= 0.10.0:
-  #   panda.urdf.xacro and dual_panda.urdf.xacro assumes file structure of franka_description >= 0.10.0.
+  #   dual_panda.urdf.xacro assumes file structure of franka_description >= 0.10.0.
   #   See https://github.com/frankaemika/franka_ros/compare/0.9.1...0.10.0 for details.
   # Why xacro >= 1.13.14:
   #   xacro.load_yaml cannot be recognized when xacro < 1.13.14, while it is recommended when xacro >= 1.13.14.
@@ -40,14 +40,17 @@ if(franka_description_FOUND
   ###
   ### panda.l generation
   ###
+  set(_panda_xacro ${franka_description_SOURCE_PREFIX}/robots/panda/panda.urdf.xacro)  # franka_description is installed from source
+  if(NOT EXISTS ${_panda_xacro})
+    set(_panda_xacro ${franka_description_PREFIX}/share/franka_description/robots/panda/panda.urdf.xacro)  # franka_description is installed from apt
+  endif()
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/panda.l
     COMMAND rosrun euscollada collada2eus -I panda.urdf -C panda.yaml -O panda.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
     DEPENDS ${PROJECT_SOURCE_DIR}/models/panda.urdf ${PROJECT_SOURCE_DIR}/models/panda.yaml)
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/panda.urdf
-    COMMAND rosrun xacro xacro --inorder panda.urdf.xacro > panda.urdf
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
-    DEPENDS ${PROJECT_SOURCE_DIR}/models/panda.urdf.xacro)
+    COMMAND rosrun xacro xacro --inorder ${_panda_xacro} hand:=true > ${PROJECT_SOURCE_DIR}/models/panda.urdf
+    DEPENDS ${_panda_xacro})
 
   add_custom_target(generate_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/panda.l)
 
