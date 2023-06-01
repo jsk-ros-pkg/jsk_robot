@@ -263,8 +263,9 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
      (if action (send* action method args) nil))
    )
   (:gripper-action-postprocess
-   (arm actions wait)
-   (let ((arms (send self :arm2arms arm)))
+   (arm actions-hash wait)
+   (let ((arms (send self :arm2arms arm))
+         (actions (gethash arm actions-hash)))
      (if wait
        (dolist (a arms)
          (send self :send-gripper-action-method a actions :wait-for-result)))
