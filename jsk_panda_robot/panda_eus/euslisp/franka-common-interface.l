@@ -273,17 +273,21 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
      (if wait
        (dolist (a arms)
          (setq wait-res
-               (and wait-res
-                    (send self :send-gripper-action-method a actions :wait-for-result)))))
+               (and (send self :send-gripper-action-method a actions :wait-for-result)
+                    wait-res))))
      (if (not wait-res)
-       (dolist (a arms)
-         (if (eq (send self :send-gripper-action-method a actions :get-state)
-                 actionlib_msgs::GoalStatus::*pending*)
-           (progn
-             (ros::ros-error
-               "No goal exists for ~a, send goal to it first (:start-grasp, :stop-grasp, ...)"
-               (send self :send-gripper-action-method a actions :name))
-             (return-from :gripper-action-postprocess nil)))))
+       (progn
+         (setq wait-res t)
+         (dolist (a arms)
+           (if (eq (send self :send-gripper-action-method a actions :get-state)
+                   actionlib_msgs::GoalStatus::*pending*)
+             (progn
+               (ros::ros-error
+                 "No goal exists for ~a, send goal to it first (:start-grasp, :stop-grasp, ...)"
+                 (send self :send-gripper-action-method a actions :name))
+               (setq wait-res nil))))
+         (if (not wait-res)
+           (return-from :gripper-action-postprocess nil))))
      (case arm
        (:arms
          (mapcar #'(lambda (a)
