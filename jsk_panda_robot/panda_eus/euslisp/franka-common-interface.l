@@ -1,5 +1,6 @@
 (require :robot-interface "package://pr2eus/robot-interface.l")
 
+(ros::roseus-add-msgs "actionlib_msgs")
 (ros::roseus-add-msgs "franka_msgs")
 (ros::roseus-add-msgs "franka_gripper")
 
@@ -86,19 +87,23 @@ Arguments specific to franka robot:
          (sethash arm gripper-grasp-actions
                   (instance ros::simple-action-client :init
                             (format nil "~a/franka_gripper/grasp" prefix)
-                            franka_gripper::GraspAction))
+                            franka_gripper::GraspAction
+                            :groupname groupname))
          (sethash arm gripper-homing-actions
                   (instance ros::simple-action-client :init
                             (format nil "~a/franka_gripper/homing" prefix)
-                            franka_gripper::HomingAction))
+                            franka_gripper::HomingAction
+                            :groupname groupname))
          (sethash arm gripper-move-actions
                   (instance ros::simple-action-client :init
                             (format nil "~a/franka_gripper/move" prefix)
-                            franka_gripper::MoveAction))
+                            franka_gripper::MoveAction
+                            :groupname groupname))
          (sethash arm gripper-stop-actions
                   (instance ros::simple-action-client :init
                             (format nil "~a/franka_gripper/stop"prefix)
-                            franka_gripper::StopAction))))
+                            franka_gripper::StopAction
+                            :groupname groupname))))
      ))
   (:set-joint-pd-gain
    (joint-name pgain dgain &key (type :default-controller))
@@ -264,10 +269,25 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
    )
   (:gripper-action-postprocess
    (arm actions wait)
-   (let ((arms (send self :arm2arms arm)))
+   (let ((arms (send self :arm2arms arm)) (wait-res t))
      (if wait
        (dolist (a arms)
-         (send self :send-gripper-action-method a actions :wait-for-result)))
+         (setq wait-res
+               (and (send self :send-gripper-action-method a actions :wait-for-result)
+                    wait-res))))
+     (if (not wait-res)
+       (progn
+         (setq wait-res t)
+         (dolist (a arms)
+           (if (eq (send self :send-gripper-action-method a actions :get-state)
+                   actionlib_msgs::GoalStatus::*pending*)
+             (progn
+               (ros::ros-error
+                 "No goal exists for ~a, send goal to it first (:start-grasp, :stop-grasp, ...)"
+                 (send self :send-gripper-action-method a actions :name))
+               (setq wait-res nil))))
+         (if (not wait-res)
+           (return-from :gripper-action-postprocess nil))))
      (case arm
        (:arms
          (mapcar #'(lambda (a)
