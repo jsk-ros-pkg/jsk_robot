@@ -22,11 +22,12 @@
     <arg name="use_helper" value="$(arg chat_use_helper)" />
   </include>
 
-  <!-- Dialogflow Client ROS -->
+  <!-- Dialogflow Client ROS --> <!-- this requires https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/460 -->
   <include file="$(find dialogflow_task_executive)/launch/dialogflow_ros.launch">
     <arg name="credential" value="$(arg google_credentials_json)" />
     <arg name="project_id" value="collaborative-remembering-kwit" />
     <arg name="enable_hotword" value="false" />
+    <arg name="override_project_id" value="true" />
   </include>
 
   <!-- Google Cloud Language -->
