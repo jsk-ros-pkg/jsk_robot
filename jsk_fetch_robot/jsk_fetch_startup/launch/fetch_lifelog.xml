@@ -3,6 +3,7 @@
   <arg name="map_frame" default="map" />
   <arg name="vital_check" default="false" />
   <arg name="extra_collections" default="[go_to_kitchen]" />
+  <arg name="replicate_on_write" default="true"/>
 
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
@@ -13,12 +14,14 @@
     <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
     <arg name="extra_collections" value="$(arg extra_collections)" />
+    <arg name="replicate_on_write" value="$(arg replicate_on_write)"/>
   </include>
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"
            unless="$(arg use_system_mongod)">
     <arg name="use_daemon" value="false"/>
     <arg name="repl_set_mode" value="false" />
     <arg name="extra_collections" value="$(arg extra_collections)" />
+    <arg name="replicate_on_write" value="$(arg replicate_on_write)"/>
   </include>
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
