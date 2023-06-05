@@ -19,5 +19,8 @@ repositories:
     version: develop
   app_manager:
     type: git
-    url: https://github.com/Affonso-Gui/app_manager
-    version: enable-parallel-run-apps
+    url: https://github.com/PR2/app_manager
+    version: kinetic-devel
+    # enable to run simple apps parallel to other apps
+    # https://github.com/PR2/app_manager/pull/59 have been merged,
+    # but 1.4.0 have not released yet.

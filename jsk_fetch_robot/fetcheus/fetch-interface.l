@@ -415,11 +415,15 @@ Example: (send self :gripper :position) => 0.00"
     t)
   (:go-pos-unsafe
     (x y d &rest args) ;; [m] [m] [degree]
+    (if (send self :simulation-modep)
+      (return-from :go-pos-unsafe (send-super* :go-pos-unsafe x y d args)))
     (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
     (send* self :go-pos-unsafe-wait args)
     t)
   (:go-pos-unsafe-no-wait
     (x y &optional (d 0)) ;; [m] [m] [degree]
+    (if (send self :simulation-modep)
+      (return-from :go-pos-unsafe-no-wait (send-super :go-pos-unsafe-no-wait x y d)))
     (ros::ros-warn ":go-pos-unsafe-no-wait is not supported for this robot.")
     (send self :put :go-pos-unsafe-no-wait-goal (float-vector x y d))
     t)
@@ -427,6 +431,8 @@ Example: (send self :gripper :position) => 0.00"
     (&key (translation-threshold 0.05) (rotation-threshold (deg2rad 5))
           (translation-gain 1.0) (rotation-gain 1.0)
           (min-translation-abs-vel 0.3) (min-rotation-abs-vel 0.8))
+    (if (send self :simulation-modep)
+      (return-from :go-pos-unsafe-wait (send-super :go-pos-unsafe-wait)))
     (unless (send self :get :go-pos-unsafe-no-wait-goal)
       (ros::ros-error ":go-pos-unsafe-wait is called without goal")
       (return-from :go-pos-unsafe-wait nil))

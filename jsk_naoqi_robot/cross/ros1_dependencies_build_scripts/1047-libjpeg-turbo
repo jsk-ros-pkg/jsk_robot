@@ -1,0 +1,30 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/libjpeg-turbo/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/libjpeg-turbo/libjpeg-turbo-1.5.2
+
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(grep -v ^# series); do
+        [ -e "${patch_file}" ] || continue
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+    done
+    touch .patched
+fi
+
+cd ${SOURCE_DIR}
+
+./configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-static --host=i686-aldebaran-linux-gnu \
+  --without-simd
+
+make -j4
+install -m755 turbojpeg.h                 /home/nao/${INSTALL_ROOT}/ros1_dependencies/include/
+install -m755 .libs/libturbojpeg.a        /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/
+install -m755 .libs/libturbojpeg.so       /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/
+install -m755 .libs/libturbojpeg.so.0     /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/
+install -m755 .libs/libturbojpeg.so.0.1.0 /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/
+install -m755 pkgscripts/libturbojpeg.pc  /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig/
+
