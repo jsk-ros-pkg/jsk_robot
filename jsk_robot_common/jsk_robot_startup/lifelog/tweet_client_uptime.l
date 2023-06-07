@@ -19,6 +19,13 @@
   (ros::ros-info "Wait for /active_user/elapsed_time parameter ..."))
 
 (cond
+ ((ros::has-param "/active_user/tweet_random_range")
+  (setq *tweet-random-range* (ros::get-param "/active_user/tweet_random_range")))
+ (t
+  (setq *tweet-random-range* 600.0)
+  ))
+
+(cond
  ((ros::has-param "/active_user/tweet_second")
   (setq *tweet-second* (ros::get-param "/active_user/tweet_second")))
  (t
@@ -34,9 +41,9 @@
   (let ((st (ros::get-param "/active_user/start_time")))
     (setq *waking-target-second*
           (+ (- (send (ros::time-now) :to-sec) st)
-             *waking-tweet-second*))))
+             (+ *waking-tweet-second* (random *tweet-random-range*))))))
  (t
-  (setq *waking-target-second* *waking-tweet-second*)))
+  (setq *waking-target-second* (+ *waking-tweet-second* (random *tweet-random-range*)))))
 
 (setq *volume* (ros::get-param "~volume" 1.0))
 (setq *speak-enable* (ros::get-param "~speak_enable" t))
@@ -76,7 +83,7 @@
           (let ((waking-time (- (send (ros::time-now) :to-sec) st)))
             (ros::ros-debug "~A waking ~A sec (~A)" *robot-name* waking-time *waking-target-second*)
             (when (> waking-time *waking-target-second*)
-              (incf *waking-target-second* *waking-tweet-second*)
+              (incf *waking-target-second* (+ *waking-tweet-second* (random *tweet-random-range*)))
               ;; tweet source of robot-interface
               (unless *src-lines*
                 (let* ((dirname (ros::rospack-find "pr2eus"))
