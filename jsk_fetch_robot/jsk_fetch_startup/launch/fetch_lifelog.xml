@@ -41,6 +41,7 @@
   <rosparam ns="lifelog/speech_logger">
     topics:
     - /sound_play/goal
+    - /robotsound_jp/goal
     - /speech_to_text
   </rosparam>
 
