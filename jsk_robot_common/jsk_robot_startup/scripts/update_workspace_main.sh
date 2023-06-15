@@ -2,7 +2,7 @@
 
 function usage()
 {
-    echo "Usage: $0 [-w workspace_directory] [-r rosinstall_path] [-t robot_type] [-s skip keys] [-h] [-u] [-l]
+    echo "Usage: $0 [-w workspace_directory] [-r rosinstall_path] [-t robot_type] [-s skip keys] [-h] [-u] [-l] [-n]
 
 optional arguments:
     -h                  show this help
@@ -12,6 +12,7 @@ optional arguments:
     -s SKIP_KEYS        rosdep install skip keys
     -u                  do not run apt-get upgrade and rosdep install
     -l                  do not send a mail
+    -n                  do not update workspace, only show wstool status
 "
 }
 
@@ -22,9 +23,10 @@ function get_full_path()
 
 ROSDEP_INSTALL=true
 SEND_MAIL=true
+UPDATE_WORKSPACE=true
 WORKSPACE=$(get_full_path $HOME/ros/$ROS_DISTRO)
 
-while getopts w:r:t:s:ulh OPT
+while getopts w:r:t:s:ulnh OPT
 do
     case $OPT in
         w)
@@ -44,6 +46,9 @@ do
             ;;
         l)
             SEND_MAIL=false
+            ;;
+        n)
+            UPDATE_WORKSPACE=false
             ;;
         h)
             usage
@@ -81,14 +86,18 @@ set -x
 # Update workspace
 
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
-wstool foreach -t $WORKSPACE/src --git 'git stash'
-wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot --delete-changed-uris
-ln -sf $ROSINSTALL $WORKSPACE/src/.rosinstall
-wstool update -t $WORKSPACE/src --delete-changed-uris
-# Forcefully checkout specified branch
-wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
-wstool update -t $WORKSPACE/src
-WSTOOL_UPDATE_RESULT=$?
+if [ "${UPDATE_WORKSPACE}" == "true" ]; then
+    wstool foreach -t $WORKSPACE/src --git 'git stash'
+    wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot --delete-changed-uris
+    ln -sf $ROSINSTALL $WORKSPACE/src/.rosinstall
+    wstool update -t $WORKSPACE/src --delete-changed-uris
+    # Forcefully checkout specified branch
+    wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
+    wstool update -t $WORKSPACE/src
+    WSTOOL_UPDATE_RESULT=$?
+else
+    WSTOOL_UPDATE_RESULT=0
+fi
 # Rosdep Install
 if [ "${ROSDEP_INSTALL}" == "true" ]; then
   sudo apt-get update -y;
