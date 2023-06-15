@@ -84,8 +84,14 @@ TMP_MAIL_BODY_FILE=/tmp/update_workspace_mailbody.txt
 {
 set -x
 # Update workspace
-
+echo "" > $TMP_MAIL_BODY_FILE
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
+WSTOOL_STATUS=$(wstool status -t $WORKSPACE/src)
+if [ -n "$WSTOOL_STATUS" ]; then
+    echo -e "Please commit robot internal change and send pull request.\n" >> $TMP_MAIL_BODY_FILE
+    echo -e $WSTOOL_STATUS >> $TMP_MAIL_BODY_FILE
+    wstool diff -t $WORKSPACE/src # rostopic pub fail when wstool diff has single quote or double quotes
+fi
 if [ "${UPDATE_WORKSPACE}" == "true" ]; then
     wstool foreach -t $WORKSPACE/src --git 'git stash'
     wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot --delete-changed-uris
@@ -115,7 +121,6 @@ catkin config -DCMAKE_BUILD_TYPE=Release
 catkin build --continue-on-failure
 CATKIN_BUILD_RESULT=$?
 # Send mail
-echo "" > $TMP_MAIL_BODY_FILE
 if [ $WSTOOL_UPDATE_RESULT -ne 0 ]; then
     echo "Please wstool update workspace manually.\n" >> $TMP_MAIL_BODY_FILE
 fi
