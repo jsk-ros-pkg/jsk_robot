@@ -159,9 +159,6 @@
     </include>
   </group>
 
-  <!-- Virtual force -->
-  <include file="$(find virtual_force_publisher)/launch/dualarm_virtual_force_publisher.launch" />
-
   <!-- Audio -->
   <include file="$(find audio_play)/launch/play.launch" if="$(arg launch_audio_play)">
     <arg name="ns" value="audio_play" />
