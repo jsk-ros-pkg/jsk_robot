@@ -1,4 +1,4 @@
-develop/fetch:
+develop_fetch:
   - '*'
 hoge:
   - hoge/*
