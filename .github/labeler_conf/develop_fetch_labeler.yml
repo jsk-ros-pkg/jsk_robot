@@ -1,2 +1,2 @@
 Fetch:
-  - any: ['*', 'jsk_fetch_robot/*']
+  - any: ['*', 'jsk_fetch_robot/**']
