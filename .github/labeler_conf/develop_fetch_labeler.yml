@@ -1,2 +1,2 @@
-"develop/fetch":
-  - '*'
+Fetch:
+    any: ['*', 'jsk_fetch_robot/*']
