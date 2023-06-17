@@ -1,6 +1,6 @@
 name: "Pull Request Labeler for develop/fetch"
 on:
-  pull_request: [develop/fetch]
+  pull_request: [develop/fetch_workflow_test_20230617]
 
 jobs:
   triage:
