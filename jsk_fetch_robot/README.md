@@ -1,5 +1,7 @@
 # jsk_fetch_robot
 
+hogefuga
+
 ## Online Manual
 
 [Fetch Robotics Online Manual](http://docs.fetchrobotics.com/FetchRobotics.pdf)
