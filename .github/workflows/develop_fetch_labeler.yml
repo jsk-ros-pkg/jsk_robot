@@ -1,0 +1,14 @@
+name: "Pull Request Labeler for develop/fetch"
+on:
+  pull_request_target: [develop/fetch]
+
+jobs:
+  triage:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@v4
+      with:
+        configuration-path: .github/labeler_conf/develop_fetch_labeler.yml
