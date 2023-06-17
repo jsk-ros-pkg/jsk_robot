@@ -1,6 +1,6 @@
 name: "Pull Request Labeler for develop/fetch"
 on:
-  pull_request_target: [develop/fetch]
+  pull_request: [develop/fetch]
 
 jobs:
   triage:
