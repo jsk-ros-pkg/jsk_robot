@@ -1,4 +1,6 @@
 develop/fetch:
-  - *
+  - '*'
+Fetch:
+  - 'jsk_fetch_robot/**'
 hoge:
   - hoge/*
