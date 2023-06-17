@@ -1,6 +1,11 @@
 name: "Pull Request Labeler for develop/fetch"
 on:
-  pull_request: [develop/fetch_workflow_test_20230617]
+  pull_request: 
+    types:
+      - opened
+      - reopened
+    branches:
+      - develop/fetch_workflow_test_20230617
 
 jobs:
   triage:
@@ -11,4 +16,4 @@ jobs:
     steps:
     - uses: actions/labeler@v4
       with:
-        configuration-path: .github/labeler_conf/develop_fetch_labeler.yml
+        configuration-path: ".github/labeler_conf/develop_fetch_labeler.yml"
