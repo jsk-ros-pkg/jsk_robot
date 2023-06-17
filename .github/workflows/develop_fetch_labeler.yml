@@ -8,12 +8,10 @@ on:
       - develop/fetch_workflow_test_20230617
 
 jobs:
-  triage:
-    permissions:
-      contents: read
-      pull-requests: write
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/labeler@v4
-      with:
-        configuration-path: ".github/labeler_conf/develop_fetch_labeler.yml"
+  runs-on: ubuntu-latest
+  steps:
+  - uses: actions/labeler@v4
+    with:
+      configuration-path: ".github/labeler_conf/develop_fetch_labeler.yml"
+      repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      sync-labels: true
