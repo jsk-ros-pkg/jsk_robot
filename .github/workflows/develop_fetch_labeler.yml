@@ -11,5 +11,4 @@ jobs:
     - uses: actions/labeler@v4
       with:
         configuration-path: ".github/labeler_conf/develop_fetch_labeler.yml"
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
         sync-labels: true
