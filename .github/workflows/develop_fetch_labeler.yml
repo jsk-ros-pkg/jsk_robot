@@ -1,9 +1,6 @@
 name: "Pull Request Labeler for develop/fetch"
 on:
   pull_request_target:
-    types:
-      - opened
-      - reopened
     branches:
       - develop/fetch_workflow_test_20230617
 
