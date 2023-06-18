@@ -1,8 +1,2 @@
 develop/fetch:
-    - any:
-        - 'jsk_fetch_robot/**'
-        - 'jsk_robot/**'
-        - 'jsk_robot_common/**'
-        - 'doc/**'
-        - 'README.md'
-        - '.github/**'
+    - '**'
