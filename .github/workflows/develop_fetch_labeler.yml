@@ -2,7 +2,7 @@ name: "Pull Request Labeler for develop/fetch"
 on:
   pull_request_target:
     branches:
-      - develop/fetch_workflow_test_20230617
+      - develop/fetch
 
 jobs:
   triage:
