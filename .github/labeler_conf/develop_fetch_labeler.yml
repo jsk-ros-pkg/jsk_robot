@@ -1,6 +1,8 @@
 develop/fetch:
-  - jsk_fetch_robot/**
-Fetch:
-  - jsk_fetch_robot/**
-hoge:
-  - hoge/**
+    - any:
+        - 'jsk_fetch_robot/**'
+        - 'jsk_robot/**'
+        - 'jsk_robot_common/**'
+        - 'doc/**'
+        - 'README.md'
+        - '.github/**'
