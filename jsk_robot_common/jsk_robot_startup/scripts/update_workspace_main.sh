@@ -62,15 +62,15 @@ do
 done
 
 if [ "$WORKSPACE" = "" ]; then
-    echo "Please set valid workspace -w $WORKSPACE"
+    echo "Please set valid workspace -w $WORKSPACE<br>"
     exit 1
 fi
 if [ "$ROSINSTALL" = "" ]; then
-    echo "Please set valid rosinstall -r $ROSINSTALL"
+    echo "Please set valid rosinstall -r $ROSINSTALL<br>"
     exit 1
 fi
 if [ "$ROBOT_TYPE" = "" ]; then
-    echo "Please set valid robot type -t $ROBOT_TYPE"
+    echo "Please set valid robot type -t $ROBOT_TYPE<br>"
     exit 1
 fi
 
@@ -88,7 +88,7 @@ echo "" > $TMP_MAIL_BODY_FILE
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
 WSTOOL_STATUS=$(wstool status -t $WORKSPACE/src)
 if [ -n "$WSTOOL_STATUS" ]; then
-    echo -e "Please commit robot internal change and send pull request.\n" >> $TMP_MAIL_BODY_FILE
+    echo -e "Please commit robot internal change and send pull request.<br>" >> $TMP_MAIL_BODY_FILE
     echo -e $WSTOOL_STATUS >> $TMP_MAIL_BODY_FILE
     # escape " ' , -- and add change line code to end of line
     wstool diff -t $WORKSPACE/src | sed -e "s/'/ /g" -e "s/^--/ /g" -e 's/"/ /g' -e "s/<br>/\\\n/" -e 's/$/<br>/g' -e "s/,/ /g" | tee -a $TMP_MAIL_BODY_FILE
@@ -123,13 +123,13 @@ catkin build --continue-on-failure
 CATKIN_BUILD_RESULT=$?
 # Send mail
 if [ $WSTOOL_UPDATE_RESULT -ne 0 ]; then
-    echo "Please wstool update workspace manually.\n" >> $TMP_MAIL_BODY_FILE
+    echo "Please wstool update workspace manually.<br>" >> $TMP_MAIL_BODY_FILE
 fi
 if [ $ROSDEP_INSTALL_RESULT -ne 0 ]; then
-    echo "Please install dependencies manually.\n" >> $TMP_MAIL_BODY_FILE
+    echo "Please install dependencies manually.<br>" >> $TMP_MAIL_BODY_FILE
 fi
 if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
-    echo "Please catkin build workspace manually.\n" >> $TMP_MAIL_BODY_FILE
+    echo "Please catkin build workspace manually.<br>" >> $TMP_MAIL_BODY_FILE
 fi
 set +x
 } 2>&1 | tee $LOGFILE
@@ -148,7 +148,7 @@ if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
   frame_id: ''
 subject: 'Daily workspace update fails'
 body:
-- {type: 'text', message: '${MAIL_BODY}', file_path: '', img_data: '', img_size: 0}
+- {type: 'html', message: '${MAIL_BODY}', file_path: '', img_data: '', img_size: 0}
 sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
 receiver_address: '$ROBOT_TYPE@jsk.imi.i.u-tokyo.ac.jp'
 smtp_server: ''
