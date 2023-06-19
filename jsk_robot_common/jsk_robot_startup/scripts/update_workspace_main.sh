@@ -88,7 +88,7 @@ echo "" > $TMP_MAIL_BODY_FILE
 wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
 WSTOOL_STATUS=$(wstool status -t $WORKSPACE/src)
 if [ -n "$WSTOOL_STATUS" ]; then
-    echo -e "Please commit robot internal change and send pull request.<br>" >> $TMP_MAIL_BODY_FILE
+    echo -e "<b>Please commit robot internal change and send pull request.</b><br><br>" >> $TMP_MAIL_BODY_FILE
     echo -e $WSTOOL_STATUS >> $TMP_MAIL_BODY_FILE
     # escape " ' , -- and add change line code to end of line
     wstool diff -t $WORKSPACE/src | sed -e "s/'/ /g" -e "s/^--/ /g" -e 's/"/ /g' -e "s/<br>/\\\n/" -e 's/$/<br>/g' -e "s/,/ /g" | tee -a $TMP_MAIL_BODY_FILE
@@ -123,13 +123,13 @@ catkin build --continue-on-failure
 CATKIN_BUILD_RESULT=$?
 # Send mail
 if [ $WSTOOL_UPDATE_RESULT -ne 0 ]; then
-    echo "Please wstool update workspace manually.<br>" >> $TMP_MAIL_BODY_FILE
+    echo "<b>Please wstool update workspace manually.</b><br>" >> $TMP_MAIL_BODY_FILE
 fi
 if [ $ROSDEP_INSTALL_RESULT -ne 0 ]; then
-    echo "Please install dependencies manually.<br>" >> $TMP_MAIL_BODY_FILE
+    echo "<b>Please install dependencies manually.</b><br>" >> $TMP_MAIL_BODY_FILE
 fi
 if [ $CATKIN_BUILD_RESULT -ne 0 ]; then
-    echo "Please catkin build workspace manually.<br>" >> $TMP_MAIL_BODY_FILE
+    echo "<b>Please catkin build workspace manually.</b><br>" >> $TMP_MAIL_BODY_FILE
 fi
 set +x
 } 2>&1 | tee $LOGFILE
