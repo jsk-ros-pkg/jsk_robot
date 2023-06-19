@@ -90,7 +90,8 @@ WSTOOL_STATUS=$(wstool status -t $WORKSPACE/src)
 if [ -n "$WSTOOL_STATUS" ]; then
     echo -e "Please commit robot internal change and send pull request.\n" >> $TMP_MAIL_BODY_FILE
     echo -e $WSTOOL_STATUS >> $TMP_MAIL_BODY_FILE
-    wstool diff -t $WORKSPACE/src # rostopic pub fail when wstool diff has single quote or double quotes
+    # escape " ' , -- and add change line code to end of line
+    wstool diff -t $WORKSPACE/src | sed -e "s/'/ /g" -e "s/^--/ /g" -e 's/"/ /g' -e "s/<br>/\\\n/" -e 's/$/<br>/g' -e "s/,/ /g" | tee -a $TMP_MAIL_BODY_FILE
 fi
 if [ "${UPDATE_WORKSPACE}" == "true" ]; then
     wstool foreach -t $WORKSPACE/src --git 'git stash'
