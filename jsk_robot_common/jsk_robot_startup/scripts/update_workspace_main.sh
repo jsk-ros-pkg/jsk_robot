@@ -94,12 +94,13 @@ if [ -n "$WSTOOL_STATUS" ]; then
     wstool diff -t $WORKSPACE/src | sed -e "s/'/ /g" -e "s/^--/ /g" -e 's/"/ /g' -e "s/<br>/\\\n/" -e 's/$/<br>/g' -e "s/,/ /g" | tee -a $TMP_MAIL_BODY_FILE
 fi
 if [ "${UPDATE_WORKSPACE}" == "true" ]; then
-    wstool foreach -t $WORKSPACE/src --git 'git stash'
-    wstool update -t $WORKSPACE/src jsk-ros-pkg/jsk_robot --delete-changed-uris
+    wstool foreach -t $WORKSPACE/src --git 'git stash -u'
+    wstool foreach -t $WORKSPACE/src --git 'git fetch origin --prune'
+    wstool update -t $WORKSPACE/src $(rospack find jsk_robot_startup)/../.. --delete-changed-uris
     ln -sf $ROSINSTALL $WORKSPACE/src/.rosinstall
     wstool update -t $WORKSPACE/src --delete-changed-uris
-    # Forcefully checkout specified branch
-    wstool foreach -t $WORKSPACE/src --git --shell 'branchname=$(git rev-parse --abbrev-ref HEAD); if [ $branchname != "HEAD" ]; then git reset --hard HEAD; git checkout origin/$branchname; git branch -D $branchname; git checkout -b $branchname --track origin/$branchname; fi'
+    # When the repository's Spec-Version branch has commits which are not pushed to remote, they are evacuated to another branch
+    wstool foreach -t $WORKSPACE/src --git --shell 'expected_version=$(wstool info . | grep Spec-Version: | awk '\''{print $2}'\''); current_version=$(git rev-parse --abbrev-ref HEAD); remote_diff=$(git diff --stat $current_version origin/$current_version); if [ "$expected_version" = "$current_version" ] && [ -n "$remote_diff" ]; then git checkout -b ${expected_version}-patch-$(date +%Y%m%d%H%M%S); git checkout origin/$expected_version; git branch -D $expected_version; git checkout -b $expected_version --track origin/$expected_version; fi'
     wstool update -t $WORKSPACE/src
     WSTOOL_UPDATE_RESULT=$?
 else
