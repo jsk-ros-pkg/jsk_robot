@@ -60,11 +60,17 @@
     local-name: jsk-ros-pkg/jsk_demos
     uri: https://github.com/jsk-ros-pkg/jsk_demos.git
     version: master
+# we need to use the development branch until PR below are merged.
+#  - https://github.com/jsk-ros-pkg/jsk_pr2eus/pull/495
 # we need to use the development branch until the next release.
+# - git:
+#     local-name: jsk-ros-pkg/jsk_pr2eus
+#     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+#     version: develop/fetch
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
     uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
-    version: master
+    version: develop/fetch
 # we need to use the development branch until the next release.
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
