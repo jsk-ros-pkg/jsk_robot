@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<launch>
+
+  <!-- Arguments for panda controllers -->
+  <arg name="hw_config_file" default="$(find jsk_panda_startup)/config/dual_panda_control_node.yaml" />
+  <arg name="controllers_file" default="$(find jsk_panda_startup)/config/dual_panda_controllers.yaml" />
+  <arg name="controllers_to_start" default="rarm_state_controller larm_state_controller dual_panda_effort_joint_trajectory_controller" />
+  <arg name="joint_states_source_list" default="[rarm_state_controller/joint_states, larm_state_controller/joint_states, rarm/franka_gripper/joint_states, larm/franka_gripper/joint_states]" />
+
+  <!-- Arguments for hand eye cameras -->
+  <!-- TODO: Use udev rule -->
+  <arg name="right_camera_dev" default="/dev/video0" />
+  <arg name="left_camera_dev" default="/dev/video2" />
+
+  <!-- Arguments for USB microphone on right hand -->
+  <arg name="launch_audio_capture" default="true" doc="Launch audio_capture node to publish audio topic from microphone" />
+  <arg name="n_channel" default="1" doc="Number of channels of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="depth" default="16" doc="Bit depth of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="sample_rate" default="44100" doc="Frame rate of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="audio_device" default="hw:2,0" doc="Card and device number of microphone (e.g. hw:0,0). you can check card number and device number by '$ arecord -l', then uses hw:[card number],[device number]" />
+
+  <!-- Panda controllers -->
+  <include file="$(find jsk_panda_startup)/launch/dual_panda.xml">
+    <arg name="robot" value="$(find panda_eus)/models/dual_panda1.urdf.xacro" />
+    <arg name="hw_config_file" value="$(arg hw_config_file)" />
+    <arg name="controllers_file" value="$(arg controllers_file)" />
+    <arg name="controllers_to_start" value="$(arg controllers_to_start)" />
+    <arg name="joint_states_source_list" value="$(arg joint_states_source_list)" />
+  </include>
+
+  <!-- Head camera -->
+  <include file="$(find openni2_launch)/launch/openni2.launch">
+    <arg name="camera" value="head_camera" />
+  </include>
+  <!-- FIXME: When subscribing compressedDepth, hz of image_raw drops if png_level is more than 7.      -->
+  <!--        CPU usage of compressedDepth creation seems too high.                                     -->
+  <!--        CPU% of nodelet_manager on htop is over 100% even when only compressedDepth is subscribed -->
+  <!--        CPU: AMD Ryzen 9 5900X 12-Core Processor                                                  -->
+  <param name="head_camera/depth/image_raw/compressedDepth/png_level" value="7" />
+
+  <!-- Hand eye cameras -->
+  <node name="uvc_camera_left" pkg="uvc_camera" type="uvc_camera_node" output="screen">
+    <remap from="image_raw" to="/left_camera/image_raw" />
+    <remap from="image_raw/compressed" to="/left_camera/image_raw/compressed" />
+    <remap from="camera_info" to="/left_camera/camera_info" />
+    <param name="device" value="$(arg left_camera_dev)" />
+    <param name="fps" value="30" />
+    <param name="width" value="640" />
+    <param name="height" value="360" />
+    <param name="format" value="rgb" />
+  </node>
+
+  <node name="uvc_camera_right" pkg="uvc_camera" type="uvc_camera_node" output="screen">
+    <remap from="image_raw" to="/right_camera/image_raw" />
+    <remap from="image_raw/compressed" to="/right_camera/image_raw/compressed" />
+    <remap from="camera_info" to="/right_camera/camera_info" />
+    <param name="device" value="$(arg right_camera_dev)" />
+    <param name="fps" value="30" />
+    <param name="width" value="640" />
+    <param name="height" value="360" />
+    <param name="format" value="rgb" />
+  </node>
+
+  <!-- USB microphone on right hand -->
+  <node name="audio_capture" pkg="audio_capture" type="audio_capture"
+        if="$(arg launch_audio_capture)"
+        respawn="true">
+    <rosparam subst_value="true">
+      format: wave
+      channels: $(arg n_channel)
+      depth: $(arg depth)
+      sample_rate: $(arg sample_rate)
+    </rosparam>
+    <param name="device" value="$(arg audio_device)" />
+  </node>
+
+</launch>
