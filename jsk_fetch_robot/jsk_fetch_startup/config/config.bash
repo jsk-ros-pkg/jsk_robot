@@ -47,4 +47,6 @@ elif [ $(hostname) = 'fetch1075' ]; then
   export NETWORK_DEFAULT_PROFILE_ID="sanshiro-73B2";
 
   export AUDIO_DEVICE="alsa_output.usb-SEEED_ReSpeaker_4_Mic_Array__UAC1.0_-00.analog-stereo"
+
+  export SMART_DEVICE_PORT=/dev/ttyACM0
 fi
