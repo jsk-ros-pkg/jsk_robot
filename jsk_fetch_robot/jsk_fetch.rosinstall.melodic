@@ -185,3 +185,8 @@
     local-name: BehaviorTree/BehaviorTree.ROS
     uri: https://github.com/BehaviorTree/BehaviorTree.ROS
     version: master
+# we need this for smart device ros system
+- git:
+    local-name: sktometometo/esp_now_ros
+    uri: https://github.com/sktometometo/esp_now_ros.git
+    version: v0.1.0
