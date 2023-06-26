@@ -32,7 +32,6 @@
   </group>
 
   <include file="$(find jsk_fetch_startup)/launch/fetch_bringup.launch">
-    <arg name="launch_moveit" value="$(arg launch_moveit)" />
     <arg name="launch_move_base" value="$(arg launch_move_base)" />
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="map_frame" value="$(arg map_frame)" />
