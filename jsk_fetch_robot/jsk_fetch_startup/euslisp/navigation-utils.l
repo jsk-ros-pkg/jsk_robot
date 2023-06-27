@@ -429,6 +429,12 @@ Args:
          (label-names (if msg (send msg :label_names))))
     (when label-names
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
+      (write-message-on-message-board
+        (list 255 255 255 255 255 255)
+        (format nil "Notify app that ~A is found." label-names)
+        (ros::time 600)
+        (ros::get-param "/robot/name" "default_name")
+        )
       (notify-app "object recognition"
                   (send msg :header :stamp)
                   location
@@ -695,6 +701,7 @@ Args:
     (ros::advertise "/esp_now_ros/send" esp_now_ros::Packet 1)
     (ros::publish "/esp_now_ros/send" (instance esp_now_ros::Packet :init)) ; publish dummy packet
     (ros::publish "/esp_now_ros/send" msg)
+    (ros::ros-info "Write message ~A to board ~A" message target-addr)
     )
   )
 
