@@ -151,10 +151,16 @@
     uri: https://github.com/jsk-ros-pkg/coral_usb_ros.git
     version: master
 # we need melodic-devel branch for headless visualization
+# - git:
+#     local-name: ros-visualization/executive_smach_visualization
+#     uri: https://github.com/ros-visualization/executive_smach_visualization.git
+#     version: master
+# UnicodeDecodeError is output without the following PR
+# https://github.com/ros-visualization/executive_smach_visualization/pull/54
 - git:
     local-name: ros-visualization/executive_smach_visualization
-    uri: https://github.com/ros-visualization/executive_smach_visualization.git
-    version: melodic-devel
+    uri: https://github.com/tkmtnt7000/executive_smach_visualization.git
+    version: fix-pickle-loads-python-version
 # we need this for eus10 and roseus_resume
 - git:
     local-name: euslisp/Euslisp
