@@ -1,24 +1,34 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import actionlib
 import base64
 import cv2
 import datetime
+import os
 import pickle
 import rospy
 import sys
 
 from cv_bridge import CvBridge
-from google_chat_ros.msg import Card
-from google_chat_ros.msg import Section
-from google_chat_ros.msg import SendMessageAction
-from google_chat_ros.msg import SendMessageActionGoal
-from google_chat_ros.msg import WidgetMarkup
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
 from smach_msgs.msg import SmachContainerStatus
 from std_msgs.msg import String
+
+_enable_google_chat = False
+try:
+    from google_chat_ros.msg import Card
+    from google_chat_ros.msg import Section
+    from google_chat_ros.msg import SendMessageAction
+    from google_chat_ros.msg import SendMessageActionGoal
+    from google_chat_ros.msg import WidgetMarkup
+    _enable_google_chat = True
+except ImportError as e:
+    print('Google chat ROS is not installed.', file=sys.stderr) 
+    print('Disable Google chat ROS', file=sys.stderr)
 
 
 class SmachToMail():
@@ -29,7 +39,8 @@ class SmachToMail():
         # is the default name of smach_ros
         self.use_mail = rospy.get_param("~use_mail", True)
         self.use_twitter = rospy.get_param("~use_twitter", True)
-        self.use_google_chat = rospy.get_param("~use_google_chat", True)
+        self.use_google_chat = rospy.get_param(
+            "~use_google_chat", _enable_google_chat)
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
         rospy.Subscriber(
@@ -47,9 +58,14 @@ class SmachToMail():
         else:
             rospy.logerr("Please set rosparam {}/receiver_address".format(
                     rospy.get_name()))
+
+        self.chat_space = rospy.get_param("~google_chat_space", None)
+        if self.use_google_chat and self.chat_space is None:
+            rospy.logerr("Please set rosparam ~google_chat_space")
+            self.use_google_chat = False
+
         if self.use_google_chat:
             self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
-            self.chat_space = rospy.get_param("~google_chat_space")
             self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
             self._gchat_thread = None
 
@@ -128,7 +144,7 @@ class SmachToMail():
             self.smach_state_list[caller_id].append(status_dict)
 
         # If we received END/FINISH status, send email, etc...
-        if status_str in ["END", "FINISH"]:
+        if status_str in ["END", "FINISH", "FINISH-SUCCESS", "FINISH-FAILURE"]:
             if (caller_id not in self.smach_state_list) or self.smach_state_list[caller_id] is None:
                 rospy.logwarn("received END node, but we did not find START node")
                 rospy.logwarn("failed to send {}".format(status_dict))
@@ -159,14 +175,20 @@ class SmachToMail():
             if 'DESCRIPTION' in x:
                 description = EmailBody()
                 description.type = 'text'
-                description.message = x['DESCRIPTION']
+                description_txt = x['DESCRIPTION']
+                if isinstance(description_txt, bytes):
+                    description_txt = description_txt.decode('utf-8')
+                description.message = description_txt
                 email_msg.body.append(description)
                 email_msg.body.append(changeline)
             if 'IMAGE' in x and x['IMAGE']:
                 image = EmailBody()
                 image.type = 'img'
                 image.img_size = 100
-                image.img_data = x['IMAGE']
+                img_txt = x['IMAGE']
+                if isinstance(img_txt, bytes):
+                    img_txt = img_txt.decode('utf-8')
+                image.img_data = img_txt
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
         email_msg.body.append(changeline)
@@ -177,7 +199,10 @@ class SmachToMail():
             if 'INFO' in x:
                 info = EmailBody()
                 info.type = 'text'
-                info.message = x['INFO']
+                info_txt = x['INFO']
+                if isinstance(info_txt, bytes):
+                    info_txt = info_txt.decode('utf-8')
+                info.message = info_txt
                 email_msg.body.append(info)
                 email_msg.body.append(changeline)
         # rospy.loginfo("body:{}".format(email_msg.body))

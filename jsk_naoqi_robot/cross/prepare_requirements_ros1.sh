@@ -137,7 +137,7 @@ docker run -it --rm \
     pip install cython==0.26.1 && \
     pip install PyYaml==3.12 Pillow==5.1.0 empy==3.3.2 docutils==0.14 pyparsing==2.2.0 python-dateutil==2.6.1 six==1.11.0 setuptools==39.0.1 numpy==1.13.3 defusedxml==0.5.0 netifaces==0.10.4 pymongo==3.6.1 image tornado==4.5.3 && \
     pip install catkin-pkg==0.5.2 rospkg==1.4.0 catkin-tools==0.6.1 && \
-    pip install service-identity==16.0.0 pyasn1==0.4.2 pyasn1-modules==0.2.1 && \
+    pip install pyOpenSSL==17.5.0 cryptography==2.1.4 service-identity==16.0.0 pyasn1==0.4.2 pyasn1-modules==0.2.1 && \
     pip install pycryptodomex==3.4.7 && \
     \
     echo ';; Install Twisted' && \
@@ -147,7 +147,7 @@ docker run -it --rm \
     wget https://files.pythonhosted.org/packages/93/ba/83fe91c2f6c613d53ce65d89b50620fc760d698a2f66b6b80147118a5c0f/Twisted-16.0.0.tar.bz2 && \
     tar -xjvf Twisted-16.0.0.tar.bz2 && \
     cd Twisted-16.0.0 && \
-    python setup.py install
+    python setup.py install && \
     \
     echo ';; Install rosinstall_generator' && \
     \

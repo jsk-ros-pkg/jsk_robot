@@ -33,8 +33,9 @@ RUN apt install -y python3-vcstool
 #
 # Setup Users
 #
+ARG UID=1000
 RUN apt-get install -y sudo
-RUN useradd -ms /bin/bash -G sudo user
+RUN useradd --uid $UID -ms /bin/bash -G sudo user
 RUN newgrp
 RUN echo user:user | chpasswd
 #

@@ -118,8 +118,8 @@ class Warning:
             time.sleep(5)
 
     def cmd_vel_callback(self, msg):
-        ## warn when cmd_vel is issued while the robot is charning
-        rospy.logdebug("cmd_vel : x:{} y:{} z:{}, battery.is_charning {}".format(msg.linear.x,msg.linear.y,msg.angular.z,self.battery_state_msgs.is_charging))
+        ## warn when cmd_vel is issued while the robot is charging
+        rospy.logdebug("cmd_vel : x:{} y:{} z:{}, battery.is_charging {}".format(msg.linear.x,msg.linear.y,msg.angular.z,self.battery_state_msgs.is_charging))
         breaker_enabled = True
         try:
             breaker_status = filter(lambda n: n.name=='base_breaker', self.robot_state_msgs.breakers)[0]

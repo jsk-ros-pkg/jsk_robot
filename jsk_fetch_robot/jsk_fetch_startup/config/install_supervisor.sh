@@ -18,4 +18,9 @@ sudo ln -sf /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk-dstat.csv
 sudo ln -sf $jsk_fetch_startup/config/config.bash /var/lib/robot/config.bash
 sudo ln -sf $jsk_fetch_startup/config/config_outside.bash /var/lib/robot/config_outside.bash
 
+# copy config.bash to /var/lib/robo if not exists
+if [ ! -e /var/lib/robot/config.bash ]; then
+    sudo cp $jsk_fetch_startup/config/config.bash /var/lib/robot/config.bash
+fi
+
 set +x
