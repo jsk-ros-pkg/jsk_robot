@@ -34,7 +34,7 @@
 (defun go-to-kitchen ()
   ;; call k-okada
   (send *ri* :speak-jp "キッチンに向かうよ")
-  (go-to-spot "/eng2/7f/room73B2-sink-front1" (make-coords :pos #f(100 -1000 0)))
+  (go-to-spot "/eng2/7f/room73B2-sink-front1" :relative-pos #f(100 -1000 0))
   (unix:sleep 1)
   (send *ri* :speak-jp "キッチンについたよ" :wait t)
   (send *fetch* :head :neck-y :joint-angle -30)

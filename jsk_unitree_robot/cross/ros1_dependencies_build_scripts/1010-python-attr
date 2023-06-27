@@ -1,0 +1,17 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/python-attr/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/python-attr/attrs-17.4.0
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(grep -v ^# series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+done
+
+cd ${SOURCE_DIR}
+mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages/
+PYTHONPATH="/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages" \
+          python \
+          setup.py install \
+          --prefix /opt/jsk/${INSTALL_ROOT}/ros1_dependencies

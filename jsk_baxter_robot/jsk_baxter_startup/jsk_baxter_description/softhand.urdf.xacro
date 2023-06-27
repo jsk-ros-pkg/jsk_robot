@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<robot name="softhand" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="softhand" params="side">
+    <joint name="softhand_${side}_endpoint" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${side}_gripper"/>
+      <child link="${side}_softhand"/>
+    </joint>
+    <xacro:include filename="$(find softhand_ros)/urdf/softhand_${side}.urdf.xacro" />
+  </xacro:macro>
+</robot>

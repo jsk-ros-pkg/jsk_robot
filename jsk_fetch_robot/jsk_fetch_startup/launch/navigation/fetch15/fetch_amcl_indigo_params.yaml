@@ -1,0 +1,8 @@
+amcl:
+  kld_err: 0.1
+  kld_z: 0.5
+  laser_z_hit: 0.9
+  laser_z_rand: 0.5
+  laser_sigma_hit: 0.1
+  laser_likelihood_max_dist: 4.0
+  resample_interval: 1

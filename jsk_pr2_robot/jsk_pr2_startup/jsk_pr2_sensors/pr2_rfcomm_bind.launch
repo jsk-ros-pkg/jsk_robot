@@ -1,0 +1,11 @@
+<launch>
+  <arg name="machine" default="localhost"/>
+  <arg name="rfcomm_devices" default="/var/lib/robot/rfcomm_devices.yaml" />
+
+  <include file="$(find pr2_machine)/$(env ROBOT).machine" />
+
+  <include file="$(find jsk_robot_startup)/launch/rfcomm_bind.launch">
+    <arg name="machine" value="$(arg machine)" />
+    <arg name="rfcomm_devices" value="$(arg rfcomm_devices)" />
+  </include>
+</launch>

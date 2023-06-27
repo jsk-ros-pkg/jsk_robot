@@ -114,6 +114,13 @@ Use `:angle-vector` method to specify the arm joint angle.
 (send *kinova* :angle-vector #f(0.0 15.0 180.0 -130.0 0.0 55.0 90.0))
 ```
 
+use registered poses.
+```
+(send *kinova* :init-pose)
+(send *kinova* :reset-pose)
+(send *kinova* :kinova-rest-pose)
+```
+
 You can also use `:inverse-kinematics` method to specify the arm pose from target coordinates.
 ```
 (send *ri* :angle-vector (send *kinova* :arm :inverse-kinematics (make-coords :pos #f(300 0 200) :rpy (float-vector 0 pi/2 0)) :debug-view t) 3000)

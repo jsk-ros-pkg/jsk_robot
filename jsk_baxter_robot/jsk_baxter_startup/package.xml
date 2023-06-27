@@ -7,35 +7,44 @@
   <license>BSD</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>baxter_interface</build_depend>
-  <build_depend>baxter_description</build_depend>
-  <build_depend>baxter_tools</build_depend>
-  <build_depend>baxter_examples</build_depend>
-  <build_depend>openni_launch</build_depend>
-  <build_depend>joy</build_depend>
-  <build_depend>checkerboard_detector</build_depend>
-  <build_depend>topic_tools</build_depend>
-  <build_depend>sound_play</build_depend>
   <build_depend>baxter_core_msgs</build_depend>
+  <build_depend>baxter_examples</build_depend>
+  <build_depend>baxter_description</build_depend>
+  <build_depend>baxter_interface</build_depend>
+  <build_depend>baxter_tools</build_depend>
+  <build_depend>checkerboard_detector</build_depend>
   <build_depend>dynamic_tf_publisher</build_depend>
-  <build_depend>rostwitter</build_depend>
   <build_depend>image_view</build_depend>
+  <build_depend>joy</build_depend>
+  <build_depend>openni_launch</build_depend>
   <build_depend>roseus</build_depend>
+  <build_depend>rostwitter</build_depend>
+  <build_depend>sound_play</build_depend>
+  <build_depend>topic_tools</build_depend>
 
-  <run_depend>baxter_interface</run_depend>
-  <run_depend>baxter_description</run_depend>
-  <run_depend>baxter_tools</run_depend>
-  <run_depend>baxter_examples</run_depend>
-  <run_depend>openni_launch</run_depend>
-  <run_depend>joy</run_depend>
-  <run_depend>checkerboard_detector</run_depend>
-  <run_depend>topic_tools</run_depend>
-  <run_depend>sound_play</run_depend>
   <run_depend>baxter_core_msgs</run_depend>
+  <run_depend>baxter_description</run_depend>
+  <run_depend>baxter_examples</run_depend>
+  <run_depend>baxter_interface</run_depend>
+  <run_depend>baxter_tools</run_depend>
+  <run_depend>checkerboard_detector</run_depend>
   <run_depend>dynamic_tf_publisher</run_depend>
-  <run_depend>rostwitter</run_depend>
+  <run_depend>image_transport</run_depend>
   <run_depend>image_view</run_depend>
+  <run_depend>joy</run_depend>
+  <run_depend>jsk_interactive_marker</run_depend>
+  <run_depend>jsk_pcl_ros</run_depend>
+  <run_depend>libuvc_camera</run_depend>
+  <run_depend>openni_launch</run_depend>
+  <run_depend>realsense2_camera</run_depend>
+  <run_depend>respeaker_ros</run_depend>
   <run_depend>roseus</run_depend>
+  <run_depend>rostwitter</run_depend>
+  <run_depend>softhand_ros</run_depend>
+  <run_depend>sound_play</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>topic_tools</run_depend>
+  <run_depend>video_stream_opencv</run_depend>
 
   <export>
   </export>

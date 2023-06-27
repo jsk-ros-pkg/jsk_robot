@@ -19,12 +19,15 @@ If the type of the monitored topic is unknown, you can set the type with `~topic
 """
 
 import rospy
-import thread
 import sys
 import roslib.message
 import rostopic
 from topic_tools.srv import MuxSelect
 import traceback
+if sys.version_info.major < 3:
+    import thread
+else:
+    import _thread as thread
 
 
 def callback (m, expr, topic, index):

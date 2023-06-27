@@ -80,8 +80,13 @@ class DweetLogger(BatteryLogger):
 
     def write(self, date, info):
         info["date"] = date.secs
-        res = requests.post("http://dweet.io/dweet/for/{uid}".format(uid=self.uid),
-                            json=info)
+        try:
+            res = requests.post("http://dweet.io/dweet/for/{uid}".format(uid=self.uid),
+                                json=info)
+        except Exception as e:
+            rospy.logerr("{}".format(e))
+            rospy.logerr("Could not write to dweet.io")
+            return
         assert res.ok and json.loads(res.content)["this"] == "succeeded"
 
 

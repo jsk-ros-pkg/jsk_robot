@@ -1,0 +1,25 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/libgcrypt-dev/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/libgcrypt-dev/libgcrypt-1.8.1
+
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(cat series); do
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+    done
+    touch .patched
+fi
+
+cd ${SOURCE_DIR}
+
+LDFLAGS="-Wl,--no-as-needed ${LDFLAGS}" ./configure \
+  --host=i686-aldebaran-linux-gnu \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-static \
+  --disable-shared \
+  --disable-asm
+
+make install -j4
+# make install --list-missing -X.la -Xinfo/dir -X.pyc -Xinstall_files.txt -X__pycache__

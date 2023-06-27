@@ -1,0 +1,63 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/postfix/postfix-3.4.3
+
+cd ${SOURCE_DIR}
+
+INSTALL_DIR=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+
+make makefiles \
+     command_directory=/bin \
+     config_directory=/etc/postfix \
+     daemon_directory=/libexec/postfix \
+     mailq_path=/bin/mailq \
+     manpage_directory=/man \
+     meta_directory=/etc/postfix \
+     newaliases_path=/bin/newaliases \
+     sendmail_path=/bin/sendmail \
+     CCARGS="-DUSE_SASL_AUTH -DUSE_CYRUS_SASL -DUSE_TLS -DNO_DB \
+             -I${INSTALL_DIR}/include/sasl \
+             -I${INSTALL_DIR}/include/openssl" \
+     AUXLIBS="-L${INSTALL_DIR}/lib -L${INSTALL_DIR}/lib/sasl2 -L${INSTALL_DIR}/openssl -lsasl2 -lssl -lcrypto -lz -lm"
+
+make
+LD_LIBRARY_PATH="${INSTALL_DIR}"/lib "${INSTALL_DIR}"/bin/expect -c "
+set timeout 100
+spawn make install
+expect install_root:
+send ${INSTALL_DIR}\n
+expect tempdir:
+send \n
+expect config_directory:
+send \n
+expect command_directory:
+send \n
+expect daemon_directory:
+send \n
+expect data_directory:
+send \n
+expect html_directory:
+send \n
+expect mail_owner:
+send \n
+expect mailq_path:
+send \n
+expect manpage_directory:
+send \n
+expect newaliases_path:
+send \n
+expect queue_directory:
+send \n
+expect readme_directory:
+send \n
+expect sendmail_path:
+send \n
+expect setgid_group:
+send \n
+expect shlib_directory:
+send \n
+expect meta_directory:
+send \n
+expect EOF
+"

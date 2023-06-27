@@ -1,0 +1,2 @@
+# kodak video
+KERNEL=="video[02468]", SUBSYSTEM=="video4linux", SUBSYSTEMS=="usb", ATTRS{idVendor}=="040a", ATTRS{idProduct}=="0426", MODE="0666", GROUP="video", SYMLINK+="kodak-head"

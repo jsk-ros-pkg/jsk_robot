@@ -1,3 +1,3 @@
 <launch>
-  <node name="run_hello_world" pkg="jsk_fetch_startup" type="boot_sound.py"/>
+  <node name="run_hello_world" pkg="jsk_robot_startup" type="boot_sound.py"/>
 </launch>

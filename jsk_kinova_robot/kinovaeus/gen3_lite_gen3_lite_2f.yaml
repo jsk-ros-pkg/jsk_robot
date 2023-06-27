@@ -15,6 +15,7 @@ rarm:
 angle-vector:
   init-pose : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
   reset-pose: [0.0, -16.0, 75.0, 0.0, -60.0, 0.0]
+  kinova-rest-pose: [0.0, -148.0, -148.0, -90.0, 60.0, 0.0]
 
 rarm-end-coords:
   parent : tool_frame

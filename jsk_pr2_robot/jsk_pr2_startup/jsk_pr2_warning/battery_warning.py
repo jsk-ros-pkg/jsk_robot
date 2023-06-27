@@ -140,8 +140,12 @@ class BatteryWarning(object):
                 self.speak("電池電圧%.1fボルトです。" % voltage)
             if self.critical_voltage < voltage < self.warning_voltage:
                 self.speak("充電してください。")
-            elif voltage <= self.critical_voltage:
+            elif (voltage > (self.critical_voltage - 10)
+                    and voltage <= self.critical_voltage):
                 self.speak("もう限界です！")
+            elif voltage < (self.critical_voltage - 10):
+                rospy.logwarn(
+                    'Battery voltage is probably wrong: {}'.format(voltage))
         except KeyError:
             pass
         except ValueError:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from email.mime.application import MIMEApplication
+from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import errno
@@ -12,12 +13,16 @@ import smtplib
 import socket
 from socket import error as socket_error
 import yaml
+import copy
+import random, string  # for image cid
+import base64
 
 
 class EmailTopic(object):
     """
     This node sends email based on received rostopic (jsk_robot_startup/Email).
-    Default values can be set by using `~email_info`
+    Default ~sender_address and ~receiver_address can be set from rosparam
+    Default values can be set by using `~email_info`(DEPRECATED)
 
     The yaml file is like the following:
     subject: hello
@@ -34,16 +39,27 @@ class EmailTopic(object):
         yaml_path = rospy.get_param(
             '~email_info', "/var/lib/robot/email_info.yaml")
         if os.path.exists(yaml_path):
+            rospy.logwarn("Using ~email_info as email config is deprecated.")
+            rospy.logwarn("Set ~sender_address and ~receiver_address directory as rosparam")
             with open(yaml_path) as yaml_f:
                 self.email_info = yaml.load(yaml_f)
             rospy.loginfo(
                 "{} is loaded as email config file.".format(yaml_path))
-            rospy.loginfo(self.email_info)
+        else:
+            self.email_info['sender_address'] = rospy.get_param(
+                "~sender_address", "jsk_robot@example.com")
+            self.email_info['receiver_address'] = rospy.get_param(
+                "~receiver_address", "jsk_robot@example.com")
+        rospy.loginfo(self.email_info)
         self.subscriber = rospy.Subscriber(
             'email', Email, self._cb, queue_size=1)
 
     def _cb(self, msg):
-        rospy.loginfo('Received an msg: {}'.format(msg))
+        msg_compact = copy.deepcopy(msg)
+        for content in msg_compact.body:
+            if len(content.img_data) >= 64:
+                content.img_data = content.img_data[:64] + "...."
+        rospy.loginfo('Received an msg: {}'.format(msg_compact))
         send_mail_args = {}
         # Set default value for self._send_mail arguments
         send_mail_args['subject'] = ''
@@ -61,7 +77,11 @@ class EmailTopic(object):
                 if field in self.email_info:
                     send_mail_args[field] = self.email_info[field]
         # Send email
-        self._send_mail(**send_mail_args)
+        try:
+            self._send_mail(**send_mail_args)
+        except TypeError as e:
+            rospy.logerr(e)
+            rospy.logerr("'receiver_address' may not be specified.")
 
     def _send_mail(
             self, subject, body, sender_address, receiver_address,
@@ -71,9 +91,44 @@ class EmailTopic(object):
         msg["Subject"] = subject
         msg["From"] = sender_address
         msg["To"] = receiver_address
-        msg.attach(MIMEText(body, 'plain', 'utf-8'))
+        # Support embed image
+        for content in body:
+            if content.type == 'text':
+                msg.attach(MIMEText(content.message, 'plain', 'utf-8'))
+            elif content.type == 'html':
+                msg.attach(MIMEText(content.message, 'html'))
+            elif content.type == 'img':
+                if content.img_data != '':
+                    embed_img = MIMEImage(base64.b64decode(content.img_data))
+                    cid = ''.join(random.choice(string.ascii_lowercase) for i in range(16))
+                elif os.path.exists(content.file_path):
+                    with open(content.file_path, 'rb') as img:
+                        embed_img = MIMEImage(img.read())
+                    cid = content.file_path
+                else:
+                    rospy.logerr("'img' content requries either file_path {}".format(content.type))
+                    rospy.logerr("                           or img_data {} with img_format {}".format(content.img_data, content.img_format))
+                    continue
+                embed_img.add_header(
+                    'Content-ID', '<{}>'.format(cid))
+                embed_img.add_header(
+                    'Content-Disposition', 'inline; filename="{}"'.format(os.path.basename(cid)))
+                msg.attach(embed_img)  # This line is necessary to embed
+                if content.img_size:
+                    image_size = content.img_size
+                else:
+                    image_size = 100
+                text = '<img src="cid:{}" width={}%>'.format(cid, image_size)
+                bodytext = MIMEText(text, 'html')
+                msg.attach(bodytext)
+            else:
+                rospy.logwarn('Unknown content type {}'.format(content.type))
+                continue
         # Attach file
         for attached_file in attached_files:
+            if attached_file == '':
+                rospy.logwarn('File name is empty. Skipped.')
+                continue
             if not os.path.exists(attached_file):
                 rospy.logerr('File {} is not found.'.format(attached_file))
                 return
