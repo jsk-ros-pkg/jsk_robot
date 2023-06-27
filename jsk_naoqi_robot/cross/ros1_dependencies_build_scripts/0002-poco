@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/poco
+cd /home/nao/ros1_dependencies_sources/build/poco
+env
+
+cmake \
+  -DWITH_QT=OFF \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  ../../src/poco
+make -j4 install VERBOSE=1

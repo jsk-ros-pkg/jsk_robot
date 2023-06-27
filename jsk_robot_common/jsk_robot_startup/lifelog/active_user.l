@@ -71,6 +71,36 @@
   (update-activeness)
   )
 
+(defun get-username ()
+  (let (username)
+    (unix::system
+     (format nil
+             "whoami > /tmp/username_~d.txt"
+             (unix::getpid)))
+    (warn "Get PID ~A" (unix::getpid))
+    (with-open-file
+        (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
+      (setq username (read-line f)))
+    (unix::unlink (format nil "/tmp/username_~d.txt" (unix::getpid)))
+    username
+    )
+  )
+
+(defun get-fullname ()
+  (let (fullname)
+    (unix::system
+     (format nil
+             "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/fullname_~d.txt"
+             (unix::getpid)))
+    (warn "Get PID ~A" (unix::getpid))
+    (with-open-file
+        (f (format nil "/tmp/fullname_~d.txt" (unix::getpid)))
+      (setq fullname (read-line f)))
+    (unix::unlink (format nil "/tmp/fullname_~d.txt" (unix::getpid)))
+    fullname
+    )
+  )
+
 (when (ros::has-param "/active_user/motor_subscribe")
   (if (ros::get-param "/active_user/motor_subscribe")
      (cond
@@ -122,14 +152,14 @@
     (unless (string= tname "false")
       (setq *user-name* tname))))
 (unless (and (boundp '*user-name*) *user-name*)
-  (unix::system
-   (format nil "getent passwd `whoami` | cut -d ':' -f 5 | cut -d ',' -f 1 > /tmp/username_~d.txt"
-           (unix::getpid)))
-  (warn "Get PID ~A" (unix::getpid))
-  (with-open-file
-   (f (format nil "/tmp/username_~d.txt" (unix::getpid)))
-   (setq *user-name* (read-line f)))
-  (ros::set-param "/active_user/launch_user_name" *user-name*)
+  (let ((fullname (get-fullname))
+        (username (get-username)))
+    (if (string= fullname "")
+        (setq *user-name* username)
+      (setq *user-name* fullname)
+      )
+    (ros::set-param "/active_user/launch_user_name" *user-name*)
+    )
   )
 (warn "~%;; start user_name = ~A~%" *user-name*)
 

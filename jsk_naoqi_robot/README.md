@@ -57,6 +57,8 @@ If this happens, please connect Pepper to network with DHCP and exit Setting.
 For ros kinetic, please refer to install guide like [here](http://wiki.ros.org/kinetic/Installation).
 For ros melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation).
 
+% As mentioned in https://github.com/ros-naoqi/naoqi_driver#launch, naoqi_driver for ROS melodic and greater have to be used for robots running NAOqi 2.9 and greater. Using ROS melodic on Pepper running NAOqi OS 2.5 has some known issue like this: https://github.com/ros-naoqi/naoqi_driver/issues/96
+
 1. Install ``Python NAOqi SDK``
 You can download it (version = 2.5.5) from [here](https://drive.google.com/file/d/1xHuYREDa78xGiikEpsjxfZQ7Gfvo1E9D/view?usp=sharing).  
 Please unzip the downloaded file.  
@@ -92,7 +94,7 @@ export ROS_IP="133.11.216.yyy" % OR run rossetip command to set ROS_IP
 mkdir -p catkin_ws/src
 cd  catkin_ws
 wstool init src
-wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/pepper.rosinstall
+wstool merge -t src https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/naoqi.rosinstall
 wstool update -t src
 source /opt/ros/${ROS_DISTRO}/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
@@ -105,24 +107,15 @@ sudo apt-get install ros-${ROS_DISTRO}-pepper-meshes
 sudo apt-get install ros-${ROS_DISTRO}-nao-meshes
 ```
 
-If you have ROS >= kinetic, please use [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).  
-This includes [Important PR](https://github.com/ros-naoqi/naoqi_dashboard/pull/3) for ROS >= kinetic.
-
-```
-cd  catkin_ws/src
-wstool set naoqi_dashboard --git https://github.com/ros-naoqi/naoqi_dashboard
-wstool update naoqi_dashboard
-cd naoqi_dashboard
-git remote add kochigami https://github.com/kochigami/naoqi_dashboard.git
-git fetch kochigami
-git checkout -b modify-for-kinetic kochigami/kochigami-develop
-```
+Note that `naoqi.rosinstall` includes necessary patches for ROS kinetic, such as [naoqi_dashboard (kochigami-develop)](https://github.com/kochigami/naoqi_dashboard/tree/kochigami-develop).
 
 Finally, please compile them.  
 
 ```
-cd ../.. # catkin_ws
-catkin build --continue-on-failure
+catkin build peppereus
+catkin build jsk_pepper_startup
+catkin build naoeus
+catkin build jsk_nao_startup
 source devel/setup.bash
 ```
 
@@ -131,89 +124,31 @@ source devel/setup.bash
 
 4. (optional) For NAO and Pepper developers
 
-Please add following source codes which you need for debugging.
+Confirm that you get the following output when you type `wstool info`
+
+% UID of jsk_robot may change from below, but there is no problem. That is because this package is in active developpment.
 
 ```
-cd  catkin_ws/src
-wstool set nao_robot --git https://github.com/ros-naoqi/nao_robot
-(if you use ROS >= melodic) wstool update nao_robot
-wstool set pepper_robot --git https://github.com/ros-naoqi/pepper_robot
-wstool set naoqi_driver --git https://github.com/ros-naoqi/naoqi_driver
-wstool update naoqi_driver
-wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
-wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-```
+$ cd ~/catkin_ws/src
+$ wstool info
+workspace: /home/leus/catkin_ws/src
 
-5. (optional) If you want to use [`ros_speech_recognition`](https://github.com/jsk-ros-pkg/jsk_3rdparty/tree/master/ros_speech_recognition) with NAO microphone
-
-Please check the version of ros-$ROS_DISTRO-ros-speech-recognition
-
+ Localname         S SCM Version (Spec)    UID  (Spec)  URI  (Spec) [http(s)://...]
+ ---------         - --- --------------    -----------  ---------------------------
+ pepper_robot        git master  (-)       efad3979b374 github.com/ros-naoqi/pepper_robot
+ naoqi_driver        git kochigami-develop 98c0b678286a github.com/kochigami/naoqi_driver
+ naoqi_dashboard     git kochigami-develop 7f32005e08e0 github.com/kochigami/naoqi_dashboard
+ naoqi_bridge_msgs   git kochigami-develop d7417613690e github.com/kochigami/naoqi_bridge_msgs
+ naoqi_bridge        git kochigami-develop c28b727e1e9b github.com/kochigami/naoqi_bridge
+ nao_robot           git master  (-)       67476469a137 github.com/ros-naoqi/nao_robot
+ nao_interaction     git master  (-)       f97ad12f3896 github.com/ros-naoqi/nao_interaction
+ jsk_robot           git master            d551865511c3 github.com/jsk-ros-pkg/jsk_robot.git
 ```
-sudo apt update
-apt search ros-$ROS_DISTRO-ros-speech-recognition
-```
-
-If version of ros_speech_recognition < 2.1.18
-
-```
-cd catkin_ws/src
-mkdir ros_speech_recognition
-cd ros_speech_recognition
-git init
-git config core.sparsecheckout true
-git remote add origin https://github.com/jsk-ros-pkg/jsk_3rdparty.git
-echo ros_speech_recognition > .git/info/sparse-checkout
-git pull origin master
-cd ../..
-catkin build ros_speech_recognition
-source devel/setup.bash
-```
-
-If version of ros_speech_recognition >=2.1.18
-```
-sudo apt-get install ros-$ROS_DISTRO-ros-speech-recognition
-```
-
 
 ## Interface when controlling NAO and Pepper via roseus
 
 Common methods for NAO and Pepper are defined in `naoqieus/naoqi-interface.l`. NAO-specific methods are defined in `naoeus/nao-interface.l`. Pepper-specific methods are defined in `peppereus/pepper-interface.l`. For further details about each method, please refer to [**_naoqieus_**](naoqieus/README.md), [**_naoeus_**](naoeus/README.md), and [**_peppereus_**](peppereus/README.md) respectively.  
-For some methods, they require specific branch (kochigami-develop) because they are not merged into master. If you need this, please change your branch of `naoqi_bridge` and `naoqi_bridge_msgs` as follows:
-
-```
-cd catkin_ws/src
-wstool set naoqi_bridge --git https://github.com/ros-naoqi/naoqi_bridge
-wstool update naoqi_bridge
-cd naoqi_bridge
-git remote add kochigami https://github.com/kochigami/naoqi_bridge.git
-git fetch kochigami
-git checkout -b kochigami-develop kochigami/kochigami-develop
-
-cd .. # catkin_ws/src
-wstool set naoqi_bridge_msgs --git https://github.com/ros-naoqi/naoqi_bridge_msgs
-wstool update naoqi_bridge_msgs
-cd naoqi_bridge_msgs
-git remote add kochigami https://github.com/kochigami/naoqi_bridge_msgs.git
-git fetch kochigami
-git checkout -b kochigami-develop kochigami/kochigami-develop
-```
-
-In addition, if you have ROS >= kinetic, please fetch the source of `nao_interaction` (master branch) for the time being ([related issue](https://github.com/ros-naoqi/nao_interaction/issues/12)).
-
-```
-cd .. # catkin_ws/src
-wstool set nao_interaction --git https://github.com/ros-naoqi/nao_interaction
-wstool update nao_interaction
-```
-
-Finally, please compile them.  
-
-```
-cd .. # catkin_ws
-catkin clean
-catkin build --continue-on-failure
-source devel/setup.bash
-```
+For some methods, they require specific branch (kochigami-develop) because they are not merged into master. [naoqi.rosinstall](https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_naoqi_robot/naoqi.rosinstall) file includes this branch for `naoqi_driver`, `naoqi_bridge` and `naoqi_bridge_msgs` repositories.
 
 ## NAO & Pepper
 
@@ -245,3 +180,35 @@ To control NAO and Pepper via gazebo simulator and roseus, please refer to [here
 [**_jsk_201504_miraikan_**](jsk_201504_miraikan/README.md)
   - demo package which Pepper introduces themselves
 
+## Troubleshooting
+
+* [Pepper Only] If you use Ubuntu 18.04, it is possible that you can't run `jsk_pepper_startup.launch` as reported in [this issue](https://github.com/jsk-ros-pkg/jsk_robot/issues/1474#issuecomment-1110768907). In that case, you may need to set audio `false` in `~/catkin_ws/src/naoqi_driver/share/boot_config.json`. Note that this means you can't subscribe audio topic.
+
+  ```
+  "audio":
+  {
+    "enabled"       : false
+  },
+  ```
+
+* If you have the error about naoqi_dashboard, the following methods will probably work.
+
+  Install goobject
+  ```
+  $ sudo apt install python-gobject-2
+  ```
+
+* If you connect to the robot using LAN cable, you need to set argument `network_interface` when launch `jsk_pepper_startup.launch`
+
+  ```
+  $ roslaunch jsk_pepper_startup jsk_pepper_startup.launch network_interface:=enp0s31f6
+  ```
+
+* If the getting started wizard appears on Pepper's tablet, please try following methods.
+
+  `ssh nao@<Pepper's IP>` and
+
+  ```
+  $ qicli call ALBehaviorManager.isBehaviorRunning boot-config
+  $ qicli call ALBehaviorManager.stopBehavior boot-config
+  ```

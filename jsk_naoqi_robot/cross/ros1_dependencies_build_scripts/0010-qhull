@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/qhull
+cd /home/nao/ros1_dependencies_sources/build/qhull
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_SHARED_LIBS=ON \
+   ../../src/qhull
+make -j4 install
+(cd /home/nao/${INSTALL_ROOT}/ros1_dependencies/include; ln -sf libqhull qhull)

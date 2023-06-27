@@ -235,6 +235,8 @@ You can not run this on Firefox. Please use Google Chrome.
 
 ### Add fetch to rwt_app_chooser
 1. Access [http://tork-a.github.io/visualization_rwt/rwt_app_chooser](http://tork-a.github.io/visualization_rwt/rwt_app_chooser "website").
+  - Be careful to access the site via http, not https, to to enable websocket communication.
+  - Modern browsers may automatically redirect from http to https.
 1. Click `ADD A ROBOT` button
 1. Select `Fetch` at `Robot type`
 1. Type `fetch15` at `Robot name`

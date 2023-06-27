@@ -1,0 +1,25 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/screen/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/screen/screen-4.6.2
+
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(cat series); do
+        [ -e "${patch_file}" ] || continue
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+    done
+    touch .patched
+fi
+
+cd ${SOURCE_DIR}
+
+#LIBNCURSES_LIBS="-lncurses -ltinfo" LIBNCURSES_CFLAGS="-I/home/nao/System/ros1_dependencies/include/ncurses -D_GNU_SOURCE -D_DEFAULT_SOURCE"
+./configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-static --host=i686-aldebaran-linux-gnu \
+  --disable-pam --disable--socket-dir --disable-doc
+
+make -j4 install
+# make install --list-missing -X.la -Xinfo/dir -X.pyc -Xinstall_files.txt -X__pycache__

@@ -1,0 +1,9 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/uuid
+cd /home/nao/ros1_dependencies_sources/build/uuid
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  ../../src/uuid
+make -j4 install

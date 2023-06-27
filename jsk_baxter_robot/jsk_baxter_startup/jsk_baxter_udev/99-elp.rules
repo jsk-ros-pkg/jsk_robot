@@ -1,0 +1,3 @@
+#elp video
+KERNEL=="video[02468]", SUBSYSTEM=="video4linux", SUBSYSTEMS=="usb", ATTRS{idVendor}=="32e4", ATTRS{idProduct}=="0317", MODE="0666", GROUP="video", SYMLINK+="elp-head"
+SUBSYSTEMS=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="32e4", ATTRS{idProduct}=="0317", MODE="0666"

@@ -1,0 +1,37 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/tinyxml/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/tinyxml/tinyxml
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(cat series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+done
+
+cd ${SOURCE_DIR}
+
+SRC_FILES="tinyxml.cpp tinyxmlparser.cpp tinyxmlerror.cpp"
+OBJ_FILES="tinyxml.o tinyxmlparser.o tinyxmlerror.o"
+
+CXX="${CXX:-g++}"
+AR="${AR:-ar}"
+CXXFLAGS="-DTIXML_USE_STL -fPIC ${CXXFLAGS}"
+
+for file in ${SRC_FILES}; do
+    ${CXX} ${CXXFLAGS} -c $file
+done
+${AR} rc libtinyxml.a ${OBJ_FILES}
+${CXX} -shared -Wl,-soname,libtinyxml.so.2.6.2 -o libtinyxml.so.2.6.2 ${OBJ_FILES}
+
+# install
+rm -f tinyxml.pc
+cat ${DEBIAN_DIR}/tinyxml.pc.in | sed "s@/usr@/home/nao/${INSTALL_ROOT}/ros1_dependencies@" \
+    | sed "s@\${DEB_HOST_MULTIARCH}@@" | sed "s@\${DEB_VERSION_UPSTREAM}@2.6.2@" | tee tinyxml.pc
+
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/include
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig/
+cp tinyxml.h                  /home/nao/${INSTALL_ROOT}/ros1_dependencies/include
+cp libtinyxml.a libtinyxml.so.2.6.2 /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/
+cp tinyxml.pc                 /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig/
+(cd /home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/; ln -sf libtinyxml.so.2.6.2 libtinyxml.so)

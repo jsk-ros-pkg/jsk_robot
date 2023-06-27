@@ -1,19 +1,40 @@
 <launch>
+  <arg name="moveit" default="true" />
+  <arg name="launch_realsense_torso" default="true"/>
+  <arg name="launch_spherical_kodak" default="false" />
+  <arg name="launch_spherical_stereo" default="false" />
+  <arg name="arm_interpolation" default="minjerk" />
+  <arg name="arm_control_mode" default="position_w_id" />
+  <arg name="launch_rviz" default="true" />
+
   <include file="$(find jsk_baxter_startup)/baxter.launch">
     <arg name="launch_servo" value="true"/>
     <arg name="launch_joint_trajectory" value="true"/>
-    <arg name="launch_gripper_action" value="true"/>
+    <arg name="launch_moveit" value="$(arg moveit)" />
+    <arg name="launch_robot_state_publisher" value="true" />
+    <arg name="launch_wrench" value="true" />
+    <arg name="load_robot_description" value="true" />
+    <arg name="sanity_check_joint_trajectory" value="false" />
     <arg name="launch_openni" value="false"/>
     <arg name="launch_kinect2" value="false"/>
-    <arg name="launch_voice_echo" value="false"/>
-    <arg name="launch_moveit" value="true"/>
-    <arg name="launch_teleop" value="false"/>
-    <arg name="launch_tweet" value="false"/>
-    <arg name="launch_mongodb" value="false"/>
-    <arg name="launch_wrench" value="false"/>
-    <arg name="launch_time_signal" value="false"/>
-    <arg name="sanity_check_joint_trajectory" value="false" />
+    <arg name="launch_realsense_torso" value="$(arg launch_realsense_torso)"/>
+    <arg name="launch_spherical_kodak" value="$(arg launch_spherical_kodak)" />
+    <arg name="launch_spherical_stereo" value="$(arg launch_spherical_stereo)" />
     <arg name="start_openni" value="false"/>
-    <arg name="USER_NAME" value="false"/>
+    <arg name="custom_xdisplay" value="true" />
+    <arg name="launch_xdisplay" value="true" />
+    <arg name="launch_gripper_action" value="true"/>
+    <arg name="left_gripper_type" value="parallel" />
+    <arg name="right_gripper_type" value="parallel" />
+    <arg name="arm_interpolation" value="$(arg arm_interpolation)" />
+    <arg name="arm_control_mode" value="$(arg arm_control_mode)" />
+    <arg name="launch_voice_echo" value="false"/>
+    <arg name="launch_respeaker" value="true"/>
+    <arg name="launch_teleop" value="false"/>
+    <arg name="launch_db" value="false" />
+    <arg name="launch_twitter" value="false" />
+    <arg name="launch_time_signal" value="false"/>
+    <arg name="launch_app_manager" value="true"/>
+    <arg name="launch_rviz" value="$(arg launch_rviz)"/>
   </include>
 </launch>

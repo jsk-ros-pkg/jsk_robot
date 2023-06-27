@@ -1,0 +1,36 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/speech_tools/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/speech_tools/speech_tools
+
+#
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(grep -v ^# series); do
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+    done
+fi
+touch .patched
+
+cd ${SOURCE_DIR}
+
+aclocal
+autoconf
+
+eval "$(dpkg-buildflags --export=sh)"
+export CXXFLAGS="${CXXFLAGS} -I/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/include -fno-delete-null-pointer-checks"
+export LDFLAGS="${LDFLAGS} -L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib"
+# example directory does not use LDFLAGS...
+export CXXFLAGS="${CXXFLAGS} -L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib"
+# main directory does not use LDFLAGS...
+export CFLAGS="${CFLAGS} -L/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib"
+export PROJECT_VERSION=2.5.0
+export PROJECT_MAJOR_VERSION=2
+
+./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
+
+make -j1 PULSEAUDIO=none
+
+cp lib/*.a    /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib
+cp lib/*.so.* /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib

@@ -1,0 +1,16 @@
+<launch>
+  <arg name="camera_name" default="kodak_head" />
+  <include file="$(find video_stream_opencv)/launch/camera.launch" >
+    <arg name="camera_name" value="$(arg camera_name)" />
+    <arg name="video_stream_provider" value="/dev/kodak-head" />
+    <arg name="fps" value="5" />
+    <arg name="frame_id" value="$(arg camera_name)_optical_frame" />
+    <arg name="camera_info_url" value="" />
+    <arg name="flip_horizontal" value="false" />
+    <arg name="flip_vertical" value="false" />
+    <arg name="width" value="2880"/>
+    <arg name="height" value="2880" />
+    <arg name="visualize" value="false" />
+    <arg name="buffer_queue_size" value="1" />
+  </include>
+</launch>

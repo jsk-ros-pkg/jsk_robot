@@ -1,0 +1,33 @@
+<launch>
+
+  <!-- "gripper type": Select from none/parallel/vacuum. -->
+  <arg name="gripper_type" default="parallel"/>
+  <group ns="/cobotta">
+    <param name="gripper_type" value="$(arg gripper_type)"/>
+  </group>
+
+  <arg name="load_robot_description" default="true"/>
+  <arg name="robot_description" default="robot_description"/>
+
+  <param if="$(arg load_robot_description)" name="$(arg robot_description)"
+         command="$(find xacro)/xacro --inorder $(find denso_cobotta_descriptions)/cobotta_description/cobotta.urdf.xacro
+         gripper_type:=$(arg gripper_type)" />
+
+  <!-- Files for denso_cobotta_driver node. -->
+  <include file="$(find denso_cobotta_driver)/launch/denso_cobotta_driver.launch">
+    <arg name="enable_calset" value="false" />
+  </include>
+
+  <!-- Files for denso_cobotta_control node. -->
+  <include file="$(find denso_cobotta_control)/launch/denso_cobotta_control.launch"/>
+
+  <!-- Files for denso_cobotta_gripper node.
+    NOTE: Files are includes unless "gripper_type" is "none".
+  -->
+  <group if="$(eval arg('gripper_type') != 'none')">
+    <include file="$(find denso_cobotta_gripper)/launch/denso_cobotta_gripper.launch">
+      <arg name="gripper_type" value="$(arg gripper_type)"/>
+    </include>
+  </group>
+
+</launch>
