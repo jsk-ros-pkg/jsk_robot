@@ -456,6 +456,12 @@ Args:
     (when occupancy
       (ros::ros-info
        (format nil "Notify app that the occupancy of trash can is measured. ~A." occupancy))
+      (write-message-on-message-board
+        (list 255 255 255 255 255 255)
+        (format nil "~A Trashcan occupancy is ~A" notify-text occupancy)
+        (ros::time 600)
+        (ros::get-param "/robot/name" "default_name")
+        )
       (notify-app "trashcan occupancy"
                   (ros::time-now)
                   location
