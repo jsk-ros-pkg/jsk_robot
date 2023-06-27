@@ -430,7 +430,7 @@ Args:
     (when label-names
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
       (write-message-on-message-board
-        (list 255 255 255 255 255 255)
+        (list 120 33 132 149 126 152)
         (format nil "Notify app that ~A is found." label-names)
         (ros::time 600)
         (ros::get-param "/robot/name" "default_name")
@@ -464,7 +464,7 @@ Args:
       (ros::ros-info
        (format nil "Notify app that the occupancy of trash can is measured. ~A." occupancy))
       (write-message-on-message-board
-        (list 255 255 255 255 255 255)
+        (list 120 33 132 149 126 152)
         (format nil "~A Trashcan occupancy is ~A" notify-text occupancy)
         (ros::time 600)
         (ros::get-param "/robot/name" "default_name")
