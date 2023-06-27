@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<launch>
+  
+  <!-- Arguments for teleop control -->
+  <arg name="start_bilateral" default="false" doc="Set this value True to immidiently start Teleop-connection"/>
+
+  <!-- Arguments for USB microphone on right hand -->
+  <arg name="n_channel" default="1" doc="Number of channels of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="depth" default="16" doc="Bit depth of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+  <arg name="sample_rate" default="44100" doc="Frame rate of audio topic and microphone. '$ pactl list short sources' to check your hardware" />
+
+  <!-- Controllers of panda and devices -->
+  <include file="$(find jsk_panda_startup)/launch/dual_panda1.launch">
+    <arg name="controllers_to_start" value="rarm_state_controller larm_state_controller larm_cartesian_impedance_controller rarm_cartesian_impedance_controller" />
+    <arg name="n_channel" value="$(arg n_channel)" />
+    <arg name="depth" value="$(arg depth)" />
+    <arg name="sample_rate" value="$(arg sample_rate)" />
+  </include>
+
+  <!-- audio -> preprocessed mono spectrogram -->
+  <include file="$(find sound_classification)/launch/audio_to_spectrogram.launch">
+    <arg name="n_channel" value="$(arg n_channel)" />
+    <arg name="bitdepth" value="$(arg depth)" />
+    <arg name="mic_sampling_rate" value="$(arg sample_rate)" />
+    <arg name="use_rosbag" value="false" />
+    <arg name="use_microphone" value="false" />
+    <arg name="high_cut_freq" value="6000" />
+    <arg name="low_cut_freq" value="1" />
+    <arg name="spectrogram_period" value="1" />
+  </include>
+
+  <!-- Touch USB to Panda connection -->
+  <node pkg="jsk_panda_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--connect_pose --connect_force" if="$(arg start_bilateral)"/>
+  <node pkg="jsk_panda_teleop" type="phantom_to_panda.py" name="phantom_to_panda" output="screen" args="--noconnect_pose --noconnect_force" unless="$(arg start_bilateral)"/>
+  
+  <!-- Publish end effector frames for easy synchronization -->
+  <node pkg="jsk_panda_teleop" type="end_effector_frames_publisher.py" name="end_effector_frames_publisher" output="screen"/>
+
+</launch>

@@ -2,6 +2,7 @@
   <param name="robot/database" value="jsk_robot_lifelog"/>
 
   <arg name="twitter" default="true" />
+  <arg name="twitter_image_topics" default="/cameras/head_camera/image" />
   <arg name="output" default="screen" />
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
@@ -42,6 +43,8 @@
 
   <!-- tweeting robot warning data and etc. -->
   <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/baxter_tweet.launch"
-           if="$(arg twitter)"/>
+           if="$(arg twitter)">
+    <arg name="image_topics" value="$(arg twitter_image_topics)"/>
+  </include>
 
 </launch>

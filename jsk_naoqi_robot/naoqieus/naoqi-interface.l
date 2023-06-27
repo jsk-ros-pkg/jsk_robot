@@ -8,7 +8,7 @@
 (ros::load-ros-package "nao_interaction_msgs")
 
 (defclass naoqi-interface
-  :super robot-interface
+  :super robot-move-base-interface
   :slots (naoqi-namespace dcm-namespace joint-stiffness-trajectory-action body-pose-with-speed-action)
   )
 
@@ -245,11 +245,37 @@
    )
   ;;
   (:speak
-   (str)
-   (let ((speech_msg (instance std_msgs::String :init)))
+   (str &key lang wait volume)
+   (let ((speech_msg (instance std_msgs::String :init))
+         (master-lang (and lang (send self :get-language)))
+         (master-volume (and volume (send self :get-master-volume))))
+     ;; restoring the original settings requires `wait' to be true
+     (when (or volume lang)
+       (setq wait t))
+     ;; set volume and language
+     (when volume
+       (unless (send self :set-master-volume (round (* volume 100)))
+         (error "Invalid volume argument")))
+     (when lang
+       (unless (send self :set-language lang)
+         (error "Invalid language argument")))
+     ;; send speech request
      (send speech_msg :data str)
-     (ros::publish (format nil "~A/speech" group-namespace) speech_msg))
-   )
+     (ros::publish (format nil "~A/speech" group-namespace) speech_msg)
+     (when wait
+       (send self :check-speak-status))
+     ;; restore original volume and language
+     (when master-volume
+       (send self :set-master-volume master-volume))
+     (when master-lang
+       (send self :set-language master-lang))
+     t))
+  (:speak-jp (str &key wait volume)
+     (send self :speak str :lang "Japanese"
+                :wait wait :volume volume))
+  (:speak-en (str &key wait volume)
+     (send self :speak str :lang "English"
+                :wait wait :volume volume))
   (:check-speak-status
    (&optional (wait 60))
    (let (speech_status tm)
@@ -285,13 +311,15 @@
     the robot moves relative to current position.
     using [m] and [degree] is historical reason from original hrpsys code"
    ;; https://github.com/jsk-ros-pkg/jsk_pr2eus/blob/master/pr2eus/robot-interface.l#L867
-   (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
-     (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
-			  :rpy (float-vector (deg2rad d) 0 0)))
-     (send pose_msg :header :frame_id "base_footprint")
-     (send pose_msg :pose (ros::coords->tf-pose c))
-     (ros::publish (format nil "~A/move_base_simple/goal" group-namespace) pose_msg)
-     ))
+   (if (send self :simulation-modep)
+     (send-super :go-pos x y d)
+     (let (c (pose_msg (instance geometry_msgs::PoseStamped :init)))
+       (setq c (make-coords :pos (float-vector (* 1000 x) (* y 1000) 0)
+             :rpy (float-vector (deg2rad d) 0 0)))
+       (send pose_msg :header :frame_id "base_footprint")
+       (send pose_msg :pose (ros::coords->tf-pose c))
+       (ros::publish (format nil "~A/move_base_simple/goal" group-namespace) pose_msg)
+       )))
 
   (:go-velocity
    (x y d &optional (msec 1000) &key (stop t)) ;; [m/sec] [m/sec] [rad/sec]
@@ -326,10 +354,15 @@
   (:set-master-volume
    (volume)
    (let ((ret (instance nao_interaction_msgs::SetAudioMasterVolumeRequest :init)))
-     (ros::wait-for-service (format nil "~A/naoqi_driver/set_volume" group-namespace))
-     (send ret :master_volume :data volume)
-     (ros::service-call (format nil "~A/naoqi_driver/set_volume" group-namespace) ret)
-     ))
+     (if (<= 0 volume 100)
+	 (progn
+	   (ros::wait-for-service (format nil "~A/naoqi_driver/set_volume" group-namespace))
+	   (send ret :master_volume :data volume)
+	   (ros::service-call (format nil "~A/naoqi_driver/set_volume" group-namespace) ret)
+	   t)
+	 (progn
+	   (ros::ros-error ":set-master-volume ~A must be between 0 and 100." volume)
+	   nil))))
   (:get-master-volume
    ()
    (let ((ret (instance nao_interaction_msgs::GetAudioMasterVolumeRequest :init))
@@ -400,11 +433,21 @@
    )
   (:set-language
    (language)
+   (if (keywordp language) (setq language (string-downcase language)))
+   (if (or (string-equal language "english")
+           (string-equal language "en"))
+       (setq language "English"))
+   (if (or (string-equal language "japanese")
+           (string-equal language "ja")
+           (string-equal language "jp"))
+       (setq language "Japanese"))
    (let ((ret (instance naoqi_bridge_msgs::SetStringRequest :init))
 	 res)
      (ros::wait-for-service (format nil "~A/naoqi_driver/set_language" group-namespace))
      (send ret :data language)
      (setq res (ros::service-call (format nil "~A/naoqi_driver/set_language" group-namespace) ret))
+     (if (not (send res :success))
+         (ros::ros-error ":speak :lang ~A must be English or Japanese" language))
      (send res :success))
    )
   (:get-language

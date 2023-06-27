@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euf -o pipefail
+mkdir -p /home/nao/ros1_dependencies_sources/build/tinyxml2
+cd /home/nao/ros1_dependencies_sources/build/tinyxml2
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_FIND_ROOT_PATH="/home/nao/${INSTALL_ROOT}/ros1_dependencies" \
+  ../../src/tinyxml2
+make -j4 install

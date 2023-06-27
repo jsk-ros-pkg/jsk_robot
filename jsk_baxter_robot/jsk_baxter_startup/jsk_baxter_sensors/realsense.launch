@@ -1,0 +1,39 @@
+<launch>
+  <arg name="realsense_camera_ns" />
+  <arg name="manager" />
+  <arg name="publish_tf" />
+  <arg name="color_width" />
+  <arg name="color_height" />
+  <arg name="depth_width" />
+  <arg name="depth_height" />
+
+  <group ns="$(arg realsense_camera_ns)">
+    <param name="rgb_camera/global_time_enabled" value="true"/>
+    <param name="l500_depth_sensor/global_time_enabled" value="true"/>
+  </group>
+
+  <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
+    <arg name="camera" value="$(arg realsense_camera_ns)" />
+    <arg name="manager" value="$(arg manager)" />
+    <arg name="publish_tf" value="$(arg publish_tf)" />
+    <arg name="color_width"  value="$(arg color_width)" />
+    <arg name="color_height" value="$(arg color_height)" />
+    <arg name="depth_width"  value="$(arg depth_width)" />
+    <arg name="depth_height" value="$(arg depth_height)" />
+  </include>
+
+  <!-- subscribing /$(arg realsense_camera_ns)/depth/image_rect_raw/compressedDepth causes serious frequency drop. -->
+  <node name="depth_compress_republish" pkg="image_transport"
+        type="republish" args="raw in:=$(arg realsense_camera_ns)/depth/image_rect_raw
+                               compressedDepth out:=$(arg realsense_camera_ns)/depth/compressed/image_rect_raw" />
+  <node name="depth_camera_info_relay" pkg="topic_tools"
+        type="relay" args="$(arg realsense_camera_ns)/depth/camera_info
+                           $(arg realsense_camera_ns)/depth/compressed/camera_info" />
+  <!-- subscribing /$(arg realsense_camera_ns)/aligned_depth_to_color/image_rect_raw/compressedDepth causes serious frequency drop. -->
+  <node name="aligned_depth_to_color_compress_republish" pkg="image_transport"
+        type="republish" args="raw in:=$(arg realsense_camera_ns)/aligned_depth_to_color/image_raw
+                               compressedDepth out:=$(arg realsense_camera_ns)/aligned_depth_to_color/compressed/image_raw" />
+  <node name="aligned_depth_to_color_camera_info_relay" pkg="topic_tools"
+        type="relay" args="$(arg realsense_camera_ns)/aligned_depth_to_color/camera_info
+                           $(arg realsense_camera_ns)/aligned_depth_to_color/compressed/camera_info" />
+</launch>

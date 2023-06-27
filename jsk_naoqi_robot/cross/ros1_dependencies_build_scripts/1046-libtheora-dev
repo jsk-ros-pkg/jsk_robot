@@ -1,0 +1,24 @@
+#!/bin/bash
+set -xeuf -o pipefail
+
+DEBIAN_DIR=/home/nao/ros1_dependencies_sources/src/libtheora/debian/debian
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/libtheora/libtheora-1.1.1
+
+cd ${DEBIAN_DIR}/patches
+if [ ! -e .patched ]; then
+    for patch_file in $(cat series); do
+        [ -e "${patch_file}" ] || continue
+        OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false)
+    done
+    touch .patched
+fi
+
+cd ${SOURCE_DIR}
+
+./configure \
+  --prefix=/home/nao/${INSTALL_ROOT}/ros1_dependencies \
+  --enable-static --host=i686-aldebaran-linux-gnu
+
+make -j4 install-exec
+make -j4 install-pkgconfigDATA
+# make install --list-missing -X.la -Xinfo/dir -X.pyc -Xinstall_files.txt -X__pycache__

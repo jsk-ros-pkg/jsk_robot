@@ -1,0 +1,28 @@
+repositories:
+  euslisp:
+    type: git
+    url: https://github.com/euslisp/euslisp.git
+    version: support_nonx
+  euslisp/patches:
+    type: tar
+    url: https://github.com/tork-a/euslisp-release/archive/refs/heads/master.tar.gz
+    version: euslisp-release-master/patches
+  jskeus:
+    type: git
+    url: https://github.com/euslisp/jskeus.git
+    version: support_nonx
+  jskeus/patches:
+    type: tar
+    url: https://github.com/tork-a/jskeus-release/archive/refs/heads/master.tar.gz
+    version: jskeus-release-master/patches
+  # https://github.com/jsk-ros-pkg/jsk_roseus/pull/711
+  jsk_roseus:
+    type: git
+    url: https://github.com/k-okada/jsk_roseus.git
+    version: irteusg_embedded_roseus
+  # https://github.com/jsk-ros-pkg/jsk_model_tools/pull/245
+  # https://github.com/jsk-ros-pkg/jsk_model_tools/pull/246
+  jsk_model_tools/euscollada:
+    type: zip
+    url: https://github.com/k-okada/jsk_model_tools/archive/refs/heads/develop.zip
+    version: jsk_model_tools-develop/euscollada

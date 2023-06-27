@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<robot name="right_softhand" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find jsk_baxter_startup)/jsk_baxter_description/softhand.urdf.xacro"/>
+  <xacro:softhand side="right"/>
+
+</robot>

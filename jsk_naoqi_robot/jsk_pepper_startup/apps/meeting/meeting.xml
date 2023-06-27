@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="jsk_pepper_startup" name="meeting"
+        type="meeting.l" args="'(main)'" />
+</launch>

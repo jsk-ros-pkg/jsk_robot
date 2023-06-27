@@ -1,0 +1,18 @@
+<library path="lib/libupdate_move_base_parameter_recovery">
+    <class
+        name="update_move_base_parameter_recovery/UpdateInflationLayerParameterRecovery"
+        type="update_move_base_parameter_recovery::UpdateInflationLayerParameterRecovery"
+        base_class_type="nav_core::RecoveryBehavior">
+        <description>
+            A recovery behavior that updates parameters of inflation layer.
+        </description>
+    </class>
+    <class
+        name="update_move_base_parameter_recovery/UpdateCostmapParameterRecovery"
+        type="update_move_base_parameter_recovery::UpdateCostmapParameterRecovery"
+        base_class_type="nav_core::RecoveryBehavior">
+        <description>
+            A recovery behavior that updates parameters of costmap.
+        </description>
+    </class>
+</library>

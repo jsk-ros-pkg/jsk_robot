@@ -1,0 +1,21 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+SOURCE_DIR=/home/nao/ros1_dependencies_sources/src/festvox-kallpc16k/festival
+
+#
+cd ${SOURCE_DIR}
+if [ ! -e festvox-kallpc16k_2.4-1.diff ]; then
+    wget http://archive.ubuntu.com/ubuntu/pool/universe/f/festvox-kallpc16k/festvox-kallpc16k_2.4-1.diff.gz
+    gunzip festvox-kallpc16k_2.4-1.diff.gz
+    patch -p1 < festvox-kallpc16k_2.4-1.diff
+fi
+
+##
+
+cd ${SOURCE_DIR}
+
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/festvox/
+mkdir -p /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/group/
+cp lib/voices/english/kal_diphone/festvox/*.scm /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/festvox/
+cp lib/voices/english/kal_diphone/group/*.group /home/nao/${INSTALL_ROOT}/ros1_dependencies/share/festival/voices/english/kal_diphone/group/
