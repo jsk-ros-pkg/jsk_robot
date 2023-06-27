@@ -1,0 +1,13 @@
+<launch>
+  <arg name="spherical_camera_ns" default="kodak_head" />
+
+  <node name="kodak_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0.05 0.05 0.1 -1.5 -0.6 0.0 head_camera $(arg spherical_camera_ns)_link 100" />
+  <node name="kodak_optical_frame_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 1.57 $(arg spherical_camera_ns)_link $(arg spherical_camera_ns)_optical_frame 100" />
+  <node name="kodak_rviz_frame_transform_publisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 3.14 0 0 $(arg spherical_camera_ns)_link $(arg spherical_camera_ns)_rviz_frame 100" />
+  <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/kodak_pixpro.launch">
+    <arg name="camera_name" value="$(arg spherical_camera_ns)" />
+  </include>
+</launch>

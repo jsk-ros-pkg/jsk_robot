@@ -1,9 +1,14 @@
 <launch>
   <arg name="rosbag" doc="rosbag file path" />
   <arg name="compress" default="false" doc="whether compress rosbag or not." />
+  <arg name="other_topics" default=""/>
+  <arg name="use_regex" default="true" doc="whether include regex in topics or not." />
+  <arg name="other_options" default=""/>
 
   <arg if="$(arg compress)" name="compress_flag" value="--bz2" />
   <arg unless="$(arg compress)" name="compress_flag" value="" />
+  <arg if="$(arg use_regex)" name="regex_flag" value="--regex" />
+  <arg unless="$(arg use_regex)" name="regex_flag" value="" />
 
   <node name="rosbag_record" pkg="rosbag" type="record"
       args="-q $(arg compress_flag) -O $(arg rosbag) -b 0 
@@ -31,7 +36,10 @@
           /kinect_head/depth_registered/throttled/camera_info
           /kinect_head/rgb/throttled/image_rect_color/compressed
           /kinect_head/depth_registered/throttled/image_rect/compressedDepth
-          /audio"
+          /audio
+          $(arg other_topics)
+          $(arg regex_flag)
+          $(arg other_options)"
       output="screen" />
 
 </launch>

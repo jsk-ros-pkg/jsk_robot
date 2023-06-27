@@ -1,0 +1,21 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/libfcl-dev/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/libfcl-dev/fcl-0.5.0
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(grep -v ^# series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+done
+
+mkdir -p /home/user/ros1_dependencies_sources/build/libfcl-dev
+cd /home/user/ros1_dependencies_sources/build/libfcl-dev
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_SKIP_RPATH=ON \
+  -DFCL_BUILD_TESTS=FALSE \
+  ${SOURCE_DIR}
+
+make install

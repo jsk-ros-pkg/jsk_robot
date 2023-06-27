@@ -32,6 +32,7 @@ private:
     std::string speak_text_;
     double duration_wait_;
     double duration_timeout_;
+    double result_timeout_;
     bool initialized_;
 };
 };

@@ -10,6 +10,7 @@ int main(int argc, char **argv)
 
     ros::Rate rate(10);
     while (ros::ok()) {
+        ROS_WARN("Spoken a test");
         recovery.runBehavior();
         ros::spinOnce();
         rate.sleep();

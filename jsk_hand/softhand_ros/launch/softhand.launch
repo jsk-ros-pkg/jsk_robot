@@ -1,0 +1,33 @@
+<launch>
+  <arg name="hand" />
+  <arg name="device" />
+  <arg name="mode" default="position" />
+
+  <!-- dxl controller manager -->
+  <node name="controller_manager" pkg="dynamixel_controllers" type="controller_manager.py"
+        respawn="true" output="screen">
+    <rosparam subst_value="true">
+      namespace: dxl_manager
+      serial_ports:
+        port:
+          port_name: $(arg device)
+          baud_rate: 1000000
+          min_motor_id: 1
+          max_motor_id: 3
+          update_rate: 20
+    </rosparam>
+  </node>
+  <!-- dxl controller spawner -->
+  <rosparam file="$(find softhand_ros)/config/$(arg hand)_hand/dxl_controllers_common.yaml"
+            command="load"/>
+  <rosparam file="$(find softhand_ros)/config/$(arg hand)_hand/dxl_$(arg mode)_controllers.yaml"
+            command="load"/>
+  <node name="controller_spawner"
+        pkg="dynamixel_controllers" type="controller_spawner.py"
+        args="--manager=dxl_manager
+              --port port
+              finger1_joint_controller
+              finger2_joint_controller
+              finger3_joint_controller"
+        output="screen" />
+</launch>

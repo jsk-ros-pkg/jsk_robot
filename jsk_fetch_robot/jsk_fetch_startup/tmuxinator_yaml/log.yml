@@ -41,3 +41,4 @@ windows:
   - jsk-dialog: tail -f -n 1000 /var/log/ros/jsk-dialog.log
   - jsk-gdrive: tail -f -n 1000 /var/log/ros/jsk-gdrive.log
   - jsk-shutdown: tail -f -n 1000 /var/log/ros/jsk-shutdown.log
+  - jsk-rfcomm-bind: tail -f -n 1000 /var/log/ros/jsk-rfcomm-bind.log

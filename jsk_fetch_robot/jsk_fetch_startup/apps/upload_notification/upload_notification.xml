@@ -1,0 +1,4 @@
+<launch>
+  <node type="roseus" pkg="roseus" name="upload_notification_exit" required="true"
+	args="&quot;(unix::exit 0)&quot;" />
+</launch>

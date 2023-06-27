@@ -46,6 +46,11 @@ install(FILES jsk_cobotta.machine
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS roslaunch roslint)
   file(GLOB LAUNCH_FILES launch/*.launch)
+  # Avoid testing cobotta_oss_bringup.launch under kinetic because denso_cobotta_ros cannot be built
+  if("$ENV{ROS_DISTRO}" STRLESS "kinetic")
+    file(GLOB COBOTTA_OSS_BRINGUP_FULL_PATH launch/cobotta_oss_bringup.launch)
+    list(REMOVE_ITEM LAUNCH_FILES ${COBOTTA_OSS_BRINGUP_FULL_PATH})
+  endif()
   foreach(LAUNCH_FILE ${LAUNCH_FILES})
     roslaunch_add_file_check(${LAUNCH_FILE})
   endforeach()

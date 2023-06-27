@@ -1,3 +1,0 @@
-move_base:
-  global_costmap:
-    update_frequency: 5.0

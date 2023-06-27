@@ -15,7 +15,7 @@
   <build_depend>rostest</build_depend>
 
   <run_depend>nao_interaction_msgs</run_depend>
-  <run_depend>naoqi_msgs</run_depend>
+  <!-- <run_depend>naoqi_msgs</run_depend> --> <!-- naoqi_msgs becomes naoqi_bridge_msgs since indigo -->
   <run_depend>naoqi_bridge_msgs</run_depend>
   <run_depend>pr2eus</run_depend> <!-- for robot interface -->
 

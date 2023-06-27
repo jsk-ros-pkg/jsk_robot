@@ -1,0 +1,9 @@
+frame_id: base
+initial_x: 0.253
+initial_y: -0.004
+initial_z: 0.563
+initial_orientation: [-0.679, 0.685, -0.153, 0.213]
+# - Translation: [0.253, -0.004, 0.563]
+# - Rotation: in Quaternion [-0.679, 0.685, -0.153, 0.213]
+#             in RPY (radian) [-2.616, 0.085, -1.557]
+#             in RPY (degree) [-149.881, 4.843, -89.196]

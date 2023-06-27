@@ -1,0 +1,14 @@
+name: "Pull Request Labeler (Main)"
+on:
+  - pull_request_target
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@v4.1.0
+      with:
+        configuration-path: ".github/labeler_conf/main_labeler.yml"
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        sync-labels: true
+        dot: true

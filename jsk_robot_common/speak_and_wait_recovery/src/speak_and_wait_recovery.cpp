@@ -23,6 +23,7 @@ void SpeakAndWaitRecovery::initialize(
         private_nh.param("speak_text", speak_text_, std::string("Make way, Please."));
         private_nh.param("duration_wait", duration_wait_, 5.0);
         private_nh.param("duration_timeout", duration_timeout_, 1.0);
+        private_nh.param("result_timeout", result_timeout_, 3.0);
         std::string sound_action_name;
         private_nh.param("sound_action", sound_action_name, std::string("sound_play"));
         ptr_action_client_ = std::shared_ptr<actionlib::SimpleActionClient<sound_play::SoundRequestAction>>(new actionlib::SimpleActionClient<sound_play::SoundRequestAction>(sound_action_name, true));
@@ -60,7 +61,7 @@ void SpeakAndWaitRecovery::say(
     goal.sound_request.arg2 = ""; // voice
     ptr_action_client_->waitForServer(ros::Duration(duration_timeout_));
     ptr_action_client_->sendGoal(goal);
-    ptr_action_client_->waitForResult();
+    ptr_action_client_->waitForResult(ros::Duration(result_timeout_));
 }
 
 };
