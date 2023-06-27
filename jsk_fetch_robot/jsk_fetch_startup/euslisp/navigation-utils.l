@@ -9,7 +9,7 @@
 (ros::load-ros-manifest "power_msgs")
 (ros::load-ros-manifest "sensor_msgs")
 (if (ros::rospack-find "esp_now_ros")
-    (ros::load-ros-manifest "esp_now_ros")
+    (ros::load-ros-manifest "esp_now_ros"))
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
