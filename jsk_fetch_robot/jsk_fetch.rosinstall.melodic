@@ -189,4 +189,4 @@
 - git:
     local-name: sktometometo/esp_now_ros
     uri: https://github.com/sktometometo/esp_now_ros.git
-    version: v0.1.0
+    version: v0.2.0
