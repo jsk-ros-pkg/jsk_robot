@@ -8,6 +8,8 @@
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "power_msgs")
 (ros::load-ros-manifest "sensor_msgs")
+(if (ros::rospack-find "esp_now_ros")
+    (ros::load-ros-manifest "esp_now_ros"))
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
@@ -427,6 +429,12 @@ Args:
          (label-names (if msg (send msg :label_names))))
     (when label-names
       (ros::ros-info (format nil "Notify app that ~A is found." label-names))
+      (write-message-on-message-board
+        (list 120 33 132 149 126 152)
+        (format nil "Notify app that ~A is found." label-names)
+        (ros::time 600)
+        (ros::get-param "/robot/name" "default_name")
+        )
       (notify-app "object recognition"
                   (send msg :header :stamp)
                   location
@@ -455,6 +463,12 @@ Args:
     (when occupancy
       (ros::ros-info
        (format nil "Notify app that the occupancy of trash can is measured. ~A." occupancy))
+      (write-message-on-message-board
+        (list 120 33 132 149 126 152)
+        (format nil "~A Trashcan occupancy is ~A" notify-text occupancy)
+        (ros::time 600)
+        (ros::get-param "/robot/name" "default_name")
+        )
       (notify-app "trashcan occupancy"
                   (ros::time-now)
                   location
@@ -654,4 +668,39 @@ Args:
     (send *ri* :go-pos-unsafe 0 0 -80) ;; face the front against the trash can
     success-move-to-trashcan-front))
 
+(defun padding-byte-array (byte-array target-length)
+  (concatenate cons byte-array (make-list (- target-length (length byte-array)) :initial-element 0)))
+
+(defun write-message-on-message-board (target-addr message timeout-duration source-name)
+  "Send packet to write message on a message board.
+
+  Args:
+    target-addr: list of integer to represent mac address of target message board.
+    message: string
+    timeout-duration: ros::time to represent message timoeut
+    source-name: string
+    "
+  (let* ((packet-type-array (list 42 0))
+         (source-name-array (padding-byte-array (coerce source-name cons) 64))
+         (timeout-duration-msec (floor (* 1000 (send timeout-duration :to-sec))))
+         (timeout-duration-array
+           (mapcar
+             #'(lambda (order) 
+                    (/
+                      (- timeout-duration-msec
+                         (* (round (expt 256 (+ 1 order))) (/ timeout-duration-msec (round (expt 256 (+ 1 order))))))
+                      (round (expt 256 order))))
+             '(0 1 2 3 4 5 6 7)
+             ))
+         (message-array (padding-byte-array (coerce message cons) 64))
+         (byte-data (concatenate cons packet-type-array source-name-array timeout-duration-array message-array))
+         (msg (instance esp_now_ros::Packet :init
+                        :mac_address (coerce target-addr string)
+                        :data (coerce byte-data string)))
+         )
+    (ros::advertise "/esp_now_ros/send" esp_now_ros::Packet 1)
+    (ros::publish "/esp_now_ros/send" msg)
+    (ros::ros-info "Write message ~A to board ~A" message target-addr)
+    )
+  )
 
