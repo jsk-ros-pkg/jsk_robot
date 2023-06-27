@@ -699,7 +699,6 @@ Args:
                         :data (coerce byte-data string)))
          )
     (ros::advertise "/esp_now_ros/send" esp_now_ros::Packet 1)
-    (ros::publish "/esp_now_ros/send" (instance esp_now_ros::Packet :init)) ; publish dummy packet
     (ros::publish "/esp_now_ros/send" msg)
     (ros::ros-info "Write message ~A to board ~A" message target-addr)
     )
