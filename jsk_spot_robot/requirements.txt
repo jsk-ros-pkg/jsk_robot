@@ -1,0 +1,4 @@
+bosdyn-client == 2.3.4
+bosdyn-mission == 2.3.4
+bosdyn-api == 2.3.4
+bosdyn-core == 2.3.4
