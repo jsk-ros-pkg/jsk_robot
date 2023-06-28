@@ -1,0 +1,9 @@
+<launch>
+
+  <node name="front_camera"
+        pkg="jsk_unitree_startup" type="camera_image_publisher.py"
+        output="screen"
+        respawn="true" >
+  </node>
+
+</launch>
