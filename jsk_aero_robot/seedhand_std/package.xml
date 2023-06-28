@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>seedhand_std</name>
+  <version>0.0.1</version>
+  <description>The seedhand_std package</description>
+
+  <maintainer email="todo@todo.todo">todo</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>aero_std</depend>
+
+  <export/>
+</package>

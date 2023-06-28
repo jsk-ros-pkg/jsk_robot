@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<!-- XML namespaces -->
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find aero_description)/urdf/common.xacro" />
+  <property name="M_PI" value="3.1415926535897931" />
+
+  <xacro:macro name="hand_yaw_s" params="prefix:=r reflect:=1 hand_link disable_mesh:=false">
+  <!-- ============================   hand_yaw   ============================ -->
+    <!-- prefix is "r" or "l" -->
+    <!-- reflect=1 is rightside, reflect=-1 is leftside -->
+  <link name="${prefix}_hand_yaw_link">
+    <xacro:unless value="${disable_mesh}"> <visual>
+      <origin xyz="0.0 0 0" rpy="0 ${M_PI / 2.0} ${reflect * M_PI / 2.0}"/>
+      <geometry>
+        <mesh filename="package://aero_description/meshes/hand_yaw_s/wrist.dae" scale="1 1 1" />
+      </geometry>
+    </visual> </xacro:unless>
+    <xacro:unless value="${disable_mesh}"> <collision>
+      <origin xyz="0 0 0" rpy="0 ${M_PI / 2.0} ${reflect * M_PI / 2.0}"/>
+      <geometry>
+        <mesh filename="package://aero_description/meshes/hand_yaw_s/wrist.dae" scale="1 1 1" />
+      </geometry>
+    </collision> </xacro:unless>
+    <inertial>
+      <mass value="0.183" />
+      <!-- original version -->
+      <!--origin xyz="0 0 -0.0875" rpy="0 -0 0"/>
+      <inertia ixx="0.000601" ixy="0" ixz="0" iyy="0.00055" iyz="0" izz="0.000102"/-->
+      <!-- just fixed for gazebo / aim to increase z axis inertia-->
+      <origin xyz="0 0.014 -0.02" rpy="0 -0 0"/>
+      <inertia ixx="0.003" ixy="0" ixz="0" iyy="0.003" iyz="0" izz="0.005" />
+    </inertial>
+  </link>
+  <gazebo reference="${prefix}_hand_yaw_link">
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+  </gazebo>
+
+  <joint name="${prefix}_hand_y_joint" type="revolute">
+    <parent link="${prefix}_hand_yaw_link"/>
+    <child  link="${hand_link}"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis   xyz="0 0 1"/>
+    <!--limit lower="-2.0" upper="2.0" effort="100" velocity="2.0" /-->
+    <limit lower="-3.2" upper="3.2" effort="100" velocity="2.0" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:gazebo_transmission joint_name="${prefix}_hand_y_joint" />
+
+  </xacro:macro>
+</robot>

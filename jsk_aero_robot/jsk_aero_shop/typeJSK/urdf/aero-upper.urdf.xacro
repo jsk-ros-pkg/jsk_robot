@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<!-- XML namespaces -->
+<robot xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+       xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+       xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+       xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+       xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find aero_description)/urdf/common.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/typeF_upperbody/aero_upper_typef.urdf.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/seed_hand/seed_hand.urdf.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/hand_yaw/hand_yaw.urdf.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/trx_s/trx_s.urdf.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/hand_yaw_s/hand_yaw.urdf.xacro" />
+
+  <xacro:macro name="aero-upper" params="disable_mesh:=false">
+
+  <xacro:aero_upper base_link="waist_link" r_hand_link="r_hand_yaw_link" l_hand_link="l_hand_yaw_link" disable_mesh="${disable_mesh}"/>
+
+  <xacro:hand_yaw prefix="r" reflect="1" hand_link="r_hand_link" disable_mesh="${disable_mesh}"/>
+  <xacro:hand_yaw_s prefix="l" reflect="-1" hand_link="l_hand_link" disable_mesh="${disable_mesh}"/>
+
+  <xacro:seed_hand prefix="r" reflect="1" disable_mesh="${disable_mesh}"/>
+  <xacro:trx_s prefix="l" reflect="-1" disable_mesh="${disable_mesh}"/>
+
+  <joint name="upper_lower_connector" type="fixed">
+    <parent link="lifter_top_link"/>
+    <child link="waist_link"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0 "/> 
+  </joint>
+
+  </xacro:macro>
+
+</robot>

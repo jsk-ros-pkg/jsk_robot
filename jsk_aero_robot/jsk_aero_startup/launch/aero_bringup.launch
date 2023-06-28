@@ -1,0 +1,14 @@
+<launch>
+  <arg name="use_restore_wrist" default="false"/>
+
+  <!-- Bringup minimal aero components -->
+  <include file="$(find aero_startup)/aero_bringup.launch"/>
+
+  <!-- Initialize both wrist rotation -->
+  <group if="$(arg use_restore_wrist)">
+    <node name="set_script"
+          pkg="jsk_aero_startup" type="init_on_end.sh"
+          output="screen"/>
+  </group>
+
+</launch>
