@@ -4,10 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Status1
-      Splitter Ratio: 0.5
-    Tree Height: 344
+        - /DepthCloud1/Auto Size1
+      Splitter Ratio: 0.5970588326454163
+    Tree Height: 728
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -26,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Image
+    SyncSource: DepthCloud
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -54,12 +53,12 @@ Visualization Manager:
       Value: true
     - Class: rviz/Axes
       Enabled: true
-      Length: 0.5
+      Length: 0.30000001192092896
       Name: Axes
-      Radius: 0.05000000074505806
+      Radius: 0.009999999776482582
       Reference Frame: <Fixed Frame>
       Value: true
-    - Alpha: 1
+    - Alpha: 0.6000000238418579
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -69,118 +68,74 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_link:
+        kinova_arm_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        bracelet_link:
+        kinova_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_color_frame:
+        kinova_dummy_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        camera_depth_frame:
+        kinova_end_effector_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        end_effector_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        forearm_link:
+        kinova_forearm_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        half_arm_1_link:
+        kinova_gripper_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        half_arm_2_link:
+        kinova_left_finger_dist_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_inner_finger:
+        kinova_left_finger_prox_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_inner_finger_pad:
+        kinova_lower_wrist_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_inner_knuckle:
+        kinova_right_finger_dist_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_outer_finger:
+        kinova_right_finger_prox_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        left_outer_knuckle:
+        kinova_shoulder_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_inner_finger:
+        kinova_tool_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kinova_upper_wrist_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        right_inner_finger_pad:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_inner_knuckle:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_outer_finger:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_outer_knuckle:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        robotiq_arg2f_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        shoulder_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        spherical_wrist_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        spherical_wrist_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        tool_frame:
+        kinova_wrist_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -195,111 +150,123 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_link:
+        kinova_arm_link:
           Value: true
-        bracelet_link:
+        kinova_base_link:
           Value: true
-        camera_color_frame:
+        kinova_dummy_link:
           Value: true
-        camera_depth_frame:
+        kinova_end_effector_link:
           Value: true
-        camera_link:
+        kinova_forearm_link:
           Value: true
-        end_effector_link:
+        kinova_gripper_base_link:
           Value: true
-        forearm_link:
+        kinova_left_finger_dist_link:
           Value: true
-        half_arm_1_link:
+        kinova_left_finger_prox_link:
           Value: true
-        half_arm_2_link:
+        kinova_lower_wrist_link:
           Value: true
-        left_inner_finger:
+        kinova_right_finger_dist_link:
           Value: true
-        left_inner_finger_pad:
+        kinova_right_finger_prox_link:
           Value: true
-        left_inner_knuckle:
+        kinova_shoulder_link:
           Value: true
-        left_outer_finger:
+        kinova_tool_frame:
           Value: true
-        left_outer_knuckle:
+        kinova_upper_wrist_link:
           Value: true
-        right_inner_finger:
+        kinova_wrist_camera_aligned_depth_to_color_frame:
           Value: true
-        right_inner_finger_pad:
+        kinova_wrist_camera_color_frame:
           Value: true
-        right_inner_knuckle:
+        kinova_wrist_camera_color_optical_frame:
           Value: true
-        right_outer_finger:
+        kinova_wrist_camera_depth_frame:
           Value: true
-        right_outer_knuckle:
+        kinova_wrist_camera_depth_optical_frame:
           Value: true
-        robotiq_arg2f_base_link:
+        kinova_wrist_camera_link:
           Value: true
-        shoulder_link:
-          Value: true
-        spherical_wrist_1_link:
-          Value: true
-        spherical_wrist_2_link:
-          Value: true
-        tool_frame:
-          Value: true
-      Marker Scale: 0.4000000059604645
+      Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          shoulder_link:
-            half_arm_1_link:
-              half_arm_2_link:
-                forearm_link:
-                  spherical_wrist_1_link:
-                    spherical_wrist_2_link:
-                      bracelet_link:
-                        end_effector_link:
-                          camera_color_frame:
-                            {}
-                          camera_depth_frame:
-                            {}
-                          camera_link:
-                            {}
-                          robotiq_arg2f_base_link:
-                            left_inner_knuckle:
+        kinova_base_link:
+          kinova_shoulder_link:
+            kinova_arm_link:
+              kinova_forearm_link:
+                kinova_lower_wrist_link:
+                  kinova_upper_wrist_link:
+                    kinova_end_effector_link:
+                      kinova_dummy_link:
+                        kinova_gripper_base_link:
+                          kinova_left_finger_prox_link:
+                            kinova_left_finger_dist_link:
                               {}
-                            left_outer_knuckle:
-                              left_outer_finger:
-                                left_inner_finger:
-                                  left_inner_finger_pad:
-                                    {}
-                            right_inner_knuckle:
+                          kinova_right_finger_prox_link:
+                            kinova_right_finger_dist_link:
                               {}
-                            right_outer_knuckle:
-                              right_outer_finger:
-                                right_inner_finger:
-                                  right_inner_finger_pad:
-                                    {}
-                          tool_frame:
-                            {}
+                        kinova_tool_frame:
+                          {}
+                    kinova_wrist_camera_link:
+                      kinova_wrist_camera_aligned_depth_to_color_frame:
+                        kinova_wrist_camera_color_optical_frame:
+                          {}
+                      kinova_wrist_camera_color_frame:
+                        {}
+                      kinova_wrist_camera_depth_frame:
+                        kinova_wrist_camera_depth_optical_frame:
+                          {}
       Update Interval: 0
       Value: true
-    - Class: rviz/Image
+    - Alpha: 1
+      Auto Size:
+        Auto Size Factor: 1
+        Value: true
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/DepthCloud
+      Color: 255; 255; 255
+      Color Image Topic: /kinova_wrist_camera/color/image_raw
+      Color Transformer: RGB8
+      Color Transport Hint: raw
+      Decay Time: 0
+      Depth Map Topic: /kinova_wrist_camera/aligned_depth_to_color/image_raw
+      Depth Map Transport Hint: raw
       Enabled: true
-      Image Topic: /camera/color/image_rect_color
-      Max Value: 1
-      Median window: 5
-      Min Value: 0
-      Name: Image
-      Normalize Range: true
-      Queue Size: 2
-      Transport Hint: compressed
-      Unreliable: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: DepthCloud
+      Occlusion Compensation:
+        Occlusion Time-Out: 30
+        Value: false
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 3
+      Style: Flat Squares
+      Topic Filter: true
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_link
+    Fixed Frame: kinova_base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -323,35 +290,33 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.203127384185791
+      Distance: 1.8170571327209473
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.08768113702535629
-        Y: -0.21367596089839935
-        Z: 0.5479295253753662
+        X: 0.08491583913564682
+        Y: 0.0020060953684151173
+        Z: 0.37909868359565735
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.38539838790893555
+      Pitch: 0.31039804220199585
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.2504054307937622
+      Yaw: 6.17358922958374
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 846
+  Height: 1025
   Hide Left Dock: false
   Hide Right Dock: true
-  Image:
-    collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001f3000002b0fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000001e3000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650100000226000000c70000001600fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670200000532000000c2000001f50000018a000000010000010f000002b0fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000002b0000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004b00000003efc0100000002fb0000000800540069006d00650100000000000004b0000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000002b7000002b000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000015600000363fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000363000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d00610067006501000002a5000000fb0000000000000000fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e00670200000532000000c2000001f50000018a000000010000010f000002b0fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000002b0000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000007800000003efc0100000002fb0000000800540069006d0065010000000000000780000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000006240000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -360,6 +325,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 1200
-  X: 67
+  Width: 1920
+  X: 0
   Y: 27
