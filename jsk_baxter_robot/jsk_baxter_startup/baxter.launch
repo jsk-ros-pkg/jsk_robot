@@ -233,4 +233,17 @@
   <node name="$(anon rviz)" pkg="rviz" type="rviz" if="$(arg launch_rviz)"
         args="-d $(find jsk_baxter_startup)/config/baxter_default.rviz"/>
 
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: $(find jsk_baxter_startup)/config/baxter_email_topic.yaml
+    </rosparam>
+  </node>
+
+  <!-- send email, twitter with smach -->
+  <node name="smach_to_mail_server" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <rosparam command="load"
+              file="$(find jsk_baxter_startup)/config/baxter_email_topic.yaml" />
+  </node>
+
 </launch>
