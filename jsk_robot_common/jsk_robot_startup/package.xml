@@ -45,6 +45,7 @@
   <exec_depend>rospy</exec_depend>
   <exec_depend>rostwitter</exec_depend>
   <exec_depend>roswww</exec_depend>
+  <exec_depend>rwt_image_view</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
@@ -52,6 +53,7 @@
   <exec_depend>tf2_geometry_msgs</exec_depend>
   <exec_depend>urdf</exec_depend>
   <exec_depend>jsk_tilt_laser</exec_depend>
+  <exec_depend>web_video_server</exec_depend>
 
   <test_depend>rostest</test_depend>
   <test_depend>pr2_gazebo</test_depend>
