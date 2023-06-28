@@ -32,6 +32,8 @@
        doc="whether launch gdrive_server on c1 or not."/>
   <arg name="launch_gdrive_server_c2" default="true"
        doc="whether launch gdrive_server on c2 or not."/>
+  <arg name="launch_app_scheduler" default="true"
+       doc="whether launch app_scheduler or not." />
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -196,5 +198,11 @@
   <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
     <remap from="~input" to="/kinect_head/rgb/image_raw" />
   </node>
+
+  <!-- app scheduler -->
+  <include if="$(arg launch_app_scheduler)"
+           file="$(find app_scheduler)/launch/app_scheduler.launch">
+    <arg name="yaml_path" value="$(find jsk_pr2_startup)/config/pr2_app_schedule.yaml" />
+  </include>
 
 </launch>
