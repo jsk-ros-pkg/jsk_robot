@@ -1,0 +1,26 @@
+# Base profile
+TrajectoryPlannerROS:
+  acc_lim_x: 0.55
+  acc_lim_y: 0.55
+  acc_lim_theta: 3.0
+  max_vel_x: 0.55
+  min_vel_x: 0.1
+  max_vel_y: 0.55
+  min_vel_y: 0.1
+  max_vel_theta: 2.00
+  min_vel_theta: -2.00
+  min_in_place_vel_theta: 0.2
+  holonomic_robot: true
+
+  #Since we're using a holonomic robot, we'll set the set of y velocities it will sample
+  y_vels: [-0.3, -0.1, 0.1, -0.3]
+
+  #Set the tolerance on achieving a goal
+  xy_goal_tolerance: 0.1
+  yaw_goal_tolerance: 0.05
+
+  #We'll configure how long and with what granularity we'll forward simulate trajectories
+  sim_time: 1.7
+  sim_granularity: 0.025
+  vx_samples: 3
+  vtheta_samples: 20
