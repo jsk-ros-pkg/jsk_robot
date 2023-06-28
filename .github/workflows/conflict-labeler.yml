@@ -18,3 +18,5 @@ jobs:
         with:
           dirtyLabel: "PleaseResolveConflicts"
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          retryAfter: 60
+          retryMax: 150
