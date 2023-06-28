@@ -9,9 +9,12 @@ import datetime
 import os
 import pickle
 import rospy
+import rosnode
 import sys
 
 from cv_bridge import CvBridge
+from dynamic_reconfigure.server import Server
+from jsk_robot_startup.cfg import SmachNotificationReconfigureConfig
 from jsk_robot_startup.msg import Email
 from jsk_robot_startup.msg import EmailBody
 from sensor_msgs.msg import CompressedImage
@@ -37,27 +40,26 @@ class SmachToMail():
         rospy.init_node('server_name')
         # it should be 'smach_to_mail', but 'server_name'
         # is the default name of smach_ros
-        self.use_mail = rospy.get_param("~use_mail", True)
-        self.use_twitter = rospy.get_param("~use_twitter", True)
-        self.use_google_chat = rospy.get_param(
-            "~use_google_chat", _enable_google_chat)
         self.pub_email = rospy.Publisher("email", Email, queue_size=10)
         self.pub_twitter = rospy.Publisher("tweet", String, queue_size=10)
+        self.reconfigure_server = Server(
+            SmachNotificationReconfigureConfig, self._reconfigure_cb)
         rospy.Subscriber(
             "~smach/container_status", SmachContainerStatus, self._status_cb)
+        rospy.Timer(rospy.Duration(
+            rospy.get_param("~stop_duration", 3600)), self._stop_timer_cb)
         self.bridge = CvBridge()
         self.smach_state_list = {}  # for status list
         self.smach_state_subject = {}  # for status subject
-        if rospy.has_param("~sender_address"):
+        self.timeout = rospy.get_param("~timeout", 1200)
+        try:
             self.sender_address = rospy.get_param("~sender_address")
-        else:
-            rospy.logerr("Please set rosparam {}/sender_address".format(
-                rospy.get_name()))
-        if rospy.has_param("~receiver_address"):
             self.receiver_address = rospy.get_param("~receiver_address")
-        else:
-            rospy.logerr("Please set rosparam {}/receiver_address".format(
-                    rospy.get_name()))
+        except KeyError as e:
+            rospy.logerr(e)
+            rospy.logerr(
+                "Please set rosparam ~sender_address or ~receiver_address")
+            sys.exit()
 
         self.chat_space = rospy.get_param("~google_chat_space", None)
         if self.use_google_chat and self.chat_space is None:
@@ -68,6 +70,43 @@ class SmachToMail():
             self.gchat_ac = actionlib.SimpleActionClient("/google_chat_ros/send", SendMessageAction)
             self.gchat_image_dir = rospy.get_param("~google_chat_tmp_image_dir", "/tmp")
             self._gchat_thread = None
+
+    def _reconfigure_cb(self, config, level):
+        self.use_mail = config['use_mail']
+        self.use_twitter = config['use_twitter']
+        self.use_google_chat = config['use_google_chat']
+        self.send_every_transition = config['send_every_transition']
+        rospy.loginfo(
+            "Switched parameters; use_mail: {send_every_transition}, "
+            "use_twitter: {use_twitter}, "
+            "use_google_chat: {use_google_chat}, "
+            "send_every_transition: {send_every_transition}".format(**config))
+        return config
+
+    def _stop_timer_cb(self, event):
+        '''
+        If smach does not go to finish/end state,
+        this is forced to send notification.
+        '''
+        rospy.logdebug("SmachToMail stop timer called")
+        if (self.smach_state_list and self.smach_state_subject):
+            for key in self.smach_state_list.keys():
+                # Check node status and force to send notification
+                if not rosnode.rosnode_ping(
+                        key, max_count=30, verbose=False):
+                    rospy.logwarn(
+                        "SmachToMail timer publishes stop signal. Send Notification.")
+                    if self.use_mail:
+                        self._send_mail(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_twitter:
+                        self._send_twitter(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    if self.use_google_chat:
+                        self._send_google_chat(
+                            self.smach_state_subject[key], self.smach_state_list[key])
+                    del self.smach_state_subject[key]
+                    del self.smach_state_list[key]
 
     def _status_cb(self, msg):
         '''
@@ -143,6 +182,14 @@ class SmachToMail():
         else:
             self.smach_state_list[caller_id].append(status_dict)
 
+        # send notification every transition
+        if (self.send_every_transition
+                and self.use_google_chat
+                and not self.smach_state_list[caller_id] is None):
+            rospy.loginfo("Send every transition called")
+            self._send_google_chat(
+                self.smach_state_subject[caller_id], [status_dict])
+
         # If we received END/FINISH status, send email, etc...
         if status_str in ["END", "FINISH", "FINISH-SUCCESS", "FINISH-FAILURE"]:
             if (caller_id not in self.smach_state_list) or self.smach_state_list[caller_id] is None:
@@ -158,9 +205,10 @@ class SmachToMail():
                     self._send_mail(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 if self.use_twitter:
                     self._send_twitter(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
-                if self.use_google_chat:
+                if self.use_google_chat and not self.send_every_transition:
                     self._send_google_chat(self.smach_state_subject[caller_id], self.smach_state_list[caller_id])
                 self.smach_state_list[caller_id] = None
+                self.smach_state_subject[caller_id] = None
 
     def _send_mail(self, subject, state_list):
         email_msg = Email()
@@ -209,6 +257,8 @@ class SmachToMail():
 
         if subject:
             email_msg.subject = subject
+        elif rospy.has_param("/email_topic/mail_title"):
+            email_msg.subject = rospy.get_param("/email_topic/mail_title")
         else:
             email_msg.subject = 'Message from {}'.format(rospy.get_param('/robot/name', 'robot'))
 
@@ -276,7 +326,7 @@ class SmachToMail():
         result = self.gchat_ac.get_result()
         if not self._gchat_thread:
             self._gchat_thread = result.message_result.thread_name
-        rospy.loginfo("Sending google chat messsage: {} to {} chat space".format(text, self.chat_space))
+        rospy.loginfo("Sending google chat messsage:{} chat space, {} thread".format(self.chat_space, self._gchat_thread))
         rospy.logdebug("Google Chat result: {}".format(self.gchat_ac.get_result()))
 
 if __name__ == '__main__':
