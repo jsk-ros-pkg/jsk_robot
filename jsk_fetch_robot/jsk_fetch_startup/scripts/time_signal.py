@@ -8,12 +8,14 @@ import rospy
 import sys
 import urllib2
 
+from dynamic_reconfigure.server import Server
+from jsk_fetch_startup.cfg import TimeSignalConfig as Config
 from sound_play.msg import SoundRequestAction
 from sound_play.msg import SoundRequestGoal
 
 
 class TimeSignal(object):
-    def __init__(self):
+    def __init__(self, volume=1.0):
         self.client_en = actionlib.SimpleActionClient(
             '/sound_play', SoundRequestAction)
         self.client_jp = actionlib.SimpleActionClient(
@@ -23,6 +25,8 @@ class TimeSignal(object):
         self.now_hour = self.now_time.hour
         self.now_minute = self.now_time.minute
         self.day = self.now_time.strftime('%a')
+        self.volume = volume
+        self.srv = Server(Config, self.config_callback)
         reload(sys)
         sys.setdefaultencoding('utf-8')
         api_key_file = rospy.get_param(
@@ -35,7 +39,7 @@ class TimeSignal(object):
         sound_goal = SoundRequestGoal()
         sound_goal.sound_request.sound = -3
         sound_goal.sound_request.command = 1
-        sound_goal.sound_request.volume = 1.0
+        sound_goal.sound_request.volume = self.volume
         if lang is not None:
             sound_goal.sound_request.arg2 = lang
         sound_goal.sound_request.arg = speech_text
@@ -152,6 +156,20 @@ class TimeSignal(object):
             forecast_text += " and the humidity is {}%.".format(humidity)
             forecast_text += " The wind speed is {} meter per second.".format(wind_speed)
         return forecast_text
+
+    def _set_volume(self, volume):
+        '''
+        Set speak volume between 0.0 and 1.0
+        '''
+        volume = min(max(0.0, volume), 1.0)
+        if self.volume != volume:
+            self.volume = volume
+            rospy.loginfo("time_signal's volume was set to {}".format(
+                self.volume))
+
+    def config_callback(self, config, level):
+        self._set_volume(config.volume)
+        return config
 
 
 if __name__ == '__main__':
