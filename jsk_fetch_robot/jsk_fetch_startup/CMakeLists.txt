@@ -11,6 +11,7 @@ endif()
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  dynamic_reconfigure
   roscpp
   std_msgs
   sensor_msgs
@@ -24,10 +25,16 @@ find_package(catkin REQUIRED COMPONENTS
 )
 find_package(Boost REQUIRED COMPONENTS)
 
+generate_dynamic_reconfigure_options(
+  cfg/TimeSignal.cfg
+)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS dynamic_reconfigure
+)
 
 catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
