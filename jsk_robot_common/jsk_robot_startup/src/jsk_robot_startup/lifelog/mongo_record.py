@@ -83,6 +83,10 @@ class MongoRecord(LoggerBase):
         self.insert(msg,
                     meta={'input_topic': topic},
                     wait=self.blocking)
+        # Unregister and register subscriber again to subscribe topic at specified rate
+        # See https://github.com/jsk-ros-pkg/jsk_robot/issues/1838
+        self.subscribers[topic].unregister()
+        del self.subscribers[topic]
 
     def run(self):
         rate = rospy.Rate(self.update_rate)
