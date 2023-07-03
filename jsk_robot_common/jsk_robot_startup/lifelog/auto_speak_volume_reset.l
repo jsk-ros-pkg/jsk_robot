@@ -11,4 +11,5 @@
 (ros::set-dynamic-reconfigure-param "/tweet_client_uptime" "volume" :double 1.0)
 (ros::set-dynamic-reconfigure-param "/tweet_client_warning" "volume" :double 1.0)
 (ros::set-dynamic-reconfigure-param "/tweet_client_worktime" "volume" :double 1.0)
+(ros::set-dynamic-reconfigure-param "/time_signal" "volume" :double 1.0)
 (exit)
