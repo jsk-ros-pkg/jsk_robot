@@ -16,6 +16,7 @@
     <arg name="save_base_trajectory" value="true" />
     <arg name="save_object_detection" value="false" />
     <arg name="save_action" value="true" />
+    <arg name="save_faces" value="true" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="localhost" value="false" />
