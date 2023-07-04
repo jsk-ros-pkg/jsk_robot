@@ -351,54 +351,85 @@
 
     <!-- object detection logger -->
     <group if="$(arg save_object_detection)">
-      <node if="$(arg save_edgetpu_object_detector)"
-            name="object_detection_logger"
-            pkg="jsk_robot_startup" type="mongo_record.py"
-            machine="$(arg machine)"
-            respawn="$(arg respawn)">
-        <rosparam subst_value="true">
-          database: $(arg database)
-          topics:
-          - /edgetpu_object_detector/output/class
-          - /edgetpu_object_detector/output/rects
-        </rosparam>
-        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
-          collection: $(arg collection)
-        </rosparam>
-      </node>
-      <node unless="$(arg save_edgetpu_object_detector)"
-            name="object_detection_logger"
-            pkg="jsk_robot_startup" type="object_detection_logger.py"
-            machine="$(arg machine)"
-            respawn="$(arg respawn)">
-        <rosparam subst_value="true">
-          database: $(arg database)
-          map_frame: $(arg map_frame_id)
-          robot_frame: $(arg base_frame_id)
-        </rosparam>
-        <rosparam subst_value="true" if="$(eval arg('collection') != '')">
-          collection: $(arg collection)
-        </rosparam>
-      </node>
+      <group if="$(arg save_edgetpu_object_detector)">
+        <node name="edgetpu_object_detector_throttle"
+              pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/SynchronizedThrottle $(arg manager)"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <rosparam subst_value="true">
+            approximate_sync: True
+            update_rate: 1.0
+            topics:
+            - /edgetpu_object_detector/output/class
+            - /edgetpu_object_detector/output/rects
+          </rosparam>
+        </node>
+        <node if="$(arg save_edgetpu_object_detector)"
+              name="object_detection_logger"
+              pkg="jsk_robot_startup" type="mongo_record.py"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <rosparam subst_value="true">
+            database: $(arg database)
+            topics:
+            - /edgetpu_object_detector/output/class/throttled
+            - /edgetpu_object_detector/output/rects/throttled
+          </rosparam>
+          <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+            collection: $(arg collection)
+          </rosparam>
+        </node>
+      </group>
+      <group unless="$(arg save_edgetpu_object_detector)">
+        <node name="objqect_detection_logger"
+              pkg="jsk_robot_startup" type="object_detection_logger.py"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <rosparam subst_value="true">
+            database: $(arg database)
+            map_frame: $(arg map_frame_id)
+            robot_frame: $(arg base_frame_id)
+          </rosparam>
+          <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+            collection: $(arg collection)
+          </rosparam>
+        </node>
+      </group>
     </group>
 
     <!-- human pose logger -->
-    <node if="$(arg save_human_pose)"
-          name="human_pose_logger"
-          pkg="jsk_robot_startup" type="mongo_record.py"
-          machine="$(arg machine)"
-          respawn="$(arg respawn)">
-      <rosparam subst_value="true">
-        database: $(arg database)
-        topics:
-        - /edgetpu_human_pose_estimator/output/class
-        - /edgetpu_human_pose_estimator/output/poses
-        - /edgetpu_human_pose_estimator/output/rects
-      </rosparam>
-      <rosparam subst_value="true" if="$(eval arg('collection') != '')">
-        collection: $(arg collection)
-      </rosparam>
-    </node>
+    <group if="$(arg save_human_pose)">
+      <node name="edgetpu_human_pose_throttle"
+            pkg="nodelet" type="nodelet"
+              args="load jsk_topic_tools/SynchronizedThrottle $(arg manager)"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <rosparam subst_value="true">
+            approximate_sync: True
+            update_rate: 1.0
+            topics:
+            - /edgetpu_human_pose_estimator/output/class
+            - /edgetpu_human_pose_estimator/output/poses
+            - /edgetpu_human_pose_estimator/output/rects
+          </rosparam>
+        </node>
+        <node name="human_pose_logger"
+              pkg="jsk_robot_startup" type="mongo_record.py"
+              machine="$(arg machine)"
+              respawn="$(arg respawn)">
+          <rosparam subst_value="true">
+            database: $(arg database)
+            topics:
+            - /edgetpu_human_pose_estimator/output/class/throttled
+            - /edgetpu_human_pose_estimator/output/poses/throttled
+            - /edgetpu_human_pose_estimator/output/rects/throttled
+          </rosparam>
+          <rosparam subst_value="true" if="$(eval arg('collection') != '')">
+            collection: $(arg collection)
+          </rosparam>
+        </node>
+    </group>
 
     <!-- action logger -->
     <node if="$(arg save_action)"
