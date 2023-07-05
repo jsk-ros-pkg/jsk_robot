@@ -365,8 +365,7 @@
             - /edgetpu_object_detector/output/rects
           </rosparam>
         </node>
-        <node if="$(arg save_edgetpu_object_detector)"
-              name="object_detection_logger"
+        <node name="object_detection_logger"
               pkg="jsk_robot_startup" type="mongo_perception_record.py"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
