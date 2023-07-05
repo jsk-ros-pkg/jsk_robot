@@ -1,0 +1,5 @@
+import spot_person_lead_behaviors.walk_behavior as walk_behavior
+import spot_person_lead_behaviors.narrow_behavior as narrow_behavior
+import spot_person_lead_behaviors.crosswalk_behavior as crosswalk_behavior
+import spot_person_lead_behaviors.stair_behavior as stair_behavior
+import spot_person_lead_behaviors.elevator_behavior as elevator_behavior
