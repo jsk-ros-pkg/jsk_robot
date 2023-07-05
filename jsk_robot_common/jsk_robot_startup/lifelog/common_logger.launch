@@ -285,7 +285,7 @@
     <!-- face save aws face data -->
     <node if="$(arg save_faces)"
           name="face_logger"
-          pkg="jsk_robot_startup" type="mongo_record.py"
+          pkg="jsk_robot_startup" type="mongo_perception_record.py"
           machine="$(arg machine)"
           respawn="$(arg respawn)">
       <rosparam subst_value="true">
@@ -367,7 +367,7 @@
         </node>
         <node if="$(arg save_edgetpu_object_detector)"
               name="object_detection_logger"
-              pkg="jsk_robot_startup" type="mongo_record.py"
+              pkg="jsk_robot_startup" type="mongo_perception_record.py"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
           <rosparam subst_value="true">
@@ -415,7 +415,7 @@
           </rosparam>
         </node>
         <node name="human_pose_logger"
-              pkg="jsk_robot_startup" type="mongo_record.py"
+              pkg="jsk_robot_startup" type="mongo_perception_record.py"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
           <rosparam subst_value="true">
