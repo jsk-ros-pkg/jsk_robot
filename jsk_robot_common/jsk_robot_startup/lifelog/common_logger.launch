@@ -382,7 +382,7 @@
         </node>
       </group>
       <group unless="$(arg save_edgetpu_object_detector)">
-        <node name="objqect_detection_logger"
+        <node name="object_detection_logger"
               pkg="jsk_robot_startup" type="object_detection_logger.py"
               machine="$(arg machine)"
               respawn="$(arg respawn)">
