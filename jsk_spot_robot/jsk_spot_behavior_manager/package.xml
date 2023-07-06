@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>spot_behavior_manager</name>
+  <name>jsk_spot_behavior_manager</name>
   <version>1.1.0</version>
   <description>The spot_behavior_manager package</description>
 
@@ -16,9 +16,9 @@
 
   <exec_depend>actionlib</exec_depend>
   <exec_depend>networkx</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
   <exec_depend>rospkg</exec_depend>
   <exec_depend>rospy</exec_depend>
-  <exec_depend>roslaunch</exec_depend>
   <exec_depend>sound_play</exec_depend>
   <exec_depend>spot_behavior_manager_msgs</exec_depend>
   <exec_depend>spot_ros_client</exec_depend>

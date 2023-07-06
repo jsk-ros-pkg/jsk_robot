@@ -12,12 +12,12 @@ import PyKDL
 from sound_play.libsoundplay import SoundClient
 from spot_ros_client.libspotros import SpotRosClient
 
-from spot_behavior_manager.support_behavior_graph import SupportBehaviorGraph
-from spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
+from jsk_spot_behavior_manager.support_behavior_graph import SupportBehaviorGraph
+from jsk_spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
 
 from std_msgs.msg import String
-from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonFeedback, LeadPersonResult, LeadPersonActionFeedback
-from spot_behavior_manager_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
+from jsk_spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonFeedback, LeadPersonResult, LeadPersonActionFeedback
+from jsk_spot_behavior_manager_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
 
 
 class BehaviorManagerNode(object):

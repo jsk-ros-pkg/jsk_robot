@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import rospy
-from spot_behavior_manager.behavior_manager_node import BehaviorManagerNode
+from jsk_spot_behavior_manager.behavior_manager_node import BehaviorManagerNode
 
 def main():
 
