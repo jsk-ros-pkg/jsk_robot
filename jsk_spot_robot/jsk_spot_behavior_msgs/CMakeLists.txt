@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(spot_behavior_manager_msgs)
+project(jsk_spot_behavior_msgs)
 
 find_package(catkin REQUIRED COMPONENTS genmsg actionlib actionlib_msgs)
 
 add_action_files(
     DIRECTORY action
-    FILES LeadPerson.action
+    FILES Navigation.action
 )
 
 add_service_files(
@@ -16,6 +16,6 @@ add_service_files(
 generate_messages(DEPENDENCIES actionlib_msgs)
 
 catkin_package(
-  LIBRARIES spot_behavior_manager_msgs
+  LIBRARIES jsk_spot_behavior_msgs
   CATKIN_DEPENDS message_runtime
 )
