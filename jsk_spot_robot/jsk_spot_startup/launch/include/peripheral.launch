@@ -1,2 +1,7 @@
 <launch>
+    <arg name="port_enr" default="/dev/ttyACM0"/>
+
+    <include file="$(find esp_now_ros)/launch/demo.launch">
+        <arg name="port" value="$(arg port_enr)"/>
+    </include>
 </launch>
