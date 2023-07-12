@@ -16,6 +16,7 @@
   <arg name="test_mode" default="false" />
 
   <param name="robot/database" value="$(arg db_name)" />
+  <param name="mongodb_replicate_on_write" value="$(arg replicate_on_write)" />
 
   <!-- Replication -->
   <group if="$(arg replicate)">
@@ -26,7 +27,6 @@
           output="screen" machine="$(arg machine)">
       <rosparam subst_value="true" if="$(eval arg('extra_collections') != '')">
         extra_collections: $(arg extra_collections)
-        replicate_on_write: $(arg replicate_on_write)
       </rosparam>
     </node>
   </group>
