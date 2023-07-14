@@ -100,7 +100,7 @@ if [ "${UPDATE_WORKSPACE}" == "true" ]; then
     ln -sf $ROSINSTALL $WORKSPACE/src/.rosinstall
     wstool update -t $WORKSPACE/src --delete-changed-uris
     # When the repository's Spec-Version branch has commits which are not pushed to remote, they are evacuated to another branch
-    wstool foreach -t $WORKSPACE/src --git --shell 'expected_version=$(wstool info . | grep Spec-Version: | awk '\''{print $2}'\''); current_version=$(git rev-parse --abbrev-ref HEAD); remote_diff_head_origin=$(git rev-list HEAD..origin); remote_diff_origin_head=$(git rev-list origin..HEAD); remote_diff="${remote_diff_head_origin}${remote_diff_origin_head}"; if [ "$expected_version" = "$current_version" ] && [ -n "$remote_diff" ]; then git checkout -b ${expected_version}-patch-$(date +%Y%m%d%H%M%S); git checkout origin/$expected_version; git branch -D $expected_version; git checkout -b $expected_version --track origin/$expected_version; fi'
+    wstool foreach -t $WORKSPACE/src --git --shell 'expected_version=$(wstool info . | grep Spec-Version: | awk '\''{print $2}'\''); current_version=$(git rev-parse --abbrev-ref HEAD); remote_diff_head_origin=$(git rev-list HEAD..origin/${expected_version}); remote_diff_origin_head=$(git rev-list origin/${expected_version}..HEAD); remote_diff="${remote_diff_head_origin}${remote_diff_origin_head}"; if [ "$expected_version" = "$current_version" ] && [ -n "$remote_diff" ]; then git checkout -b ${expected_version}-patch-$(date +%Y%m%d%H%M%S); git checkout origin/$expected_version; git branch -D $expected_version; git checkout -b $expected_version --track origin/$expected_version; fi'
     wstool update -t $WORKSPACE/src
     WSTOOL_UPDATE_RESULT=$?
 else
