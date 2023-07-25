@@ -1,2 +1,0 @@
-import jsk_spot_behavior_manager.support_behavior_graph as support_behavior_graph
-import jsk_spot_behavior_manager.base_behavior as base_behavior

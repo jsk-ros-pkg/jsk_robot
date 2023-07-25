@@ -4,7 +4,7 @@
 import actionlib
 import rospy
 
-from spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonGoal
+from jsk_spot_behavior_msgs.msg import NavigationAction, NavigationGoal
 
 from sound_play.libsoundplay import SoundClient
 from ros_speech_recognition import SpeechRecognitionClient
@@ -16,7 +16,7 @@ def main():
 
     speech_recognition_client = SpeechRecognitionClient()
     sound_client = SoundClient(sound_action='/robotsound_jp', sound_topic='/robotsound_jp')
-    action_server_lead_to = actionlib.SimpleActionClient('~execute_behaviors', LeadPersonAction)
+    action_server_lead_to = actionlib.SimpleActionClient('~execute_behaviors', NavigationAction)
 
     node_list = rospy.get_param('~nodes', {})
 
@@ -59,7 +59,7 @@ def main():
         sound_client.say('{} へ移動します'.format(target_node_name_jp))
 
         rospy.loginfo('executing behaviors to {}'.format(target_node_name_jp))
-        action_server_lead_to.send_goal_and_wait(LeadPersonGoal(target_node_id=target_node_id))
+        action_server_lead_to.send_goal_and_wait(NavigationGoal(target_node_id=target_node_id))
 
 
 if __name__ == '__main__':

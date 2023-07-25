@@ -12,7 +12,7 @@ import PyKDL
 from sound_play.libsoundplay import SoundClient
 from spot_ros_client.libspotros import SpotRosClient
 
-from jsk_spot_behavior_manager.support_behavior_graph import SupportBehaviorGraph
+from jsk_spot_behavior_manager.behavior_graph import BehaviorGraph
 from jsk_spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
 
 from std_msgs.msg import String
@@ -27,7 +27,7 @@ class BehaviorManagerNode(object):
         # navigation dictonary
         raw_edges = rospy.get_param('~map/edges')
         raw_nodes = rospy.get_param('~map/nodes')
-        self.graph = SupportBehaviorGraph(raw_edges, raw_nodes)
+        self.graph = BehaviorGraph(raw_edges, raw_nodes)
         self.current_node_id = rospy.get_param('~initial_node_id')
         self.pre_edge = None
         self.anchor_pose = None
@@ -86,6 +86,10 @@ class BehaviorManagerNode(object):
 
         rospy.loginfo('Initialized!')
 
+    def say(self, message, blocking=True):
+
+        self.sound_client.say(message, blocking=blocking)
+
     def get_robot_pose(self):
 
         try:
@@ -142,7 +146,7 @@ class BehaviorManagerNode(object):
 
     def handler_execute_behaviors(self, goal):
 
-        rospy.loginfo('Lead Action started. goal: {}'.format(goal))
+        rospy.loginfo('Behavior Action started. goal: {}'.format(goal))
 
         current_graph = copy.deepcopy(self.graph)
         while True:
@@ -153,7 +157,7 @@ class BehaviorManagerNode(object):
                 rospy.logerr('No path from {} to {}'.format(
                     self.current_node_id, goal.target_node_id))
                 if not self.silent_mode:
-                    self.sound_client.say('パスが見つかりませんでした')
+                    self.say('パスが見つかりませんでした')
                 result = NavigationResult(
                     success=False, message='No path found')
                 self.server_execute_behaviors.set_aborted(result)
@@ -161,7 +165,7 @@ class BehaviorManagerNode(object):
             else:
                 # navigation of edges in the path
                 if not self.silent_mode:
-                    self.sound_client.say('目的地に向かいます', blocking=True)
+                    self.say('目的地に向かいます', blocking=True)
                 self.go_back_to_anchor_pose()
                 success_navigation = True
                 for edge in path:
@@ -176,7 +180,7 @@ class BehaviorManagerNode(object):
                         else:
                             rospy.logwarn('Edge {} failed'.format(edge))
                             if not self.silent_mode:
-                                self.sound_client.say(
+                                self.say(
                                     '移動に失敗しました。経路を探索し直します。', blocking=True)
                             self.server_execute_behaviors.publish_feedback(NavigationFeedback(current_node_id=self.current_node_id))
                             current_graph.remove_edge(
@@ -187,7 +191,7 @@ class BehaviorManagerNode(object):
                         rospy.logerr(
                             'Got an error while navigating edge {}: {}'.format(edge, e))
                         if not self.silent_mode:
-                            self.sound_client.say('エラーが発生しました', blocking=True)
+                            self.say('エラーが発生しました', blocking=True)
                         self.pre_edge = None
                         result = NavigationResult(
                             success=False,
@@ -201,7 +205,7 @@ class BehaviorManagerNode(object):
 
         rospy.loginfo('Goal Reached!')
         if not self.silent_mode:
-            self.sound_client.say('目的地に到着しました.', blocking=True)
+            self.say('目的地に到着しました.', blocking=True)
         result = NavigationResult(success=True, message='Goal Reached.')
         self.server_execute_behaviors.set_succeeded(result)
         self.set_anchor_pose()
@@ -229,7 +233,7 @@ class BehaviorManagerNode(object):
             rospy.logerr(
                 'Failed to load and initialize behavior class: {}'.format(e))
             if not self.silent_mode:
-                self.sound_client.say('行動クラスを読み込めませんでした', blocking=True)
+                self.say('行動クラスを読み込めませんでした', blocking=True)
             self.pre_edge = None
             return False
 

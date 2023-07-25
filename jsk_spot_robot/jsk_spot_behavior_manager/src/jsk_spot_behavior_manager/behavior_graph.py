@@ -29,9 +29,9 @@ class GraphNode:
         self.properties = properties
 
 
-class SupportBehaviorGraph:
+class BehaviorGraph:
 
-    # 現在の SupportBehaviorGraph の仕様
+    # 現在の BehaviorGraph の仕様
     #   重み付きの有向グラフ
     #   あるノードからあるノードまでのエッジの数は 0 or 1
 

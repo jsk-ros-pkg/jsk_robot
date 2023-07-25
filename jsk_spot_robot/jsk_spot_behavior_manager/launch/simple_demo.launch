@@ -15,7 +15,7 @@
 
         <rosparam subst_value="true">
             initial_node_id: 'nodeA'
-            silent_mode: false
+            silent_mode: true
         </rosparam>
     </node>
 </launch>
