@@ -1,6 +1,8 @@
 import PyKDL
 import rospy
 import actionlib
+import tf2_ros
+import tf2_geometry_msgs
 
 import math
 
@@ -273,6 +275,10 @@ class SpotRosClient:
             NavigationAction
         )
 
+        #
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
+
         # wait for action
         try:
             self._actionclient_navigate_to.wait_for_server(rospy.Duration(5))
@@ -299,6 +305,28 @@ class SpotRosClient:
         except rospy.ROSException as e:
             rospy.logwarn('{}'.format(e))
             return None
+
+    def get_robot_pose(self):
+        try:
+            frame_odom_to_base = tf2_geometry_msgs.transform_to_kdl(
+                    self.tf_buffer.lookup_transform(
+                        'odom',
+                        'base_link',
+                        rospy.Time()
+                        )
+                    )
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+            return None
+        return frame_odom_to_base
+
+    def go_pose(self, target_frame):
+        self.trajectory(
+                target_frame.p[0],
+                target_frame.p[1],
+                target_frame.M.GetRPY()[2],
+                10,
+                blocking=True
+                )
 
     def is_connected(self):
         try:
