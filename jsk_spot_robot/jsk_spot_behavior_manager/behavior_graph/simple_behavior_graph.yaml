@@ -3,15 +3,26 @@ edges:
     to: 'nodeB'
     behavior_type: 'jsk_spot_behavior_manager.base_behavior.SimpleBehavior'
     cost: 10
+    args: {}
   - from: 'nodeB'
     to: 'nodeC'
     behavior_type: 'jsk_spot_behavior_manager.base_behavior.SimpleBehavior'
     cost: 10
+    args: {}
   - from: 'nodeC'
     to: 'nodeB'
     behavior_type: 'jsk_spot_behavior_manager.base_behavior.SimpleBehavior'
     cost: 10
+    args: {}
   - from: 'nodeB'
     to: 'nodeA'
     behavior_type: 'jsk_spot_behavior_manager.base_behavior.SimpleBehavior'
     cost: 10
+    args: {}
+nodes:
+  'nodeA':
+      name_en: 'nodeA'
+  'nodeB':
+      name_en: 'nodeB'
+  'nodeC':
+      name_en: 'nodeC'

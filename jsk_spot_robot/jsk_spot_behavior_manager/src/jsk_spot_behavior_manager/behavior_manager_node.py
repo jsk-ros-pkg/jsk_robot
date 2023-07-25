@@ -44,7 +44,7 @@ class BehaviorManagerNode(object):
             '~action_names_synchronizer', [])
 
         # action clients
-        self.spot_client = SpotRosClient()
+        #self.spot_client = SpotRosClient()
         self.sound_client = SoundClient(
             blocking=False,
             sound_action='/robotsound_jp',
@@ -102,21 +102,21 @@ class BehaviorManagerNode(object):
 
     def set_anchor_pose(self):
         rospy.loginfo('Set new anchor pose')
-        self.anchor_pose = self.get_robot_pose()
+        #self.anchor_pose = self.get_robot_pose()
 
     def go_back_to_anchor_pose(self):
         rospy.loginfo('Going back to an anchor pose')
-        current_pose = self.get_robot_pose()
-        if current_pose is None or self.anchor_pose is None:
-            return False
-        frame_current_to_anchor = current_pose.Inverse() * self.anchor_pose
-        self.spot_client.trajectory(
-                frame_current_to_anchor.p[0],
-                frame_current_to_anchor.p[1],
-                frame_current_to_anchor.M.GetRPY()[2],
-                10,
-                blocking=True
-                )
+        #current_pose = self.get_robot_pose()
+        #if current_pose is None or self.anchor_pose is None:
+        #    return False
+        #frame_current_to_anchor = current_pose.Inverse() * self.anchor_pose
+        #self.spot_client.trajectory(
+        #        frame_current_to_anchor.p[0],
+        #        frame_current_to_anchor.p[1],
+        #        frame_current_to_anchor.M.GetRPY()[2],
+        #        10,
+        #        blocking=True
+        #        )
 
     def callback_synchronizer(self, msg):
 
