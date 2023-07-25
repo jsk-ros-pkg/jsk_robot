@@ -16,8 +16,8 @@ from jsk_spot_behavior_manager.support_behavior_graph import SupportBehaviorGrap
 from jsk_spot_behavior_manager.base_behavior import BaseBehavior, load_behavior_class
 
 from std_msgs.msg import String
-from jsk_spot_behavior_manager_msgs.msg import LeadPersonAction, LeadPersonFeedback, LeadPersonResult, LeadPersonActionFeedback
-from jsk_spot_behavior_manager_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
+from jsk_spot_behavior_msgs.msg import NavigationAction, NavigationFeedback, NavigationResult, NavigationActionFeedback
+from jsk_spot_behavior_msgs.srv import ResetCurrentNode, ResetCurrentNodeResponse
 
 
 class BehaviorManagerNode(object):
@@ -72,13 +72,13 @@ class BehaviorManagerNode(object):
         self.list_behaviors_execution_actions = []
         for action_name in self.list_action_name_synchronizer:
             self.list_behaviors_execution_actions.append(
-                    rospy.Subscriber('{}/feedback'.format(action_name), LeadPersonActionFeedback, self.callback_synchronizer)
+                    rospy.Subscriber('{}/feedback'.format(action_name), NavigationActionFeedback, self.callback_synchronizer)
                     )
 
         # action server
         self.server_execute_behaviors = actionlib.SimpleActionServer(
             '~execute_behaviors',
-            LeadPersonAction,
+            NavigationAction,
             execute_cb=self.handler_execute_behaviors,
             auto_start=False
         )
@@ -154,7 +154,7 @@ class BehaviorManagerNode(object):
                     self.current_node_id, goal.target_node_id))
                 if not self.silent_mode:
                     self.sound_client.say('パスが見つかりませんでした')
-                result = LeadPersonResult(
+                result = NavigationResult(
                     success=False, message='No path found')
                 self.server_execute_behaviors.set_aborted(result)
                 return
@@ -170,7 +170,7 @@ class BehaviorManagerNode(object):
                         if self.navigate_edge(edge):
                             rospy.loginfo('Edge {} succeeded.'.format(edge))
                             self.current_node_id = edge.node_id_to
-                            self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
+                            self.server_execute_behaviors.publish_feedback(NavigationFeedback(current_node_id=self.current_node_id))
                             self.pre_edge = edge
                             self.set_anchor_pose()
                         else:
@@ -178,7 +178,7 @@ class BehaviorManagerNode(object):
                             if not self.silent_mode:
                                 self.sound_client.say(
                                     '移動に失敗しました。経路を探索し直します。', blocking=True)
-                            self.server_execute_behaviors.publish_feedback(LeadPersonFeedback(current_node_id=self.current_node_id))
+                            self.server_execute_behaviors.publish_feedback(NavigationFeedback(current_node_id=self.current_node_id))
                             current_graph.remove_edge(
                                 edge.node_id_from, edge.node_id_to)
                             success_navigation = False
@@ -189,7 +189,7 @@ class BehaviorManagerNode(object):
                         if not self.silent_mode:
                             self.sound_client.say('エラーが発生しました', blocking=True)
                         self.pre_edge = None
-                        result = LeadPersonResult(
+                        result = NavigationResult(
                             success=False,
                             message='Got an error while navigating edge {}: {}'.format(edge, e))
                         self.server_execute_behaviors.set_aborted(result)
@@ -202,7 +202,7 @@ class BehaviorManagerNode(object):
         rospy.loginfo('Goal Reached!')
         if not self.silent_mode:
             self.sound_client.say('目的地に到着しました.', blocking=True)
-        result = LeadPersonResult(success=True, message='Goal Reached.')
+        result = NavigationResult(success=True, message='Goal Reached.')
         self.server_execute_behaviors.set_succeeded(result)
         self.set_anchor_pose()
         return
