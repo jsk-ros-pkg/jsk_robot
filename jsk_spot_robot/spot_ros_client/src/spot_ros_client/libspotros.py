@@ -33,8 +33,8 @@ from spot_msgs.srv import UploadGraphRequest
 from spot_msgs.srv import Dock
 from spot_msgs.srv import DockRequest
 # actions
-from spot_behavior_manager_msgs.msg import LeadPersonAction
-from spot_behavior_manager_msgs.msg import LeadPersonGoal
+from jsk_spot_behavior_msgs.msg import NavigationAction
+from jsk_spot_behavior_msgs.msg import NavigationGoal
 from spot_msgs.msg import NavigateToAction
 from spot_msgs.msg import NavigateToGoal
 from spot_msgs.msg import TrajectoryAction
@@ -270,7 +270,7 @@ class SpotRosClient:
         )
         self._actionclient_execute_behaviors = actionlib.SimpleActionClient(
             actionname_execute_behaviors,
-            LeadPersonAction
+            NavigationAction
         )
 
         # wait for action
@@ -483,7 +483,7 @@ class SpotRosClient:
             return None
 
     def execute_behaviors(self, target_node_id, blocking=True):
-        goal = LeadPersonGoal()
+        goal = NavigationGoal()
         goal.target_node_id = target_node_id
         self._actionclient_execute_behaviors.send_goal(goal)
         if blocking:
