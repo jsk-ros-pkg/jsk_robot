@@ -16,6 +16,7 @@
         <rosparam subst_value="true">
             initial_node_id: 'nodeA'
             silent_mode: true
+            dry_mode: true
         </rosparam>
     </node>
 </launch>
