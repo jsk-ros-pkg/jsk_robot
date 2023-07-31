@@ -107,7 +107,7 @@
       ```
       - Notice
         - `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
-        - `dual_panda`'s `end-coords`, `reset-pose`, and `reset-manip-pose` are different from single `panda`'s ones for historical reasons.
+        - `dual_panda`'s `reset-pose` and `reset-manip-pose` are different from single `panda`'s ones for historical reasons.
 #### Record/play rosbag
 ```bash
 roslaunch jsk_panda_startup dual_panda1_record.launch  # Or roslaunch jsk_panda_startup dual_panda2_record.launch
