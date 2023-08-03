@@ -23,6 +23,7 @@
   <exec_depend>spot_behavior_manager_msgs</exec_depend>
   <exec_depend>spot_ros_client</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <exec_depend>spot_autowalk_data</exec_depend>
 
   <build_export_depend>actionlib</build_export_depend>
   <build_export_depend>networkx</build_export_depend>

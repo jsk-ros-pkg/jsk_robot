@@ -18,18 +18,18 @@ class WalkBehavior(BaseBehavior):
         rospy.logdebug('run_main() called')
 
         graph_name = edge.properties['graph']
-        start_id = filter(
+        start_id = list(filter(
             lambda x: x['graph'] == graph_name,
             start_node.properties['waypoints_on_graph']
-        )[0]['id']
-        end_id = filter(
+        ))[0]['id']
+        end_id = list(filter(
             lambda x: x['graph'] == graph_name,
             end_node.properties['waypoints_on_graph']
-        )[0]['id']
-        localization_method = filter(
+        ))[0]['id']
+        localization_method = list(filter(
             lambda x: x['graph'] == graph_name,
             start_node.properties['waypoints_on_graph']
-        )[0]['localization_method']
+        ))[0]['localization_method']
 
         # graph uploading and localization
         if pre_edge is not None and \

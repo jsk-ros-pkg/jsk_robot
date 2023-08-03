@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import copy
+import sys
+import traceback
 
 import actionlib
 import rospy
@@ -171,7 +173,8 @@ class BehaviorManagerNode(object):
                             break
                     except Exception as e:
                         rospy.logerr(
-                            'Got an error while navigating edge {}: {}'.format(edge, e))
+                            'Got an error while navigating edge {}: {}'.format(edge, sys.exc_info()))
+                        traceback.print_exc()
                         self.say('エラーが発生しました', blocking=True)
                         self.pre_edge = None
                         result = NavigationResult(
@@ -211,7 +214,8 @@ class BehaviorManagerNode(object):
             )
         except Exception as e:
             rospy.logerr(
-                'Failed to load and initialize behavior class: {}'.format(e))
+                'Failed to load and initialize behavior class: {}'.format(sys.exc_info()))
+            traceback.print_exc()
             self.say('行動クラスを読み込めませんでした', blocking=True)
             self.pre_edge = None
             return False
