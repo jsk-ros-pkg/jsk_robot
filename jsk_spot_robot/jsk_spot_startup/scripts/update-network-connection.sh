@@ -2,7 +2,7 @@
 
 IF_ETH=enxa0cec875af37
 IF_LTE=enxf8b7975c750a
-IF_WIFI=wlxc006c31b198c
+IF_WIFI=wlxc006c31b1a80
 WIFI_PROFILE=sanshiro
 
 function existIF() {
