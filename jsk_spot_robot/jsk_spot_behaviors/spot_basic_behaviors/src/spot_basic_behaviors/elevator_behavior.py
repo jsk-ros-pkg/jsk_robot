@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from spot_behavior_manager.base_behavior import BaseBehavior
+from jsk_spot_behavior_manager.base_behavior import BaseBehavior
 
 import actionlib
 import roslaunch
