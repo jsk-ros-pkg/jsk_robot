@@ -18,6 +18,13 @@
   <build_export_depend>spot_msgs</build_export_depend>
   <build_export_depend>std_srvs</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>jsk_spot_behavior_msgs</build_export_depend>
+
+  <build_depend>actionlib</build_depend>
+  <build_depend>spot_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>jsk_spot_behavior_msgs</build_depend>
 
   <export>
   </export>
