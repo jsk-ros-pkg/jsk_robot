@@ -132,11 +132,11 @@ Also, you can access to running ROS process on Pepper from your remote PC by typ
 
 ### To comple `pepper.l` within the robot
 
-Note: This issue was solved by https://github.com/kochigami/jsk_robot/commit/1a0cfe08e51421a2378bc2938ea3014b62e788fb
+Note: This issue was solved by https://github.com/kochigami/jsk_robot/commit/1a0cfe08e51421a2378bc2938ea3014b62e788fb and https://github.com/jsk-ros-pkg/jsk_robot/pull/1847
 
 Please refer to this comment: https://github.com/jsk-ros-pkg/jsk_robot/pull/1583#issuecomment-1235043472
 ```
-cp -r /opt/ros/melodic/share/pepper_meshes/meshes/  ./i386_User/src/pepper_meshes/
+cp -r /opt/ros/$ROS_DISTRO/share/pepper_meshes/meshes/  ./i386_User/src/pepper_meshes/
 rm -fr i386_User/build/pepper_meshes/ i386_User/build/peppereus
 ./build_user.sh build pepper_meshes peppereus
 ```
