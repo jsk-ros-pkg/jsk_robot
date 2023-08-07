@@ -49,6 +49,12 @@ export ALDE_CTC_CROSS=$HOME/ctc-linux64-atom-2.5.10.7
 sudo apt install python-vcstool sshpass
 ```
 
+If you use Ubuntu 20.04, please execute the command below:
+
+```
+sudo apt install python3-vcstool sshpass
+```
+
 ### Build ROS System on Docker  (Run only the fist time per host computer)
 
 ```
