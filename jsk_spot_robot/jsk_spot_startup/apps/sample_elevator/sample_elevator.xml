@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="jsk_spot_startup" type="sample_elevator.py" name="sample_elevator"/>
+  <node pkg="jsk_spot_startup" type="sample_elevator.py" name="sample_elevator" output="screen" required="True"/>
 
   <include
       file="$(find jsk_spot_behavior_manager)/launch/demo.launch"
