@@ -36,14 +36,15 @@ class ElevatorBehavior(BaseBehavior):
         self.silent_mode = rospy.get_param('~silent_mode', True)
 
         start_floor = start_node.properties['floor']
+        rospy.loginfo("Start floor: {}".format(start_floor))
 
         # launch recognition launch
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, True)
         roslaunch_path = rospkg.RosPack().get_path('spot_basic_behaviors') +\
             '/launch/elevator_detection.launch'
-        roslaunch_cli_args = [roslaunch_path, "initial_floor:={}".format(start_floor)]
-        roslaunch_file = roslaunch.rlutil.resolve_launch_arguments(
-            roslaunch_cli_args)
+        cli_args = [roslaunch_path, "initial_floor:={}".format(start_floor)]
+        roslaunch_args = cli_args[1:]
+        roslaunch_file = [(roslaunch.rlutil.resolve_launch_arguments(cli_args)[0], roslaunch_args)]
         self.roslaunch_parent = roslaunch.parent.ROSLaunchParent(
             uuid,
             roslaunch_file
@@ -72,9 +73,9 @@ class ElevatorBehavior(BaseBehavior):
             return False
 
         try:
-            rospy.wait_for_message('/spot_recognition/elevator_door_points', timeout=rospy.Duration(30))
-            rospy.wait_for_message("/elevator_state_publisher/current_floor", timeout=rospy.Duration(30))
-            rospy.wait_for_message("/elevator_state_publisher/rest_elevator", timeout=rospy.Duration(30))
+            rospy.wait_for_message('/spot_recognition/elevator_door_points', PointCloud2, timeout=rospy.Duration(30))
+            rospy.wait_for_message("/elevator_state_publisher/current_floor", Int16, timeout=rospy.Duration(30))
+            rospy.wait_for_message("/elevator_state_publisher/rest_elevator", Bool, timeout=rospy.Duration(30))
         except rospy.ROSException:
             rospy.logerr("Some topics are not published.")
             return False
