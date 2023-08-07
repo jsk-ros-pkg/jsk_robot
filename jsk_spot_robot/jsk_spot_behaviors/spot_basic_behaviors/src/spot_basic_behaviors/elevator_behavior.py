@@ -35,11 +35,13 @@ class ElevatorBehavior(BaseBehavior):
 
         self.silent_mode = rospy.get_param('~silent_mode', True)
 
+        start_floor = start_node.properties['floor']
+
         # launch recognition launch
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, True)
         roslaunch_path = rospkg.RosPack().get_path('spot_basic_behaviors') +\
             '/launch/elevator_detection.launch'
-        roslaunch_cli_args = [roslaunch_path]
+        roslaunch_cli_args = [roslaunch_path, "initial_floor:={}".format(start_floor)]
         roslaunch_file = roslaunch.rlutil.resolve_launch_arguments(
             roslaunch_cli_args)
         self.roslaunch_parent = roslaunch.parent.ROSLaunchParent(
@@ -64,6 +66,18 @@ class ElevatorBehavior(BaseBehavior):
             '/switchbot_ros/switch',
             SwitchBotCommandAction
         )
+
+        if not self.action_client_switchbot.wait_for_server(rospy.Duration(30)):
+            rospy.logerr('switchbot server seems to fail.')
+            return False
+
+        try:
+            rospy.wait_for_message('/spot_recognition/elevator_door_points', timeout=rospy.Duration(30))
+            rospy.wait_for_message("/elevator_state_publisher/current_floor", timeout=rospy.Duration(30))
+            rospy.wait_for_message("/elevator_state_publisher/rest_elevator", timeout=rospy.Duration(30))
+        except rospy.ROSException:
+            rospy.logerr("Some topics are not published.")
+            return False
 
         return True
 
@@ -119,27 +133,23 @@ class ElevatorBehavior(BaseBehavior):
         # push button with switchbot
         rospy.loginfo('calling elevator when riding...')
         success_calling = False
-        if not self.action_client_switchbot.wait_for_server(rospy.Duration(10)):
-            rospy.logerr('switchbot server seems to fail.')
+        switchbot_goal = SwitchBotCommandGoal()
+        switchbot_goal.device_name = start_node.properties['switchbot_device']
+        switchbot_goal.command = 'press'
+        count = 0
+        while True:
+            self.action_client_switchbot.send_goal(switchbot_goal)
+            if self.action_client_switchbot.wait_for_result(rospy.Duration(10)):
+                break
+            count += 1
+        if count >= 3:
+            rospy.logerr('switchbot calling failed.')
             return False
-        else:
-            switchbot_goal = SwitchBotCommandGoal()
-            switchbot_goal.device_name = start_node.properties['switchbot_device']
-            switchbot_goal.command = 'press'
-            count = 0
-            while True:
-                self.action_client_switchbot.send_goal(switchbot_goal)
-                if self.action_client_switchbot.wait_for_result(rospy.Duration(10)):
-                    break
-                count += 1
-            if count >= 3:
-                rospy.logerr('switchbot calling failed.')
-                return False
-            result = self.action_client_switchbot.get_result()
-            rospy.loginfo('switchbot result: {}'.format(result))
-            if not result.done:
-                rospy.logerr('switchbot calling failed.')
-                return False
+        result = self.action_client_switchbot.get_result()
+        rospy.loginfo('switchbot result: {}'.format(result))
+        if not result.done:
+            rospy.logerr('switchbot calling failed.')
+            return False
         rospy.loginfo('elevator calling when riding on has succeeded')
 
         # wait for elevator

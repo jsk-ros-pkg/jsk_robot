@@ -12,6 +12,8 @@
     <arg name="TOPIC_CAMERA_BACK" default="/spot/camera/back"/>
 
     <arg name="switchbot_token_yaml" default="/var/lib/robot/credentials/switchbot_token.yaml"/>
+    <arg name="elevator_device_name" default="/dev/elevator_device"/>
+    <arg name="initial_floor" default="7"/>
 
     <!-- depth_image_proc -->
     <!-- front right -->
@@ -211,5 +213,14 @@
             file="$(arg switchbot_token_yaml)"
             />
     </node>
+
+    <!-- elevator state_ publisher -->
+    <include
+        file="$(find elevator_operation)/launch/elevator_state_publisher.launch">
+        <arg name="intial_floor" value="$(arg initial_floor)"/>
+        <arg name="device_type" value="core2"/>
+        <arg name="device_name" value="$(arg elevator_device_name)"/>
+        <arg name="robot_type" value="spot"/>
+    </include>
 
 </launch>
