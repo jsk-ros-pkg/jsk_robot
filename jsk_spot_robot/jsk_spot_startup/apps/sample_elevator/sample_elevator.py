@@ -21,8 +21,10 @@ if __name__ == '__main__':
 
     behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_7FElevator"))
     result = behavior_client.get_result()
+    rospy.loginfo("Result forward: {} {}".format(result.success, result.message))
 
     behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_73B2_dock"))
     result = behavior_client.get_result()
+    rospy.loginfo("Result backward: {} {}".format(result.success, result.message))
 
     client.dock(521)

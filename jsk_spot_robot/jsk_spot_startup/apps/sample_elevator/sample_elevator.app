@@ -22,14 +22,14 @@ plugins:
         - /tf_static
         - /joint_states
         - /odom
-        - /elevator_accel \
-        - /elevator_accel_filtered \
-        - /elevator_altitude \
-        - /elevator_state_publisher/current_floor \
-        - /elevator_state_publisher/elevator_movement \
-        - /elevator_state_publisher/rest_elevator \
-        - /m5stack_core2_driver/imu \
-        - /m5stack_core2_driver/pressure \
+        - /elevator_accel
+        - /elevator_accel_filtered
+        - /elevator_altitude
+        - /elevator_state_publisher/current_floor
+        - /elevator_state_publisher/elevator_movement
+        - /elevator_state_publisher/rest_elevator
+        - /m5stack_core2_driver/imu
+        - /m5stack_core2_driver/pressure
         - /m5stack_core2_driver/temperature
   - name: result_recorder_plugin
     type: app_recorder/result_recorder_plugin
