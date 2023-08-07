@@ -72,16 +72,16 @@ class ElevatorBehavior(BaseBehavior):
         rospy.logdebug('run_main() called')
 
         graph_name = edge.properties['graph']
-        start_id = filter(
+        start_id = list(filter(
             lambda x: x['graph'] == graph_name,
             start_node.properties['waypoints_on_graph']
-        )[0]['id']
+        ))[0]['id']
         end_id = edge.properties['goal_waypoint_id']
         rest_waypoint_id = edge.properties['rest_waypoint_id']
-        localization_method = filter(
+        localization_method = list(filter(
             lambda x: x['graph'] == graph_name,
             start_node.properties['waypoints_on_graph']
-        )[0]['localization_method']
+        ))[0]['localization_method']
 
         end_floor = end_node.properties['floor']
 
