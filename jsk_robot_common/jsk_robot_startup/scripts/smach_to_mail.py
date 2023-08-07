@@ -175,14 +175,20 @@ class SmachToMail():
             if 'DESCRIPTION' in x:
                 description = EmailBody()
                 description.type = 'text'
-                description.message = x['DESCRIPTION']
+                description_txt = x['DESCRIPTION']
+                if isinstance(description_txt, bytes):
+                    description_txt = description_txt.decode('utf-8')
+                description.message = description_txt
                 email_msg.body.append(description)
                 email_msg.body.append(changeline)
             if 'IMAGE' in x and x['IMAGE']:
                 image = EmailBody()
                 image.type = 'img'
                 image.img_size = 100
-                image.img_data = x['IMAGE']
+                img_txt = x['IMAGE']
+                if isinstance(img_txt, bytes):
+                    img_txt = img_txt.decode('utf-8')
+                image.img_data = img_txt
                 email_msg.body.append(image)
                 email_msg.body.append(changeline)
         email_msg.body.append(changeline)
@@ -193,7 +199,10 @@ class SmachToMail():
             if 'INFO' in x:
                 info = EmailBody()
                 info.type = 'text'
-                info.message = x['INFO']
+                info_txt = x['INFO']
+                if isinstance(info_txt, bytes):
+                    info_txt = info_txt.decode('utf-8')
+                info.message = info_txt
                 email_msg.body.append(info)
                 email_msg.body.append(changeline)
         # rospy.loginfo("body:{}".format(email_msg.body))

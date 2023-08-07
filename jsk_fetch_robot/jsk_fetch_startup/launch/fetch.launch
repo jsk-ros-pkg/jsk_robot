@@ -1,11 +1,20 @@
 <launch>
   <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
   <arg name="launch_teleop" default="true" />
+  <arg name="launch_moveit" default="true" />
+
   <arg name="use_base_camera_mount" default="true" />
   <arg name="use_head_box" default="true" />
   <arg name="launch_diagnostics_agg" default="false" />
+  <arg name="use_head_l515" default="true" />
   <arg name="use_realsense" default="true" />
   <arg name="use_fetch_description" default="false" />
+
+  <!-- realsense serial numbers -->
+  <arg name="RS_SERIAL_NO_T265" default="$(optenv RS_SERIAL_NO_T265)" />
+  <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="$(optenv RS_SERIAL_NO_D435_FRONTRIGHT)" />
+  <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="$(optenv RS_SERIAL_NO_D435_FRONTLEFT)" />
+  <arg name="RS_SERIAL_NO_L515_HEAD" default="$(optenv RS_SERIAL_NO_L515_HEAD)" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -26,6 +35,10 @@
   <!-- Launch realsense cameras -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
       <arg name="respawn" value="true" />
+      <arg name="RS_SERIAL_NO_T265" value="$(arg RS_SERIAL_NO_T265)" />
+      <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" value="$(arg RS_SERIAL_NO_D435_FRONTRIGHT)" />
+      <arg name="RS_SERIAL_NO_D435_FRONTLEFT" value="$(arg RS_SERIAL_NO_D435_FRONTLEFT)" />
+      <arg name="RS_SERIAL_NO_L515_HEAD" value="$(arg RS_SERIAL_NO_L515_HEAD)" />
   </include>
 
   <!-- Odometry -->
@@ -123,7 +136,8 @@
   <param name="robot_description"
          command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
                   ros_distro:=$(env ROS_DISTRO) use_fetch_description:=$(arg use_fetch_description)
-                  base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)" />
+                  base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)
+                  head_l515:=$(arg use_head_l515)" />
 
   <!-- Drivers for Base -->
   <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">
@@ -167,6 +181,15 @@
   <include file="$(find fetch_bringup)/launch/include/runstop.launch.xml">
     <arg name="flags" value="-a -b -g -t"/>
   </include>
+
+  <!-- include fetch moveit -->
+  <group if="$(arg launch_moveit)">
+    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+    <!-- overwrite fetch.srdf -->
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="robot_description_semantic"
+	   command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro head_l515:=$(arg use_head_l515)" />
+  </group>
 
   <!-- Diagnostics Aggregator -->
   <include if="$(arg launch_diagnostics_agg)"

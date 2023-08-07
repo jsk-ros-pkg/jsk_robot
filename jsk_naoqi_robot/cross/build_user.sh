@@ -43,13 +43,13 @@ done
 
 # force copy pepper_meshes
 if [ ! -e ${SOURCE_ROOT}/src/pepper_meshes/meshes ]; then
-    if [ ! -e /opt/ros/melodic/share/pepper_meshes/meshes/ ]; then
+    if [ ! -e /opt/ros/$ROS_DISTRO/share/pepper_meshes/meshes/ ]; then
         set +x
-        echo "ERROR: You need /opt/ros/melodic/share/pepper_meshes/meshes/ " 1>&2
-        echo "ERROR: run apt 'install ros-melodic-pepper-meshes'" 1>&2
+        echo "ERROR: You need /opt/ros/$ROS_DISTRO/share/pepper_meshes/meshes/ " 1>&2
+        echo "ERROR: run apt 'install ros-$ROS_DISTRO-pepper-meshes'" 1>&2
         exit -1
     fi
-    cp -r /opt/ros/melodic/share/pepper_meshes/meshes/ ${SOURCE_ROOT}/src/pepper_meshes/
+    cp -r /opt/ros/$ROS_DISTRO/share/pepper_meshes/meshes/ ${SOURCE_ROOT}/src/pepper_meshes/
 fi
 
 ## UPDATE_SOURCE_ROOT=1  # TRUE
@@ -88,6 +88,7 @@ docker run -it --rm \
 cp -a ${PWD}/startup_scripts/user_setup.bash ${SOURCE_ROOT}/
 cp -a ${PWD}/startup_scripts/start.sh ${SOURCE_ROOT}/
 cp -a ${PWD}/startup_scripts/screenrc ${SOURCE_ROOT}/
+cp -a ${PWD}/startup_scripts/attach.sh ${SOURCE_ROOT}/
 
 echo "
 
