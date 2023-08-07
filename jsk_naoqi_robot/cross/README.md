@@ -14,7 +14,7 @@ As for robot version, please refer to http://doc.aldebaran.com/2-8/family/pepper
 
 - Linux PC which meets the prerequisites at https://docs.docker.com/engine/install/ubuntu/#prerequisites to prepare cros-compiling environment and copy system to Pepper.
 
-- (Recommendation) Linux PC (OS 16.04 + ROS kinetic, and lower) which has environment for NAOqi robot for developping programs for Pepper. For further information, please refer to https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#setup-environment.
+- (Recommendation) Linux PC (OS 18.04 + ROS melodic or OS 16.04 + ROS kinetic) which has environment for NAOqi robot for developping programs for Pepper. For further information, please refer to https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_naoqi_robot#setup-environment.
 
 ### Prepare cross-compiling environment (Run only the fist time per host computer)
 
