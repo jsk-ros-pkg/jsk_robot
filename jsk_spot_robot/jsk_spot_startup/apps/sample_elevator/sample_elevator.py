@@ -19,7 +19,7 @@ if __name__ == '__main__':
     client.power_on()
     client.undock()
 
-    behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_3FElevator"))
+    behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_7FElevator"))
     result = behavior_client.get_result()
 
     behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_73B2_dock"))
