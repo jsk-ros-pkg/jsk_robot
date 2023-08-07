@@ -1,0 +1,9 @@
+<launch>
+  <node pkg="jsk_spot_startup" type="sample_elevator.py" name="sample_elevator"/>
+
+  <include
+      file="$(find jsk_spot_behavior_manager)/launch/demo.launch"
+      >
+      <arg name="initial_node_id" value="eng2_73B2_dock" />
+  </include>
+</launch>
