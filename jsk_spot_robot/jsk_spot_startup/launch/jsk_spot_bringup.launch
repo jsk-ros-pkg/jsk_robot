@@ -27,4 +27,9 @@
   <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
 	   if="$(arg launch_interaction)" />
 
+  <include file="$(find gdrive_ros)/launch/gdrive_server.launch">
+      <arg name="settings_yaml" value="/var/lib/robot/gdrive/belka_pydrive_settings.yaml"/>
+      <arg name="respawn" value="true"/>
+  </include>
+
 </launch>
