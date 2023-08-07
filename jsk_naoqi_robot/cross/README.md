@@ -143,7 +143,7 @@ rm -fr i386_User/build/pepper_meshes/ i386_User/build/peppereus
 
 ### Development
 
-On development phase, users are expected to develop sofoware on a remote machine. All codes are expected to add in `jsk_pepper_startup` package.
+On development phase, users are expected to develop software on a remote machine. All codes are expected to add in `jsk_pepper_startup` package.
 
 
 You can send all development files to robot and start them on boot time. Note that this process requres `NAO_IP` environment variable.
@@ -158,14 +158,16 @@ If you want to use ethernet, you need to change from `wlan0` to `eth0` in `jsk_n
 export ROS_IP=$(ip addr show eth0 | grep -Po '(?<= inet )([0-9]{1,3}.){3}[0-9]{1,3}')
 ```
 
-```
-screen -c User/screenrc -S session -p 0 -X stuff "roslaunch jsk_pepper_startup jsk_pepper_startup.launch launch_dashboard:=false network_interface:=eth0
-```
+To startup Pepper, please refer to `Start jsk_pepper_startup.launch`
 
 If you add more dependencies to `package.xml`, you need to remove `i386_Users` and run `make user` again.
 
+You can restore from saved docker container. For JSK users, you can find latest data at [Google Drive](https://drive.google.com/drive/u/1/folders/10rINVGt1iDM2WNofmf0sZBX_iTnpXya6).
 
-You can restore from saved docker container. For JSK users, you can find latest data at [Google Drive](https://drive.google.com/drive/u/1/folders/10rINVGt1iDM2WNofmf0sZBX_iTnpXya6). You can also find backup of `i386_System`.
+It will be useful when you can't create `ros1-pepper.tar` image. For example, when `./prepare_requirements_ros1.sh` fails unfortunately.
+
 ```
 docker load < ros1-pepper.tar
 ```
+
+For more information, please refer to [here](https://github.com/jsk-ros-pkg/jsk_robot/issues/1846).
