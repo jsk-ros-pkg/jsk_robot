@@ -543,7 +543,7 @@ class SpotRosClient:
         goal.target_pose.pose.orientation.z = rotation.GetQuaternion()[2]
         goal.target_pose.pose.orientation.w = rotation.GetQuaternion()[3]
         if duration is None:
-            goal.duration.data = rospy.Duration(math.sqrt(x**2 + y**2)*10)
+            goal.duration.data = rospy.Duration(math.sqrt(x**2 + y**2)/0.5)
         else:
             goal.duration.data = rospy.Duration(duration)
         self._actionclient_trajectory.send_goal(goal)
