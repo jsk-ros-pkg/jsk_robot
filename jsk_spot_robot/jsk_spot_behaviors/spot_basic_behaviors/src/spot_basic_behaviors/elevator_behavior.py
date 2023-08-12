@@ -73,11 +73,21 @@ class ElevatorBehavior(BaseBehavior):
             return False
 
         try:
-            rospy.wait_for_message('/spot_recognition/elevator_door_points', PointCloud2, timeout=rospy.Duration(30))
+            end_time = rospy.Time.now() + rospy.Duration(30)
+        except rospy.ROSException:
+            rospy.logerr("Door points topics are not published.")
+            return False
+
+        try:
             rospy.wait_for_message("/elevator_state_publisher/current_floor", Int16, timeout=rospy.Duration(30))
+        except rospy.ROSException:
+            rospy.logerr("Current floor topics are not published.")
+            return False
+
+        try:
             rospy.wait_for_message("/elevator_state_publisher/rest_elevator", Bool, timeout=rospy.Duration(30))
         except rospy.ROSException:
-            rospy.logerr("Some topics are not published.")
+            rospy.logerr("Elevator state topic are not published.")
             return False
 
         return True
