@@ -197,7 +197,13 @@ class ElevatorBehavior(BaseBehavior):
             self.spot_client.wait_for_navigate_to_result()
             return False
         result_switchbot = self.action_client_switchbot.get_result()
-        self.spot_client.wait_for_navigate_to_result()
+        while not rospy.is_shutdown():
+            switchbot_goal = SwitchBotCommandGoal()
+            switchbot_goal.device_name = start_node.properties['switchbot_device']
+            switchbot_goal.command = 'press'
+            self.action_client_switchbot.send_goal_and_wait(switchbot_goal, execute_timeout=rospy.Duration(10))
+            if self.spot_client.wait_for_navigate_to_result(rospy.Duration(5)):
+                break
         result_navigation = self.spot_client.get_navigate_to_result()
         # recovery when riding on
         if not result_navigation.success or not result_switchbot.done:
