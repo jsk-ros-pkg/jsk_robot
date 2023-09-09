@@ -8,12 +8,11 @@ This package provides a ROS Node which retieve head camera images from web brows
 
 First, Download [suitable version of chrome webdriver to Google chrome installed](https://chromedriver.chromium.org/downloads) and place it somewhere.
 
-And install catkin and pip dependencies
+And install catkin dependencies
 
 ```bash
 cd <directory of aibo_selenium_ros>
 rosdep install --from-paths . --ignore-src -y -r
-pip install -r requirements.txt
 ```
 
 Build
@@ -33,7 +32,7 @@ roscore
 Then run `main.py`
 
 ```bash
-$ rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver>
+$ rosrun aibo_selenium_ros main.py
 
 Press Enter when logging if completed.
 ```
@@ -56,11 +55,11 @@ Then hit Enter key on the `main.py` window. So it will start to control browser 
 You may be able to use `auto_login` mode. **This mode is unstable**
 
 ```bash
-rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver> _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true
+rosrun aibo_selenium_ros main.py _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true
 ```
 
 You can also use headless mode. by setting parameter.
 
 ```bash
-rosrun aibo_selenium_ros main.py _webdriver:=<path to chromedriver> _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true _headless:=true
+rosrun aibo_selenium_ros main.py _login_id:=<login_id> _login_password:=<login_password> _auto_login:=true _headless:=true
 ```
