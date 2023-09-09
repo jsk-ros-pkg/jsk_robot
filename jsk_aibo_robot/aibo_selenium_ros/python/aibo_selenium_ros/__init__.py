@@ -5,6 +5,7 @@ import random
 import time
 
 import selenium
+import undetected_chromedriver as uc
 from imageio import imread
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -34,16 +35,13 @@ class AIBOBrowserInterface(object):
     self.initialized = False
 
     options = Options()
-    options.add_argument('--disable-blink-features=AutomationControlled')
-    options.add_argument('--user-agent=' +
-                         user_agent[random.randrange(0, len(user_agent), 1)])
     if headless:
       options.add_argument('--headless')
     if chrome_executable_path is not None:
       options.binary_location = chrome_executable_path
 
-    self.driver = webdriver.Chrome(executable_path=webdriver_path,
-                                   options=options)
+    self.driver = uc.Chrome(executable_path=webdriver_path, options=options)
+    logger.info(f"navigator.webdriver: {self.driver.execute_script('return navigator.webdriver')}")
 
     if not auto_login:
       self.driver.get(login_page_url)
