@@ -33,7 +33,7 @@ class AIBOBrowserInterface(object):
     if chrome_executable_path is not None:
       options.binary_location = chrome_executable_path
 
-    self.driver = uc.Chrome(executable_path=webdriver_path, options=options)
+    self.driver = uc.Chrome(executable_path=webdriver_path, options=options, version_main=115)
     logger.info(f"navigator.webdriver: {self.driver.execute_script('return navigator.webdriver')}")
 
     if not auto_login:
