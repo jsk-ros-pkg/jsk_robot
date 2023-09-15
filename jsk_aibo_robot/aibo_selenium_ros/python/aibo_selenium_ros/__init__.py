@@ -3,6 +3,7 @@ import io
 import logging
 import random
 import time
+import subprocess
 
 import selenium
 import undetected_chromedriver as uc
@@ -23,7 +24,8 @@ class AIBOBrowserInterface(object):
                login_pw='',
                auto_login=True,
                headless=False,
-               timeout=20.):
+               timeout=20.,
+               chromium_main_version=None):
 
     self.initialized = False
 
@@ -33,7 +35,12 @@ class AIBOBrowserInterface(object):
     if chrome_executable_path is not None:
       options.binary_location = chrome_executable_path
 
-    self.driver = uc.Chrome(executable_path=webdriver_path, options=options)
+    if chromium_main_version is None:
+      result = subprocess.check_output("{} --version".format(chrome_executable_path), shell=True)
+      chromium_main_version = int(result.decode("utf-8").split(" ")[1].split(".")[0])
+
+    print(f"chrome main versoin: {chromium_main_version}")
+    self.driver = uc.Chrome(executable_path=webdriver_path, options=options, version_main=chromium_main_version)
     logger.info(f"navigator.webdriver: {self.driver.execute_script('return navigator.webdriver')}")
 
     if not auto_login:
