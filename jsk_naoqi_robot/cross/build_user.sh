@@ -52,6 +52,17 @@ if [ ! -e ${SOURCE_ROOT}/src/pepper_meshes/meshes ]; then
     cp -r /opt/ros/$ROS_DISTRO/share/pepper_meshes/meshes/ ${SOURCE_ROOT}/src/pepper_meshes/
 fi
 
+# force copy nao_meshes
+if [ ! -e ${SOURCE_ROOT}/src/nao_meshes/meshes ]; then
+    if [ ! -e /opt/ros/$ROS_DISTRO/share/nao_meshes/meshes/ ]; then
+        set +x
+        echo "ERROR: You need /opt/ros/$ROS_DISTRO/share/nao_meshes/meshes/ " 1>&2
+        echo "ERROR: run apt 'install ros-$ROS_DISTRO-nao-meshes'" 1>&2
+        exit -1
+    fi
+    cp -r /opt/ros/$ROS_DISTRO/share/nao_meshes/meshes/ ${SOURCE_ROOT}/src/nao_meshes/
+fi
+
 ## UPDATE_SOURCE_ROOT=1  # TRUE
 
 # run on docker
