@@ -43,7 +43,7 @@ mkdir -p catkin_ws/src
 cd  catkin_ws/src
 wstool init .
 wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
-if [[ $ROS_DISTRO =~ ^(indigo|kinetic|melodic)$ ]]; then
+if [[ $ROS_DISTRO =~ ^(indigo|kinetic|melodic|noetic)$ ]]; then
   wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
 else
   echo "Your ROS distribution $ROS_DISTRO is not supported."

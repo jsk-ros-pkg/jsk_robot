@@ -1,0 +1,12 @@
+# This file is for work space in noetic user PC.
+
+# For proximity sensor on fetch hand.
+- git:
+    local-name: FA-I-sensor
+    uri: https://github.com/RoboticMaterials/FA-I-sensor.git
+    version: master
+# The latest apt release is 0.10.1 for melodic, but 0.11.4 for noetic, which does not have backward compatibility, so we need to build 0.10.1.
+- git:
+    local-name: ros-planning/moveit_msgs
+    uri: https://github.com/ros-planning/moveit_msgs
+    version: 0.10.1
