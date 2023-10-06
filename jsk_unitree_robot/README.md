@@ -50,6 +50,14 @@ source devel/setup.bash
 5. Deployment
 
    Once you have completed your development, put your code into [apps](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/jsk_unitree_startup/apps/) directory and build on cross environment and copy to onboard computer.
+
+   To run cross compile, you need to do following steps.
+
+   - https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_unitree_robot/cross#prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer
+   - https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_unitree_robot/cross#build-ros-system-on-docker--run-only-the-fist-time-per-host-computer
+
+   After that, please run command below to build ros workspace and deploy it to robot.
+
    ```
    roscd jsk_unitree_startup/../cross
    make user
