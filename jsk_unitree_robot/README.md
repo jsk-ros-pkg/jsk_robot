@@ -53,8 +53,8 @@ source devel/setup.bash
 
    To run cross compile, you need to do following steps.
 
-   - https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_unitree_robot/cross#prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer
-   - https://github.com/jsk-ros-pkg/jsk_robot/tree/master/jsk_unitree_robot/cross#build-ros-system-on-docker--run-only-the-fist-time-per-host-computer
+   - [prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer](./cross/README.md#prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer)
+   - [build-ros-system-on-docker--run-only-the-fist-time-per-host-computer](./cross/README.md#build-ros-system-on-docker--run-only-the-fist-time-per-host-computer)
 
    After that, please run command below to build ros workspace and deploy it to robot.
 
