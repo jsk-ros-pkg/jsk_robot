@@ -25,7 +25,9 @@ $ sudo apt install -y qemu-user-static
 make system
 ```
 
-Caution!!! It will take more than a few hours !! So for JSK users, download the `arm64v8_System.tgz` archive file from [here](https://drive.google.com/drive/u/2/folders/1SBA9oAwjfD84yRFEB-jsCH1m5Q8eEGSK) and extract under `jsk_unitree_robot/cross/` directory before run `make` command.
+**Caution!!! It will take more than a few hours !! (some times longer than 24 hours).**
+
+So For JSK users, download the output of this command (`arm64v8_System.tgz` archive file) from [here](https://drive.google.com/drive/u/2/folders/1SBA9oAwjfD84yRFEB-jsCH1m5Q8eEGSK) and extract under `jsk_unitree_robot/cross/` directory so that you can skip this process.
 
 Run following command to copy ROS1 base sytem to Go1 onboard computer. This should be done only in the first time. So normally user do not have to run this command
 ```
