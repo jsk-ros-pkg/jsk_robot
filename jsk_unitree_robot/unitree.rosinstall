@@ -4,9 +4,11 @@
     uri: https://github.com/k-okada/unitree_legged_sdk.git
     version: develop
 - git:
+    # Use 50ff98 commit since unitree_ros has unitree_ros_to_real as submodule and 
+    # causes https://github.com/jsk-ros-pkg/jsk_robot/issues/1858
     local-name: unitree_ros
     uri: https://github.com/unitreerobotics/unitree_ros.git
-    version: master
+    version: 50ff982dfbd4b9d2d08f1a05d66f141ab9f8d7f9
 - git:
     # waiting for https://github.com/unitreerobotics/unitree_ros_to_real/pull/22 - 25
     local-name: unitree_ros_to_real
