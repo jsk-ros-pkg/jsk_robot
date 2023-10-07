@@ -29,16 +29,20 @@ source devel/setup.bash
 
 1. Connect to the robot via Ethernet
 
-2. Set your PC'S IP address to `192.168.96.162`
+2. Configure your PC's ethernet like below
+
+  - IP Address: 192.168.123.162
+  - Subnet Mask: 255.255.255.0
+  - Gateway: 192.168.123.161
 
 3. Setup ROS_IP and ROS_MASTER_URI
 
    ```
    rossetmaster 192.168.96.161
-   rossetip
+   rossetip 192.168.96.162
    ```
 
-4. Run roseus
+6. Run roseus
 
    ```lisp
    (load "package://unitreeeus/unitree-interface.l") ;; load modules
@@ -47,7 +51,7 @@ source devel/setup.bash
 
    See `https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/unitreeeus/test/test-go1.l` for example.
 
-5. Deployment
+7. Deployment
 
    Once you have completed your development, put your code into [apps](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/jsk_unitree_startup/apps/) directory and build on cross environment and copy to onboard computer.
 
