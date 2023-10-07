@@ -65,7 +65,8 @@ source devel/setup.bash
    ```
    roscd jsk_unitree_startup/../cross
    make user
-   ./install -p 123
+   ./install -t Pro -p 123 # for Go1 Pro
+   ./install -t Air -p 123 # for Go1 Air
    ```
 
    Then, reboot the robot and go to [app_chooser](http://192.168.123.161:8000/rwt_app_chooser) and start your application
