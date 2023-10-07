@@ -1,18 +1,18 @@
 (require :go1 "package://unitreeeus/go1.l")
 
-(defun go1 () (setq *go1* (instance go1_description-robot :init)))
+(defun go1 () (setq *go1* (instance go1-robot :init)))
 
 ;; euscollada can not generate end-coords without limbs...
 ;; head-end-coords:
 ;;  parent : camera_optical_face_lk
 ;;   translate : [0, -12.5, -6.7]
 ;;   rotate : [0, 1, 0, 0]
-(defmethod go1_description-robot
+(defmethod go1-robot
   (:head-end-coords (&rest args) (forward-message-to camera_optical_face_lk args))
   )
 
 ;; define ik methods
-(defmethod go1_description-robot
+(defmethod go1-robot
   (:fullbody-inverse-kinematics
    ;; see https://github.com/euslisp/jskeus/pull/349 for detail
    (target-coords move-target &rest args &key
