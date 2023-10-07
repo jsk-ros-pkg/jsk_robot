@@ -25,6 +25,10 @@ catkin build unitreeeus jsk_unitree_startup
 source devel/setup.bash
 ```
 
+### Prepare JSK Environment to Go1 Robot
+
+Please follow [this instruction](./cross/README.md#setup-go1-robot). This is only required for the first time.
+
 ### Program Go1 robot
 
 1. Connect to the robot via Ethernet
