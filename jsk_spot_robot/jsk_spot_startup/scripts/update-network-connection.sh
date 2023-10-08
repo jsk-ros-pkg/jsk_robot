@@ -97,9 +97,9 @@ function updateConnection() {
     # Check default route is current connection
     default_route=$(get_default_route)
     if [ $default_route = $CURRENT_CONNECTION ]; then
-        echo "Current connection is default route. No need to update."
+        echo "Current connection $CURRENT_CONNECTION is default route. No need to update."
     else
-        echo "Current connection is not default route. Trying to update."
+        echo "Current connection $CURRENT_CONNECTION is not default route. Trying to update."
         if [ $CURRENT_CONNECTION = $IF_ETH ]; then
             updateConnectionToETH
         elif [ $CURRENT_CONNECTION = $IF_WIFI ]; then
@@ -109,13 +109,18 @@ function updateConnection() {
         else
             echo "Unknown current connection: $CURRENT_CONNECTION"
         fi
-    if    
+    fi
 
     # Reconnect WIFI
     if [ $(existIF $IF_WIFI) = 0 ]; then
         ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI > /dev/null 2>&1
         if [ $? = 0 ]; then
-            echo "wifi connected"
+            if [ $CURRENT_CONNECTION = $IF_WIFI ]; then
+                echo "wifi connected"
+            else
+                echo "wifi connected. But current connection $CURRENT_CONNECTION is not wifi $IF_WIFI. So update"
+                updateConnectionToWiFi
+            fi
         else
             echo "wifi not connected. trying to connect $WIFI_PROFILE"
             restartWIFI
@@ -144,7 +149,6 @@ function updateConnection() {
     updateConnectionToLTE
 }
 
-updateRouteToETH
 CURRENT_CONNECTION=$IF_ETH
 while :
 do
