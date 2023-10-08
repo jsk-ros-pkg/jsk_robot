@@ -19,12 +19,6 @@ function existIF() {
     return 1
 }
 
-function connectETH() {
-    sudo ifmetric $IF_ETH 100
-    sudo ifmetric $IF_WIFI 101
-    sudo ifmetric $IF_LTE 101
-}
-
 function restartWIFI() {
     sudo nmcli connection down $WIFI_PROFILE
     #sudo ip l set $IF_WIFI down
@@ -32,16 +26,27 @@ function restartWIFI() {
     sudo nmcli connection up $WIFI_PROFILE
 }
 
-function connectWIFI() {
+function updateRouteToETH() {
+    sudo ifmetric $IF_ETH 100
+    sudo ifmetric $IF_WIFI 101
+    sudo ifmetric $IF_LTE 101
+}
+
+function updateRouteToWIFI() {
     sudo ifmetric $IF_WIFI 100
     sudo ifmetric $IF_ETH 102
     sudo ifmetric $IF_LTE 101
 }
 
-function connectLTE() {
+function updateRouteToLTE() {
     sudo ifmetric $IF_LTE 100
     sudo ifmetric $IF_WIFI 101
     sudo ifmetric $IF_ETH 102
+}
+
+# get default route interface name which has most priority
+function get_default_route() {
+    ip route | grep default | awk '{print $5}' | head -n 1
 }
 
 function updateConnectionToETH() {
@@ -49,8 +54,8 @@ function updateConnectionToETH() {
         ping -c 1 -W 1 1.1.1.1 -I $IF_ETH > /dev/null 2>&1
         if [ $? = 0 ]; then
             echo "Ethernet is online. switched to ethernet."
-            CURRENT_CONNECTION="ETH"
-            connectETH
+            CURRENT_CONNECTION=$IF_ETH
+            updateRouteToETH
         else
             echo "Ethernet is offline.: $?"
         fi
@@ -64,8 +69,8 @@ function updateConnectionToWiFi() {
         ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI > /dev/null 2>&1
         if [ $? = 0 ]; then
             echo "Wifi is online. switched to wifi."
-            CURRENT_CONNECTION="WiFi"
-            connectWIFI
+            CURRENT_CONNECTION=$IF_WIFI
+            updateRouteToWIFI
         else
             echo "Wifi is offline.: $?"
         fi
@@ -77,8 +82,8 @@ function updateConnectionToWiFi() {
 function updateConnectionToLTE() {
     if [ $(existIF $IF_LTE) = 0 ]; then
         echo "Connection type switched to lte"
-        CURRENT_CONNECTION="LTE"
-        connectLTE
+        CURRENT_CONNECTION=$IF_LTE
+        updateRouteToLTE
     else
         echo "No lte device is found"
     fi
@@ -87,12 +92,28 @@ function updateConnectionToLTE() {
 }
 
 function updateConnection() {
-
     echo "Connection updating."
+
+    # Check default route is current connection
+    default_route=$(get_default_route)
+    if [ $default_route = $CURRENT_CONNECTION ]; then
+        echo "Current connection is default route. No need to update."
+    else
+        echo "Current connection is not default route. Trying to update."
+        if [ $CURRENT_CONNECTION = $IF_ETH ]; then
+            updateConnectionToETH
+        elif [ $CURRENT_CONNECTION = $IF_WIFI ]; then
+            updateConnectionToWiFi
+        elif [ $CURRENT_CONNECTION = $IF_LTE ]; then
+            updateConnectionToLTE
+        else
+            echo "Unknown current connection: $CURRENT_CONNECTION"
+        fi
+    if    
 
     # Reconnect WIFI
     if [ $(existIF $IF_WIFI) = 0 ]; then
-        ping -c 1 -W 1 133.11.216.240 -I $IF_WIFI > /dev/null 2>&1
+        ping -c 1 -W 1 1.1.1.1 -I $IF_WIFI > /dev/null 2>&1
         if [ $? = 0 ]; then
             echo "wifi connected"
         else
@@ -123,8 +144,8 @@ function updateConnection() {
     updateConnectionToLTE
 }
 
-connectETH
-CURRENT_CONNECTION="ETH"
+updateRouteToETH
+CURRENT_CONNECTION=$IF_ETH
 while :
 do
     sleep 5
