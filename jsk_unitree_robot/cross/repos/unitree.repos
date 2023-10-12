@@ -9,7 +9,7 @@ repositories:
   unitree_ros:
     type: git
     url: https://github.com/unitreerobotics/unitree_ros.git
-    veresion: master
+    veresion: 5dee20c
   unitree_ros_to_real:
     type: git
     url: https://github.com/k-okada/unitree_ros_to_real.git
