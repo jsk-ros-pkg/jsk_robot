@@ -1,5 +1,6 @@
 #!/bin/bash
 
+IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
@@ -26,24 +27,15 @@ cp repos/ros1_dependencies.repos ${SOURCE_ROOT}/
 mkdir -p ${HOST_INSTALL_ROOT}/Python
 cp repos/go1_requirements.txt ${SOURCE_ROOT}/go1_requirements.txt
 
-case ${OSTYPE} in
-    linux*)
-        OPTIONS="-u $(id -u $USER)"
-    ;;
-    darwin*)
-        OPTIONS=""
-    ;;
-esac
-
 docker run -it --rm \
-  ${OPTIONS} \
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${PWD}/ros1_dependencies_build_scripts:/home/user/ros1_dependencies_build_scripts:ro \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/ros1_dependencies_sources:rw \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk//${INSTALL_ROOT}/ros1_dependencies:rw \
   -v ${HOST_INSTALL_ROOT}/Python:/opt/jsk/${INSTALL_ROOT}/Python:rw \
-  ros1-unitree:${TARGET_MACHINE} \
+  ${IMAGE_NAME}:${TARGET_MACHINE} \
   bash -c "\
     set -xeuf -o pipefail && \
     cd /home/user/ros1_dependencies_sources && \

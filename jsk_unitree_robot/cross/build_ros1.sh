@@ -1,5 +1,6 @@
 #!/bin/bash
 
+IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
@@ -48,24 +49,15 @@ JSK_ROBOT_UTILS="jsk_network_tools"
 DIAGNOSTIC_AGGREGATOR="diagnostic_aggregator"  # jsk_XXX_startup usually depends on diagnostic_aggregator
 PR2EUS="pr2eus"
 
-case ${OSTYPE} in
-    linux*)
-        OPTIONS="-u $(id -u $USER)"
-        ;;
-    darwin*)
-        OPTIONS=""
-        ;;
-esac
-
 docker run -it --rm \
-  ${OPTIONS} \
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:rw \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/${SOURCE_ROOT}:rw \
-  ros1-unitree:${TARGET_MACHINE} \
+  ${IMAGE_NAME}:${TARGET_MACHINE} \
   bash -c "\
     source /opt/jsk/System/ros1_dependencies_setup.bash && \
     source /opt/ros/melodic/setup.bash && \
