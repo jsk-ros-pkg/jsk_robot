@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# From https://qiita.com/ymdymd/items/312c9f554d4ffb1f8dc6
+JOBS=$(($(grep cpu.cores /proc/cpuinfo | sort -u | sed 's/[^0-9]//g') + 1))
+
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
 SOURCE_ROOT=${TARGET_MACHINE}_ws_ros1_dependencies_sources
-MAKEFLAGS=${MAKEFLAGS:-'-j4'}
+MAKEFLAGS=${MAKEFLAGS:-'-j'}${JOBS}
 
 if [ -e "${SOURCE_ROOT}" ]; then
     echo "WARNING: Source directory is found ${SOURCE_ROOT}" 1>&2
