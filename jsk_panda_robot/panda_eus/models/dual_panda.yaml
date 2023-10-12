@@ -20,13 +20,13 @@ larm:
 #  - pan_tilt_JOINT1 : head-neck-p
 
 rarm-end-coords:
-  parent: rarm_link7
-  translate: [0, 0, 0.2]
-  rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
+  parent: rarm_hand_tcp
+  translate: [0, 0, 0]
+  rotate : [0, -1, 0, 90]
 larm-end-coords:
-  parent: larm_link7
-  translate: [0, 0, 0.2]
-  rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
+  parent: larm_hand_tcp
+  translate: [0, 0, 0]
+  rotate : [0, -1, 0, 90]
 
 angle-vector:
   reset-pose: [ 0.0, 15.0, 0.0, -135.0, 0.0, 150.0, 45.0,

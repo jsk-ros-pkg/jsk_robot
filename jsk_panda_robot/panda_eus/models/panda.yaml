@@ -8,9 +8,9 @@ rarm:
   - panda_joint7 : rarm-wrist-y
 
 rarm-end-coords:
-  parent: panda_link8
-  translate: [0, 0, 0.1]
-  rotate : [-0.35740972270209, -0.86285515644477, -0.35740630816298, 98.42112728719206]
+  parent: panda_hand_tcp
+  translate: [0, 0, 0]
+  rotate : [0, -1, 0, 90]
 
 angle-vector:
   reset-pose: [ 0.0, -45.0, 0.0, -135.0, 0.0, 90.0, 45.0,
