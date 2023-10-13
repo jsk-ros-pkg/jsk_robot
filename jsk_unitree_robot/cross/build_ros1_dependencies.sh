@@ -41,7 +41,9 @@ docker run -it --rm \
     cd /home/user/ros1_dependencies_sources && \
     vcs import --skip-existing --retry 10 --shallow src < ros1_dependencies.repos && \
     for script_file in \$(ls /home/user/ros1_dependencies_build_scripts/|sort); do
+      [ -e /home/user/ros1_dependencies_sources/\$script_file.installed ] && continue;
       /home/user/ros1_dependencies_build_scripts/\$script_file || exit 1;
+      touch /home/user/ros1_dependencies_sources/\$script_file.installed;
     done && \
     pip install -U --user pip && \
     export PKG_CONFIG_PATH=\"/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig\" && \
