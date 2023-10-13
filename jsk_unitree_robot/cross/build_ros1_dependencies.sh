@@ -1,7 +1,14 @@
 #!/bin/bash
 
-# From https://qiita.com/ymdymd/items/312c9f554d4ffb1f8dc6
-JOBS=$(($(grep cpu.cores /proc/cpuinfo | sort -u | sed 's/[^0-9]//g') + 1))
+IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    JOBS=$(cat /proc/cpuinfo | grep "processor" | wc -l)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    JOBS=$(sysctl -n hw.logicalcpu)
+else
+    JOBS=8
+fi
 
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
