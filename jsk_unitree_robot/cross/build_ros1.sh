@@ -32,6 +32,7 @@ mkdir -p ${SOURCE_ROOT}/src
 mkdir -p ${HOST_INSTALL_ROOT}/ros1_inst
 
 if [ ${UPDATE_SOURCE_ROOT} -eq 1 ]; then
+    vcs import --force --retry 10 --shallow ${SOURCE_ROOT}/src < repos/catkin_virtualenv.repos
     vcs import --force --retry 10 --shallow ${SOURCE_ROOT}/src < repos/roseus_no_window.repos
     for dir in euslisp jskeus; do ls ${SOURCE_ROOT}/src/$dir/patches/; rsync -avz ${SOURCE_ROOT}/src/$dir/patches/ ${SOURCE_ROOT}/src/$dir; done
     # linux can use sed -i'.bak' and latest mac also supports same syntax.
