@@ -39,6 +39,9 @@ RUN apt-get install -y sudo
 #
 RUN dpkg -r --force-depends cython gir1.2-gstreamer-1.0 libtinyxml-dev python-attr python-autobahn python-automat python-cbor python-concurrent.futures python-constantly python-constantly python-incremental python-lz4 python-nacl python-pyasn1 python-pyasn1-modules python-qrcode python-service-identity python-snappy python-trie python-trollius python-twisted-bin python-twisted-core python-twisted python-txaio python-ubjson python-u-msgpack python-wsaccel python-zope.interface
 #
+# Add cython, which we need to compile packages with catkin_virtualenv, not sure why 1049-cython works...
+RUN (cd /tmp; apt download cython && dpkg --force-depends -i cython_*.deb)
+#
 #
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh

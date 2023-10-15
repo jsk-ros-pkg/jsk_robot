@@ -262,6 +262,12 @@ repositories:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/universe/libc/libccd/libccd_2.0-1.debian.tar.xz
     # fcl depends on ccd
+  virtualenv:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/p/python-virtualenv/python-virtualenv_15.1.0+ds.orig.tar.gz
+  virtualenv/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/p/python-virtualenv/python-virtualenv_15.1.0+ds-1.1.debian.tar.xz
   python3-pyparsing:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/p/pyparsing/pyparsing_2.2.0+dfsg1.orig.tar.gz
@@ -280,3 +286,9 @@ repositories:
   python3-rospkg-modules/debian:
     type: tar
     url: http://packages.ros.org/ros/ubuntu/pool/main/p/python3-rospkg-modules/python3-rospkg-modules_1.5.0-1.debian.tar.xz
+  cython:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/c/cython/cython_0.26.1.orig.tar.gz
+  cython/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/c/cython/cython_0.26.1-0.4.debian.tar.xz
