@@ -51,6 +51,8 @@ docker run -it --rm \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
   -v ${HOST_INSTALL_ROOT}/system_setup.bash:/opt/jsk/${INSTALL_ROOT}/system_setup.bash:ro \
+  -v ${PWD}/startup_scripts/usercustomize.py:/home/user/.local/lib/python2.7/site-packages/usercustomize.py:ro \
+  -v ${PWD}/startup_scripts/usercustomize.py:/home/user/.local/lib/python3.6/site-packages/usercustomize.py:ro \
   -v ${PWD}/${SOURCE_ROOT}:/opt/jsk/User:rw \
   -v ${PWD}/rosinstall_generator_unreleased.py:/home/user/rosinstall_generator_unreleased.py:ro \
   ${IMAGE_NAME}:${TARGET_MACHINE} \

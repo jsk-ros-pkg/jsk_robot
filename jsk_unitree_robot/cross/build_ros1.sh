@@ -56,6 +56,8 @@ docker run -it --rm \
   -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
+  -v ${PWD}/startup_scripts/usercustomize.py:/home/user/.local/lib/python2.7/site-packages/usercustomize.py:ro \
+  -v ${PWD}/startup_scripts/usercustomize.py:/home/user/.local/lib/python3.6/site-packages/usercustomize.py:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:rw \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/${SOURCE_ROOT}:rw \
   ${IMAGE_NAME}:${TARGET_MACHINE} \
@@ -74,4 +76,7 @@ docker run -it --rm \
         -DEUSLISP_WITHOUT_DISPLAY=TRUE -DDISABLE_DOCUMENTATION=1 \
     " 2>&1 | tee ${TARGET_MACHINE}_build_ros1.log
 
-cp ${PWD}/startup_scripts/system_setup.bash ${HOST_INSTALL_ROOT}/
+for file in system_setup.bash usercustomize.py; do
+    [ -d ${HOST_INSTALL_ROOT}/$file ] && rmdir ${HOST_INSTALL_ROOT}/$file
+    cp ${PWD}/startup_scripts/$file ${HOST_INSTALL_ROOT}/
+done
