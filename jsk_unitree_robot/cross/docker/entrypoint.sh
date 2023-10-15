@@ -15,7 +15,8 @@ groupadd -g $HOST_GID user
 # -m Create the user's home directory if it does not exist.
 # -g The group name or number of the user's initial login group.
 # -s The name of the user's login shell.
-useradd -u $HOST_UID -o -m -g $HOST_GID -s /usr/bin user
+useradd -u $HOST_UID -o -m -g $HOST_GID -s /usr/bin user -G sudo
+echo user:user | chpasswd
 export HOME=/home/user
 chown $HOST_UID:$HOST_GID $HOME
 cd $HOME
