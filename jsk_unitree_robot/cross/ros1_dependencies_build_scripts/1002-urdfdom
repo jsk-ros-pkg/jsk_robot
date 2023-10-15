@@ -8,6 +8,7 @@ cd /home/user/ros1_dependencies_sources/build/urdfdom
 cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
   -DCMAKE_BUILD_TYPE=Release \
+  -j ${JOBS} \
   ../../src/urdfdom/urdfdom-1.0.0
 
-make install
+make install ${MAKEFLAGS}

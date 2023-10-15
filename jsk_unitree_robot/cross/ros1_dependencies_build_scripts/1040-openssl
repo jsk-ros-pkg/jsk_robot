@@ -7,8 +7,8 @@ cd ${SOURCE_DIR}
 
 ./config --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies --openssldir=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/openssl
 
-make
-make install
+make ${MAKEFLAGS}
+make install ${MAKEFLAGS}
 
 # download pem (ssl.get_default_verify_paths)
 wget https://curl.haxx.se/ca/cacert.pem -O /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/openssl/cert.pem

@@ -51,6 +51,8 @@ docker run -it --rm \
     set -xeuf -o pipefail && \
     cd /home/user/ros1_dependencies_sources && \
     vcs import --skip-existing --workers ${JOBS} --retry 10 --shallow src < ros1_dependencies.repos && \
+    export JOBS=${JOBS} && \
+    export MAKEFLAGS=${MAKEFLAGS} && \
     for script_file in \$(ls /home/user/ros1_dependencies_build_scripts/|sort); do
       /home/user/ros1_dependencies_build_scripts/\$script_file || exit 1;
     done && \

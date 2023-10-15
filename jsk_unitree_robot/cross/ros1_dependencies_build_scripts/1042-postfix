@@ -21,7 +21,7 @@ make makefiles \
              -I${INSTALL_DIR}/include/openssl" \
      AUXLIBS="-L${INSTALL_DIR}/lib -L${INSTALL_DIR}/lib/sasl2 -L${INSTALL_DIR}/openssl -lsasl2 -lssl -lcrypto -lz -lm"
 
-make
+make ${MAKEFLAGS}
 LD_LIBRARY_PATH="${INSTALL_DIR}"/lib "${INSTALL_DIR}"/bin/expect -c "
 set timeout 100
 spawn make install

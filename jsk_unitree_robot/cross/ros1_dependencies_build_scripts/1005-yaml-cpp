@@ -17,6 +17,7 @@ cmake \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=ON \
   -DYAML_CPP_BUILD_TOOLS=ON \
+  -j ${JOBS} \
   ${SOURCE_DIR}
 
-make install
+make install ${MAKEFLAGS}
