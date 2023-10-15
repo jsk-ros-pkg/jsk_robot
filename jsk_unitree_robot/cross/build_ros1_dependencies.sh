@@ -51,8 +51,9 @@ docker run -it --rm \
     set -xeuf -o pipefail && \
     cd /home/user/ros1_dependencies_sources && \
     vcs import --skip-existing --workers ${JOBS} --retry 10 --shallow src < ros1_dependencies.repos && \
-    export JOBS=${JOBS} && \
-    ls /home/user/ros1_dependencies_build_scripts/ | sort | xargs -I{} -P${JOBS} bash -c '/home/user/ros1_dependencies_build_scripts/{}' && \
+    for script_file in \$(ls /home/user/ros1_dependencies_build_scripts/|sort); do
+      /home/user/ros1_dependencies_build_scripts/\$script_file || exit 1;
+    done && \
     pip install -U --user pip && \
     export PYTHONPATH=\"/opt/jsk/System/ros1_dependencies/lib/python2.7/site-packages\" && \
     export PKG_CONFIG_PATH=\"/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/pkgconfig\" && \
