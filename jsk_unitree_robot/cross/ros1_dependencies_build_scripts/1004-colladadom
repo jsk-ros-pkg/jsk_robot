@@ -25,7 +25,7 @@ cmake \
   -DOPT_BUILD_PACKAGES=OFF \
   -DOPT_BUILD_PACKAGE_DEFAULT=OFF \
   -DOPT_DOUBLE_PRECISION=ON \
-  -j ${JOBS} \
   ${SOURCE_DIR}
 
-make install ${MAKEFLAGS]
+# ${MAKEFLAGS} causes error?
+make install
