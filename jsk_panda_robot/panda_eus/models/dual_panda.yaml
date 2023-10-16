@@ -20,12 +20,12 @@ larm:
 #  - pan_tilt_JOINT1 : head-neck-p
 
 rarm-end-coords:
-  parent: rarm_hand_tcp
-  translate: [0, 0, 0]
+  parent: rarm_hand  # If rarm_hand_tcp is used to delete the following translation, (send *dual_panda* :rarm :gripper :joint-list) does not include finger joints
+  translate: [0, 0, 0.1034]  # https://github.com/frankaemika/franka_ros/blob/0.10.1/franka_description/robots/common/franka_robot.xacro#L8
   rotate : [0, -1, 0, 90]
 larm-end-coords:
-  parent: larm_hand_tcp
-  translate: [0, 0, 0]
+  parent: larm_hand  # If larm_hand_tcp is used to delete the following translation, (send *dual_panda* :larm :gripper :joint-list) does not include finger joints
+  translate: [0, 0, 0.1034]  # https://github.com/frankaemika/franka_ros/blob/0.10.1/franka_description/robots/common/franka_robot.xacro#L8
   rotate : [0, -1, 0, 90]
 
 angle-vector:
