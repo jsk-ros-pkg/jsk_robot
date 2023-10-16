@@ -67,6 +67,18 @@
     <arg name="untuck_service" default="unstow_arm" />
     <arg name="teleop_twist_joy_param_file" default="$(find jsk_spot_startup)/config/dualsense_teleop_twist_joy.yaml" />
   </include>
+
+  <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
+    <arg name="pad_type" value="R1" />
+    <!--arg name="joy_dev" value="/dev/input/js0" /-->
+    <arg name="joy_dev" value="/dev/magicseejoy" />
+    <arg name="cmd_vel_topic" default="bluetooth_teleop/cmd_vel" />
+    <arg name="joy_name_space" default="/spot/" />
+    <arg name="dock_service" default="dock_fixed_id" />
+    <arg name="tuck_service" default="stow_arm" />
+    <arg name="untuck_service" default="unstow_arm" />
+  </include>
+
   <!-- node to receive /spot/dock_fixed_no and calls /spot/dock -->
   <node pkg="jsk_spot_startup" type="call_spot_dock_with_id.py" name="call_spot_dock_with_id">
     <remap from="~dock_id" to="/spot/spot_ros/dock_id" />
