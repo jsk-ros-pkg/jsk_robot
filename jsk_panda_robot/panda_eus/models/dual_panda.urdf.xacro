@@ -109,17 +109,17 @@
   <link name="$(arg arm_id_1)_end_effector" >
   </link>
   <joint name="$(arg arm_id_1)_end_effector_joint" type="fixed">
-    <parent link="$(arg arm_id_1)_hand_tcp"/>
+    <parent link="$(arg arm_id_1)_hand"/>
     <child link="$(arg arm_id_1)_end_effector"/>
-    <origin xyz="0 0 0" rpy="0 -1.570796327 0"/>
+    <origin xyz="0 0 0.1034" rpy="0 -1.570796327 0"/>
   </joint>
 
   <link name="$(arg arm_id_2)_end_effector" >
   </link>
   <joint name="$(arg arm_id_2)_end_effector_joint" type="fixed">
-    <parent link="$(arg arm_id_2)_hand_tcp"/>
+    <parent link="$(arg arm_id_2)_hand"/>
     <child link="$(arg arm_id_2)_end_effector"/>
-    <origin xyz="0 0 0" rpy="0 -1.570796327 0"/>
+    <origin xyz="0 0 0.1034" rpy="0 -1.570796327 0"/>
   </joint>
 
 </robot>
