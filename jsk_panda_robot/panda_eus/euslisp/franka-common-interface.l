@@ -274,7 +274,8 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
        (dolist (a arms)
          (setq wait-res
                (and (send self :send-gripper-action-method a actions :wait-for-result)
-                    wait-res))))
+                    wait-res)))
+       (send self :spin-once))
      (if (not wait-res)
        (progn
          (setq wait-res t)
@@ -316,9 +317,9 @@ Details: `StopAction` part of https://frankaemika.github.io/docs/franka_ros.html
          :send-gripper-stop-action gripper-stop-actions arm wait)
    )
   (:get-stop-gripper-result
-   (arm)
+   (arm &key (wait t))
    "Return result of :stop-gripper (`franka_gripper::StopActionResult`)"
-   (send self :gripper-action-postprocess arm gripper-stop-actions t)
+   (send self :gripper-action-postprocess arm gripper-stop-actions wait)
    )
   (:homing-gripper
    (arm &key (wait nil))
@@ -331,9 +332,9 @@ Details: `HomingAction` part of https://frankaemika.github.io/docs/franka_ros.ht
            :send-gripper-homing-action gripper-homing-actions arm wait)
      ))
   (:get-homing-gripper-result
-   (arm)
+   (arm &key (wait t))
    "Return result of :homing-gripper (`franka_gripper::HomingActionResult`)"
-   (send self :gripper-action-postprocess arm gripper-homing-actions t)
+   (send self :gripper-action-postprocess arm gripper-homing-actions wait)
    )
   (:gripper
    (&rest args)
@@ -396,9 +397,9 @@ Details: `GraspAction` part of https://frankaemika.github.io/docs/franka_ros.htm
            effort :inner inner :outer outer)
      ))
   (:get-start-grasp-result
-   (arm)
+   (arm &key (wait t))
    "Return result of :start-grasp (`franka_gripper::GraspActionResult`)"
-   (send self :gripper-action-postprocess arm gripper-grasp-actions t)
+   (send self :gripper-action-postprocess arm gripper-grasp-actions wait)
    )
   (:stop-grasp
    (arm &key (wait nil) (width 0.08))
@@ -406,9 +407,9 @@ Details: `GraspAction` part of https://frankaemika.github.io/docs/franka_ros.htm
    (send self :move-gripper arm width :tm 500 :wait wait)
    )
   (:get-stop-grasp-result
-   (arm)
+   (arm &key (wait t))
    "Return result of :stop-gripper (`franka_gripper::MoveActionResult`)"
-   (send self :get-move-gripper-result arm)
+   (send self :get-move-gripper-result arm :wait wait)
    )
   (:move-gripper
    (arm width &key (tm 500) (wait nil))
@@ -421,9 +422,9 @@ Details: `MoveAction` part of https://frankaemika.github.io/docs/franka_ros.html
            :send-gripper-move-action gripper-move-actions arm wait width tm)
      ))
   (:get-move-gripper-result
-   (arm)
+   (arm &key (wait t))
    "Return result of :move-gripper (`franka_gripper::MoveActionResult`)"
-   (send self :gripper-action-postprocess arm gripper-move-actions t)
+   (send self :gripper-action-postprocess arm gripper-move-actions wait)
    )
   )
 
