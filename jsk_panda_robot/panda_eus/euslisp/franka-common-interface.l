@@ -264,8 +264,14 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
      ))
   (:send-gripper-action-method
    (arm actions method &rest args)
-   (let ((action (gethash (send self :expand-arm-alias arm) actions)))
-     (if action (send* action method args) nil))
+   (case arm
+     (:arms
+       (mapcar #'(lambda (a)
+                   (send self :send-gripper-action-method a actions method))
+               (send self :arm2arms arm)))
+     (t
+       (let ((action (gethash (send self :expand-arm-alias arm) actions)))
+         (if action (send* action method args) nil))))
    )
   (:gripper-action-postprocess
    (arm actions wait)
@@ -289,13 +295,7 @@ Details: `ErrorRecoveryAction` part of https://frankaemika.github.io/docs/franka
                (setq wait-res nil))))
          (if (not wait-res)
            (return-from :gripper-action-postprocess nil))))
-     (case arm
-       (:arms
-         (mapcar #'(lambda (a)
-                     (send self :send-gripper-action-method a actions :get-result))
-                 arms))
-       (t
-         (send self :send-gripper-action-method arm actions :get-result)))
+     (send self :send-gripper-action-method arm actions :get-result)
      ))
   (:gripper-method-helper
    (action-sender actions arm wait)
@@ -316,6 +316,12 @@ Details: `StopAction` part of https://frankaemika.github.io/docs/franka_ros.html
    (send self :gripper-method-helper
          :send-gripper-stop-action gripper-stop-actions arm wait)
    )
+  (:get-stop-gripper-status
+   (arm)
+   "Return status of :stop-gripper (`status` of `actionlib_msgs::GoalStatus`)"
+   (send self :spin-once)
+   (send self :send-gripper-action-method arm gripper-stop-actions :get-state)
+   )
   (:get-stop-gripper-result
    (arm &key (wait t))
    "Return result of :stop-gripper (`franka_gripper::StopActionResult`)"
@@ -331,6 +337,12 @@ Details: `HomingAction` part of https://frankaemika.github.io/docs/franka_ros.ht
      (send self :gripper-method-helper
            :send-gripper-homing-action gripper-homing-actions arm wait)
      ))
+  (:get-homing-gripper-status
+   (arm)
+   "Return status of :homing-gripper (`status` of `actionlib_msgs::GoalStatus`)"
+   (send self :spin-once)
+   (send self :send-gripper-action-method arm gripper-homing-actions :get-state)
+   )
   (:get-homing-gripper-result
    (arm &key (wait t))
    "Return result of :homing-gripper (`franka_gripper::HomingActionResult`)"
@@ -396,6 +408,12 @@ Details: `GraspAction` part of https://frankaemika.github.io/docs/franka_ros.htm
            :send-gripper-grasp-action gripper-grasp-actions arm wait width tm
            effort :inner inner :outer outer)
      ))
+  (:get-start-grasp-status
+   (arm)
+   "Return status of :start-grasp (`status` of `actionlib_msgs::GoalStatus`)"
+   (send self :spin-once)
+   (send self :send-gripper-action-method arm gripper-grasp-actions :get-state)
+   )
   (:get-start-grasp-result
    (arm &key (wait t))
    "Return result of :start-grasp (`franka_gripper::GraspActionResult`)"
@@ -406,9 +424,14 @@ Details: `GraspAction` part of https://frankaemika.github.io/docs/franka_ros.htm
    "Open the gripper to the target `width` [m]"
    (send self :move-gripper arm width :tm 500 :wait wait)
    )
+  (:get-stop-grasp-status
+   (arm)
+   "Return status of :stop-grasp (`status` of `actionlib_msgs::GoalStatus`)"
+   (send self :get-move-gripper-status arm)
+   )
   (:get-stop-grasp-result
    (arm &key (wait t))
-   "Return result of :stop-gripper (`franka_gripper::MoveActionResult`)"
+   "Return result of :stop-grasp (`franka_gripper::MoveActionResult`)"
    (send self :get-move-gripper-result arm :wait wait)
    )
   (:move-gripper
@@ -421,6 +444,12 @@ Details: `MoveAction` part of https://frankaemika.github.io/docs/franka_ros.html
      (send self :gripper-method-with-width-helper
            :send-gripper-move-action gripper-move-actions arm wait width tm)
      ))
+  (:get-move-gripper-status
+   (arm)
+   "Return status of :move-gripper (`status` of `actionlib_msgs::GoalStatus`)"
+   (send self :spin-once)
+   (send self :send-gripper-action-method arm gripper-move-actions :get-state)
+   )
   (:get-move-gripper-result
    (arm &key (wait t))
    "Return result of :move-gripper (`franka_gripper::MoveActionResult`)"
