@@ -34,6 +34,7 @@ from spot_msgs.srv import UploadGraph
 from spot_msgs.srv import UploadGraphRequest
 from spot_msgs.srv import Dock
 from spot_msgs.srv import DockRequest
+from jsk_spot_behavior_msgs.srv import ResetCurrentNode, ResetCurrentNodeRequest
 # actions
 from jsk_spot_behavior_msgs.msg import NavigationAction
 from jsk_spot_behavior_msgs.msg import NavigationGoal
@@ -137,6 +138,7 @@ class SpotRosClient:
                  servicename_set_localization_waypoint='/spot/set_localization_waypoint',
                  servicename_dock='/spot/dock',
                  servicename_undock='/spot/undock',
+                 servicename_reset_current_node='/spot_behavior_manager_server/reset_current_node_id',
                  actionname_navigate_to='/spot/navigate_to',
                  actionname_trajectory='/spot/trajectory',
                  actionname_execute_behaviors='/spot_behavior_manager_server/execute_behaviors',
@@ -184,6 +186,7 @@ class SpotRosClient:
                 servicename_set_localization_waypoint, rospy.Duration(5))
             rospy.wait_for_service(servicename_dock, rospy.Duration(5))
             rospy.wait_for_service(servicename_undock, rospy.Duration(5))
+            rospy.wait_for_service(servicename_reset_current_node, rospy.Duration(5))
         except rospy.ROSException as e:
             rospy.logerr('Service unavaliable: {}'.format(e))
 
@@ -259,6 +262,10 @@ class SpotRosClient:
         self._srv_client_undock = rospy.ServiceProxy(
             servicename_undock,
             Trigger
+        )
+        self._srv_client_reset_current_node = rospy.ServiceProxy(
+            servicename_reset_current_node,
+            ResetCurrentNode
         )
 
         # Action Clients
@@ -466,7 +473,7 @@ class SpotRosClient:
             self.stand()
         return res.success, res.message
 
-    def auto_dock(self, dock_id, home_node_id='eng2_73B2'):
+    def auto_dock(self, dock_id, home_node_id='eng2_73B2_dock'):
         res = self.execute_behaviors(home_node_id)
         if not res.success:
             return res.success, res.message
@@ -526,6 +533,12 @@ class SpotRosClient:
 
     def get_execute_behaviors_result(self):
         return self._actionclient_execute_behaviors.get_result()
+    
+    def reset_current_node(self, node):
+        req = ResetCurrentNodeRequest()
+        req.current_node_id = node
+        res = self._srv_client_reset_current_node(req)
+        return res.success
 
     # \brief call trajectory service
     # \param x x value of the target position [m]
