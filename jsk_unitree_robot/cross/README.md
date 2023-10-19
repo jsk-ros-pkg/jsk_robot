@@ -8,33 +8,50 @@ This project contains a set of patches and scripts to compile and run ROS1 on a 
 
 We're going to use Docker to set up a container that will compile all the tools for cross-compiling ROS and all of its dependencies. Go to https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository to install it for your Linux distribution.
 
+We strongly recommend using an arm64v8 machine, but it will also work on x86_64 machines.
+
 1. Add your user to docker group
 ```
 $ sudo usermod -aG docker $USER
 $ newgrp
 ```
 
-2. Install Qemu software
+2. Install Qemu software (Only for x86_64 machine)
 ```
 $ sudo apt install -y qemu-user-static
 ```
 
-### Build ROS System on Docker  (Run only the fist time per host computer)
+### <<For JSK users>> Build ROS System on Docker from Archive (Run only the fist time per host computer)
+
+**Caution!!! Build ROS System for Unitree robot will take more than a few hours !! (some times longer than 24 hours). Therefor, if you are not a unitree robot's JSK ROS system developer, we strongly recommend to use the archive, **
+
+Download the docker image (`ros1-unitree-arm64v8.tar`) and System and User archvie file (`arm64v8_System.tgz` and `arm64v8_User.tgz`) from [here](https://drive.google.com/drive/u/2/folders/1SBA9oAwjfD84yRFEB-jsCH1m5Q8eEGSK)
+
+To extract archive, run folowing commands
+```
+cat ~/Downloads/ros1-unitree-arm64v8.tar | docker import - ros1-unitree:arm64v8
+roscd jsk_unitree_startup/../cross
+tar -xvzf ~/Downloads/arm64v8_System.tgz
+tar -xvzf ~/Downloads/arm64v8_User.tgz
+```
+
+To confarm evemTo verify that the archive was decompressed correctly, check that the following commands are executed without error.
+```
+make user
+```
+
+### Build ROS System on Docker from Scratch (Run only the fist time per host computer)
 
 ```
 make system
 ```
-
-**Caution!!! It will take more than a few hours !! (some times longer than 24 hours).**
-
-So For JSK users, download the output of this command (`arm64v8_System.tgz` archive file) from [here](https://drive.google.com/drive/u/2/folders/1SBA9oAwjfD84yRFEB-jsCH1m5Q8eEGSK) and extract under `jsk_unitree_robot/cross/` directory so that you can skip this process.
 
 ### Deploy ROS System to Go1 robot
 
 After finishing former step, run following command to copy ROS1 base sytem to Go1 onboard computer. This should be done only in the first time. So normally user do not have to run this command
 
 ```
-./install.sh -p 123 -D System
+./install.sh -p 123 -d System
 ```
 
 ### Build `jsk_unitree_robot` software on Docker
