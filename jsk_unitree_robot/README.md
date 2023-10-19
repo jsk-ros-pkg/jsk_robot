@@ -2,6 +2,8 @@
 
 ROS package for Unitree Go1 robot.
 
+This document assumes that your robot is already configured with JSK's ROS environment. To configure this, please ask your robot's administrator along with [this instruction](./cross/README.md#setup-go1-robot).
+
 ## How to Run
 
 See [manual](https://drive.google.com/drive/folders/1PZDOo8WUcqwU8mNek2qAaTwW9WjJVVRL?usp=sharing) before you use Go 1. (jsk.imi.i.u-tokyo.ac.jp account is required.)
@@ -25,10 +27,6 @@ catkin build unitreeeus jsk_unitree_startup
 source devel/setup.bash
 ```
 
-### Prepare JSK Environment to Go1 Robot
-
-Please follow [this instruction](./cross/README.md#setup-go1-robot). This is only required for the first time.
-
 ### Program Go1 robot
 
 1. Connect to the robot via Ethernet
@@ -46,7 +44,7 @@ Please follow [this instruction](./cross/README.md#setup-go1-robot). This is onl
    rossetip 192.168.96.162
    ```
 
-6. Run roseus
+4. Run roseus
 
    ```lisp
    (load "package://unitreeeus/unitree-interface.l") ;; load modules
@@ -55,11 +53,12 @@ Please follow [this instruction](./cross/README.md#setup-go1-robot). This is onl
 
    See `https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/unitreeeus/test/test-go1.l` for example.
 
-7. Deployment
+5. Deployment
 
    Once you have completed your development, put your code into [apps](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/jsk_unitree_startup/apps/) directory and build on cross environment and copy to onboard computer.
 
-   To run cross compile, you need to do following steps.
+   To run cross compile, you need `ros1-unitree` docker image and `arm64v8_System` directory. If you do not have them, pleas ask your development environment administrator along with following instructions.
+
 
    - [prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer](./cross/README.md#prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer)
    - [build-ros-system-on-docker--run-only-the-fist-time-per-host-computer](./cross/README.md#build-ros-system-on-docker--run-only-the-fist-time-per-host-computer)
