@@ -14,7 +14,7 @@ fi
 ##
 
 cd ${SOURCE_DIR}
-make -C lib/dicts/cmu
+make -C lib/dicts/cmu ${MAKEFLAGS}
 
 mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu
 cp lib/dicts/cmu/cmudict-*.out     /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/share/festival/dicts/cmu

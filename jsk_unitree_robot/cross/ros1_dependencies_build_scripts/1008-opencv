@@ -48,6 +48,7 @@ cmake \
   -DWITH_OPENEXR=OFF \
   -DPYTHON2_PACKAGES_PATH=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages \
   -DOPENCV_CONFIG_INSTALL_PATH=lib/cmake/OpenCV \
+  -j ${JOBS} \
   ${SOURCE_DIR}
 
-make install
+make install ${MAKEFLAGS}

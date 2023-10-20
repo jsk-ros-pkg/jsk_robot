@@ -27,4 +27,5 @@ cmake \
   -DOPT_DOUBLE_PRECISION=ON \
   ${SOURCE_DIR}
 
+# ${MAKEFLAGS} causes error?
 make install

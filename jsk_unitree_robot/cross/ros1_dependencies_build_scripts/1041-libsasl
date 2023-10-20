@@ -7,4 +7,4 @@ cd ${SOURCE_DIR}
 
 ./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
-make install
+make install ${MAKEFLAGS}

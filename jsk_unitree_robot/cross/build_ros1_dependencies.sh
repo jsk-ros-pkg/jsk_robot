@@ -1,10 +1,22 @@
 #!/bin/bash
 
+IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    JOBS=$(cat /proc/cpuinfo | grep "processor" | wc -l)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    JOBS=$(sysctl -n hw.logicalcpu)
+else
+    JOBS=8
+fi
+
+echo "NUM JOBS=${JOBS}"
+
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
 SOURCE_ROOT=${TARGET_MACHINE}_ws_ros1_dependencies_sources
-MAKEFLAGS=${MAKEFLAGS:-'-j4'}
+MAKEFLAGS=${MAKEFLAGS:-'-j'}${JOBS}
 
 if [ -e "${SOURCE_ROOT}" ]; then
     echo "WARNING: Source directory is found ${SOURCE_ROOT}" 1>&2
@@ -38,7 +50,9 @@ docker run -it --rm \
   bash -c "\
     set -xeuf -o pipefail && \
     cd /home/user/ros1_dependencies_sources && \
-    vcs import --skip-existing --retry 10 --shallow src < ros1_dependencies.repos && \
+    vcs import --skip-existing --workers ${JOBS} --retry 10 --shallow src < ros1_dependencies.repos && \
+    export JOBS=${JOBS} && \
+    export MAKEFLAGS=${MAKEFLAGS} && \
     for script_file in \$(ls /home/user/ros1_dependencies_build_scripts/|sort); do
       /home/user/ros1_dependencies_build_scripts/\$script_file || exit 1;
     done && \

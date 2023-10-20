@@ -21,6 +21,7 @@ cmake \
   -DBUILD_DOCS=OFF \
   -DCMAKE_DEBUG_POSTFIX='' \
   -DASSIMP_ENABLE_BOOST_WORKAROUND=OFF \
+  -j ${JOBS} \
   ${SOURCE_DIR}
 
-make install
+make install ${MAKEFLAGS}

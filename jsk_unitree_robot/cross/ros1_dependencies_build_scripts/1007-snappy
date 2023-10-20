@@ -16,6 +16,7 @@ cmake \
   -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=on \
+  -j ${JOBS} \
   ${SOURCE_DIR}
 
-make install
+make install ${MAKEFLAGS}

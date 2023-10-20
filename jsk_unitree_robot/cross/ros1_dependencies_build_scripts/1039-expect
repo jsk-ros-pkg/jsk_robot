@@ -16,5 +16,5 @@ cd ${SOURCE_DIR}
 
 ./configure --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies --build=arm --verbose --enable-shared --exec-prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies
 
-make
-make install
+make ${MAKEFLAGS}
+make install ${MAKEFLAGS}

@@ -1,10 +1,20 @@
 #!/bin/bash
 
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    JOBS=$(cat /proc/cpuinfo | grep "processor" | wc -l)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    JOBS=$(sysctl -n hw.logicalcpu)
+else
+    JOBS=8
+fi
+
+echo "NUM JOBS=${JOBS}"
+
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
 SOURCE_ROOT=${TARGET_MACHINE}_ws_system
-MAKEFLAGS=${MAKEFLAGS:-'-j4'}
+MAKEFLAGS=${MAKEFLAGS:-'-j'}${JOBS}
 
 UPDATE_SOURCE_ROOT=1  # TRUE
 if [ -e "${SOURCE_ROOT}" ]; then
@@ -31,7 +41,7 @@ mkdir -p ${SOURCE_ROOT}/src
 mkdir -p ${HOST_INSTALL_ROOT}/ros1_inst
 
 if [ ${UPDATE_SOURCE_ROOT} -eq 1 ]; then
-    vcs import --force --retry 10 --shallow ${SOURCE_ROOT}/src < repos/roseus_no_window.repos
+    vcs import --force --workers ${JOBS} --retry 10 --shallow ${SOURCE_ROOT}/src < repos/roseus_no_window.repos
     for dir in euslisp jskeus; do ls ${SOURCE_ROOT}/src/$dir/patches/; rsync -avz ${SOURCE_ROOT}/src/$dir/patches/ ${SOURCE_ROOT}/src/$dir; done
     sed -i s@:{version}@0.0.0@ ${SOURCE_ROOT}/src/euslisp/package.xml ${SOURCE_ROOT}/src/jskeus/package.xml
 fi
@@ -63,7 +73,7 @@ docker run -it --rm \
     rospack list && \
     cd ${SOURCE_ROOT} && \
     [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || ROS_PACKAGE_PATH=src:\$ROS_PACKAGE_PATH rosinstall_generator ${EUSCOLLADA_DEPENDS} ${ROSEUS_DEPENDS} ${ROSEUS_MONGO_DEPENDS} ${ROSEUS_SMACH_DEPENDS} ${JSK_ROBOT_STARTUP_DEPENDS} ${DIAGNOSTIC_AGGREGATOR} ${PR2EUS} --verbose --deps --rosdistro melodic --exclude RPP --depend-type buildtool buildtool_export build run | tee unitree_ros1_system.repos && \
-    [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || PYTHONPATH= vcs import --force --retry 10 --shallow src < unitree_ros1_system.repos && \
+    [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || PYTHONPATH= vcs import --force --workers ${JOBS} --retry 10 --shallow src < unitree_ros1_system.repos && \
     [ ! -e pr2_mechanism-346.diff ] || OUT=\"\$(patch -p1 --forward --directory src/pr2_mechanism < pr2_mechanism-346.diff | tee /dev/tty)\" || echo \"\${OUT}\" | grep \"Skipping patch\" -q || (echo \"\$OUT\" && false) && \
     catkin_make_isolated --install --install-space /opt/jsk/${INSTALL_ROOT}/ros1_inst -DCMAKE_BUILD_TYPE=Release \
         -DCATKIN_ENABLE_TESTING=FALSE \
