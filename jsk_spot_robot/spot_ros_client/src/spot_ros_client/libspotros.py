@@ -540,6 +540,9 @@ class SpotRosClient:
         res = self._srv_client_reset_current_node(req)
         return res.success
 
+    def list_nodes(self):
+        return list(rospy.get_param("/spot_behavior_manager_server/map/nodes", {}).keys())
+
     # \brief call trajectory service
     # \param x x value of the target position [m]
     # \param x y value of the target position [m]
