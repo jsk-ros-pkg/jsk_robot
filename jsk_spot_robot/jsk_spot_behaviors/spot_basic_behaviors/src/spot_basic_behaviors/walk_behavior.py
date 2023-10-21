@@ -61,7 +61,7 @@ class WalkBehavior(BaseBehavior):
         rate = rospy.Rate(10)
         if not self.silent_mode:
             self.sound_client.say('移動します', blocking=True)
-        self.spot_client.navigate_to(end_id, blocking=False)
+        self.spot_client.navigate_to(end_id, velocity_limit=(0.2, 0.2, 0.1), blocking=False)
         while not rospy.is_shutdown():
             rate.sleep()
             if self.spot_client.wait_for_navigate_to_result(rospy.Duration(0.1)):
