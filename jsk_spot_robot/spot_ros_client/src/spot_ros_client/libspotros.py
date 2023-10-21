@@ -326,12 +326,12 @@ class SpotRosClient:
             return None
         return frame_odom_to_base
 
-    def go_pose(self, target_frame):
+    def go_pose(self, target_frame, timeout = None):
         self.trajectory(
                 target_frame.p[0],
                 target_frame.p[1],
                 target_frame.M.GetRPY()[2],
-                10,
+                duration=timeout,
                 blocking=True
                 )
 
