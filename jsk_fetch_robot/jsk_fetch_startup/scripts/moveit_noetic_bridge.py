@@ -163,19 +163,15 @@ class MoveitNoeticBridge(object):
         )
         self._melodic_move_group_action = imp.load_source(
             "MoveGroupAction",
-            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupAction.py",
+            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupAction.py",
         )
         self._melodic_move_group_goal = imp.load_source(
             "MoveGroupGoal",
-            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupGoal.py",
-        )
-        self._melodic_move_group_status = imp.load_source(
-            "MoveGroupStatus",
-            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupStatus.py",
+            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupGoal.py",
         )
         self._melodic_move_group_result = imp.load_source(
             "MoveGroupResult",
-            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupResult.py",
+            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupResult.py",
         )
 
         # Service bridge
@@ -226,8 +222,9 @@ class MoveitNoeticBridge(object):
             "/move_group_noetic",
             MoveGroupAction,
             execute_cb=self._move_group_action_cb,
-            auto_start=True,
+            auto_start=False,
         )
+        self.move_group_as.start()
         self.move_group_ac = actionlib.SimpleActionClient(
             "/move_group", self._melodic_move_group_action.MoveGroupAction
         )
@@ -238,7 +235,6 @@ class MoveitNoeticBridge(object):
             PlanningSceneWorld,
             self._planning_scene_world_cb,
         )
-
         self.planning_scene_world_pub = rospy.Publisher(
             "/planning_scene_world",
             self._melodic_planning_scene_world.PlanningSceneWorld,
