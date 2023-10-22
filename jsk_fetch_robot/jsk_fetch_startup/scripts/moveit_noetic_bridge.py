@@ -8,6 +8,9 @@ from moveit_msgs.msg import (
     AttachedCollisionObject,
     CollisionObject,
     MotionPlanResponse,
+    MoveGroupActionGoal,
+    MoveGroupActionResult,
+    MoveGroupActionFeedback,
     PlanningScene,
     PlanningSceneWorld,
     RobotState,
@@ -217,20 +220,38 @@ class MoveitNoeticBridge(object):
             "/plan_kinematic_path", self._melodic_get_motion_plan.GetMotionPlan
         )
 
-        # Actionlib
-        self.move_group_as = actionlib.SimpleActionServer(
-            "/move_group_noetic",
-            MoveGroupAction,
-            execute_cb=self._move_group_action_cb,
-            auto_start=False,
-        )
-        self.move_group_as.start()
-        self.move_group_ac = actionlib.SimpleActionClient(
-            "/move_group", self._melodic_move_group_action.MoveGroupAction
-        )
-
         # Topic
-        self.planning_scene_world_cb = rospy.Subscriber(
+        self.move_group_goal_sub = rospy.Subscriber(
+            "/move_group_noetic/goal",
+            MoveGroupActionGoal,
+            self._move_group_goal_cb,
+        )
+        self.move_group_goal_pub = rospy.Publisher(
+            "/move_group/goal",
+            self._melodic_move_group_goal.MoveGroupActionGoal,
+            queue_size=1,
+        )
+        self.move_group_result_sub = rospy.Subscriber(
+            "/move_group/result",
+            MoveGroupActionResult,
+            self._move_group_result_cb,
+        )
+        self.move_group_result_pub = rospy.Publisher(
+            "/move_group_noetic/result",
+            self._melodic_move_group_result.MoveGroupActionResult,
+            queue_size=1,
+        )
+        self.move_group_feedback_sub = rospy.Subscriber(
+            "/move_group/feedback",
+            self._melodic_move_group_action.MoveGroupActionFeedback,
+            self._move_group_feedback_cb,
+        )
+        self.move_group_feedback_pub = rospy.Publisher(
+            "/move_group_noetic/feedback",
+            MoveGroupActionFeedback,
+            queue_size=1,
+        )
+        self.planning_scene_world_sub = rospy.Subscriber(
             "/planning_scene_world_noetic",
             PlanningSceneWorld,
             self._planning_scene_world_cb,
@@ -305,19 +326,20 @@ class MoveitNoeticBridge(object):
         )
         return response
 
-    def _move_group_action_cb(self, goal):
-        self.move_group_ac.send_goal(
-            self._convert_noetic_move_group_goal_msg_to_melodic(goal),
-            feedback_cb=self._move_group_feedback_cb,
+    def _move_group_goal_cb(self, action_goal):
+        action_goal.goal = self._convert_noetic_move_group_goal_msg_to_melodic(
+            action_goal.goal
         )
-        self.move_group_ac.wait_for_result()
-        result = self.move_group_ac.get_result()
-        self.move_group_as.set_succeeded(
-            self._convert_melodic_move_group_result_msg_to_noetic(result)
-        )
+        self.move_group_goal_pub.publish(action_goal)
 
-    def _move_group_feedback_cb(self, feedback):
-        self.move_group_as.publish_feedback(feedback)
+    def _move_group_result_cb(self, action_result):
+        action_result.result = self._convert_melodic_move_group_result_msg_to_noetic(
+            action_result.result
+        )
+        self.move_group_result_pub.publish(action_result)
+
+    def _move_group_feedback_cb(self, action_feedback):
+        self.move_group_feedback_pub.publish(action_feedback)
 
     def _planning_scene_world_cb(self, msg):
         converted_msg = self._convert_noetic_planning_scene_world_msg_to_melodic(msg)
