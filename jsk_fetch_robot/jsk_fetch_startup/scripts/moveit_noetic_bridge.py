@@ -168,13 +168,17 @@ class MoveitNoeticBridge(object):
             "MoveGroupAction",
             "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupAction.py",
         )
-        self._melodic_move_group_goal = imp.load_source(
-            "MoveGroupGoal",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupGoal.py",
+        self._melodic_move_group_action_goal = imp.load_source(
+            "MoveGroupActionGoal",
+            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupActionGoal.py",
         )
-        self._melodic_move_group_result = imp.load_source(
-            "MoveGroupResult",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupResult.py",
+        self._melodic_move_group_action_result = imp.load_source(
+            "MoveGroupActionResult",
+            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupActionResult.py",
+        )
+        self._melodic_move_group_action_feedback = imp.load_source(
+            "MoveGroupActionFeedback",
+            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupActionFeedback.py",
         )
 
         # Service bridge
@@ -228,7 +232,7 @@ class MoveitNoeticBridge(object):
         )
         self.move_group_goal_pub = rospy.Publisher(
             "/move_group/goal",
-            self._melodic_move_group_goal.MoveGroupActionGoal,
+            self._melodic_move_group_action_goal.MoveGroupActionGoal,
             queue_size=1,
         )
         self.move_group_result_sub = rospy.Subscriber(
@@ -238,12 +242,12 @@ class MoveitNoeticBridge(object):
         )
         self.move_group_result_pub = rospy.Publisher(
             "/move_group_noetic/result",
-            self._melodic_move_group_result.MoveGroupActionResult,
+            self._melodic_move_group_action_result.MoveGroupActionResult,
             queue_size=1,
         )
         self.move_group_feedback_sub = rospy.Subscriber(
             "/move_group/feedback",
-            self._melodic_move_group_action.MoveGroupActionFeedback,
+            self._melodic_move_group_action_feedback.MoveGroupActionFeedback,
             self._move_group_feedback_cb,
         )
         self.move_group_feedback_pub = rospy.Publisher(
