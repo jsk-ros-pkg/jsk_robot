@@ -59,9 +59,19 @@ class WalkBehavior(BaseBehavior):
         # start navigation
         success = False
         rate = rospy.Rate(10)
+        velocity_limit_linear_x = rospy.get_param('/spot_basic_behaviors/walk_behaviors/velocity_limit_linear_x', None)
+        velocity_limit_linear_y = rospy.get_param('/spot_basic_behaviors/walk_behaviors/velocity_limit_linear_y', None)
+        velocity_limit_angular_z = rospy.get_param('/spot_basic_behaviors/walk_behaviors/velocity_limit_angular_z', None)
         if not self.silent_mode:
             self.sound_client.say('移動します', blocking=True)
-        self.spot_client.navigate_to(end_id, velocity_limit=(0.2, 0.2, 0.1), blocking=False)
+        self.spot_client.navigate_to(
+                end_id,
+                velocity_limit=(
+                    velocity_limit_linear_x,
+                    velocity_limit_linear_y,
+                    velocity_limit_angular_z
+                    ),
+                blocking=False)
         while not rospy.is_shutdown():
             rate.sleep()
             if self.spot_client.wait_for_navigate_to_result(rospy.Duration(0.1)):
