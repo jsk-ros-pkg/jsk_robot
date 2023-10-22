@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import actionlib
 import imp
 import rospkg
 import rospy
@@ -10,6 +11,8 @@ from moveit_msgs.msg import (
     PlanningScene,
     PlanningSceneWorld,
     RobotState,
+    MoveGroupAction,
+    MoveGroupResult,
 )  # importing noetic version
 from moveit_msgs.srv import (
     ApplyPlanningScene,
@@ -19,7 +22,6 @@ from moveit_msgs.srv import (
     GetPositionIK,
 )  # importing noetic version
 from packaging import version
-from rospy.impl.tcpros_pubsub import check_if_still_publisher
 
 
 """
@@ -159,6 +161,22 @@ class MoveitNoeticBridge(object):
             "RobotState",
             "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_RobotState.py",
         )
+        self._melodic_move_group_action = imp.load_source(
+            "MoveGroupAction",
+            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupAction.py",
+        )
+        self._melodic_move_group_goal = imp.load_source(
+            "MoveGroupGoal",
+            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupGoal.py",
+        )
+        self._melodic_move_group_status = imp.load_source(
+            "MoveGroupStatus",
+            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupStatus.py",
+        )
+        self._melodic_move_group_result = imp.load_source(
+            "MoveGroupResult",
+            "/opt/ros/melodic/lib/python2.7/dist-package/moveit_msgs/msg/_MoveGroupResult.py",
+        )
 
         # Service bridge
         self.apply_planning_scene_srv = rospy.Service(
@@ -201,6 +219,30 @@ class MoveitNoeticBridge(object):
         )
         self.plan_kinematic_path_proxy = rospy.ServiceProxy(
             "/plan_kinematic_path", self._melodic_get_motion_plan.GetMotionPlan
+        )
+
+        # Actionlib
+        self.move_group_as = actionlib.SimpleActionServer(
+            "/move_group_noetic",
+            MoveGroupAction,
+            execute_cb=self._move_group_action_cb,
+            auto_start=True,
+        )
+        self.move_group_ac = actionlib.SimpleActionClient(
+            "/move_group", self._melodic_move_group_action.MoveGroupAction
+        )
+
+        # Topic
+        self.planning_scene_world_cb = rospy.Subscriber(
+            "/planning_scene_world_noetic",
+            PlanningSceneWorld,
+            self._planning_scene_world_cb,
+        )
+
+        self.planning_scene_world_pub = rospy.Publisher(
+            "/planning_scene_world",
+            self._melodic_planning_scene_world.PlanningSceneWorld,
+            queue_size=1,
         )
 
     def _apply_planning_scene_srv_cb(self, request):
@@ -266,6 +308,24 @@ class MoveitNoeticBridge(object):
             )
         )
         return response
+
+    def _move_group_action_cb(self, goal):
+        self.move_group_ac.send_goal(
+            self._convert_noetic_move_group_goal_msg_to_melodic(goal),
+            feedback_cb=self._move_group_feedback_cb,
+        )
+        self.move_group_ac.wait_for_result()
+        result = self.move_group_ac.get_result()
+        self.move_group_as.set_succeeded(
+            self._convert_melodic_move_group_result_msg_to_noetic(result)
+        )
+
+    def _move_group_feedback_cb(self, feedback):
+        self.move_group_as.publish_feedback(feedback)
+
+    def _planning_scene_world_cb(self, msg):
+        converted_msg = self._convert_noetic_planning_scene_world_msg_to_melodic(msg)
+        self.planning_scene_world_pub.publish(converted_msg)
 
     def _convert_melodic_collision_object_msg_to_noetic(self, collision_object_msg):
         """
@@ -393,6 +453,50 @@ class MoveitNoeticBridge(object):
         noetic_msg.trajectory = motion_plan_response_msg.trajectory
         noetic_msg.planning_time = motion_plan_response_msg.planning_time
         noetic_msg.error_code = motion_plan_response_msg.error_code
+
+    def _convert_noetic_move_group_goal_msg_to_melodic(self, move_group_goal_msg):
+        melodic_msg = self._melodic_move_group_goal.MoveGroupGoal()
+        melodic_msg.request = self._convert_noetic_motion_plan_request_msg_to_melodic(
+            move_group_goal_msg.request
+        )
+        melodic_msg.planning_options.planning_scene_diff = (
+            self._convert_noetic_planning_scene_msg_to_melodic(
+                move_group_goal_msg.planning_options.planning_scene_diff
+            )
+        )
+        melodic_msg.planning_options.plan_only = (
+            move_group_goal_msg.planning_options.plan_only
+        )
+        melodic_msg.planning_options.look_around = (
+            move_group_goal_msg.planning_options.look_around
+        )
+        melodic_msg.planning_options.look_around_attempts = (
+            move_group_goal_msg.planning_options.look_around_attempts
+        )
+        melodic_msg.planning_options.max_safe_execution_cost = (
+            move_group_goal_msg.planning_options.max_safe_execution_cost
+        )
+        melodic_msg.planning_options.replan = (
+            move_group_goal_msg.planning_options.replan
+        )
+        melodic_msg.planning_options.replan_attempts = (
+            move_group_goal_msg.planning_options.replan_attampts
+        )
+        melodic_msg.planning_options.replan_delay = (
+            move_group_goal_msg.planning_options.replan_delay
+        )
+        return melodic_msg
+
+    def _convert_melodic_move_group_result_msg_to_noetic(self, move_group_result_msg):
+        noetic_msg = MoveGroupResult()
+        noetic_msg.error_code = move_group_result_msg.error_code
+        noetic_msg.trajectory_start = self._convert_melodic_robot_state_msg_to_noetic(
+            move_group_result_msg.trajectory_start
+        )
+        noetic_msg.planned_trajectory = move_group_result_msg.planned_trajectory
+        noetic_msg.executed_trajectory = move_group_result_msg.executed_trajectory
+        noetic_msg.planning_time = move_group_result_msg.planning_time
+        return noetic_msg
 
     def _convert_noetic_position_ik_request_msg_to_melodic(
         self, position_ik_request_msg
