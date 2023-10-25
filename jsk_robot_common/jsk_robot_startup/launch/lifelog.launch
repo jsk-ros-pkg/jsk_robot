@@ -23,6 +23,8 @@
   <arg name="launch_mongodb" default="false" />
   <arg name="launch_common_logger" default="false" />
 
+  <arg name="manager" default="mongodb_record_nodelet_manager" />
+
   <param name="robot/database" value="jsk_robot_lifelog"/>
 
 
@@ -63,7 +65,7 @@
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
     <arg name="launch_manager" value="true" />
-    <arg name="manager" value="mongodb_record_nodelet_manager" />
+    <arg name="manager" value="$(arg manager)" />
     <arg name="map_frame_id" value="$(arg logger_map_frame)" />
     <arg name="approximate_sync" value="true"/>
   </include>
@@ -102,7 +104,7 @@
   <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
   <node name="camera_throttle_nodelet"
         pkg="nodelet" type="nodelet"
-        args="load jsk_topic_tools/SynchronizedThrottle mongodb_record_nodelet_manager" >
+        args="load jsk_topic_tools/SynchronizedThrottle $(arg manager)" >
     <rosparam subst_value="true">
       approximate_sync: true
       topics:
@@ -116,7 +118,7 @@
     <include file="$(find jsk_robot_startup)/lifelog/lifelog_rgb_image.launch" >
       <arg name="node_name" value="hand_color_logger" />
       <arg name="image" value="$(arg image)/compressed/throttled" />
-      <arg name="manager" value="mongodb_record_nodelet_manager" />
+      <arg name="manager" value="$(arg manager)" />
     </include>
   </group>
 
