@@ -1,14 +1,13 @@
 <launch>
-  
-  <include file="$(find jsk_robot_startup)/launch/lifelog.launch" >
-    <arg name="logger_save_action" value="true" />
-    <arg name="logger_save_smach" value="true" />
-    <!-- <arg name="logger_save_faces" value="true" /> -->
-    <arg name="logger_save_dialogflow" value="true" />
-    <arg name="image" value="/head_camera/rgb/image_rect_color" />
-    <arg name="launch_mongodb" value="false" />
-  </include>
-  <include file="$(find jsk_robot_startup)/launch/interaction.launch" >
+  <!-- <include file="$(find jsk_robot_startup)/launch/lifelog.launch" > -->
+  <!--   <arg name="logger_save_action" value="true" /> -->
+  <!--   <arg name="logger_save_smach" value="true" /> -->
+  <!--   <!-\- <arg name="logger_save_faces" value="true" /> -\-> -->
+  <!--   <arg name="logger_save_dialogflow" value="true" /> -->
+  <!--   <arg name="image" value="/head_camera/rgb/image_rect_color" /> -->
+  <!--   <arg name="launch_mongodb" value="false" /> -->
+  <!-- </include> -->
+  <include file="$(find jsk_robot_startup)/launch/interaction.launch" ns="db_talker" >
     <arg name="chat_use_helper" value="false" />
     <arg name="launch_google_chat" value="false" />
     <arg name="launch_gdrive_server" value="false" />
