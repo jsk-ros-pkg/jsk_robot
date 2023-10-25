@@ -80,4 +80,9 @@
       - sound_play/SoundRequestActionGoal
       - sound_play/SoundRequestActionResult
   </rosparam>
+
+  <include file="$(find jsk_robot_startup)/launch/lifelog.launch" >
+    <arg name="image" value="/head_camera/rgb/image_rect_color" />
+  </include>
+
 </launch>
