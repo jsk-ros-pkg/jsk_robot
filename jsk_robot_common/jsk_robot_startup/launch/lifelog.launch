@@ -19,6 +19,7 @@
   <arg name="image" default="usb_cam/image_raw" />
 
   <arg name="launch_mongodb" default="true" />
+  <arg name="launch_common_logger" default="true" />
 
   <param name="robot/database" value="jsk_robot_lifelog"/>
 
@@ -42,7 +43,7 @@
     </node>
   </group>
 
-  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch" if="$(arg launch_common_logger)">
     <arg name="save_rgb" value="$(arg logger_save_rgb)" />
     <arg name="save_depth" value="$(arg logger_save_depth)" />
     <arg name="save_tf" value="$(arg logger_save_tf)" />
