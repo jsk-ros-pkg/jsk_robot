@@ -27,6 +27,7 @@
 
   <!-- Dialogflow Client ROS -->
   <include file="$(find dialogflow_task_executive)/launch/dialogflow_ros.launch">
+    <arg name="override_project_id" value="true" />
     <arg name="credential" value="$(arg google_credentials_json)" />
     <arg name="project_id" value="collaborative-remembering-kwit" />
     <arg name="enable_hotword" value="false" />
