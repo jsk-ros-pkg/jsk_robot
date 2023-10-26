@@ -8,8 +8,8 @@ rarm:
   - panda_joint7 : rarm-wrist-y
 
 rarm-end-coords:
-  parent: panda_hand_tcp
-  translate: [0, 0, 0]
+  parent: panda_hand  # If panda_hand_tcp is used to delete the following translation, (send *panda* :rarm :gripper :joint-list) does not include finger joints
+  translate: [0, 0, 0.1034]  # https://github.com/frankaemika/franka_ros/blob/0.10.1/franka_description/robots/common/franka_robot.xacro#L8
   rotate : [0, -1, 0, 90]
 
 angle-vector:
