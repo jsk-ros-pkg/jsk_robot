@@ -72,20 +72,25 @@ class SmachToMail():
             self._gchat_thread = None
 
     def _stop_timer_cb(self, event):
+        '''
+        If smach does not go to finish/end state,
+        this is forced to send notification.
+        '''
         now = rospy.Time.now()
-        rospy.loginfo("stop timer")
+        rospy.logdebug("SmachToMail stop timer called")
         if (self.smach_state_list and
-            self.smach_state_subject and
-            self.timeout is not None and
-            self.smach_start_time is not None):
+                self.smach_state_subject and
+                self.timeout is not None and
+                self.smach_start_time is not None):
             for key in self.smach_state_list.keys():
                 if (now - self.smach_start_time[key]).to_sec() > self.timeout:
                     self._send_mail(
                         self.smach_state_subject[key], self.smach_state_list[key])
                     self._send_twitter(
                         self.smach_state_subject[key], self.smach_state_list[key])
-                rospy.logwarn(
-                    "SmachToMail timer publishes stop signal. Send Notification.")
+                    self.smach_state_subject[key] = None
+                    rospy.logwarn(
+                        "SmachToMail timer publishes stop signal. Send Notification.")
 
     def _status_cb(self, msg):
         '''
