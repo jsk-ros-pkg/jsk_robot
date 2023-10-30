@@ -10,9 +10,6 @@ find_package(franka_description)  # Just in case when description is not release
 
 catkin_package()
 
-###
-### dual_panda.l generation
-###
 set(_franka_description_min_ver "0.10.0")
 set(_xacro_min_ver "1.13.14")
 if(franka_description_FOUND
@@ -25,6 +22,10 @@ if(franka_description_FOUND
   #   xacro.load_yaml cannot be recognized when xacro < 1.13.14, while it is recommended when xacro >= 1.13.14.
   #   PR introducing xacro.load_yaml: https://github.com/ros/xacro/pull/283
   #   Related issue: https://github.com/ros/xacro/issues/298
+
+  ###
+  ### dual_panda.l generation
+  ###
   add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/dual_panda.l
     COMMAND rosrun euscollada collada2eus -I dual_panda.urdf -C dual_panda.yaml -O dual_panda.l
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
@@ -34,9 +35,27 @@ if(franka_description_FOUND
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
     DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.urdf.xacro)
 
-  add_custom_target(generate_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.l)
+  add_custom_target(generate_dual_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/dual_panda.l)
+
+  ###
+  ### panda.l generation
+  ###
+  set(_panda_xacro ${franka_description_SOURCE_PREFIX}/robots/panda/panda.urdf.xacro)  # franka_description is installed from source
+  if(NOT EXISTS ${_panda_xacro})
+    set(_panda_xacro ${franka_description_PREFIX}/share/franka_description/robots/panda/panda.urdf.xacro)  # franka_description is installed from apt
+  endif()
+  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/panda.l
+    COMMAND rosrun euscollada collada2eus -I panda.urdf -C panda.yaml -O panda.l
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/models
+    DEPENDS ${PROJECT_SOURCE_DIR}/models/panda.urdf ${PROJECT_SOURCE_DIR}/models/panda.yaml)
+  add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/models/panda.urdf
+    COMMAND rosrun xacro xacro --inorder ${_panda_xacro} hand:=true > ${PROJECT_SOURCE_DIR}/models/panda.urdf
+    DEPENDS ${_panda_xacro})
+
+  add_custom_target(generate_panda_lisp ALL DEPENDS ${PROJECT_SOURCE_DIR}/models/panda.l)
+
 else()
-  message(WARNING "Dependency is not met, so skip generating dual_panda.l")
+  message(WARNING "Dependency is not met, so skip generating panda.l and dual_panda.l")
   message(WARNING "franka_description version: ${franka_description_VERSION}, must be >= ${_franka_description_min_ver}")
   message(WARNING "xacro version: ${xacro_VERSION}, must be >= ${_xacro_min_ver}")
 endif()
