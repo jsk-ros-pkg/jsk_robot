@@ -1,4 +1,14 @@
 <launch>
+  <!--
+      THIS NODE REQURES jsk_3rdparty >= 2.1.25, melodic user need to install jsk_3rdparty from source tree
+
+      google_chat/dialogflow_task_executive which uses `override_project_id`
+      https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/dialogflow_task_executive/CHANGELOG.rst#2125-2023-06-08
+      https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/460
+
+      ros_google_cloud_language >= 2.1.25
+      https://github.com/jsk-ros-pkg/jsk_3rdparty/blob/master/ros_google_cloud_language/CHANGELOG.rst
+  -->
   <!-- strelka -->
   <arg name="google_chat_credentials_json" default="$(find jsk_robot_startup)/auth/tribal-quasar-343006-1025e6fc703f.json" />
   <arg name="project_id" default="tribal-quasar-343006" />

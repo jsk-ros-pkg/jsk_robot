@@ -1,4 +1,9 @@
 <launch>
+  <!--
+      THIS NODE REQURES jsk_perception >= 1.2.16, melodic user need to install jsk_perception from source tree
+
+      https://github.com/jsk-ros-pkg/jsk_recognition/pull/2736
+  -->
   <arg name="use_mail" default="false" />
   <arg name="min_percent" default="5" doc="parameter for video_to_scene"/>
   <arg name="max_percent" default="15" doc="parameter for video_to_scene"/>
