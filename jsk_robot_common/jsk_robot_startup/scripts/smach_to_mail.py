@@ -77,7 +77,7 @@ class SmachToMail():
         self.use_google_chat = config['use_google_chat']
         self.send_every_transition = config['send_every_transition']
         rospy.loginfo(
-            "Switched parameters; use_mail: {send_every_transition}, "
+            "Switched parameters; use_mail: {use_mail}, "
             "use_twitter: {use_twitter}, "
             "use_google_chat: {use_google_chat}, "
             "send_every_transition: {send_every_transition}".format(**config))
