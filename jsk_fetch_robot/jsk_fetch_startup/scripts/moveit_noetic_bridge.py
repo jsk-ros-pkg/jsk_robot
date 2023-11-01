@@ -1,31 +1,21 @@
 #!/usr/bin/env python
 
-import actionlib
-import imp
+import sys
 import rospkg
 import rospy
-from moveit_msgs.msg import (
-    AttachedCollisionObject,
-    CollisionObject,
-    MotionPlanResponse,
-    MoveGroupActionGoal,
-    MoveGroupActionResult,
-    MoveGroupActionFeedback,
-    PlanningScene,
-    PlanningSceneWorld,
-    RobotState,
-    MoveGroupAction,
-    MoveGroupResult,
-)  # importing noetic version
-from moveit_msgs.srv import (
-    ApplyPlanningScene,
-    GetMotionPlan,
-    GetPlanningScene,
-    GetStateValidity,
-    GetPositionIK,
-)  # importing noetic version
+import moveit_msgs.msg as noetic_moveit_msg
+import moveit_msgs.srv as noetic_moveit_srv
 from packaging import version
 
+for module in sys.modules.keys():
+    if module.startswith("moveit_msgs"):
+        del sys.modules[module]
+
+sys.path.insert(0, "/opt/ros/melodic/lib/python2.7/dist-packages")
+import moveit_msgs.msg as melodic_moveit_msg
+import moveit_msgs.srv as melodic_moveit_srv
+
+sys.path.pop(0)
 
 """
 On https://github.com/ros-planning/moveit_msgs/compare/0.10.1...0.11.4, the CollisionObject.msg has breaking changes
@@ -114,177 +104,175 @@ class MoveitNoeticBridge(object):
 
     def __init__(self):
         # Loading Melodic version services, c.f. https://stackoverflow.com/questions/67631/how-can-i-import-a-module-dynamically-given-the-full-path
-        self._melodic_apply_planning_scene = imp.load_source(
-            "ApplyPlanningScene",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_ApplyPlanningScene.py",
-        )
-        self._melodic_get_motion_plan = imp.load_source(
-            "GetMotionPlan",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetMotionPlan.py",
-        )
-        self._melodic_get_state_validity = imp.load_source(
-            "GetStateValidity",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetStateValidity.py",
-        )
-        self._melodic_get_position_ik = imp.load_source(
-            "GetPositionIK",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetPositionIK.py",
-        )
-        self._melodic_get_planning_scene = imp.load_source(
-            "GetPlanningScene",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetPlanningScene.py",
-        )
+        # self._melodic_apply_planning_scene = imp.load_source(
+        #     "ApplyPlanningScene",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_ApplyPlanningScene.py",
+        # )
+        # self._melodic_get_motion_plan = imp.load_source(
+        #     "GetMotionPlan",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetMotionPlan.py",
+        # )
+        # self._melodic_get_state_validity = imp.load_source(
+        #     "GetStateValidity",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetStateValidity.py",
+        # )
+        # self._melodic_get_position_ik = imp.load_source(
+        #     "GetPositionIK",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetPositionIK.py",
+        # )
+        # self._melodic_get_planning_scene = imp.load_source(
+        #     "GetPlanningScene",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetPlanningScene.py",
+        # )
 
         # Loading Melodic version messages
-        self._melodic_collision_object = imp.load_source(
-            "CollisionObject",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_CollisionObject.py",
-        )
-        self._melodic_attached_collision_object = imp.load_source(
-            "AttachedCollisionObject",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_AttachedCollisionObject.py",
-        )
-        self._melodic_motion_plan_request = imp.load_source(
-            "MotionPlanRequest",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MotionPlanRequest.py",
-        )
-        self._melodic_position_ik_request = imp.load_source(
-            "PositionIKRequest",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PositionIKRequest.py",
-        )
-        self._melodic_planning_scene = imp.load_source(
-            "PlanningScene",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PlanningScene.py",
-        )
-        self._melodic_planning_scene_world = imp.load_source(
-            "PlanningSceneWorld",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PlanningSceneWorld.py",
-        )
-        self._melodic_robot_state = imp.load_source(
-            "RobotState",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_RobotState.py",
-        )
-        self._melodic_move_group_action = imp.load_source(
-            "MoveGroupAction",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupAction.py",
-        )
-        self._melodic_move_group_action_goal = imp.load_source(
-            "MoveGroupActionGoal",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupActionGoal.py",
-        )
-        self._melodic_move_group_action_result = imp.load_source(
-            "MoveGroupActionResult",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupActionResult.py",
-        )
-        self._melodic_move_group_action_feedback = imp.load_source(
-            "MoveGroupActionFeedback",
-            "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupActionFeedback.py",
-        )
+        # self._melodic_collision_object = imp.load_source(
+        #     "CollisionObject",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_CollisionObject.py",
+        # )
+        # self._melodic_attached_collision_object = imp.load_source(
+        #     "AttachedCollisionObject",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_AttachedCollisionObject.py",
+        # )
+        # self._melodic_motion_plan_request = imp.load_source(
+        #     "MotionPlanRequest",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MotionPlanRequest.py",
+        # )
+        # self._melodic_position_ik_request = imp.load_source(
+        #     "PositionIKRequest",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PositionIKRequest.py",
+        # )
+        # self._melodic_planning_scene = imp.load_source(
+        #     "PlanningScene",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PlanningScene.py",
+        # )
+        # self._melodic_planning_scene_world = imp.load_source(
+        #     "PlanningSceneWorld",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PlanningSceneWorld.py",
+        # )
+        # self._melodic_robot_state = imp.load_source(
+        #     "RobotState",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_RobotState.py",
+        # )
+        # self._melodic_move_group_action = imp.load_source(
+        #     "MoveGroupAction",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupAction.py",
+        # )
+        # self._melodic_move_group_goal = imp.load_source(
+        #     "MoveGroupGoal",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupGoal.py",
+        # )
+        # self._melodic_move_group_result = imp.load_source(
+        #     "MoveGroupResult",
+        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupResult.py",
+        # )
 
         # Service bridge
         self.apply_planning_scene_srv = rospy.Service(
             "/apply_planning_scene_noetic",
-            ApplyPlanningScene,
+            noetic_moveit_srv.ApplyPlanningScene,
             self._apply_planning_scene_srv_cb,
         )
         self.check_state_validity_srv = rospy.Service(
             "/check_state_validity_noetic",
-            GetStateValidity,
+            noetic_moveit_srv.GetStateValidity,
             self._check_state_validity_srv_cb,
         )
         self.compute_ik_srv = rospy.Service(
-            "/compute_ik_noetic", GetPositionIK, self._compute_ik_srv_cb
+            "/compute_ik_noetic",
+            noetic_moveit_srv.GetPositionIK,
+            self._compute_ik_srv_cb,
         )
         self.get_planning_scene_srv = rospy.Service(
             "/get_planning_scene_noetic",
-            GetPlanningScene,
+            noetic_moveit_srv.GetPlanningScene,
             self._get_planning_scene_srv_cb,
         )
         self.plan_kinematic_path_srv = rospy.Service(
             "/plan_kinematic_path_noetic",
-            GetMotionPlan,
+            noetic_moveit_srv.GetMotionPlan,
             self._plan_kinematic_path_srv_cb,
         )  # NOTE Is this service necessary to be bridged? Not seen in pr2eus_moveit
 
         # Service proxy
         self.apply_planning_scene_proxy = rospy.ServiceProxy(
             "/apply_planning_scene",
-            self._melodic_apply_planning_scene.ApplyPlanningScene,
+            melodic_moveit_srv.ApplyPlanningScene,
         )
         self.check_state_validity_proxy = rospy.ServiceProxy(
-            "/check_state_validity", self._melodic_get_state_validity.GetStateValidity
+            "/check_state_validity", melodic_moveit_srv.GetStateValidity
         )
         self.compute_ik_proxy = rospy.ServiceProxy(
-            "/compute_ik", self._melodic_get_position_ik.GetPositionIK
+            "/compute_ik", melodic_moveit_srv.GetPositionIK
         )
         self.get_planning_scene_proxy = rospy.ServiceProxy(
-            "/get_planning_scene", self._melodic_get_planning_scene.GetPlanningScene
+            "/get_planning_scene", melodic_moveit_srv.GetPlanningScene
         )
         self.plan_kinematic_path_proxy = rospy.ServiceProxy(
-            "/plan_kinematic_path", self._melodic_get_motion_plan.GetMotionPlan
+            "/plan_kinematic_path", melodic_moveit_srv.GetMotionPlan
         )
 
         # Topic
         self.move_group_goal_sub = rospy.Subscriber(
             "/move_group_noetic/goal",
-            MoveGroupActionGoal,
+            noetic_moveit_msg.MoveGroupActionGoal,
             self._move_group_goal_cb,
         )
         self.move_group_goal_pub = rospy.Publisher(
             "/move_group/goal",
-            self._melodic_move_group_action_goal.MoveGroupActionGoal,
+            melodic_moveit_msg.MoveGroupActionGoal,
             queue_size=1,
         )
         self.move_group_result_sub = rospy.Subscriber(
             "/move_group/result",
-            MoveGroupActionResult,
+            noetic_moveit_msg.MoveGroupActionResult,
             self._move_group_result_cb,
         )
         self.move_group_result_pub = rospy.Publisher(
             "/move_group_noetic/result",
-            self._melodic_move_group_action_result.MoveGroupActionResult,
+            melodic_moveit_msg.MoveGroupActionResult,
             queue_size=1,
         )
         self.move_group_feedback_sub = rospy.Subscriber(
             "/move_group/feedback",
-            self._melodic_move_group_action_feedback.MoveGroupActionFeedback,
+            melodic_moveit_msg.MoveGroupActionFeedback,
             self._move_group_feedback_cb,
         )
         self.move_group_feedback_pub = rospy.Publisher(
             "/move_group_noetic/feedback",
-            MoveGroupActionFeedback,
+            noetic_moveit_msg.MoveGroupActionFeedback,
             queue_size=1,
         )
         self.planning_scene_world_sub = rospy.Subscriber(
             "/planning_scene_world_noetic",
-            PlanningSceneWorld,
+            noetic_moveit_msg.PlanningSceneWorld,
             self._planning_scene_world_cb,
         )
         self.planning_scene_world_pub = rospy.Publisher(
             "/planning_scene_world",
-            self._melodic_planning_scene_world.PlanningSceneWorld,
+            melodic_moveit_msg.PlanningSceneWorld,
             queue_size=1,
         )
 
     def _apply_planning_scene_srv_cb(self, request):
-        bridged_request = self._melodic_apply_planning_scene.ApplyPlanningSceneRequest()
+        bridged_request = melodic_moveit_srv.ApplyPlanningSceneRequest()
         bridged_request.scene = self._convert_noetic_planning_scene_msg_to_melodic(
             request.scene
         )
-        original_response = self.apply_planning_scene_proxy.call(bridged_request)
-        response = self._melodic_apply_planning_scene.ApplyPlanningSceneResponse()
+        original_response = self.get_planning_scene_proxy.call(bridged_request)
+        response = melodic_moveit_srv.ApplyPlanningSceneResponse()
         response.success = original_response.success
         return response
 
     def _check_state_validity_srv_cb(self, request):
-        bridged_request = self._melodic_get_state_validity.GetStateValidityRequest()
+        bridged_request = melodic_moveit_srv.GetStateValidityRequest()
         bridged_request.robot_state = self._convert_noetic_robot_state_msg_to_melodic(
             request.robot_state
         )
         bridged_request.group_name = request.group_name
         bridged_request.constraints = request.constraints
         original_response = self.check_state_validity_proxy.call(bridged_request)
-        response = self._melodic_get_state_validity.GetStateValidityResponse()
+        response = melodic_moveit_srv.GetStateValidityResponse()
         response.valid = original_response.valid
         response.contacts = original_response.contacts
         response.cost_sources = original_response.cost_sources
@@ -292,12 +280,12 @@ class MoveitNoeticBridge(object):
         return response
 
     def _compute_ik_srv_cb(self, request):
-        bridged_request = self._melodic_get_position_ik.GetPositionIKRequest()
+        bridged_request = melodic_moveit_srv.GetPositionIKRequest()
         bridged_request.ik_request = (
             self._convert_noetic_position_ik_request_msg_to_melodic(request.ik_request)
         )
         original_response = self.compute_ik_proxy.call(bridged_request)
-        response = self._melodic_get_position_ik.GetPositionIKResponse()
+        response = melodic_moveit_srv.GetPositionIKResponse()
         response.solution = self._convert_melodic_robot_state_msg_to_noetic(
             original_response.solution
         )
@@ -305,24 +293,24 @@ class MoveitNoeticBridge(object):
         return response
 
     def _get_planning_scene_srv_cb(self, request):
-        bridged_request = self._melodic_get_planning_scene.GetPlanningSceneRequest()
+        bridged_request = melodic_moveit_srv.GetPlanningSceneRequest()
         bridged_request.components = request.components
         original_response = self.get_planning_scene_proxy.call(bridged_request)
-        response = self._melodic_get_planning_scene.GetPlanningSceneResponse()
+        response = melodic_moveit_srv.GetPlanningSceneResponse()
         response.scene = self._convert_melodic_planning_scene_msg_to_noetic(
             original_response.scene
         )
         return response
 
     def _plan_kinematic_path_srv_cb(self, request):
-        bridged_request = self._melodic_get_motion_plan.GetMotionPlanRequest()
+        bridged_request = melodic_moveit_srv.GetMotionPlanRequest()
         bridged_request.motion_plan_request = (
             self._convert_noetic_motion_plan_request_msg_to_melodic(
                 request.motion_plan_request
             )
         )
         original_response = self.plan_kinematic_path_proxy.call(bridged_request)
-        response = self._melodic_get_motion_plan.GetMotionPlanResponse()
+        response = melodic_moveit_srv.GetMotionPlanResponse()
         response.motion_plan_response = (
             self._convert_melodic_motion_plan_response_msg_to_noetic(
                 original_response.motion_plan_response
@@ -356,7 +344,7 @@ class MoveitNoeticBridge(object):
         :returns: Noetic CollisionObject message
         :rtype: moveit_msgs.msg.CollisionObject
         """
-        noetic_msg = CollisionObject()
+        noetic_msg = noetic_moveit_msg.CollisionObject()
         noetic_msg.header = collision_object_msg.header
         noetic_msg.id = collision_object_msg.id
         noetic_msg.type = collision_object_msg.type
@@ -377,7 +365,7 @@ class MoveitNoeticBridge(object):
         :returns: Melodic CollisionObject message
         :rtype: moveit_msgs.msg.CollisionObject
         """
-        melodic_msg = self._melodic_collision_object.CollisionObject()
+        melodic_msg = melodic_moveit_msg.CollisionObject()
         melodic_msg.header = collision_object_msg.header
         melodic_msg.id = collision_object_msg.id
         melodic_msg.type = collision_object_msg.type
@@ -400,7 +388,7 @@ class MoveitNoeticBridge(object):
         :returns: Noetic AttachedCollisionObject message
         :rtype: moveit_msgs.msg.AttachedCollisionObject
         """
-        noetic_msg = AttachedCollisionObject()
+        noetic_msg = noetic_moveit_msg.AttachedCollisionObject()
         noetic_msg.link_name = attached_collision_object_msg.link_name
         noetic_msg.object = self._convert_melodic_collision_object_msg_to_noetic(
             attached_collision_object_msg.object
@@ -419,7 +407,7 @@ class MoveitNoeticBridge(object):
         :returns: Melodic AttachedCollisionObject message
         :rtype: moveit_msgs.msg.AttachedCollisionObject
         """
-        melodic_msg = self._melodic_attached_collision_object.AttachedCollisionObject()
+        melodic_msg = melodic_moveit_msg.AttachedCollisionObject()
         melodic_msg.link_name = attached_collision_object_msg.link_name
         melodic_msg.object = self._convert_noetic_collision_object_msg_to_melodic(
             attached_collision_object_msg.object
@@ -438,7 +426,7 @@ class MoveitNoeticBridge(object):
         :returns: Noetic MotionPlanRequest message
         :rtype: moveit_msgs.msg.MotionPlanRequest
         """
-        melodic_msg = self._melodic_motion_plan_request.MotionPlanRequest()
+        melodic_msg = melodic_moveit_msg.MotionPlanRequest()
         melodic_msg.workspace_parameters = motion_plan_request_msg.workspace_parameters
         melodic_msg.start_state = self._convert_noetic_robot_state_msg_to_melodic(
             motion_plan_request_msg.start_state
@@ -467,7 +455,7 @@ class MoveitNoeticBridge(object):
     def _convert_melodic_motion_plan_response_msg_to_noetic(
         self, motion_plan_response_msg
     ):
-        noetic_msg = MotionPlanResponse()
+        noetic_msg = noetic_moveit_msg.MotionPlanResponse()
         noetic_msg.trajectory_start = self._convert_melodic_robot_state_msg_to_noetic(
             motion_plan_response_msg.trajectory_start
         )
@@ -477,7 +465,7 @@ class MoveitNoeticBridge(object):
         noetic_msg.error_code = motion_plan_response_msg.error_code
 
     def _convert_noetic_move_group_goal_msg_to_melodic(self, move_group_goal_msg):
-        melodic_msg = self._melodic_move_group_goal.MoveGroupGoal()
+        melodic_msg = melodic_moveit_msg.MoveGroupGoal()
         melodic_msg.request = self._convert_noetic_motion_plan_request_msg_to_melodic(
             move_group_goal_msg.request
         )
@@ -510,7 +498,7 @@ class MoveitNoeticBridge(object):
         return melodic_msg
 
     def _convert_melodic_move_group_result_msg_to_noetic(self, move_group_result_msg):
-        noetic_msg = MoveGroupResult()
+        noetic_msg = noetic_moveit_msg.MoveGroupResult()
         noetic_msg.error_code = move_group_result_msg.error_code
         noetic_msg.trajectory_start = self._convert_melodic_robot_state_msg_to_noetic(
             move_group_result_msg.trajectory_start
@@ -529,7 +517,7 @@ class MoveitNoeticBridge(object):
         :returns: Melodic PositionIKRequest message
         :rtype: moveit_msgs.msg.PositionIKRequest
         """
-        melodic_msg = self._melodic_position_ik_request.PositionIKRequest()
+        melodic_msg = melodic_moveit_msg.PositionIKRequest()
         melodic_msg.group_name = position_ik_request_msg.group_name
         melodic_msg.robot_state = self._convert_noetic_robot_state_msg_to_melodic(
             position_ik_request_msg.robot_state
@@ -551,7 +539,7 @@ class MoveitNoeticBridge(object):
         :returns: Noetic PlanningScene message
         :rtype: moveit_msgs.msg.PlanningScene
         """
-        noetic_msg = PlanningScene()
+        noetic_msg = noetic_moveit_msg.PlanningScene()
         noetic_msg.name = planning_scene_msg.name
         noetic_msg.robot_state = self._convert_melodic_robot_state_msg_to_noetic(
             planning_scene_msg.robot_state
@@ -577,7 +565,7 @@ class MoveitNoeticBridge(object):
         :returns: Melodic PlanningScene message
         :rtype: moveit_msgs.msg.PlanningScene
         """
-        melodic_msg = self._melodic_planning_scene.PlanningScene()
+        melodic_msg = melodic_moveit_msg.PlanningScene()
         melodic_msg.name = planning_scene_msg.name
         melodic_msg.robot_state = self._convert_noetic_robot_state_msg_to_melodic(
             planning_scene_msg.robot_state
@@ -605,7 +593,7 @@ class MoveitNoeticBridge(object):
         :returns: Noetic PlanningSceneWorld message
         :rtype: moveit_msgs.msg.PlanningSceneWorld
         """
-        noetic_msg = PlanningSceneWorld()
+        noetic_msg = noetic_moveit_msg.PlanningSceneWorld()
         for obj in planning_scene_world_msg.collision_objects:
             noetic_msg.collision_objects.append(
                 self._convert_melodic_collision_object_msg_to_noetic(obj)
@@ -622,7 +610,7 @@ class MoveitNoeticBridge(object):
         :returns: Melodic PlanningSceneWorld message
         :rtype: moveit_msgs.msg.PlanningSceneWorld
         """
-        melodic_msg = self._melodic_planning_scene_world.PlanningSceneWorld()
+        melodic_msg = melodic_moveit_msg.PlanningSceneWorld()
         for obj in planning_scene_world_msg.collision_objects:
             melodic_msg.collision_objects.append(
                 self._convert_noetic_collision_object_msg_to_melodic(obj)
@@ -637,7 +625,7 @@ class MoveitNoeticBridge(object):
         :returns: Noetic RobotState message
         :rtype: moveit_msgs.msg.RobotState
         """
-        noetic_msg = RobotState()
+        noetic_msg = noetic_moveit_msg.RobotState()
         noetic_msg.joint_state = robot_state_msg.joint_state
         noetic_msg.multi_dof_joint_state = robot_state_msg.multi_dof_joint_state
         for obj in robot_state_msg.attached_collision_objects:
@@ -654,7 +642,7 @@ class MoveitNoeticBridge(object):
         :returns: Melodic RobotState message
         :rtype: moveit_msgs.msg.RobotState
         """
-        melodic_msg = self._melodic_robot_state.RobotState()
+        melodic_msg = melodic_moveit_msg.RobotState()
         melodic_msg.joint_state = robot_state_msg.joint_state
         melodic_msg.multi_dof_joint_state = robot_state_msg.multi_dof_joint_state
         melodic_msg.is_diff = robot_state_msg.is_diff
