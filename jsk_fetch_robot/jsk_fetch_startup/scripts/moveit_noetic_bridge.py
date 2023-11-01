@@ -259,7 +259,7 @@ class MoveitNoeticBridge(object):
         bridged_request.scene = self._convert_noetic_planning_scene_msg_to_melodic(
             request.scene
         )
-        original_response = self.get_planning_scene_proxy.call(bridged_request)
+        original_response = self.apply_planning_scene_proxy.call(bridged_request)
         response = melodic_moveit_srv.ApplyPlanningSceneResponse()
         response.success = original_response.success
         return response
