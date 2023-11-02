@@ -111,7 +111,7 @@
                      false, false, false]
       odom0_nodelay: true
       odom0_differential: true
-      permit_corrected_publication: true
+      permit_corrected_publication: false
     </rosparam>
     <!--
     See https://github.com/jsk-ros-pkg/jsk_robot/issues/1876
