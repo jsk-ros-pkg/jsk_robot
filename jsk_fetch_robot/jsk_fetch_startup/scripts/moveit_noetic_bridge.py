@@ -3,18 +3,18 @@
 import sys
 import rospkg
 import rospy
-import moveit_msgs.msg as noetic_moveit_msg
-import moveit_msgs.srv as noetic_moveit_srv
 from packaging import version
 
-for module in sys.modules.keys():
+import moveit_msgs.msg as noetic_moveit_msg
+import moveit_msgs.srv as noetic_moveit_srv
+
+for module in list(sys.modules):
     if module.startswith("moveit_msgs"):
         del sys.modules[module]
 
 sys.path.insert(0, "/opt/ros/melodic/lib/python2.7/dist-packages")
 import moveit_msgs.msg as melodic_moveit_msg
 import moveit_msgs.srv as melodic_moveit_srv
-
 sys.path.pop(0)
 
 """
@@ -103,70 +103,6 @@ class MoveitNoeticBridge(object):
     """
 
     def __init__(self):
-        # Loading Melodic version services, c.f. https://stackoverflow.com/questions/67631/how-can-i-import-a-module-dynamically-given-the-full-path
-        # self._melodic_apply_planning_scene = imp.load_source(
-        #     "ApplyPlanningScene",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_ApplyPlanningScene.py",
-        # )
-        # self._melodic_get_motion_plan = imp.load_source(
-        #     "GetMotionPlan",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetMotionPlan.py",
-        # )
-        # self._melodic_get_state_validity = imp.load_source(
-        #     "GetStateValidity",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetStateValidity.py",
-        # )
-        # self._melodic_get_position_ik = imp.load_source(
-        #     "GetPositionIK",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetPositionIK.py",
-        # )
-        # self._melodic_get_planning_scene = imp.load_source(
-        #     "GetPlanningScene",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/srv/_GetPlanningScene.py",
-        # )
-
-        # Loading Melodic version messages
-        # self._melodic_collision_object = imp.load_source(
-        #     "CollisionObject",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_CollisionObject.py",
-        # )
-        # self._melodic_attached_collision_object = imp.load_source(
-        #     "AttachedCollisionObject",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_AttachedCollisionObject.py",
-        # )
-        # self._melodic_motion_plan_request = imp.load_source(
-        #     "MotionPlanRequest",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MotionPlanRequest.py",
-        # )
-        # self._melodic_position_ik_request = imp.load_source(
-        #     "PositionIKRequest",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PositionIKRequest.py",
-        # )
-        # self._melodic_planning_scene = imp.load_source(
-        #     "PlanningScene",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PlanningScene.py",
-        # )
-        # self._melodic_planning_scene_world = imp.load_source(
-        #     "PlanningSceneWorld",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_PlanningSceneWorld.py",
-        # )
-        # self._melodic_robot_state = imp.load_source(
-        #     "RobotState",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_RobotState.py",
-        # )
-        # self._melodic_move_group_action = imp.load_source(
-        #     "MoveGroupAction",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupAction.py",
-        # )
-        # self._melodic_move_group_goal = imp.load_source(
-        #     "MoveGroupGoal",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupGoal.py",
-        # )
-        # self._melodic_move_group_result = imp.load_source(
-        #     "MoveGroupResult",
-        #     "/opt/ros/melodic/lib/python2.7/dist-packages/moveit_msgs/msg/_MoveGroupResult.py",
-        # )
-
         # Service bridge
         self.apply_planning_scene_srv = rospy.Service(
             "/apply_planning_scene_noetic",
@@ -260,7 +196,7 @@ class MoveitNoeticBridge(object):
             request.scene
         )
         original_response = self.apply_planning_scene_proxy.call(bridged_request)
-        response = melodic_moveit_srv.ApplyPlanningSceneResponse()
+        response = noetic_moveit_srv.ApplyPlanningSceneResponse()
         response.success = original_response.success
         return response
 
@@ -272,7 +208,7 @@ class MoveitNoeticBridge(object):
         bridged_request.group_name = request.group_name
         bridged_request.constraints = request.constraints
         original_response = self.check_state_validity_proxy.call(bridged_request)
-        response = melodic_moveit_srv.GetStateValidityResponse()
+        response = noetic_moveit_srv.GetStateValidityResponse()
         response.valid = original_response.valid
         response.contacts = original_response.contacts
         response.cost_sources = original_response.cost_sources
@@ -285,7 +221,7 @@ class MoveitNoeticBridge(object):
             self._convert_noetic_position_ik_request_msg_to_melodic(request.ik_request)
         )
         original_response = self.compute_ik_proxy.call(bridged_request)
-        response = melodic_moveit_srv.GetPositionIKResponse()
+        response = noetic_moveit_srv.GetPositionIKResponse()
         response.solution = self._convert_melodic_robot_state_msg_to_noetic(
             original_response.solution
         )
@@ -296,7 +232,7 @@ class MoveitNoeticBridge(object):
         bridged_request = melodic_moveit_srv.GetPlanningSceneRequest()
         bridged_request.components = request.components
         original_response = self.get_planning_scene_proxy.call(bridged_request)
-        response = melodic_moveit_srv.GetPlanningSceneResponse()
+        response = noetic_moveit_srv.GetPlanningSceneResponse()
         response.scene = self._convert_melodic_planning_scene_msg_to_noetic(
             original_response.scene
         )
@@ -310,7 +246,7 @@ class MoveitNoeticBridge(object):
             )
         )
         original_response = self.plan_kinematic_path_proxy.call(bridged_request)
-        response = melodic_moveit_srv.GetMotionPlanResponse()
+        response = noetic_moveit_srv.GetMotionPlanResponse()
         response.motion_plan_response = (
             self._convert_melodic_motion_plan_response_msg_to_noetic(
                 original_response.motion_plan_response
