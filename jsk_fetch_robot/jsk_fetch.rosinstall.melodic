@@ -193,8 +193,9 @@
     uri: https://github.com/sktometometo/esp_now_ros.git
     version: v0.4.0
 # melodic version of robot_localization causes TF_REPEATED_DATA Errors to noetic client
-# So we have to use noetic-devel of robot_localization
+# So we have to adopt https://github.com/cra-ros-pkg/robot_localization/pull/595 (Using noetic-devel causes some localization trouble)
+# After https://github.com/cra-ros-pkg/robot_localization/pull/840 has been merged, we can use upstream melodic-devel branch
 - git:
     local-name: cra-ros-pkg/robot_localization
-    uri: https://github.com/cra-ros-pkg/robot_localization.git
-    version: noetic-devel
+    uri: https://github.com/mqcmd196/robot_localization.git
+    version: 2.6.9-suppress
