@@ -1,0 +1,3 @@
+selenium==4.9.0
+imageio
+undetected-chromedriver==3.5.0
