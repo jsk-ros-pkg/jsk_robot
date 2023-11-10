@@ -2,8 +2,8 @@
   <node pkg="jsk_spot_startup" type="sample_elevator.py" name="sample_elevator" output="screen" required="True"/>
 
   <include
-      file="$(find jsk_spot_behavior_manager)/launch/demo.launch"
-      >
-      <arg name="initial_node_id" value="eng2_73B2_dock" />
+      file="$(find elevator_operation)/launch/elevator_state_publisher.launch">
+      <arg name="initial_floor" value="7" />
+      <arg name="robot_type" value="spot" />
   </include>
 </launch>

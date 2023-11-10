@@ -19,12 +19,14 @@ if __name__ == '__main__':
     client.power_on()
     client.undock()
 
-    behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_3FElevator"))
-    result = behavior_client.get_result()
+    client.reset_current_node('eng2_73B2_dock')
+    client.execute_behaviors(target_node_id="eng2_3FElevator")
+    client.wait_execute_behaviors_result()
+    result = client.get_execute_behaviors_result()
     rospy.loginfo("Result forward: {} {}".format(result.success, result.message))
 
-    behavior_client.send_goal_and_wait(NavigationGoal(target_node_id="eng2_73B2_dock"))
-    result = behavior_client.get_result()
+    client.execute_behaviors(NavigationGoal(target_node_id="eng2_73B2_dock"))
+    result = client.get_execute_behaviors_result()
     rospy.loginfo("Result backward: {} {}".format(result.success, result.message))
 
     client.dock(521)
