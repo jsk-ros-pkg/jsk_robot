@@ -96,6 +96,8 @@ class ElevatorBehavior(BaseBehavior):
 
         rospy.logdebug('run_main() called')
 
+        start_floor = start_node.properties['floor']
+
         graph_name = edge.properties['graph']
         start_id = list(filter(
             lambda x: x['graph'] == graph_name,
@@ -145,7 +147,7 @@ class ElevatorBehavior(BaseBehavior):
         rospy.loginfo('calling elevator when riding...')
         success_calling = False
         switchbot_goal = SwitchBotCommandGoal()
-        switchbot_goal.device_name = start_node.properties['switchbot_device']
+        switchbot_goal.device_name = start_node.properties['switchbot_device_up'] if end_floor > start_floor else start_node.properties['switchbot_device_down']
         switchbot_goal.command = 'press'
         count = 0
         while True:
@@ -186,7 +188,7 @@ class ElevatorBehavior(BaseBehavior):
         # call elevator from destination floor while
         rospy.loginfo('calling elevator when getting off...')
         switchbot_goal = SwitchBotCommandGoal()
-        switchbot_goal.device_name = end_node.properties['switchbot_device']
+        switchbot_goal.device_name = end_node.properties['switchbot_device_up'] if end_floor > start_floor else end_node.properties['switchbot_device_down']
         switchbot_goal.command = 'press'
         self.action_client_switchbot.send_goal(switchbot_goal)
         ##
@@ -199,7 +201,7 @@ class ElevatorBehavior(BaseBehavior):
         result_switchbot = self.action_client_switchbot.get_result()
         while not rospy.is_shutdown():
             switchbot_goal = SwitchBotCommandGoal()
-            switchbot_goal.device_name = start_node.properties['switchbot_device']
+            switchbot_goal.device_name = start_node.properties['switchbot_device_up'] if end_floor > start_floor else end_node.properties['switchbot_device_down']
             switchbot_goal.command = 'press'
             self.action_client_switchbot.send_goal_and_wait(switchbot_goal, execute_timeout=rospy.Duration(10))
             if self.spot_client.wait_for_navigate_to_result(rospy.Duration(5)):
