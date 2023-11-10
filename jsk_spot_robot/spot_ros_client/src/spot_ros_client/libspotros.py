@@ -493,13 +493,13 @@ class SpotRosClient:
 
     def navigate_to(self,
                     id_navigate_to,
-                    velocity_limit=(0.0, 0.0, 0.0),
+                    velocity_limit=(1.0, 1.0, 1.0),
                     blocking=False):
         goal = NavigateToGoal()
         goal.id_navigate_to = id_navigate_to
-        goal.velocity_limit.linear.x = velocity_limit[0]
-        goal.velocity_limit.linear.y = velocity_limit[1]
-        goal.velocity_limit.angular.z = velocity_limit[2]
+        goal.velocity_limit.linear.x = float(velocity_limit[0])
+        goal.velocity_limit.linear.y = float(velocity_limit[1])
+        goal.velocity_limit.angular.z = float(velocity_limit[2])
         self._actionclient_navigate_to.send_goal(goal)
         if blocking:
             self._actionclient_navigate_to.wait_for_result()
