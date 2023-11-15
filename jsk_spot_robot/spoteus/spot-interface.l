@@ -11,6 +11,9 @@
 (defun call-trigger-service (srvname &key (wait nil))
   "Call std_srv/Trigger service"
   (let (r)
+    (when (send *ri* :simulation-modep)
+      (ros::ros-warn "call-trigger-service (~A)" srvname)
+      (return-from call-trigger-service t))
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance std_srvs::TriggerRequest :init)))
     (ros::ros-debug "Call \"~A\" returns \"~A\"" srvname (send r :message))
@@ -19,6 +22,9 @@
 (defun call-set-bool-service (srvname data &key (wait nil))
   "Call std_srv/Trigger service"
   (let (r)
+    (when (send *ri* :simulation-modep)
+      (ros::ros-warn "call-set-bool-service (~A) ~A" srvname data)
+      (return-from call-set-bool-service t))
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance std_srvs::SetBoolRequest :init :data data)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
@@ -27,6 +33,9 @@
 (defun call-set-locomotion-service (srvname locomotion_hint &key (wait nil))
   "Call spot_msgs/SetLocomotion service"
   (let (r)
+    (when (send *ri* :simulation-modep)
+      (ros::ros-warn "call-set-locomotion-service (~A) ~A" srvname locomotion_hint)
+      (return-from call-set-locomotion-service t))
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance spot_msgs::SetLocomotionRequest :init :locomotion_mode locomotion_hint)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
@@ -35,6 +44,9 @@
 (defun call-dock-service (srvname dock_id &key (wait nil))
   "Call spot_msgs/Dock service"
   (let (r)
+    (when (send *ri* :simulation-modep)
+      (ros::ros-warn "call-dock-service (~A) ~A" srvname dock_id)
+      (return-from call-dock-service t))
     (if wait (ros::wait-for-service srvname))
     (setq r (ros::service-call srvname (instance spot_msgs::DockRequest :init :dock_id dock_id)))
     (ros::ros-info "Call \"~A\" returns \"~A\"" srvname (send r :message))
@@ -51,7 +63,7 @@
    (prog1
        (send-super* :init :robot spot-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      ;; check if spot_ros/driver.launch started
-     (unless (ros::wait-for-service "/spot/claim" 5)
+     (unless (or (send self :simulation-modep) (ros::wait-for-service "/spot/claim" 5))
        (ros::ros-error "could not communicate with robot, may be forget to roslaunch spot_driver driver.launch, or did not power on the robot"))
      ;; http://www.clearpathrobotics.com/assets/guides/melodic/spot-ros/ros_usage.html#view-the-robot
      ;; spot_msgs version 0.0.0
@@ -320,11 +332,17 @@
 	 (call-trigger-service "/spot/claim")
        (ros::ros-warn "robot is already claimed by ~A" client))))
   (:release () "Relase the robot control" (call-trigger-service "/spot/release"))
-  (:power-on () "Power on the robot" (call-trigger-service "/spot/power_on"))
+  (:power-on ()
+   "Power on the robot"
+   (if (send *ri* :simulation-modep)
+       (send self :set-robot-state1 :power-state-motor-power-state 'on)
+     (call-trigger-service "/spot/power_on")))
   (:power-off
    ()
    "Power off the robot"
-   (call-trigger-service "/spot/power_off"))
+   (if (send *ri* :simulation-modep)
+       (send self :set-robot-state1 :power-state-motor-power-state 'off)
+     (call-trigger-service "/spot/power_off")))
   (:self-right () (call-trigger-service "/spot/self_right"))
   (:stand () "Stand the robot up" (call-trigger-service "/spot/stand"))
   (:sit () "Sit the robot down" (call-trigger-service "/spot/sit"))
