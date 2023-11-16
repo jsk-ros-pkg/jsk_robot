@@ -1,0 +1,23 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/libccd-dev/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/libccd-dev/libccd-2.0
+
+#
+# libccd-dev does not have patches
+#
+# cd ${DEBIAN_DIR}/patches
+# for patch_file in $(grep -v ^# series); do
+#     OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+# done
+
+mkdir -p /home/user/ros1_dependencies_sources/build/libccd-dev
+cd /home/user/ros1_dependencies_sources/build/libccd-dev
+cmake \
+  -DCMAKE_INSTALL_PREFIX=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_SKIP_RPATH=ON \
+  ${SOURCE_DIR}
+
+make install

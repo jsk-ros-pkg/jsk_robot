@@ -53,11 +53,10 @@
 (defvar *pose6* (list #f(2.0 -2.0 -5.0 110.0 35.0 -40.0 -60.0 -40.0 110.0 -35.0 40.0 60.0 40.0 0.0 15.0) #f(2.0 -2.0 -5.0 110.0 35.0 -40.0 -60.0 -40.0 110.0 -35.0 40.0 60.0 40.0 0.0 15.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)))
 (defvar *time6* (list 2000 3000 1000))
 
-;;
+;; poses for byebye
 (defvar *reset* #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0))
-(defvar *a* #f(2.0 -2.0 -5.0 0.0 10.0 -100.0 -70.0 60.0 0.0 -10.0 100.0 70.0 -60.0 0.0 0.0))
-(defvar *d* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
-(defvar *e* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
+(defvar *byebye-close* #f(2.0 -2.0 -5.0 0.0 10.0 -100.0 -70.0 60.0 0.0 -10.0 100.0 70.0 -60.0 0.0 0.0))
+(defvar *byebye-open* #f(2.0 -2.0 -5.0 0.0 10.0 -110.0 -70.0 60.0 0.0 -10.0 110.0 70.0 -60.0 0.0 -10.0))
 
 (defvar *img-list*
   (list
@@ -86,15 +85,7 @@
 
 (ros::roseus "online-meeting-enhancement-main")
 
-(ros::subscribe "joy" sensor_msgs::Joy
-                #'(lambda (msg)
-                    (let ((button (send msg :buttons)))
-                      (ros::ros-info "received joy button ~A" button)
-                      (when (eq (elt button 3) 1)
-                        (send *ri* :speak "はい")
-                        (setq *continue* nil)))))
-
-(defun start-func (args)
+(defun start-func (&rest args)
   (let ()
     (setq *last-tm* (ros::time-now))
     ;;
@@ -114,14 +105,16 @@
     (set-alist 'description "" args)
     :started))
 
-(defun end-func (args)
+(defun end-func (&rest args)
   (let ()
     (send *ri* :show-image "golden-saying-by-pepper-7.png")
+    (send *ri* :set-basic-awareness-enabled nil)
+    (send *ri* :set-background-movement-enabled nil)
     (send *ri* :angle-vector-sequence (list #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0) #f(2.0 -2.0 -5.0 85.0 20.0 -70.0 -20.0 -40.0 85.0 -20.0 70.0 20.0 40.0 -30.0 -10.0) #f(2.0 -2.0 -5.0 85.0 10.0 -70.0 -20.0 -40.0 85.0 -10.0 70.0 20.0 40.0 0.0 0.0)) (list 1000 1000 1000 1000))
     (send *ri* :speak "\\vct=120\\\\rspd=80\\みなさん")
     (send *ri* :wait-interpolation)
 
-    (send *ri* :angle-vector-sequence (list *a* *d* *a* *d* *a* *d* *a* *d* *a* *e* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
+    (send *ri* :angle-vector-sequence (list *byebye-close* *byebye-open* *byebye-close* *byebye-open* *byebye-close* *byebye-open* *byebye-close* *byebye-open* *byebye-close* *byebye-open* *reset*) (list 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 3000))
     (send *ri* :speak "\\vct=120\\\\rspd=80\\おつかれさまでしたッ！\\rspd=100\\")
     (send *ri* :wait-interpolation)
     (send *ri* :hide-image)
@@ -130,7 +123,7 @@
     (set-alist 'description "End Meeting" args)
     :finished))
 
-(defun comment-func (args)
+(defun comment-func (&rest args)
   (let (count str (wait 600) tm)
     ;; cleanup description/image
     (set-alist 'description "" args)

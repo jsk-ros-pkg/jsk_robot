@@ -1,5 +1,6 @@
 #!/bin/bash
 
+IMAGE_NAME="${IMAGE_NAME:-ros1-unitree}"
 TARGET_MACHINE="${TARGET_MACHINE:-arm64v8}"
 HOST_INSTALL_ROOT="${BASE_ROOT:-${PWD}}/"${TARGET_MACHINE}_System
 INSTALL_ROOT=System
@@ -31,9 +32,12 @@ mkdir -p ${SOURCE_ROOT}/src
 mkdir -p ${HOST_INSTALL_ROOT}/ros1_inst
 
 if [ ${UPDATE_SOURCE_ROOT} -eq 1 ]; then
-    vcs import --force --retry 3 --shallow ${SOURCE_ROOT}/src < repos/roseus_no_window.repos
+    vcs import --force --retry 10 --shallow ${SOURCE_ROOT}/src < repos/catkin_virtualenv.repos
+    vcs import --force --retry 10 --shallow ${SOURCE_ROOT}/src < repos/roseus_no_window.repos
     for dir in euslisp jskeus; do ls ${SOURCE_ROOT}/src/$dir/patches/; rsync -avz ${SOURCE_ROOT}/src/$dir/patches/ ${SOURCE_ROOT}/src/$dir; done
-    sed -i s@:{version}@0.0.0@ ${SOURCE_ROOT}/src/euslisp/package.xml ${SOURCE_ROOT}/src/jskeus/package.xml
+    # linux can use sed -i'.bak' and latest mac also supports same syntax.
+    # https://stackoverflow.com/questions/4247068/sed-command-with-i-option-failing-on-mac-but-works-on-linux/14813278#14813278
+    sed -i.bak s@:{version}@0.0.0@ ${SOURCE_ROOT}/src/euslisp/package.xml ${SOURCE_ROOT}/src/jskeus/package.xml
 fi
 wget https://patch-diff.githubusercontent.com/raw/PR2/pr2_mechanism/pull/346.diff -O ${SOURCE_ROOT}/pr2_mechanism-346.diff
 
@@ -47,14 +51,16 @@ DIAGNOSTIC_AGGREGATOR="diagnostic_aggregator"  # jsk_XXX_startup usually depends
 PR2EUS="pr2eus"
 
 docker run -it --rm \
-  -u $(id -u $USER) \
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) \
   -e INSTALL_ROOT=${INSTALL_ROOT} \
   -e MAKEFLAGS=${MAKEFLAGS} \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_dependencies_setup.bash:/opt/jsk/${INSTALL_ROOT}/ros1_dependencies_setup.bash:ro \
+  -v ${PWD}/startup_scripts/usercustomize.py:/home/user/.local/lib/python2.7/site-packages/usercustomize.py:ro \
+  -v ${PWD}/startup_scripts/usercustomize.py:/home/user/.local/lib/python3.6/site-packages/usercustomize.py:ro \
   -v ${HOST_INSTALL_ROOT}/ros1_inst:/opt/jsk/${INSTALL_ROOT}/ros1_inst:rw \
   -v ${PWD}/${SOURCE_ROOT}:/home/user/${SOURCE_ROOT}:rw \
-  ros1-unitree:${TARGET_MACHINE} \
+  ${IMAGE_NAME}:${TARGET_MACHINE} \
   bash -c "\
     source /opt/jsk/System/ros1_dependencies_setup.bash && \
     source /opt/ros/melodic/setup.bash && \
@@ -63,11 +69,14 @@ docker run -it --rm \
     rospack list && \
     cd ${SOURCE_ROOT} && \
     [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || ROS_PACKAGE_PATH=src:\$ROS_PACKAGE_PATH rosinstall_generator ${EUSCOLLADA_DEPENDS} ${ROSEUS_DEPENDS} ${ROSEUS_MONGO_DEPENDS} ${ROSEUS_SMACH_DEPENDS} ${JSK_ROBOT_STARTUP_DEPENDS} ${DIAGNOSTIC_AGGREGATOR} ${PR2EUS} --verbose --deps --rosdistro melodic --exclude RPP --depend-type buildtool buildtool_export build run | tee unitree_ros1_system.repos && \
-    [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || PYTHONPATH= vcs import --force --retry 3 --shallow src < unitree_ros1_system.repos && \
+    [ ${UPDATE_SOURCE_ROOT} -eq 0 ] || PYTHONPATH= vcs import --force --retry 10 --shallow src < unitree_ros1_system.repos && \
     [ ! -e pr2_mechanism-346.diff ] || OUT=\"\$(patch -p1 --forward --directory src/pr2_mechanism < pr2_mechanism-346.diff | tee /dev/tty)\" || echo \"\${OUT}\" | grep \"Skipping patch\" -q || (echo \"\$OUT\" && false) && \
     catkin_make_isolated --install --install-space /opt/jsk/${INSTALL_ROOT}/ros1_inst -DCMAKE_BUILD_TYPE=Release \
         -DCATKIN_ENABLE_TESTING=FALSE \
         -DEUSLISP_WITHOUT_DISPLAY=TRUE -DDISABLE_DOCUMENTATION=1 \
     " 2>&1 | tee ${TARGET_MACHINE}_build_ros1.log
 
-cp ${PWD}/startup_scripts/system_setup.bash ${HOST_INSTALL_ROOT}/
+for file in system_setup.bash usercustomize.py; do
+    [ -d ${HOST_INSTALL_ROOT}/$file ] && rmdir ${HOST_INSTALL_ROOT}/$file
+    cp ${PWD}/startup_scripts/$file ${HOST_INSTALL_ROOT}/
+done

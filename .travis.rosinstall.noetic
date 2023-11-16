@@ -41,10 +41,6 @@
 - git: # https://github.com/ros-naoqi/nao_robot/issues/40
    uri: https://github.com/ros-naoqi/nao_robot.git
    local-name: nao_robot
-- git: # use naoqi_pose, wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
-   uri: https://github.com/ros-naoqi/naoqi_bridge-release.git
-   local-name: naoqi_pose
-   version: release/kinetic/naoqi_pose
 # for drc_task_common in jsk_demos
 # jsk_control is not released in noetic
 - git:

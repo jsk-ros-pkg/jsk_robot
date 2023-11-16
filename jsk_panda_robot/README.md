@@ -49,6 +49,35 @@
    ```
 
 
+## Running single Panda
+### Boot robot
+1. Please turn on the controller box and unlock joints by accessing desk.
+### Via roseus
+1. Start controller on controller PC:
+   ```bash
+   ssh leus@dual-panda1.jsk.imi.i.u-tokyo.ac.jp  # Or ssh leus@dual-panda2.jsk.imi.i.u-tokyo.ac.jp
+   roslaunch jsk_panda_startup panda.launch robot_ip:=<IP OF TARGET ROBOT>
+   ```
+
+2. Controlling single Panda via roseus:
+   1. Setting up network:
+      ```bash
+      rossetmaster dual-panda1.jsk.imi.i.u-tokyo.ac.jp  # Or rossetmaster dual-panda2.jsk.imi.i.u-tokyo.ac.jp
+      rossetip
+      ```
+   2. Execute following script in roseus:
+      ```lisp
+      (load "package://panda_eus/euslisp/panda-interface.l")
+      (panda-init)
+      (send *robot* :angle-vector (send *robot* :reset-pose))
+      (when (send *ri* :check-error)
+        (send *ri* :recover-error))
+      (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
+      ```
+      - Notice
+        - `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
+
+
 ## Running Dual-Panda
 ### Boot robot
 1. Please turn on the controller box and unlock joints by accessing desk.
@@ -76,7 +105,9 @@
         (send *ri* :recover-error))
       (send *ri* :angle-vector (send *robot* :angle-vector) 3000)
       ```
-      `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
+      - Notice
+        - `(send *ri* :recover-error)` is required every time when you press and release the black switch (`activated` -> `monitored stop` -> `activated`).
+        - `dual_panda`'s `reset-pose` and `reset-manip-pose` are different from single `panda`'s ones for historical reasons.
 #### Record/play rosbag
 ```bash
 roslaunch jsk_panda_startup dual_panda1_record.launch  # Or roslaunch jsk_panda_startup dual_panda2_record.launch
