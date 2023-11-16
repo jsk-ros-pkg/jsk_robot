@@ -1,6 +1,7 @@
 #!/usr/bin/env roseus
 (require :unittest "lib/llib/unittest.l")
 (require "package://spoteus/spot-utils.l")
+(require "package://spoteus/spot-interface.l")
 
 (init-unit-test)
 
@@ -30,8 +31,8 @@
     (look-at robot)))
 
 ;; spot-interface is not work on simulator
-;; (deftest test-spot-init
-;;   (spot-init))
+(deftest test-spot-init
+  (spot-init))
 
 (run-all-tests)
 (exit)
