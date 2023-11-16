@@ -30,7 +30,6 @@
     (send robot :arm :inverse-kinematics (send (make-coords :pos #f(600 0 600)) :transform robot))
     (look-at robot)))
 
-;; spot-interface is not work on simulator
 (deftest test-spot-init
   (spot-init))
 
