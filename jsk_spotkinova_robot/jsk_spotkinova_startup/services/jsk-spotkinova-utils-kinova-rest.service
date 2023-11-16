@@ -1,0 +1,8 @@
+[Unit]
+Description=JSK SpotKinova Utils Kinova Rest Service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c ". /opt/ros/roscore_poststart.bash && . /home/spot/spot_ws/devel/setup.bash && if [ -e /var/lib/robot/config.bash ];then . /var/lib/robot/config.bash ;fi && rosservice call /arm_gen3/rest \"{}\" && exit 0"
+KillMode=control-group
+KillSignal=SIGTERM
