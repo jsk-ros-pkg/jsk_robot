@@ -27,4 +27,7 @@
   <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
 	   if="$(arg launch_interaction)" />
 
+  <!-- behavior manager -->
+  <include file="$(find jsk_spot_behavior_manager)/launch/demo.launch" />
+
 </launch>
