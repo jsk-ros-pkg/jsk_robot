@@ -27,4 +27,8 @@
   <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
 	   if="$(arg launch_interaction)" />
 
+  <include file="$(find switchbot_ros)/launch/switchbot.launch">
+      <arg name="token" value="/var/lib/robot/credentials/switchbot_token.txt"/>
+  </include>
+
 </launch>
