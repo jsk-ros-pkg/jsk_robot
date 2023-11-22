@@ -83,20 +83,20 @@
 
   <!-- republish compressed image -->
   <node pkg="image_transport" type="republish" name="hand_color_compress"
-        args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image" />
+	args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image" />
   <node pkg="image_transport" type="republish" name="hand_depth_compress"
-        args="raw in:=/spot/camera/hand_depth/image compressedDepth out:=/spot/camera/hand_depth/image" />
+	args="raw in:=/spot/camera/hand_depth/image compressedDepth out:=/spot/camera/hand_depth/image" />
 
   <node pkg="image_transport" type="republish" name="frontleft_compress"
-        args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image" />
+	args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image" />
   <node pkg="image_transport" type="republish" name="frontright_compress"
-        args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image" />
+	args="raw in:=/spot/camera/frontright/image compressed out:=/spot/camera/frontright/image" />
   <node pkg="image_transport" type="republish" name="left_compress"
-        args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image" />
+	args="raw in:=/spot/camera/left/image compressed out:=/spot/camera/left/image" />
   <node pkg="image_transport" type="republish" name="right_compress"
-        args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image" />
+	args="raw in:=/spot/camera/right/image compressed out:=/spot/camera/right/image" />
   <node pkg="image_transport" type="republish" name="back_compress"
-        args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image" />
+	args="raw in:=/spot/camera/back/image compressed out:=/spot/camera/back/image" />
 
   <!-- english speach node -->
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
