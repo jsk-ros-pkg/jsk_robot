@@ -47,6 +47,8 @@
   <exec_depend>xacro</exec_depend>
   <exec_depend>xterm</exec_depend>
 
+  <exec_depend>esp_now_ros</exec_depend>
+
   <test_depend>rostest</test_depend>
 
   <export>
