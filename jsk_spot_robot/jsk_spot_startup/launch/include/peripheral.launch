@@ -9,5 +9,6 @@
         <arg name="width" value="2176"/>
         <arg name="height" value="1088"/>
         <arg name="panorama_resolution_mode" value="low"/>
+        <arg name="gui" value="false"/>
     </include>
 </launch>
