@@ -80,6 +80,7 @@ fi
 LOGFILE=$WORKSPACE/update_workspace.txt
 
 TMP_MAIL_BODY_FILE=/tmp/update_workspace_mailbody.txt
+TMP_MAIL_TOPIC_FILE=/tmp/update_workspace_email_topic.yaml
 
 {
 set -x
@@ -142,7 +143,7 @@ echo "MAIL_BODY: $MAIL_BODY"
 
 if [ -n "$MAIL_BODY" ] && [ "${SEND_MAIL}" == "true" ]; then
     echo "Sent a mail"
-    rostopic pub -1 /email jsk_robot_startup/Email "header:
+    echo "header:
   seq: 0
   stamp: {secs: 0, nsecs: 0}
   frame_id: ''
@@ -153,5 +154,6 @@ sender_address: '$(hostname)@jsk.imi.i.u-tokyo.ac.jp'
 receiver_address: '$ROBOT_TYPE@jsk.imi.i.u-tokyo.ac.jp'
 smtp_server: ''
 smtp_port: ''
-attached_files: ['$LOGFILE']"
+attached_files: ['$LOGFILE']" > $TMP_MAIL_TOPIC_FILE
+    rostopic pub -1 /email jsk_robot_startup/Email -f $TMP_MAIL_TOPIC_FILE
 fi
