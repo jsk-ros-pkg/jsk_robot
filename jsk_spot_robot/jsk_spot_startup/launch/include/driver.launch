@@ -86,6 +86,10 @@
 	args="raw in:=/spot/camera/hand_color/image compressed out:=/spot/camera/hand_color/image" />
   <node pkg="image_transport" type="republish" name="hand_depth_compress"
 	args="raw in:=/spot/camera/hand_depth/image compressedDepth out:=/spot/camera/hand_depth/image" />
+  <node pkg="image_transport" type="republish" name="hand_color_in_hand_depth_frame_compress"
+	args="raw in:=/spot/camera/hand_color_in_hand_depth_frame/image compressed out:=/spot/camera/hand_color_in_hand_depth_frame/image" />
+  <node pkg="image_transport" type="republish" name="hand_depth_in_hand_depth_frame_compress"
+	args="raw in:=/spot/camera/hand_depth_in_hand_color_frame/image compressedDepth out:=/spot/camera/hand_depth_in_hand_color_frame/image" />
 
   <node pkg="image_transport" type="republish" name="frontleft_compress"
 	args="raw in:=/spot/camera/frontleft/image compressed out:=/spot/camera/frontleft/image" />
