@@ -50,6 +50,7 @@
 
   <exec_depend>jsk_spot_behavior_manager</exec_depend>
   <exec_depend>spot_basic_behaviors</exec_depend>
+  <exec_depend>esp_now_ros</exec_depend>
 
   <test_depend>rostest</test_depend>
 
