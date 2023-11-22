@@ -450,7 +450,7 @@
      (if (< index (length ids))
 	 (setq ret (elt ids index)))
      ret))
-  (:initial-localization-fiducial
+  (:set-localization-fiducial
    ()
    "initial the localization for autowalk based on the fiducial marker"
    (let (r)
@@ -458,7 +458,7 @@
                                 (instance spot_msgs::SetLocalizationFiducialRequest :init)))
      (ros::ros-info "Call \"/spot/set_localization_fiducial\" returns \"~A\"" (send r :message))
      t))
-  (:initial-localization-waypoint
+  (:set-localization-waypoint
    (init-waypoint)
    "initial the localization for waypoint id in the graph"
    (let (r)
@@ -470,16 +470,35 @@
                                 (instance spot_msgs::SetLocalizationWaypointRequest :init :waypoint_id init-waypoint)))
      (ros::ros-info "Call \"/spot/set_localization_waypoint\" returns \"~A\"" (send r :message))
      t))
-  (:upload-path
-   (filepath &key (initial-localization-fiducial t) (wait nil))
-   "upload graph for autowalk"
-   (let (r)
-     (if wait (ros::wait-for-service srvname))
-     (setq r (ros::service-call "/spot/upload_graph"
-                                (instance spot_msgs::UploadGraphRequest :init :upload_filepath filepath)))
-     (ros::ros-info "Call \"/spot/upload_graph\" returns .. \"~A\"" (send r :message))
-     (if initial-localization-fiducial (send self :initial-localization-fiducial))
-     (send r :message)))
+  (:start-recording
+    ()
+    "Start AutoWalk recording"
+    (call-trigger-service "/spot/start-recording"))
+  (:stop-recording
+    ()
+    "Stop AutoWalk recording"
+    (call-trigger-service "/spot/stop-recording"))
+  (:upload-graph
+    (path &key (initial-localization-fiducial t) (wait nil))
+    "upload graph for autowalk"
+    (let (r
+          (srvname "/spot/upload_graph"))
+      (if wait (ros::wait-for-service srvname))
+      (setq r (ros::service-call srvname
+                                 (instance spot_msgs::UploadGraphRequest :init :upload_filepath path)))
+      (ros::ros-info "Call \"~A\" returns .. \"~A\"" srvname (send r :message))
+      (if initial-localization-fiducial (send self :initial-localization-fiducial))
+      (send r :success)))
+  (:download-graph
+    (path &key (wait nil))
+    "Download AutoWalk graph from robot"
+    (let (r)
+      (if wait (ros::wait-for-service srvname))
+      (setq r (ros::service-call srvname
+                                 (instance spot_msgs::DownloadGraphRequest :init :download_filepath path)))
+      (ros::ros-info "Call \"~A\" returns... \"~A\"" srvname (send r :message))
+      (send r :success)
+      ))
   (:list-graph
    ()
    "list up the waypoint (a string type hash id) list in the uploaded graph"
@@ -490,6 +509,12 @@
      (dolist (id (send r :waypoint_ids))
        (ros::ros-info "  \"~A\"" id))
      (send r :waypoint_ids)))
+  (:clear-graph
+    ()
+    "Clear the AutoWalk graph in the robot."
+    (let ()
+      (call-trigger-service "/spot/clear_graph")
+      ))
   (:navigate-to
    (navigate-to &key (initial-localization-waypoint nil))
    (let (ids c goal ret)
