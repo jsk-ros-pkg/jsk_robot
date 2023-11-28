@@ -1,0 +1,10 @@
+{
+  "python.autoComplete.extraPaths": [
+    "/home/sktometometo/ros/ws_jsk_spot/devel/lib/python3/dist-packages",
+    "/opt/ros/noetic/lib/python3/dist-packages"
+  ],
+  "python.analysis.extraPaths": [
+    "/home/sktometometo/ros/ws_jsk_spot/devel/lib/python3/dist-packages",
+    "/opt/ros/noetic/lib/python3/dist-packages"
+  ]
+}

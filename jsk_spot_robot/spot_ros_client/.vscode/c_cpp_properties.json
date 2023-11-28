@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/sktometometo/ros/ws_jsk_spot/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/jsk-ros-pkg/jsk_robot/jsk_robot_common/jsk_robot_startup/include/**",
+        "/opt/ros/noetic/share/julius/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/jsk-ros-pkg/jsk_robot/jsk_pr2_robot/pr2_base_trajectory_action/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/jsk-ros-pkg/jsk_robot/jsk_robot_common/speak_and_wait_recovery/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/ublox/ublox_gps/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/ublox/ublox_msg_filters/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/ublox/ublox_msgs/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/ublox/ublox_serialization/include/**",
+        "/home/sktometometo/ros/ws_jsk_spot/src/jsk-ros-pkg/jsk_robot/jsk_robot_common/update_move_base_parameter_recovery/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

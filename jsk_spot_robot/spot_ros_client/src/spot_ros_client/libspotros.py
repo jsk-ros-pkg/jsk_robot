@@ -162,8 +162,10 @@ class SpotRosClient:
             Pose,
             queue_size=1
         )
+        rospy.loginfo("Publisher initialization done.")
 
         # wait for services
+        rospy.loginfo("Waiting all service available...")
         try:
             rospy.wait_for_service(servicename_claim, rospy.Duration(5))
             rospy.wait_for_service(servicename_release, rospy.Duration(5))
@@ -268,6 +270,8 @@ class SpotRosClient:
             ResetCurrentNode
         )
 
+        rospy.loginfo("Service initialization done.")
+
         # Action Clients
         self._actionclient_navigate_to = actionlib.SimpleActionClient(
             actionname_navigate_to,
@@ -282,10 +286,7 @@ class SpotRosClient:
             NavigationAction
         )
 
-        #
-        self.tf_buffer = tf2_ros.Buffer()
-        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
-
+        rospy.loginfo("Waiting actions available")
         # wait for action
         try:
             self._actionclient_navigate_to.wait_for_server(rospy.Duration(5))
@@ -294,6 +295,14 @@ class SpotRosClient:
                 rospy.Duration(5))
         except rospy.ROSException as e:
             rospy.logerr('Action unavaliable: {}'.format(e))
+
+        #
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
+
+        rospy.loginfo("Action initialization done.")
+
+        rospy.loginfo("Initialization done")
 
     def get_laptop_percepntage(self):
         try:
