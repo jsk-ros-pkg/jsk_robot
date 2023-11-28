@@ -2,6 +2,8 @@
 
 ROS package for Unitree Go1 robot.
 
+This document assumes that your robot is already configured with JSK's ROS environment. To configure this, please ask your robot's administrator along with [this instruction](./cross/README.md#setup-go1-robot).
+
 ## How to Run
 
 See [manual](https://drive.google.com/drive/folders/1PZDOo8WUcqwU8mNek2qAaTwW9WjJVVRL?usp=sharing) before you use Go 1. (jsk.imi.i.u-tokyo.ac.jp account is required.)
@@ -29,13 +31,17 @@ source devel/setup.bash
 
 1. Connect to the robot via Ethernet
 
-2. Set your PC'S IP address to `192.168.96.162`
+2. Configure your PC's ethernet like below
+
+  - IP Address: 192.168.123.162
+  - Subnet Mask: 255.255.255.0
+  - Gateway: 192.168.123.161
 
 3. Setup ROS_IP and ROS_MASTER_URI
 
    ```
    rossetmaster 192.168.96.161
-   rossetip
+   rossetip 192.168.96.162
    ```
 
 4. Run roseus
@@ -50,10 +56,20 @@ source devel/setup.bash
 5. Deployment
 
    Once you have completed your development, put your code into [apps](https://github.com/jsk-ros-pkg/jsk_robot/blob/master/jsk_unitree_robot/jsk_unitree_startup/apps/) directory and build on cross environment and copy to onboard computer.
+
+   To run cross compile, you need `ros1-unitree` docker image and `arm64v8_System` directory. If you do not have them, pleas ask your development environment administrator along with following instructions.
+
+
+   - [prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer](./cross/README.md#prepare-cross-compiling-environment-run-only-the-fist-time-per-host-computer)
+   - [build-ros-system-on-docker--run-only-the-fist-time-per-host-computer](./cross/README.md#build-ros-system-on-docker--run-only-the-fist-time-per-host-computer)
+
+   After that, please run command below to build ros workspace and deploy it to robot.
+
    ```
    roscd jsk_unitree_startup/../cross
    make user
-   ./install -p 123
+   ./install -t Pro -p 123 # for Go1 Pro
+   ./install -t Air -p 123 # for Go1 Air
    ```
 
    Then, reboot the robot and go to [app_chooser](http://192.168.123.161:8000/rwt_app_chooser) and start your application
