@@ -3,6 +3,7 @@
   <arg name="launch_robot_state_publisher" default="true" />
   <arg name="launch_peripheral" default="true" />
   <arg name="launch_interaction" default="false" />
+  <arg name="launch_panorama_detection" default="true" />
 
   <arg name="use_driver" default="true" />
   <arg name="use_app_manager" default="true" />
@@ -26,5 +27,9 @@
   <!-- interaction nodes -->
   <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
 	   if="$(arg launch_interaction)" />
+
+  <!-- panorama object detection -->
+  <include file="$(find jsk_spot_startup)/launch/include/panorama_detection.launch"
+           if="$(arg launch_panorama_detection)" />
 
 </launch>
