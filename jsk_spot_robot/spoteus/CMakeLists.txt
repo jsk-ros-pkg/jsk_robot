@@ -5,7 +5,6 @@ project(spoteus)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  collada_urdf
   roseus
   euscollada
 )
@@ -28,7 +27,6 @@ if(EXISTS ${spot_description_SOURCE_PREFIX}/urdf)
 else()
   set(_spot_urdf ${spot_description_PREFIX}/share/spot_description/urdf)
 endif()
-set(_urdf_to_collada ${collada_urdf_PREFIX}/lib/collada_urdf/urdf_to_collada)
 set(_collada2eus ${euscollada_PREFIX}/lib/euscollada/collada2eus)
 
 message("spot_urdf: ${_spot_urdf}")
