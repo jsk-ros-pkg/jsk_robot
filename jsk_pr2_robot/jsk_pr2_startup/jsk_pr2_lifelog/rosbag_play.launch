@@ -6,9 +6,18 @@
   <arg name="gui" default="false" />
   <arg name="loop_flag" value="--loop" if="$(arg loop)" />
   <arg name="loop_flag" value="" unless="$(arg loop)" />
+  <arg name="start_time" default="0" />
+  <arg name="duration_time" default="0" />
+  <arg name="duration" default="--duration $(arg duration_time)" if="$(eval duration_time != 0)" />
+  <arg name="duration" default="" if="$(eval duration_time == 0)" />
+  <arg name="audio_play" default="false" />
+  <arg name="audio_device" default="" />
 
   <arg name="RGB_CAMERA_INFO" value="/kinect_head/rgb/throttled/camera_info" />
   <arg name="RGB_IMAGE" value="/kinect_head/rgb/throttled/image_rect_color" />
+  <arg name="NARROW_IMAGE" value="/narrow_stereo/left/image_raw" />
+  <arg name="WIDE_IMAGE" value="/wide_stereo/left/image_rect_color" />
+  <arg name="WIDE_CAMERA_INFO" value="/wide_stereo/left/camera_info" />
   <arg name="QUAT_RGB_CAMERA_INFO" value="/kinect_head/rgb/quater/throttled/camera_info" />
   <arg name="QUAT_RGB_IMAGE" value="/kinect_head/rgb/quater/throttled/image_rect_color" />
   <arg name="DEPTH_CAMERA_INFO" value="/kinect_head/depth_registered/throttled/camera_info" />
@@ -25,6 +34,10 @@
   <!-- decompress -->
   <node name="rgb_decompress" pkg="image_transport" type="republish"
         args="compressed in:=$(arg RGB_IMAGE) raw out:=$(arg RGB_IMAGE)" />
+  <node name="narrow_rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg NARROW_IMAGE) raw out:=$(arg NARROW_IMAGE)" />
+  <node name="wide_rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg WIDE_IMAGE) raw out:=$(arg WIDE_IMAGE)" />
   <node name="depth_decompress" pkg="image_transport" type="republish"
         args="compressedDepth in:=$(arg DEPTH_IMAGE) raw out:=$(arg DEPTH_IMAGE)" />
   <node pkg="nodelet" type="nodelet" name="point_cloud_xyzrgb"
@@ -78,7 +91,7 @@
 
   <!-- rosbag player -->
   <node pkg="rosbag" type="play" name="rosbag_play"
-        args="$(arg rosbag) $(arg loop_flag) --clock" output="screen" />
+        args="$(arg rosbag) $(arg loop_flag) --clock --start $(arg start_time) $(arg duration)" output="screen" />
 
   <node pkg="rviz" type="rviz" name="$(anon rviz)" if="$(arg gui)"
         args="-d $(find jsk_pr2_startup)/config/jsk_startup.rviz" />
