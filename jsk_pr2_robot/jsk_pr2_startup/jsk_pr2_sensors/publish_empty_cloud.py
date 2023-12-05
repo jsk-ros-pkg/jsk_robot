@@ -11,7 +11,7 @@ class PublishEmptyCloud(ConnectionBasedTransport):
     def __init__(self):
         super(PublishEmptyCloud, self).__init__()
 
-        frame_id = rospy.get_param('~frame_id', '/base_laser_link')
+        frame_id = rospy.get_param('~frame_id', 'base_laser_link')
         max_range = rospy.get_param('~max_range', 25.0)
         rotate_points = rospy.get_param('~rotate_points', False)
 
