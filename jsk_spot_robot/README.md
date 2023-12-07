@@ -120,3 +120,30 @@ roscd jsk_spot_startup/apps/head_lead_demo                                      
 
 #### Install apps
 If you would like to call your apps from rwt_app_chooser, you can 
+
+## Connect Spot Robot
+
+There are 3 network interface in Spot Robot
+
+- Ethernet
+- WiFi
+- Payload
+
+### Ethernet
+
+Spot has ethernet port on its rear. its ip address is `10.0.0.3/24` by default. See [this article](https://support.bostondynamics.com/s/article/Spot-network-setup) for more details.
+
+You can open web console by accessing `https://<robot address:443/`. So it is `https://10.0.0.3:443` by default.
+
+For BelKa, this configuration is changed to DHCP. And this ethernet port is also connected to ethernet port of docking station and belka's docking station is connected to 133 network. And robot FQDN is assigned like `spot-BD-<robot SN>-p.jsk.imi.i.u-tokyo.ac.jp` . You can connect `https://spot-BD-<robot SN>-p.jsk.imi.i.u-tokyo.ac.jp`.
+
+### WiFi
+
+Spot has WiFi interface and it is usually used for table control. Its accesspoint is `spot-BD-<SN>` by default.
+You can connect web console by connecting its AP and connect ip of robot.
+
+### Payload
+
+Payload has ethernet port `192.168.50.3` by default. So if you have access to SpotCore and do port foward to `192.168.50.3:443` with some way ( e.g. Local forward of SSH ) You can connect robot web console through payload.
+
+For examples, if you can connect SpotCore by `ssh spot@spotcore.local`, you can forward access of robot to your local machine by `ssh spot@sporcore.local -L 443:192.168.50.3:443` and you can open webconsole by accesing `https://localhost:443`.
