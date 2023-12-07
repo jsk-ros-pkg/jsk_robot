@@ -68,8 +68,8 @@
     version: master
 - git:
     local-name: jsk-ros-pkg/jsk_demos
-    uri: https://github.com/knorth55/jsk_demos.git
-    version: develop/pr2
+    uri: https://github.com/jsk-ros-pkg/jsk_demos.git
+    version: master
 - git:
     local-name: jsk-ros-pkg/jsk_model_tools
     uri: https://github.com/jsk-ros-pkg/jsk_model_tools.git
