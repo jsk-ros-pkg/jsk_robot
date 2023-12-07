@@ -1,0 +1,42 @@
+<launch>
+  <include file="$(find jsk_spot_startup)/launch/rosbag_record.launch" >
+    <arg name="rosbag" value="$(env HOME)/head_lead_demo" />
+  </include>
+  <!--include file="$(find jsk_spot_startup)/launch/include/lifelog.launch" >
+  </include-->
+  <include file="$(find jsk_spot_startup)/launch/include/interaction.launch" >
+  </include>
+  <include file="$(find jsk_spot_startup)/launch/include/perception.launch" >
+    <!--arg name="start_aws_detect_faces" value="true" /-->
+    <!--arg name="start_aws_auto_checkin_app" value="true" /-->
+    <arg name="start_aws_detect_faces" value="false" />
+    <arg name="start_aws_auto_checkin_app" value="false" />
+    <!--arg name="image_sources" value="[frontleft_fisheye_image, frontright_fisheye_image, left_fisheye_image, right_fisheye_image]" /-->
+    <arg name="image_sources" value="[frontleft_fisheye_image, frontright_fisheye_image]" />
+    <arg name="ml_models" value="[dogtoy-model]" />
+    <arg name="ml_confidence" value="0.7" />
+  </include>
+  <!-- head teleop nodes
+     1. end_effector_to_joy.py: subscribe spot/manipulator_state and publish joy_head/joy_raw, using estimated_end_effector_force_in_hand
+     2. head_teleop_joy_completion.py: subscribe joy_head/joy_raw and publish joy_head/joy_complemented, see Tukamoto RSJ 2022 paper
+     3. subscribe joy_head/joy_complemented and publish joy_head/cmd_vel
+  -->
+  <node pkg="jsk_spot_startup" type="end_effector_to_joy.py" name="end_effector_to_joy">
+    <param name="~deadzone_x" value="0.03" />
+    <param name="~deadzone_y" value="0.02" />
+    <param name="~maxrange_x" value="0.1" />
+    <param name="~maxrange_y" value="0.07" />
+  </node>
+  <node pkg="jsk_robot_startup" type="head_teleop_joy_completion.py" name="head_teleop_joy_completion">
+    <remap from="~joy_input" to="joy_head/joy_raw" />
+    <remap from="~joy_output" to="joy_head/joy_complemented" />
+
+    <param name="~pass_through" value="false" />
+    <rosparam command="load" file="$(find jsk_spot_startup)/config/head_teleop_twist_joy.yaml" />
+  </node>
+
+  <!-- -->
+  <node pkg="jsk_spot_startup" type="head-lead-teleop.l" name="head_lead_teleop"
+        output="screen" />
+  
+</launch>
