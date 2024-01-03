@@ -75,7 +75,7 @@ class PublishEmptyCloud(ConnectionBasedTransport):
             else:
                 points.append(pack('<ffff', x, y, 0.0, 0.0))
 
-        msg.data = ''.join(points)
+        msg.data = b''.join(points)
         return msg
 
     def timer_callback(self, event=None):

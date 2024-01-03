@@ -1,0 +1,23 @@
+# check use_sim_time
+- name: check_use_sim_time
+  app_name: jsk_robot_startup/check_use_sim_time
+  app_schedule:
+    start: every().hour.at(":00")
+# volume for monday
+- name: volume_zero_monday
+  app_name: jsk_robot_startup/volume_zero
+  app_schedule:
+    start: every().monday.at("12:00")
+- name: volume_reset_monday
+  app_name: jsk_robot_startup/volume_reset
+  app_schedule:
+    start: every().monday.at("16:00")
+# volume for tuesday
+- name: volume_zero_tuesday
+  app_name: jsk_robot_startup/volume_zero
+  app_schedule:
+    start: every().tuesday.at("12:00")
+- name: volume_reset_tuesday
+  app_name: jsk_robot_startup/volume_reset
+  app_schedule:
+    start: every().tuesday.at("16:00")

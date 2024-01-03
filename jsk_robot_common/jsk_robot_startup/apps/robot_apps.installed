@@ -1,5 +1,15 @@
 apps:
   - app: jsk_robot_startup/personal_use
-    display: Personal use 
+    display: Personal use
   - app: jsk_robot_startup/check_use_sim_time
     display: Check /use_sim_time param
+  - app: jsk_robot_startup/roseus_resume_interrupt
+    display: Interrupt
+  - app: jsk_robot_startup/roseus_resume_resume
+    display: Resume
+  - app: jsk_robot_startup/volume_lower
+    display: Volume lower
+  - app: jsk_robot_startup/volume_reset
+    display: Volume reset
+  - app: jsk_robot_startup/volume_zero
+    display: Volume zero

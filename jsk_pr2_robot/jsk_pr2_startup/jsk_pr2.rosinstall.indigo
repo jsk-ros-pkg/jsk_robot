@@ -15,7 +15,7 @@
 - git:
     local-name: PR2/pr2_controllers
     uri: https://github.com/PR2/pr2_controllers.git
-    version: melodic-devel
+    version: 1.10.18
 # we need to install from source because pr2 is indigo
 - git:
     local-name: PR2/pr2_self_test
@@ -85,8 +85,8 @@
 # we need this for eus10 and roseus_resume
 - git:
     local-name: jsk-ros-pkg/jsk_pr2eus
-    uri: https://github.com/knorth55/jsk_pr2eus.git
-    version: pr1040
+    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git
+    version: master 
 # we need to install from source because pr2 is indigo
 - git:
     local-name: jsk-ros-pkg/jsk_recognition
@@ -142,6 +142,11 @@
     local-name: ros/common_msgs/visualization_msgs
     uri: https://github.com/ros-gbp/common_msgs-release/archive/release/kinetic/visualization_msgs/1.12.7-0.tar.gz
     version: common_msgs-release-release-kinetic-visualization_msgs-1.12.7-0
+# we need to install from source because pr2 is indigo
+- git:
+    local-name: ros-visualization/executive_smach_visualization
+    uri: https://github.com/ros-visualization/executive_smach_visualization.git
+    version: melodic-devel
 # we need to install from source because pr2 is indigo
 - git:
     local-name: ros-visualization/interactive_markers
