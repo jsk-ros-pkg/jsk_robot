@@ -189,9 +189,9 @@
     version: master
 # we need this for smart device ros system
 - git:
-    local-name: sktometometo/esp_now_ros
-    uri: https://github.com/sktometometo/esp_now_ros.git
-    version: v0.4.0
+    local-name: sktometometo/smart_device_protocol
+    uri: https://github.com/sktometometo/smart_device_protocol.git
+    version: v0.5.1
 # melodic version of robot_localization causes TF_REPEATED_DATA Errors to noetic client
 # So we have to adopt https://github.com/cra-ros-pkg/robot_localization/pull/595 (Using noetic-devel causes some localization trouble)
 # After https://github.com/cra-ros-pkg/robot_localization/pull/840 has been merged, we can use upstream melodic-devel branch

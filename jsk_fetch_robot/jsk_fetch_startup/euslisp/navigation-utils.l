@@ -8,8 +8,8 @@
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "power_msgs")
 (ros::load-ros-manifest "sensor_msgs")
-(if (ros::rospack-find "esp_now_ros")
-    (ros::load-ros-manifest "esp_now_ros"))
+(if (ros::rospack-find "smart_device_protocol")
+    (ros::load-ros-manifest "smart_device_protocol"))
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
@@ -694,12 +694,12 @@ Args:
              ))
          (message-array (padding-byte-array (coerce message cons) 64))
          (byte-data (concatenate cons packet-type-array source-name-array timeout-duration-array message-array))
-         (msg (instance esp_now_ros::Packet :init
+         (msg (instance smart_device_protocol::Packet :init
                         :mac_address (coerce target-addr string)
                         :data (coerce byte-data string)))
          )
-    (ros::advertise "/esp_now_ros/send" esp_now_ros::Packet 1)
-    (ros::publish "/esp_now_ros/send" msg)
+    (ros::advertise "/smart_device_protocol/send" smart_device_protocol::Packet 1)
+    (ros::publish "/smart_device_protocol/send" msg)
     (ros::ros-info "Write message ~A to board ~A" message target-addr)
     )
   )
