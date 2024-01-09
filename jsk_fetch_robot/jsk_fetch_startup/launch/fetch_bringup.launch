@@ -427,6 +427,7 @@
   <group if="$(eval arg('smart_device_port') != '')">
       <include file="$(find smart_device_protocol)/launch/demo.launch">
           <arg name="port" value="$(arg smart_device_port)"/>
+          <arg name="tag_id" value="$(optenv SDP_TAG_ID 11)"/>
       </include>
   </group>
 
