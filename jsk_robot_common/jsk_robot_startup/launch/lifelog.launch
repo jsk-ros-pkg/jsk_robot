@@ -1,0 +1,147 @@
+<launch>
+  <arg name="use_mail" default="false" />
+  <arg name="min_percent" default="5" doc="parameter for video_to_scene"/>
+  <arg name="max_percent" default="15" doc="parameter for video_to_scene"/>
+
+  <arg name="logger_save_rgb" default="false" />
+  <arg name="logger_save_depth" default="false" />
+  <arg name="logger_save_tf" default="false" />
+  <arg name="logger_save_joint_states" default="false" />
+  <arg name="logger_save_base_trajectory" default="false" />
+  <arg name="logger_save_object_detection" default="false" />
+  <arg name="logger_save_action" default="false" />
+  <arg name="logger_save_smach" default="false" />
+  <arg name="logger_save_faces" default="false" />
+  <arg name="logger_save_dialogflow" default="false" />
+  <arg name="logger_save_app" default="false" />
+  <arg name="logger_map_frame" default="odom" />
+  <arg name="logger_save_speech" default="false" />
+  <arg name="logger_save_google_chat" default="false" />
+
+  <arg name="image" default="usb_cam/image_raw" />
+
+  <arg name="launch_mongodb" default="false" />
+  <arg name="launch_common_logger" default="false" />
+
+  <arg name="manager" default="mongodb_record_nodelet_manager" />
+
+  <param name="robot/database" value="jsk_robot_lifelog"/>
+
+
+  <!-- logging database -->
+  <param name="mongodb_replicate_on_write" value="true" /> <!-- need to set True to query from extra serveres, otherwise it only query from local server -->
+  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch" if="$(arg launch_mongodb)">
+    <arg name="use_daemon" value="true"/>
+    <arg name="port" value="27017" />
+    <arg name="repl_set_mode" value="false" />
+    <arg name="replicate" default="true" />
+  </include>
+
+  <group if="$(arg use_mail)" >
+    <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen" />
+
+    <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+      <remap from="~smach/container_status" to="/server_name/smach/container_status" />
+      <param name="sender_address" command='python -c "import rospy;print(rospy.get_param(\"robot/name\")+\"@jsk.imi.i.u-tokyo.ac.jp\")"' />
+      <param name="receiver_address" command='python -c "import rospy;print(rospy.get_param(\"robot/type\")+\"@jsk.imi.i.u-tokyo.ac.jp\")"' />
+    </node>
+  </group>
+
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch" if="$(arg launch_common_logger)">
+    <arg name="save_rgb" value="$(arg logger_save_rgb)" />
+    <arg name="save_depth" value="$(arg logger_save_depth)" />
+    <arg name="save_tf" value="$(arg logger_save_tf)" />
+    <arg name="save_joint_states" value="$(arg logger_save_joint_states)" />
+    <arg name="save_base_trajectory" value="$(arg logger_save_base_trajectory)" />
+    <arg name="save_object_detection" value="$(arg logger_save_object_detection)" />
+    <arg name="save_action" value="$(arg logger_save_action)" />
+    <arg name="save_smach" value="$(arg logger_save_smach)" />
+    <arg name="save_faces" value="$(arg logger_save_faces)" />
+    <arg name="save_dialogflow" value="$(arg logger_save_dialogflow)" />
+    <arg name="save_app" value="$(arg logger_save_app)" />
+    <arg name="save_speech" value="$(arg logger_save_speech)" />
+    <arg name="save_google_chat" value="$(arg logger_save_google_chat)" />
+
+    <arg name="enable_monitor" value="false" />
+    <arg name="log_rate" value="1.0" />
+    <arg name="launch_manager" value="true" />
+    <arg name="manager" value="$(arg manager)" />
+    <arg name="map_frame_id" value="$(arg logger_map_frame)" />
+    <arg name="approximate_sync" value="true"/>
+  </include>
+
+  <!-- outputs $(arg image)/output/compressed when new scene found -->
+  <include file="$(find jsk_perception)/launch/video_to_scene.launch" >
+    <arg name="INPUT_IMAGE" value="$(arg image)" />
+    <arg name="IMAGE_TRANSPORT" default="compressed" />
+    <arg name="launch_manager" value="true" />
+    <arg name="manager" value="vidoe_to_scene_nodelet_manager" />
+    <arg name="min_percent" value="$(arg min_percent)" />
+    <arg name="max_percent" value="$(arg max_percent)" />
+  </include>
+
+  <!-- publish /publish_trigger_mongodb_event when video_to_scene, */class or dialogflow are detected -->
+  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_video_to_scene"
+        args="--wait-for-start $(arg image)/output/compressed /publish_trigger_mongodb_event std_msgs/Header
+              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
+
+  <!-- <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_auto_checkin" -->
+  <!--       args="-\-wait-for-start /aws_auto_checkin_app/output/class /publish_trigger_mongodb_event std_msgs/Header -->
+  <!--             'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' -\-import std_msgs" /> -->
+  <!-- <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_aws_detect_faces" -->
+  <!--       args="-\-wait-for-start /aws_detect_faces/attributes /publish_trigger_mongodb_event std_msgs/Header -->
+  <!--             'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' -\-import std_msgs" /> -->
+  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_dialogflow_client"
+        args="--wait-for-start /dialogflow_client/text_action/result /publish_trigger_mongodb_event std_msgs/Header
+              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
+  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_google_chat_ros_send_goal"
+        args="--wait-for-start /google_chat_ros/send/goal /publish_trigger_mongodb_event std_msgs/Header
+              'std_msgs.msg.Header(stamp=m.header.stamp, frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs" />
+  <node pkg="topic_tools" type="transform" name="publish_trigger_mongodb_event_google_chat_ros_message_activity"
+        args="--wait-for-start /google_chat_ros/message_activity /publish_trigger_mongodb_event std_msgs/Header
+              'std_msgs.msg.Header(stamp=rospy.Time.now(), frame_id=m._connection_header[&quot;callerid&quot;])' --import std_msgs rospy" />
+
+  <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
+  <node name="camera_throttle_nodelet"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_topic_tools/SynchronizedThrottle $(arg manager)" >
+    <rosparam subst_value="true">
+      approximate_sync: true
+      topics:
+      - /publish_trigger_mongodb_event
+      - $(arg image)/compressed
+    </rosparam>
+  </node>
+
+  <!-- store thottled image -->
+  <group ns="lifelog">
+    <include file="$(find jsk_robot_startup)/lifelog/lifelog_rgb_image.launch" >
+      <arg name="node_name" value="hand_color_logger" />
+      <arg name="image" value="$(arg image)/compressed/throttled" />
+      <arg name="manager" value="$(arg manager)" />
+    </include>
+  </group>
+
+  <!-- save classification data -->
+  <!-- sample code for object detection
+  <node name="classification_logger"
+        pkg="jsk_robot_startup" type="mongo_record.py" >
+    <rosparam subst_value="true">
+      topics:
+      - /spot/ncb_provider/hand_color_image/class
+    </rosparam>
+    </node>
+  -->
+
+  <!-- save bbox data -->
+  <!-- sample code for object detection
+  <node name="bbox_logger"
+        pkg="jsk_robot_startup" type="mongo_record.py" >
+    <rosparam subst_value="true">
+      topics:
+      - /spot/ncb_provider/bbox_array
+    </rosparam>
+  </node>
+  -->
+
+</launch>

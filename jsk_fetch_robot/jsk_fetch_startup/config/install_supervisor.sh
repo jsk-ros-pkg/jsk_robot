@@ -8,16 +8,14 @@ current_prefix_path="${prefix_paths[0]}"
 set -x
 
 cd $jsk_fetch_startup/supervisor_scripts
-for file in $(ls ./*.conf); do
-    sudo cp $file /etc/supervisor/conf.d/
-    sudo chown root:root /etc/supervisor/conf.d/$file
-    sudo chmod 644 /etc/supervisor/conf.d/$file
-    echo "copied $file to /etc/supervisor/conf.d"
+for file in $(ls *.conf); do
+    sudo ln -sf $jsk_fetch_startup/supervisor_scripts/$file /etc/supervisor/conf.d/$file
 done
+sudo supervisorctl reread
+# Enable jsk_dstat job to save the csv log under /var/log
+sudo ln -sf /home/fetch/Documents/jsk_dstat.csv /var/log/ros/jsk-dstat.csv
 
-# copy config.bash to /var/lib/robo if not exists
-if [ ! -e /var/lib/robot/config.bash ]; then
-    sudo cp $jsk_fetch_startup/config/config.bash /var/lib/robot/config.bash
-fi
+sudo ln -sf $jsk_fetch_startup/config/config.bash /var/lib/robot/config.bash
+sudo ln -sf $jsk_fetch_startup/config/config_outside.bash /var/lib/robot/config_outside.bash
 
 set +x

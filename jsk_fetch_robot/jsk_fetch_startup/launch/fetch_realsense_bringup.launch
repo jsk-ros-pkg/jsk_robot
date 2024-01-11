@@ -1,11 +1,33 @@
 <launch>
 
   <arg name="respawn" default="true" />
+  <arg name="manager" default="realsense2_camera_manager" />
 
   <arg name="RS_SERIAL_NO_T265" default="" />
   <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="" />
   <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="" />
   <arg name="RS_SERIAL_NO_L515_HEAD" default="" />
+
+  <arg name="l515_high_resolution" default="true" />
+  <!-- Available profiles can be shown by $ rs-enumerate-devices -->
+  <!-- L515 high resolution -->
+  <arg name="l515_color_width" default="1920" if="$(arg l515_high_resolution)" />
+  <arg name="l515_color_height" default="1080" if="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_width" default="640" if="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_height" default="480" if="$(arg l515_high_resolution)" />
+  <!-- L515 low resolution -->
+  <arg name="l515_color_width" default="640" unless="$(arg l515_high_resolution)" />
+  <arg name="l515_color_height" default="480" unless="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_width" default="320" unless="$(arg l515_high_resolution)" />
+  <arg name="l515_depth_height" default="240" unless="$(arg l515_high_resolution)" />
+
+  <!-- Args for depth registration and pointcloud -->
+  <arg name="enable_pointcloud"               default="true" doc="If false, L515 pointcloud is not created and published" />
+  <arg name="rgb"                             default="color" />
+  <arg name="depth_registered_pub"            default="depth_registered" />
+  <arg name="depth_registered"                default="aligned_depth_to_color" />
+  <arg name="throttle_l515_points"            default="true" doc="Use throttled rgb and depth images to create pointcloud" />
+  <arg name="throttled_rate"                  default="5.0" doc="Rate [Hz] to publish L515 pointcloud" />
 
   <!-- t265 -->
   <group ns="t265" if="$(eval arg('RS_SERIAL_NO_T265') != '')">
@@ -56,13 +78,12 @@
       <arg name="tf_prefix"             value="d435_front_right"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
-      <arg name="filters"               value="pointcloud"/>
       <arg name="color_width"           value="640"/>
       <arg name="color_height"          value="480"/>
       <arg name="depth_width"           value="640"/>
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
-      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="enable_pointcloud"     value="$(arg enable_pointcloud)"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
@@ -73,16 +94,17 @@
       <arg name="tf_prefix"             value="d435_front_left"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
-      <arg name="filters"               value="pointcloud"/>
       <arg name="color_width"           value="640"/>
       <arg name="color_height"          value="480"/>
       <arg name="depth_width"           value="640"/>
       <arg name="depth_height"          value="480"/>
       <arg name="clip_distance"         value="-2"/>
-      <arg name="enable_pointcloud"     value="true"/>
+      <arg name="enable_pointcloud"     value="$(arg enable_pointcloud)"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
   </group>
+
+  <!-- L515 -->
   <group ns="l515_head" if="$(eval arg('RS_SERIAL_NO_L515_HEAD') != '')">
     <include file="$(find jsk_fetch_startup)/launch/devices/realsense_nodelet.launch.xml">
       <arg name="device_type"           value="l515"/>
@@ -90,21 +112,90 @@
       <arg name="tf_prefix"             value="l515_head"/>
       <arg name="initial_reset"         value="true"/>
       <arg name="align_depth"           value="true"/>
-      <arg name="filters"               value="pointcloud"/>
-      <arg name="color_width"           value="1920"/>
-      <arg name="color_height"          value="1080"/>
-      <arg name="depth_width"           value="640"/>
-      <arg name="depth_height"          value="480"/>
+      <arg name="color_width"           value="$(arg l515_color_width)"/>
+      <arg name="color_height"          value="$(arg l515_color_height)"/>
+      <arg name="depth_width"           value="$(arg l515_depth_width)"/>
+      <arg name="depth_height"          value="$(arg l515_depth_height)"/>
       <arg name="clip_distance"         value="-2"/>
       <arg name="enable_pointcloud"     value="false"/>
       <arg name="enable_infra"          value="true"/>
       <arg name="respawn"              value="$(arg respawn)"/>
     </include>
     <rosparam>
-        /l515_head/motion_module/global_time_enabled: true
-        /l515_head/l500_depth_sensor/global_time_enabled: true
-        /l515_head/rgb_camera/global_time_enabled: true
+      /l515_head/motion_module/global_time_enabled: true
+      /l515_head/l500_depth_sensor/global_time_enabled: true
+      /l515_head/rgb_camera/global_time_enabled: true
     </rosparam>
+    <!-- Create pointcloud with throttled RGB and depth image to reduce CPU usage -->
+    <!--
+        This launch file is copied from realsense2_camera in realsense_ros https://github.com/IntelRealSense/realsense-ros and then modified
+        And it is originally distributed under Apache-2.0 License
+    -->
+    <group if="$(arg enable_pointcloud)">
+      <!-- Create rectified image -->
+      <include file="$(find rgbd_launch)/launch/includes/rgb.launch.xml">
+        <arg name="manager"                       value="/l515_head/$(arg manager)" />
+        <arg name="respawn"                       value="$(arg respawn)" />
+        <arg name="rgb"                           value="$(arg rgb)" />
+        <arg name="debayer_processing"            value="false" />
+      </include>
+      <group if="$(arg throttle_l515_points)">
+        <group ns="$(arg rgb)">
+          <!-- Throttle RGB images -->
+          <node name="throttle_image"
+                pkg="nodelet" type="nodelet"
+                args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+                respawn="true">
+            <remap from="~input" to="image_rect_color" />
+            <remap from="~output" to="throttled/image_rect_color" />
+            <param name="update_rate" value="$(arg throttled_rate)" />
+          </node>
+          <!-- Throttle camera info -->
+          <node name="throttle_camera_info"
+                pkg="nodelet" type="nodelet"
+                args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+                respawn="true">
+            <remap from="~input" to="camera_info" />
+            <remap from="~output" to="throttled/camera_info" />
+            <param name="update_rate" value="$(arg throttled_rate)" />
+          </node>
+        </group>
+        <group ns="$(arg depth_registered)">
+          <!-- Throttle depth images -->
+          <node name="throttle_image"
+                pkg="nodelet" type="nodelet"
+                args="load jsk_topic_tools/LightweightThrottle /l515_head/$(arg manager)"
+                respawn="true">
+            <remap from="~input" to="image_raw" />
+            <remap from="~output" to="throttled/image_raw" />
+            <param name="update_rate" value="$(arg throttled_rate)" />
+          </node>
+        </group>
+      </group>
+      <!-- Publish registered XYZRGB point cloud with hardware registered input (ROS Realsense depth alignment) -->
+      <!-- The output topic name is always /l515_head/depth_registered/points regardless of throttle option -->
+      <node pkg="nodelet" type="nodelet" name="points_xyzrgb_hw_registered"
+            args="load depth_image_proc/point_cloud_xyzrgb /l515_head/$(arg manager)" respawn="$(arg respawn)">
+        <remap from="rgb/image_rect_color"        to="$(arg rgb)/throttled/image_rect_color"        if="$(arg throttle_l515_points)" />
+        <remap from="rgb/image_rect_color"        to="$(arg rgb)/image_rect_color"                  unless="$(arg throttle_l515_points)" />
+        <remap from="rgb/camera_info"             to="$(arg rgb)/throttled/camera_info"             if="$(arg throttle_l515_points)" />
+        <remap from="rgb/camera_info"             to="$(arg rgb)/camera_info"                       unless="$(arg throttle_l515_points)" />
+        <remap from="depth_registered/image_rect" to="$(arg depth_registered)/throttled/image_raw"  if="$(arg throttle_l515_points)" />
+        <remap from="depth_registered/image_rect" to="$(arg depth_registered)/image_raw"            unless="$(arg throttle_l515_points)" />
+        <remap from="depth_registered/points"     to="$(arg depth_registered_pub)/points" />
+      </node>
+      <node name="resize_cloud"
+            pkg="nodelet" type="nodelet"
+            args="load jsk_pcl/ResizePointsPublisher /l515_head/$(arg manager)"
+            respawn="true">
+        <remap from="~input" to="$(arg depth_registered_pub)/points" />
+        <remap from="~output" to="$(arg depth_registered_pub)/quater/points" />
+        <rosparam>
+          step_x: 4
+          step_y: 4
+        </rosparam>
+      </node>
+    </group>
   </group>
 
 </launch>

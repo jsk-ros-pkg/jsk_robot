@@ -2,6 +2,8 @@
   <arg name="use_system_mongod" default="true" />
   <arg name="map_frame" default="map" />
   <arg name="vital_check" default="false" />
+  <arg name="extra_collections" default="[go_to_kitchen]" />
+  <arg name="replicate_on_write" default="true"/>
 
   <include file="$(find jsk_fetch_startup)/jsk_fetch.machine" />
 
@@ -11,23 +13,28 @@
     <arg name="use_daemon" value="true"/>
     <arg name="port" value="27017" />
     <arg name="repl_set_mode" value="false" />
+    <arg name="extra_collections" value="$(arg extra_collections)" />
+    <arg name="replicate_on_write" value="$(arg replicate_on_write)"/>
   </include>
   <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch"
            unless="$(arg use_system_mongod)">
     <arg name="use_daemon" value="false"/>
     <arg name="repl_set_mode" value="false" />
+    <arg name="extra_collections" value="$(arg extra_collections)" />
+    <arg name="replicate_on_write" value="$(arg replicate_on_write)"/>
   </include>
 
   <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
     <arg name="approximate_sync" value="true"/>
-    <arg name="save_rgb" value="true" />
-    <arg name="save_depth" value="true" />
+    <arg name="save_rgb" value="false" />
+    <arg name="save_depth" value="false" />
     <arg name="save_tf" value="true" />
     <arg name="save_joint_states" value="true" />
     <arg name="save_base_trajectory" value="true" />
     <arg name="save_object_detection" value="false" />
     <arg name="save_speech" value="true" />
     <arg name="save_action" value="true" />
+    <arg name="save_human_pose" default="true" />
     <arg name="camera_ns" value="head_camera" />
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
@@ -73,4 +80,10 @@
       - sound_play/SoundRequestActionGoal
       - sound_play/SoundRequestActionResult
   </rosparam>
+
+  <include file="$(find jsk_robot_startup)/launch/lifelog.launch" >
+    <arg name="image" value="/head_camera/rgb/image_rect_color" />
+    <arg name="manager" value="mongodb_lifelog_nodelet_manager" />
+  </include>
+
 </launch>
