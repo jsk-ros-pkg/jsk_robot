@@ -69,14 +69,14 @@ mkdir -p ~/kinova_ws/src
 cd ~/kinova_ws/src
 wstool init
 wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_kinova_robot/kinova.rosinstall
+wstool merge https://raw.githubusercontent.com/Kanazawanaoaki/jsk_robot/kinova-noetic/jsk_kinova_robot/kinova.rosinstall.${ROS_DISTRO} # Please ignore error if kinova.rosinstall.${ROS_DISTRO} does not exist. # We can remove this line after the https://github.com/ros/collada_urdf/pull/44 is merged
 wstool update
 cd ../
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 catkin build jsk_kinova_startup kinovaeus
 source devel/setup.bash
 ```
-If an error related to `collada_urdf` occurs during build in noetic environments, it may be solved by referring to https://github.com/jsk-ros-pkg/jsk_robot/issues/1892 .
 
 ## Start ROS Node
 

@@ -1,0 +1,12 @@
+# Current collada_urdf cannot be built on noetic # We can remove this line after the https://github.com/ros/collada_urdf/pull/44 is merged
+# https://github.com/ros/collada_urdf/pull/44
+- git:
+    local-name: collada_urdf
+    uri: https://github.com/werner291/collada_urdf.git
+    version: patch-1
+# jsk_model_tools has to be built with patched collada_urdf # We can remove this line after the https://github.com/ros/collada_urdf/pull/44 is merged
+# https://github.com/jsk-ros-pkg/jsk_model_tools/pull/254
+- git:
+    local-name: jsk-ros-pkg/jsk_model_tools
+    uri: https://github.com/Takuma-Hiraoka/jsk_model_tools.git
+    version: fix_for_python3-python2_compatible
