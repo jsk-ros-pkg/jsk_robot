@@ -65,6 +65,7 @@ conan profile update settings.compiler.libcxx=libstdc++11 default
 Use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 
 ```bash
+source /opt/ros/*/setup.bash
 mkdir -p ~/kinova_ws/src
 cd ~/kinova_ws/src
 wstool init
