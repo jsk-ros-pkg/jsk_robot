@@ -1,0 +1,18 @@
+<library path="lib/libcomplex_recovery">
+    <class
+        name="complex_recovery/SequentialComplexRecovery"
+        type="complex_recovery::SequentialComplexRecovery"
+        base_class_type="nav_core::RecoveryBehavior">
+        <description>
+            A recovery behavior that runs other recovery behaviors sequentially.
+        </description>
+    </class>
+    <class
+        name="complex_recovery/ParallelComplexRecovery"
+        type="complex_recovery::ParallelComplexRecovery"
+        base_class_type="nav_core::RecoveryBehavior">
+        <description>
+            A recovery behavior that runs other recovery behaviors in parallel.
+        </description>
+    </class>
+</library>
