@@ -23,6 +23,7 @@
   <arg name="logger_save_app" default="false" />
   <arg name="logger_save_video_to_scene" default="false" />
   <arg name="logger_map_frame" default="odom" />
+  <arg name="logger_save_throttled_image" default="ture" />
 
   <arg name="image" default="usb_cam/image_raw" />
 
@@ -121,7 +122,7 @@
   </node>
 
   <!-- store thottled image -->
-  <group ns="lifelog">
+  <group ns="lifelog" if="$(arg logger_save_throttled_image)" >
     <include file="$(find jsk_robot_startup)/lifelog/lifelog_rgb_image.launch" >
       <arg name="node_name" value="hand_color_logger" />
       <arg name="image" value="$(arg image)/compressed/throttled" />
