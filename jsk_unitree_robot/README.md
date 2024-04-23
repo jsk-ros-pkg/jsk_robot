@@ -115,11 +115,12 @@ The Mechanical keyboard LED button changes colors based on the button pressed to
 
 | Button Presses | LED Color         | Action                        | Description                           |
 |----------------|-------------------|-------------------------------|---------------------------------------|
-| 1 press        | Red | Sit                           | Unitree sits and will not walk.       |
-| 2 presses      | Blue | Stand                         | Unitree stands up and is able to walk.|
-| 3 presses      | Green | -                            | -                                     |
-| 4 presses      | Yellow | Disable movement           | Unitree stops moving.                 |
-| 5 presses      | White | Enable movement           | Unitree is able to move again.        |
+| 0 presses       | Red | no action                           | Unitree is just standing.       |
+| 1 press        | Blue | Sit                           | Unitree sits and will not walk.       |
+| 2 presses      | Green | Stand                         | Unitree stands up and is able to walk.|
+| 3 presses      | Yellow | no action                            | no action                                     |
+| 4 presses      | White | Disable movement           | Unitree stops moving.                 |
+| 5 presses      | Purple | Enable movement           | Unitree is able to move again.        |
 
 The robot's motion and action mappings, such as stopping, moving, sitting, and standing, are defined in [rosserial_node.launch](./jsk_unitree_startup/launch/rosserial_node.launch) and [lead_joystick_teleop.yaml](./jsk_unitree_startup/config/lead_joystick_teleop.yaml). These files control the robot's responses to joystick inputs and can be customized as needed.
 
