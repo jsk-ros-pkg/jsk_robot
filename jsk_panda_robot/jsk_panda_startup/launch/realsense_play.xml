@@ -1,0 +1,48 @@
+<launch>
+  <arg name="camera" default="camera" />
+  <arg name="manager" default="realsense2_camera_manager" />
+  <arg name="republish_cloud" default="true" />
+
+  <group ns="$(arg camera)">
+    <group ns="color">
+      <node name="republish"
+            pkg="image_transport" type="republish"
+            args="compressed raw">
+        <remap from="in" to="image_raw" />
+        <remap from="out" to="image_raw" />
+      </node>
+    </group>
+    <group ns="depth">
+      <node name="republish"
+            pkg="image_transport" type="republish"
+            args="compressedDepth raw">
+        <remap from="in" to="image_rect_raw" />
+        <remap from="out" to="image_rect_raw" />
+      </node>
+    </group>
+
+    <group if="$(arg republish_cloud)">
+      <!-- Based on rgbd_launch/launch/includes/depth_registered.launch.xml -->
+      <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen" />
+      <!-- Registration nodelet, projecting depth to RGB camera -->
+      <node pkg="nodelet" type="nodelet" name="register_depth_color"
+            args="load depth_image_proc/register $(arg manager)" output="screen">
+        <!-- Explicit topic remappings, shouldn't need all of these -->
+        <remap from="rgb/camera_info"             to="color/camera_info" />
+        <remap from="depth/camera_info"           to="depth/camera_info" />
+        <remap from="depth/image_rect"            to="depth/image_rect_raw" />
+        <remap from="depth_registered/image_rect" to="depth_registered/sw_registered/image_rect_raw" />
+      </node>
+      <!-- Publish registered XYZRGB point cloud with software registered input -->
+      <!-- This cloud is not the same as the original realsense one             -->
+      <node pkg="nodelet" type="nodelet" name="point_cloud_xyzrgb_sw_registered"
+            args="load depth_image_proc/point_cloud_xyzrgb $(arg manager)" output="screen">
+        <!-- Explicit topic remappings, shouldn't need all of these -->
+        <remap from="rgb/image_rect_color"        to="color/image_raw" />  <!-- image_raw of D435 is rectified: https://github.com/IntelRealSense/realsense-ros/issues/1646 -->
+        <remap from="rgb/camera_info"             to="color/camera_info" />
+        <remap from="depth_registered/image_rect" to="depth_registered/sw_registered/image_rect_raw" />
+        <remap from="depth_registered/points"     to="depth/color/points" />
+      </node>
+    </group>
+  </group>
+</launch>

@@ -19,4 +19,4 @@ cmake \
   -DYAML_CPP_BUILD_TOOLS=ON \
   ${SOURCE_DIR}
 
-make -j4 install
+make install

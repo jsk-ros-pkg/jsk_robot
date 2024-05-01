@@ -1,0 +1,14 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/openssl/openssl-1.1.1q
+
+cd ${SOURCE_DIR}
+
+./config --prefix=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies --openssldir=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/openssl
+
+make
+make install
+
+# download pem (ssl.get_default_verify_paths)
+wget https://curl.haxx.se/ca/cacert.pem -O /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/openssl/cert.pem

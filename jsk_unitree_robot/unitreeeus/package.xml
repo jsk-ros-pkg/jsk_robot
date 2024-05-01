@@ -20,6 +20,7 @@
 
   <run_depend>roseus</run_depend>
   <run_depend>pr2eus</run_depend>
+  <run_depend>unitree_legged_msgs</run_depend>
 
   <export>
   </export>

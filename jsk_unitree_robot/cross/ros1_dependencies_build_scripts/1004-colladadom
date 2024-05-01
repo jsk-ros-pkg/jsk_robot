@@ -27,4 +27,4 @@ cmake \
   -DOPT_DOUBLE_PRECISION=ON \
   ${SOURCE_DIR}
 
-make -j4 install
+make install

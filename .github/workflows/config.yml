@@ -71,12 +71,13 @@ jobs:
         shell: bash
 
       - name: Chcekout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.0.2
         with:
           submodules: true
 
       - name: Start X server
         run: |
+          if [[ "${{ matrix.CONTAINER }}" =~ "jskrobotics/ros-ubuntu:14.04" ]]; then exit 0; fi
           echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections || echo "failing on ros-ubuntu is OK" # set non interactive tzdata https://stackoverflow.com/questions/8671308/non-interactive-method-for-dpkg-reconfigure-tzdata
           sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy wget
           export DISPLAY=:0
@@ -85,6 +86,7 @@ jobs:
           sleep 3 # wait x server up
           export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
           xhost +local:root
+        shell: bash
 
       - name: Run jsk_travis
         uses: jsk-ros-pkg/jsk_travis@master

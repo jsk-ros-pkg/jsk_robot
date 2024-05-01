@@ -54,7 +54,9 @@ function copy_data () {
     fi
 
     # Check if robot is reachable
-    reachability=$(ping -c4 ${hostname} 2>/dev/null | awk '/---/,0' | grep -Po '[0-9]{1,3}(?=% packet loss)')
+    # Use perl instead of `grep -Po '[0-9]{1,3}(?=% packet loss)'` for Mac environment.
+    # See https://stackoverflow.com/questions/16658333/grep-p-no-longer-works-how-can-i-rewrite-my-searches/16658690#16658690
+    reachability=$(LANG=C ping -c4 ${hostname} 2>/dev/null | awk '/---/,0' | perl -nle'print $& while m{[0-9]{1,3}(?=% packet loss)}g')
     if [ -z "$reachability" ] || [ "$reachability" == 100 ]; then
         echo "ERROR: ${hostname} unreachable" 1>&2
         exit 2
@@ -63,6 +65,12 @@ function copy_data () {
     # clear old known_hosts
     ssh-keygen -f "${HOME}/.ssh/known_hosts" -R "${hostname}" || echo "OK"
     sshpass -p $PASS ssh -o StrictHostKeyChecking=no ${user}@${hostname} exit
+
+    if [[ "${TARGET_DIRECTORY}" == "System" ]]; then
+        sshpass -p 123 scp ${TARGET_MACHINE}_${TARGET_DIRECTORY}/usercustomize.py ${user}@${hostname}:/tmp/usercustomize.py
+        sshpass -p $PASS ssh -t ${user}@${hostname} "mkdir -p ~/.local/lib/python2.7/site-packages/; cp -f /tmp/usercustomize.py .local/lib/python2.7/site-packages/"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "mkdir -p ~/.local/lib/python3.6/site-packages/; cp -f /tmp/usercustomize.py .local/lib/python3.6/site-packages/"
+    fi
 
     # cehck disk space
     echo "Copy ${TARGET_MACHINE}_${TARGET_DIRECTORY} ...."
@@ -92,9 +100,13 @@ function copy_data () {
     sshpass -p $PASS ssh -t ${user}@${hostname} "test -e /opt/jsk" || \
         sshpass -p $PASS ssh -t ${user}@${hostname} "sudo mkdir -p /opt/jsk && sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /opt/jsk && ls -al /opt/jsk"
 
-    rsync --rsh="/usr/bin/sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded --exclude "*.pyc" --exclude "^logs/" ${TARGET_MACHINE}_${TARGET_DIRECTORY}/ ${hostname}:/opt/jsk/${TARGET_DIRECTORY}
+    # check if we have /var/mail/${user}
+    sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S touch /var/mail/${user}" && \
+        sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo -S sudo chown -R \$(id -u \${USER}):\$(id -g \${USER}) /var/mail/${user}"
+
+    rsync --rsh="sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded --exclude "*.pyc" --exclude "^logs/" ${TARGET_MACHINE}_${TARGET_DIRECTORY}/ ${hostname}:/opt/jsk/${TARGET_DIRECTORY}
     if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
-        rsync --rsh="/usr/bin/sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded ../jsk_unitree_startup/autostart/ ${hostname}:Unitree/autostart/jsk_startup
+        rsync --rsh="sshpass -p $PASS ssh -o StrictHostKeyChecking=no -l ${user}" -avz --delete --delete-excluded ../jsk_unitree_startup/autostart/ ${hostname}:Unitree/autostart/jsk_startup
         # https://stackoverflow.com/questions/23395363/make-patch-return-0-when-skipping-an-already-applied-patch
 
         # On Air, we need to start unitree_bringup at 129.168.123.13
@@ -104,15 +116,15 @@ function copy_data () {
 
         # update udev
         # respeaker_ros
-        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find respeaker_ros)/config/60-respeaker.rules /etc/udev/rules.d/60-respeaker.rules"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; echo $PASS | sudo cp -f \$(rospack find respeaker_ros)/config/60-respeaker.rules /etc/udev/rules.d/60-respeaker.rules"
         #
-        sshpass -p $PASS ssh -t ${user}@${hostname} "ls -al /etc/udev/rules.d/; sudo systemctl restart udev"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "ls -al /etc/udev/rules.d/; echo $PASS | sudo systemctl restart udev"
     fi
 
     # enable Internet with USB LTE module
     if [[ "${hostname}" == "192.168.123.161" ]]; then
-        sshpass -p $PASS ssh -t ${user}@${hostname} "source /opt/jsk/User/user_setup.bash; sudo cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
-        sshpass -p $PASS ssh -t ${user}@${hostname} "sudo systemctl restart dhcpcd"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "export PATH=\$PATH:/sbin; source /opt/jsk/User/user_setup.bash; echo $PASS | sudo cp -f \$(rospack find jsk_unitree_startup)/config/dhcpcd.conf /etc/dhcpcd.conf"
+        sshpass -p $PASS ssh -t ${user}@${hostname} "echo $PASS | sudo systemctl restart dhcpcd"
     fi
     set +x
 }

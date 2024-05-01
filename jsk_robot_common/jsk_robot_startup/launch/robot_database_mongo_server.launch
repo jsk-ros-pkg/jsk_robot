@@ -1,0 +1,36 @@
+<launch>
+  <!-- logging database -->
+  <param name="robot/database" value="jsk_robot_lifelog"/>
+
+  <!-- use central data base -->
+  <!-- <arg name="host" default="localhost" /> -->
+  <arg name="host" default="musca.jsk.imi.i.u-tokyo.ac.jp" />
+  <arg name="port" default="27017" />
+
+  <!-- default value -->
+  <arg name="use_daemon" default="true" />
+  <arg name="db_path" default="/var/lib/robot/mongodb_store"/>
+  <arg name="defaults_path" default=""/>
+  <arg name="replicator_dump_path" default="/tmp/replicator_dumps"/>
+  <arg name="queue_size" default="100" />
+  <arg name="use_localdatacenter" default="true" />
+
+  <!-- mongodb_store_inc.launch -->
+  <param name="mongodb_use_daemon" value="$(arg use_daemon)" />
+  <param name="mongodb_port" value="$(arg port)" />
+  <param name="mongodb_host" value="$(arg host)" />
+
+  <node name="config_manager" pkg="mongodb_store" type="config_manager.py" >
+    <param name="defaults_path" value="$(arg defaults_path)"/>
+  </node>
+
+  <node name="message_store" pkg="mongodb_store" type="message_store_node.py" >
+    <param name="mongodb_use_localdatacenter" value="$(arg use_localdatacenter)" />
+    <param name="queue_size" value="$(arg queue_size)" />
+  </node>
+
+  <node name="replicator_node" pkg="mongodb_store" type="replicator_node.py" >
+    <param name="replicator_dump_path" value="$(arg replicator_dump_path)"/>
+  </node>
+
+</launch>

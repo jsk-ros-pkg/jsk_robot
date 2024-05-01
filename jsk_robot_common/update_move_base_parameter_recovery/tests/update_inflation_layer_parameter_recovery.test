@@ -1,0 +1,24 @@
+<launch>
+    <test
+        test-name="test_update_inflation_layer_parameter_recovery"
+        pkg="update_move_base_parameter_recovery"
+        type="test_update_inflation_layer_parameter_recovery.py"
+        name="update_inflation_layer_parameter_recovery_test"
+        time-limit="30"
+        />
+
+    <node
+        pkg="update_move_base_parameter_recovery"
+        type="update_inflation_layer_parameter_recovery_test_node"
+        name="update_inflation_layer_parameter_recovery_test_node"
+        >
+        <rosparam>
+            recovery:
+                parameter_name: '/update_inflation_layer_parameter_recovery_test'
+                cost_scaling_factor: 1.0
+                enabled: False
+                inflate_unknown: True
+                inflation_radius: 1.0
+        </rosparam>
+    </node>
+</launch>

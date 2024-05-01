@@ -50,4 +50,4 @@ cmake \
   -DOPENCV_CONFIG_INSTALL_PATH=lib/cmake/OpenCV \
   ${SOURCE_DIR}
 
-make -j4 install
+make install

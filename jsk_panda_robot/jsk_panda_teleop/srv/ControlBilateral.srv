@@ -1,0 +1,6 @@
+bool pose_connecting
+bool force_connecting
+bool reset_phantom
+float32 wait
+---
+bool ok
