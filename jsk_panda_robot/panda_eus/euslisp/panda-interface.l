@@ -7,8 +7,8 @@
 
 (defmethod panda-robot-interface
   (:init
-    (&rest args)
-    (send-super* :init :robot panda-robot
+    (&rest args &key (robot panda-robot))
+    (send-super* :init :robot robot
                  :joint-states-topic "joint_states"
                  :all-arms (list :rarm)
                  :all-arm-aliases (list :arm)

@@ -49,17 +49,17 @@
    ```
 
 
-## Running single Panda
+## Running single Panda/FR3 (Franka Research 3)
 ### Boot robot
 1. Please turn on the controller box and unlock joints by accessing desk.
 ### Via roseus
 1. Start controller on controller PC:
    ```bash
    ssh leus@dual-panda1.jsk.imi.i.u-tokyo.ac.jp  # Or ssh leus@dual-panda2.jsk.imi.i.u-tokyo.ac.jp
-   roslaunch jsk_panda_startup panda.launch robot_ip:=<IP OF TARGET ROBOT>
+   roslaunch jsk_panda_startup panda.launch robot_ip:=<IP OF TARGET ROBOT>  # FR3: roslaunch jsk_panda_startup fr3.launch robot_ip:=<IP OF TARGET ROBOT>
    ```
 
-2. Controlling single Panda via roseus:
+2. Controlling single Panda/FR3 via roseus:
    1. Setting up network:
       ```bash
       rossetmaster dual-panda1.jsk.imi.i.u-tokyo.ac.jp  # Or rossetmaster dual-panda2.jsk.imi.i.u-tokyo.ac.jp
@@ -67,8 +67,8 @@
       ```
    2. Execute following script in roseus:
       ```lisp
-      (load "package://panda_eus/euslisp/panda-interface.l")
-      (panda-init)
+      (load "package://panda_eus/euslisp/panda-interface.l")  ;; FR3: (load "package://panda_eus/euslisp/fr3-interface.l")
+      (panda-init)  ;; FR3: (fr3-init)
       (send *robot* :angle-vector (send *robot* :reset-pose))
       (when (send *ri* :check-error)
         (send *ri* :recover-error))

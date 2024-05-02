@@ -1,0 +1,19 @@
+rarm:
+  - fr3_joint1 : rarm-collar-y
+  - fr3_joint2 : rarm-shoulder-p
+  - fr3_joint3 : rarm-shoulder-y
+  - fr3_joint4 : rarm-elbow-p
+  - fr3_joint5 : rarm-wrist-r
+  - fr3_joint6 : rarm-wrist-p
+  - fr3_joint7 : rarm-wrist-y
+
+rarm-end-coords:
+  parent: fr3_hand  # If fr3_hand_tcp is used to delete the following translation, (send *fr3* :rarm :gripper :joint-list) does not include finger joints
+  translate: [0, 0, 0.1034]  # https://github.com/frankaemika/franka_ros/blob/0.10.1/franka_description/robots/common/franka_robot.xacro#L8
+  rotate : [0, -1, 0, 90]
+
+angle-vector:
+  reset-pose: [ 0.0, -45.0, 0.0, -135.0, 0.0, 90.0, 45.0,
+                0.0, -75.0 ]
+  reset-manip-pose: [ 0.0, -45.0, 0.0, -135.0, 0.0, 90.0, 45.0,
+                      0.0, -75.0 ]
