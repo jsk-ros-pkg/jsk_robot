@@ -39,5 +39,18 @@
     <arg name="launch_teleop" value="false" /> <!-- duplicates cmd_vel_mux nodes -->
     <arg name="launch_insta360" value="false" />
     <arg name="fetch_switchbot" value="false" />
+    <arg name="launch_fetch_lifelog" default="false" />
+    <arg name="use_diagnostic_aggregator" default="false" />
+    <arg name="use_cpu_monitor" default="false" />
+    <arg name="launch_twitter" default="false" />
+    <arg name="launch_app_manager" default="false" />
+    <arg name="use_network_status" default="false" />
+    <arg name="use_network_detector" default="false" />
+    <arg name="use_respeaker" default="false" />
+    <arg name="check_room_light" default="false" />
+    <arg name="check_driver_boards" default="false" />
+    <arg name="use_email" default="false" />
+    <arg name="use_serial" default="false" />
+    <arg name="use_voice_text" default="false" />
   </include>
 </launch>

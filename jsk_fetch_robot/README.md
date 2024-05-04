@@ -96,6 +96,19 @@ or
 Gazebo can be used for simulating robot's movements.
 It is unable to communicate to the real robot when running the simulation.
 
+#### Create the environment
+
+``` bash
+cd catkin_ws/src
+vcs import < jsk-ros-pkg/jsk_robot/jsk_fetch_robot/jsk_fetch_gazebo.noetic.repos
+rosdep install -y -r --from-paths . --ignore-src
+cd ../
+catkin build
+source devel/setup.bash
+```
+
+#### How to run
+
 ```bash
 roslaunch fetch_gazebo simulation.launch
 roslaunch fetch_moveit_config move_group.launch
@@ -104,6 +117,11 @@ roslaunch fetch_moveit_config move_group.launch
 Roseus script can be executed on Gazebo. The whole demo is in `jsk_fetch_gazebo_demo/launch/demo.launch`
 ```bash
 roslaunch jsk_fetch_gazebo_demo demo.launch
+```
+
+If you want to spawn 73B2 model
+```bash
+roslaunch jsk_fetch_startup fetch_gazebo_73b2.launch
 ```
 
 ## Fetcheus APIs
