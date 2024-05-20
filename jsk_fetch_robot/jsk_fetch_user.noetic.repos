@@ -1,0 +1,19 @@
+repositories:
+  jsk-ros-pkg/jsk_demos:
+    type: git
+    url: git@github.com:jsk-ros-pkg/jsk_demos
+    version: master
+  # In order to avoid issue https://github.com/jsk-ros-pkg/jsk_robot/issues/1665,
+  # we need to use development branch until PR below are merged
+  # https://github.com/ZebraDevs/fetch_ros/pull/162
+  # https://github.com/ZebraDevs/fetch_ros/pull/163
+  # https://github.com/ZebraDevs/fetch_ros/pull/164
+  ZebraDevs/fetch_ros:
+    type: git
+    url: git@github.com:mqcmd196/fetch_ros
+    version: noetic-develop/fetch
+  # fetch_gazebo for noetic is not released
+  ZebraDevs/fetch_gazebo:
+    type: git
+    url: git@github.com:ZebraDevs/fetch_gazebo
+    version: gazebo11
