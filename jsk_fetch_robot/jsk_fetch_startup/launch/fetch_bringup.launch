@@ -43,6 +43,7 @@
   <arg name="launch_network_status" default="true" />
   <arg name="launch_audible_warning" default="true" />
   <arg name="launch_check_driver_boards" default="true" />
+  <arg name="launch_cpu_monitor" default="true" />
 
   <!--iot devices -->
   <arg name="launch_rosserial" default="true" />
@@ -152,7 +153,7 @@
 
   <!-- publish CPU status to diagnostics -->
   <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
-        args="--diag-hostname=my_machine" >
+        args="--diag-hostname=my_machine" if="$(arg launch_cpu_monitor)">
     <param name="check_ipmi_tool" value="false" type="bool" />
     <param name="enforce_clock_speed" value="false" type="bool" />
     <param name="num_cores" value="-1" type="int" />
