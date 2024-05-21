@@ -80,5 +80,7 @@
     <arg name="launch_rosserial" default="false" />
     <arg name="launch_switchbot" default="false" />
     <arg name="launch_fetch_lifelog" default="false" />
+    <arg name="launch_google_analyze_text" default="false" />
+    <arg name="launch_cpu_monitor" default="false" />
   </include>
 </launch>

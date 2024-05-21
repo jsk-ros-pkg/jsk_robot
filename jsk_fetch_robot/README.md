@@ -38,7 +38,10 @@
 First, you need to install ROS. For ROS melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation/Ubuntu).
 Please make sure your ROS Distribution is indigo, kinetic or melodic.
 
+#### The client user for indigo, kinetic melodic
+
 ```bash
+source /opt/ros/*/setup.bash
 mkdir -p catkin_ws/src
 cd  catkin_ws/src
 wstool init .
@@ -53,12 +56,27 @@ wstool update -t .
 wget https://raw.githubusercontent.com/jsk-ros-pkg/jsk_roseus/master/setup_upstream.sh -O /tmp/setup_upstream.sh
 bash /tmp/setup_upstream.sh -w ../ -p jsk-ros-pkg/geneus -p euslisp/jskeus
 
-source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep install -y -r --from-paths . --ignore-src
 cd ../
 # (optional): if you want to use roseus_resume, build roseus_resume, too.
 catkin build fetcheus jsk_fetch_startup
 
+source devel/setup.bash
+```
+
+#### The client user for noetic
+
+```bash
+source /opt/ros/noetic/setup.bash
+mkdir -p catkin_ws/src/jsk-ros-pkg
+cd catkin_ws/src/jsk-ros-pkg
+git clone git@github.com:jsk-ros-pkg/jsk_robot -b develop/fetch
+cd ../
+vcs import < jsk-ros-pkg/jsk_robot/jsk_fetch_robot/jsk_fetch_user.noetic.repos
+cd ../
+rosdep update
+rosdep install -y -r --from-paths src --ignore-src
+catkin build fetcheus jsk_fetch_startup
 source devel/setup.bash
 ```
 
@@ -123,6 +141,14 @@ It is unable to communicate to the real robot when running the simulation.
 roslaunch fetch_gazebo simulation.launch
 roslaunch fetch_moveit_config move_group.launch
 ```
+
+Or you can launch
+
+```bash
+roslaunch jsk_fetch_startup fetch_gazebo_bringup.launch launch_move_base:=false
+```
+
+If you want to use JSK's 73B2 gazebo environment, you can launch
 
 Roseus script can be executed on Gazebo. The whole demo is in `jsk_fetch_gazebo_demo/launch/demo.launch`
 ```bash
