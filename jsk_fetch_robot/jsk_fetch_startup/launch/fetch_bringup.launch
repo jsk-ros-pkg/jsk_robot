@@ -343,12 +343,12 @@
     <rosparam command="load"
               file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_common_params.yaml" />
     <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_$(env ROS_DISTRO)_params.yaml" />
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_amcl_melodic_params.yaml" />
     <!-- load move_base params -->
     <rosparam command="load"
               file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_common_params.yaml" />
     <rosparam command="load"
-              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_$(env ROS_DISTRO)_params.yaml" />
+              file="$(find jsk_fetch_startup)/launch/navigation/$(arg hostname)/fetch_move_base_melodic_params.yaml" />
   </group>
 
   <!-- slam for build a map -->
