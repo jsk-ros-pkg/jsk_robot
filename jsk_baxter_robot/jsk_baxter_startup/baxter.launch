@@ -14,6 +14,7 @@
   <arg name="launch_spherical_kodak" default="false" />
   <arg name="launch_spherical_stereo" default="false" />
   <arg name="start_openni" default="false"/>
+  <arg name="camera_type" default="l515"/>
   <arg name="REALSENSE_CAMERA_NS" value="realsense_torso" />
   <arg name="SPHERICAL_CAMERA_NS" value="kodak_head" />
   <arg name="SPHERICAL_LEFT_CAMERA_NS" value="elp_head_left" />
@@ -144,10 +145,11 @@
     <arg name="launch_openni" value="$(arg start_openni)" />
   </include>
 
-  <!-- Use realsense L515 on torso -->
+  <!-- Use realsense L515 or d435 on torso -->
   <include if="$(arg launch_realsense_torso)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_torso.launch">
     <arg name="realsense_camera_ns" value="$(arg REALSENSE_CAMERA_NS)" />
+    <arg name="camera_type" value="$(arg camera_type)"/>
   </include>
 
   <!-- Use spherical kodak on head -->

@@ -1,6 +1,7 @@
 <launch>
   <arg name="realsense_camera_ns" />
   <arg name="manager" />
+  <arg name="serial_no" />
   <arg name="publish_tf" />
   <arg name="color_width" />
   <arg name="color_height" />
@@ -15,6 +16,7 @@
   <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
     <arg name="camera" value="$(arg realsense_camera_ns)" />
     <arg name="manager" value="$(arg manager)" />
+    <arg name="serial_no" value="$(arg serial_no)"/>
     <arg name="publish_tf" value="$(arg publish_tf)" />
     <arg name="color_width"  value="$(arg color_width)" />
     <arg name="color_height" value="$(arg color_height)" />

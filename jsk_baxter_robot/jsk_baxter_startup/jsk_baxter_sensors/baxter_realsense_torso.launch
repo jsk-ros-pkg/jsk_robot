@@ -1,6 +1,10 @@
 <launch>
   <arg name="launch_transformable_server" default="true" />
   <arg name="realsense_camera_ns" default="realsense_torso" />
+  <arg name="camera_type" default="l515" />
+  <arg name="serial_no" default="f0232933" if="$(eval arg('camera_type') == 'l515' )"/>
+  <arg name="serial_no" default="827112071768" if="$(eval arg('camera_type') == 'd435' )" />
+  
   <arg name="publish_tf" default="false" />
   <!-- in order to get higher resolution, we need USB3.2 -->
   <arg name="color_width" default="960" />
@@ -26,7 +30,8 @@
   <!-- tf for realsense at baxter's torso -->
   <node name="marker_6dof_tf_base_to_color"
         pkg="jsk_interactive_marker" type="marker_6dof">
-    <rosparam command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/l515_torso_pose.yaml" />
+    <!-- <rosparam command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/l515_torso_pose.yaml" /> -->
+    <rosparam command="load" file="$(find jsk_baxter_startup)/jsk_baxter_sensors/$(arg camera_type)_torso_pose.yaml" />
     <rosparam subst_value="true" >
       object_type: cube
       publish_tf: true
@@ -40,6 +45,7 @@
   <include file="$(find jsk_baxter_startup)/jsk_baxter_sensors/realsense.launch">
     <arg name="realsense_camera_ns" value="$(arg realsense_camera_ns)" />
     <arg name="manager" value="$(arg manager)" />
+    <arg name="serial_no" value="$(arg serial_no)" />
     <arg name="publish_tf" value="$(arg publish_tf)" />
     <arg name="color_width"  value="$(arg color_width)" />
     <arg name="color_height" value="$(arg color_height)" />
