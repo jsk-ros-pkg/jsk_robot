@@ -5,6 +5,70 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## t265_odometry_transformer.py
+
+This node publishes odometry topics and TF with raw odometry topics of Realsense T265. Realsense T265 can publish odometry TF in camera frames. This node helps to use them in robot base_link frames.
+
+![t265_odometry_transformer](https://user-images.githubusercontent.com/9410362/172747852-9d78d710-528d-4c53-ba32-9af8021ce7eb.png)
+
+### Subscribers
+
+- `~odom_in` (type: nav_msgs/Odometry)
+
+Raw odometry topic from Realsense T265
+
+### Publishers
+
+- `~odom_out` (type: nav_msgs/Odometry)
+
+Transformed odometry topic.
+
+- `/tf` (type: tf2_msgs/TFMessage)
+
+### Parameters
+
+- `~base_frame_id` (type: `string`, default: `base_link`)
+
+Frame ID of robot base_link. It is assumed that this link is top frame of TF tree because TF from odom to this link will be broadcasted.
+
+- `~odom_frame_id` (type: `string`, default: `odom`)
+
+Frame ID name to be broadcasted as odometry frame 
+
+- `~translation_base_link_to_pose_frame_x` (type: `double`, default: `0.0`)
+- `~translation_base_link_to_pose_frame_y` (type: `double`, default: `0.0`)
+- `~translation_base_link_to_pose_frame_z` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_x` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_y` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_z` (type: `double`, default: `0.0`)
+- `~rotation_base_link_to_pose_frame_w` (type: `double`, default: `1.0`)
+
+Relative pose from robot base link to T265 pose frame. For pose_frame of Realsense T265 on ROS, please see the figure above.
+
+- `~publish_tf` (type: `bool`, default: `True`)
+
+If set to true, TF from odometry frame to base_link is broadcasted.
+
+- `~2d_mode` (type: `bool`, default: `True`)
+
+If 2D odometry is prefered, please set this to True.
+
+### How to run a demo
+
+Connect Realsense T265 to your computer and run
+
+```bash
+roslaunch jsk_robot_startup t265_odometry_transformer.launch
+```
+
+### How to use t265_odometry_transformer with your robot.
+
+First, this program currently assumes that T265 is attached to the base link of the robot. Please make sure your robot's configuration.
+
+Then, please check the transform from your robot base frame to t265 pose frame ( transform from $\Sigma_{base}$ to $\Sigma_{t265}$ in the figure above.)
+
+And launch `t265_odometry_transformer.launch` with your configuration.
+
 ## scripts/email_topic.py
 
 This node sends email based on received rostopic (jsk_robot_startup/Email).
