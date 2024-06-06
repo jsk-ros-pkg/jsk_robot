@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import os
 from importlib import import_module
 
 import rospy
+from sound_play.libsoundplay import SoundClient
 from std_msgs.msg import Empty
 
 
@@ -32,7 +34,7 @@ class Shutdown(object):
 
     def __init__(self):
         rospy.loginfo('Start shutdown node.')
-
+        self.client_jp = SoundClient(sound_action='/robotsound_jp', blocking=True)
         self.condition = rospy.get_param(
             '~input_condition', None)
         if self.condition is not None:
@@ -51,6 +53,11 @@ class Shutdown(object):
             '~shutdown_command', '/sbin/shutdown -h now')
         self.reboot_command = rospy.get_param(
             '~reboot_command', '/sbin/shutdown -r now')
+        self.volume = rospy.get_param('~volume', 1.0)
+
+    def speak(self, client, speech_text, lang='jp'):
+        client.say(speech_text, voice=lang, volume=self.volume, replace=False)
+        return client.actionclient.get_result()
 
     def callback(self, msg):
         if isinstance(msg, rospy.msg.AnyMsg):
@@ -81,6 +88,7 @@ class Shutdown(object):
                 return
 
         rospy.loginfo('Shut down robot.')
+        self.speak(self.client_jp, 'シャットダウンします。')
         ret = os.system(self.shutdown_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(
@@ -88,6 +96,7 @@ class Shutdown(object):
 
     def reboot(self, msg):
         rospy.loginfo('Reboot robot.')
+        self.speak(self.client_jp, '再起動します。')
         ret = os.system(self.reboot_command)
         if ret != 0:
             rospy.logerr("Failed to call '$ {}'. Check authentication.".format(

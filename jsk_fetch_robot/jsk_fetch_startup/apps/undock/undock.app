@@ -1,5 +1,5 @@
 display: Fetch undock
 platform: fetch
-launch: jsk_fetch_startup/undock.xml
+run: jsk_fetch_startup/undock.l
 interface: jsk_fetch_startup/undock.interface
 icon: jsk_fetch_startup/undock.png

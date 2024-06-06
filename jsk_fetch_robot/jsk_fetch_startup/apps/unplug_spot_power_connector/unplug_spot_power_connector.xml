@@ -1,0 +1,3 @@
+<launch>
+    <include file="$(find jsk_fetch_plug_power_spot)/launch/unplug.launch"/>
+</launch>

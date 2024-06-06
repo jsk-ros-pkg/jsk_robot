@@ -1,0 +1,52 @@
+# 'go to kitchen' launch time is temporary changed to 9:30 AM by yamaguchi, 2022/05/20.
+# Recently fetch1075 freezes at 9:00 AM.
+# I think the reason may be the simultaneous launch of 'go to kitchen' and 'time signal'
+- name: go_to_kitchen_morning
+  app_name: jsk_fetch_startup/go_to_kitchen
+  app_schedule:
+    start: every(1).day.at("09:30")
+- name: go_to_kitchen_noon
+  app_name: jsk_fetch_startup/go_to_kitchen
+  app_schedule:
+    start: every(1).day.at("13:30")
+- name: go_to_kitchen_evening
+  app_name: jsk_fetch_startup/go_to_kitchen
+  app_schedule:
+    start: every(1).day.at("17:30")
+- name: go_to_kitchen_night
+  app_name: jsk_fetch_startup/go_to_kitchen
+  app_schedule:
+    start: every(1).day.at("21:30")
+# time singnal
+- name: time_signal
+  app_name: jsk_fetch_startup/time_signal
+  app_schedule:
+    start: every(1).hour.at(":00")
+# upload notification
+- name: upload_notification
+  app_name: jsk_fetch_startup/upload_notification
+  app_schedule:
+    start: every(1).day.at("03:50")
+# check use_sim_time
+- name: check_use_sim_time
+  app_name: jsk_robot_startup/check_use_sim_time
+  app_schedule:
+    start: every().hour.at(":00")
+# volume for monday meeting
+- name: volume_zero_monday
+  app_name: jsk_robot_startup/volume_zero
+  app_schedule:
+    start: every().monday.at("12:00")
+- name: volume_reset_monday
+  app_name: jsk_robot_startup/volume_reset
+  app_schedule:
+    start: every().monday.at("16:00")
+# volume for tuesday meeting
+- name: volume_zero_tuesday
+  app_name: jsk_robot_startup/volume_zero
+  app_schedule:
+    start: every().tuesday.at("12:00")
+- name: volume_reset_tuesday
+  app_name: jsk_robot_startup/volume_reset
+  app_schedule:
+    start: every().tuesday.at("16:00")

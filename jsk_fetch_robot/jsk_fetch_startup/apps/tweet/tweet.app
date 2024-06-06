@@ -1,6 +1,6 @@
 display: Fetch tweet
 platform: fetch
-launch: jsk_fetch_startup/tweet.xml
+run: jsk_fetch_startup/tweet.l
 interface: jsk_fetch_startup/tweet.interface
 icon: jsk_fetch_startup/tweet.png
 plugins:
@@ -8,6 +8,7 @@ plugins:
     type: app_notifier/user_speech_notifier_plugin
     plugin_args:
       client_name: /sound_play
+      warning: true
 plugin_order:
   start_plugin_order:
     - user_speech_notifier_plugin

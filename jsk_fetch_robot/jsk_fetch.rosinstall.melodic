@@ -5,10 +5,12 @@
 # https://github.com/PR2/app_manager/pull/50
 # In order to run multiple app_managers in one master, we need this PR
 # https://github.com/PR2/app_manager/pull/54
+# This PR add run_name entry to specif node name when we use run entry
+# https://github.com/PR2/app_manager/pull/64
 - git:
     local-name: PR2/app_manager
-    uri: https://github.com/knorth55/app_manager.git
-    version: fetch15
+    uri: https://github.com/tkmtnt7000/app_manager.git
+    version: add-run-name-entry-fetch15
 # we need this for proximity sensors
 - git:
     local-name: RoboticMaterials/FA-I-sensor
@@ -70,7 +72,7 @@
     local-name: jsk-ros-pkg/jsk_recognition
     uri: https://github.com/jsk-ros-pkg/jsk_recognition.git
     version: master
-# we need to use the development branch (fetch15 branch in knorth55's fork)
+# we need to use the development branch (develop/fetch branch in jsk-ros-pkg)
 # until it is merged to master
 - git:
     local-name: jsk-ros-pkg/jsk_robot
@@ -185,3 +187,15 @@
     local-name: BehaviorTree/BehaviorTree.ROS
     uri: https://github.com/BehaviorTree/BehaviorTree.ROS
     version: master
+# we need this for smart device ros system
+- git:
+    local-name: sktometometo/smart_device_protocol
+    uri: https://github.com/sktometometo/smart_device_protocol.git
+    version: v0.5.1
+# melodic version of robot_localization causes TF_REPEATED_DATA Errors to noetic client
+# So we have to adopt https://github.com/cra-ros-pkg/robot_localization/pull/595 (Using noetic-devel causes some localization trouble)
+# After https://github.com/cra-ros-pkg/robot_localization/pull/840 has been merged, we can use upstream melodic-devel branch
+- git:
+    local-name: cra-ros-pkg/robot_localization
+    uri: https://github.com/mqcmd196/robot_localization.git
+    version: 2.6.9-suppress
