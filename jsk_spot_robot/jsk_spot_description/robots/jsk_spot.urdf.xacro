@@ -1,0 +1,52 @@
+<?xml version="1.0" ?>
+<robot name="spot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- spot -->
+    <xacro:include filename="$(find spot_description)/urdf/spot.urdf.xacro" />
+
+    <!-- jsk_head_mount_frame -->
+    <link name="jsk_head_mount_frame">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.0000000001" />
+        <inertia ixx="0.0000000001" ixy="0.0000000001" ixz="0.0000000001"
+            iyy="0.0000000001" iyz="0.0000000001" izz="0.0000000001" />
+      </inertial>
+    </link>
+    <joint name="body_to_jsk_head_mount_joint" type="fixed" >
+        <origin rpy="0 0 0" xyz="0.29 0 0.09" />
+        <parent link="body" />
+        <child link="jsk_head_mount_frame" />
+    </joint>
+
+    <!-- jsk_payload_frame -->
+    <link name="jsk_payload_frame">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.0000000001" />
+        <inertia ixx="0.0000000001" ixy="0.0000000001" ixz="0.0000000001"
+            iyy="0.0000000001" iyz="0.0000000001" izz="0.0000000001" />
+      </inertial>
+    </link>
+    <joint name="front_rail_to_jsk_payload_frame" type="fixed" >
+        <origin rpy="0 0 0" xyz="-0.3 0 0" />
+        <parent link="front_rail" />
+        <child link="jsk_payload_frame" />
+    </joint>
+
+    <!-- insta 360 air -->
+    <link name="insta360_link">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <mass value="0.0000000001" />
+        <inertia ixx="0.0000000001" ixy="0.0000000001" ixz="0.0000000001"
+            iyy="0.0000000001" iyz="0.0000000001" izz="0.0000000001" />
+      </inertial>
+    </link>
+    <joint name="jsk_payload_frame_to_insta_360_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0.1 0 0.5" />
+        <parent link="jsk_payload_frame" />
+        <child link="insta360_link" />
+    </joint>
+
+</robot>

@@ -1,0 +1,12 @@
+# spot-ros is required for spot_msgs
+# This is a develop branch for jsk version.
+# We need to use it until it is merged to master
+- git:
+    local-name: spot-ros
+    uri: https://github.com/sktometometo/spot_ros.git
+    version: develop/spot
+# aerial_robot packages are requied for msgs for spot spinal
+- git:
+    local-name: aerial_robot
+    uri: https://github.com/sktometometo/aerial_robot.git
+    version: develop/spot

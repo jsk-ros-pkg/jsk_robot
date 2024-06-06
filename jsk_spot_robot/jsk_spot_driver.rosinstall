@@ -1,0 +1,12 @@
+# spot-ros is required for spot
+# This is a develop branch for jsk version.
+# We need to use it until it is merged to master
+- git:
+    local-name: spot-ros
+    uri: https://github.com/sktometometo/spot_ros.git
+    version: develop/spot
+# geometry2 have to be built for python3
+- git:
+    local-name: geometry2
+    uri: https://github.com/ros/geometry2.git
+    version: 0.6.5
