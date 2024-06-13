@@ -1,3 +1,5 @@
 apps:
   - app: jsk_pepper_startup/meeting
     display: join meeting
+  - app: jsk_pepper_startup/walk_together
+    display: walk together hand in hand
