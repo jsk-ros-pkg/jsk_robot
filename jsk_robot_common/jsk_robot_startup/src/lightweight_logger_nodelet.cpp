@@ -49,8 +49,21 @@ namespace jsk_robot_startup
       jsk_topic_tools::StealthRelay::onInit();
 
       // settings for database
-      nh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
-      nh_->param<std::string>("/robot/name", col_name_, std::string());
+      if (ros::param::has(pnh_->resolveName("database")))
+      {
+        pnh_->param<std::string>("database", db_name_, "jsk_robot_lifelog");
+      }
+      else
+      {
+        pnh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
+      }
+
+      pnh_->param<std::string>("collection", col_name_, std::string());
+      if (col_name_.empty() || col_name_=="USE_DEFAULT_VALUE")
+      {
+        pnh_->param<std::string>("/robot/name", col_name_, std::string());
+      }
+
       if (col_name_.empty())
       {
         NODELET_FATAL_STREAM("Please specify param 'robot/name' (e.g. pr1012, olive)");
@@ -123,7 +136,7 @@ namespace jsk_robot_startup
 
       // The message store object is initialized here, since the object waits for connection
       // until the connection to the server is established.
-      msg_store_.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name_, db_name_));
+      msg_store_.reset(new mongodb_store::MessageStoreProxy(*pnh_, col_name_, db_name_));
       initialized_ = true;
 
       // After message store object is initialized, this thread is re-used for
