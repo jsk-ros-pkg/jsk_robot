@@ -148,6 +148,7 @@ class SmachToMail():
 
         # If we received START/INIT status, restart storing smach_state_list
         if status_str in ["START", "INIT"]:
+            self.smach_start_time[caller_id] = rospy.Time.now()
             self.smach_state_list[caller_id] = []
             # DESCRIPTION of START is MAIL SUBJECT
             if 'DESCRIPTION' in local_data_str:
