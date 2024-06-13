@@ -20,6 +20,7 @@ class MongoRecord(LoggerBase):
             self.queue_size = rospy.get_param("~queue_size", 1)
             self.update_rate = rospy.get_param("~update_rate", 1.0)
             subst_param = rospy.get_param("~subst_param", False)
+            database = rospy.get_param("~database", 'jsk_robot_lifelog')
             collection = rospy.get_param("~collection", None)
         else:
             args = self.parse_args(argv)
@@ -28,6 +29,7 @@ class MongoRecord(LoggerBase):
             self.queue_size = args.queue_size
             self.update_rate = args.update_rate
             subst_param = args.subst_param
+            database = args.database
             collection = args.collection
         self.subscribers = {}
 
@@ -42,7 +44,7 @@ class MongoRecord(LoggerBase):
                 topics.append(str().join(splitted))
             self.topics = topics
 
-        LoggerBase.__init__(self, col_name=collection)
+        LoggerBase.__init__(self, db_name=database, col_name=collection)
 
     def parse_args(self, argv):
         p = argparse.ArgumentParser()
@@ -57,6 +59,8 @@ class MongoRecord(LoggerBase):
                        help="Enable substring param (e,g, '$(param robot/name)/list')")
         p.add_argument("-r", "--update-rate", type=float, default=1.0,
                        help="Update rate for checking topics")
+        p.add_argument("-d", "--database", type=str, default=None,
+                       help="Database name to record data")
         p.add_argument("-c", "--collection", type=str, default=None,
                        help="Collection name to record data")
         return p.parse_args(argv)
