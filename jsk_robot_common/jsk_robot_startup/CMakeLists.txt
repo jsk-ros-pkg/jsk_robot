@@ -169,4 +169,5 @@ if(CATKIN_ENABLE_TESTING)
   # see https://github.com/PR2/pr2_simulator/pull/126
   # add_rostest(lifelog/test/logger_pr2.test)
   add_rostest(lifelog/test/test_common_logger.test)
+  add_rostest(test/test_smach_utils.test)
 endif()

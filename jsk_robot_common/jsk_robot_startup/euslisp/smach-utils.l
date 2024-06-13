@@ -1,0 +1,21 @@
+(defmacro def-state-func (name args &rest body)
+  (let ((userdata
+          (cond ((eq (car args) '&optional)
+                 (cond
+                   ((listp (cadr args))
+                    (if (listp (caadr args))
+                      (cadr (caadr args))
+                      (caadr args)))
+                   (t (cadr args))))
+                ((eq (car args) '&rest) `(car ,(cadr args)))
+                ((or (null args)
+                     (eq (car args) '&key)
+                     (eq (car args) '&aux))
+                 (error "def-state-func must have one positional argument for userdata"))
+                (t (car args)))))
+    `(defun ,name ,args
+       (if (assoc 'description ,userdata)
+         (setf (cdr (assoc 'description ,userdata)) ""))
+       (if (assoc 'image ,userdata)
+         (setf (cdr (assoc 'image ,userdata)) ""))
+       ,@body)))
