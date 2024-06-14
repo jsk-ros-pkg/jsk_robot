@@ -23,7 +23,7 @@
   <arg name="logger_save_app" default="false" />
   <arg name="logger_save_video_to_scene" default="false" />
   <arg name="logger_map_frame" default="odom" />
-  <arg name="logger_save_throttled_image" default="ture" />
+  <arg name="logger_save_throttled_image" default="true" />
 
   <arg name="start_mongodb_record_nodelet_manager" default="true" />
   <arg name="start_mongodb" default="true" />
