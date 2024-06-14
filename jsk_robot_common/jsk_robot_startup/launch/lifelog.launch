@@ -25,18 +25,24 @@
   <arg name="logger_map_frame" default="odom" />
   <arg name="logger_save_throttled_image" default="ture" />
 
+  <arg name="start_mongodb_record_nodelet_manager" default="true" />
+  <arg name="start_mongodb" default="true" />
+  <arg name="start_camera_throttle_nodelet" default="true" />
+
   <arg name="image" default="usb_cam/image_raw" />
 
   <param name="robot/database" value="jsk_robot_lifelog"/>
 
   <!-- logging database -->
-  <param name="mongodb_replicate_on_write" value="true" /> <!-- need to set True to query from extra serveres, otherwise it only query from local server -->
-  <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
-    <arg name="use_daemon" value="true"/>
-    <arg name="port" value="27017" />
-    <arg name="repl_set_mode" value="false" />
-    <arg name="replicate" default="true" />
-  </include>
+  <group if="$(arg start_mongodb)" >
+    <param name="mongodb_replicate_on_write" value="true" /> <!-- need to set True to query from extra serveres, otherwise it only query from local server -->
+    <include file="$(find jsk_robot_startup)/lifelog/mongodb.launch">
+      <arg name="use_daemon" value="true"/>
+      <arg name="port" value="27017" />
+      <arg name="repl_set_mode" value="false" />
+      <arg name="replicate" default="true" />
+    </include>
+  </group>
 
   <group if="$(arg use_mail)" >
     <node pkg="jsk_robot_startup" type="email_topic.py" name="email_topic" output="screen" />
@@ -65,7 +71,7 @@
 
     <arg name="enable_monitor" value="false" />
     <arg name="log_rate" value="1.0" />
-    <arg name="launch_manager" value="true" />
+    <arg name="launch_manager" value="$(arg start_mongodb_record_nodelet_manager)" />
     <arg name="manager" value="mongodb_record_nodelet_manager" />
     <arg name="map_frame_id" value="$(arg logger_map_frame)" />
     <arg name="approximate_sync" value="true"/>
@@ -112,7 +118,8 @@
   <!-- republish compressed/throttled image data only when /publish_trigger_mongodb_event is published -->
   <node name="camera_throttle_nodelet"
         pkg="nodelet" type="nodelet"
-        args="load jsk_topic_tools/SynchronizedThrottle mongodb_record_nodelet_manager" >
+        args="load jsk_topic_tools/SynchronizedThrottle mongodb_record_nodelet_manager"
+	if="$(arg start_camera_throttle_nodelet)" >
     <rosparam subst_value="true">
       approximate_sync: true
       topics:
