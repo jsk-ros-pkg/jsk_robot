@@ -1,6 +1,7 @@
 <launch>
   <node pkg="jsk_robot_startup" type="start_launch_sound.py"
         name="start_launch_sound" />
+  <arg name="hostname" default="pr1040" />
   <arg name="map_frame" default="eng2" />
   <arg name="launch_map" default="true" />
   <arg name="launch_kinect" default="true" />
@@ -195,6 +196,19 @@
   <!-- check if room light is on -->
   <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
     <remap from="~input" to="/kinect_head/rgb/image_raw" />
+  </node>
+
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
+  <!-- send email, twitter with smach -->
+  <node name="smach_to_mail_server" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <rosparam command="load"
+              file="$(find jsk_pr2_startup)/config/$(arg hostname)_email_topic.yaml" />
   </node>
 
 </launch>

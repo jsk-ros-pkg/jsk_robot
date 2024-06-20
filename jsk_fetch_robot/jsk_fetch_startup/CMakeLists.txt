@@ -51,9 +51,21 @@ macro(configure_icon_files icol iname)
   endif()
 endmacro(configure_icon_files)
 
+# Create email config for fetch
+macro(configure_email_topic_yaml rname fetch_name)
+  # If HOSTNAME is "fetchxxx", create email config
+  set(FETCH_NAME ${fetch_name})
+  set(RECEIVER_MAIL ${rname})
+  set(EMAIL_SENDER_ADDRESS ${FETCH_NAME}@jsk.imi.i.u-tokyo.ac.jp)
+  set(EMAIL_RECEIVER_ADDRESS ${RECEIVER_MAIL}@jsk.imi.i.u-tokyo.ac.jp)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../jsk_robot_common/jsk_robot_startup/config/email_topic.yaml.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/${FETCH_NAME}_email_topic.yaml)
+endmacro(configure_email_topic_yaml)
+
 configure_icon_files(blue fetch15)
 configure_icon_files(red fetch1075)
-
+configure_email_topic_yaml(fetch fetch15)
+configure_email_topic_yaml(fetch fetch1075)
 
 #############
 ## Testing ##

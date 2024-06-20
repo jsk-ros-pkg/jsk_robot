@@ -18,6 +18,17 @@ install(DIRECTORY config launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
+macro(configure_email_topic_yaml rname unitree_name)
+  set(UNITREE_NAME ${unitree_name})
+  set(RECEIVER_MAIL ${rname})
+  set(EMAIL_SENDER_ADDRESS ${UNITREE_NAME}@jsk.imi.i.u-tokyo.ac.jp)
+  set(EMAIL_RECEIVER_ADDRESS ${RECEIVER_MAIL}@jsk.imi.i.u-tokyo.ac.jp)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../../jsk_robot_common/jsk_robot_startup/config/email_topic.yaml.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/config/${UNITREE_NAME}_email_topic.yaml)
+endmacro(configure_email_topic_yaml)
+
+configure_email_topic_yaml(unitree unitreepro)
+
 #############
 ## Testing ##
 #############
