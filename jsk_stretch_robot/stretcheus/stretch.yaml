@@ -1,0 +1,22 @@
+larm:
+  - joint_lift: torso-lift-z
+  - joint_arm_l3: larm-l3-x
+  - joint_arm_l2: larm-l2-x
+  - joint_arm_l1: larm-l1-x
+  - joint_arm_l0: larm-l0-x
+  - joint_wrist_yaw: larm-wrist-y
+  - joint_wrist_pitch: larm-wrist-p
+  - joint_wrist_roll: larm-wrist-r
+head:
+  - joint_head_pan: head-y
+  - joint_head_tilt: head-p
+
+angle-vector:
+  reset-pose: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+larm-end-coords:
+  parent: link_straight_gripper
+  translate: [0, 0, 0.22]
+  rotate: [1, 0, 0, 180]
+head-end-coords:
+  parent: link_head_tilt
