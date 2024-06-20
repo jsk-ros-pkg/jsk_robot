@@ -10,6 +10,7 @@
 (ros::load-ros-manifest "jsk_robot_startup")
 (ros::load-ros-manifest "jsk_recognition_msgs")
 (ros::load-ros-manifest "power_msgs")
+(ros::load-ros-manifest "sensor_msgs")
 
 (defparameter *dock-action* nil)
 (defparameter *undock-action* nil)
@@ -403,6 +404,24 @@ Args:
                   location
                   (format nil "CO2 concentration is ~A ppm" (send msg :data))))))
 
+(defun notify-trashcan-occupancy (&key (location "kitchen"))
+ (let* ((msg (one-shot-subscribe "/trashbin_occupancy_detector/container/occupancies"
+                                  jsk_recognition_msgs::BoundingBoxArray
+                                  :timeout 3000))
+         (occupancy (if msg (send (elt (send msg :boxes) 0) :value)))
+         (notify-text (if occupancy (if (> occupancy 1.0)
+                                      "Trashcan is full."
+                                      "Trashcan is not full."))))
+    (when occupancy
+      (ros::ros-info
+       (format nil "Notify app that the occupancy of trash can is measured. ~A." occupancy))
+      (notify-app "trashcan occupancy"
+                  (ros::time-now)
+                  location
+                  (format nil "~A Trashcan occupancy is ~A"
+                              notify-text
+                              occupancy)))))
+
 (defun inspect-kitchen (&key (tweet t))
   (report-move-to-sink-front-success)
   (if tweet
@@ -573,6 +592,7 @@ Args:
           (ros::publish "/photo_taken" img))
         (take-photo "trashcan_inside.jpg")
         (notify-recognition :location "trash cans inside")
+        (notify-trashcan-occupancy :location "trash can")
         (send *ri* :go-pos-unsafe -0.2 0 0))
     (progn
       (notify-recognition :location "trash cans"))))
@@ -681,13 +701,15 @@ Args:
             (:move-to-sink-front -> :inspect-kitchen)
             (:move-to-sink-front !-> :report-move-to-sink-front-failure)
             ;;(:inspect-kitchen -> :auto-dock)
-            ;;(:report-move-to-sink-front-failure -> :auto-dock)
+            (:report-move-to-sink-front-failure -> :auto-dock)
             (:inspect-kitchen -> :move-to-trashcan-front)
             (:move-to-trashcan-front -> :inspect-trashcan)
             (:move-to-trashcan-front !-> :report-move-to-trashcan-front-failure)
             (:inspect-trashcan -> :auto-dock)
             (:report-move-to-trashcan-front-failure -> :auto-dock)
             (:auto-dock -> :room-light-off)
+            (:auto-dock !-> :auto-dock-failure)
+            (:auto-dock-failure -> :room-light-off)
             (:room-light-off -> :finish)
             (:finish -> t)
             (:finish !-> nil))

@@ -10,7 +10,19 @@ endif()
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  tf
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
+  tf2_eigen
+  tf2_msgs
+)
+find_package(Boost REQUIRED COMPONENTS)
 
 ###################################
 ## catkin specific configuration ##
@@ -19,6 +31,18 @@ catkin_package()
 
 catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/env-hooks)
+
+###########
+## Build ##
+###########
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+)
+add_executable(trashbins_pose_estimator src/trashbins_pose_estimator.cpp)
+target_link_libraries(trashbins_pose_estimator
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -53,7 +77,6 @@ endmacro(configure_icon_files)
 
 configure_icon_files(blue fetch15)
 configure_icon_files(red fetch1075)
-
 
 #############
 ## Testing ##
