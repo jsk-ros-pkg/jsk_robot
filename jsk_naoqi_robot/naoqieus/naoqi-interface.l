@@ -35,6 +35,24 @@
 	 (instance ros::simple-action-client :init
 		   (format nil "~A/~A/pose/body_pose_naoqi" group-namespace naoqi-namespace)
 		   naoqi_bridge_msgs::BodyPoseWithSpeedAction))
+   (ros::subscribe (format nil "~A/~A/sonar/back" group-namespace naoqi-namespace) sensor_msgs::Range
+                   #'send self :sonar-callback :back :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/sonar/front" group-namespace naoqi-namespace) sensor_msgs::Range
+                   #'send self :sonar-callback :front :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/chest_touch" group-namespace naoqi-namespace) naoqi_bridge_msgs::ChestButtonPressed
+                   #'send self :chest-touch-callback :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/hand_touch" group-namespace naoqi-namespace) naoqi_bridge_msgs::HandTouch
+                   #'send self :hand-touch-callback :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/head_touch" group-namespace naoqi-namespace) naoqi_bridge_msgs::HeadTouch
+                   #'send self :head-touch-callback :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/base" group-namespace naoqi-namespace) sensor_msgs::Imu
+                   #'send self :imu-callback :base :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/torso" group-namespace naoqi-namespace) sensor_msgs::Imu
+                   #'send self :imu-callback :torso :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/info" group-namespace naoqi-namespace) naoqi_bridge_msgs::StringStamped
+                   #'send self :info-callback :groupname groupname)
+   (ros::subscribe (format nil "~A/~A/bumper" group-namespace naoqi-namespace) naoqi_bridge_msgs::Bumper
+                   #'send self :bumper-callback :groupname groupname)
    self)
   ;;
   (:dcm-head-controller
@@ -121,6 +139,28 @@
      (cons :action-type naoqi_bridge_msgs::JointTrajectoryAction)
      (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name))))
     ))
+  ;;
+  (:sonar-callback
+   (key msg)
+   (send self :set-robot-state1 (intern (format nil "SONAR-~A" (string key)) *keyword-package*) msg))
+  (:chest-touch-callback
+   (msg)
+   (send self :set-robot-state1 :chest-touch msg))
+  (:hand-touch-callback
+   (msg)
+   (send self :set-robot-state1 :hand-touch msg))
+  (:head-touch-callback
+   (msg)
+   (send self :set-robot-state1 :head-touch msg))
+  (:imu-callback
+   (key msg)
+   (send self :set-robot-state1 (intern (format nil "IMU-~A" (string key)) *keyword-package*) msg))
+  (:info-callback
+   (msg)
+   (send self :set-robot-state1 :info msg))
+  (:bumper-callback
+   (msg)
+   (send self :set-robot-state1 :bumper msg))
   ;;
   (:error-vector () (map float-vector #'rad2deg (send self :state :effort)))
   ;;
