@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       name="AeroTypeFCESy" >
+
+  <!-- The following included files set up definitions of parts of the robot body -->
+  <!-- common variables -->
+  <xacro:include filename="$(find aero_description)/urdf/common.xacro" />
+  <!-- wraps upperbody and hand-->
+  <xacro:include filename="$(find aero_description)/urdf/aero-upper.urdf.xacro" />
+  <!-- wraps lifter and wheels-->
+  <xacro:include filename="$(find aero_description)/urdf/aero-wheels.urdf.xacro" />
+
+ <!-- Now we can start using the macros included above to define the actual robot -->
+ <xacro:aero-upper/>
+ <xacro:aero-wheels base_link="base_link"/>
+
+ <!-- gazebo settings -->
+ <!-- camera -->
+ <link name="camera_frame" />
+ <link name="camera_optical_frame" />
+ <joint name="camera_setting" type="fixed" >
+   <parent link="head_link" />
+   <child  link="camera_frame" />
+   <origin xyz="0 0.035 0.09" rpy="0 0.15 0" />
+ </joint>
+ <joint name="camera_optical" type="fixed" >
+   <parent link="camera_frame" />
+   <child  link="camera_optical_frame" />
+   <origin xyz="0 0 0" rpy="-1.570796326795 0 -1.570796326795" />
+ </joint>
+ <xacro:gazebo_camera link_name="camera_frame"
+                      frame_name="camera_optical_frame" />
+
+ <!-- laser -->
+ <xacro:gazebo_laser_sensor link_name="wheels_base_laser_link"
+                            frame_name="wheels_base_laser_link" />
+
+ <!-- joint control -->
+ <xacro:gazebo_trajectory_controller />
+
+ <!-- mobile base -->
+ <xacro:gazebo_base_controller base_frame="base_link" />
+
+ <!-- mimic joints -->
+ <gazebo>
+   <plugin name="mimic_updater" filename="libmimic_plugin.so">
+     <!-- lifter -->
+     <mimic joint="knee_joint"  offset="0.0" multiplier="-1.0"
+            P="300" I="0" D="0" i_max="5" i_min="-5"
+            command_max="100" command_min="-100" velocity="true">
+       knee_joint_mimic
+       <joint> knee_joint </joint>
+       <offset> 0.0 </offset>
+       <multiplier> -1.0 </multiplier>
+       <P> 300 </P>
+       <I> 0 </I>
+       <D> 0 </D>
+       <i_max>  5 </i_max>
+       <i_min> -5 </i_min>
+       <command_max>  100 </command_max>
+       <command_min> -100 </command_min>
+       <velocity> true </velocity>
+     </mimic>
+     <mimic joint="ankle_joint"  offset="0.0" multiplier="-1.0"
+            P="300" I="0" D="0" i_max="5" i_min="-5"
+            command_max="100" command_min="-100" velocity="true">
+       ankle_joint_mimic
+       <joint> ankle_joint </joint>
+       <offset> 0.0 </offset>
+       <multiplier> -1.0 </multiplier>
+       <P> 300 </P>
+       <I> 0 </I>
+       <D> 0 </D>
+       <i_max>  5 </i_max>
+       <i_min> -5 </i_min>
+       <command_max>  100 </command_max>
+       <command_min> -100 </command_min>
+       <velocity> true </velocity>
+     </mimic>
+     <!-- lifter(dummy) -->
+     <mimic joint="knee_joint"  offset="0.0" multiplier="-1.0"
+            P="1000" I="0.0" D="1" i_max="0" i_min="0"
+            command_max="200" command_min="-200">
+       knee_joint_dummy
+       <joint> knee_joint </joint>
+       <offset> 0.0 </offset>
+       <multiplier> -1.0 </multiplier>
+       <P> 1000 </P>
+       <I> 0.0 </I>
+       <D> 1 </D>
+       <i_max>  0 </i_max>
+       <i_min> -0 </i_min>
+       <command_max>  200 </command_max>
+       <command_min> -200 </command_min>
+     </mimic>
+     <mimic joint="ankle_joint"  offset="0.0" multiplier="1.0"
+            P="1000" I="0.0" D="1" i_max="0" i_min="0"
+            command_max="200" command_min="-200">
+       ankle_joint_dummy
+       <joint> ankle_joint </joint>
+       <offset> 0.0 </offset>
+       <multiplier> 1.0 </multiplier>
+       <P> 1000 </P>
+       <I> 0.0 </I>
+       <D> 1 </D>
+       <i_max>  0 </i_max>
+       <i_min> -0 </i_min>
+       <command_max>  200 </command_max>
+       <command_min> -200 </command_min>
+     </mimic>
+     <!-- lhand -->
+     <mimic joint="l_indexbase_joint"  offset="-0.2" multiplier="-0.3"
+            P="30" I="0.0" D="0.03" i_max="0" i_min="0"
+            command_max="50" command_min="-50">
+       l_indexend_joint
+       <joint> l_indexbase_joint </joint>
+       <offset> -0.2 </offset>
+       <multiplier> -0.3 </multiplier>
+       <P> 30 </P>
+       <I> 0.0 </I>
+       <D> 0.03 </D>
+       <i_max>  0 </i_max>
+       <i_min> -0 </i_min>
+       <command_max>  50 </command_max>
+       <command_min> -50 </command_min>
+     </mimic>
+     <!-- rhand -->
+     <mimic joint="r_indexbase_joint"  offset="0.2" multiplier="-0.3"
+            P="30" I="0.0" D="0.03" i_max="0" i_min="0"
+            command_max="50" command_min="-50">
+       r_indexend_joint
+       <joint> r_indexbase_joint </joint>
+       <offset> 0.2 </offset>
+       <multiplier> -0.3 </multiplier>
+       <P> 30 </P>
+       <I> 0.0 </I>
+       <D> 0.03 </D>
+       <i_max>  0 </i_max>
+       <i_min> -0 </i_min>
+       <command_max>  50 </command_max>
+       <command_min> -50 </command_min>
+     </mimic>
+   </plugin>
+ </gazebo>
+
+</robot>

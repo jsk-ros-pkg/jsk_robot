@@ -1,0 +1,2 @@
+#KERNEL=="ttyUSB[0-9]*",  GROUP="dialout", MODE="0666"
+SUBSYSTEMS=="usb",ATTRS{idProduct}=="6001",ATTRS{idVendor}=="0403",ATTRS{serial}=="A6030NL7",MODE="666",SYMLINK="touchsensor"

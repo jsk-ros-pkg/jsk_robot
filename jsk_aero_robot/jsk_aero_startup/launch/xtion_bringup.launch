@@ -1,0 +1,30 @@
+<launch>
+
+  <arg name="rgb_camera_info_url"   default="" />
+  <arg name="depth_camera_info_url" default="" />
+  <arg name="publish_tf" default="true" />
+  <arg name="camera" default="openni_camera" />
+
+  <!-- set lowest png compression level -->
+  <param name="$(arg camera)/depth/image_raw/compressed/format" value="png" />
+  <param name="$(arg camera)/depth/image_raw/compressed/png_level" value="1" />
+  <param name="$(arg camera)/depth/image_raw/compressedDepth/png_level" value="1" />
+  <param name="$(arg camera)/depth_registered/image_raw/compressed/format" value="png" />
+  <param name="$(arg camera)/depth_registered/image_raw/compressed/png_level" value="1" />
+  <param name="$(arg camera)/depth_registered/image_raw/compressedDepth/png_level" value="1" />
+
+  <include file="$(find openni2_launch)/launch/openni2.launch">
+    <arg name="camera" value="$(arg camera)"/>
+    <arg name="depth_registration" value="true" />
+    <arg name="publish_tf" value="$(arg publish_tf)" />
+  </include>
+
+  <arg name="base_frame" default="/head_link" />
+  <arg name="camera_frame" default="/$(arg camera)_link" />
+
+  <node name="xtion_link_publisher"
+        pkg="tf" type="static_transform_publisher"
+        args="0.083 0.05 0.1
+              0.011 0.062 0.014 0.998
+              $(arg base_frame) $(arg camera_frame) 1000" />
+</launch>

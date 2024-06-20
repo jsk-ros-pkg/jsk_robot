@@ -1,0 +1,7 @@
+string finger
+string arm
+float32 thumb_angle
+float32 index_angle
+float32 time
+---
+bool status

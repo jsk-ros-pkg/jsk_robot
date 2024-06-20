@@ -1,0 +1,154 @@
+- spot:
+    name: conveni_shelf_1
+    position:
+      x: 0.35
+      y: 0.475
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- spot:
+    name: conveni_shelf_2
+    position:
+      x: 0.3
+      y: -0.625
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- spot:
+    name: conveni_shelf_3
+    position:
+      x: 0.06
+      y: 0.478
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- spot:
+    name: apc_shelf
+    position:
+      x: 0.0
+      y: -0.9
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.707
+      w: 0.707
+- spot:
+    name: worktable
+    position:
+      x: 0.11 # 0.102
+      y: 0.56 # 0.258
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 1.0
+      w: 0.0
+- spot:
+    name: table_1
+    position:
+      x: -0.35
+      y: 0.475
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 1.0
+      w: 0.0
+- spot:
+    name: table_west
+    position:
+      x: 0.0
+      y: 0.475
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 1.0
+      w: 0.0
+- spot:
+    name: table_south
+    position:
+      x: -0.75
+      y: 1.85
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.707
+      w: 0.707
+- spot:
+    name: table_north
+    position:
+      x: -0.7
+      y: -0.75
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.707
+      w: 0.707
+- spot:
+    name: entrance
+    position:
+      x: -1.25
+      y: 3.225
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.707
+      w: 0.707
+- spot:
+    name: home
+    position:
+      x: -0.73382
+      y: -1.0077
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- spot:
+    name: homeway
+    position:
+      x: 0.02
+      y: -0.96
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- spot:
+    name: garbage
+    position:
+      x: -0.11374
+      y: -0.4636
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+- spot:
+    name: garbage_home
+    position:
+      x: -0.19311
+      y: -0.98518
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 1.0
+      w: 0.0
