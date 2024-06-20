@@ -197,6 +197,9 @@
       <arg name="twitter" value="$(arg launch_twitter)"/>
       <arg name="twitter_image_topics" value="$(arg twitter_image_topics)"/>
     </include>
+    <include file="$(find influxdb_store)/sample/baxter_influxdb_logger.launch">
+      <arg name="robot_name" value="baxter"/>
+    </include>
   </group>
 
   <!-- Wrench -->
