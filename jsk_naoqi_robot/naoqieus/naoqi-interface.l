@@ -27,6 +27,16 @@
    (ros::advertise (format nil "~A/animated_speech" group-namespace) std_msgs::String 1)
    (ros::advertise (format nil "~A/RightHand_controller/command" dcm-namespace) trajectory_msgs::JointTrajectory 1)
    (ros::advertise (format nil "~A/LeftHand_controller/command" dcm-namespace)  trajectory_msgs::JointTrajectory 1)
+   (when (eq type :naoqi-controller-disabled)
+     ;; replace :angle-vector with :send-joint-anlges-with-speed
+     (ros::ros-warn "use /joint_angles (naoqi_bridge_msgs::JointAnglesWithSpeed)")
+     ;;(rplaca (assoc :angle-vector (send self :methods)) :angle-vector-org)
+     (setq ctype nil) ;; disable ctype so that :wait-interface returns immediately
+     (defmethod naoqi-interface
+       (:angle-vector (&rest args) (send* self :send-joint-angles-with-speed args))
+       (:wait-interpolation (&rest args) (send* self :send-joint-angles-with-speed-wait args)))
+     (ros::advertise "/joint_angles" naoqi_bridge_msgs::JointAnglesWithSpeed 1)
+     (return-from :init self))
    (setq joint-stiffness-trajectory-action
 	 (instance ros::simple-action-client :init
 		   (format nil "~A/~A/pose/joint_stiffness_trajectory" group-namespace naoqi-namespace)
@@ -123,6 +133,58 @@
     ))
   ;;
   (:error-vector () (map float-vector #'rad2deg (send self :state :effort)))
+  ;;
+  (:naoqi-controller-disabled ())
+  (:naoqi-controller-only-joint-names
+   ()
+   (list
+    (list
+     (cons :joint-names (mapcar #'(lambda (n) (if (symbolp n) (symbol-name n) n)) (send-all (send robot :joint-list) :name)))
+     ))
+   )
+  ;;
+  (:send-joint-angles-with-speed-wait
+   ()
+   (let (v0 v1 (count 0))
+     (while (not (or (and v0 v1 (< (norm (v- v0 v1)) 0.5))
+                     (> count 30)))
+       (setq v0 v1)
+       (setq v1 (send self :state :potentio-vector))
+       (send self :spin-once)
+       (send self :ros-wait 0.2)
+       (incf count)
+       )))
+  (:send-joint-angles-with-speed
+   (av &optional (tm nil) (ctype controller-type) (start-time 0) &key (scale 1) (min-time 0.01))
+   (let* ((fastest-tm (* 1000 (send self :angle-vector-duration
+                                    (send self :state :potentio-vector) av scale min-time :naoqi-controller-only-joint-names)))
+          (msg (instance naoqi_bridge_msgs::JointAnglesWithSpeed :init))
+          (joint-list (send robot :joint-list))
+          (positions (instantiate float-vector (length joint-list)))
+          speed)
+     (send msg :header :stamp (ros::time-now))
+     (send msg :header :seq 1)
+     (send msg :relative 0)
+     (dotimes (i (length joint-list))
+       (let* ((joint (elt joint-list i))
+              (id (position joint (send robot :joint-list)))
+              p)
+         (setq p (elt av id))
+         (cond
+           ((derivedp joint rotational-joint)
+            (setq p (deg2rad p)))
+           (t
+            (setq p (* 0.001 p))))
+         (setf (elt positions i) p)))
+     (send msg :joint_names (send-all joint-list :name))
+     (send msg :joint_angles positions)
+     ;; fastest-tm is the distance to target
+     (setq speed (+ 1.0 (* (/ -1.0 200) (min 180 fastest-tm))))
+     (if tm (setq speed (* (/ 1000.0 tm) speed)))
+     (send msg :speed (min 1.0 speed))
+     (ros::ros-warn ":send-joint-angles-with-speed tm:~A, fastest:~A, speed:~A" tm fastest-tm speed)
+     (ros::publish "/joint_angles" msg)
+   ))
   ;;
   (:send-stiffness-controller
    (joint  stiffness)

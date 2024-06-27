@@ -9,7 +9,7 @@
   )
 
 (defmethod pepper-interface
-  (:init (&rest args &key ((:group-namespace gns) ""))
+  (:init (&rest args &key ((:group-namespace gns) "") &allow-other-keys)
    (send-super* :init :robot pepper-robot :group-namespace gns :naoqi-namespace "pepper_robot" :dcm-namespace "pepper_dcm" args)
    (when (ros::get-param "use_sim_time" nil)
      ;; add controllers for gazebo
