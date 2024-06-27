@@ -180,8 +180,8 @@
      (send msg :joint_angles positions)
      ;; fastest-tm is the distance to target
      (setq speed (+ 1.0 (* (/ -1.0 200) (min 180 fastest-tm))))
-     (if tm (setq speed (* (/ tm 1000.0) speed)))
-     (send msg :speed speed)
+     (if tm (setq speed (* (/ 1000.0 tm) speed)))
+     (send msg :speed (min 1.0 speed))
      (ros::ros-warn ":send-joint-angles-with-speed tm:~A, fastest:~A, speed:~A" tm fastest-tm speed)
      (ros::publish "/joint_angles" msg)
    ))
