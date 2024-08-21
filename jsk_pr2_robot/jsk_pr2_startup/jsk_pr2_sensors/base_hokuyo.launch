@@ -1,0 +1,12 @@
+<launch>
+  <include file="$(find pr2_machine)/pr2.machine" />
+  <!-- Base Laser -->
+  <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
+    <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
+    <param name="frame_id" type="string" value="base_laser_link" />
+    <param name="min_ang" type="double" value="-2.2689" />
+    <param name="max_ang" type="double" value="2.2689" />
+    <param name="skip" type="int" value="1" />
+    <param name="intensity" value="false" />
+  </node>
+</launch>
