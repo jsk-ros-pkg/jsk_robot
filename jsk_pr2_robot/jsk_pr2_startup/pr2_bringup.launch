@@ -77,24 +77,14 @@
   </node>
 
   <!-- Base Laser -->
-  <node machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="base_hokuyo_node" args="scan:=base_scan">
-    <param name="port" type="string" value="/etc/ros/sensors/base_hokuyo" />
-    <param name="frame_id" type="string" value="base_laser_link" />
-    <param name="min_ang" type="double" value="-2.2689" />
-    <param name="max_ang" type="double" value="2.2689" />
-    <param name="skip" type="int" value="1" />
-    <param name="intensity" value="false" />
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/base_hokuyo.launch" />
+  <node machine="c2" name="base_hokuyo_scan_checker"
+        pkg="jsk_pr2_startup" type="check_hokuyo_scan_node.py" output="log">
+    <param name="hokuyo_name" value="base" />
   </node>
 
   <!-- Tilt Laser -->
-  <node  machine="c2" pkg="hokuyo_node" type="hokuyo_node" name="tilt_hokuyo_node" args="scan:=tilt_scan">
-    <param name="port" type="string" value="/etc/ros/sensors/tilt_hokuyo" />
-    <param name="frame_id" type="string" value="laser_tilt_link" />
-    <param name="min_ang" type="double" value="-0.829" />
-    <param name="max_ang" type="double" value="0.829" />
-    <param name="skip" type="int" value="1" />
-    <param name="intensity" value="true" />
-  </node>
+  <include file="$(find jsk_pr2_startup)/jsk_pr2_sensors/tilt_hokuyo.launch" />
 
   <!-- imu -->
   <node machine="c1" pkg="microstrain_3dmgx2_imu" type="imu_node" name="imu_node" output="screen">
