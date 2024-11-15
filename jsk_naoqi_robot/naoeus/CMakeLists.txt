@@ -19,3 +19,13 @@ compile_naoqi_model(nao naoV50_generated_urdf)
 if(nao_meshes_FOUND)
   add_rostest(test/naoeus.test)
 endif()
+
+###
+### install
+###
+install(DIRECTORY patch test launch sample webots euslisp
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)
+file(GLOB LISP_FILES *.l)
+install(FILES ${LISP_FILES} nao.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+

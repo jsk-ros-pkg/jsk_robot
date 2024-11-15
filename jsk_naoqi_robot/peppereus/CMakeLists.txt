@@ -20,4 +20,11 @@ if(pepper_meshes_FOUND AND CATKIN_ENABLE_TESTING)
   add_rostest(test/peppereus.test)
 endif()
 
-
+###
+### install
+###
+install(DIRECTORY doc test
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)
+file(GLOB LISP_FILES *.l)
+install(FILES ${LISP_FILES} pepper.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
