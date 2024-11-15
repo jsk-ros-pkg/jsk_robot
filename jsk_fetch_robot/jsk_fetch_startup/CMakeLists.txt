@@ -23,7 +23,15 @@ catkin_add_env_hooks(99.jsk_fetch_startup SHELLS bash zsh sh
 #############
 ## Install ##
 #############
-install(DIRECTORY config launch scripts data
+file(GLOB_RECURSE SCRIPT_PROGRAMS scripts/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts/)
+  endif()
+endforeach()
+install(DIRECTORY config launch data apps euslisp robots supervisor_scripts tmuxinator_yaml udev_rules upstart_scripts
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
