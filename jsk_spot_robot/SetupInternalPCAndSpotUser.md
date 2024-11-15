@@ -17,14 +17,64 @@ core-io$ passwd ...                       # change password
 core-io$ sudo usermod -a -G docker spot   # add spot to docker group
 ```
 
+# Build Docker containers for Development environment
+
+Software development on core-is uses Docker containers and we provided two containers.
+
+1.  spot_dev_env
+2.  `<your username>_dev_env`.
+
+The `spot_dev_env` runs as `spot` user, which will provide basic functions like `roscore` and `jsk_spot_startup` and should be started at boot time.
+
+Users are expected to run `<your username>_dev_env` and create an overay workspace (https://wiki.ros.org/catkin/Tutorials/workspace_overlaying) on top of the workspace of `spot` user.
+
+## Build `spot_dev_env` (for admin)
+
+1. Login to spot as `spot` user or any ararch64 machine as user with uid `1000`. Using an aarch64 machine is recommended because `core-io` has less CPU power.
+2. Create a ROS workspace in `~/spot_dev_env`. Then change to the `jsk_spot_robot/coreio/base` directory.
+3. Run `make build`. This will build the docker image and compile all packages needed for `jsk_spot_startup`.
+
+
+If you have built `spot_dev_env` on a machine other than `core-io,
+
+1. Run `docker save spot_dev_env:latest -o spot_dev_env.tar` on your aarch64 machine.
+2. Copy it to core-io, e.g. `scp spot_dev_env.tar spot@core-io:/tmp'.
+3. Run `docker load -i /tmp/spot_dev_env.tar' on `core-io` machine.
+4. As this docker image requires `~/spot_dev_env`. Please set up the ROS workspace under `~/spot_dev_env` as the same as your aarch64 machine.
+5. Copy `package.tar` in aarch64 machine to `core-io` under workspace. Log in aarch64 machine and go to `~/spot_dev_env`. Then `scp package.tar spot@core-io:~/spot_dev_env/`.
+6. Run `make build` in the `jsk_spot_robot/coreio/base` directory.
+
+## Build `<your username>_dev_env`
+
+1. Create your ROS workspace on `core-io` as your own userid.
+2. go to `jsk_spot_robot/coreio/base` and run `make build`.
+
+# Run Docker container as your development environment
+
+## Run the startup program (for admin)
+
+1.Login to `core-io` as `spot` user, run `~/bash.sh` to start `spot_dev_env` container2. run `roslaunch jsk_spot_startup jsk_spot_bringup.launch credential_config:=$(rospack find jsk_spot_startup)/auth/spot_credential.yaml use_gps:=false`.
+
+Note:
+- This process should be run as upstart or supervisor.
+- Please do not start multiple `spot_dev_env` containers, it will restart multiple system services including bluetooth, so it will disconnect your joystick.
+
+## Run your custom development environment
+
+1. Login to `core-io` as your local user and run `~/bash.sh` to start your build environment.
+2. For the first time, you don't have an overlay package, so if you run `rospack list | grep $HOME`, you will get nothing. If you have a package to modify, run `catkin <package name>` and `source devel/setup.bash`, you will have your package on your overlay workspace.
+
+
+# Tips
+
 ### Setup development environment
 
 ```
-core-io$ mkdir ~/spot_driver_ws/src -p
-core-io$ cd ~/spot_driver_ws/src
+core-io$ mkdir ~/spot_dev_env/src -p
+core-io$ cd ~/spot_dev_env/src
 core-io$ git clone https://github.com/k-okada/jsk_robot.git -b spot_arm
-core-io$ cd ~/spot_driver_ws/src/jsk_robot/jsk_spot_robot/coreio/base
-core-io$ make pre_build catkin_build dev_build all
+core-io$ cd ~/spot_dev_env/src/jsk_robot/jsk_spot_robot/coreio/base
+core-io$ make build bash
 ```
 This procedure create `~/bash.sh`. Please use this script when you start development.
 
