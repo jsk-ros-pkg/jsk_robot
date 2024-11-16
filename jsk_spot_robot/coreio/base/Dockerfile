@@ -113,6 +113,9 @@ RUN chmod 0777 /home/${USER}/ros_entrypoint.sh
 
 RUN echo "source /opt/ros/melodic/share/rosbash/rosbash" >> ~/.bashrc
 
+## add your favorite package
+RUN sudo apt install -y clisp
+
 ## FIXME @@HOME@@ is replaced by create_src_tree_tar in Makefile
 ENTRYPOINT ["@@HOME@@/ros_entrypoint.sh"]
 CMD ["bash"]
