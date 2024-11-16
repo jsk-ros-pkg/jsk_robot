@@ -13,7 +13,7 @@ catkin_package()
 #############
 ## Install ##
 #############
-install(DIRECTORY auth config launch scripts services udev_rules template
+install(DIRECTORY auth config launch
    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
    USE_SOURCE_PERMISSIONS
 )

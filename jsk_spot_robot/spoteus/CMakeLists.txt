@@ -44,11 +44,12 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/spot.l
 add_custom_target(compile_spot ALL DEPENDS ${PROJECT_SOURCE_DIR}/spot.l)
 
 
-install(DIRECTORY euslisp test
+install(DIRECTORY demo test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES spot.l spot-interface.l spot-util.l spot.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+file(GLOB LISP_FILES *.l)
+install(FILES ${LISP_FILES} spot.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
