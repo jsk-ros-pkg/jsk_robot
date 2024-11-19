@@ -109,7 +109,7 @@ catkin_config:
 	$(call run, catkin config $(CATKIN_CONFIG) --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_INCLUDE_DIR=/usr/include/python3.6m -DPYTHON_LIBRARY=/usr/lib/aarch64-linux-gnu/libpython3.6m.so.1)
 
 catkin_build:
-	$(call run, catkin build)
+	$(call run, catkin build --summarize)
 
 # run all build
 build:
