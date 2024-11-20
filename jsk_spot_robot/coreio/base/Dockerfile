@@ -40,11 +40,11 @@ COPY package.tar /tmp/
 RUN tar -C /tmp/ws/ -xvf /tmp/package.tar
 
 # install pip3 dependencies
-RUN pip3 install pip==21.3.1
-RUN pip3 install wrapt==1.12.1 six==1.15.0 PyJWT==2.0.0 numpy==1.19.4 grpcio==1.34.0
+RUN sudo -H pip3 install pip==21.3.1
+RUN sudo -H pip3 install wrapt==1.12.1 six==1.15.0 PyJWT==2.0.0 numpy==1.19.4 grpcio==1.34.0
 
 # install python requirements
-RUN pip3 install -r /tmp/ws/src/jsk_robot/jsk_spot_robot/requirements.txt
+RUN sudo -H pip3 install -r /tmp/ws/src/jsk_robot/jsk_spot_robot/requirements.txt
 
 # # rosdep install
 # RUN sudo apt-get update && rosdep install -y -r --from-paths /tmp/ws/src --ignore-src --rosdistro melodic || echo "OK"
