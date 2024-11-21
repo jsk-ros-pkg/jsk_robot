@@ -115,7 +115,7 @@ catkin_build:
 build:
 ifeq ($(shell id -u $$USER),1000) ## This is dev(uid=1000) setting
 	make dev_build
-	make catkin_config CATKIN_CONFIG='--merge-install --blacklist test_tf2'
+	make catkin_config CATKIN_CONFIG='--install --blacklist test_tf2'
 	make catkin_build
 else
 	make user_build
