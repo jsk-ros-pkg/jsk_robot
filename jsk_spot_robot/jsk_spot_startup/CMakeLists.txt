@@ -13,7 +13,7 @@ catkin_package()
 #############
 ## Install ##
 #############
-install(DIRECTORY auth config launch
+install(DIRECTORY apps auth config launch
    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
    USE_SOURCE_PERMISSIONS
 )
