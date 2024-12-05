@@ -4,7 +4,10 @@ all: $(HOME)/bash.sh
 	@echo "make build"
 
 $(HOME)/bash.sh:
-	echo "#!/bin/bash\n\ncd $(CURDIR)\nmake shell\n" > $(HOME)/bash.sh
+	echo "#!/bin/bash\n\n" > $(HOME)/bash.sh
+ifeq ($(shell id -u $$USER),1000) ## This is dev(uid=1000) setting
+endif
+	echo "cd $(CURDIR)\nmake shell ARGS=\$$@\n" >> $(HOME)/bash.sh
 	chmod u+x $(HOME)/bash.sh
 
 
@@ -45,7 +48,7 @@ endif
 endef
 
 define run
-docker run --rm --privileged --hostname $(HOSTNAME)-core-io --add-host $(HOSTNAME)-core-io:$(IPADDRESS) --add-host $(HOSTNAME)-core-io.jsk.imi.i.u-tokyo.ac.jp:$(IPADDRESS) --network=host -u=$(shell id -u $$USER):$(shell id -g $$USER) --group-add sudo --device=/dev/input --device=/dev/input/js0:/dev/dualsense -v $(shell realpath /home/$(shell id -un 1000))/spot_dev_env:/home/spot/ws -v $(WS_ROOT):/home/$(DOCKER_USER)/ws -v $(HOME)/.ros:/home/$(DOCKER_USER)/.ros -v $(HOME)/.config:/home/$(DOCKER_USER)/.config -w /home/$(DOCKER_USER)/ws -ti $(DOCKER_TARGET_NAME) ${1};
+docker run --rm --privileged --hostname $(HOSTNAME)-core-io --add-host $(HOSTNAME)-core-io:$(IPADDRESS) --add-host $(HOSTNAME)-core-io.jsk.imi.i.u-tokyo.ac.jp:$(IPADDRESS) --network=host -u=$(shell id -u $$USER):$(shell id -g $$USER) --group-add sudo -v /dev:/dev -v $(shell realpath /home/$(shell id -un 1000))/spot_dev_env:/home/spot/ws -v $(WS_ROOT):/home/$(DOCKER_USER)/ws -v $(HOME)/.ros:/home/$(DOCKER_USER)/.ros -v $(HOME)/.config:/home/$(DOCKER_USER)/.config -w /home/$(DOCKER_USER)/ws $(shell if test -n "$(NAME)"; then echo '--name $$NAME'; fi) -ti $(DOCKER_TARGET_NAME) ${1};
 endef
 
 define create_src_tree_tar
@@ -122,7 +125,8 @@ else
 	make catkin_config
 endif
 shell:
-	$(call run, bash)
+	echo "$(ARGS)" > ~/.ros/bash-init.sh
+	$(call run, bash --init-file /home/$(DOCKER_USER)/.ros/bash-init.sh)
 
 emacs:
 	$(call run, emacs -nw)
