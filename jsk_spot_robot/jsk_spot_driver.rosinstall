@@ -14,7 +14,7 @@
 - git:
     local-name: spot-ros
     uri: https://github.com/k-okada/spot_ros-arm.git
-    version: 0a8c4b29768ae946d7c84aec9a2ae2d185ed97a9
+    version: d4bdb07347a8890b96fa45f538000a93645ce21e
 ## to support custom limb name, we need https://github.com/jsk-ros-pkg/jsk_model_tools/pull/249
 - git:
     local-name: jsk_model_tools
