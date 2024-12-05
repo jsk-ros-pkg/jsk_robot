@@ -71,6 +71,9 @@ RUN sudo apt-get update && ROS_PYTHON_VERSION=3 rosdep install -y -r --skip-keys
 #####
 FROM pre_build AS dev_build
 
+# extra tools
+RUN sudo apt-get update && sudo apt install -y -q tmux expect
+
 RUN echo "#!/bin/bash"	 > /home/spot/ros_entrypoint.sh && \
     echo "set -e"	>>  /home/spot/ros_entrypoint.sh && \
     echo "source /opt/ros/melodic/setup.bash --"	>>  /home/spot/ros_entrypoint.sh && \
