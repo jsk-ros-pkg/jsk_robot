@@ -5,9 +5,20 @@ all: $(HOME)/bash.sh
 
 $(HOME)/bash.sh:
 	echo "#!/bin/bash\n\n" > $(HOME)/bash.sh
+	echo "cd $(CURDIR)\n" >> $(HOME)/bash.sh
 ifeq ($(shell id -u $$USER),1000) ## This is dev(uid=1000) setting
+	$(eval DOCKER_CONTAINER_NAME := spot_dev_env)
+else
+	$(eval DOCKER_CONTAINER_NAME := $(USER)_dev_env)
 endif
-	echo "cd $(CURDIR)\nmake shell ARGS=\$$@\n" >> $(HOME)/bash.sh
+	echo "NAME=$(shell basename $(DOCKER_CONTAINER_NAME) _dev_env)_\$${NAME:-dev}_env" >> $(HOME)/bash.sh
+	echo "if docker ps --format "{{.Names}}" | grep \$$NAME; then" >> $(HOME)/bash.sh
+	echo " echo \";; attach \$$NAME, use Ctrl-P Ctrl-Q to exit.\"" >> $(HOME)/bash.sh
+	echo " docker attach \$$NAME" >> $(HOME)/bash.sh
+	echo "else" >> $(HOME)/bash.sh
+	echo " echo \";; run \$$NAME\"" >> $(HOME)/bash.sh
+	echo " make shell NAME=\$$NAME ARGS=\"\$$@\"" >> $(HOME)/bash.sh
+	echo "fi\n" >> $(HOME)/bash.sh
 	chmod u+x $(HOME)/bash.sh
 
 
@@ -48,6 +59,8 @@ endif
 endef
 
 define run
+if [ ! -e ~/.ros ]; then mkdir ~/.ros; fi; \
+if [ ! -e ~/.config ]; then mkdir ~/.config; fi; \
 docker run --rm --privileged --hostname $(HOSTNAME)-core-io --add-host $(HOSTNAME)-core-io:$(IPADDRESS) --add-host $(HOSTNAME)-core-io.jsk.imi.i.u-tokyo.ac.jp:$(IPADDRESS) --network=host -u=$(shell id -u $$USER):$(shell id -g $$USER) --group-add sudo -v /dev:/dev -v $(shell realpath /home/$(shell id -un 1000))/spot_dev_env:/home/spot/ws -v $(WS_ROOT):/home/$(DOCKER_USER)/ws -v $(HOME)/.ros:/home/$(DOCKER_USER)/.ros -v $(HOME)/.config:/home/$(DOCKER_USER)/.config -w /home/$(DOCKER_USER)/ws $(shell if test -n "$(NAME)"; then echo '--name $$NAME'; fi) -ti $(DOCKER_TARGET_NAME) ${1};
 endef
 
@@ -55,7 +68,8 @@ define create_src_tree_tar
 $(info "Create source tree tar file")
 $(eval TMP_FILE:=$(shell mktemp))
 $(eval PKG_FILE:=$(WS_ROOT)/package.tar)
-cp Dockerfile $(WS_ROOT); sed -i 's+@@HOME@@+$(HOME)+' $(WS_ROOT)/Dockerfile;  (cd $(WS_ROOT); find src -iname 'package.xml' -o -path '*jsk_spot_robot/requirements.txt' | tar cf $(TMP_FILE) -T -); chmod 644 $(TMP_FILE)
+cp Dockerfile $(WS_ROOT); sed -i 's+@@HOME@@+/home/$(shell echo $$USER)+' $(WS_ROOT)/Dockerfile; (cd $(WS_ROOT); find src -iname 'package.xml' -o -path '*jsk_spot_robot/requirements.txt' | tar cf $(TMP_FILE) -T -); chmod 644 $(TMP_FILE)
+if [ $(shell id -u $$USER) -ne 1000 ]; then sed -i -n -e '/^FROM dev_build AS user_build$$/,$$p' $(WS_ROOT)/Dockerfile; sed -i 's/^FROM dev_build/FROM spot_dev_env:dev_build/' $(WS_ROOT)/Dockerfile; fi;
 if test "$$(md5sum $(TMP_FILE) | awk '{print $$1}')" = "$$(md5sum $(PKG_FILE) | awk '{print $$1}')" ; then echo "- We have latest $(PKG_FILE)"; else echo "- source tree is different from $(PKG_FILE), create new source tree tar"; cp $(TMP_FILE) $(PKG_FILE); tar -tf $(PKG_FILE); fi
 rm $(TMP_FILE)
 endef
@@ -104,7 +118,8 @@ dev_build: pre_build
 user_build:
 	$(eval $(call run_uid_not_equal,1000,This target requires user setting, except uid 1000))
 	$(call create_src_tree_tar)
-	cd $(WS_ROOT); DOCKER_BUILDKIT=1 docker build -t spot_dev_env:user_build --target user_build --progress=plain --network=host -t $(shell echo $$USER)_dev_env --build-arg USER=$$USER --build-arg UID=$(shell id -u $$USER) --build-arg GID=$(shell id -g $$USER) -f Dockerfile .
+	# multi stage build from different users's image did not work...
+	cd $(WS_ROOT); DOCKER_BUILDKIT=0 docker build -t $(DOCKER_TARGET_NAME):user_build --progress=plain --network=host -t $(shell echo $$USER)_dev_env --build-arg USER=$$USER --build-arg UID=$(shell id -u $$USER) --build-arg GID=$(shell id -g $$USER) -f Dockerfile .
 
 # run catkin build
 catkin_config:
@@ -123,9 +138,10 @@ ifeq ($(shell id -u $$USER),1000) ## This is dev(uid=1000) setting
 else
 	make user_build
 	make catkin_config
+	if [ ! -e $(WS_ROOT)/ws/devel ]; then $(call run, catkin build spoteus) $(call run, catkin clean spoteus) fi
 endif
 shell:
-	echo "$(ARGS)" > ~/.ros/bash-init.sh
+	echo ". ~/.bashrc\n$(ARGS)" > ~/.ros/bash-init.sh
 	$(call run, bash --init-file /home/$(DOCKER_USER)/.ros/bash-init.sh)
 
 emacs:
