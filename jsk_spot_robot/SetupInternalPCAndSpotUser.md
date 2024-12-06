@@ -44,7 +44,7 @@ If you have built `spot_dev_env` on a machine other than `core-io,
 5. Copy `package.tar` in aarch64 machine to `core-io` under workspace. Log in aarch64 machine and go to `~/spot_dev_env`. Then `scp package.tar spot@core-io:~/spot_dev_env/`.
 6. Run `make build` in the `jsk_spot_robot/coreio/base` directory.
 
-## Build `<your username>_dev_env`
+## Build `<your username>_dev_env` (for users)
 
 1. Create your ROS workspace on `core-io` as your own userid.
 2. go to `jsk_spot_robot/coreio/base` and run `make build`.
@@ -53,16 +53,87 @@ If you have built `spot_dev_env` on a machine other than `core-io,
 
 ## Run the startup program (for admin)
 
-1.Login to `core-io` as `spot` user, run `~/bash.sh` to start `spot_dev_env` container2. run `roslaunch jsk_spot_startup jsk_spot_bringup.launch credential_config:=$(rospack find jsk_spot_startup)/auth/spot_credential.yaml use_gps:=false`.
+Login to `core-io` as `spot` user, run `~/start.sh` to start `spot_dev_env` container with tmux to start Bluetooth configuration and jsk_spot_bringup.
+
+- `start.sh` installs `udev` setting and start `start-tmux.sh` through `~/bash.sh`.
+
+```
+#!/bin/bash
+
+if [ ! -e /etc/udev/rules.d/88-dualsense.rules ]; then echo 'KERNEL=="js*", ATTRS{name}=="Wireless Controller", SYMLINK+="dualsense"' | sudo tee /etc/udev/rules.d/88-dualsense.rules; fi
+
+~/bash.sh ./start-tmux.sh
+```
+
+- `start-tmux.sh` start `connect-bt.sh`, `launch-jsk-spot.sh` and `bash` within `tmux`.
+
+```
+#!/bin/bash
+
+tmux set-option -g history-limit 50000 \; new -d -s spot bash \; send "top" SPACE "-c" ENTER\; new-window -d -n bluetooth bash \; next-window \; send "./connect-bt.sh" ENTER \; new-window -d -n roslaunch bash \; next-window \; send "./launch-jsk-spot.sh" ENTER \; next-window \; new-window -d bash \; attach \;
+
+```
+
+- `launch-jsk-spot.sh` starts `jsk_spot_bringup.launch`, for example
+```
+#!/bin/bash
+
+roslaunch jsk_spot_startup jsk_spot_bringup.launch credential_config:=$(rospack find jsk_spot_startup)/auth/spot_credential.yaml use_voice_text:=true use_gps:=false
+```
+
+- `connect-bt.sh` connects to Dualsense joystick.
+```
+#!/bin/bash -x
+
+while [ 1 ]; do
+	if [ -e /dev/input/js0 ]; then sleep 10; continue; fi
+	sudo hcitool dev
+	sudo hcitool -i hci0 scan
+
+/usr/bin/expect -c '
+
+set MAC "D0:BC:C1:CB:48:37"
+set timeout 30
+
+spawn sudo bluetoothctl
+
+send "scan on\n"
+
+expect " Device $MAC " {
+    send "trust $MAC\n"
+}
+
+expect " Device $MAC " {
+    send "pair $MAC\n"
+}
+
+expect {
+       "AlreadyExists" {
+           send "connect $MAC\n"
+       }
+       "Paired: yes" {
+           send "connect $MAC\n"
+       }
+}
+
+expect "Connection successful" {
+    send "quit\n"
+}
+'
+	sleep 3;
+done
+```
 
 Note:
 - This process should be run as upstart or supervisor.
-- Please do not start multiple `spot_dev_env` containers, it will restart multiple system services including bluetooth, so it will disconnect your joystick.
+- When `~/bash.sh` is invoked a second time, this existing `spot_dev_env` containers is attached. Therefore, when you exit from this environment, the original `start.sh` container will also be destroyed. To exit from attached environment, use the `[Ctrl-p] [Ctrl-q]`.
 
-## Run your custom development environment
+## Run your custom development environment  (for users)
 
 1. Login to `core-io` as your local user and run `~/bash.sh` to start your build environment.
-2. For the first time, you don't have an overlay package, so if you run `rospack list | grep $HOME`, you will get nothing. If you have a package to modify, run `catkin <package name>` and `source devel/setup.bash`, you will have your package on your overlay workspace.
+2. `~/bash.sh` attach existing container, so use `[Ctrl-p] [Ctrl-q]` to exit from the shell. Otherwise, for example `exit`, it will destroy all container.
+3. If you want to create new contaioner, run `NAME=dummy_name ~/bash.sh`
+4. In the first time, you don't have an overlay package, so if you run `rospack list | grep $HOME`, you will get nothing. If you have a package to modify, run `catkin <package name>` and `source devel/setup.bash`, you will have your package on your overlay workspace.
 
 
 # Tips

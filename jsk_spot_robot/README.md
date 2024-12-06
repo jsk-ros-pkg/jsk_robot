@@ -85,7 +85,42 @@ for example, when you want to move spot 1m forward, type.
 (send *ri* :sit)
 ```
 
-### How to set up a catkin workspace in on-bodyPC
+### How to set up a catkin workspace in on-bodyPC (for CORE I/O)
+
+First create user account into internal PC
+```
+ssh spotcore -l spot
+sudo adduser k-okada
+sudo adduser k-okada spot
+sudo adduser k-okada sudo
+sudo adduser k-okada docker
+```
+
+Create a workspace. Make sure that you need to login to spotcore with your account
+
+```bash
+ssh spotcore -l k-okada
+mkdir ~/ws/src -p
+cd ~/ws/src
+git clone https://github.com/k-okada/jsk_robot.git -b spot_arm
+cd ~/ws/src/pot_dev_env/src/jsk_robot/jsk_spot_robot/coreio/base
+make build all
+```
+
+To develop your source code, run docker container from `~/bash.sh`.
+
+```bash
+~/bash.sh
+```
+
+If you need to install deb file, update `add your favorite package` section of `jsk_spot_robot/coreio/base/Dockerfile` and run `make build` under `~/ws/src/pot_dev_env/src/jsk_robot/jsk_spot_robot/coreio/base` directory. Note that you have to run `make build` outside of docker container.
+
+```
+## add your favorite package
+RUN sudo apt install -y clisp
+```
+
+### How to set up a catkin workspace in on-bodyPC (for SPOT CORE)
 
 First create user account into internal PC
 ```
