@@ -1,0 +1,14 @@
+<launch>
+  <!-- You need to run this launch file in the PR2 robot for higher frequency of the image,
+  otherwise the internal message filter will not work -->
+  <node pkg="apriltag_ros" type="apriltag_ros_continuous_node" name="apriltag_pose_detector">
+    <remap from="image_rect" to="/kinect_head/rgb/image_rect_color" />
+    <remap from="camera_info" to="/kinect_head/rgb/camera_info" />
+    <rosparam>
+      <!-- NOTE: the size is the inner square's edge length of the tag, not the outer edge length!!! -->
+      standalone_tags: [{id: 0, size: 0.0277, name: april},]
+      tag_family: "tagStandard41h12"
+      publish_tf: true
+    </rosparam>
+  </node>
+</launch>
