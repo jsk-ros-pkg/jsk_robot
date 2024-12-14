@@ -1,0 +1,7 @@
+/build
+*.stl
+*.pdf
+*.out
+*.log
+*.aux
+*.dvi
