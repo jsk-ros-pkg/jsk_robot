@@ -70,20 +70,6 @@ class BatteryWarning(object):
         self.speak_client.send_goal(SoundRequestGoal(sound_request=req))
         self.speak_client.wait_for_result(timeout=rospy.Duration(10))
 
-    def play_sound(self, sound):
-        key = sound
-        if self.sound_history[key] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
-            return
-        self.sound_history[key] = rospy.Time.now()
-        sound_req = SoundRequest()
-        sound_req.sound = sound
-        sound_req.command = SoundRequest.PLAY_ONCE  # 1: PLAY_ONCE
-        sound_req.volume = 1.0  # Volume（0.0〜1.0）
-        sound_req.arg = ''
-        sound_req.arg2 = ''
-        self.sound_client.send_goal(SoundRequestGoal(sound_request=sound_req))
-        self.sound_client.wait_for_result(timeout=rospy.Duration(10))
-
     def log_cb(self, event):
         try:
             if osp.exists(self.log_path):
@@ -113,7 +99,18 @@ class BatteryWarning(object):
             if 60 > max_temp > self.warning_temp:
                 self.speak("バッテリ温度%.1f度。暑いです。部屋の温度を下げてください。" % max_temp)
                 if max_temp > self.cable_warning_temp:
-                    self.play_sound(2) # kan kan
+                    # play sound 2 (kan kan)
+                    key = 2
+                    if not self.sound_history[key] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
+                        self.sound_history[key] = rospy.Time.now()
+                        sound_req = SoundRequest()
+                        sound_req.sound = 2 # kan kan
+                        sound_req.command = SoundRequest.PLAY_ONCE  # 1: PLAY_ONCE
+                        sound_req.volume = 1.0  # Volume（0.0〜1.0）
+                        sound_req.arg = ''
+                        sound_req.arg2 = ''
+                        self.sound_client.send_goal(SoundRequestGoal(sound_request=sound_req))
+                        self.sound_client.wait_for_result(timeout=rospy.Duration(10))
                     self.speak("危険な温度です。電源ケーブルのコネクタを確認して下さい。")
         except KeyError:
             pass
