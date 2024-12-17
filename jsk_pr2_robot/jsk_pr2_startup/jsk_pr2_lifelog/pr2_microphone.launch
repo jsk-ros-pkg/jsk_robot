@@ -4,9 +4,7 @@
   <arg name="respawn" default="false"/>
 
   <arg name="language" default="ja-JP"/>
-
-  <arg name="machine" default="c1" if="$(optenv USE_MIC_C1 false)"/>
-  <arg name="machine" default="c2" if="$(optenv USE_MIC_C2 false)"/>
+  <arg name="machine" default="c1" />
 
   <arg name="ROBOT" default="$(optenv ROBOT pr2)"/>
   <include file="$(find pr2_machine)/$(arg ROBOT).machine"/>
@@ -29,7 +27,7 @@
 
     <node name="speech_to_text"
           pkg="respeaker_ros" type="speech_to_text.py"
-          machine="$(arg machine)">
+          machine="$(arg machine)" respawn="$(arg respawn)">
       <remap from="speech_to_text" to="speech_to_text_google" />
       <remap from="audio" to="speech_audio"/>
       <remap from="sound_play" to="robotsound_jp"/>

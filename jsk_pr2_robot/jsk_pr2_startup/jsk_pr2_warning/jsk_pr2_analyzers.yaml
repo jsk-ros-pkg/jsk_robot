@@ -6,13 +6,13 @@ analyzers:
       joystick:
         type: diagnostic_aggregator/GenericAnalyzer
         path: Joystick
-        expected: 'joy: Joystick Driver Status'
+        expected: 'joy_node: Joystick Driver Status'
         num_items: 1
-        remove_prefix: 'joy'
+        remove_prefix: 'joy_node'
       sound:
         type: diagnostic_aggregator/GenericAnalyzer
         path: Sound
-        num_items: 1
+        num_items: 2
         contains: 'sound_play'
       imu:
         type: diagnostic_aggregator/GenericAnalyzer
@@ -96,6 +96,13 @@ analyzers:
                    'c2 CPU Temperature',
                    'c2 CPU Usage',
                    'c2 HD Temperature']
+      clocks:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Clocks
+        timeout: 20.0
+        expected: ['NTP offset from c2 to c1',
+                   'NTP self-offset for c1',
+                   'NTP self-offset for c2']
   motors:
     type: diagnostic_aggregator/GenericAnalyzer
     path: Motors

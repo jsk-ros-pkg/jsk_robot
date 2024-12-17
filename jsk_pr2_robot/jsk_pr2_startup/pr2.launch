@@ -32,6 +32,12 @@
        doc="whether launch gdrive_server on c1 or not."/>
   <arg name="launch_gdrive_server_c2" default="true"
        doc="whether launch gdrive_server on c2 or not."/>
+  <arg name="launch_app_scheduler" default="true"
+       doc="whether launch app_scheduler or not." />
+  <arg name="launch_coral" default="false"
+       doc="whether launch coral or not." />
+  <arg name="launch_google_chat" default="true"
+       doc="whether launch google chat or not."/>
   <arg name="USER_NAME" default="false" />
 
   <include file="$(find jsk_pr2_startup)/jsk_pr2.machine"
@@ -67,7 +73,9 @@
 
   <!-- kinect node -->
   <include if="$(arg launch_kinect)"
-           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" />
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
+    <arg name="monitor_driver" value="true" />  <!-- iory 2022/05/11-->
+  </include>
 
   <!-- logging node for PR2  -->
   <include if="$(arg launch_db)"
@@ -137,6 +145,7 @@
   <!-- for microphone -->
   <include if="$(arg launch_microphone)"
            file="$(find jsk_pr2_startup)/jsk_pr2_lifelog/pr2_microphone.launch">
+    <arg name="machine" value="c2" />
     <arg name="respawn" value="true" />
   </include>
 
@@ -196,5 +205,94 @@
   <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
     <remap from="~input" to="/kinect_head/rgb/image_raw" />
   </node>
+
+  <node name="audible_warning"
+        pkg="jsk_tools" type="audible_warning.py"
+        clear_params="true"
+        output="screen" >
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/warning_blacklist.yaml" />
+    <rosparam>
+      run_stop_topic: /power_board/state
+      run_stop_condition: "m.run_stop is False"
+      seconds_to_start_speaking: 60
+      speak_interval: 600
+      ignore_time_after_runstop_is_enabled: 5.0
+      ignore_time_after_runstop_is_disabled: 5.0
+    </rosparam>
+  </node>
+
+  <group ns="audible_warning" >
+    <!-- tweet with image -->
+    <node name="publish_to_tweet_server"
+          pkg="topic_tools" type="transform"
+          args="/audible_warning/output/original_text
+                /tweet_image_server/tweet/goal
+                rostwitter/TweetActionGoal
+                --wait-for-start
+                'rostwitter.msg.TweetActionGoal(goal=rostwitter.msg.TweetGoal(text=&quot;[Audible warning] &quot; + m.data, image=True, image_topic_name=&quot;/edgetpu_human_pose_estimator/output/image&quot;))'
+                --import rostwitter">
+    </node>
+  </group>
+
+  <node name="sanity_diagnostics"
+        pkg="jsk_tools" type="sanity_diagnostics.py" >
+    <rosparam command="load" file="$(find jsk_pr2_startup)/jsk_pr2_warning/sanity_targets.yaml" />
+    <rosparam subst_value="true">
+      duration: 60
+    </rosparam>
+  </node>
+
+  <!-- send email by rostopic -->
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
+  <!-- send email, twitter with smach -->
+  <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <remap from="~smach/container_status" to="/server_name/smach/container_status" />
+    <rosparam command="load" file="/var/lib/robot/email_topic.yaml" />
+    <rosparam subst_value="true">
+      use_mail: true
+      use_twitter: $(arg launch_twitter)
+      use_google_chat: $(arg launch_google_chat)
+      google_chat_space: spaces/AAAAT_OCXCw
+    </rosparam>
+  </node>
+
+  <!-- publish smach image -->
+  <node name="smach_image_publisher" pkg="smach_viewer" type="smach_image_publisher.py"
+        output="screen">
+    <rosparam>
+      duration: 0.5
+    </rosparam>
+  </node>
+
+  <!-- app scheduler -->
+  <include if="$(arg launch_app_scheduler)"
+           file="$(find app_scheduler)/launch/app_scheduler.launch">
+    <arg name="yaml_path" value="$(find jsk_pr2_startup)/config/pr2_app_schedule.yaml" />
+  </include>
+
+  <!-- google chat -->
+  <include if="$(arg launch_google_chat)"
+           file="$(find google_chat_ros)/launch/google_chat.launch">
+    <arg name="use_yaml" value="true" />
+    <arg name="receiving_mode" value="pubsub" />
+    <arg name="project_id" value="pr2-yeusde" />
+    <arg name="subscription_id" value="chat-sub" />
+    <arg name="yaml_file" value="/var/lib/robot/google_chat.yaml" />
+    <arg name="gdrive_upload_service" value="/gdrive_server/upload" />
+  </include>
+
+  <!-- coral -->
+  <include if="$(arg launch_coral)"
+           file="$(find jsk_pr2_startup)/jsk_pr2_sensors/pr2_coral.launch">
+    <arg name="input_image" value="/kinect_head/rgb/image_rect_color" />
+    <arg name="launch_edgetpu_human_pose_estimator" value="true" />
+    <arg name="launch_edgetpu_object_detector" value="true" />
+    <arg name="machine" value="c2" />
+  </include>
 
 </launch>
