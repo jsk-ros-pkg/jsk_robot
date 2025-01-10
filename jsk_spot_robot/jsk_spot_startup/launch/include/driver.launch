@@ -85,6 +85,15 @@
   </node>
 
   <!-- Sound/Camera -->
+  <!-- speech recognition -->
+  <group ns="head">
+    <include file="$(find ros_speech_recognition)/launch/speech_recognition.launch">
+      <arg name="device" value="hw:Device,0" />
+      <arg name="language" value="ja-JP" />
+      <arg name="launch_sound_play" value="false" />
+      <arg name="sample_rate" value="44100" />
+    </include>
+  </group>
 
   <!-- republish compressed image -->
   <node pkg="image_transport" type="republish" name="hand_color_compress"
@@ -108,20 +117,19 @@
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
         respawn="true" if="$(arg launch_sound_play)" >
-    <param name="device" value="hw:0,0" />
+    <param name="device" value="hw:UC,0" />
   </node>
-
 
   <!-- japanese speech node -->
   <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
   </include>
-  <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
-  </include>
-
+  <!-- <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch"> -->
+  <!--   <arg name="launch_sound_play" value="$(arg launch_sound_play)" /> -->
+  <!--   <arg name="sound_play_respawn" value="true" /> -->
+  <!-- </include> -->
+  
   <!-- Notifier/Visualization -->
 
   <!-- <node -->
