@@ -2,6 +2,7 @@
   <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
   <arg name="launch_robot_state_publisher" default="true" />
   <arg name="launch_sound_play" default="true" />
+  <arg name="launch_sound_play_jp" default="true" />
 
   <arg name="use_voice_text" default="false" doc="voice_text needs license" />
   <arg name="use_app_manager" default="true" />
@@ -121,14 +122,16 @@
   </node>
 
   <!-- japanese speech node -->
-  <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
-  </include>
-  <!-- <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch"> -->
-  <!--   <arg name="launch_sound_play" value="$(arg launch_sound_play)" /> -->
-  <!--   <arg name="sound_play_respawn" value="true" /> -->
-  <!-- </include> -->
+  <group if="$(arg launch_sound_play_jp)" >
+    <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
+      <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+      <arg name="sound_play_respawn" value="true" />
+    </include>
+    <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
+      <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
+      <arg name="sound_play_respawn" value="true" />
+    </include>
+  </group>
   
   <!-- Notifier/Visualization -->
 
