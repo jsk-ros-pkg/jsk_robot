@@ -47,6 +47,7 @@
   <exec_depend>xacro</exec_depend>
   <exec_depend>xterm</exec_depend>
 
+  <test_depend>roslint</test_depend>
   <test_depend>rostest</test_depend>
 
   <export>
