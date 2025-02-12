@@ -61,6 +61,9 @@ install(DIRECTORY include/${PROJECT_NAME}/
   FILES_MATCHING PATTERN "*.h"
 )
 
+install(DIRECTORY config launch tests worlds
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
 install(FILES update_move_base_parameter_recovery_plugins.xml
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

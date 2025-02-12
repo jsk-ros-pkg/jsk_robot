@@ -138,17 +138,34 @@ if($ENV{ROS_DISTRO} STRGREATER "indigo") # quadruped_joystick_teleop.cpp uses c+
     )
 endif()
 
-install(DIRECTORY lifelog util launch images config cfg
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h")
+
+install(DIRECTORY util launch images config cfg euslisp apps
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
+
+install(FILES lifelog_nodelet_plugins.xml
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
 file(GLOB_RECURSE SCRIPT_PROGRAMS lifelog/*)
 foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
   if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
     catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
   else()
-    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/lifelog)
   endif()
 endforeach()
+file(GLOB_RECURSE SCRIPT_PROGRAMS scripts/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts)
+  endif()
+endforeach()
+
 
 if(mongodb_store_FOUND)
 install(TARGETS jsk_robot_lifelog

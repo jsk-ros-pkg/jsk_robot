@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>jsk_spot_startup</name>
+  <version>1.1.0</version>
+  <description>The jsk_spot_startup package</description>
+
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</maintainer>
+  <author email="shinjo@jsk.imi.i.u-tokyo.ac.jp">Koki Shinjo</author>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roslaunch</build_depend>
+  <build_depend>roslint</build_depend>
+
+  <exec_depend>app_manager</exec_depend>
+  <exec_depend>app_scheduler</exec_depend>
+  <exec_depend>aques_talk</exec_depend>
+  <exec_depend>audio_capture</exec_depend>
+  <exec_depend>cmd_vel_smoother</exec_depend>
+  <exec_depend>compressed_image_transport</exec_depend>
+  <exec_depend>image_transport</exec_depend>
+  <exec_depend>interactive_marker_twist_server</exec_depend>
+  <exec_depend>jsk_perception</exec_depend>
+  <exec_depend>jsk_robot_startup</exec_depend>
+  <exec_depend>jsk_tools</exec_depend>
+  <exec_depend>julius_ros</exec_depend>
+  <exec_depend>laptop_battery_monitor</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros_speech_recognition</exec_depend>
+  <exec_depend>rosbag</exec_depend>
+  <exec_depend>roseus</exec_depend>
+  <exec_depend>roseus_smach</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+  <exec_depend>rosserial_python</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>rwt_app_chooser</exec_depend>
+  <exec_depend>sound_play</exec_depend>
+  <exec_depend>spot_description</exec_depend>
+  <exec_depend>spot_driver</exec_depend>
+  <exec_depend>spoteus</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+  <exec_depend>twist_mux</exec_depend>
+  <exec_depend>voice_text</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>xterm</exec_depend>
+
+  <test_depend>roslint</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+    <app_manager app_dir="${prefix}/apps" />
+  </export>
+</package>

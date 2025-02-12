@@ -44,12 +44,14 @@ foreach(ROBOT_TYPE go1)
   add_custom_target(compile_${ROBOT_TYPE} ALL DEPENDS ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}.l ${PROJECT_SOURCE_DIR}/${ROBOT_TYPE}-simple.l)
 endforeach()
 
-
+###
+### install
+###
 install(DIRECTORY test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES go1.l unitree-interface.l go1-utils.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES go1.l unitree-interface.l go1-utils.l go1.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)

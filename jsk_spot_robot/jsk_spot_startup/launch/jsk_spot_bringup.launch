@@ -1,0 +1,37 @@
+<launch>
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
+  <arg name="launch_robot_state_publisher" default="true" />
+  <arg name="launch_peripheral" default="false" />
+  <arg name="launch_interaction" default="false" />
+  <arg name="launch_switchbot_ros" default="false" />
+  <arg name="launch_sound_play_jp" default="true" />
+
+  <arg name="use_driver" default="true" />
+  <arg name="use_app_manager" default="true" />
+  <arg name="use_gps" default="true" />
+
+  <param name="robot/type" value="spot" />
+  <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
+  <node pkg="jsk_spot_startup" type="start-spot.l" name="start_spot" />
+
+  <!-- spot driver -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/driver.launch"
+      if="$(arg use_driver)"
+      pass_all_args="true" >
+  </include>
+
+  <!-- peripheral devices -->
+  <include file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+	   if="$(arg launch_peripheral)" />
+
+  <!-- interaction nodes -->
+  <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+	   if="$(arg launch_interaction)" />
+
+  <include file="$(find switchbot_ros)/launch/switchbot.launch"
+           if="$(arg launch_switchbot_ros)" >
+      <arg name="token" value="/var/lib/robot/credentials/switchbot_token.txt"/>
+  </include>
+
+</launch>

@@ -67,7 +67,7 @@ public:
         sound_play::SoundRequest msg;
         msg.sound = sound_play::SoundRequest::SAY;
         msg.command = sound_play::SoundRequest::PLAY_ONCE;
-        msg.volume = 1.0;
+        msg.volume = 0.3;
         msg.arg = message;
         pub_sound_play_.publish(msg);
     }
@@ -92,7 +92,8 @@ public:
                     if ( client_estop_hard_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_estop_hard_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_estop_hard_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_estop_hard_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("estop hard failed" + srv.response.message);
                     }
                     pressed_[button_estop_hard_] = true;
                 }
@@ -115,7 +116,8 @@ public:
                     if ( client_estop_gentle_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_estop_gentle_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_estop_gentle_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_estop_gentle_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("estop gentle failed" + srv.response.message);
                     }
                     pressed_[button_estop_gentle_] = true;
                 }
@@ -138,7 +140,8 @@ public:
                     if ( client_power_off_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_power_off_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_power_off_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_power_off_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("power off failed" + srv.response.message);
                     }
                     pressed_[button_power_off_] = true;
                 }
@@ -161,7 +164,8 @@ public:
                     if ( client_power_on_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_power_on_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_power_on_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_power_on_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("power on failed" + srv.response.message);
                     }
                     pressed_[button_power_on_] = true;
                 }
@@ -184,7 +188,8 @@ public:
                     if ( client_self_right_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_self_right_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_self_right_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_self_right_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("self right failed" + srv.response.message);
                     }
                     pressed_[button_self_right_] = true;
                 }
@@ -207,7 +212,8 @@ public:
                     if ( client_sit_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_sit_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_sit_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_sit_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("sit failed" + srv.response.message);
                     }
                     pressed_[button_sit_] = true;
                 }
@@ -230,7 +236,8 @@ public:
                     if ( client_stand_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_stand_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_stand_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_stand_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("stand failed" + srv.response.message);
                     }
                     pressed_[button_stand_] = true;
                 }
@@ -253,7 +260,8 @@ public:
                     if ( client_stop_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_stop_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_stop_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_stop_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("stop failed" + srv.response.message);
                     }
                     pressed_[button_stop_] = true;
                 }
@@ -276,7 +284,8 @@ public:
                     if ( client_release_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_release_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_release_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_release_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("release failed" + srv.response.message);
                     }
                     pressed_[button_release_] = true;
                 }
@@ -299,7 +308,8 @@ public:
                     if ( client_claim_.call(srv) && srv.response.success ) {
                         ROS_INFO_STREAM("Service " << client_claim_.getService() << " succeeded.");
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_claim_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_claim_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("claim failed" + srv.response.message);
                     }
                     pressed_[button_claim_] = true;
                 }
@@ -328,7 +338,8 @@ public:
                         ROS_INFO_STREAM("Service " << client_stair_mode_.getService() << " succeeded. set to " << req_next_stair_mode_.data);
                         req_next_stair_mode_.data = not req_next_stair_mode_.data;
                     } else {
-                        ROS_ERROR_STREAM("Service " << client_stair_mode_.getService() << " failed.");
+                        ROS_ERROR_STREAM("Service " << client_stair_mode_.getService() << " failed. (" << srv.response.message << ")");
+			this->say("stair mode failed" + srv.response.message);
                     }
                     pressed_[button_stair_mode_] = true;
                 }
@@ -350,7 +361,8 @@ public:
                   if (client_dock_.call(srv) && srv.response.success ){
                     ROS_INFO_STREAM("Service '" << client_dock_.getService() << "' succeeded.");
                   } else {
-                    ROS_ERROR_STREAM("Service '" << client_dock_.getService() << "' failed.");
+                    ROS_ERROR_STREAM("Service '" << client_dock_.getService() << "' failed. (" << srv.response.message << ")");
+		    this->say("dock failed" + srv.response.message);
                   }
                   pressed_axes_[axe_dock_] = true;
                 }
@@ -358,9 +370,10 @@ public:
             if (not pressed_axes_[axe_dock_]){
               this->say("undock calling");
               if (client_undock_.call(srv) && srv.response.success ){
-                ROS_INFO("Service 'undock' succeeded.");
+		ROS_INFO_STREAM("Service '" << client_undock_.getService() << "' succeeded.");
               } else {
-                ROS_ERROR("Service 'undock' failed.");
+		ROS_ERROR_STREAM("Service '" << client_undock_.getService() << "' failed. (" << srv.response.message << ")");
+		this->say("undock failed" + srv.response.message);
               }
               pressed_axes_[axe_dock_] = true;
             }
@@ -384,7 +397,8 @@ public:
                   if (client_tuck_.call(srv) && srv.response.success ){
                     ROS_INFO_STREAM("Service '" << client_tuck_.getService() << "' succeeded.");
                   } else {
-                    ROS_ERROR_STREAM("Service '" << client_tuck_.getService() << "' failed.");
+                    ROS_ERROR_STREAM("Service '" << client_tuck_.getService() << "' failed. (" << srv.response.message << ")");
+		    this->say("tuck failed" + srv.response.message);
                   }
                   pressed_axes_[axe_tuck_] = true;
                 }
@@ -394,7 +408,8 @@ public:
               if (client_untuck_.call(srv) && srv.response.success ){
                 ROS_INFO_STREAM("Service '" << client_untuck_.getService() << "' succeeded.");
               } else {
-                ROS_ERROR_STREAM("Service '" << client_untuck_.getService() << "' failed.");
+                ROS_ERROR_STREAM("Service '" << client_untuck_.getService() << "' failed. (" << srv.response.message << ")");
+		this->say("untuck failed" + srv.response.message);
               }
               pressed_axes_[axe_tuck_] = true;
             }

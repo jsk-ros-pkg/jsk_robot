@@ -28,7 +28,12 @@ add_executable(pr2_base_trajectory_action
   src/pr2_base_trajectory_action_controller_node.cpp)
 target_link_libraries(pr2_base_trajectory_action ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
-install(DIRECTORY config include launch
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+)
+
+install(DIRECTORY config launch test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 install(TARGETS pr2_base_trajectory_action

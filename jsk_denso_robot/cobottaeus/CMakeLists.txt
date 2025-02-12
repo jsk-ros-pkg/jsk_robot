@@ -43,11 +43,12 @@ add_custom_command(OUTPUT ${PROJECT_SOURCE_DIR}/cobotta.l
   add_custom_target(compile_cobotta ALL DEPENDS ${PROJECT_SOURCE_DIR}/cobotta.l)
 
 
-install(DIRECTORY euslisp test
+install(DIRECTORY sample test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES cobotta.l cobotta-interface.l cobotta-util.l cobotta.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+file(GLOB LISP_FILES *.l)
+install(FILES ${LISP_FILES} cobotta.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)

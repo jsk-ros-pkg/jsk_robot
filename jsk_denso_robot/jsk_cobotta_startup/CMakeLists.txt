@@ -33,12 +33,12 @@ catkin_package()
 #############
 ## Install ##
 #############
-install(DIRECTORY config launch scripts data
+install(DIRECTORY launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES jsk_cobotta.machine
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+# install(FILES jsk_cobotta.machine
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 #############
 ## Testing ##
