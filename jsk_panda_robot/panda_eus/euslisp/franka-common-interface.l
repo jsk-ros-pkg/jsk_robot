@@ -26,9 +26,9 @@
 Arguments specific to franka robot:
 - all-arms : names of all arms (e.g., (list :rarm))
 - all-arm-aliases : aliases of all arms (e.g., (list :arm))
-- error-topics : topics used for getting error states of arms (e.g., (list \"/franka_state_controller/franka_states\"))
+- error-topics : topics used for getting error states of arms (e.g., (list \"franka_state_controller/franka_states\"))
 - error-topic-types : message types of error-topics (e.g., (list franka_msgs::FrankaState))
-- error-recovery-action : action for error recovery (e.g., \"/franka_control/error_recovery\")
+- error-recovery-action : action for error recovery (e.g., \"franka_control/error_recovery\")
 - gripper-action-prefixes : prefixes added to gripper action names (e.g., (list \"\"))
 "
    (setq all-arms aa)
@@ -83,25 +83,27 @@ Arguments specific to franka robot:
      (setq gripper-move-actions (make-hash-table))
      (setq gripper-stop-actions (make-hash-table))
      (dotimes (i (length all-arms))
-       (let ((arm (elt all-arms i)) (prefix (elt gripper-action-prefixes i)))
+       (let* ((arm (elt all-arms i))
+              (prefix-raw (elt gripper-action-prefixes i))
+              (prefix (if (string= prefix-raw "") prefix-raw (format nil "~a/" prefix-raw))))
          (sethash arm gripper-grasp-actions
                   (instance ros::simple-action-client :init
-                            (format nil "~a/franka_gripper/grasp" prefix)
+                            (format nil "~Afranka_gripper/grasp" prefix)
                             franka_gripper::GraspAction
                             :groupname groupname))
          (sethash arm gripper-homing-actions
                   (instance ros::simple-action-client :init
-                            (format nil "~a/franka_gripper/homing" prefix)
+                            (format nil "~Afranka_gripper/homing" prefix)
                             franka_gripper::HomingAction
                             :groupname groupname))
          (sethash arm gripper-move-actions
                   (instance ros::simple-action-client :init
-                            (format nil "~a/franka_gripper/move" prefix)
+                            (format nil "~Afranka_gripper/move" prefix)
                             franka_gripper::MoveAction
                             :groupname groupname))
          (sethash arm gripper-stop-actions
                   (instance ros::simple-action-client :init
-                            (format nil "~a/franka_gripper/stop"prefix)
+                            (format nil "~Afranka_gripper/stop" prefix)
                             franka_gripper::StopAction
                             :groupname groupname))))
      ))
@@ -127,8 +129,8 @@ This method works only when `type` includes a controller coming from effort_cont
                                            (position #\/ (reverse fjt-name))
                                            1)))
               (srv-name (format nil "~a/gains/~a/set_parameters" cname joint-name)))
-         ;; If fjt-name is "/dual_panda/dual_panda_effort_joint_trajectory_controller/follow_joint_trajectory",
-         ;; cname will be "/dual_panda/dual_panda_effort_joint_trajectory_controller"
+         ;; If fjt-name is "dual_panda/dual_panda_effort_joint_trajectory_controller/follow_joint_trajectory",
+         ;; cname will be "dual_panda/dual_panda_effort_joint_trajectory_controller"
          (if (ros::wait-for-service srv-name 0)
            (progn
              (ros::service-call srv-name req)
