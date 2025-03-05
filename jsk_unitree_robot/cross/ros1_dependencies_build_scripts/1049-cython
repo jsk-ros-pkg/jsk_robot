@@ -1,0 +1,46 @@
+#!/bin/bash
+set -xeu -o pipefail
+
+DEBIAN_DIR=/home/user/ros1_dependencies_sources/src/cython/debian/debian
+SOURCE_DIR=/home/user/ros1_dependencies_sources/src/cython/Cython-0.26.1
+
+cd ${DEBIAN_DIR}/patches
+for patch_file in $(grep -v ^# series); do
+    OUT="$(patch -p1 --forward --directory ${SOURCE_DIR} < ${patch_file} | tee /dev/tty)" || echo "${OUT}" | grep "Skipping patch" -q || (echo "$OUT" && false) || echo "OK"
+done
+
+cd ${SOURCE_DIR}
+
+# mkdir -p /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages/
+# PYTHONPATH="/opt/jsk/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages" \
+#           python2 \
+#           setup.py install \
+# 	  --force --root=/opt/jsk/${INSTALL_ROOT}/ros1_dependencies \
+# 	  --no-compile -O0 --single-version-externally-managed --prefix=./
+
+# fix shebang
+#sed -i -e '1 s,#!.*python.*,#!/usr/bin/python,' /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin/cython
+#sed -i -e '1 s,#!.*python.*,#!/usr/bin/python,' /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin/cygdb
+#sed -i -e '1 s,#!.*python.*,#!/usr/bin/python,' /opt/jsk/${INSTALL_ROOT}/ros1_dependencies/bin/cythonize
+
+###
+### catkin_virtualenv failed with PyYAML,
+### We still do not find the root couse but it fails with source install
+### add following code in docker/Dockerfile_ros1, but it is exceptional.
+### RUN (cd /tmp; apt download cython && dpkg --force-depends -i cython_*.deb)
+### Dockerfile_ros1 is designed to reproduce dog's internal PC and we install cython just to pass build_ros1.sh
+
+ # [ 20%] Lock input requirements if they don't exist                                                                      [ 40%] Install requirements to /home/user/arm64v8_ws_system/build_isolated/test_catkin_virtualenv_python2/venv            ERROR: Command errored out with exit status 1:                                                                           command: /home/user/arm64v8_ws_system/build_isolated/test_catkin_virtualenv_python2/venv/bin/python /home/user/arm64v8_ws_system/build_isolated/test_catkin_virtualenv_python2/venv/local/lib/python2.7/site-packages/pip/_vendor/pep517/_in_process.py get_requires_for_build_wheel /tmp/tmplXEZlo                                                                         cwd: /tmp/pip-install-YKwwFS/pyyaml
+ #  Complete output (46 lines):                                                                                             running egg_info                                                                                                        creating lib/PyYAML.egg-info
+ #  writing lib/PyYAML.egg-info/PKG-INFO
+ #  writing top-level names to lib/PyYAML.egg-info/top_level.txt
+ #  writing dependency_links to lib/PyYAML.egg-info/dependency_links.txt
+ #  writing manifest file 'lib/PyYAML.egg-info/SOURCES.txt'
+ #  Traceback (most recent call last):                                                                                        File "/home/user/arm64v8_ws_system/build_isolated/test_catkin_virtualenv_python2/venv/local/lib/python2.7/site-packages/pip/_vendor/pep517/_in_process.py", line 280, in <module>                                                                 main()                                                 
+ #    File "/home/user/arm64v8_ws_system/build_isolated/test_catkin_virtualenv_python2/venv/local/lib/python2.7/site-packages/setuptools/command/py36compat.py", line 120, in _add_defaults_ext
+ #      self.filelist.extend(build_ext.get_source_files())                                                                    File "setup.py", line 201, in get_source_files
+ #      self.cython_sources(ext.sources, ext)
+ #    File "/usr/lib/python2.7/distutils/cmd.py", line 105, in __getattr__
+ #      raise AttributeError, attr
+ #  AttributeError: cython_sources
+ #  ----------------------------------------
