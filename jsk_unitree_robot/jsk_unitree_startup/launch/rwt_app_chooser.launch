@@ -1,0 +1,9 @@
+<launch>
+  <!-- node to run on pi@raspberrypi, so that we can access by http://192.168.123.161:8000/rwt_app_chooser/#!robot -->
+  <arg name="port" default="9090" />
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+    <arg name="port" value="$(arg port)" />
+  </include>
+  <!-- start roswww on 8000 port -->
+  <include file="$(find rwt_app_chooser)/launch/rwt_app_chooser.launch" />
+</launch>

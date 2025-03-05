@@ -1,0 +1,23 @@
+<launch>
+    <test
+        test-name="test_update_costmap_parameter_recovery"
+        pkg="update_move_base_parameter_recovery"
+        type="test_update_costmap_parameter_recovery.py"
+        name="update_costmap_parameter_recovery_test"
+        time-limit="30"
+        />
+
+    <node
+        pkg="update_move_base_parameter_recovery"
+        type="update_costmap_parameter_recovery_test_node"
+        name="update_costmap_parameter_recovery_test_node"
+        >
+        <rosparam>
+            recovery:
+                parameter_name: '/update_costmap_parameter_recovery_test'
+                footprint: '[[1.0,1.0]]'
+                robot_radius: 1.0
+                footprint_padding: 1.0
+        </rosparam>
+    </node>
+</launch>

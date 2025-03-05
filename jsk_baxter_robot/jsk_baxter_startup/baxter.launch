@@ -14,6 +14,10 @@
   <arg name="launch_spherical_kodak" default="false" />
   <arg name="launch_spherical_stereo" default="false" />
   <arg name="start_openni" default="false"/>
+  <arg name="REALSENSE_CAMERA_NS" value="realsense_torso" />
+  <arg name="SPHERICAL_CAMERA_NS" value="kodak_head" />
+  <arg name="SPHERICAL_LEFT_CAMERA_NS" value="elp_head_left" />
+  <arg name="SPHERICAL_RIGHT_CAMERA_NS" value="elp_head_right" />
 
   <!-- xdisplay -->
   <arg name="custom_xdisplay" default="true" />
@@ -57,6 +61,10 @@
        doc="Deprecated. Please use launch_twitter instead." />
   <arg name="launch_twitter" default="$(arg launch_tweet)"
        doc="launch twitter" />
+  <arg if ="$(arg launch_spherical_stereo)"
+       name="twitter_image_topics" default="/$(arg SPHERICAL_LEFT_CAMERA_NS)/image_raw"/>
+  <arg unless ="$(arg launch_spherical_stereo)"
+       name="twitter_image_topics" default="/cameras/head_camera/image"/>
   <arg name="launch_time_signal" default="true"/>
   <arg name="launch_app_manager" default="true"/>
 
@@ -139,20 +147,20 @@
   <!-- Use realsense L515 on torso -->
   <include if="$(arg launch_realsense_torso)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_torso.launch">
-    <arg name="realsense_camera_ns" value="realsense_torso" />
+    <arg name="realsense_camera_ns" value="$(arg REALSENSE_CAMERA_NS)" />
   </include>
 
   <!-- Use spherical kodak on head -->
   <include if="$(arg launch_spherical_kodak)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_spherical_kodak.launch">
-    <arg name="spherical_camera_ns" value="kodak_head" />
+    <arg name="spherical_camera_ns" value="$(arg SPHERICAL_CAMERA_NS)" />
   </include>
 
   <!-- Use spherical stereo on head -->
   <include if="$(arg launch_spherical_stereo)"
            file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_spherical_stereo.launch">
-    <arg name="spherical_left_camera_ns" value="elp_head_left" />
-    <arg name="spherical_right_camera_ns" value="elp_head_right" />
+    <arg name="spherical_left_camera_ns" value="$(arg SPHERICAL_LEFT_CAMERA_NS)" />
+    <arg name="spherical_right_camera_ns" value="$(arg SPHERICAL_RIGHT_CAMERA_NS)" />
   </include>
 
   <!-- Fix camera info -->
@@ -187,6 +195,7 @@
     </include>
     <include file="$(find jsk_baxter_startup)/jsk_baxter_lifelog/db_client.launch" >
       <arg name="twitter" value="$(arg launch_twitter)"/>
+      <arg name="twitter_image_topics" value="$(arg twitter_image_topics)"/>
     </include>
   </group>
 

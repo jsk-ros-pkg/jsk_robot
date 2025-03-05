@@ -21,7 +21,8 @@ class CorrectPosition(ConnectionBasedTransport):
         if robot_name == 'fetch15':
             dock_name = '/eng2/7f/room73B2-fetch-dock-front'
         elif robot_name == 'fetch1075':
-            dock_name = '/eng2/7f/room73B2-fetch-dock-entrance'
+            dock_name = '/eng2/7f/room73B2-fetch-dock2-front'
+            # dock_name = '/eng2/7f/room73B2-fetch-dock-entrance'
         for spot in spots.markers:
             if spot.text == dock_name:
                 self.dock_pose = spot.pose

@@ -26,6 +26,7 @@
     <arg name="save_joint_states" value="true" />
     <arg name="save_base_trajectory" value="true" />
     <arg name="save_object_detection" value="false" />
+    <arg name="save_speech" value="true" />
     <arg name="save_action" value="true" />
     <arg name="camera_ns" value="head_camera" />
     <arg name="enable_monitor" value="false" />
@@ -36,6 +37,13 @@
     <arg name="base_frame_id" value="base_link" />
     <arg name="vital_check" value="$(arg vital_check)" />
   </include>
+
+  <rosparam ns="lifelog/speech_logger">
+    topics:
+    - /sound_play/goal
+    - /robotsound_jp/goal
+    - /speech_to_text
+  </rosparam>
 
   <rosparam ns="lifelog/joint_states_throttle">
     periodic: false

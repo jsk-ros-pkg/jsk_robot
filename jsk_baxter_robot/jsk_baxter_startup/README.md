@@ -53,6 +53,18 @@ roseus baxter-softhand-interface.l
 (baxter-init)
 ```
 
+### Rosbag record
+
+```bash
+roslaunch jsk_baxter_startup baxter_rosbag_record.launch
+```
+
+### Rosbag play
+
+```bash
+roslaunch jsk_baxter_startup baxter_rosbag_play.launch
+```
+
 ## ROS nodes
 
 ### xdisplay\_image\_topic.py

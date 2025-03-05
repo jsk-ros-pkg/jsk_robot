@@ -1,0 +1,71 @@
+define block model
+(
+  size [0.500 0.500 0.750]
+  gui_nose 0
+)
+
+define topurg ranger
+(
+  sensor(
+    range_max 30.0
+    fov 270.25
+    samples 1081
+  )
+  # generic model properties
+  color "black"
+  size [ 0.050 0.050 0.100 ]
+)
+
+define pr2 position
+(
+  size [0.650 0.650 0.250]
+  origin [-0.050 0.000 0.000 0.000]
+  gui_nose 1
+  drive "omni"
+  topurg(pose [ 0.275 0.000 0.000 0.000 ])
+)
+
+define floorplan model
+(
+  # sombre, sensible, artistic
+  color "gray30"
+
+  # most maps will need a bounding box
+  boundary 1
+
+  gui_nose 0
+  gui_grid 0
+
+  gui_outline 0
+  gripper_return 0
+  fiducial_return 0
+  ranger_return 1.000
+)
+
+# set the resolution of the underlying raytrace model in meters
+resolution 0.02
+
+interval_sim 100  # simulation timestep in milliseconds
+
+
+window
+( 
+  size [ 960 1025 ] 
+
+  rotate [ 0.000 91.940 ]
+  scale 59.023 
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "willow"
+  bitmap "willow-full-0.05.pgm"
+  size [58.250 47.250 1.000]
+  pose [ -23.625 29.125 0.000 90.000 ]
+)
+
+# throw in a robot
+pr2( pose [ -27.017 50.665 0.000 179.107 ] name "pr2" color "blue")
+block( pose [ -31.850 48.364 0.000 137.028 ] color "red")
+block( pose [ -28.162 51.631 0.000 -174.271 ] color "yellow")

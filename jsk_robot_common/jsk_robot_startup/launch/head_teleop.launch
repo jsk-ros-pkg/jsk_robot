@@ -1,0 +1,46 @@
+<launch>
+  <arg name="launch_joy_node" default="true" />
+  <arg name="joy_dev" default="/dev/input/js0" />
+  <arg name="joy_topic_raw" default="/joy_head/joy_raw" />
+  <arg name="joy_topic_complemented" default="/joy_head/joy_complemented" />
+  <arg name="cmd_vel_topic" default="joy_head/cmd_vel" />
+  <arg name="deadzone" default="0.3" />
+  <arg name="autorepeat_rate" default="20" />
+
+  <arg name="joy_name_space" default="/" />
+  <arg name="teleop_twist_joy_param_file" default="$(find jsk_robot_startup)/config/head_teleop_twist_joy.yaml" />
+  <arg name="joystick_teleop_param_file" default="$(find jsk_robot_startup)/config/head_joystick_teleop.yaml" />
+  <arg name="pass_through" default="false"
+       doc="pass through joy data, set true to enable dog-like interface" />
+
+  <group if="$(arg launch_joy_node)" >
+    <node pkg="joy" type="joy_node" name="joy_node">
+      <param name="dev" value="$(arg joy_dev)" />
+      <param name="deadzone" value="$(arg deadzone)" />
+      <param name="autorepeat_rate" value="20" />
+
+      <remap from="joy" to="$(arg joy_topic_raw)" />
+    </node>
+  </group>
+  <!-- node to set enable button -->
+  <!-- <node pkg="topic_tools" name="enabele_button" type="transform" -->
+  <!--       args="$(arg joy_topic_raw) $(arg joy_topic_complemented) -->
+  <!--             sensor_msgs/Joy -->
+  <!--             'sensor_msgs.msg.Joy(header=m.header,axes=m.axes,buttons=[1])' -->
+  <!--             -\-import sensor_msgs" /> -->
+  <node pkg="jsk_robot_startup" type="head_teleop_joy_completion.py" name="head_teleop_joy_completion">
+    <remap from="~joy_input" to="$(arg joy_topic_raw)" />
+    <remap from="~joy_output" to="$(arg joy_topic_complemented)" />
+
+    <param name="~pass_through" value="$(arg pass_through)" />
+    <rosparam command="load" file="$(arg teleop_twist_joy_param_file)" />
+  </node>
+
+  <include file="$(find jsk_robot_startup)/launch/quadruped_joystick_teleop.launch" >
+    <arg name="launch_joy_node" default="false" />
+    <arg name="joy_topic" default="$(arg joy_topic_complemented)" />
+    <arg name="joy_name_space" default="$(arg joy_name_space)" />
+    <arg name="teleop_twist_joy_param_file" default="$(arg teleop_twist_joy_param_file)" />
+    <arg name="joystick_teleop_param_file" default="$(arg joystick_teleop_param_file)" />
+  </include>
+</launch>

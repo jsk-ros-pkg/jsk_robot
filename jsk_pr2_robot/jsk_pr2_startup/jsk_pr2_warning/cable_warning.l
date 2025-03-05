@@ -19,6 +19,13 @@
 
 (defun move-base-command-cb (msg)
   (cond
+   ((and (= (send msg :linear :x) 0)
+         (= (send msg :linear :y) 0)
+         (= (send msg :linear :z) 0)
+         (= (send msg :angular :x) 0)
+         (= (send msg :angular :y) 0)
+         (= (send msg :angular :z) 0))
+    (ros::publish "/base_controller/command" msg))
    ((and *check-power-p* *ac*)
     (when (< *ac-warning-sec* (send (ros::time- (ros::time-now) *ac-warning-time*) :to-sec))
       (setq *ac-warning-time* (ros::time-now))

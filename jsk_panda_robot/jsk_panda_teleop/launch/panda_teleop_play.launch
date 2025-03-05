@@ -1,0 +1,15 @@
+<launch>
+  <arg name="bagfile_name" />
+  <arg name="rosbag_option" default="" />
+  <arg name="rviz" default="true" />
+
+  <include file="$(find jsk_panda_startup)/launch/dual_panda1_play.launch">
+    <arg name="bagfile_name" value="$(arg bagfile_name)" />
+    <arg name="rosbag_option" value="$(arg rosbag_option)" />
+    <arg name="rviz" value="false" />
+  </include>
+
+  <group if="$(arg rviz)">
+    <node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find jsk_panda_teleop)/config/rviz/dual_panda1.rviz" />
+  </group>
+</launch>

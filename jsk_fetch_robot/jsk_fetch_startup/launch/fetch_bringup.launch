@@ -1,6 +1,5 @@
 <launch>
   <arg name="hostname" default="fetch15" />
-  <arg name="launch_moveit" default="true" />
   <arg name="launch_teleop" default="true" />
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
@@ -115,15 +114,6 @@
   <include file="$(find jsk_fetch_startup)/launch/fetch_sensors.xml" >
     <arg name="launch_manager" value="false"/>
   </include>
-
-  <!-- include fetch moveit -->
-  <group if="$(arg launch_moveit)">
-    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
-    <!-- overwrite fetch.srdf -->
-    <!-- The semantic description that corresponds to the URDF -->
-    <param name="robot_description_semantic"
-           command="rosrun xacro xacro --inorder $(find jsk_fetch_startup)/launch/moveit/fetch.srdf.xacro" />
-  </group>
 
   <!-- teleop -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_teleop.xml"
@@ -260,6 +250,13 @@
 
   <!-- send email by rostopic -->
   <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+    <rosparam>
+      email_info: /var/lib/robot/email_topic.yaml
+    </rosparam>
+  </node>
+
+  <!-- send email, twitter with smach -->
+  <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
     <rosparam>
       email_info: /var/lib/robot/email_topic.yaml
     </rosparam>

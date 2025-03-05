@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"
+       name="dual_panda" >
+
+  <xacro:include filename="$(find panda_eus)/models/dual_panda.urdf.xacro" />
+
+  <!-- head camera -->
+  <!-- TODO: intrinsic param calibration -> extrinsic param calibration -->
+  <link name="head_camera_link" />
+  <joint name="head_camera_fixed_joint" type="fixed">
+    <parent link="dual_arm_base"/>
+    <child link="head_camera_link" />
+    <origin xyz="-0.26 -0.01 1.45" rpy="0 0.38 0" />
+  </joint>
+
+</robot>
