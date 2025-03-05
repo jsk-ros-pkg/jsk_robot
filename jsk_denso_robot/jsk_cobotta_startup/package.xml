@@ -15,6 +15,10 @@
   <run_depend>bcap_service</run_depend>
   <run_depend>denso_robot_control</run_depend>
   <run_depend>denso_robot_descriptions</run_depend>
+  <run_depend>denso_cobotta_control</run_depend>
+  <run_depend>denso_cobotta_descriptions</run_depend>
+  <run_depend>denso_cobotta_driver</run_depend>
+  <run_depend>denso_cobotta_gripper</run_depend>
   <run_depend>cobottaeus</run_depend>
   <run_depend>robot_state_publisher</run_depend>
   <run_depend>rviz</run_depend>

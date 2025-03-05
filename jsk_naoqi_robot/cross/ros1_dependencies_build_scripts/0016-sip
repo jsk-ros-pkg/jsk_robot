@@ -1,0 +1,5 @@
+set -euf -o pipefail
+cd src/sip/sip4-4.17+dfsg.orig/
+python configure.py --destdir=/home/nao/${INSTALL_ROOT}/ros1_dependencies/lib/python2.7/site-packages --bindir=/home/nao/${INSTALL_ROOT}/ros1_dependencies/bin  --incdir=/home/nao/${INSTALL_ROOT}/ros1_dependencies/include/python2.7
+
+make -j4 install CC=${CC} CXX=${CXX} LINK=${LINK} CFLAGS="${CFLAGS}"

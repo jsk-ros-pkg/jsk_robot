@@ -1,7 +1,7 @@
 - git:
     local-name: jsk_robot
-    uri: https://github.com/k-okada/jsk_robot.git
-    version: add_cobotta
+    uri: https://github.com/jsk-ros-pkg/jsk_robot.git
+    version: master
 - git:
     local-name: denso_cobotta_ros
     uri: https://github.com/DENSORobot/denso_cobotta_ros

@@ -17,3 +17,10 @@
     local-name: jsk-ros-pkg/jsk_demos/jsk_maps
     uri: https://github.com/tork-a/jsk_demos-release/archive/release/melodic/jsk_maps/0.0.5-1.tar.gz
     version: jsk_demos-release-release-melodic-jsk_maps-0.0.5-1
+# use naoqi_pose, wait for melodic release https://github.com/ros-naoqi/naoqi_bridge/issues/94
+# use naoqi_apps, wait for merge https://github.com/ros-naoqi/naoqi_bridge/pull/95 & https://github.com/ros-naoqi/naoqi_bridge/pull/96
+# see https://github.com/jsk-ros-pkg/jsk_robot/pull/1718
+- git:
+   local-name: naoqi_bridge
+   uri: https://github.com/kochigami/naoqi_bridge.git
+   version: kochigami-develop

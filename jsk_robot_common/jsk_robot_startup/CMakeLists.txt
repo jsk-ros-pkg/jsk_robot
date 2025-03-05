@@ -53,12 +53,14 @@ generate_dynamic_reconfigure_options(
   cfg/OdometryFeedbackWrapperReconfigure.cfg
   cfg/ConstantHeightFramePublisherReconfigure.cfg
   cfg/JointStatesThrottle.cfg
+  cfg/SmachNotificationReconfigure.cfg
 )
 
 add_message_files(
   FILES
   RoomLight.msg
   Email.msg
+  EmailBody.msg
 )
 
 generate_messages(
@@ -122,9 +124,31 @@ target_link_libraries(joint_states_throttle
   ${catkin_LIBRARIES})
 add_dependencies(joint_states_throttle ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
 
+if($ENV{ROS_DISTRO} STRGREATER "indigo") # quadruped_joystick_teleop.cpp uses c++11 and also msg.volume
+  add_executable(quadruped_joystick_teleop
+    src/quadruped_joystick_teleop.cpp)
+  target_link_libraries(quadruped_joystick_teleop
+    ${Boost_LIBRARIES}
+    ${catkin_LIBRARIES})
+  add_dependencies(quadruped_joystick_teleop ${PROJECT_NAME}_gencpp ${PROJECT_NAME}_gencfg)
+  install(TARGETS quadruped_joystick_teleop
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    )
+endif()
+
 install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
+file(GLOB_RECURSE SCRIPT_PROGRAMS lifelog/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  endif()
+endforeach()
 
 if(mongodb_store_FOUND)
 install(TARGETS jsk_robot_lifelog

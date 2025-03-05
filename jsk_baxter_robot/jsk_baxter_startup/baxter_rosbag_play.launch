@@ -1,0 +1,94 @@
+<launch>
+  <arg name="rosbag" />
+  <arg name="launch_rviz" default="true" />
+  <arg name="loop" default="true" />
+  <arg name="lgripper_type" default="softhand" />
+  <arg name="rgripper_type" default="softhand" />
+  <arg name="manager" default="rosbag_play_nodelet_manager" />
+
+  <!-- rosbag flag -->
+  <arg name="loop_flag" value="--loop" if="$(arg loop)" />
+  <arg name="loop_flag" value="" unless="$(arg loop)" />
+
+  <!-- gripper and display-->
+  <arg name="finger" default="standard_narrow" />
+  <arg name="finger_tip" default="paddle_tip" />
+  <arg name="left_electric_gripper" default="$(eval arg('lgripper_type') == 'parallel')" />
+  <arg name="right_electric_gripper" default="$(eval arg('rgripper_type') == 'parallel')" />
+
+  <!-- realsense camera -->
+  <arg name="REALSENSE_CAMERA_NS" value="realsense_torso"/>
+  <arg name="REALSENSE_RGB_IMAGE" value="/$(arg REALSENSE_CAMERA_NS)/color/image_rect_color" />
+  <arg name="REALSENSE_RGB_CAMERA_INFO" value="/$(arg REALSENSE_CAMERA_NS)/color/camera_info" />
+  <arg name="REALSENSE_DEPTH_IMAGE"
+       value="/$(arg REALSENSE_CAMERA_NS)/aligned_depth_to_color/compressed/image_raw" />
+  <arg name="REALSENSE_DEPTH_CAMERA_INFO"
+       value="/$(arg REALSENSE_CAMERA_NS)/aligned_depth_to_color/compressed/camera_info" />
+
+  <!-- spherical camera -->
+  <arg name="SPHERICAL_CAMERA_NS" value="kodak_head" />
+  <arg name="SPHERICAL_RGB_IMAGE" value="/$(arg SPHERICAL_CAMERA_NS)/image_raw" />
+
+  <!-- spherical stereo camera -->
+  <arg name="SPHERICAL_LEFT_CAMERA_NS" value="elp_head_left" />
+  <arg name="SPHERICAL_RIGHT_CAMERA_NS" value="elp_head_right" />
+  <arg name="SPHERICAL_LEFT_RGB_IMAGE" value="/$(arg SPHERICAL_LEFT_CAMERA_NS)/image_raw" />
+  <arg name="SPHERICAL_RIGHT_RGB_IMAGE" value="/$(arg SPHERICAL_RIGHT_CAMERA_NS)/image_raw" />
+
+  <!-- baxter params -->
+  <param name="/use_sim_time" value="true" />
+  <param name="/robot_description"
+         command="$(find xacro)/xacro --inorder
+                  $(find jsk_baxter_startup)/jsk_baxter_description/baxter.urdf.xacro
+                  gazebo:=false finger:=$(arg finger) finger_tip:=$(arg finger_tip)
+                  left_electric_gripper:=$(arg left_electric_gripper)
+                  right_electric_gripper:=$(arg right_electric_gripper)" />
+
+  <!-- rosbag play -->
+  <node pkg="rosbag" type="play" name="rosbag_play"
+        args="$(arg rosbag) $(arg loop_flag) --clock" output="screen" />
+
+  <!-- robot state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="joint_states" to="/robot/joint_states"/>
+  </node>
+
+  <!-- nodelet manager -->
+  <node pkg="nodelet" type="nodelet" name="$(arg manager)" args="manager" output="screen" />
+
+  <!-- realsense rgb, depth and pointcloud -->
+  <node name="realsense_rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg REALSENSE_RGB_IMAGE)
+              raw out:=$(arg REALSENSE_RGB_IMAGE)" />
+  <node name="realsense_depth_decompress" pkg="image_transport" type="republish"
+        args="compressedDepth in:=$(arg REALSENSE_DEPTH_IMAGE)
+              raw out:=$(arg REALSENSE_DEPTH_IMAGE)" />
+  <node name="realsense_point_cloud_xyzrgb" pkg="nodelet" type="nodelet"
+        args="load depth_image_proc/point_cloud_xyzrgb $(arg manager)" output="screen" >
+    <remap from="rgb/camera_info" to="$(arg REALSENSE_RGB_CAMERA_INFO)" />
+    <remap from="rgb/image_rect_color" to="$(arg REALSENSE_RGB_IMAGE)" />
+    <remap from="depth_registered/image_rect" to="$(arg REALSENSE_DEPTH_IMAGE)" />
+    <remap from="depth_registered/points" to="/$(arg REALSENSE_CAMERA_NS)/depth_registered/points" />
+    <rosparam>
+      queue_size: 100
+    </rosparam>
+  </node>
+
+  <!-- spherical rgb -->
+  <node name="spherical_rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg SPHERICAL_RGB_IMAGE)
+              raw out:=$(arg SPHERICAL_RGB_IMAGE)" />
+
+  <!-- spherical stereo rgb -->
+  <node name="spherical_left_rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg SPHERICAL_LEFT_RGB_IMAGE)
+              raw out:=$(arg SPHERICAL_LEFT_RGB_IMAGE)" />
+  <node name="spherical_right_rgb_decompress" pkg="image_transport" type="republish"
+        args="compressed in:=$(arg SPHERICAL_RIGHT_RGB_IMAGE)
+              raw out:=$(arg SPHERICAL_RIGHT_RGB_IMAGE)" />
+
+  <!-- launch rviz -->
+  <node if="$(arg launch_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz"
+        args="-d $(find jsk_baxter_startup)/config/baxter_default.rviz" />
+
+</launch>

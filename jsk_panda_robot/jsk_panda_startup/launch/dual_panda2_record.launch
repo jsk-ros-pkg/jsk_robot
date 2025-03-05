@@ -1,0 +1,24 @@
+<launch>
+  <arg name="save_dir" default="/tmp/panda_rosbag"/>
+  <arg name="bagfile_prefix" default="data" />
+  <arg name="other_topics" default=""/>
+  <arg name="quiet" default="true"/>
+  <arg name="machine" default="localhost" />
+
+  <include file="$(find jsk_panda_startup)/launch/dual_panda_record.xml">
+    <arg name="save_dir" value="$(arg save_dir)" />
+    <arg name="bagfile_prefix" value="$(arg bagfile_prefix)" />
+    <arg name="quiet" value="$(arg quiet)" />
+    <arg name="machine" value="$(arg machine)" />
+    <arg name="other_topics" value="$(arg other_topics)
+                                    /larm_camera/color/camera_info
+                                    /larm_camera/color/image_raw/compressed
+                                    /larm_camera/depth/camera_info
+                                    /larm_camera/depth/image_rect_raw/compressedDepth
+                                    /rarm_camera/color/camera_info
+                                    /rarm_camera/color/image_raw/compressed
+                                    /rarm_camera/depth/camera_info
+                                    /rarm_camera/depth/image_rect_raw/compressedDepth
+                                    " />
+  </include>
+</launch>

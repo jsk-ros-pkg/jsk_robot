@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<robot name="head_l515">
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+  <disable_collisions link1="head_tilt_link" link2="head_l515_mount_link" reason="Never" />
+  <disable_collisions link1="head_tilt_link" link2="l515_head_link" reason="Never" />
+  <disable_collisions link1="head_pan_link" link2="head_l515_mount_link" reason="Never" />
+  <disable_collisions link1="head_pan_link" link2="l515_head_link" reason="Never" />
+</robot>
