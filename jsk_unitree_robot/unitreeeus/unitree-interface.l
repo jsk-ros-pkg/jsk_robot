@@ -36,7 +36,7 @@
   (:init
    (&rest args)
    (prog1
-       (send-super* :init :robot go1_description-robot :base-frame-id "base_lk" :odom-topic "/odom_combined" :base-controller-action-name nil args)
+       (send-super* :init :robot go1-robot :base-frame-id "base_lk" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      (setq body-pose-topic "/go1/body_pose")
      (ros::advertise body-pose-topic geometry_msgs::Pose 1)
      (setq cmd-vel-topic "/go1/cmd_vel")

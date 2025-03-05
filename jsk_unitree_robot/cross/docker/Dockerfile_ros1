@@ -31,19 +31,18 @@ RUN git clone https://github.com/k-okada/rosinstall_generator /tmp/rosinstall_ge
 RUN pip install /tmp/rosinstall_generator
 RUN apt install -y python3-vcstool
 #
-# Setup Users
+# add tool for users
 #
-ARG UID=1000
 RUN apt-get install -y sudo
-RUN useradd --uid $UID -ms /bin/bash -G sudo user
-RUN newgrp
-RUN echo user:user | chpasswd
 #
 # Remove packages is not found on 161
 #
 RUN dpkg -r --force-depends cython gir1.2-gstreamer-1.0 libtinyxml-dev python-attr python-autobahn python-automat python-cbor python-concurrent.futures python-constantly python-constantly python-incremental python-lz4 python-nacl python-pyasn1 python-pyasn1-modules python-qrcode python-service-identity python-snappy python-trie python-trollius python-twisted-bin python-twisted-core python-twisted python-txaio python-ubjson python-u-msgpack python-wsaccel python-zope.interface
 #
+# Add cython, which we need to compile packages with catkin_virtualenv, not sure why 1049-cython works...
+RUN (cd /tmp; apt download cython && dpkg --force-depends -i cython_*.deb)
 #
 #
-WORKDIR /home/user
-USER user
+ADD entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

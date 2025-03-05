@@ -20,6 +20,9 @@ user:
 install:
 	./install.sh
 
+compress:
+	./compress.sh
+
 clean:
 	rm -fr ${TARGET_MACHINE}_ws_*
 
