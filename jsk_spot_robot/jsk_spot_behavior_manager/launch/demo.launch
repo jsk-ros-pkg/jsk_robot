@@ -1,0 +1,23 @@
+<launch>
+    <arg name="initial_node_id" default="eng2_73B2_dock" />
+
+    <!-- behahvior_executor_server for autonomous walking -->
+    <node
+        pkg="jsk_spot_behavior_manager"
+        type="behavior_manager_server.py"
+        name="spot_behavior_manager_server"
+        output="screen"
+        >
+
+        <rosparam
+            ns="map"
+            file="/home/sktometometo/behavior_graph/graph.yaml"
+            subst_value="true"
+            />
+
+        <rosparam subst_value="true">
+            initial_node_id: '$(arg initial_node_id)'
+            silent_mode: true
+        </rosparam>
+    </node>
+</launch>
