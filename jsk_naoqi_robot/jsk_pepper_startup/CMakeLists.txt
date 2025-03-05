@@ -3,11 +3,21 @@ project(jsk_pepper_startup)
 
 find_package(catkin REQUIRED COMPONENTS)
 
+catkin_python_setup()
+
 catkin_package()
 
-install(DIRECTORY launch nodes sample
+install(DIRECTORY launch nodes sample apps config
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
+file(GLOB_RECURSE SCRIPT_PROGRAMS script/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/script)
+  endif()
+endforeach()
 
 if(CATKIN_ENABLE_TESTING AND NOT $ENV{ROS_DISTRO} STREQUAL "hydro")
   find_package(catkin REQUIRED COMPONENTS rostest roslaunch)

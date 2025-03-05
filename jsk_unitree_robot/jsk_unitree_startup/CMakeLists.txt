@@ -14,7 +14,15 @@ catkin_package()
 #############
 ## Install ##
 #############
-install(DIRECTORY config launch
+file(GLOB_RECURSE SCRIPT_PROGRAMS scripts/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts)
+  endif()
+endforeach()
+install(DIRECTORY config launch apps autostart ino
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 

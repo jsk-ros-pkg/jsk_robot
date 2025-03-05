@@ -9,7 +9,9 @@ catkin_add_env_hooks(99.jsk_pr2_startup SHELLS bash zsh
 
 install(DIRECTORY config jsk_pr2_image_transport
   jsk_pr2_joy jsk_pr2_lifelog jsk_pr2_move_base jsk_pr2_moveit
+  jsk_pr2_perception jsk_pr2_rocon jsk_pr2_teleop
   jsk_pr2_sensors jsk_pr2_warning src sample
+  apps
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 file(GLOB _LAUNCH_FILES ${PROJECT_SOURCE_DIR}/ *.launch) # add / to avoid to get current directory
@@ -18,5 +20,5 @@ foreach(_LAUNCH_FILE ${_LAUNCH_FILES})
       DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 endforeach()
 
-install(FILES install_pr1040_description.sh jsk_pr2.machine plugin.xml startup.app
+install(FILES iai_kitchen.rosinstall jsk_pr2.rosinstall install_pr1040_description.sh jsk_pr2.machine plugin.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

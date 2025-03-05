@@ -1,0 +1,16 @@
+<launch>
+  <arg name="image" default="hand_color" doc="image to set object location [frontleft, frontright, left, right, hand_color]" />
+  <arg name="distance" default="0.5" doc="final distance to walk to object" />
+  
+  <node pkg="image_view2" type="image_view2" name="image_view_for_pick_object" >
+    <remap from="image" to="/spot/camera/$(arg image)/image" />
+    <param name="~image_transport" value="compressed" />
+  </node>
+
+  <node pkg="jsk_spot_startup" type="sample_walk_to_point_in_image.py" name="sample_walk_to_point_in_image" output="screen" >
+    <remap from="screenpoint" to="/spot/camera/$(arg image)/image/screenpoint" />
+    <param name="~image_source" value="$(arg image)" />
+    <param name="~distance" value="$(arg distance)" />
+  </node>
+  
+</launch>
