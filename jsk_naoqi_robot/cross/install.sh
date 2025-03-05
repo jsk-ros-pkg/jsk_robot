@@ -79,11 +79,12 @@ function copy_data () {
 
     if [[ "${TARGET_DIRECTORY}" == "System" ]]; then
         sed -i 's@if 0:@if 1:@' i386_System/Python-2.7.17/lib/python2.7/site-packages/rosdep2/sources_list.py
-        sshpass -p $PASS ssh -t ${user}@${hostname} bash -x -c 'test -e .ros/rosdep/sources.cache/index && exit 0; source User/user_setup.bash; export ROS_ETC_DIR=User/etc; rosdep init; rosdep update'
     fi
 
     if [[ "${TARGET_DIRECTORY}" == "User" ]]; then
-        sshpass -p $PASS ssh -t ${user}@${hostname} bash -c 'mkdir -p .local/share/PackageManager/apps/img/html/; cp -r User/src/jsk_robot/jsk_naoqi_robot/jsk_pepper_startup/apps/meeting/image/* .local/share/PackageManager/apps/img/html/'
+        ##  add ls; then run your command ???? https://stackoverflow.com/a/33107011
+        sshpass -p $PASS ssh -t ${user}@${hostname} bash -c 'ls; test -e .ros/rosdep/sources.cache/index && exit 0; echo "OK"; source User/user_setup.bash; export ROS_ETC_DIR=User/etc; rosdep init; rosdep update'
+        sshpass -p $PASS ssh -t ${user}@${hostname} bash -c 'ls; mkdir -p .local/share/PackageManager/apps/img/html/; cp -r User/src/jsk_robot/jsk_naoqi_robot/jsk_pepper_startup/apps/meeting/image/* .local/share/PackageManager/apps/img/html/'
     fi
 }
 

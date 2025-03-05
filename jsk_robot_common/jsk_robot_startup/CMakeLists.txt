@@ -53,6 +53,7 @@ generate_dynamic_reconfigure_options(
   cfg/OdometryFeedbackWrapperReconfigure.cfg
   cfg/ConstantHeightFramePublisherReconfigure.cfg
   cfg/JointStatesThrottle.cfg
+  cfg/SmachNotificationReconfigure.cfg
 )
 
 add_message_files(
@@ -140,6 +141,14 @@ endif()
 install(DIRECTORY lifelog util launch images config cfg
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
+file(GLOB_RECURSE SCRIPT_PROGRAMS lifelog/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+  endif()
+endforeach()
 
 if(mongodb_store_FOUND)
 install(TARGETS jsk_robot_lifelog

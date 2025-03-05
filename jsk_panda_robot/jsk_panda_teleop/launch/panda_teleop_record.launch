@@ -1,0 +1,31 @@
+<launch>
+  <arg name="save_dir" default="/tmp/panda_rosbag"/>
+  <arg name="bagfile_prefix" default="data" />
+  <arg name="other_topics" default=""/>
+  <arg name="quiet" default="true"/>
+  <arg name="machine" default="localhost" />
+
+  <include file="$(find jsk_panda_startup)/launch/dual_panda1_record.launch">
+    <arg name="save_dir" value="$(arg save_dir)" />
+    <arg name="bagfile_prefix" value="$(arg bagfile_prefix)" />
+    <arg name="quiet" value="$(arg quiet)" />
+    <arg name="machine" value="$(arg machine)" />
+    <arg name="other_topics" value="$(arg other_topics)
+                                    /dual_panda/larm/status_overlay
+                                    /dual_panda/rarm/status_overlay
+                                    /dual_panda/larm_cartesian_impedance_controller/equilibrium_pose
+                                    /dual_panda/rarm_cartesian_impedance_controller/equilibrium_pose
+                                    /dual_panda/larm_ee_frame
+                                    /dual_panda/rarm_ee_frame
+                                    /synced/dual_panda/larm_cartesian_impedance_controller/equilibrium_pose
+                                    /synced/dual_panda/rarm_cartesian_impedance_controller/equilibrium_pose
+                                    /synced/dual_panda/larm_ee_frame
+                                    /synced/dual_panda/rarm_ee_frame
+                                    /synced/head_camera/rgb/image_raw/compressed
+                                    /synced/dual_panda/joint_states
+                                    /synced/dual_panda/rarm_state_controller/F_ext
+                                    /synced/right_camera/image_raw/compressed
+                                    /synced/audio
+                                    " />
+  </include>
+</launch>

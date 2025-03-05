@@ -1,0 +1,24 @@
+aero:
+    - 'jsk_aero_robot/**'
+baxter:
+    - 'jsk_baxter_robot/**'
+cobotta:
+    - 'jsk_denso_robot/**'
+Fetch:
+    - 'jsk_fetch_robot/**'
+jsk_robot_startup:
+    - 'jsk_robot_common/jsk_robot_startup/**'
+naoqi:
+    - 'jsk_naoqi_robot/**'
+magni:
+    - 'jsk_magni_robot/**'
+kinova:
+    - 'jsk_kinova_robot/**'
+panda:
+    - 'jsk_panda_robot/**'
+spot:
+    - 'jsk_spot_robot/**'
+Unitree:
+    - 'jsk_unitree_robot/**'
+PR2:
+    - 'jsk_pr2_robot/**'
