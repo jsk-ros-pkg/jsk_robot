@@ -22,11 +22,11 @@
 
 (defclass fetch-interface
   :super robot-move-base-interface
-  :slots (gripper-action moveit-robot fetch-controller-action)
+  :slots (gripper-action moveit-robot fetch-controller-action point-head-action)
   )
 
 (defmethod fetch-interface
-  (:init (&key (default-collision-object t) &rest args)
+  (:init (&rest args &key (default-collision-object t) &allow-other-keys)
    (prog1 (send-super* :init :robot fetch-robot :base-frame-id "base_link" :odom-topic "/odom_combined" :base-controller-action-name nil args)
      (send self :add-controller :arm-controller)
      (send self :add-controller :torso-controller)
@@ -43,16 +43,18 @@
      (setq moveit-robot (instance fetch-robot :init))
      (send self :set-moveit-environment (instance fetch-moveit-environment :init :robot moveit-robot))
      (when (and (boundp '*co*) default-collision-object)
-       (send self :delete-headbox-collision-object)
        (send self :delete-keepout-collision-object)
        (send self :delete-ground-collision-object)
-       (send self :add-headbox-collision-object)
        (send self :add-keepout-collision-object)
        (send self :add-ground-collision-object))
      (setq fetch-controller-action
            (instance ros::simple-action-client :init
                      "/query_controller_states"
                      robot_controllers_msgs::QueryControllerStatesAction))
+     (setq point-head-action
+           (instance ros::simple-action-client :init
+                     "/head_controller/point_head"
+                     control_msgs::PointHeadAction))
      ))
   (:state (&rest args)
    "We do not have :wait-until-update option for :state :worldcoords.
@@ -131,8 +133,8 @@ Example usage:
                             (subseq args (+ (position :use-torso args) 2))))))
      (return-from :angle-vector (send* self :angle-vector-raw av tm ctype start-time args)))
    ;;
-   (when (not (numberp tm))
-     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args"))
+   (when (and (not (numberp tm)) (not (eql tm :fast)))
+     (ros::warn ":angle-vector tm is not a number, use :angle-vector av tm args~%"))
    (send* self :angle-vector-motion-plan av :ctype ctype :move-arm :rarm :total-time tm
                :start-offset-time (if start-offset-time start-offset-time start-time)
                :clear-velocities clear-velocities :use-torso use-torso args)))
@@ -205,6 +207,17 @@ Example usage:
   (:stop-grasp
     (&rest args &key &allow-other-keys)
     (send* self :go-grasp :pos 0.1 args))
+  (:point-head (pos &key (frame-id "base_link") (wait t))
+    (let ((goal (instance control_msgs::PointHeadGoal :init)))
+      (send goal :target :header :stamp (ros::time-now))
+      (send goal :target :header :frame_id frame-id)
+      (send goal :target :point (ros::pos->tf-point pos))
+      (if wait
+          (send point-head-action :send-goal goal)
+        (send point-head-action :send-goal-and-wait goal)
+        )
+      )
+    )
   (:go-grasp
     (&key (pos 0) (effort 50) (wait t))
     (when (send self :simulation-modep)
@@ -257,18 +270,6 @@ Example: (send self :gripper :position) => 0.00"
   (:delete-workspace ()
     (send *co* :delete-attached-object-by-id "workspace")
     (send *co* :delete-object-by-id "workspace"))
-  (:add-headbox-collision-object ()
-    (let ()
-      ;; fetch must be :reset-pose when we run this method
-      (setq *fetch-headbox* (make-cube 100 201 120))
-      (send *fetch-headbox* :move-coords (send robot :head_pan_link_lk :worldcoords)
-                                         (send robot :base_link_lk :worldcoords))
-      (send *fetch-headbox* :translate #f(33.75 0 150) (send robot :head_pan_link_lk :worldcoords))
-      (send *co* :add-attached-object *fetch-headbox* "head_pan_link"
-                 :frame_id "head_pan_link"
-                 :object_id "fetchheadbox")))
-  (:delete-headbox-collision-object ()
-    (send *co* :delete-attached-object-by-id "fetchheadbox"))
   (:add-keepout-collision-object ()
     (let ((cube (make-cube 200 350 10))
           (keepout (make-cylinder 300 10)))

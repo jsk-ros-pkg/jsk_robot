@@ -2,19 +2,22 @@
   <!-- add arg launch_teleop: yamaguchi & s-kitagawa (2019/04/19) -->
   <arg name="launch_teleop" default="true" />
   <arg name="launch_moveit" default="true" />
-
-  <arg name="use_base_camera_mount" default="true" />
-  <arg name="use_head_box" default="true" />
   <arg name="launch_diagnostics_agg" default="false" />
-  <arg name="use_head_l515" default="true" />
-  <arg name="use_realsense" default="true" />
-  <arg name="use_fetch_description" default="false" />
 
-  <!-- realsense serial numbers -->
+  <!-- options for robot_description -->
+  <arg name="use_fetch_description" default="false" />
+  <arg name="use_base_camera_mount" default="$(optenv USE_BASE_CAMERA_MOUNT true)" />
+  <arg name="use_head_box" default="$(optenv USE_HEAD_BOX true)" />
+  <arg name="use_head_l515" default="$(optenv USE_HEAD_L515 true)" />
+  <arg name="insta360_stand" default="$(optenv USE_INSTA360_STAND true)" />
+
+  <!-- realsense option and serial numbers -->
+  <arg name="use_realsense" default="true" />
   <arg name="RS_SERIAL_NO_T265" default="$(optenv RS_SERIAL_NO_T265)" />
   <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" default="$(optenv RS_SERIAL_NO_D435_FRONTRIGHT)" />
   <arg name="RS_SERIAL_NO_D435_FRONTLEFT" default="$(optenv RS_SERIAL_NO_D435_FRONTLEFT)" />
   <arg name="RS_SERIAL_NO_L515_HEAD" default="$(optenv RS_SERIAL_NO_L515_HEAD)" />
+  <arg name="l515_high_resolution" default="$(optenv L515_HIGH_RESOLUTION true)" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false"/>
@@ -31,7 +34,6 @@
   <arg name="rgb_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
   <arg name="depth_camera_info_url" default="file:///etc/ros/$(env ROS_DISTRO)/depth_latest.yaml"/>
 
-
   <!-- Launch realsense cameras -->
   <include file="$(find jsk_fetch_startup)/launch/fetch_realsense_bringup.launch" if="$(arg use_realsense)">
       <arg name="respawn" value="true" />
@@ -39,6 +41,8 @@
       <arg name="RS_SERIAL_NO_D435_FRONTRIGHT" value="$(arg RS_SERIAL_NO_D435_FRONTRIGHT)" />
       <arg name="RS_SERIAL_NO_D435_FRONTLEFT" value="$(arg RS_SERIAL_NO_D435_FRONTLEFT)" />
       <arg name="RS_SERIAL_NO_L515_HEAD" value="$(arg RS_SERIAL_NO_L515_HEAD)" />
+      <arg name="l515_high_resolution" value="$(arg l515_high_resolution)" />
+      <arg name="enable_pointcloud" value="true" />
   </include>
 
   <!-- Odometry -->
@@ -107,7 +111,12 @@
                      false, false, false]
       odom0_nodelay: true
       odom0_differential: true
+      permit_corrected_publication: false
     </rosparam>
+    <!--
+    See https://github.com/jsk-ros-pkg/jsk_robot/issues/1876
+        for permit_corrected_publication
+    -->
   </node>
 
   <!-- Visual Odom -->
@@ -137,7 +146,7 @@
          command="$(find xacro)/xacro $(find jsk_fetch_startup)/robots/jsk_fetch.urdf.xacro
                   ros_distro:=$(env ROS_DISTRO) use_fetch_description:=$(arg use_fetch_description)
                   base_camera_mount:=$(arg use_base_camera_mount) head_box:=$(arg use_head_box)
-                  head_l515:=$(arg use_head_l515)" />
+                  head_l515:=$(arg use_head_l515) insta360_stand:=$(arg insta360_stand)" />
 
   <!-- Drivers for Base -->
   <node name="robot_driver" launch-prefix="$(arg launch_prefix)" pkg="fetch_drivers" type="robot_driver" output="screen">

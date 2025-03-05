@@ -1,6 +1,6 @@
 display: Fetch light off
 platform: fetch
-launch: jsk_fetch_startup/light_off.xml
+run: jsk_fetch_startup/light-off.l
 interface: jsk_fetch_startup/light_off.interface
 icon: jsk_fetch_startup/light_off.png
 plugins:

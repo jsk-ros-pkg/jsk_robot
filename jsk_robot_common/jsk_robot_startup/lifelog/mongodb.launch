@@ -10,17 +10,25 @@
   <arg name="replicator_dump_path" default="/tmp/replicator_dumps" />
   <arg name="replicator_param_path"
        default="$(find jsk_robot_startup)/lifelog/mongodb_replication_params.yaml" />
+  <arg name="extra_collections" default="" />
+  <arg name="replicate_on_write" default="false"/>
 
   <arg name="test_mode" default="false" />
 
   <param name="robot/database" value="$(arg db_name)" />
+  <param name="mongodb_replicate_on_write" value="$(arg replicate_on_write)" />
 
   <!-- Replication -->
   <group if="$(arg replicate)">
     <rosparam command="load" file="$(arg replicator_param_path)" />
+
     <node name="replication_client"
           pkg="jsk_robot_startup" type="periodic_replicator_client.py"
-          output="screen" machine="$(arg machine)"/>
+          output="screen" machine="$(arg machine)">
+      <rosparam subst_value="true" if="$(eval arg('extra_collections') != '')">
+        extra_collections: $(arg extra_collections)
+      </rosparam>
+    </node>
   </group>
 
   <!-- MongoDB -->
@@ -34,6 +42,7 @@
     <arg name="repl_set" value="rs0"
          if="$(arg repl_set_mode)" />
     <arg name="replicator_dump_path" value="$(arg replicator_dump_path)" />
+    <arg name="logerr_period" default="3600" />
     <arg name="test_mode" value="$(arg test_mode)" />
   </include>
 

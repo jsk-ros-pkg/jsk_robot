@@ -12,7 +12,9 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend version_gte="0.7.11">fetch_teleop</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
 
+  <run_depend>dynamic_reconfigure</run_depend>
   <run_depend>image_proc</run_depend>
   <run_depend>jsk_fetch_accessories</run_depend>
   <run_depend>jsk_fetch_diagnosis</run_depend>
@@ -29,12 +31,15 @@
   <run_depend>pr2_computer_monitor</run_depend>
   <run_depend>robot_pose_publisher</run_depend>
   <run_depend>rviz</run_depend>
+  <run_depend>switchbot_ros</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>touchegg</run_depend>
   <run_depend>sound_play</run_depend>
   <run_depend>switchbot_ros</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>voice_text</run_depend>
+  <run_depend>tf2</run_depend>
+  <run_depend>tf2_geometry_msgs</run_depend>
 
   <!-- for fetch_naviation -->
   <run_depend>amcl</run_depend>
@@ -48,6 +53,7 @@
   <run_depend>librealsense2</run_depend>
   <run_depend>realsense2_camera</run_depend>
   <run_depend>realsense2_description</run_depend>
+  <run_depend>update_move_base_parameter_recovery</run_depend>
 
   <!-- for fetch teleop -->
   <run_depend>app_manager</run_depend>
@@ -64,8 +70,15 @@
   <run_depend>julius_ros</run_depend>
   <run_depend version_gte="2.1.13">respeaker_ros</run_depend>
 
+  <!-- for fetch communication -->
+  <run_depend>dialogflow_task_executive</run_depend>
+  <run_depend>google_chat_ros</run_depend>
+
   <!-- for rwt_nav -->
   <run_depend>robot_pose_publisher</run_depend>
+
+  <!-- for container occupancy detection -->
+  <run_depend>jsk_pcl_ros</run_depend>
 
   <test_depend>rostest</test_depend>
 

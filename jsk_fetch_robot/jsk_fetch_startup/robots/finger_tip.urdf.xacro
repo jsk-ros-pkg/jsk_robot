@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<robot name="finger_tips" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link name="l_gripper_finger_tip">
+        <inertial>
+          <origin rpy="0 0 0" xyz="0 0 0" />
+          <mass value="0.1" />
+          <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1" />
+        </inertial>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://jsk_fetch_accessories/finger_tip_collision/finger_tip_collision.STL"
+                    scale="0.001 0.001 0.001"
+                    />
+            </geometry>
+            <material name="">
+                <color rgba="0.356 0.361 0.376 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://jsk_fetch_accessories/finger_tip_collision/finger_tip_collision.STL"
+                    scale="0.001 0.001 0.001"
+                    />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="l_gripper_finger_tip_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 -0.001 -0.013" />
+        <parent link="l_gripper_finger_link" />
+        <child link="l_gripper_finger_tip" />
+        <axis xyz="0 0 1" />
+    </joint>
+
+    <link name="r_gripper_finger_tip">
+        <inertial>
+          <origin rpy="0 0 0" xyz="0 0 0" />
+          <mass value="0.1" />
+          <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1" />
+        </inertial>
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://jsk_fetch_accessories/finger_tip_collision/finger_tip_collision.STL"
+                    scale="0.001 0.001 0.001"
+                    />
+            </geometry>
+            <material name="">
+                <color rgba="0.356 0.361 0.376 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="package://jsk_fetch_accessories/finger_tip_collision/finger_tip_collision.STL"
+                    scale="0.001 0.001 0.001"
+                    />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="r_gripper_finger_tip_joint" type="fixed">
+        <origin rpy="3.141592 0 0" xyz="0 0.001 0.013" />
+        <parent link="r_gripper_finger_link" />
+        <child link="r_gripper_finger_tip" />
+        <axis xyz="0 0 1" />
+    </joint>
+</robot>

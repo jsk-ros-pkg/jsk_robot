@@ -1,6 +1,6 @@
 <launch>
-  <node name="go_to_kitchen" pkg="roseus" type="roseus"
-        args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l"/>
+  <node name="go_to_kitchen" pkg="roseus" type="roseus" required="true" output="screen"
+        args="$(find jsk_fetch_startup)/euslisp/go-to-kitchen.l" />
 
   <!-- launch rviz with throttle -->
   <include file="$(find jsk_fetch_startup)/launch/rviz_record.launch" />
@@ -13,5 +13,58 @@
       baud: 115200
     </rosparam>
   </node>
+
+  <node name="go_to_kitchen_object_detector_score_thresh" pkg="dynamic_reconfigure" type="dynparam"
+        args="set_from_parameters edgetpu_object_detector">
+    <param name="score_thresh" type="double" value="0.60" /> <!-- default: 0.6 -->
+  </node>
+
+  <!-- Trash can occupancy detector -->
+  <include file="$(find jsk_fetch_startup)/launch/trashbin_occupancy_detector.launch" />
+
+  <node name="$(anon rviz)" pkg="rviz" type="rviz"
+        args="-d $(find jsk_fetch_startup)/config/jsk_startup_record.rviz">
+    <env name="DISPLAY" value=":0" />
+    <env name="HOME" value="/home/fetch" />
+  </node>
+
+  <!-- logging database for go_to_kitchen -->
+  <arg name="map_frame" default="map" />
+  <include file="$(find jsk_robot_startup)/lifelog/common_logger.launch">
+    <arg name="ns" value="go_to_kitchen" />
+    <arg name="database" value="jsk_robot_lifelog" />
+    <arg name="collection" value="go_to_kitchen" />
+    <arg name="save_rgb" value="true" />
+    <arg name="camera_ns" value="head_camera" />
+    <arg name="rgb_ns" value="rgb/half" />
+    <arg name="rgb_topic" value="image_rect_color" />
+    <arg name="rgb_suffix" value="/compressed"/>
+    <arg name="save_depth" value="true" />
+    <arg name="depth_topic" value="image" />
+    <arg name="depth_suffix" value="/compressedDepth"/>
+    <arg name="save_tf" value="true" />
+    <arg name="save_joint_states" value="true" />
+    <arg name="save_base_trajectory" value="true" />
+    <arg name="save_object_detection" value="true" />
+    <arg name="save_edgetpu_object_detector" value="true" />
+    <arg name="save_speech" value="true" />
+    <arg name="save_action" value="true" />
+    <arg name="save_smach" value="true" />
+    <arg name="save_app" value="true" />
+    <arg name="save_human_pose" default="true" />
+    <arg name="enable_monitor" value="false" />
+    <arg name="log_rate" value="1.0" />
+    <arg name="launch_manager" value="true" />
+    <arg name="map_frame_id" value="$(arg map_frame)" />
+    <arg name="approximate_sync" value="true"/>
+    <arg name="base_frame_id" value="base_link" />
+    <arg name="vital_check" value="true" />
+  </include>
+
+  <rosparam ns="go_to_kitchen/speech_logger">
+    topics:
+    - /sound_play/goal
+    - /speech_to_text
+  </rosparam>
 
 </launch>

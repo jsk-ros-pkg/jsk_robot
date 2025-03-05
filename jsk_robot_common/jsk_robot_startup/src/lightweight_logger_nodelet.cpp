@@ -49,8 +49,23 @@ namespace jsk_robot_startup
       jsk_topic_tools::StealthRelay::onInit();
 
       // settings for database
-      nh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
-      nh_->param<std::string>("/robot/name", col_name_, std::string());
+      if (ros::param::has(pnh_->resolveName("database")))
+      {
+        pnh_->param<std::string>("database", db_name_, "jsk_robot_lifelog");
+      }
+      else
+      {
+        pnh_->param<std::string>("/robot/database", db_name_, "jsk_robot_lifelog");
+      }
+      if (ros::param::has(pnh_->resolveName("collection")))
+      {
+        pnh_->param<std::string>("collection", col_name_, std::string());
+      }
+      else
+      {
+        pnh_->param<std::string>("/robot/name", col_name_, std::string());
+      }
+
       if (col_name_.empty())
       {
         NODELET_FATAL_STREAM("Please specify param 'robot/name' (e.g. pr1012, olive)");
@@ -123,7 +138,7 @@ namespace jsk_robot_startup
 
       // The message store object is initialized here, since the object waits for connection
       // until the connection to the server is established.
-      msg_store_.reset(new mongodb_store::MessageStoreProxy(*nh_, col_name_, db_name_));
+      msg_store_.reset(new mongodb_store::MessageStoreProxy(*pnh_, col_name_, db_name_));
       initialized_ = true;
 
       // After message store object is initialized, this thread is re-used for
@@ -183,7 +198,9 @@ namespace jsk_robot_startup
       const boost::shared_ptr<topic_tools::ShapeShifter const>& msg = event.getConstMessage();
       jsk_topic_tools::StealthRelay::inputCallback(msg);
 
-      vital_checker_->poke();
+      if (vital_checker_ != nullptr) {
+        vital_checker_->poke();
+      }
 
       bool on_the_fly = initialized_ && buffer_.empty();
       if (!wait_for_insert_ && msg_store_->getNumInsertSubscribers() == 0) {
@@ -231,7 +248,7 @@ namespace jsk_robot_startup
       } else if (!initialized_) {
         stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
                      getName() + " is taking too long to be initialized");
-      } else if (vital_check_ && !vital_checker_->isAlive()) {
+      } else if (vital_checker_ != nullptr && vital_check_ && !vital_checker_->isAlive()) {
         jsk_topic_tools::addDiagnosticErrorSummary(getName(), vital_checker_, stat);
       } else if (insert_error_count_ != prev_insert_error_count_) {
         stat.summary(diagnostic_msgs::DiagnosticStatus::ERROR,
@@ -244,7 +261,9 @@ namespace jsk_robot_startup
 
       stat.add("Inserted", inserted_count_);
       stat.add("Insert Failure", insert_error_count_);
-      vital_checker_->registerStatInfo(stat, "Last Insert");
+      if (vital_checker_ != nullptr) {
+        vital_checker_->registerStatInfo(stat, "Last Insert");
+      }
     }
   } // lifelog
 } // jsk_robot_startup
