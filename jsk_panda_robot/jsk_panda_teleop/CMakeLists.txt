@@ -6,10 +6,6 @@ find_package(catkin REQUIRED
   message_generation
   )
 
-if(NOT $ENV{ROS_DISTRO} STREQUAL "indigo") # on noetic it needs catkin_install_python to support Python3 and it does not work on indigo for some reason...
-  catkin_python_setup()
-endif()
-
 add_service_files(
   FILES
   ControlBilateral.srv
@@ -23,7 +19,7 @@ install(DIRECTORY config launch script
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS
   )
-if(NOT $ENV{ROS_DISTRO} STREQUAL "indigo") # on noetic it needs catkin_install_python to support Python3 and it does not work on indigo for some reason...
+if($ENV{ROS_DISTRO} STREQUAL "indigo") # on noetic it needs catkin_install_python to support Python3 and it does not work on indigo for some reason...
   install(DIRECTORY python
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS
