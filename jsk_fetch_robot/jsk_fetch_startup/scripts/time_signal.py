@@ -19,7 +19,9 @@ class TimeSignal(object):
         self.client_jp = actionlib.SimpleActionClient(
             '/robotsound_jp', SoundRequestAction)
         self.now_time = datetime.now()
+        self.now_date = self.now_time.date()
         self.now_hour = self.now_time.hour
+        self.now_minute = self.now_time.minute
         self.day = self.now_time.strftime('%a')
         reload(sys)
         sys.setdefaultencoding('utf-8')
@@ -43,7 +45,9 @@ class TimeSignal(object):
 
     def speak_jp(self):
         # time signal
-        speech_text = str(self.now_hour) + 'じです。'
+        speech_text = self._get_time_text(
+            self.now_date, self.now_hour, self.now_minute,
+            lang='ja')
         if self.now_hour == 0:
             speech_text += '早く帰りましょう。'
         if self.now_hour == 12:
@@ -56,10 +60,8 @@ class TimeSignal(object):
             speech_text += 'そろそろ輪講です。'
         if self.day == 'Tue' and self.now_hour == 15:
             speech_text += '掃除の時間です。'
-        if self.day == 'Fri' and self.now_hour == 14:
+        if self.day == 'Fri' and self.now_hour == 15:
             speech_text += '創造輪講の時間です。'
-        if self.day == 'Fri' and self.now_hour == 16:
-            speech_text += '掃除の時間です。'
 
         # weather forecast
         if self.now_hour in [0, 7, 12, 19]:
@@ -72,7 +74,9 @@ class TimeSignal(object):
         self.speak(self.client_jp, speech_text, lang='jp')
 
     def speak_en(self):
-        speech_text = self._get_text(self.now_hour)
+        speech_text = self._get_time_text(
+            self.now_date, self.now_hour, self.now_minute,
+            lang='en')
         # time signal
         if self.now_hour == 0:
             speech_text += " Let's go home."
@@ -80,6 +84,14 @@ class TimeSignal(object):
             speech_text += " Let's go to lunch."
         if self.now_hour == 19:
             speech_text += " Let's go to dinner."
+        if self.day == 'Mon' and self.now_hour == 12:
+            speech_text += ' The lab meeting will start soon.'
+        if self.day == 'Tue' and self.now_hour == 12:
+            speech_text += ' The lab meeting will start soon.'
+        if self.day == 'Tue' and self.now_hour == 15:
+            speech_text += ' It is cleaning time now.'
+        if self.day == 'Fri' and self.now_hour == 15:
+            speech_text += ' Rinko will start soon. '
 
         # weather forecast
         if self.now_hour in [0, 7, 12, 19]:
@@ -91,18 +103,33 @@ class TimeSignal(object):
         rospy.logdebug(speech_text)
         self.speak(self.client_en, speech_text)
 
-    def _get_text(self, hour):
-        if hour == 0:
-            text = 'midnight'
-        elif hour == 12:
-            text = 'noon'
-        else:
-            if hour > 12:
-                text = str(hour % 12) + ' P.M.'
+    def _get_time_text(self, date, hour, minute, lang='en'):
+        if lang == 'ja':
+            if hour == 0 and minute == 0:
+                time_text = '{}年{}月{}日'.format(
+                    date.year, date.month, date.day)
+            elif hour == 12 and minute == 0:
+                time_text = '正午'
             else:
-                text = str(hour % 12) + ' A.M.'
-        text = "It's " + text + "."
-        return text
+                time_text = '{}時'.format(hour)
+                if minute != 0:
+                    time_text += '{}分'.format(minute)
+            time_text += 'です。'
+        else:
+            if hour == 0 and minute == 0:
+                time_text = date.strftime('%Y %B %d')
+            elif hour == 12 and minute == 0:
+                time_text = 'noon'
+            else:
+                time_text = str(hour % 12)
+                if minute != 0:
+                    time_text += ' {}'.format(minute)
+                if hour > 12:
+                    time_text += ' P.M.'
+                else:
+                    time_text += ' A.M.'
+            time_text = "It's {}.".format(time_text)
+        return time_text
 
     def _get_weather_forecast(self, lang='en'):
         url = 'http://api.openweathermap.org/data/2.5/weather?q=tokyo&lang={}&units=metric&appid={}'.format(lang, self.appid)  # NOQA
