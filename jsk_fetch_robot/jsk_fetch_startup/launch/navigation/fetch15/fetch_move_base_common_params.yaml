@@ -22,6 +22,9 @@ move_base:
   # base_local_planner: base_local_planner/TrajectoryPlannerROS
   GlobalPlanner:
     allow_unknown: true
+    neural_cost: 50
+    lethal_cost: 253
+    cost_factor: 0.8
     default_tolerance: 0.0
     orientation_mode: 1
     visualize_potential: false
@@ -86,7 +89,7 @@ move_base:
     weight_acc_lim_x: 1
     weight_acc_lim_theta: 1
     weight_kinematics_nh: 1000
-    weight_kinematics_forward_drive: 1
+    weight_kinematics_forward_drive: 1000
     weight_kinematics_turning_radius: 100
     weight_optimaltime: 1
     weight_obstacle: 50
@@ -110,10 +113,14 @@ move_base:
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery0"
       type: "rotate_recovery/RotateRecovery"
+    - name: "speak_and_wait0"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "aggressive_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery1"
       type: "rotate_recovery/RotateRecovery"
+    - name: "speak_and_wait1"
+      type: "speak_and_wait_recovery/SpeakAndWaitRecovery"
     - name: "all_reset"
       type: "clear_costmap_recovery/ClearCostmapRecovery"
     - name: "rotate_recovery2"
@@ -125,11 +132,21 @@ move_base:
   rotate_recovery0:
     frequency: 20.0
     sim_granularity: 0.017
+  speak_and_wait0:
+    speak_text: "とおれません、みちをあけてください"
+    duration_wait: 5.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
   aggressive_reset:
     reset_distance: 1.0 # 0.5
   rotate_recovery1:
     frequency: 20.0
     sim_granularity: 0.017
+  speak_and_wait1:
+    speak_text: "とおれません、みちをあけてください"
+    duration_wait: 5.0
+    duration_timeout: 1.0
+    sound_action: /robotsound_jp
   all_reset:
     reset_distance: 0.0
   rotate_recovery2:
@@ -140,7 +157,7 @@ move_base:
     limited_trans_speed: 0.3
     limited_rot_speed: 0.8
     limited_distance: 0.3
-    planner_namespace: TrajectoryPlannerROS
+    planner_namespace: TebLocalPlannerROS
     max_trans_param_name: max_vel_x
     max_rot_param_name: max_vel_theta
   max_planning_retries: 2

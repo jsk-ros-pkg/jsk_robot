@@ -56,6 +56,24 @@ repositories:
   python-twisted/debian:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/t/twisted/twisted_17.9.0-2ubuntu0.3.debian.tar.xz
+  python-setuptools-scm:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/s/setuptools-scm/setuptools-scm_1.15.6.orig.tar.gz
+  python-setuptools-scm/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/s/setuptools-scm/setuptools-scm_1.15.6-1.debian.tar.xz
+  python-attr:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/python-attrs/python-attrs_17.4.0.orig.tar.gz
+  python-attr/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/python-attrs/python-attrs_17.4.0-2.debian.tar.xz
+  python-automat:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/a/automat/automat_0.6.0.orig.tar.gz
+  python-automat/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/a/automat/automat_0.6.0-1.debian.tar.xz
   python-incremental:
     type: tar
     url: http://archive.ubuntu.com/ubuntu/pool/main/i/incremental/incremental_16.10.1.orig.tar.gz
@@ -230,3 +248,47 @@ repositories:
   postfix:
     type: tar
     url: http://mirror.postfix.jp/postfix-release/official/postfix-3.4.3.tar.gz
+  libfcl-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/fcl/fcl_0.5.0.orig.tar.gz
+  libfcl-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/f/fcl/fcl_0.5.0-5.debian.tar.xz
+    # geometric_shapes depends on fcl
+  libccd-dev:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/libc/libccd/libccd_2.0.orig.tar.gz
+  libccd-dev/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/libc/libccd/libccd_2.0-1.debian.tar.xz
+    # fcl depends on ccd
+  virtualenv:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/p/python-virtualenv/python-virtualenv_15.1.0+ds.orig.tar.gz
+  virtualenv/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/p/python-virtualenv/python-virtualenv_15.1.0+ds-1.1.debian.tar.xz
+  python3-pyparsing:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/pyparsing/pyparsing_2.2.0+dfsg1.orig.tar.gz
+  python3-pyparsing/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/pool/main/p/pyparsing/pyparsing_2.2.0+dfsg1-2.debian.tar.xz
+  python3-catkin-pkg-modules:
+    type: tar
+    url: http://packages.ros.org/ros/ubuntu/pool/main/p/python3-catkin-pkg-modules/python3-catkin-pkg-modules_0.5.2.orig.tar.gz
+  python3-catkin-pkg-modules/debian:
+    type: tar
+    url: http://packages.ros.org/ros/ubuntu/pool/main/p/python3-catkin-pkg-modules/python3-catkin-pkg-modules_0.5.2-1.debian.tar.xz
+  python3-rospkg-modules:
+    type: tar
+    url: http://packages.ros.org/ros/ubuntu/pool/main/p/python3-rospkg-modules/python3-rospkg-modules_1.5.0.orig.tar.gz
+  python3-rospkg-modules/debian:
+    type: tar
+    url: http://packages.ros.org/ros/ubuntu/pool/main/p/python3-rospkg-modules/python3-rospkg-modules_1.5.0-1.debian.tar.xz
+  cython:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/c/cython/cython_0.26.1.orig.tar.gz
+  cython/debian:
+    type: tar
+    url: http://archive.ubuntu.com/ubuntu/ubuntu/pool/universe/c/cython/cython_0.26.1-0.4.debian.tar.xz

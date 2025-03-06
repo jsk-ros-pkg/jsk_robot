@@ -5,6 +5,9 @@
   <arg name="save_tf" default="true" />
   <arg name="save_joint_states" default="true" />
   <arg name="save_speech" default="true" />
+  <arg name="save_faces" default="true" />
+  <arg name="save_dialogflow" default="true" />
+  <arg name="save_google_chat" default="true" />
   <arg name="save_smach" default="true" />
   <arg name="save_base_trajectory" default="false" />
   <arg name="save_object_detection" default="false" />
@@ -233,6 +236,49 @@
       <rosparam subst_value="true">
         topics:
         - /Tablet/voice
+        - /speech_to_text
+      </rosparam>
+    </node>
+
+    <!-- face save aws face data -->
+    <node if="$(arg save_faces)"
+          name="face_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /aws_auto_checkin_app/class
+        - /aws_detect_faces/attributes
+      </rosparam>
+    </node>
+
+    <!-- face dialogflow I/O -->
+    <node if="$(arg save_dialogflow)"
+          name="dialogflow_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /dialogflow_client/text_action/goal
+        - /dialogflow_client/text_action/result
+      </rosparam>
+    </node>
+
+    <!-- google chat -->
+    <node if="$(arg save_google_chat)"
+          name="google_chat_logger"
+          pkg="jsk_robot_startup" type="mongo_record.py"
+          machine="$(arg machine)"
+          respawn="$(arg respawn)">
+      <rosparam subst_value="true">
+        topics:
+        - /google_chat_ros/send/goal
+        - /google_chat_ros/send/result
+        - /google_chat_ros/message_activity
+        - /google_chat_ros
+        - /google_chat_ros/card_activity
       </rosparam>
     </node>
 

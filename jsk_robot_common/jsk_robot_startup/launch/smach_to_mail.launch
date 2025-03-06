@@ -10,7 +10,7 @@
 
   <group if="$(arg use_mail)" ns="$(arg namespace)">
     <param name="sender_address" value="$(arg email_sender_address)" />
-    <param name="receiver_address" value="$(arg email_reveiver_address)" />
+    <param name="receiver_address" value="$(arg email_receiver_address)" />
   </group>
   <group if="$(arg use_google_chat)" ns="$(arg namespace)">
     <param name="google_chat_space" value="$(arg google_chat_space)" />

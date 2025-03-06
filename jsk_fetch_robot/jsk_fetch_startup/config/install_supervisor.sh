@@ -15,4 +15,9 @@ for file in $(ls ./*.conf); do
     echo "copied $file to /etc/supervisor/conf.d"
 done
 
+# copy config.bash to /var/lib/robo if not exists
+if [ ! -e /var/lib/robot/config.bash ]; then
+    sudo cp $jsk_fetch_startup/config/config.bash /var/lib/robot/config.bash
+fi
+
 set +x

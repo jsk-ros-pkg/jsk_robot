@@ -1,0 +1,120 @@
+dual_panda_effort_joint_trajectory_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - rarm_joint1
+    - rarm_joint2
+    - rarm_joint3
+    - rarm_joint4
+    - rarm_joint5
+    - rarm_joint6
+    - rarm_joint7
+    - larm_joint1
+    - larm_joint2
+    - larm_joint3
+    - larm_joint4
+    - larm_joint5
+    - larm_joint6
+    - larm_joint7
+  constraints:
+    goal_time: 0.5
+    larm_joint1:
+      goal: 0.05
+    larm_joint2:
+      goal: 0.05
+    larm_joint3:
+      goal: 0.05
+    larm_joint4:
+      goal: 0.05
+    larm_joint5:
+      goal: 0.05
+    larm_joint6:
+      goal: 0.05
+    larm_joint7:
+      goal: 0.05
+    rarm_joint1:
+      goal: 0.05
+    rarm_joint2:
+      goal: 0.05
+    rarm_joint3:
+      goal: 0.05
+    rarm_joint4:
+      goal: 0.05
+    rarm_joint5:
+      goal: 0.05
+    rarm_joint6:
+      goal: 0.05
+    rarm_joint7:
+      goal: 0.05
+  gains:
+    rarm_joint1: {p: 600, d: 30, i: 0, i_clamp: 1}
+    rarm_joint2: {p: 600, d: 30, i: 0, i_clamp: 1}
+    rarm_joint3: {p: 600, d: 30, i: 0, i_clamp: 1}
+    rarm_joint4: {p: 600, d: 30, i: 0, i_clamp: 1}
+    rarm_joint5: {p: 250, d: 10, i: 0, i_clamp: 1}
+    rarm_joint6: {p: 150, d: 10, i: 0, i_clamp: 1}
+    rarm_joint7: {p: 50, d: 5, i: 0, i_clamp: 1}
+    larm_joint1: {p: 600, d: 30, i: 0, i_clamp: 1}
+    larm_joint2: {p: 600, d: 30, i: 0, i_clamp: 1}
+    larm_joint3: {p: 600, d: 30, i: 0, i_clamp: 1}
+    larm_joint4: {p: 600, d: 30, i: 0, i_clamp: 1}
+    larm_joint5: {p: 250, d: 10, i: 0, i_clamp: 1}
+    larm_joint6: {p: 150, d: 10, i: 0, i_clamp: 1}
+    larm_joint7: {p: 50, d: 5, i: 0, i_clamp: 1}
+
+rarm_state_controller:
+  type: franka_control/FrankaStateController
+  arm_id: rarm
+  joint_names:
+    - rarm_joint1
+    - rarm_joint2
+    - rarm_joint3
+    - rarm_joint4
+    - rarm_joint5
+    - rarm_joint6
+    - rarm_joint7
+  publish_rate: 30  # [Hz]
+
+larm_state_controller:
+  type: franka_control/FrankaStateController
+  arm_id: larm
+  joint_names:
+    - larm_joint1
+    - larm_joint2
+    - larm_joint3
+    - larm_joint4
+    - larm_joint5
+    - larm_joint6
+    - larm_joint7
+  publish_rate: 30  # [Hz]
+
+rarm_cartesian_impedance_controller:
+  type: franka_example_controllers/CartesianImpedanceExampleController
+  arm_id: rarm
+  joint_names:
+    - rarm_joint1
+    - rarm_joint2
+    - rarm_joint3
+    - rarm_joint4
+    - rarm_joint5
+    - rarm_joint6
+    - rarm_joint7
+# # Keep params the same as DualArmCartesianPoseController
+# # (https://github.com/frankaemika/franka_ros/pull/270/files#diff-6edeaeced01c9386cab21e9b756259aa82a94cebca584324d241454e97d76863R20)
+# rarm_cartesian_impedance_controllerdynamic_reconfigure_compliance_param_node:
+#   nullspace_stiffness: 0.0
+
+larm_cartesian_impedance_controller:
+  type: franka_example_controllers/CartesianImpedanceExampleController
+  arm_id: larm
+  joint_names:
+    - larm_joint1
+    - larm_joint2
+    - larm_joint3
+    - larm_joint4
+    - larm_joint5
+    - larm_joint6
+    - larm_joint7
+# # Keep params the same as DualArmCartesianPoseController
+# # (https://github.com/frankaemika/franka_ros/pull/270/files#diff-6edeaeced01c9386cab21e9b756259aa82a94cebca584324d241454e97d76863R20)
+# larm_cartesian_impedance_controllerdynamic_reconfigure_compliance_param_node:
+#   nullspace_stiffness: 0.0

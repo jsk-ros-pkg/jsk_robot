@@ -1,6 +1,6 @@
-x_joint_name: base_link_x
-y_joint_name: base_link_y
-rotational_joint_name: base_link_pan
+linear_x_joint_name: base_link_x
+linear_y_joint_name: base_link_y
+rotational_z_joint_name: base_link_pan
 base_link_x:
     max_velocity: 0.305
 base_link_y:
