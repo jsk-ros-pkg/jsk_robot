@@ -547,7 +547,9 @@ Example: (send self :gripper :position) => 0.00"
   :super moveit-environment)
 (defmethod fetch-moveit-environment
   (:init (&key ((:robot rb) *fetch*) &rest args)
-         (send-super* :init :robot rb :frame-id "base_link" args))
+         (send-super* :init :robot rb :frame-id "base_link" :scene-service "/get_planning_scene_noetic" :planning-service "/plan_kinematic_path_noetic" :state-validity-service "/check_state_validity_noetic" :compute-ik-service "/compute_ik_noetic" args)
+  ;; FIXME *_noetic should be only when ROS_DISTRO is noetic
+  ;; TODO /apply_planning_scene
   (:default-configuration ()
    (list (list :rarm
                (cons :group-name "arm")

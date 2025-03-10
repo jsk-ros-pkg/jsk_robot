@@ -1,4 +1,4 @@
-<package>
+<package format="3">
   <name>jsk_fetch_startup</name>
   <version>1.1.0</version>
   <description>
@@ -13,59 +13,62 @@
 
   <build_depend version_gte="0.7.11">fetch_teleop</build_depend>
 
-  <run_depend>image_proc</run_depend>
-  <run_depend>jsk_fetch_accessories</run_depend>
-  <run_depend>jsk_fetch_diagnosis</run_depend>
-  <run_depend>jsk_network_tools</run_depend>
-  <run_depend>jsk_robot_startup</run_depend>
-  <run_depend version_gte="2.2.12">jsk_tools</run_depend>
-  <run_depend>jsk_maps</run_depend>
-  <run_depend>fetcheus</run_depend>
-  <run_depend>fetch_navigation</run_depend>
-  <run_depend>fetch_moveit_config</run_depend>
-  <run_depend>fetch_open_auto_dock</run_depend>
-  <run_depend>fetch_driver_msgs</run_depend>
-  <run_depend>nodelet</run_depend>
-  <run_depend>pr2_computer_monitor</run_depend>
-  <run_depend>robot_pose_publisher</run_depend>
-  <run_depend>rviz</run_depend>
-  <run_depend>tf</run_depend>
-  <run_depend>touchegg</run_depend>
-  <run_depend>sound_play</run_depend>
-  <run_depend>switchbot_ros</run_depend>
-  <run_depend>tf2_ros</run_depend>
-  <run_depend>voice_text</run_depend>
+  <exec_depend>image_proc</exec_depend>
+  <exec_depend>jsk_fetch_accessories</exec_depend>
+  <exec_depend>jsk_fetch_diagnosis</exec_depend>
+  <exec_depend>jsk_network_tools</exec_depend>
+  <exec_depend>jsk_robot_startup</exec_depend>
+  <exec_depend version_gte="2.2.12">jsk_tools</exec_depend>
+  <exec_depend>jsk_maps</exec_depend>
+  <exec_depend>fetcheus</exec_depend>
+  <exec_depend>fetch_navigation</exec_depend>
+  <exec_depend>fetch_moveit_config</exec_depend>
+  <exec_depend>fetch_open_auto_dock</exec_depend>
+  <exec_depend>fetch_driver_msgs</exec_depend>
+  <exec_depend>nodelet</exec_depend>
+  <exec_depend>pr2_computer_monitor</exec_depend>
+  <exec_depend>robot_pose_publisher</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>touchegg</exec_depend>
+  <exec_depend>sound_play</exec_depend>
+  <exec_depend>switchbot_ros</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>voice_text</exec_depend>
 
   <!-- for fetch_naviation -->
-  <run_depend>amcl</run_depend>
-  <run_depend>global_planner</run_depend>
-  <run_depend>map_server</run_depend>
-  <run_depend>move_base</run_depend>
-  <run_depend>move_slow_and_clear</run_depend>
-  <run_depend>robot_localization</run_depend>
-  <run_depend>teb_local_planner</run_depend>
-  <run_depend>pyquaternion</run_depend>
-  <run_depend>librealsense2</run_depend>
-  <run_depend>realsense2_camera</run_depend>
-  <run_depend>realsense2_description</run_depend>
+  <exec_depend>amcl</exec_depend>
+  <exec_depend>global_planner</exec_depend>
+  <exec_depend>map_server</exec_depend>
+  <exec_depend>move_base</exec_depend>
+  <exec_depend>move_slow_and_clear</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
+  <exec_depend>teb_local_planner</exec_depend>
+  <exec_depend>pyquaternion</exec_depend>
+  <exec_depend>librealsense2</exec_depend>
+  <exec_depend>realsense2_camera</exec_depend>
+  <exec_depend>realsense2_description</exec_depend>
 
   <!-- for fetch teleop -->
-  <run_depend>app_manager</run_depend>
-  <run_depend>fetch_bringup</run_depend>
-  <run_depend>safe_teleop_base</run_depend>
-  <run_depend>joy</run_depend>
-  <run_depend>topic_tools</run_depend>
-  <run_depend>fetch_teleop</run_depend>
+  <exec_depend>app_manager</exec_depend>
+  <exec_depend>fetch_bringup</exec_depend>
+  <exec_depend>safe_teleop_base</exec_depend>
+  <exec_depend>joy</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+  <exec_depend>fetch_teleop</exec_depend>
 
   <!-- for diagnostic aggregator -->
-  <run_depend>diagnostic_aggregator</run_depend>
+  <exec_depend>diagnostic_aggregator</exec_depend>
 
   <!-- for fetch speech recognition -->
-  <run_depend>julius_ros</run_depend>
-  <run_depend version_gte="2.1.13">respeaker_ros</run_depend>
+  <exec_depend>julius_ros</exec_depend>
+  <exec_depend version_gte="2.1.13">respeaker_ros</exec_depend>
 
   <!-- for rwt_nav -->
-  <run_depend>robot_pose_publisher</run_depend>
+  <exec_depend>robot_pose_publisher</exec_depend>
+
+  <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-packaging</exec_depend>
+  <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-packaging</exec_depend>
 
   <test_depend>rostest</test_depend>
 
