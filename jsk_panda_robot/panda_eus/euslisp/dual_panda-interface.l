@@ -15,14 +15,14 @@
                    :all-arm-aliases (mapcar #'(lambda (arm) nil) all-arms)
                    :error-topics (mapcar
                                    #'(lambda (arm)
-                                       (format nil "/dual_panda/~a/has_error"
+                                       (format nil "dual_panda/~a/has_error"
                                                (string-downcase (string arm))))
                                    all-arms)
                    :error-topic-types (mapcar #'(lambda (arm) std_msgs::Bool) all-arms)
-                   :error-recovery-action "/dual_panda/error_recovery"
+                   :error-recovery-action "dual_panda/error_recovery"
                    :gripper-action-prefixes (mapcar
                                               #'(lambda (arm)
-                                                  (format nil "/dual_panda/~a"
+                                                  (format nil "dual_panda/~a"
                                                           (string-downcase (string arm))))
                                               all-arms)
                    args)))
@@ -30,8 +30,8 @@
     ()
     (list
       (list
-        (cons :controller-action "/dual_panda/dual_panda_effort_joint_trajectory_controller/follow_joint_trajectory")
-        (cons :controller-state  "/dual_panda/dual_panda_effort_joint_trajectory_controller/state")
+        (cons :controller-action "dual_panda/dual_panda_effort_joint_trajectory_controller/follow_joint_trajectory")
+        (cons :controller-state  "dual_panda/dual_panda_effort_joint_trajectory_controller/state")
         (cons :action-type control_msgs::FollowJointTrajectoryAction)
         (cons :joint-names (send-all (send robot :joint-list) :name))))))
 

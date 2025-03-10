@@ -12,17 +12,17 @@
                  :joint-states-topic "joint_states"
                  :all-arms (list :rarm)
                  :all-arm-aliases (list :arm)
-                 :error-topics (list "/franka_state_controller/franka_states")
+                 :error-topics (list "franka_state_controller/franka_states")
                  :error-topic-types (list franka_msgs::FrankaState)
-                 :error-recovery-action "/franka_control/error_recovery"
+                 :error-recovery-action "franka_control/error_recovery"
                  :gripper-action-prefixes (list "")
                  args))
   (:default-controller
     ()
     (list
       (list
-        (cons :controller-action "/position_joint_trajectory_controller/follow_joint_trajectory")
-        (cons :controller-state  "/position_joint_trajectory_controller/state")
+        (cons :controller-action "position_joint_trajectory_controller/follow_joint_trajectory")
+        (cons :controller-state  "position_joint_trajectory_controller/state")
         (cons :action-type control_msgs::FollowJointTrajectoryAction)
         (cons :joint-names (send-all (send robot :joint-list) :name)))))
   )
