@@ -5,22 +5,26 @@
 
 (if (not (boundp '*baxter*))
     (setq *baxter* (instance baxter-robot :init)))
+(setq frames (make-hash-table))
+(dolist (arm (list :rarm :larm))
+  (sethash arm frames (send (send (send *baxter* arm :end-coords) :parent) :name))
+  )
 
-(ros::rate 20)
+(ros::rate 100)
 
 (defun right-state-cb(msg)
-  (state-cb "/robot/end_effector/right/wrench" :rarm (send msg :wrench))
+  (state-cb "/robot/end_effector/right/wrench" :rarm (send msg :wrench) (send msg :header :stamp))
   )
 
 (defun left-state-cb(msg)
-  (state-cb "/robot/end_effector/left/wrench" :larm (send msg :wrench))
+  (state-cb "/robot/end_effector/left/wrench" :larm (send msg :wrench) (send msg :header :stamp))
   )
 
-(defun state-cb(advertise-topic arm wrench-msg)
+(defun state-cb(advertise-topic arm wrench-msg stamp)
   (let ((msg (instance geometry_msgs::WrenchStamped :init)))
     (send msg :wrench wrench-msg)
-    (send msg :header :stamp (ros::time-now))
-    (send msg :header :frame_id (send (send (send *baxter* arm :end-coords) :parent) :name))
+    (send msg :header :stamp stamp)
+    (send msg :header :frame_id (gethash arm frames))
     (ros::publish advertise-topic msg))
   )
 
