@@ -22,7 +22,10 @@ class ActionLogger(LoggerBase):
     subscribers = {} # topicname:subscriber
 
     def __init__(self):
-        LoggerBase.__init__(self)
+        db_name = rospy.get_param('~database', 'jsk_robot_lifelog')
+        col_name = rospy.get_param('~collection', None)
+
+        super(ActionLogger, self).__init__(db_name=db_name, col_name=col_name)
 
         self.queue_size = rospy.get_param("~queue_size", 30)
         self.action_regex = re.compile(".*Action(Result|Goal|Feedback)$")
