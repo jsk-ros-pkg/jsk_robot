@@ -12,6 +12,19 @@
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
+  <arg name="launch_fetch_lifelog" default="true" />
+  <arg name="use_diagnostic_aggregator" default="true" />
+  <arg name="use_cpu_monitor" default="true" />
+  <arg name="launch_twitter" default="true" />
+  <arg name="launch_app_manager" default="true" />
+  <arg name="use_network_status" default="true" />
+  <arg name="use_network_detector" default="true" />
+  <arg name="use_respeaker" default="true" />
+  <arg name="check_room_light" default="true" />
+  <arg name="check_driver_boards" default="true" />
+  <arg name="use_email" default="true" />
+  <arg name="use_serial" default="true" />
+
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -73,20 +86,20 @@
   </node>
 
   <!-- logging -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml">
+  <include file="$(find jsk_fetch_startup)/launch/fetch_lifelog.xml" if="$(arg launch_fetch_lifelog)">
     <arg name="map_frame" value="$(arg map_frame)" />
     <arg name="vital_check" value="false" />
   </include>
 
   <!-- diagnostic aggregator -->
   <node pkg="diagnostic_aggregator" type="aggregator_node"
-        name="diag_agg" args="CPP" output="screen" >
+        name="diag_agg" args="CPP" output="screen" if="$(arg use_diagnostic_aggregator)">
     <rosparam command="load" file="$(find jsk_fetch_startup)/config/fetch_analyzers.yaml" />
   </node>
 
   <!-- publish CPU status to diagnostics -->
   <node name="cpu_monitor" pkg="pr2_computer_monitor" type="cpu_monitor.py"
-        args="--diag-hostname=my_machine" >
+        args="--diag-hostname=my_machine" if="$(arg use_cpu_monitor)">
     <param name="check_ipmi_tool" value="false" type="bool" />
     <param name="enforce_clock_speed" value="false" type="bool" />
     <param name="num_cores" value="-1" type="int" />
@@ -95,7 +108,7 @@
   </node>
 
   <!-- twitter -->
-  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" />
+  <include file="$(find jsk_fetch_startup)/launch/fetch_tweet.launch" if="$(arg launch_twitter)"/>
 
   <!-- switchbot -->
   <include file="$(find switchbot_ros)/launch/switchbot.launch" if="$(arg fetch_switchbot)">
@@ -103,7 +116,7 @@
   </include>
 
   <!-- app manager -->
-  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch">
+  <include file="$(find jsk_robot_startup)/lifelog/app_manager.launch" if="$(arg launch_app_manager)">
     <arg name="use_applist" value="false" /> <!-- use plugin -->
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
@@ -122,9 +135,9 @@
   </include>
 
   <!-- network status -->
-  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" />
+  <node pkg="jsk_network_tools" type="network_status.py" name="network_status" if="$(arg use_network_status)"/>
   <!-- network detector -->
-  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector">
+  <node pkg="pr2_computer_monitor" type="network_detector" name="network_detector" if="$(arg use_network_detector)">
     <rosparam>
       interface_name: wlan0
     </rosparam>
@@ -132,7 +145,7 @@
 
   <!-- speech recognition -->
   <node name="respeaker_transformer" pkg="tf" type="static_transform_publisher"
-        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100"/>
+        args="0 0 0.1 0 0 0 head_pan_link respeaker_base 100" if="$(arg use_respeaker)"/>
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <include file="$(find julius_ros)/launch/julius.launch">
@@ -140,7 +153,7 @@
     <arg name="launch_sound_play" value="false"/>
     <arg name="speech_to_text_topic" value="speech_to_text_julius"/>
   </include>
-  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch">
+  <include file="$(find respeaker_ros)/launch/sample_respeaker.launch" if="$(arg use_respeaker)">
     <arg name="publish_tf" default="false"/>
     <arg name="launch_soundplay" default="false"/>
     <arg name="audio" value="speech_audio"/>
@@ -232,7 +245,7 @@
   </node>
 
   <!-- check if room light is on -->
-  <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py">
+  <node name="check_room_light" pkg="jsk_robot_startup" type="check_room_light.py" if="$(arg check_room_light)">
     <remap from="~input" to="/head_camera/rgb/image_raw" />
   </node>
 
@@ -245,18 +258,18 @@
   </node>
 
   <!-- Check fetch's boards in a constant period -->
-  <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen">
+  <node name="check_board_info" pkg="jsk_fetch_diagnosis" type="check_driver_boards.py" output="screen" if="$(arg check_driver_boards)">
   </node>
 
   <!-- send email by rostopic -->
-  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen">
+  <node name="email_topic" pkg="jsk_robot_startup" type="email_topic.py" output="screen" if="$(arg use_email)">
     <rosparam>
       email_info: /var/lib/robot/email_topic.yaml
     </rosparam>
   </node>
 
   <!-- send email, twitter with smach -->
-  <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+  <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen" if="$(arg use_email)">
     <rosparam>
       email_info: /var/lib/robot/email_topic.yaml
     </rosparam>
@@ -264,7 +277,7 @@
 
   <!-- Two robots cannot use one rosserial device at the same time -->
   <group if="$(eval hostname == 'fetch1075')">
-    <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" />
+    <include file="$(find jsk_fetch_startup)/launch/fetch_rosserial.launch" if="$(arg use_serial)"/>
   </group>
 
   <!-- Publish /diagnostics based on topics and nodes sanity check -->
