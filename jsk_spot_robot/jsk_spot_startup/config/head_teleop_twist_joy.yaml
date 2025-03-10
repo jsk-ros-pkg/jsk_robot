@@ -1,0 +1,13 @@
+axis_linear:
+  x: 0
+  y: 1
+  x_min: -0.5
+  x_max:  1.25
+  y_min: -0.5
+  y_max:  0.5
+axis_angular:
+  yaw: 2
+  yaw_min: -0.75
+  yaw_max:  0.75
+enable_button: 0
+enable_turbo_button: -1

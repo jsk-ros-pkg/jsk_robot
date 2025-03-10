@@ -1,0 +1,7 @@
+apps:
+- app: jsk_spot_startup/hello_world
+  dispay: Hello World
+- app: jsk_spot_startup/head_lead_demo
+  dispay: Head Lead Demo
+- app: jsk_spot_startup/sample_elevator
+  dispay: Sample Elevator

@@ -1,0 +1,43 @@
+<launch>
+  <arg name="credential_config" default="/var/lib/robot/credentials/spot_credential.yaml" />
+  <arg name="launch_robot_state_publisher" default="true" />
+  <arg name="launch_peripheral" default="true" />
+  <arg name="launch_interaction" default="false" />
+  <arg name="launch_panorama_detection" default="true" />
+
+  <arg name="use_driver" default="true" />
+  <arg name="use_app_manager" default="true" />
+  <arg name="use_gps" default="true" />
+
+  <param name="robot/type" value="spot" />
+  <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
+  <node pkg="jsk_spot_startup" type="start-spot.l" name="start_spot" />
+
+  <!-- spot driver -->
+  <include
+      file="$(find jsk_spot_startup)/launch/include/driver.launch"
+      if="$(arg use_driver)"
+      pass_all_args="true" >
+  </include>
+
+  <!-- peripheral devices -->
+  <include file="$(find jsk_spot_startup)/launch/include/peripheral.launch"
+	   if="$(arg launch_peripheral)" />
+
+  <!-- interaction nodes -->
+  <include file="$(find jsk_spot_startup)/launch/include/interaction.launch"
+	   if="$(arg launch_interaction)" />
+
+  <!-- behavior manager -->
+  <include file="$(find jsk_spot_behavior_manager)/launch/demo.launch" />
+
+  <include file="$(find gdrive_ros)/launch/gdrive_server.launch">
+      <arg name="settings_yaml" value="/var/lib/robot/gdrive/belka_pydrive_settings.yaml"/>
+      <arg name="respawn" value="true"/>
+  </include>
+
+  <!-- panorama object detection -->
+  <include file="$(find jsk_spot_startup)/launch/include/panorama_detection.launch"
+           if="$(arg launch_panorama_detection)" />
+
+</launch>
