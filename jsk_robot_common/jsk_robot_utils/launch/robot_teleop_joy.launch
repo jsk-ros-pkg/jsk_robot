@@ -1,0 +1,34 @@
+<launch>
+  <arg name="teleop_robot" default="aero" doc="choice: {aero, pr2, hrp2}"/>
+  <arg name="joy_type" default="ps4" doc="choice: {ps3, ps4}"/>
+
+  <arg name="use_grasp" default="false" />
+  <arg name="use_reset_pose" default="false" />
+  <arg name="use_look_at" default="false" />
+  <arg name="use_move_head" default="false" />
+
+  <arg name="max_pos" default="3.0" />
+  <arg name="max_rot" default="0.015" />
+  <arg name="send_time" default="1000" doc="send angle-vector time [ms]"/>
+  <arg name="head_gain" default="0.3" />
+  <arg name="debug" default="false" />
+
+  <node name="robot_teleop_joy"
+        pkg="jsk_robot_utils" type="robot-teleop-joy.l"
+        output="log">
+    <rosparam subst_value="true">
+      teleop_robot: $(arg teleop_robot)
+      joy_type: $(arg joy_type)
+      use_grasp: $(arg use_grasp)
+      use_reset_pose: $(arg use_reset_pose)
+      use_look_at: $(arg use_look_at)
+      use_move_head: $(arg use_move_head)
+      max_pos: $(arg max_pos)
+      max_rot: $(arg max_rot)
+      send_time: $(arg send_time)
+      head_gain: $(arg head_gain)
+      debug: $(arg debug)
+    </rosparam>
+  </node>
+
+</launch>
