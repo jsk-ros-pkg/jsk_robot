@@ -1,0 +1,6 @@
+# This file is for work space in noetic user PC.
+
+- git:
+    local-name: ros-planning/moveit_msgs
+    uri: https://github.com/ros-planning/moveit_msgs
+    version: melodic-devel
