@@ -5,6 +5,241 @@ jsk_robot_startup
 
 see [lifelog/README.md](lifelog/README.md)
 
+## CameraBaseToOffset.py
+
+This node publishes transformed odometry topics and TF with raw odometry topic.(e.g. Realsense T265).
+
+![CameraToBaseOffsetConceptPose](https://user-images.githubusercontent.com/9410362/173268226-3707a424-0099-42fb-a595-f61161b73a7b.svg)
+
+### Concept
+
+Coordinates for visual odometry is often different from coordinates robot base frame. To use it as robot odometry, Odometry topic have to be transformed.
+`nav_msgs/Odometry` has information below
+
+- pose
+- covariance for pose
+- twist
+- covariance for twist
+
+In this section, transformation for each values are described.
+
+#### Pose transformation
+
+See figure above and notations below.
+
+- ${}^\mathrm{Ovis}H_\mathrm{vis}$: pose of $\Sigma_\mathrm{vis}$ in $\Sigma_\mathrm{Ovis}$ (raw odometry, `htm_odom_camera_to_camera` in source code.)
+- ${}^\mathrm{Ovis}H_\mathrm{Obase}$: pose of $\Sigma_\mathrm{Obase}$ in $\Sigma_\mathrm{Ovis}$ (`htm_odom_base_to_odom_camera` in source code.)
+- ${}^\mathrm{vis}H_\mathrm{base}$: pose of $\Sigma_\mathrm{base}$ in $\Sigma_\mathrm{vis}$ (`htm_camera_to_base` in source code.)
+
+From these, transformed pose (`htm_odom_base_to_base` in source code) is calculated like below.
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{Obase}H_\mathrm{base} = {}^\mathrm{Ovis}H_\mathrm{Obase}^{-1} {}^\mathrm{Ovis}H_\mathrm{vis} {}^\mathrm{vis}H_\mathrm{base}
+\end{eqnarray}
+$$
+
+#### Pose covariance transformation
+
+When $y = f(x)$, it is approximated near $x = x_0$ as $y = (\left.\frac{\partial}{\partial x}f\right|_{x=x_0}) x$.
+So relationship of covariance matricies $C(x)$ for $x$ and $C(y)$ for $y$ when $x=x_0$ is like
+
+$$
+\begin{eqnarray}
+    C(y) = F C(x) F^\mathrm{T}
+\end{eqnarray}
+$$
+
+where $F=\left.\frac{\partial}{\partial x}f\right|_{x=x_0}$.
+
+Here, we have already got transformation of position and rotation.
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{Obase}R_\mathrm{base} &=& {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base} \\
+    {}^\mathrm{Obase}p_\mathrm{base} &=& {}^\mathrm{Obase}p_\mathrm{Ovis} + 
+                                         {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + 
+                                         {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base}
+\end{eqnarray}
+$$
+
+Since rotation covariance is calculated in euler angles in `geometry_msgs/PoseWithCovariance`, rotation transformation is
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{Obase}rot_\mathrm{base} &=& f({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) \\
+    &=& convert^{-1}({}^\mathrm{Obase}R_\mathrm{base}) \\
+    &=& convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}R_\mathrm{vis} {}^\mathrm{vis}R_\mathrm{base}) \\
+    &=& convert^{-1}({}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}R_\mathrm{base})
+\end{eqnarray}
+$$
+
+where $convert(rot)$ is a function to convert rotation vector in euler angle to rotation matrix representation.
+
+and transform function for position is
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{Obase}p_\mathrm{base} &=& g({}^\mathrm{Ovis}p_\mathrm{vis}, {}^\mathrm{Ovis}rot_\mathrm{vis}) \\
+    &=& {}^\mathrm{Obase}p_\mathrm{Ovis} + 
+        {}^\mathrm{Obase}R_\mathrm{Ovis} {}^\mathrm{Ovis}p_\mathrm{vis} + 
+        {}^\mathrm{Obase}R_\mathrm{Ovis} convert({}^\mathrm{Ovis}rot_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base}
+\end{eqnarray}
+$$
+
+So when $pose = (p, rot)^T$,
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{Obase}pose_\mathrm{base} = T({}^\mathrm{Ovis}pose_\mathrm{vis}) = \left(
+      \begin{array}{c}
+        g({}^\mathrm{Ovis}pose_\mathrm{vis}) \\
+        f({}^\mathrm{Ovis}pose_\mathrm{vis})
+      \end{array}
+    \right)
+\end{eqnarray}
+$$
+
+And then we can transform covariance matrix
+
+$$
+\begin{eqnarray}
+    C({}^\mathrm{Obase}pose_\mathrm{base}) = T_0 C({}^\mathrm{Ovis}pose_\mathrm{vis}) T_0^\mathrm{T}
+\end{eqnarray}
+$$
+
+Where $T_0=\left.\frac{\partial}{\partial pose}T\right|_{pose=pose_0}$
+
+#### Twist transformation
+
+![CameraToBaseOffsetConceptTwist](https://user-images.githubusercontent.com/9410362/173268459-e8fe9b14-25f6-47ee-9be1-b55e6181f432.svg)
+
+See the figure above.
+
+Velocity of base frame can be calculated as
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{base}v_\mathrm{base} &=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{base}\\
+    &=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{base})\\
+    &=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis} + 
+        {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base})\\
+    &=& {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}p_\mathrm{vis}) + 
+        {}^\mathrm{base}R_\mathrm{O} \frac{d}{dt}({}^\mathrm{O}R_\mathrm{vis}) {}^\mathrm{vis}p_\mathrm{base} + 
+        {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
+    &=& {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}v_\mathrm{vis} + 
+        {}^\mathrm{base}R_\mathrm{O} [{}^\mathrm{O}\omega_\mathrm{vis}\times] {}^\mathrm{O}R_\mathrm{vis} {}^\mathrm{vis}p_\mathrm{base} + 
+        {}^\mathrm{base}R_\mathrm{O} {}^\mathrm{O}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \\
+    &=& {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + 
+        {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base} + 
+        {}^\mathrm{base}R_\mathrm{vis} \frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base})
+\end{eqnarray}
+$$
+
+And it is assumed that $\frac{d}{dt}({}^\mathrm{vis}p_\mathrm{base}) \simeq 0$. so
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{base}v_\mathrm{base} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}v_\mathrm{vis} + 
+                                      {}^\mathrm{base}R_\mathrm{vis} [{}^\mathrm{vis}\omega_\mathrm{vis}\times] {}^\mathrm{vis}p_\mathrm{base}
+\end{eqnarray}
+$$
+
+And angular velocity of base frame can be calculated as
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{base}\omega_\mathrm{base} = {}^\mathrm{base}R_\mathrm{vis} {}^\mathrm{vis}\omega_\mathrm{vis}
+\end{eqnarray}
+$$
+
+<!-- 
+導出の追加求む。
+{}^\mathrm{vis}R_\mathrm{base} が時間的に変化するとき、うまくやれば {}^\mathrm{base}\omega_\mathrm{base} = 0 になるようにできるはず
+ってことは本来は d/dt({}^\mathrm{vis}R_\mathrm{base}) の寄与が入る項があるはず
+0=d/dt({}^\mathrm{vis}R_\mathrm{base} {}^\mathrm{base}R_\mathrm{vis}) あたりから導出できるかも。
+-->
+
+#### Twist covariance transformation
+
+When $\nu = \left(v,\ \omega\right)^\mathrm{T}$, transformation of $\nu$ is like
+
+$$
+\begin{eqnarray}
+    {}^\mathrm{base}\nu_\mathrm{base} = A {}^\mathrm{vis}\nu_\mathrm{vis} \\
+    where\ A = \left(
+        \begin{array}{c}
+            a & b \\
+            c & d
+        \end{array}
+    \right)
+\end{eqnarray}
+$$
+
+So, covariance transformation is
+
+$$
+\begin{eqnarray}
+    C({}^\mathrm{base}\nu_\mathrm{base}) = A C({}^\mathrm{vis}\nu_\mathrm{vis}) A^\mathrm{T}
+\end{eqnarray}
+$$
+
+### Demo
+
+Connect Realsense T265 to your machine and run
+
+```bash
+roslaunch jsk_robot_startup sample_camera_to_base_offset.launch
+```
+
+### ROS Interfaces of the node
+
+#### Subscribers
+
+- `~source_odom` (type: `nav_msgs/Odometry`)
+
+Raw odometry topic
+
+#### Publishers
+
+- `~output` (type: `nav_msgs/Odometry`)
+
+Transformed odometry topic.
+
+- `/tf` (type: `tf2_msgs/TFMessage`)
+
+Transformed odometry frames.
+
+#### Parameters
+
+- `~base_frame_id` (type: `string`, default: `BODY`)
+
+Frame ID of robot base_link.
+
+- `~camera_frame_id` (type: `string`, default: `left_camera_optical_frame`)
+
+Frame ID of base frame of odometry source.
+
+- `~odom_frame_id` (type: `string`, default: `viso_odom`)
+
+Frame ID name to be broadcasted as odometry frame 
+
+- `~publish_tf` (type: `bool`, default: `True`)
+
+If set to true, TF from odometry frame to base_link is broadcasted.
+
+- `~invert_tf` (type: `bool`, default: `True`)
+
+If set to true, published tf transformation is not from odom to base, but from base to odom.
+
+- `~enable_covariance` (type: `bool`, default: `True`)
+
+If set to true, pose covariance and twist covariance are transformed and published. otherwise, covariances of output odometry is set to zero.
+
+### How to use this with your robot
+
+TODO
+
 ## scripts/email_topic.py
 
 This node sends email based on received rostopic (jsk_robot_startup/Email).
