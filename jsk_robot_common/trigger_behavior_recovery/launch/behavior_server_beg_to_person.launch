@@ -1,0 +1,38 @@
+<launch>
+
+  <node
+      pkg="jsk_perception"
+      type="rect_array_in_panorama_to_bounding_box_array.py"
+      name="edgetpu_panorama_object_detection_rect_array_in_panorama_to_bounding_box_array"
+      output="log"
+      >
+      <remap from="~panorama_image" to="/dual_fisheye_to_panorama/quater/output" />
+      <remap from="~panorama_info" to="/dual_fisheye_to_panorama/panorama_info" />
+      <remap from="~input_class" to="/edgetpu_panorama_object_detector/output/class" />
+      <remap from="~input_rects" to="/edgetpu_panorama_object_detector/output/rects" />
+      <remap from="~bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
+      <rosparam>
+          frame_fixed: "map"
+          dimensions_labels:
+              person: [0.5, 0.5, 1.5]
+      </rosparam>
+  </node>
+
+  <node
+      pkg="trigger_behavior_recovery"
+      type="beg_to_person_behavior.l"
+      name="beg_to_person_behavior"
+      output="screen"
+      >
+      <remap from="~path" to="/move_base/TrajectoryPlannerROS/global_plan" />
+      <remap from="~person_bbox_array" to="/edgetpu_panorama_object_detector/bbox_array" />
+      <remap from="~start_edgetpu_node" to="/edgetpu_object_node_manager/start" />
+      <rosparam>
+        fixed_frame_id: "map"
+        base_frame_id: "base_link"
+        speak_text: "道をあけて下さい"
+        use_panorama_coral_detector: True
+        panorama_edgetpu_node_name: "edgetpu_panorama_object_detector"
+      </rosparam>
+  </node>
+</launch>
