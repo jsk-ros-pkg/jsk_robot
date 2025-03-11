@@ -4,14 +4,25 @@
   <arg name="launch_move_base" default="true" />
   <arg name="launch_sound_play" default="true" />
   <arg name="launch_insta360" default="true" />
-  <arg name="use_voice_text" default="true" />
-  <arg name="boot_sound" default="false" />
+  <arg name="launch_app_scheduler" default="true" />
+  <arg name="launch_dialogflow" default="true" />
+  <arg name="launch_gdrive_server" default="true" />
+  <arg name="launch_edgetpu_human_pose_estimator" default="true" />
+  <arg name="launch_edgetpu_object_detector" default="true" />
+  <arg name="launch_edgetpu_panorama_human_pose_estimator" default="false" />
+  <arg name="launch_edgetpu_panorama_object_detector" default="false" />
+
+  <arg name="use_voice_text" default="false" />
+  <arg name="default_speaker" default="$(OPTENV DEFAULT_SPEAKER_ 2)" />
+  <arg name="default_english_speaker" default="$(OPTENV DEFAULT_ENGLISH_SPEAKER kal)" />
+  <arg name="boot_sound" default="true" />
   <arg name="map_frame" default="eng2" />
   <arg name="map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05.yaml"/>
   <arg name="keepout_map_file" default="$(find jsk_maps)/raw_maps/eng2-7f-0.05_keepout.yaml" />
   <arg name="use_build_map" default="false" />
   <arg name="use_keepout" default="true" />
   <arg name="fetch_switchbot" default="true" />
+  <arg name="network_interface" default="$(OPTENV NETWORK_DEFAULT_WIFI_INTERFACE wlan0)" />
 
   <param name="robot/type" value="fetch" />
   <param name="robot/name" command='bash -c "hostname | xargs echo -n"' />
@@ -55,16 +66,20 @@
   <!-- disable sound_play in julius.launch and place it in fetch_bringup.launch -->
   <!-- see: https://github.com/jsk-ros-pkg/jsk_robot/pull/1140 -->
   <node name="sound_play" pkg="sound_play" type="soundplay_node.py"
-        respawn="true" if="$(arg launch_sound_play)" />
+        respawn="true" if="$(arg launch_sound_play)">
+    <rosparam subst_value="true" >
+      default_voice: $(arg default_english_speaker)
+      plugin: sound_play/flite_plugin
+    </rosparam>
+  </node>
 
   <!-- japanese speech node -->
   <include if="$(arg use_voice_text)" file="$(find voice_text)/launch/voice_text.launch">
     <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
     <arg name="sound_play_respawn" value="true" />
   </include>
-  <include unless="$(arg use_voice_text)" file="$(find aques_talk)/launch/aques_talk.launch">
-    <arg name="launch_sound_play" value="$(arg launch_sound_play)" />
-    <arg name="sound_play_respawn" value="true" />
+  <include unless="$(arg use_voice_text)" file="$(find voicevox)/launch/voicevox_texttospeech.launch">
+    <arg name="default_speaker" value="$(arg default_speaker)" />
   </include>
 
   <!-- Buffer Server -->
@@ -108,6 +123,58 @@
     <arg name="respawn" value="false" />
     <arg name="basic" value="true" />
     <arg name="basic_yaml" value="/var/lib/robot/roswww_basic_keys.yaml" />
+  </include>
+
+  <!-- app scheduler -->
+  <include if="$(arg launch_app_scheduler)"
+           file="$(find app_scheduler)/launch/app_scheduler.launch">
+    <arg name="yaml_path" value="/var/lib/robot/app_schedule.yaml" />
+  </include>
+
+  <!-- dialogflow task executive -->
+  <include if="$(arg launch_dialogflow)"
+           file="$(find jsk_fetch_startup)/launch/fetch_dialogflow_task_executive.launch">
+    <arg name="run_app_manager" value="false" />
+    <arg name="webhook_server" value="true" />
+    <arg name="hostname" value="$(arg hostname)" />
+  </include>
+
+  <!-- gdrive_ros -->
+  <include if="$(arg launch_gdrive_server)"
+           file="$(find gdrive_ros)/launch/gdrive_server.launch">
+    <arg name="respawn" value="true" />
+  </include>
+
+  <!-- edgetpu human pose estimator -->
+  <include if="$(arg launch_edgetpu_human_pose_estimator)"
+           file="$(find coral_usb)/launch/edgetpu_human_pose_estimator.launch">
+    <arg name="INPUT_IMAGE" value="/head_camera/rgb/image_rect_color" />
+    <arg name="device_id" value="0" />
+  </include>
+
+  <!-- edgetpu panorama human pose estimator -->
+  <include if="$(arg launch_edgetpu_panorama_human_pose_estimator)"
+           file="$(find coral_usb)/launch/edgetpu_panorama_human_pose_estimator.launch">
+    <arg name="INPUT_IMAGE" value="/dual_fisheye_to_panorama/quarter/output" />
+    <arg name="device_id" value="0" />
+  </include>
+
+  <!-- edgetpu object detector -->
+  <include if="$(arg launch_edgetpu_object_detector)"
+           file="$(find coral_usb)/launch/edgetpu_object_detector.launch">
+    <arg name="INPUT_IMAGE" value="/head_camera/rgb/image_rect_color" />
+    <arg name="device_id" value="1" />
+    <arg name="model_file" value="$(env HOME)/.ros/data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite" />
+    <arg name="label_file" value="$(env HOME)/.ros/data/coral_usb/73b2_kitchen_labels.txt" />
+  </include>
+
+  <!-- edgetpu panorama object detector -->
+  <include if="$(arg launch_edgetpu_panorama_object_detector)"
+           file="$(find coral_usb)/launch/edgetpu_panorama_object_detector.launch">
+    <arg name="INPUT_IMAGE" value="/dual_fisheye_to_panorama/quarter/output" />
+    <arg name="device_id" value="1" />
+    <arg name="model_file" value="$(env HOME)/.ros/data/coral_usb/mobilenet_v2_ssd_73b2_kitchen_finetuning_20200528.tflite" />
+    <arg name="label_file" value="$(env HOME)/.ros/data/coral_usb/73b2_kitchen_labels.txt" />
   </include>
 
   <!-- downsample / throttle sensor data -->
