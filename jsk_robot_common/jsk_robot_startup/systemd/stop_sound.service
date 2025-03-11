@@ -1,0 +1,11 @@
+[Unit]
+Description=Play sound at shutdown
+Before=shutdown.target alsa-store.service
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/jsk_robot_startup/stop_sound.sh
+
+[Install]
+WantedBy=shutdown.target
