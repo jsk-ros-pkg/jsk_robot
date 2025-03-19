@@ -23,8 +23,6 @@ class BatteryWarning(object):
         # speak
         self.speak_client = actionlib.SimpleActionClient(
             "/robotsound_jp", SoundRequestAction)
-        self.sound_client = actionlib.SimpleActionClient(
-            "/robotsound", SoundRequestAction)
         ok = self.speak_client.wait_for_server(rospy.Duration(10))
         if not ok:
             rospy.logfatal("Action /robotsound_jp is not advertised")
@@ -33,7 +31,6 @@ class BatteryWarning(object):
         # param
         self.monitor_rate = rospy.get_param("~monitor_rate", 4)
         self.warning_temp = rospy.get_param("~warning_temperature", 42.0)
-        self.cable_warning_temp = rospy.get_param("~cable_warning_temperature", 44.0)
         self.min_capacity = rospy.get_param("~min_capacity", 800)
         self.warning_voltage = rospy.get_param("~warning_voltage", 14.0)
         self.critical_voltage = rospy.get_param("~critical_voltage", 13.7)
@@ -44,7 +41,6 @@ class BatteryWarning(object):
         self.prev_plugged_in = None
         self.latest_status = None
         self.speech_history = defaultdict(lambda: rospy.Time(0))
-        self.sound_history = defaultdict(lambda: rospy.Time(0))
 
         self.diag_sub = rospy.Subscriber(
             "/diagnostics_agg", DiagnosticArray, self.diag_cb, queue_size=1)
@@ -98,20 +94,6 @@ class BatteryWarning(object):
             rospy.logdebug("temperature: %s" % max_temp)
             if 60 > max_temp > self.warning_temp:
                 self.speak("バッテリ温度%.1f度。暑いです。部屋の温度を下げてください。" % max_temp)
-                if max_temp > self.cable_warning_temp:
-                    # play sound 2 (kan kan)
-                    key = 2
-                    if not self.sound_history[key] + rospy.Duration(self.warn_repeat_rate) > rospy.Time.now():
-                        self.sound_history[key] = rospy.Time.now()
-                        sound_req = SoundRequest()
-                        sound_req.sound = 2 # kan kan
-                        sound_req.command = SoundRequest.PLAY_ONCE  # 1: PLAY_ONCE
-                        sound_req.volume = 1.0  # Volume（0.0〜1.0）
-                        sound_req.arg = ''
-                        sound_req.arg2 = ''
-                        self.sound_client.send_goal(SoundRequestGoal(sound_request=sound_req))
-                        self.sound_client.wait_for_result(timeout=rospy.Duration(10))
-                    self.speak("危険な温度です。電源ケーブルのコネクタを確認して下さい。")
         except KeyError:
             pass
         except ValueError:
