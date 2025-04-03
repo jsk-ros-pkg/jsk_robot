@@ -1,0 +1,19 @@
+<launch>
+  <arg name="launch_manager" default="true" />
+  <arg     if="$(arg launch_manager)" name="manager" default="mongodb_record_nodelet_manager" />
+  <arg unless="$(arg launch_manager)" name="manager" />
+  <arg name="respawn" default="false" />
+  <arg name="image" default="image" />
+  <arg name="node_name" default="rgb_image_logger" />
+
+  <node name="$(arg node_name)"
+        pkg="nodelet" type="nodelet"
+        args="load jsk_robot_lifelog/LightweightLogger /$(arg manager)"
+        respawn="$(arg respawn)">
+    <remap from="~input" to="$(arg image)" />
+    <rosparam subst_value="true">
+      enable_monitor: false
+      vital_check: false
+    </rosparam>
+  </node>
+</launch>
