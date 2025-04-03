@@ -1,0 +1,71 @@
+1694083040310	geckodriver	INFO	Listening on 127.0.0.1:36887
+1694083040823	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/usr ... 15" "--remote-debugging-port" "45867" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofileNIU3Ix"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1694083041907	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-disable-blink-features"
+console.error: "Warning: unrecognized command line flag" "-user-agent"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1694083042013	Marionette	INFO	Listening on port 36857
+Read port: 36857
+WebDriver BiDi listening on ws://127.0.0.1:45867
+1694083042080	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+DevTools listening on ws://127.0.0.1:45867/devtools/browser/fb9d5f44-68a9-485a-83d3-0c51e7b7985c
+JavaScript warning: https://myaibo.aibo.sony.jp/assets/bundle.js, line 48: Script terminated by timeout at:
+xa@https://myaibo.aibo.sony.jp/assets/bundle.js:48:90654
+Rn@https://myaibo.aibo.sony.jp/assets/bundle.js:48:30478
+
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: unreachable code after return statement
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://acm.account.sony.com."
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+console.error: (new TypeError("lazy.AsyncShutdown.profileBeforeChange is undefined", "resource://services-settings/Database.sys.mjs", 593))
+console.error: "update.locale" " file doesn't exist in either the application or GRE directories"
+JavaScript warning: https://my.account.sony.com/central/signin/c9b433609b383b6d7147ab7a2f0dcff63b47f87f/assets/vendor-889503f9bf182b98c91436fde9bbd8f8.js, line 8160: unreachable code after return statement
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: unreachable code after return statement
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://my.account.sony.com."
+JavaScript warning: https://client-api.arkoselabs.com/cdn/fc/js/6af2c0d87b9879cbf3365be1a208293f84d37b1e/standard/funcaptcha_api.js?onload=loadChallenge, line 2: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+console.error: (new TypeError("lazy.AsyncShutdown.profileBeforeChange is undefined", "resource://services-settings/Database.sys.mjs", 593))
+1694083129915	Marionette	INFO	Stopped listening on port 36857
+1694083135711	geckodriver	INFO	Listening on 127.0.0.1:53347
+1694083136220	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/usr ... 15" "--remote-debugging-port" "55713" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile1dCaPK"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1694083137339	Marionette	INFO	Marionette enabled
+console.error: "Warning: unrecognized command line flag" "-disable-blink-features"
+console.error: "Warning: unrecognized command line flag" "-user-agent"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1694083137446	Marionette	INFO	Listening on port 34359
+WebDriver BiDi listening on ws://127.0.0.1:55713
+Read port: 34359
+1694083137726	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+DevTools listening on ws://127.0.0.1:55713/devtools/browser/c2791957-3a00-49d4-88fd-d91eee6ed79b
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: unreachable code after return statement
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://acm.account.sony.com/5h7VmhV-da/NQ/qVI8FFHp/G77rLc0Sp0EOuE/IVIdI3dzAQ/fjM1IB/AIaAQ, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://acm.account.sony.com."
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+console.error: (new TypeError("lazy.AsyncShutdown.profileBeforeChange is undefined", "resource://services-settings/Database.sys.mjs", 593))
+console.error: "update.locale" " file doesn't exist in either the application or GRE directories"
+JavaScript warning: https://my.account.sony.com/central/signin/c9b433609b383b6d7147ab7a2f0dcff63b47f87f/assets/vendor-889503f9bf182b98c91436fde9bbd8f8.js, line 8160: unreachable code after return statement
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: unreachable code after return statement
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://my.account.sony.com/9hRawg/tKNSFk/ubOB/44hKfq/Q3/cu5tLDf4mVY9OY/UEZsSQ/MXwZ/eyZbQQQB, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://my.account.sony.com."
+JavaScript warning: https://client-api.arkoselabs.com/cdn/fc/js/6af2c0d87b9879cbf3365be1a208293f84d37b1e/standard/funcaptcha_api.js?onload=loadChallenge, line 2: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1694083508103	Marionette	INFO	Stopped listening on port 34359
