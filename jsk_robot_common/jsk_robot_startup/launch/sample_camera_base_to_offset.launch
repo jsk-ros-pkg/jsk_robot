@@ -1,0 +1,85 @@
+<launch>
+  <arg name="topic_odom_in" default="/t265/odom/sample" />
+  <arg name="topic_odom_out" default="odom" />
+  <arg name="topic_tf" default="/tf" />
+
+  <arg name="base_frame_id" default="base" />
+  <arg name="camera_frame_id" default="t265_pose_frame" />
+  <arg name="odom_frame_id" default="odom" />
+
+  <arg name="publish_tf" default="true" />
+  <arg name="invert_tf" default="false" />
+  <arg name="2d_mode" default="false" />
+  <arg name="enable_covariance" default="false" />
+
+  <arg name="launch_t265" default="true" />
+  <arg name="camera" default="t265" />
+
+  <arg name="launch_rviz" default="false" />
+
+  <node
+      pkg="jsk_robot_startup"
+      type="CameraToBaseOffset.py"
+      name="CameraToBaseOffset"
+      output="screen"
+      >
+      <remap from="~source_odom" to="/$(arg topic_odom_in)" />
+      <remap from="~output" to="$(arg topic_odom_out)" />
+      <remap from="/tf" to="$(arg topic_tf)" />
+
+      <rosparam subst_value="true">
+          base_frame_id: $(arg base_frame_id)
+          camera_frame_id: $(arg camera_frame_id)
+          odom_frame_id: $(arg odom_frame_id)
+          publish_tf: $(arg publish_tf)
+          invert_tf: $(arg invert_tf)
+          enable_covariance: $(arg enable_covariance)
+      </rosparam>
+  </node>
+
+  <group ns="$(arg camera)" if="$(arg launch_t265)">
+    <rosparam>
+      /tracking_module/enable_mapping: false
+      /tracking_module/enable_relocalization: false
+      /tracking_module/enable_pose_jumping: false
+      /tracking_module/enable_dynamic_calibration: true
+      /tracking_module/enable_map_preservation: false
+    </rosparam>
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="tf_prefix"                value="$(arg camera)"/>
+      <arg name="serial_no"                value=""/>
+      <arg name="usb_port_id"              value=""/>
+      <arg name="device_type"              value="t265"/>
+      <arg name="json_file_path"           value=""/>
+
+      <arg name="enable_sync"              value="false"/>
+
+      <arg name="fisheye_width"            value="-1"/>
+      <arg name="fisheye_height"           value="-1"/>
+      <arg name="enable_fisheye1"          value="false"/>
+      <arg name="enable_fisheye2"          value="false"/>
+
+      <arg name="fisheye_fps"              value="-1"/>
+      <arg name="gyro_fps"                 value="-1"/>
+      <arg name="accel_fps"                value="-1"/>
+      <arg name="enable_gyro"              value="true"/>
+      <arg name="enable_accel"             value="true"/>
+      <arg name="enable_pose"              value="true"/>
+
+      <arg name="linear_accel_cov"         value="0.01"/>
+      <arg name="initial_reset"            value="true"/>
+      <arg name="unite_imu_method"         value=""/>
+
+      <arg name="publish_odom_tf"          value="false"/>
+      <arg name="publish_tf"               value="false"/>
+    </include>
+  </group>
+
+  <node
+      pkg="rviz"
+      type="rviz"
+      name="$(anon rviz)"
+      args="-d $(find jsk_robot_startup)/config/sample_camera_base_to_offset.rviz"
+      if="$(arg launch_rviz)"
+      />
+</launch>
