@@ -1,0 +1,18 @@
+<launch>
+    <arg name="speak_text" default="とおれません、みちをあけてください。" />
+    <arg name="duration_wait" default="5.0" />
+    <arg name="sound_action" default="/robotsound_jp" />
+
+    <node
+        pkg="trigger_behavior_recovery"
+        type="speak_and_wait_behavior.py"
+        name="speak_and_wait_behavior"
+        output="screen"
+        >
+        <rosparam subst_value="true">
+          speak_text: $(arg speak_text)
+          duration_wait: $(arg duration_wait)
+          sound_action: $(arg sound_action)
+        </rosparam>
+    </node>
+</launch>
