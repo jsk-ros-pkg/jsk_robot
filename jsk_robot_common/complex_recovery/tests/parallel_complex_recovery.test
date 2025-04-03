@@ -1,0 +1,56 @@
+<launch>
+    <node
+        pkg="complex_recovery"
+        type="parallel_complex_recovery_test_node"
+        name="parallel_complex_recovery_test_node"
+        >
+        <rosparam>
+          recovery:
+            recovery_behaviors:
+              - name: 'wait_and_speak_complex0'
+                type: 'complex_recovery/SequentialComplexRecovery'
+              - name: 'wait_and_speak_complex1'
+                type: 'complex_recovery/SequentialComplexRecovery'
+            wait_and_speak_complex0:
+              recovery_behaviors:
+                - name: 'wait_3_secs'
+                  type: 'speak_and_wait_recovery/SpeakAndWaitRecovery'
+                - name: 'speak_and_wait0'
+                  type: 'speak_and_wait_recovery/SpeakAndWaitRecovery'
+              wait_3_secs:
+                speak_text: ''
+                duration_wait: 3.0
+                duration_timeout: 2.0
+                result_timeout: 1.0
+              speak_and_wait0:
+                speak_text: 'test0'
+                duration_wait: 2.0
+                duration_timeout: 2.0
+                result_timeout: 1.0
+            wait_and_speak_complex1:
+              recovery_behaviors:
+                - name: 'wait_5_secs'
+                  type: 'speak_and_wait_recovery/SpeakAndWaitRecovery'
+                - name: 'speak_and_wait1'
+                  type: 'speak_and_wait_recovery/SpeakAndWaitRecovery'
+              wait_5_secs:
+                speak_text: ''
+                duration_wait: 5.0
+                duration_timeout: 2.0
+                result_timeout: 1.0
+              speak_and_wait1:
+                speak_text: 'test1'
+                duration_wait: 2.0
+                duration_timeout: 2.0
+                result_timeout: 1.0
+        </rosparam>
+    </node>
+
+    <test
+        test-name="test_parallel_complex_recovery"
+        pkg="complex_recovery"
+        type="test_parallel_complex_recovery.py"
+        name="parallel_complex_recovery_test"
+        time-limit="30"
+        />
+</launch>
