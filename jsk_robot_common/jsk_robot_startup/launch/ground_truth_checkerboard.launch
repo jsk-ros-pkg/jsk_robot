@@ -1,0 +1,56 @@
+<launch>
+  <arg name="rect0_size_x" default="0.108"/>
+  <arg name="rect0_size_y" default="0.108"/>
+  <arg name="grid0_size_x" default="6"/>
+  <arg name="grid0_size_y" default="7"/>
+  <arg name="board_type" default="chess" />
+  <arg name="base_link_frame" default="BODY"/>
+
+   <group ns="ground_truth" clear_params="true">
+    <param name="display" type="int" value="1"/>
+    <param name="rect0_size_x" type="double" value="$(arg rect0_size_x)"/>
+    <param name="rect0_size_y" type="double" value="$(arg rect0_size_y)"/>
+    <param name="grid0_size_x" type="int" value="$(arg grid0_size_x)"/>
+    <param name="grid0_size_y" type="int" value="$(arg grid0_size_y)"/>
+    <param name="board_type" value="$(arg board_type)" />
+    <param name="use_P" value="true" />
+    <param name="type0" type="string" value="data/ricebox.kinbody.xml"/>
+    <param name="message_throttle" value="1" />
+    <node pkg="checkerboard_detector" name="checkerboard_detector" type="checkerboard_detector" respawn="false">
+      <remap from="camera_info" to="/multisense_local/left/camera_info"/>
+      <remap from="image" to="/multisense_local/left/image_rect"/>
+      <remap from="objectdetection_pose" to="ground_truth_marker_pose" />
+    </node>
+    <node pkg="jsk_robot_startup" type="PoseStampedToTf.py"
+          name="camera_to_ground_truth" output="screen">
+      <remap from="~input_pose" to="/ground_truth/ground_truth_marker_pose"/>
+      <param name="~frame_name" value="/ground_truth_marker"/>
+    </node>
+  </group>
+  <node pkg="jsk_robot_startup" type="GroundTruthFromCheckerBoard.py"
+        name="ground_truth_to_body" output="screen">
+    <param name="~base_frame" value="$(arg base_link_frame)"/>
+    <param name="~odom_frame" value="/ground_truth_odom_raw"/>
+    <param name="~invert_tf" value="true"/>
+    <remap from="~input_pose" to="/ground_truth/ground_truth_marker_pose"/>
+    <remap from="~init_trigger" to="/odom_init_trigger" />
+    <remap from="~output" to="/ground_truth_odom_raw"/>
+  </node>
+  <node pkg="jsk_robot_startup" type="odometry_offset.py" name="ground_truth_odometry_offset"
+        output="screen" >
+    <remap from="~source_odom" to="/ground_truth_odom_raw" />
+    <remap from="~initial_base_link_transform" to="/init_to_base_link_transform" />
+    <remap from="~output" to="/ground_truth_odom" />
+    <param name="~odom_frame" value="ground_truth_odom" />
+    <param name="~base_link_frame" value="$(arg base_link_frame)" />
+  </node>
+
+  <!-- This topic is no longer used because of /slam_odom -->
+  <!--
+  <node pkg="jsk_robot_startup" type="TfToPoseStamped.py"
+        name="map_to_body" output="screen">
+    <param name="~parent_frame" value="/map"/>
+    <param name="~child_frame" value="$(arg base_link_frame)"/>
+  </node>
+  -->
+</launch>
