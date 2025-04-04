@@ -31,6 +31,7 @@
   <run_depend>dynamic_tf_publisher</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>image_view</run_depend>
+  <run_depend>influxdb_store</run_depend>
   <run_depend>joy</run_depend>
   <run_depend>jsk_interactive_marker</run_depend>
   <run_depend>jsk_pcl_ros</run_depend>
