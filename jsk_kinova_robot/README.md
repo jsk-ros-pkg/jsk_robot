@@ -54,7 +54,7 @@ You need to install `conan` (Decentralized, open-source (MIT), C/C++ package man
 
 ```bash
 sudo apt install python3 python3-pip
-python3 -m pip install --user conan
+python3 -m pip install --user 'conan<2'
 conan config set general.revisions_enabled=1
 conan profile new default --detect > /dev/null
 conan profile update settings.compiler.libcxx=libstdc++11 default
@@ -65,13 +65,15 @@ conan profile update settings.compiler.libcxx=libstdc++11 default
 Use `wstool`, `rosdep` and `catkin` to checkout and compile the source tree.
 
 ```bash
+source /opt/ros/*/setup.bash
 mkdir -p ~/kinova_ws/src
 cd ~/kinova_ws/src
 wstool init
 wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_kinova_robot/kinova.rosinstall
+wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_kinova_robot/kinova.rosinstall.${ROS_DISTRO} # Please ignore error if kinova.rosinstall.${ROS_DISTRO} does not exist. # We can remove this line after the https://github.com/ros/collada_urdf/pull/44 is merged
 wstool update
 cd ../
-source /opt/ros/melodic/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 rosdep install -y -r --from-paths src --ignore-src
 catkin build jsk_kinova_startup kinovaeus
 source devel/setup.bash
