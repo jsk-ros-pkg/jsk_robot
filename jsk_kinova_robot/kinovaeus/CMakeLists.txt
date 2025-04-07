@@ -67,7 +67,7 @@ install(DIRECTORY test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   USE_SOURCE_PERMISSIONS)
 
-install(FILES kinova.l kinova-interface.l kinova-util.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES kinova.l kinova-interface.l kinova-util.l gen3_robotiq_2f_85.yaml gen3_robotiq_2f_140.yaml gen3_lite_gen3_lite_2f.yaml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)

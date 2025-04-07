@@ -13,7 +13,7 @@ find_package(catkin REQUIRED COMPONENTS)
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -130,6 +130,22 @@ include_directories(
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
+file(GLOB_RECURSE SCRIPT_PROGRAMS nodes/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/nodes)
+  endif()
+endforeach()
+file(GLOB_RECURSE SCRIPT_PROGRAMS scripts/*)
+foreach(SCRIPT_PROGRAM ${SCRIPT_PROGRAMS})
+  if("${SCRIPT_PROGRAM}" MATCHES ".*\\.py$")
+    catkin_install_python(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+  else()
+    install(PROGRAMS ${SCRIPT_PROGRAM} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts)
+  endif()
+endforeach()
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -137,6 +153,9 @@ include_directories(
 #   FILES_MATCHING PATTERN "*.h"
 #   PATTERN ".svn" EXCLUDE
 # )
+install(DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

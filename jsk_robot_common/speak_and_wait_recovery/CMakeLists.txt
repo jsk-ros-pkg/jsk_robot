@@ -53,6 +53,9 @@ install(DIRECTORY include/${PROJECT_NAME}/
   FILES_MATCHING PATTERN "*.h"
 )
 
+install(DIRECTORY launch test
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
 install(FILES speak_and_wait_plugin.xml
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
