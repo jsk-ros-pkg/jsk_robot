@@ -141,13 +141,17 @@
 	(setq joint-name (list "LHand")))
        (:rhand
 	(setq joint-name (list "RHand")))
+       (t
+        (setq joint-name joint)
+        (if (/= (length joint-name) (length stiffness))
+            (ros::ros-warn "length for 'joint' and 'sitffness' must be same")))
        )
      (send goal :goal :trajectory :joint_names joint-name)
      (send goal :goal :trajectory :header :stamp (ros::time-now))
      (send goal :goal :trajectory :points
 	   (list (instance trajectory_msgs::JointTrajectoryPoint
 			   :init
-			   :positions (fill (instantiate float-vector (length joint-name)) stiffness)
+			   :positions (if (numberp stiffness) (fill (instantiate float-vector (length joint-name)) stiffness) stiffness)
 			   :time_from_start (ros::time 1))))
      (send joint-stiffness-trajectory-action :send-goal goal)
      ))
