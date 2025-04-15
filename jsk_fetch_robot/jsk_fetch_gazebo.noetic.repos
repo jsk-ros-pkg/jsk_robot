@@ -1,0 +1,9 @@
+repositories:
+  ZebraDevs/fetch_gazebo:
+    type: git
+    url: git@github.com:ZebraDevs/fetch_gazebo
+    version: gazebo11
+  GT-RAIL/robot_pose_publisher:
+    type: git
+    url: git@github.com:GT-RAIL/robot_pose_publisher
+    version: develop
