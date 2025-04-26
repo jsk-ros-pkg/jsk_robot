@@ -3,6 +3,8 @@
 (require :aero-hand "package://aeroeus/aero-hand.l")
 (require :robot-interface "package://pr2eus/robot-interface.l")
 
+(ros::load-ros-manifest "seedhand_std")
+
 (defclass aero-interface
   :super robot-move-base-interface
   :slots (hand-interface)
@@ -50,6 +52,8 @@
      (send self :add-controller ct :create-actions nil))
    (setq hand-interface
          (instance aero-hand-interface :init))
+   (setq set-hand-srv
+         (instance seedhand_std::SetHandRequest :init))
    )
   ;;
   (:default-controller nil
@@ -119,7 +123,45 @@
    (&optional (arm :arms) &key (wait nil))
    (send hand-interface :ungrasp arm)
    )
+  (:angle-index-finger
+   (&key (arm :rarm) (angle 0.0) (time 5.0))
+   (if (eq arm :rarm)
+       (send set-hand-srv :arm "rarm")
+     (send set-hand-srv :arm "larm"))
+   (send set-hand-srv :finger "index")
+   (send set-hand-srv :index_angle angle)
+   (send set-hand-srv :time time)
+   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
+   )
+  (:angle-thumb-finger
+   (&key (arm :rarm) (angle 0.0) (time 5.0))
+   (cond
+    ((eq arm :rarm)
+     (send set-hand-srv :arm "rarm")
+     (send set-hand-srv :finger "thumb")
+     )
+    ((eq arm :larm)
+     (send set-hand-srv :arm "larm")
+     (send set-hand-srv :finger "trx")
+     )
+    (t
+     ))
+   (send set-hand-srv :thumb_angle angle)
+   (send set-hand-srv :time time)
+   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
+   )
+  (:angle-both-finger
+   (&key (arm :rarm) (thumb-angle 0.0) (index-angle 0.0) (time 5.0))
+   (send set-hand-srv :arm "rarm")
+   (send set-hand-srv :finger "both")
+   (send set-hand-srv :thumb_angle thumb-angle)
+   (send set-hand-srv :index_angle index-angle)
+   (send set-hand-srv :time time)
+   (send (ros::service-call "/seedhand_server/set_hand" set-hand-srv) :status)
+   )
   )
+
+
 
 (defun aero-init (&rest args)
   (if (not (boundp '*ri*))
@@ -167,3 +209,41 @@
               (* 0.75 (send j :min-angle))))
           ))
 |#
+
+;; grasp by finger angle
+(defun start-pinch (arm &optional (time 3000) (trx-angle 0.0))
+  (cond
+   ((eq arm :rarm)
+    (send *ri* :angle-index-finger :angle 0.3 :time (* time 0.001) :arm :rarm)
+    (unix:usleep (* 1000 time))
+    (send *ri* :angle-thumb-finger :angle -0.05 :time (* time 0.001) :arm :rarm)
+    (unix:usleep (* 1000 time))
+    )
+   ((eq arm :larm)
+    (send *ri* :angle-thumb-finger :angle trx-angle :time (* time 0.001) :arm :larm)
+    (unix:usleep (* 1000 time))
+    )
+   (t
+    (ros::ros-warn "set arm argument {:rarm or :larm}")
+    nil
+    ))
+  )
+;;
+;; open by finger angle
+(defun stop-pinch (arm &optional (time 3000))
+  (cond
+   ((eq arm :rarm)
+    (send *ri* :angle-index-finger :angle -0.9 :time (* time 0.001) :arm arm)
+    (unix:usleep (* 1000 time))
+    (send *ri* :angle-thumb-finger :angle 0.25 :time (* time 0.001) :arm arm)
+    (unix:usleep (* 1000 time))
+    )
+   ((eq arm :larm)
+    (send *ri* :angle-thumb-finger :angle -0.3 :time (* time 0.001) :arm arm)
+    (unix:usleep (* 1000 time))
+    )
+   (t
+    (ros::ros-warn "set arm argument {:rarm or :larm}")
+    nil
+    ))
+  )

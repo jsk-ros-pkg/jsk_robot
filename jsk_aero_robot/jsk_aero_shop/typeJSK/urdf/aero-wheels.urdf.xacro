@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!-- XML namespaces -->
+<robot xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+       xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+       xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+       xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+       xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find aero_description)/urdf/common.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/typeC_lifter/lifter.urdf.xacro" />
+  <xacro:include filename="$(find aero_description)/urdf/typeE_wheel/wheels.urdf.xacro" />
+
+  <xacro:macro name="aero-wheels" params="base_link" >
+
+    <xacro:wheels base_link="${base_link}" />
+
+    <joint name="wheel_lifter_connector" type="fixed">
+      <parent  link="wheels_top_link"/>
+      <child link="lifter_base_link"/>
+      <origin xyz="0.0 0.0 0.005" rpy="0 0 0 "/>
+    </joint>
+
+    <xacro:lifter base_link="lifter_base_link"/>
+  </xacro:macro>
+
+</robot>
