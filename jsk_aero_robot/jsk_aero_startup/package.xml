@@ -22,4 +22,6 @@
   <run_depend>stereo_image_proc</run_depend>
   <run_depend>tf2_ros</run_depend>
   <run_depend>tf</run_depend>
+  <run_depend>ros_speech_recognition</run_depend>
+
 </package>
