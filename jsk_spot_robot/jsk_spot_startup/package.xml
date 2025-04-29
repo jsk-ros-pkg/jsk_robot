@@ -21,6 +21,7 @@
   <exec_depend>audio_capture</exec_depend>
   <exec_depend>cmd_vel_smoother</exec_depend>
   <exec_depend>compressed_image_transport</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>image_transport</exec_depend>
   <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>jsk_perception</exec_depend>
@@ -28,6 +29,7 @@
   <exec_depend>jsk_tools</exec_depend>
   <exec_depend>julius_ros</exec_depend>
   <exec_depend>laptop_battery_monitor</exec_depend>
+  <exec_depend>message_filters</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>ros_speech_recognition</exec_depend>
   <exec_depend>rosbag</exec_depend>
@@ -41,6 +43,8 @@
   <exec_depend>spot_description</exec_depend>
   <exec_depend>spot_driver</exec_depend>
   <exec_depend>spoteus</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>tf2_msgs</exec_depend>
   <exec_depend>topic_tools</exec_depend>
   <exec_depend>twist_mux</exec_depend>
   <exec_depend>voice_text</exec_depend>

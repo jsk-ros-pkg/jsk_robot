@@ -36,7 +36,8 @@
     <remap from="tf" to="~tf" if="$(arg sync_tf)" />
   </node>
 
-  <!-- <node name="tf_synchronizer" pkg="jsk_spot_startup" type="tf_synchronizer.py"/> -->
+  <node name="tf_synchronizer" pkg="jsk_spot_startup" type="tf_synchronizer.py"
+        if="$(arg sync_tf)"/>
 
   <node name="cmd_vel_smoother" pkg="cmd_vel_smoother" type="cmd_vel_smoother">
     <remap from="input" to="spot/cmd_vel_unsmoothed" />
