@@ -76,6 +76,8 @@
            file="$(find jsk_pr2_startup)/jsk_pr2_sensors/kinect_head.launch" >
     <arg name="monitor_driver" value="true" />  <!-- iory 2022/05/11-->
   </include>
+  <!-- Set image compressedDepth png_leve to 5 -->
+  <rosparam file="$(find jsk_pr2_startup)/config/pr2_png_level.yaml" command="load"/>
 
   <!-- logging node for PR2  -->
   <include if="$(arg launch_db)"
