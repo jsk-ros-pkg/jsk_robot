@@ -8,9 +8,17 @@
   <arg name="use_app_manager" default="true" />
   <arg name="use_gps" default="true" />
 
+  <arg name="sync_tf" default="false" />
 
   <group if="$(arg launch_robot_state_publisher)">
-    <include file="$(find spot_description)/launch/description.launch" />
+    <include file="$(find spot_description)/launch/description.launch" unless="$(arg sync_tf)"/>
+    <param name="robot_description" command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro"
+	   if="$(arg sync_tf)"/>
+    <param name="robot_description_semantic" command="$(find xacro)/xacro $(find spot_description)/urdf/spot.urdf.xacro"
+	   if="$(arg sync_tf)"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" if="$(arg sync_tf)">
+      <remap from="/tf" to="~tf" />
+    </node>
   </group>
 
   <node
@@ -24,8 +32,11 @@
     <rosparam file="$(find spot_driver)/config/spot_ros.yaml" command="load" />
     <rosparam file="$(arg credential_config)" command="load" />
     <remap from="joint_states" to="/joint_states"/>
-    <remap from="tf" to="/tf"/>
+    <remap from="tf" to="/tf" unless="$(arg sync_tf)" />
+    <remap from="tf" to="~tf" if="$(arg sync_tf)" />
   </node>
+
+  <!-- <node name="tf_synchronizer" pkg="jsk_spot_startup" type="tf_synchronizer.py"/> -->
 
   <node name="cmd_vel_smoother" pkg="cmd_vel_smoother" type="cmd_vel_smoother">
     <remap from="input" to="spot/cmd_vel_unsmoothed" />
