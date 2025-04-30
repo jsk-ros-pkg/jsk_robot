@@ -1,0 +1,18 @@
+<launch>
+  <!-- You need to run this launch file in the PR2 robot for higher frequency of the image,
+  otherwise the internal message filter will not work -->
+  <node pkg="apriltag_ros" type="apriltag_ros_continuous_node" name="apriltag_pose_detector">
+    <remap from="image_rect" to="/kinect_head/rgb/image_rect_color" />
+    <remap from="camera_info" to="/kinect_head/rgb/camera_info" />
+    <rosparam>
+      <!-- NOTE: the size is the inner square's edge length of the tag, not the outer edge length!!! -->
+      standalone_tags: [{id: 0, size: 0.0277, name: apriltag},]
+      tag_family: "tagStandard41h12"
+      publish_tf: true
+    </rosparam>
+  </node>
+
+  <!-- NOTE: -0.04 is measured by hand. -.12 is determined by "eye calibration" -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="sensor_frame_publisher"
+        args="-0.12 0 -0.04 0 0 3.1415926 l_gripper_tool_frame apriltag_fk" />
+</launch>
