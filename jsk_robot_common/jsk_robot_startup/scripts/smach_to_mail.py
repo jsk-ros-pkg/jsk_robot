@@ -257,6 +257,8 @@ class SmachToMail():
 
         if subject:
             email_msg.subject = subject
+        elif rospy.has_param("~mail_title"):
+            email_msg.subject = rospy.get_param("~mail_title")
         else:
             email_msg.subject = 'Message from {}'.format(rospy.get_param('/robot/name', 'robot'))
 
