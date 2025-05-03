@@ -1,0 +1,3 @@
+<launch>
+  <test pkg="spoteus" type="test-spot.l" test-name="spot_lisp" time-limit="300" />
+</launch>
