@@ -95,6 +95,7 @@ plugins:
         - /tmp/go_to_kitchen_panorama.avi
         - /tmp/go_to_kitchen_audio.wav
         - /tmp/go_to_kitchen_rosbag.bag
+        - /tmp/trashcan_inside.jpg
       upload_file_titles:
         - go_to_kitchen_result.yaml
         - go_to_kitchen_head_camera.avi
@@ -102,6 +103,7 @@ plugins:
         - go_to_kitchen_panorama.avi
         - go_to_kitchen_audio.wav
         - go_to_kitchen_rosbag.bag
+        - trashcan_inside.jpg
       upload_parents_path: fetch_go_to_kitchen
       upload_server_name: /gdrive_server
   - name: speech_notifier_plugin
