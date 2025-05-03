@@ -1,6 +1,12 @@
 --- live_human_pose.py	2022-05-26 00:17:04.634784206 +0900
 +++ live_human_pose_jsk.py	2022-05-26 00:17:18.102931810 +0900
-@@ -169,6 +169,8 @@
+@@ -1,4 +1,5 @@
+ #coding:utf-8
++import base64
+ import json
+ import trt_pose . coco
+ import trt_pose . models
+@@ -169,6 +171,8 @@
      if 39 - 39: o00ooo0 - II111iiii * OoO0O00 % o0oOOo0O0Ooo * II111iiii % II111iiii
      cv2 . circle ( src , ( i1I1iI , o0O ) , 8 , I1i1I1II , - 1 )
   iI1Ii11111iIi . write ( src )
@@ -9,3 +15,12 @@
  # cv2 . imshow ( "ai" , src )
  # cv2 . waitKey ( 1 )
   if 59 - 59: iIii1I11I1II1 + I1IiiI - o0oOOo0O0Ooo - I1IiiI + Oo / I1ii11iIi11i
+@@ -199,6 +203,8 @@
+  print ( "AI is working ...." , camIndex . value )
+  Oo0oOOo , Oo0OoO00oOO0o = o0OOO [ camIndex . value - 1 ] . read ( )
+  OOO00O = time . time ( )
++ # add by iory 2022.8.6
++ O0ii1ii1ii.publish("vision/front_camera", base64.b64encode(cv2.imencode('.jpg', Oo0OoO00oOO0o, [int(cv2.IMWRITE_JPEG_QUALITY), 90])[1]).decode('ascii'))
+  OOoOO0oo0ooO = cv2 . resize ( Oo0OoO00oOO0o , dsize = ( OooO0 , II11iiii1Ii ) , interpolation = cv2 . INTER_AREA )
+  iI ( OOoOO0oo0ooO , Oo0OoO00oOO0o , OOO00O )
+  if 98 - 98: I1II1 * I1II1 / I1II1 + O00ooOO
