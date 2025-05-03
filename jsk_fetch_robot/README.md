@@ -33,26 +33,49 @@
 
 ## How to Run
 
+### Setup Environment (For Remote PC)
 
-### Setup Environment
-
-First, you need to install ros. For ros indigo, please refer to install guide like [here](http://wiki.ros.org/indigo/Installation/Ubuntu)
+First, you need to install ROS. For ROS melodic, please refer to install guide like [here](http://wiki.ros.org/melodic/Installation/Ubuntu).
+Please make sure your ROS Distribution is indigo, kinetic or melodic.
 
 ```bash
 mkdir -p catkin_ws/src
 cd  catkin_ws/src
 wstool init .
-wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -y
-if [[ $ROS_DISTRO =~ ^(indigo|kinetic|melodic)$ ]]; then
-  wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
-else
-  echo "Your ROS distribution $ROS_DISTRO is not supported."
-fi
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -v develop/fetch -y
+wstool merge -t . https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_fetch_robot/jsk_fetch_user.rosinstall.$ROS_DISTRO
+
+# (optional): the two lines below are necessary when you want to use roseus_resume
+wstool merge -t . https://gist.githubusercontent.com/Affonso-Gui/25518fef9dc7af0051147bdd2a94b116/raw/e3fcbf4027c876329801a25e32f4a4746200ddae/guiga_system.rosinstall
+wstool update -t .
+
+# (optional): the two lines below are necessary when you want to use eus10
+wget https://raw.githubusercontent.com/jsk-ros-pkg/jsk_roseus/master/setup_upstream.sh -O /tmp/setup_upstream.sh
+bash /tmp/setup_upstream.sh -w ../ -p jsk-ros-pkg/geneus -p euslisp/jskeus
+
+source /opt/ros/$ROS_DISTRO/setup.bash
+rosdep install -y -r --from-paths . --ignore-src
+cd ../
+# (optional): if you want to use roseus_resume, build roseus_resume, too.
+catkin build fetcheus jsk_fetch_startup
+
+source devel/setup.bash
+```
+
+#### Setup Environment (For Robot Internal PC, only for advanced developer)
+
+```bash
+mkdir -p catkin_ws/src
+cd  catkin_ws/src
+wstool init .
+wstool set --git jsk-ros-pkg/jsk_robot https://github.com/jsk-ros-pkg/jsk_robot.git -v develop/fetch -y
+wstool update -t .
+wstool merge -t . jsk-ros-pkg/jsk_robot/jsk_fetch_robot/jsk_fetch.rosinstall.$ROS_DISTRO
 wstool update -t .
 source /opt/ros/$ROS_DISTRO/setup.bash
 rosdep install -y -r --from-paths . --ignore-src
 cd ../
-catkin build fetcheus jsk_fetch_startup
+catkin build
 source devel/setup.bash
 ```
 
