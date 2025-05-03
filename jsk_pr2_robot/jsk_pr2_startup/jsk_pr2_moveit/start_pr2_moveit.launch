@@ -12,10 +12,6 @@
        name="sensor_params_file"
        value="$(find jsk_pr2_startup)/jsk_pr2_moveit/sensors_kinect.yaml" />
 
-  <include file="$(find pr2_moveit_config)/launch/planning_context.launch">
-    <arg name="load_robot_description" value="false"/>
-  </include>
-
   <!--node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 odom_combined base_footprint 100" /-->
   <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
     <param name="/use_gui" value="true"/>
@@ -24,6 +20,7 @@
 
   <include file="$(find pr2_moveit_config)/launch/move_group.launch">
     <arg name="allow_trajectory_execution" value="true"/>
+    <arg name="load_robot_description" value="false"/>
     <arg name="moveit_octomap_sensor_params_file"
          value="$(arg sensor_params_file)" />
   </include>
