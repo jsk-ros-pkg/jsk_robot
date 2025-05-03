@@ -1,0 +1,7 @@
+<launch>
+  <node name="main"
+	pkg="roseus" type="roseus"
+	args="$(find jsk_pepper_startup)/apps/walk_together/euslisp/walk_together_main.l &quot;(progn (unix:sleep 15) (main))&quot;" required="true" >
+  </node>
+  
+</launch>
