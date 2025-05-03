@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find pr2_description)/robots/upload_pr2.launch" />
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="ignore_timestamp" value="true" />
+  </node>
+</launch>
