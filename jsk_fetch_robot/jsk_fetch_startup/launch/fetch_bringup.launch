@@ -256,9 +256,15 @@
   </node>
 
   <!-- send email, twitter with smach -->
-  <node name="server_name" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
-    <rosparam>
-      email_info: /var/lib/robot/email_topic.yaml
+  <node name="smach_to_mail" pkg="jsk_robot_startup" type="smach_to_mail.py" output="screen">
+    <remap from="~smach/container_status" to="/server_name/smach/container_status" />
+    <rosparam command="load"
+              file="$(find jsk_fetch_startup)/config/$(arg hostname)_email_topic.yaml" />
+    <rosparam subst_value="true">
+      use_mail: true
+      use_twitter: $(arg launch_tweet)
+      use_google_chat: $(arg launch_google_chat)
+      google_chat_space: spaces/AAAARE9CrfA
     </rosparam>
   </node>
 
