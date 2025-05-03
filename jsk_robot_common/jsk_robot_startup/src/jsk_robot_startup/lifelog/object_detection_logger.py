@@ -16,7 +16,11 @@ from .transformations import TransformListener
 
 class ObjectDetectionLogger(LoggerBase):
     def __init__(self):
-        LoggerBase.__init__(self)
+        db_name = rospy.get_param('~database', 'jsk_robot_lifelog')
+        col_name = rospy.get_param('~collection', None)
+
+        super(ObjectDetectionLogger, self).__init__(db_name=db_name, col_name=col_name)
+        
         self.update_rate = rospy.get_param("~update_rate", 1.0)
         self.map_frame = rospy.get_param('~map_frame', 'map')
         self.robot_frame = rospy.get_param('~robot_frame', 'base_footprint')
