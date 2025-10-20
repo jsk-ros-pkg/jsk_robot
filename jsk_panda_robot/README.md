@@ -6,7 +6,7 @@
 
 
 ### Installation for User PC
-1. Install OpenHaptics and Touch Device Driver from here: https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
+1. If you want to use TouchUSBs (haptic devices), install OpenHaptics and Touch Device Driver from here: https://support.3dsystems.com/s/article/OpenHaptics-for-Linux-Developer-Edition-v34?language=en_US
    * If your Ubuntu version is not supported, check JSK backup: https://drive.google.com/drive/folders/1FiQ4m3XtoDlwdRIq3H7LJv8T882SBVBl
 
 2. Install ROS packages:
@@ -17,7 +17,7 @@
    wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_panda_robot/jsk_panda_user.rosinstall
    wstool update
    cd ../
-   source /opt/ros/melodic/setup.bash
+   source /opt/ros/<Your ROS Distribution>/setup.bash
    rosdep install -y -r --from-paths src --ignore-src --skip-keys=librealsense2,realsense2_camera  # See comments in jsk_panda.rosinstall
    catkin build jsk_panda_startup jsk_panda_teleop
    source devel/setup.bash
@@ -42,7 +42,7 @@
    wstool merge https://raw.githubusercontent.com/jsk-ros-pkg/jsk_robot/master/jsk_panda_robot/jsk_panda.rosinstall
    wstool update
    cd ../
-   source /opt/ros/melodic/setup.bash
+   source /opt/ros/<Your ROS Distribution>/setup.bash
    rosdep install -y -r --from-paths src --ignore-src --skip-keys=librealsense2,realsense2_camera  # See comments in jsk_panda.rosinstall
    catkin build jsk_panda_startup jsk_panda_teleop
    source devel/setup.bash

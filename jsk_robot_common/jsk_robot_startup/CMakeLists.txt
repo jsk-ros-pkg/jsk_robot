@@ -53,6 +53,7 @@ generate_dynamic_reconfigure_options(
   cfg/OdometryFeedbackWrapperReconfigure.cfg
   cfg/ConstantHeightFramePublisherReconfigure.cfg
   cfg/JointStatesThrottle.cfg
+  cfg/SmachNotificationReconfigure.cfg
 )
 
 add_message_files(

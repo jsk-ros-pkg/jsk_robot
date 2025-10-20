@@ -74,6 +74,20 @@ source devel/setup.bash
 
    Then, reboot the robot and go to [app_chooser](http://192.168.123.161:8000/rwt_app_chooser) and start your application
 
+## Lead teleop
+
+[lead_teleop.launch](./jsk_unitree_startup/launch/lead_teleop.launch) is designed to interface with a mechanical button and an LED,
+publishing joystick messages (`joy_msg`) to ROS using the rosserial library.
+The node captures button presses and publishes the count of presses as part of the `/joy` messages to ROS.
+
+### Hardware Setup
+
+- Joystick: Interprets analog signals from two axes.
+- LEDs: One Adafruit NeoPixel strip for status indication.
+- Button: A single mechanical button used to trigger different commands based on the number of presses.
+
+For detailed instructions on setting up the Arduino IDE, see [Setup Arduino IDE for LeadJoyDevelopment](#setup-arduino-ide-for-leadjoydevelopment).
+
 ### Setup Arduino IDE for LeadJoyDevelopment
 - Add Seeduino XIAO to board manager
     - Open arduino IDE. `~/arduino-$ARDUINO_VERSION/arduino`
@@ -86,6 +100,33 @@ source devel/setup.bash
       - Arduino 1.8.19
       - Seeed XIAO RP2040: 1.12.0
       - Adafruit NeoPixel: 1.10.5
+
+### ROS Parameters
+
+- `~deadzone`: Adjusts the sensitivity of the joystick's zero point.
+- `~press_interval`: Time window to register multiple button presses as a single action.
+- `~debounce_period`: Debounce time to stabilize the button input.
+
+### Visual Feedback
+
+The Mechanical keyboard LED button changes colors based on the button pressed to provide immediate visual feedback. Each button press is associated with a different color.
+
+### Button Press Actions and LED Feedback
+
+| Button Presses | LED Color         | Action                        | Description                           |
+|----------------|-------------------|-------------------------------|---------------------------------------|
+| 0 presses       | Red | no action                           | Unitree is just standing.       |
+| 1 press        | Blue | Sit                           | Unitree sits and will not walk.       |
+| 2 presses      | Green | Stand                         | Unitree stands up and is able to walk.|
+| 3 presses      | Yellow | no action                            | no action                                     |
+| 4 presses      | White | Disable movement           | Unitree stops moving.                 |
+| 5 presses      | Purple | Enable movement           | Unitree is able to move again.        |
+
+The robot's motion and action mappings, such as stopping, moving, sitting, and standing, are defined in [rosserial_node.launch](./jsk_unitree_startup/launch/rosserial_node.launch) and [lead_joystick_teleop.yaml](./jsk_unitree_startup/config/lead_joystick_teleop.yaml). These files control the robot's responses to joystick inputs and can be customized as needed.
+
+You can see it in the next video.
+
+[lead_teleop](https://drive.google.com/file/d/1I7L-Ib8dmE77NPU4tOTtzfbOxjwT2nNe/view?usp=sharing)
 
 ## Topics
 
