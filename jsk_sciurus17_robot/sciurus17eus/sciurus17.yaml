@@ -1,0 +1,43 @@
+head:
+  - neck_yaw_joint: head-y
+  - neck_pitch_joint: head-p
+torso:
+  - waist_yaw_joint: waist-y
+rhand:
+  - r_hand_joint: rarm-gripper
+lhand:
+  - l_hand_joint: larm-gripper
+rarm:
+  - r_arm_joint1: rarm-shoulder-y
+  - r_arm_joint2: rarm-shoulder-p
+  - r_arm_joint3: rarm-shoulder-r
+  - r_arm_joint4: rarm-elbow-p
+  - r_arm_joint5: rarm-elbow-r
+  - r_arm_joint6: rarm-wrist-p
+  - r_arm_joint7: rarm-wrist-r
+larm:
+  - l_arm_joint1: larm-shoulder-y
+  - l_arm_joint2: larm-shoulder-p
+  - l_arm_joint3: larm-shoulder-r
+  - l_arm_joint4: larm-elbow-p
+  - l_arm_joint5: larm-elbow-r
+  - l_arm_joint6: larm-wrist-p
+  - l_arm_joint7: larm-wrist-r
+
+angle-vector:
+  reset-pose: [0, 0, 0, 0, 0, 0, -90, 0, 156.2, 0, -120, 0, 0, 90, 0, -156.2, 0, 120, 0]
+  init-pose: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -85.94, 0.0, 120.32, 0.0, -114.59, 0.0, 0.0, 85.94, 0.0, -120.32, 0.0, 114.59, 0.0]
+
+head-end-coords:
+  parent: camera_link
+  translate: [0, 0, 0]
+  rotate: [0, 1, 0, 90]
+torso-end-coords:
+  parent: chest_camera_link
+  translate: [0, 0, 0]
+rarm-end-coords:
+  parent: r_link7
+  translate: [0, -0.05, 0]
+larm-end-coords:
+  parent: l_link7
+  translate: [0, 0.05, 0]

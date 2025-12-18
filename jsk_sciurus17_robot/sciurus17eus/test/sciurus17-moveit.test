@@ -1,0 +1,16 @@
+<launch>
+  <arg name="use_rviz" default="true" />
+
+  <!-- Launch sciurus17_bringup (includes MoveIt, no Gazebo) -->
+  <include file="$(find jsk_sciurus17_bringup)/launch/sciurus17_bringup.launch">
+    <arg name="use_rviz" value="$(arg use_rviz)" />
+    <arg name="use_head_camera" value="false" />
+    <arg name="use_chest_camera" value="false" />
+  </include>
+
+  <!-- Start test -->
+  <test test-name="sciurus17_moveit_test" pkg="roseus" type="roseus"
+        time-limit="360"
+        args="$(find sciurus17eus)/test/test-sciurus17-moveit.l"
+        retry="2" />
+</launch>

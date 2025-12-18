@@ -1,0 +1,8 @@
+<launch>
+  <param name="use_sim_time" value="false" />
+
+  <test test-name="test_sciurus17_robot"
+        pkg="roseus" type="roseus"
+        time-limit="300"
+        args="$(find sciurus17eus)/test/test-sciurus17.l" />
+</launch>

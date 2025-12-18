@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find sciurus17eus)/test/sciurus17-moveit.test">
+    <arg name="gui" value="false" />
+  </include>
+</launch>

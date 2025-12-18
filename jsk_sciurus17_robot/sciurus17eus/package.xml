@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>sciurus17eus</name>
+  <version>1.0.0</version>
+  <description>The sciurus17 package for robot manipulation.</description>
+
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+
+  <license>BSD</license>
+
+  <author email="your_email@example.com">Your Name</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>collada_urdf</build_depend>
+  <build_depend>euscollada</build_depend>
+  <build_depend>sciurus17</build_depend>
+  <build_depend>sciurus17_description</build_depend>
+  <build_depend>pr2eus</build_depend>
+  <build_depend>pr2eus_moveit</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>rostest</build_depend>
+
+  <build_export_depend>collada_urdf</build_export_depend>
+  <build_export_depend>euscollada</build_export_depend>
+  <build_export_depend>sciurus17</build_export_depend>
+  <build_export_depend>sciurus17_description</build_export_depend>
+  <build_export_depend>pr2eus</build_export_depend>
+  <build_export_depend>pr2eus_moveit</build_export_depend>
+  <build_export_depend>roseus</build_export_depend>
+  <build_export_depend>rostest</build_export_depend>
+
+  <exec_depend>pr2eus</exec_depend>
+  <exec_depend>pr2eus_moveit</exec_depend>
+  <exec_depend>roseus</exec_depend>
+
+  <export>
+  </export>
+</package>

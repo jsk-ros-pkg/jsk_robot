@@ -1,0 +1,23 @@
+<launch>
+    <arg name="use_rviz" default="true" />
+    <arg name="use_head_camera" default="true" />
+    <arg name="use_chest_camera" default="true" />
+
+    <include file="$(find sciurus17_moveit_config)/launch/demo.launch" if="$(arg use_rviz)"/>
+    <include file="$(find sciurus17_moveit_config)/launch/sciurus17_planning.launch" unless="$(arg use_rviz)">
+      <arg name="use_gazebo" value="false"/>
+      <arg name="use_rviz" value="$(arg use_rviz)"/>
+    </include>
+
+    <include ns="sciurus17" file="$(find sciurus17_vision)/launch/realsense.launch" if="$(arg use_head_camera)">
+      <arg name="color_fps" value="30"/>
+      <arg name="color_width" value="640"/>
+      <arg name="color_height" value="480"/>
+      <rosparam>
+	/sciurus17/aligned_depth_to_color/image_raw/compressedDepth/png_level: 9
+	/sciurus17/camera/color/image_raw/compressed/png_level: 9
+      </rosparam>
+    </include>
+
+    <include ns="sciurus17" file="$(find sciurus17_vision)/launch/chest_camera.launch" if="$(arg use_chest_camera)"/>
+</launch>
