@@ -25,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: RealsenseTorsoImage
+    SyncSource: RealsenseTorsoCloud
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -53,6 +53,8 @@ Visualization Manager:
       Value: true
     - Class: rviz/TF
       Enabled: false
+      Filter (blacklist): ""
+      Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: true
@@ -107,6 +109,26 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        l_gripper_l_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_l_finger_tip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_r_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        l_gripper_r_finger_tip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         left_arm_itb:
           Alpha: 1
           Show Axes: false
@@ -123,6 +145,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         left_hand:
           Alpha: 1
           Show Axes: false
@@ -201,6 +224,26 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        r_gripper_l_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_l_finger_tip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_r_finger:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        r_gripper_r_finger_tip:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         right_arm_itb:
           Alpha: 1
           Show Axes: false
@@ -217,6 +260,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         right_hand:
           Alpha: 1
           Show Axes: false
@@ -410,6 +454,34 @@ Visualization Manager:
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
+      Name: RealsenseHeadCloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /realsense_head/depth_registered/quarter/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
       Name: RealsenseTorsoCloud
       Position Transformer: XYZ
       Queue Size: 10
@@ -422,6 +494,46 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: RealsenseBaseCloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 2
+      Size (m): 0.009999999776482582
+      Style: Points
+      Topic: /realsense_base/depth_registered/quarter/points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /realsense_head/color/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: RealsenseHeadImage
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
     - Class: rviz/Image
       Enabled: true
       Image Topic: /realsense_torso/color/image_rect_color
@@ -429,6 +541,18 @@ Visualization Manager:
       Median window: 5
       Min Value: 0
       Name: RealsenseTorsoImage
+      Normalize Range: true
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz/Image
+      Enabled: true
+      Image Topic: /realsense_base/color/image_rect_color
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: RealsenseBaseImage
       Normalize Range: true
       Queue Size: 2
       Transport Hint: raw
@@ -510,10 +634,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 1.3897963762283325
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.135403871536255
+      Yaw: 3.1404032707214355
     Saved: ~
 Window Geometry:
   Displays:
@@ -529,7 +653,11 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd00000004000000000000029500000363fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000363000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000001fa000001a60000017d00fffffffb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016000000010000023700000363fc0200000007fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb00000026005200650061006c00730065006e007300650054006f00720073006f0049006d006100670065010000003d0000014b0000001600fffffffb000000200045004c0050004c00650066007400480065006100640049006d006100670065010000018e0000010f0000001600fffffffb0000002000470072006100730070004d00610073006b00520043004e004e0056006900730100000133000000fe0000000000000000fb000000220045004c00500052006900670068007400480065006100640049006d00610067006501000002a3000000fd0000001600fffffffb0000000a00560069006500770073000000028900000117000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009bd0000003efc0100000002fb0000000800540069006d00650100000000000009bd000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004e50000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd00000004000000000000029500000363fc020000000cfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000363000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000001fa000001a60000017d00fffffffb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016fb00000026005200650061006c00730065006e007300650054006f00720073006f0049006d00610067006501000002d9000000c70000000000000000000000010000023700000363fc0200000009fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb00000024005200650061006c00730065006e0073006500480065006100640049006d006100670065010000003d000000c10000001600fffffffb00000024005200650061006c00730065006e0073006500420061007300650049006d0061006700650100000104000000b10000001600fffffffb00000026005200650061006c00730065006e007300650054006f00720073006f0049006d00610067006501000001bb000000a30000001600fffffffb000000200045004c0050004c00650066007400480065006100640049006d0061006700650100000264000000990000001600fffffffb0000002000470072006100730070004d00610073006b00520043004e004e0056006900730100000133000000fe0000000000000000fb000000220045004c00500052006900670068007400480065006100640049006d00610067006501000003030000009d0000001600fffffffb0000000a00560069006500770073000000028900000117000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009bd0000003efc0100000002fb0000000800540069006d00650100000000000009bd000002eb00fffffffb0000000800540069006d00650100000000000004500000000000000000000004e50000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  RealsenseBaseImage:
+    collapsed: false
+  RealsenseHeadImage:
+    collapsed: false
   RealsenseTorsoImage:
     collapsed: false
   Selection:

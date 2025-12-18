@@ -1,6 +1,8 @@
 <launch>
   <arg name="moveit" default="true" />
+  <arg name="launch_realsense_head" default="false"/>
   <arg name="launch_realsense_torso" default="true"/>
+  <arg name="launch_realsense_base" default="false"/>
   <arg name="launch_spherical_kodak" default="false" />
   <arg name="launch_spherical_stereo" default="false" />
   <arg name="arm_interpolation" default="minjerk" />
@@ -17,7 +19,9 @@
     <arg name="sanity_check_joint_trajectory" value="false" />
     <arg name="launch_openni" value="false"/>
     <arg name="launch_kinect2" value="false"/>
+    <arg name="launch_realsense_head" value="$(arg launch_realsense_head)"/>
     <arg name="launch_realsense_torso" value="$(arg launch_realsense_torso)"/>
+    <arg name="launch_realsense_base" value="$(arg launch_realsense_base)"/>
     <arg name="launch_spherical_kodak" value="$(arg launch_spherical_kodak)" />
     <arg name="launch_spherical_stereo" value="$(arg launch_spherical_stereo)" />
     <arg name="start_openni" value="false"/>

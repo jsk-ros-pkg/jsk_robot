@@ -10,11 +10,15 @@
   <!-- camera-->
   <arg name="launch_openni" default="false"/>
   <arg name="launch_kinect2" default="false"/>
-  <arg name="launch_realsense_torso" default="false"/>
+  <arg name="launch_realsense_head" default="true"/>
+  <arg name="launch_realsense_torso" default="true"/>
+  <arg name="launch_realsense_base" default="false"/>
   <arg name="launch_spherical_kodak" default="false" />
   <arg name="launch_spherical_stereo" default="false" />
   <arg name="start_openni" default="false"/>
-  <arg name="REALSENSE_CAMERA_NS" value="realsense_torso" />
+  <arg name="REALSENSE_CAMERA_HEAD_NS" value="realsense_head" />
+  <arg name="REALSENSE_CAMERA_TORSO_NS" value="realsense_torso" />
+  <arg name="REALSENSE_CAMERA_BASE_NS" value="realsense_base" />
   <arg name="SPHERICAL_CAMERA_NS" value="kodak_head" />
   <arg name="SPHERICAL_LEFT_CAMERA_NS" value="elp_head_left" />
   <arg name="SPHERICAL_RIGHT_CAMERA_NS" value="elp_head_right" />
@@ -144,10 +148,43 @@
     <arg name="launch_openni" value="$(arg start_openni)" />
   </include>
 
+  <!-- Use realsense d435 on head -->
+  <include if="$(arg launch_realsense_head)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_camera.launch">
+    <arg name="realsense_camera_ns" value="$(arg REALSENSE_CAMERA_HEAD_NS)" />
+    <arg name="launch_marker_6dof" value="true" />
+    <arg name="color_width" default="640" />
+    <arg name="color_height" default="480" />
+    <arg name="color_fps" default="30" />
+    <arg name="depth_width" default="640" />
+    <arg name="depth_height" default="480" />
+    <arg name="depth_fps" default="30" />
+  </include>
+
   <!-- Use realsense L515 on torso -->
   <include if="$(arg launch_realsense_torso)"
-           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_torso.launch">
-    <arg name="realsense_camera_ns" value="$(arg REALSENSE_CAMERA_NS)" />
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_camera.launch">
+    <arg name="realsense_camera_ns" value="$(arg REALSENSE_CAMERA_TORSO_NS)" />
+    <arg name="launch_marker_6dof" value="true" />
+    <arg name="color_width" default="960" />
+    <arg name="color_height" default="540" />
+    <arg name="color_fps" default="30" />
+    <arg name="depth_width" default="640" />
+    <arg name="depth_height" default="480" />
+    <arg name="depth_fps" default="30" />
+  </include>
+
+  <!-- Use realsense d435 on base -->
+  <include if="$(arg launch_realsense_base)"
+           file="$(find jsk_baxter_startup)/jsk_baxter_sensors/baxter_realsense_camera.launch">
+    <arg name="realsense_camera_ns" value="$(arg REALSENSE_CAMERA_BASE_NS)" />
+    <arg name="launch_marker_6dof" value="true" />
+    <arg name="color_width" default="640" />
+    <arg name="color_height" default="480" />
+    <arg name="color_fps" default="30" />
+    <arg name="depth_width" default="640" />
+    <arg name="depth_height" default="480" />
+    <arg name="depth_fps" default="30" />
   </include>
 
   <!-- Use spherical kodak on head -->
