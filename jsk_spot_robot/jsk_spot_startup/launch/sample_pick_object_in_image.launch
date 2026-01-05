@@ -1,0 +1,12 @@
+<launch>
+  <arg name="image" default="frontleft" doc="image to set object location [frontleft, frontright, left, right, hand_color]" />
+  <node pkg="image_view2" type="image_view2" name="image_view_for_pick_object" >
+    <remap from="image" to="/spot/camera/$(arg image)/image" />
+    <param name="~image_transport" value="compressed" />
+  </node>
+  <node pkg="jsk_spot_startup" type="sample_pick_object_in_image.l" name="sample_pick_object_in_image" >
+    <remap from="screenpoint" to="/spot/camera/$(arg image)/image/screenpoint" />
+    <param name="~image_source" value="$(arg image)" />
+  </node>
+  
+</launch>

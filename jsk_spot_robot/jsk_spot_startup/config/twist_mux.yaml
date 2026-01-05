@@ -1,0 +1,13 @@
+topics:
+#
+# priority  9: high <--> 1: low
+#
+- name    : bt_joy
+  topic   : bluetooth_teleop/cmd_vel
+  timeout : 0.5
+  priority: 9
+- name    : head_joy
+  topic   : joy_head/cmd_vel
+  timeout : 0.5
+  priority: 7
+locks: []

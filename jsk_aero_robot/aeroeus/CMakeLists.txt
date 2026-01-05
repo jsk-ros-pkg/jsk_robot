@@ -8,4 +8,5 @@ catkin_package(
 
 ## rosrun euscollada collada2eus_urdfmodel $(rospack find aero_description)/robots/aero.urdf $(rospack find aero_description)/robots/aero.yaml aero.l
 
-install(FILES aero-interface.l aero-hand.l aero-wheels.l DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+file(GLOB LISP_FILES *.l)
+install(FILES ${LISP_FILES} DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

@@ -4,3 +4,7 @@ project(jsk_pr2_calibration)
 find_package(catkin REQUIRED COMPONENTS)
 
 catkin_package()
+
+install(DIRECTORY scripts
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS)

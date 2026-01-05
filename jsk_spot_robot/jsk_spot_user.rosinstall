@@ -1,0 +1,6 @@
+# spot-ros is required for spot
+## use https://github.com/cst0/spot_ros/pull/4 for Arm and gripper
+- git:
+    local-name: spot-ros
+    uri: https://github.com/k-okada/spot_ros-arm.git
+    version: arm
