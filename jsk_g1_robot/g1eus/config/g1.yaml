@@ -1,0 +1,57 @@
+torso:
+  - waist_yaw_joint   : torso-waist-y
+  - waist_roll_joint  : torso-waist-r
+  - waist_pitch_joint : torso-waist-p
+
+lleg:
+  - left_hip_pitch_joint   : lleg-hip-p
+  - left_hip_roll_joint    : lleg-hip-r
+  - left_hip_yaw_joint     : lleg-hip-y
+  - left_knee_joint        : lleg-knee-p
+  - left_ankle_pitch_joint : lleg-ankle-p
+  - left_ankle_roll_joint  : lleg-ankle-r
+
+rleg:
+  - right_hip_pitch_joint   : rleg-hip-p
+  - right_hip_roll_joint    : rleg-hip-r
+  - right_hip_yaw_joint     : rleg-hip-y
+  - right_knee_joint        : rleg-knee-p
+  - right_ankle_pitch_joint : rleg-ankle-p
+  - right_ankle_roll_joint  : rleg-ankle-r
+
+larm:
+  - left_shoulder_pitch_joint : larm-shoulder-p
+  - left_shoulder_roll_joint  : larm-shoulder-r
+  - left_shoulder_yaw_joint   : larm-shoulder-y
+  - left_elbow_joint          : larm-elbow-p
+  - left_wrist_roll_joint     : larm-wrist-r
+  - left_wrist_pitch_joint    : larm-wrist-p
+  - left_wrist_yaw_joint      : larm-wrist-y
+
+rarm:
+  - right_shoulder_pitch_joint : rarm-shoulder-p
+  - right_shoulder_roll_joint  : rarm-shoulder-r
+  - right_shoulder_yaw_joint   : rarm-shoulder-y
+  - right_elbow_joint          : rarm-elbow-p
+  - right_wrist_roll_joint     : rarm-wrist-r
+  - right_wrist_pitch_joint    : rarm-wrist-p
+  - right_wrist_yaw_joint      : rarm-wrist-y
+
+angle-vector:
+  reset-pose : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+larm-end-coords:
+  parent    : left_wrist_yaw_link
+  translate : [0.1, 0.0, 0.0]
+
+rarm-end-coords:
+  parent    : right_wrist_yaw_link
+  translate : [0.1, 0.0, 0.0]
+
+lleg-end-coords:
+  parent    : left_ankle_roll_link
+  translate : [0.0, 0.0, 0.0]
+
+rleg-end-coords:
+  parent    : right_ankle_roll_link
+  translate : [0.0, 0.0, 0.0]

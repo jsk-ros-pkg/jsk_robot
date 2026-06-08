@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>g1eus</name>
+  <version>0.0.0</version>
+  <description>This package provides EusLisp interface for Unitree G1 Robot</description>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <author email="tsubaki@jsk.t.u-tokyo.ac.jp">Michitoshi Tsubaki</author>
+  <license>BSD</license>
+  <depend>euscollada</depend>
+  <depend>pr2eus</depend>
+  <depend>unitree_controller</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

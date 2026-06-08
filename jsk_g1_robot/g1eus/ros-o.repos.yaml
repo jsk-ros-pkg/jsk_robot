@@ -1,0 +1,9 @@
+repositories:
+  unitree/unitree_ros:
+    type: git
+    url: https://github.com/unitreerobotics/unitree_ros.git
+    version: master
+  unitree/unitree_ros_to_real:
+    type: git
+    url: https://github.com/unitreerobotics/unitree_ros_to_real.git
+    version: master
