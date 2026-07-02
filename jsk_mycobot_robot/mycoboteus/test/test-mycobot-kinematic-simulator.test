@@ -1,0 +1,3 @@
+<launch>
+  <test pkg="mycoboteus" type="test-mycobot-kinematic-simulator.l" test-name="mycobot_kinematic_simulator_lisp" time-limit="300" />
+</launch>

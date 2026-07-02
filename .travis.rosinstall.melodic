@@ -49,6 +49,12 @@
 - git:
     local-name: UbiquityRobotics/magni_robot
     uri: https://github.com/UbiquityRobotics/magni_robot
+# jks_mycobot_startup requires mycobot_ros with following PR
+# https://github.com/elephantrobotics/mycobot_ros/pull/48
+- git:
+    local-name: mycobot_ros
+    uri: https://github.com/Michi-Tsubaki/mycobot_ros.git
+    version: mycobot280
 # denso_cobotta_control, denso_cobotta_descriptions, denso_cobotta_driver, and denso_cobotta_gripper are not released
 - git:
     local-name: DENSORobot/denso_cobotta_ros

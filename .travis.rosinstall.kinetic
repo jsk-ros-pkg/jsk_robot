@@ -28,6 +28,12 @@
     local-name: fetchrobotics/fetch_ros
     uri: https://github.com/fetchrobotics/fetch_ros.git
     version: 0ad250a996a2ef68172fc064698f253bc9cf08d0
+# jks_mycobot_startup requires mycobot_ros with following PR
+# https://github.com/elephantrobotics/mycobot_ros/pull/48
+- git:
+    local-name: mycobot_ros
+    uri: https://github.com/Michi-Tsubaki/mycobot_ros.git
+    version: mycobot280
 - git:
     local-name: visualization_rwt/rwt_app_chooser
     uri: https://github.com/tork-a/visualization_rwt-release.git

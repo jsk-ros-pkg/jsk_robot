@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>mycoboteus</name>
+  <version>1.1.0</version>
+  <description>The mycoboteus package</description>
+
+  <maintainer email="chou@jsk.imi.i.u-tokyo.ac.jp">Moju Zhao</maintainer>
+
+  <license>BSD</license>
+
+  <author email="chou@jsk.imi.i.u-tokyo.ac.jp">Moju Zhao</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>collada_urdf</build_depend>
+  <build_depend>euscollada</build_depend>
+  <build_depend>mycobot_280_moveit</build_depend>
+  <build_depend>mycobot_description</build_depend>
+  <build_depend>pr2eus</build_depend>
+  <build_depend>pr2eus_moveit</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>rostest</build_depend>
+
+  <build_export_depend>collada_urdf</build_export_depend>
+  <build_export_depend>euscollada</build_export_depend>
+  <build_export_depend>mycobot_280_moveit</build_export_depend>
+  <build_export_depend>mycobot_description</build_export_depend>
+  <build_export_depend>pr2eus</build_export_depend>
+  <build_export_depend>pr2eus_moveit</build_export_depend>
+  <build_export_depend>roseus</build_export_depend>
+  <build_export_depend>rostest</build_export_depend>
+
+  <exec_depend>pr2eus</exec_depend>
+  <exec_depend>pr2eus_moveit</exec_depend>
+  <exec_depend>roseus</exec_depend>
+
+  <export>
+  </export>
+</package>
