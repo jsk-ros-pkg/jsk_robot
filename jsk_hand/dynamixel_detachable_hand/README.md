@@ -191,16 +191,26 @@ It keeps the physical detachable hand interface in this package and lets task co
 When `*irtviewer*` already exists, or when `nextage-init` has a `nextage-interface` in `*ri*`,
 `attach-tool` and `detach-tool` automatically rebuild the viewer object list and redraw it
 after the euslisp robot model is updated.
-A Nextage demo can use the same helper after `nextage-init`:
+A Nextage demo can use the same helper after loading the Nextage EusLisp
+utilities and this package's helper:
 
 ```lisp
+(require "package://nextage_tutorials/euslisp/nextage-utils.l")
+(require "package://dynamixel_detachable_hand/euslisp/tool-change.l")
+
 (nextage-init)
 (tool-setup-robot *nextage* :robot-kind :nextage)
 (objects (list *nextage*))
 
-(attach-tool *nextage* :rarm :needle-holder)
-(detach-tool *nextage* :rarm)
+;; irtviewer/model-only switch; no Dynamixel current and no ROS model reload.
+(attach-tool *nextage* :rarm :needle-holder :reload-model nil)
+(detach-tool *nextage* :rarm :reload-model nil)
 ```
+
+In this example `:physical` stays at its default `nil`, so no detachable-hand
+current is commanded.  `:reload-model nil` keeps the check inside the EusLisp
+robot model and irtviewer; omit it when the ROS `hand_model.launch.xml` model
+should also be restarted.
 
 If the viewer should always include scene objects in addition to the robot,
 set `*detachable-tool-irtviewer-objects*` to that list, for example
