@@ -1,0 +1,9 @@
+string side
+string tool
+bool attached
+bool update_robot_state_publisher
+---
+bool success
+string message
+ToolState state
+string robot_description

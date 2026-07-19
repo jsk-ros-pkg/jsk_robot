@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<robot name="rhand_needle_holder_robot">
+  <link name="rhand_SURGERY_CLAMP_ASSY_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -1.540744e-33 -4.0620921e-18" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -1.540744e-33 -4.0620921e-18" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.407876 0.82975787 1.4193686" rpy="0 0 0" />
+      <mass value="0.00675555" />
+      <inertia ixx="4.67905e-07" ixy="9.59811e-07" ixz="1.28892e-08" iyy="6.25673e-06" iyz="-3.42424e-09" izz="6.71611e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_SURGERY_CLAMP_01_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="1.8517676 -1.2976235 -0.016454989" rpy="-1.4027984e-17 -6.7917456e-18 1.8390651" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="1.8517676 -1.2976235 -0.016454989" rpy="-1.4027984e-17 -6.7917456e-18 1.8390651" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.042705769 0.022098692 -0.0013036672" rpy="0 0 0" />
+      <mass value="0.00562524" />
+      <inertia ixx="1.16073e-06" ixy="-1.91324e-06" ixz="-4.08357e-10" iyy="4.55448e-06" iyz="4.80985e-10" izz="5.71081e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_XL_XC_330_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-2.1264703e-10 -0.0072689569 -0.0070465317" rpy="0 0 0" />
+      <mass value="0.0168532" />
+      <inertia ixx="2.45858e-06" ixy="-2.3451e-14" ixz="4.47712e-14" iyy="1.4262e-06" iyz="-4.7932e-08" izz="2.13119e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_base_link">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 6.9388939e-18 0" rpy="1.5708 2.653613e-06 3.1415863" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 6.9388939e-18 0" rpy="1.5708 2.653613e-06 3.1415863" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="1.4379197e-05 -0.00010693446 -0.002404028" rpy="0 0 0" />
+      <mass value="0.0162824" />
+      <inertia ixx="1.61417e-06" ixy="3.47271e-09" ixz="-7.8199e-10" iyy="1.62572e-06" iyz="-1.41077e-09" izz="2.52267e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_small_needle_hoder_base_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.027860061 0.0204749 0.0028270405" rpy="0 0 0" />
+      <mass value="0.020773" />
+      <inertia ixx="2.68109e-06" ixy="8.34229e-08" ixz="7.87172e-08" iyy="5.53461e-06" iyz="4.19901e-08" izz="7.91237e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_small_needle_holder_link1_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="-0.0019866805 -0.0058389996 -0.01" rpy="0 -0 1.0090966" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.0019866805 -0.0058389996 -0.01" rpy="0 -0 1.0090966" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.0067603411 0.010742293 -0.0056220958" rpy="0 0 0" />
+      <mass value="0.00332751" />
+      <inertia ixx="4.67896e-07" ixy="-2.67743e-07" ixz="2.00383e-08" iyy="2.10944e-07" iyz="3.18413e-08" izz="6.2836e-07" />
+    </inertial>
+  </link>
+  <link name="rhand_small_needle_holder_link2_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="-0.067897678 0.031920296 0.01" rpy="-1.8593294e-16 -1.479345e-16 -0.41280172" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.067897678 0.031920296 0.01" rpy="-1.8593294e-16 -1.479345e-16 -0.41280172" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-0.034350012 0.015044146 0.0115" rpy="0 0 0" />
+      <mass value="0.00195003" />
+      <inertia ixx="1.82933e-07" ixy="3.91066e-07" ixz="-1.45386e-22" iyy="9.04573e-07" iyz="6.36835e-23" izz="1.08458e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_command_link" />
+
+  <link name="rhand_detach_link_0">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.12 0 0.05"/>
+      <geometry>
+        <box size="0.08 0.08 0.1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!--
+    Keep the hardware/API joint name stable across detachable tools.
+    The real needle-holder four-bar joints are driven from this joint by
+    loop_coupling_relay.
+  -->
+  <joint name="rhand_joint" type="continuous">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="rhand_base_link"/>
+    <child link="rhand_command_link"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="2.0" velocity="6.8"/>
+  </joint>
+
+  <joint name="rhand_detach_joint_0" type="continuous">
+    <origin rpy="0 0 0" xyz="0.1 0 0.1"/>
+    <parent link="rhand_base_link"/>
+    <child link="rhand_detach_link_0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2.0" velocity="6.8"/>
+  </joint>
+
+  <joint name="small_needle_hoder_base_1__XL_XC_330_1" type="fixed">
+    <origin xyz="0.0745 0.014 0.0075" rpy="3.1415927 -0 1.5707963" />
+    <parent link="rhand_small_needle_hoder_base_1" />
+    <child link="rhand_XL_XC_330_1" />
+    <axis xyz="0 0 -1" />
+    <!-- mates: COINCIDENT, CONCENTRIC, CONCENTRIC, COINCIDENT, CONCENTRIC, CONCENTRIC -->
+  </joint>
+  <joint name="small_needle_hoder_base_1__SURGERY_CLAMP_ASSY_1" type="fixed">
+    <origin xyz="0.36246313 0.87784003 -1.4206441" rpy="-9.6767984e-18 1.2217695e-17 -3.0922928" />
+    <parent link="rhand_small_needle_hoder_base_1" />
+    <child link="rhand_SURGERY_CLAMP_ASSY_1" />
+    <axis xyz="0 0 -1" />
+    <!-- mates: COINCIDENT, COINCIDENT, DISTANCE, COINCIDENT, COINCIDENT, DISTANCE -->
+  </joint>
+  <joint name="screwlock_male_hard_v2_1__small_needle_hoder_base_1" type="fixed">
+    <origin xyz="0.01999964 0.020000341 -0.01850002" rpy="3.6732051e-06 2.653613e-06 3.1415863" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_small_needle_hoder_base_1" />
+    <axis xyz="0 0 1" />
+    <!-- mates: COINCIDENT, CONCENTRIC, PARALLEL, COINCIDENT, CONCENTRIC, PARALLEL -->
+  </joint>
+  <joint name="SURGERY_CLAMP_ASSY_1__SURGERY_CLAMP_01_1" type="revolute">
+    <origin xyz="0.45205981 0.81993821 1.4208627" rpy="-1.0267128e-17 1.1725978e-17 3.0922928" />
+    <parent link="rhand_SURGERY_CLAMP_ASSY_1" />
+    <child link="rhand_SURGERY_CLAMP_01_1" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-0.29662" upper="0.44772" effort="10" velocity="3.14" />
+    <mimic joint="XL_XC_330_1__small_needle_holder_link1_1" multiplier="0.575693" offset="0" />
+    <!-- mates: CONCENTRIC, COINCIDENT, CONCENTRIC, COINCIDENT -->
+  </joint>
+  <joint name="XL_XC_330_1__small_needle_holder_link1_1" type="revolute">
+    <origin xyz="0 0 0.0065" rpy="3.1415927 -0 1.5707963" />
+    <parent link="rhand_XL_XC_330_1" />
+    <child link="rhand_small_needle_holder_link1_1" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-0.51382" upper="0.51382" effort="10" velocity="3.14" />
+    <!-- mates: COINCIDENT, CONCENTRIC, COINCIDENT, CONCENTRIC -->
+  </joint>
+  <joint name="small_needle_holder_link1_1__small_needle_holder_link2_1" type="revolute">
+    <origin xyz="0.020772397 0.033007689 -0.017" rpy="0 -0 0" />
+    <parent link="rhand_small_needle_holder_link1_1" />
+    <child link="rhand_small_needle_holder_link2_1" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.84903" upper="0.87973" effort="10" velocity="3.14" />
+    <mimic joint="XL_XC_330_1__small_needle_holder_link1_1" multiplier="1.34041" offset="0" />
+    <!-- mates: CONCENTRIC, COINCIDENT, CONCENTRIC, COINCIDENT -->
+  </joint>
+
+  <transmission name="rhand_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rhand_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <offset>0.0</offset>
+    </joint>
+    <actuator name="rhand_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="rhand_detach_trans_0">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rhand_detach_joint_0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <offset>0.0</offset>
+    </joint>
+    <actuator name="rhand_detach_motor_0">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+</robot>

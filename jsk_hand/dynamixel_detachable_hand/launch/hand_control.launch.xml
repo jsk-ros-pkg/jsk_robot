@@ -1,0 +1,58 @@
+<launch>
+  <arg name="side" default="lhand" description="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(var side)" />
+  <arg name="tool" default="generic" description="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="attached" default="true" />
+  <arg name="port_name" default="/dev/$(var side)" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="protocol_version" default="2.0" />
+  <arg name="controllers_file" default="$(find-pkg-share dynamixel_detachable_hand)/config/$(var side)/default_controllers.yaml" />
+  <arg name="auto_detect" default="false" />
+  <arg name="scan_ids" default="" />
+  <arg name="simulated_present_ids" default="" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="$(var side)_base_link" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <arg name="robot_description_cmd"
+       default="$(command 'ros2 run dynamixel_detachable_hand print_robot_description.py --side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version)')" />
+
+  <node pkg="controller_manager" exec="ros2_control_node"
+        name="controller_manager" namespace="$(var namespace)" output="screen">
+    <param name="robot_description" value="$(var robot_description_cmd)" />
+    <param from="$(var controllers_file)" />
+  </node>
+
+  <node pkg="robot_state_publisher" exec="robot_state_publisher"
+        name="robot_state_publisher" namespace="$(var namespace)" output="screen">
+    <param name="robot_description" value="$(var robot_description_cmd)" />
+    <remap from="joint_states" to="display_joint_states" />
+  </node>
+
+  <node pkg="dynamixel_detachable_hand" exec="modular_hand_manager.py"
+        name="modular_hand_manager" namespace="$(var namespace)" output="screen"
+        args="--side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --auto-detect $(var auto_detect) --scan-ids $(var scan_ids) --simulated-present-ids $(var simulated_present_ids)" />
+
+  <node pkg="dynamixel_detachable_hand" exec="joint_state_coupling_relay.py"
+        name="joint_state_coupling_relay" namespace="$(var namespace)" output="screen"
+        args="--joint-states-source-topic joint_states --joint-states-topic display_joint_states" />
+
+  <node if="$(var publish_static_tf)"
+        pkg="tf2_ros" exec="static_transform_publisher"
+        name="tool_mount_static_tf" namespace="$(var namespace)"
+        args="$(var static_xyz) $(var static_rpy) $(var parent_frame) $(var root_frame)"
+        output="screen" />
+
+  <node pkg="controller_manager" exec="spawner" namespace="$(var namespace)"
+        output="screen"
+        args="joint_state_broadcaster --controller-manager /$(var namespace)/controller_manager" />
+  <node pkg="controller_manager" exec="spawner" namespace="$(var namespace)"
+        output="screen"
+        args="position_joint_trajectory_controller --controller-manager /$(var namespace)/controller_manager"
+        />
+  <node pkg="controller_manager" exec="spawner" namespace="$(var namespace)"
+        output="screen"
+        args="joint_group_effort_controller --controller-manager /$(var namespace)/controller_manager"
+        />
+</launch>

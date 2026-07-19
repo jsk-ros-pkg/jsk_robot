@@ -1,0 +1,48 @@
+<launch>
+  <arg name="port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="namespace" default="lhand" />
+  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="lhand_base_link" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <arg name="robot_description_file"
+       default="$(eval find('dynamixel_detachable_hand') + '/urdf/lhand_' + arg('tool') + '.urdf')" />
+  <arg name="couplings_file"
+       default="$(eval find('dynamixel_detachable_hand') + '/config/lhand/needle_holder_loop_couplings.yaml' if arg('tool') == 'needle_holder' else find('dynamixel_detachable_hand') + '/config/lhand/empty_loop_couplings.yaml')" />
+
+  <include file="$(find dynamixel_general_hw)/launch/dynamixel_general_control.launch">
+    <arg name="port_name" value="$(arg port_name)" />
+    <arg name="baud_rate" value="$(arg baud_rate)" />
+    <arg name="namespace" value="$(arg namespace)" />
+    <arg name="robot_description_file" value="$(arg robot_description_file)" />
+    <arg name="dynamixel_info_file" value="$(find dynamixel_detachable_hand)/config/lhand/dynamixel_info.yaml" />
+    <arg name="controllers_file" value="$(find dynamixel_detachable_hand)/config/lhand/default_controllers.yaml" />
+    <arg name="controllers_to_start" value="joint_state_controller position_joint_trajectory_controller joint_group_effort_controller" />
+    <arg name="joint_states_topic" value="joint_states_source" />
+    <arg name="launch_rviz" value="false" />
+    <arg name="launch_robot_state_publisher" value="false" />
+  </include>
+
+  <include file="$(find dynamixel_detachable_hand)/launch/hand_tool_model.launch">
+    <arg name="side" value="lhand" />
+    <arg name="namespace" value="$(arg namespace)" />
+    <arg name="tool" value="$(arg tool)" />
+    <arg name="robot_description_file" value="$(arg robot_description_file)" />
+    <arg name="couplings_file" value="$(arg couplings_file)" />
+    <arg name="publish_static_tf" value="$(arg publish_static_tf)" />
+    <arg name="parent_frame" value="$(arg parent_frame)" />
+    <arg name="root_frame" value="$(arg root_frame)" />
+    <arg name="static_xyz" value="$(arg static_xyz)" />
+    <arg name="static_rpy" value="$(arg static_rpy)" />
+  </include>
+
+  <group ns="$(arg namespace)">
+    <node pkg="rostopic" type="rostopic" name="set_initial_effort_limit"
+          args="pub joint_group_effort_controller/command std_msgs/Float64MultiArray
+                '{layout: {dim: [], data_offset: 0}, data: [0.92, 0.0]}'"
+          output="screen"/>
+  </group>
+</launch>

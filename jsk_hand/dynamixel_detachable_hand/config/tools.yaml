@@ -1,0 +1,60 @@
+# Runtime detachable-tool vocabulary and Dynamixel ID map.
+#
+# The rendered robot_description carries these values in its ros2_control
+# block.  Edit this file when a physical tool is assigned a different motor ID.
+tools:
+  generic:
+    description: Dummy generic detachable hand model used as a manual fallback.
+    loop_coupling: false
+  needle_holder:
+    description: SURGENOID needle holder model with four-bar display coupling.
+    loop_coupling: true
+  gripper:
+    description: Dummy gripper placeholder model.
+    loop_coupling: false
+  forceps:
+    description: Dummy forceps placeholder model.
+    loop_coupling: false
+
+hardware:
+  default_baud_rate: 57600
+  protocol_version: 2.0
+  sides:
+    lhand:
+      default_port_name: /dev/lhand
+      detacher:
+        motor_id: 0
+        operating_mode: 0
+      tools:
+        generic:
+          motor_id: 2
+          operating_mode: 5
+          detectable: false
+        needle_holder:
+          motor_id: 4
+          operating_mode: 5
+        gripper:
+          motor_id: 2
+          operating_mode: 5
+        forceps:
+          motor_id: 6
+          operating_mode: 5
+    rhand:
+      default_port_name: /dev/rhand
+      detacher:
+        motor_id: 1
+        operating_mode: 0
+      tools:
+        generic:
+          motor_id: 3
+          operating_mode: 5
+          detectable: false
+        needle_holder:
+          motor_id: 5
+          operating_mode: 5
+        gripper:
+          motor_id: 3
+          operating_mode: 5
+        forceps:
+          motor_id: 7
+          operating_mode: 5

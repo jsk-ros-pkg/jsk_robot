@@ -1,0 +1,13 @@
+<launch>
+  <include file="$(find dynamixel_detachable_hand)/launch/left_detacher.launch">
+    <arg name="port_name" default="/dev/lhand" />
+    <arg name="baud_rate" default="57600" />
+    <arg name="namespace" default="lhand" />
+  </include>
+
+  <include file="$(find dynamixel_detachable_hand)/launch/right_detacher.launch">
+    <arg name="port_name" default="/dev/rhand" />
+    <arg name="baud_rate" default="57600" />
+    <arg name="namespace" default="rhand" />
+  </include>
+</launch>

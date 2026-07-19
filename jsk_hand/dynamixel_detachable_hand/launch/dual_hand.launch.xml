@@ -1,0 +1,26 @@
+<launch>
+  <arg name="left_tool" default="generic" />
+  <arg name="right_tool" default="generic" />
+  <arg name="left_port_name" default="/dev/lhand" />
+  <arg name="right_port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="auto_detect" default="false" />
+
+  <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
+    <arg name="side" value="lhand" />
+    <arg name="namespace" value="lhand" />
+    <arg name="tool" value="$(var left_tool)" />
+    <arg name="port_name" value="$(var left_port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="auto_detect" value="$(var auto_detect)" />
+  </include>
+
+  <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
+    <arg name="side" value="rhand" />
+    <arg name="namespace" value="rhand" />
+    <arg name="tool" value="$(var right_tool)" />
+    <arg name="port_name" value="$(var right_port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="auto_detect" value="$(var auto_detect)" />
+  </include>
+</launch>

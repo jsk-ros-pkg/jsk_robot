@@ -1,0 +1,2 @@
+# No nonlinear display coupling is needed for dummy end-effectors.
+couplings: []

@@ -1,0 +1,32 @@
+<launch>
+  <arg name="left_hand_attached" default="false" />
+  <arg name="right_hand_attached" default="false" />
+  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps" />
+
+  <include if="$(arg left_hand_attached)" file="$(find dynamixel_detachable_hand)/launch/left_hand.launch">
+    <arg name="port_name" value="/dev/lhand" />
+    <arg name="baud_rate" value="57600" />
+    <arg name="namespace" value="lhand" />
+    <arg name="tool" value="$(arg left_tool)" />
+  </include>
+
+  <include unless="$(arg left_hand_attached)" file="$(find dynamixel_detachable_hand)/launch/left_detacher.launch">
+    <arg name="port_name" value="/dev/lhand" />
+    <arg name="baud_rate" value="57600" />
+    <arg name="namespace" value="lhand" />
+  </include>
+
+  <include if="$(arg right_hand_attached)" file="$(find dynamixel_detachable_hand)/launch/right_hand.launch">
+    <arg name="port_name" value="/dev/rhand" />
+    <arg name="baud_rate" value="57600" />
+    <arg name="namespace" value="rhand" />
+    <arg name="tool" value="$(arg right_tool)" />
+  </include>
+
+  <include unless="$(arg right_hand_attached)" file="$(find dynamixel_detachable_hand)/launch/right_detacher.launch">
+    <arg name="port_name" value="/dev/rhand" />
+    <arg name="baud_rate" value="57600" />
+    <arg name="namespace" value="rhand" />
+  </include>
+</launch>

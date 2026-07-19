@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<robot name="rhand_detacher_robot">
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.2"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="rhand_detach_link_0">
+    <visual>
+      <origin rpy="0 0 0" xyz="0.12 0 0.05"/>
+      <geometry>
+        <box size="0.08 0.08 0.1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!--
+    Detacher motor that is always connected to the robot side.
+    The detachable hand motor is intentionally not described here.
+  -->
+  <joint name="rhand_detach_joint_0" type="continuous">
+    <origin rpy="0 0 0" xyz="0.1 0 0.1"/>
+    <parent link="base_link"/>
+    <child link="rhand_detach_link_0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="2.0" velocity="6.8"/>
+  </joint>
+
+  <transmission name="rhand_detach_trans_0">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="rhand_detach_joint_0">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <offset>0.0</offset>
+    </joint>
+    <actuator name="rhand_detach_motor_0">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>

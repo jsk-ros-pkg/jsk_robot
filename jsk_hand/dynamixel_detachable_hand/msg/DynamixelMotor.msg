@@ -1,0 +1,15 @@
+string side
+string name
+string joint
+uint8 id
+string model
+uint8 operating_mode_id
+string operating_mode
+float64 torque_constant
+float64 mechanical_reduction
+float64 effort_limit
+float64 velocity_limit
+float64 current_limit
+float64 calibration_offset
+string role
+string command_interface

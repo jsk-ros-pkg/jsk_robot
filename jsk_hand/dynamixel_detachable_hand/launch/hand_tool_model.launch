@@ -1,0 +1,42 @@
+<launch>
+  <arg name="side" default="rhand" doc="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(arg side)" />
+  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="joint_states_source_topic" default="joint_states_source" />
+  <arg name="joint_states_topic" default="joint_states" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="$(eval arg('side') + '_base_link')" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <arg name="static_tf_period" default="100" />
+  <arg name="robot_description_file"
+       default="$(eval find('dynamixel_detachable_hand') + '/urdf/' + arg('side') + '_' + arg('tool') + '.urdf')" />
+  <arg name="couplings_file"
+       default="$(eval find('dynamixel_detachable_hand') + '/config/' + arg('side') + '/needle_holder_loop_couplings.yaml' if arg('tool') == 'needle_holder' else find('dynamixel_detachable_hand') + '/config/' + arg('side') + '/empty_loop_couplings.yaml')" />
+
+  <group ns="$(arg namespace)">
+    <param name="current_tool" value="$(arg tool)" />
+    <param name="robot_description"
+           command="$(find xacro)/xacro $(arg robot_description_file)" />
+
+    <node pkg="surgenoid_needle_holder_description" type="loop_coupling_relay.py"
+          name="loop_coupling_relay" output="screen">
+      <param name="config_file" value="$(arg couplings_file)" />
+      <remap from="joint_states_source" to="$(arg joint_states_source_topic)" />
+      <remap from="joint_states" to="$(arg joint_states_topic)" />
+    </node>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher"
+          name="robot_state_publisher" output="screen">
+      <remap from="robot_description" to="robot_description" />
+      <remap from="joint_states" to="$(arg joint_states_topic)" />
+    </node>
+
+    <node if="$(arg publish_static_tf)"
+          pkg="tf" type="static_transform_publisher"
+          name="tool_mount_static_tf"
+          args="$(arg static_xyz) $(arg static_rpy) $(arg parent_frame) $(arg root_frame) $(arg static_tf_period)"
+          output="screen" />
+  </group>
+</launch>

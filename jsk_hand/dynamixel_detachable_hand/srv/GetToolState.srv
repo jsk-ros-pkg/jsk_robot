@@ -1,0 +1,7 @@
+string side
+---
+bool success
+string message
+ToolState state
+HandDescription hand_description
+string robot_description

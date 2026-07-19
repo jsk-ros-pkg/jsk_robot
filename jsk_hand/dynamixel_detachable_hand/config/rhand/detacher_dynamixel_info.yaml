@@ -1,0 +1,10 @@
+rhand_detach_motor_0:
+  ID: 1
+  Return_Delay_Time: 0
+  Operating_Mode: 0
+  torque_constant: 1.15
+
+# Operation_Mode
+## 0 for Current Control Mode
+## 3 for Position Control Mode
+## 5 for Current-based Position Control Mode

@@ -1,0 +1,9 @@
+builtin_interfaces/Time stamp
+string side
+string tool
+bool attached
+string root_link
+string tip_link
+string command_joint
+string detach_joint
+string robot_description_sha256

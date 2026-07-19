@@ -1,0 +1,12 @@
+# Closed-loop (four-bar) joint couplings for the right-hand needle holder.
+# The hardware/controller joint stays named rhand_joint.  The visible CAD
+# joints are filled in here for robot_state_publisher.
+couplings:
+  - driver: rhand_joint
+    followers:
+      - joint: XL_XC_330_1__small_needle_holder_link1_1
+        poly: [1.0, 0.0]
+      - joint: SURGERY_CLAMP_ASSY_1__SURGERY_CLAMP_01_1
+        poly: [0.02303863, 0.16378077, 0.57174735, -0.00059876]
+      - joint: small_needle_holder_link1_1__small_needle_holder_link2_1
+        poly: [0.09893885, 0.0097754, 1.32346416, -0.00057368]

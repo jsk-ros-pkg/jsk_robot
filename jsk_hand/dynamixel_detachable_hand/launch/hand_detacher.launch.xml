@@ -1,0 +1,32 @@
+<launch>
+  <arg name="side" default="lhand" description="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(var side)" />
+  <arg name="port_name" default="/dev/$(var side)" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="protocol_version" default="2.0" />
+  <arg name="controllers_file" default="$(find-pkg-share dynamixel_detachable_hand)/config/$(var side)/detacher_controllers.yaml" />
+  <arg name="robot_description_cmd"
+       default="$(command 'ros2 run dynamixel_detachable_hand print_robot_description.py --side $(var side) --tool detacher --attached false --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version)')" />
+
+  <node pkg="controller_manager" exec="ros2_control_node"
+        name="controller_manager" namespace="$(var namespace)" output="screen">
+    <param name="robot_description" value="$(var robot_description_cmd)" />
+    <param from="$(var controllers_file)" />
+  </node>
+
+  <node pkg="robot_state_publisher" exec="robot_state_publisher"
+        name="robot_state_publisher" namespace="$(var namespace)" output="screen">
+    <param name="robot_description" value="$(var robot_description_cmd)" />
+  </node>
+
+  <node pkg="dynamixel_detachable_hand" exec="modular_hand_manager.py"
+        name="modular_hand_manager" namespace="$(var namespace)" output="screen"
+        args="--side $(var side) --tool detacher --attached false --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version)" />
+
+  <node pkg="controller_manager" exec="spawner" namespace="$(var namespace)"
+        output="screen"
+        args="joint_state_broadcaster --controller-manager /$(var namespace)/controller_manager" />
+  <node pkg="controller_manager" exec="spawner" namespace="$(var namespace)"
+        output="screen"
+        args="joint_group_effort_controller --controller-manager /$(var namespace)/controller_manager" />
+</launch>

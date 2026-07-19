@@ -1,0 +1,24 @@
+<launch>
+  <arg name="port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="namespace" default="lhand" />
+
+  <include file="$(find dynamixel_general_hw)/launch/dynamixel_general_control.launch">
+    <arg name="port_name" value="$(arg port_name)" />
+    <arg name="baud_rate" value="$(arg baud_rate)" />
+    <arg name="namespace" value="$(arg namespace)" />
+    <arg name="robot_description_file" value="$(find dynamixel_detachable_hand)/urdf/lhand_detacher.urdf" />
+    <arg name="dynamixel_info_file" value="$(find dynamixel_detachable_hand)/config/lhand/detacher_dynamixel_info.yaml" />
+    <arg name="controllers_file" value="$(find dynamixel_detachable_hand)/config/lhand/detacher_controllers.yaml" />
+    <arg name="controllers_to_start" value="joint_state_controller joint_group_effort_controller" />
+    <arg name="launch_rviz" value="false" />
+    <arg name="launch_robot_state_publisher" value="false" />
+  </include>
+
+  <group ns="$(arg namespace)">
+    <node pkg="rostopic" type="rostopic" name="set_initial_effort_limit"
+          args="pub joint_group_effort_controller/command std_msgs/Float64MultiArray
+                '{layout: {dim: [], data_offset: 0}, data: [0.0]}'"
+          output="screen"/>
+  </group>
+</launch>
