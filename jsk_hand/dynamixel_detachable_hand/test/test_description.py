@@ -50,8 +50,12 @@ def test_needle_holder_couplings_are_embedded() -> None:
     robot_description = build_robot_description("lhand", "needle_holder")
     couplings = extract_couplings(robot_description)
 
-    assert len(couplings) == 3
-    assert couplings[0].driver == "lhand_joint"
+    assert len(couplings) == 2
+    assert {coupling.driver for coupling in couplings} == {"lhand_joint"}
+    assert {coupling.joint for coupling in couplings} == {
+        "lhand_holder_jaw_joint",
+        "lhand_holder_tip_joint",
+    }
 
 
 def test_resolve_tool_from_present_ids() -> None:

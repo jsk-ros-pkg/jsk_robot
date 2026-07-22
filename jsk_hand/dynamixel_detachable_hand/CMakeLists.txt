@@ -37,37 +37,19 @@ ament_python_install_package(hand_controller
   PACKAGE_DIR src/hand_controller
 )
 
-set(_venv_python "${CMAKE_CURRENT_SOURCE_DIR}/.venv/bin/python3")
-if(EXISTS "${_venv_python}")
-  set(DYNAMIXEL_DETACHABLE_HAND_PYTHON "${_venv_python}")
-else()
-  set(DYNAMIXEL_DETACHABLE_HAND_PYTHON "${Python3_EXECUTABLE}")
-endif()
-message(STATUS "dynamixel_detachable_hand scripts use ${DYNAMIXEL_DETACHABLE_HAND_PYTHON}")
+message(STATUS "dynamixel_detachable_hand scripts use their source shebangs")
 
 set(_python_entrypoint_scripts
   scripts/hand_command.py
   scripts/joint_state_coupling_relay.py
   scripts/modular_hand_manager.py
   scripts/print_robot_description.py
+  scripts/static_transform_publisher_xyz_rpy.py
   scripts/tool_auto_detector.py
 )
 
-set(_generated_python_entrypoint_scripts)
-foreach(_script IN LISTS _python_entrypoint_scripts)
-  set(_source_script "${CMAKE_CURRENT_SOURCE_DIR}/${_script}")
-  set(_generated_script "${CMAKE_CURRENT_BINARY_DIR}/${_script}")
-  get_filename_component(_generated_script_dir "${_generated_script}" DIRECTORY)
-  file(MAKE_DIRECTORY "${_generated_script_dir}")
-  file(READ "${_source_script}" _script_content)
-  string(REGEX REPLACE "^#![^\n]*(\n|$)" "#!${DYNAMIXEL_DETACHABLE_HAND_PYTHON}\n"
-         _script_content "${_script_content}")
-  file(WRITE "${_generated_script}" "${_script_content}")
-  list(APPEND _generated_python_entrypoint_scripts "${_generated_script}")
-endforeach()
-
 install(PROGRAMS
-  ${_generated_python_entrypoint_scripts}
+  ${_python_entrypoint_scripts}
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -76,8 +58,14 @@ install(DIRECTORY
   euslisp
   figs
   launch
+  meshes
   udev
   urdf
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(FILES
+  README.md
   DESTINATION share/${PROJECT_NAME}
 )
 

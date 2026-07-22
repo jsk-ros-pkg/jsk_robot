@@ -1,62 +1,226 @@
-<?xml version="1.0"?>
+<?xml version='1.0' encoding='utf-8'?>
 <robot name="rhand_gripper_robot">
-
+  <link name="rhand_xl_xc_330_1_2">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/XL_XC_330_1_2.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/XL_XC_330_1_2.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="7.9754e-05 -0.000522147 0.000155912" rpy="0 0 0" />
+      <mass value="0.0168537" />
+      <inertia ixx="2.4587e-06" ixy="-3.37625e-13" ixz="8.18258e-14" iyy="1.4263e-06" iyz="-4.79354e-08" izz="2.13125e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_bottom_spacer3300a_1">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/buttom_spacer3300A_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/buttom_spacer3300A_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="3.8e-08 1.4144e-05 0.000690651" rpy="0 0 0" />
+      <mass value="0.00617072" />
+      <inertia ixx="6.66254e-07" ixy="4.89446e-14" ixz="4.42692e-13" iyy="1.01649e-06" iyz="1.66262e-08" izz="3.91814e-07" />
+    </inertial>
+  </link>
+  <link name="rhand_finger_11">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/finger_11.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/finger_11.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.00028687979 0.0026460947 0.023443637" rpy="0 0 0" />
+      <mass value="0.0442481" />
+      <inertia ixx="1.19476e-05" ixy="-1.25326e-06" ixz="1.6834e-06" iyy="1.32116e-05" iyz="8.62256e-07" izz="7.77573e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_finger_13">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/finger_11_2.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/finger_11_2.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-0.0013329019 -0.0026460947 0.023443637" rpy="0 0 0" />
+      <mass value="0.0442481" />
+      <inertia ixx="1.19476e-05" ixy="-1.25326e-06" ixz="-1.6834e-06" iyy="1.32116e-05" iyz="-8.62256e-07" izz="7.77573e-06" />
+    </inertial>
+  </link>
+  <link name="rhand_pinion_1">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/pinion_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/pinion_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 -7.1262e-05 9.7656e-05" rpy="0 0 0" />
+      <mass value="0.00261444" />
+      <inertia ixx="9.77225e-08" ixy="4.93411e-16" ixz="-1.32552e-16" iyy="9.77268e-08" iyz="-1.47807e-13" izz="1.80972e-07" />
+    </inertial>
+  </link>
+  <link name="rhand_screwlock_male_1">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/screwlock_male_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/screwlock_male_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-2.8667e-05 0.000879083 -3.9498e-05" rpy="0 0 0" />
+      <mass value="0.0103795" />
+      <inertia ixx="8.89533e-07" ixy="7.30713e-10" ixz="-1.58925e-09" iyy="1.59088e-06" iyz="2.26231e-09" izz="8.9266e-07" />
+    </inertial>
+  </link>
   <link name="rhand_base_link">
     <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <box size="0.2 0.2 0.2"/>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/servo_and_case_simple_1.dae" />
       </geometry>
-      <material name="red">
-        <color rgba="1 0 0 1"/>
-      </material>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/servo_and_case_simple_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="4.1022654e-07 -2.0111843e-07 0.0025990495" rpy="0 0 0" />
+      <mass value="0.0498606" />
+      <inertia ixx="7.11208e-06" ixy="3.44902e-09" ixz="-8.05012e-12" iyy="2.86607e-05" iyz="9.35155e-11" izz="3.3854e-05" />
+    </inertial>
   </link>
-
-  <link name="rhand_link">
+  <link name="rhand_small_diameter_hornb_1">
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0.3"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <box size="0.2 0.2 0.6"/>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/small_diameter_hornB_1.dae" />
       </geometry>
-      <material name="green">
-        <color rgba="0 1 0 1"/>
-      </material>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://dynamixel_detachable_hand/meshes/nejineji_finger_module/small_diameter_hornB_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-5.067e-06 0 -6.0142e-05" rpy="0 0 0" />
+      <mass value="0.000682303" />
+      <inertia ixx="1.02178e-08" ixy="2.7465e-25" ixz="-5.18874e-15" iyy="1.02178e-08" iyz="9.34299e-26" izz="1.89764e-08" />
+    </inertial>
   </link>
-
+  <link name="rhand_tip_link" />
   <link name="rhand_detach_link_0">
     <visual>
-      <origin rpy="0 0 0" xyz="0.12 0 0.05"/>
+      <origin rpy="0 0 0" xyz="0.12 0 0.05" />
       <geometry>
-        <box size="0.08 0.08 0.1"/>
+        <box size="0.08 0.08 0.1" />
       </geometry>
-      <material name="blue">
-        <color rgba="0 0 1 1"/>
+      <material name="detacher_blue">
+        <color rgba="0 0 1 1" />
       </material>
     </visual>
   </link>
-
-  <!--
-    Joint limits are example values for XC330-T288-T with sample_trans (it is written later).
-    effort: (Stall Torque [Nm]) * (mechanicalReduction in sample_trans) = 0.92 * 1.0
-    velocity: (No Load Speed [rad/s]) / (mechanicalReduction in sample_trans) = (65 [rev/min] * 2 * pi / 60) / 1.0
-  -->
-  <joint name="rhand_joint" type="continuous">
-    <origin rpy="0 0 0" xyz="0 0 0.1"/>
-    <parent link="rhand_base_link"/>
-    <child link="rhand_link"/>
-    <axis xyz="0 1 0"/>
-    <limit effort="2.0" velocity="6.8"/>
+  <joint name="rhand_servo_and_case_simple_1__xl_xc_330_1_2" type="fixed">
+    <origin xyz="-0.0067468 7.9755e-05 -0.015702072" rpy="0 0 -1.5707963" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_xl_xc_330_1_2" />
+    <axis xyz="0 0 -1" />
   </joint>
-
+  <joint name="rhand_servo_and_case_simple_1__pinion_1" type="fixed">
+    <origin xyz="-6.95e-06 -7.0943e-05 0.005234895" rpy="-3.141592607 0 -0.09765488" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_pinion_1" />
+    <axis xyz="-0 0 -1" />
+  </joint>
+  <joint name="rhand_servo_and_case_simple_1__small_diameter_hornb_1" type="fixed">
+    <origin xyz="-5.065e-06 0 0.000967784" rpy="0 0 -3.141592607" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_small_diameter_hornb_1" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <joint name="rhand_xl_xc_330_1_2__buttom_spacer3300a_1" type="fixed">
+    <origin xyz="7.9799e-05 0.003444766 -0.015364374" rpy="-1.5707963 0 3.141592607" />
+    <parent link="rhand_xl_xc_330_1_2" />
+    <child link="rhand_bottom_spacer3300a_1" />
+    <axis xyz="0 -1 0" />
+  </joint>
+  <joint name="rhand_buttom_spacer3300a_1__screwlock_male_1" type="fixed">
+    <origin xyz="-5.6e-06 0.007707033 -0.003298772" rpy="0 -1.570796301 0" />
+    <parent link="rhand_bottom_spacer3300a_1" />
+    <child link="rhand_screwlock_male_1" />
+    <axis xyz="-0 1 -0" />
+  </joint>
+  <joint name="rhand_joint" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_finger_11" />
+    <axis xyz="-1 0 0" />
+    <limit lower="0" upper="0.05" effort="2.0" velocity="0.1" />
+  </joint>
+  <joint name="rhand_finger_mimic_joint" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 -0 0" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_finger_13" />
+    <axis xyz="-1 0 0" />
+    <limit lower="-0.05" upper="0" effort="10" velocity="3.14" />
+    <mimic joint="rhand_joint" multiplier="-1" offset="0" />
+  </joint>
+  <joint name="rhand_to_tip" type="fixed">
+    <origin xyz="0 0 0.06743" rpy="0 0 0" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_tip_link" />
+  </joint>
   <joint name="rhand_detach_joint_0" type="continuous">
-    <origin rpy="0 0 0" xyz="0.1 0 0.1"/>
-    <parent link="rhand_base_link"/>
-    <child link="rhand_detach_link_0"/>
-    <axis xyz="0 1 0"/>
-    <limit effort="2.0" velocity="6.8"/>
+    <origin rpy="0 0 0" xyz="0.1 0 0.1" />
+    <parent link="rhand_base_link" />
+    <child link="rhand_detach_link_0" />
+    <axis xyz="0 1 0" />
+    <limit effort="2.0" velocity="6.8" />
   </joint>
-
   <transmission name="rhand_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rhand_joint">
@@ -68,8 +232,7 @@
       <mechanicalReduction>1.0</mechanicalReduction>
     </actuator>
   </transmission>
-
-  <transmission name="rhand_detach_trans_0">
+  <transmission name="rhand_detach_0_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="rhand_detach_joint_0">
       <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
@@ -80,5 +243,4 @@
       <mechanicalReduction>1.0</mechanicalReduction>
     </actuator>
   </transmission>
-
 </robot>

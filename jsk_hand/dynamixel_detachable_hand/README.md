@@ -62,21 +62,20 @@ Python virtual environment, use system site packages so ROS 2 Python modules
 such as `rclpy`, `launch_xml`, and generated interfaces remain visible:
 
 ```bash
-cd ~/colcon_ws/src/jsk-ros-pkg/jsk_robot/jsk_hand/dynamixel_detachable_hand
+cd $COLCON_WS/src/jsk-ros-pkg/jsk_robot/jsk_hand/dynamixel_detachable_hand
 uv venv --system-site-packages .venv
 source .venv/bin/activate
 source /opt/ros/jazzy/setup.bash
 uv pip install -e .
 ```
 
-When `.venv/bin/python3` exists during CMake configuration, installed ROS 2
-entry-point scripts get that interpreter in their shebang.  Without `.venv`,
-the build falls back to CMake's `Python3_EXECUTABLE`.
+Installed ROS 2 entry-point scripts use `/usr/bin/env python3` so the install
+tree is portable across machines.
 
 Build from the workspace root:
 
 ```bash
-cd ~/colcon_ws
+cd $COLCON_WS
 colcon build --packages-up-to dynamixel_detachable_hand
 source install/setup.bash
 ```
@@ -84,7 +83,7 @@ source install/setup.bash
 Run smoke tests without hardware:
 
 ```bash
-cd ~/colcon_ws/src/jsk-ros-pkg/jsk_robot/jsk_hand/dynamixel_detachable_hand
+cd $COLCON_WS/src/jsk-ros-pkg/jsk_robot/jsk_hand/dynamixel_detachable_hand
 source .venv/bin/activate
 source /opt/ros/jazzy/setup.bash
 PYTHONPATH=src:$PYTHONPATH python3 -m pytest -q
@@ -96,6 +95,8 @@ Run ROS 2 launch files:
 
 ```bash
 ros2 launch dynamixel_detachable_hand hand_model.launch.xml side:=lhand tool:=generic
+ros2 launch dynamixel_detachable_hand hand_model.launch.xml side:=lhand tool:=gripper
+ros2 launch dynamixel_detachable_hand hand_model.launch.xml side:=rhand tool:=needle_holder
 ros2 launch dynamixel_detachable_hand hand_control.launch.xml side:=lhand tool:=generic port_name:=/dev/lhand
 ros2 launch dynamixel_detachable_hand hand_detacher.launch.xml side:=lhand port_name:=/dev/lhand
 ros2 launch dynamixel_detachable_hand dual_hand.launch.xml left_tool:=generic right_tool:=generic
@@ -116,17 +117,18 @@ Install the udev rules if the hands should appear as `/dev/lhand` and
 `/dev/rhand`:
 
 ```bash
-cd ~/colcon_ws/src/jsk-ros-pkg/jsk_robot/jsk_hand/dynamixel_detachable_hand
+cd $COLCON_WS/src/jsk-ros-pkg/jsk_robot/jsk_hand/dynamixel_detachable_hand
 sudo scripts/create_udev_rules.sh
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
 
-The attached tool model can be selected per side.  Available tool names are
-`generic`, `needle_holder`, `gripper`, and `forceps`.  `needle_holder` uses the
-SURGENOID needle-holder meshes and nonlinear four-bar display coupling;
-`gripper` and `forceps` are placeholder URDFs with the same stable control
-joint names.
+The attached tool model can be selected per side. Available tool names are
+`generic`, `needle_holder`, `gripper`, and `forceps`. `gripper` uses the
+nejineji finger module meshes, `needle_holder` uses the SURGENOID-style local
+mesh and nonlinear display coupling, and `forceps` is currently a hardware-ID
+alias that renders and controls as the same gripper model. The short control joint names are stable across tools:
+`lhand_joint` and `rhand_joint`.
 
 The Dynamixel IDs are fixed by side so the manager can identify the attached
 tool from an ID scan:
@@ -140,6 +142,34 @@ tool from an ID scan:
 
 `generic` is a manual fallback model and is not auto-detected.  When rendered
 manually it uses the gripper motor ID for that side.
+
+## Simulation
+
+For model-only simulation, launch `hand_model.launch.xml` and feed joint states
+from a simulator or GUI into `/<side>/sim_joint_states`:
+
+```bash
+ros2 launch dynamixel_detachable_hand hand_model.launch.xml \
+  side:=lhand tool:=gripper sim_mode:=true \
+  joint_states_source_topic:=sim_joint_states
+```
+
+In sim mode the package publishes only URDF, TF, metadata, and display
+couplings. It does not command Dynamixel current or require `/dev/lhand` /
+`/dev/rhand`. Physical attach/detach current is only used by
+`hand_control.launch.xml` or explicit `hand_command.py attach/detach` calls.
+
+Genesis render checks of the package-local tool URDFs:
+
+| Gripper | Needle holder |
+| --- | --- |
+| ![Genesis gripper simulation](figs/sim_gripper.png) | ![Genesis needle holder simulation](figs/sim_needle_holder.png) |
+
+The screenshots can be regenerated from `nextage_ros_genesis`:
+
+```bash
+ros2 run nextage_ros_genesis render_detachable_end_effectors.py
+```
 
 ## EusLisp Interface
 

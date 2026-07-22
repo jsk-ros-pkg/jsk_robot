@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<robot name="surgenoid_needle_holder">
+  <link name="SURGERY_CLAMP_ASSY_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-0.004059165 0.0026714 -0.000173157" rpy="0 0 0" />
+      <mass value="0.00675555" />
+      <inertia ixx="4.67905e-07" ixy="9.59811e-07" ixz="1.28892e-08" iyy="6.25673e-06" iyz="-3.42424e-09" izz="6.71611e-06" />
+    </inertial>
+  </link>
+  <link name="SURGERY_CLAMP_01_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.042705769 0.022098692 -0.0013036672" rpy="0 0 0" />
+      <mass value="0.00562524" />
+      <inertia ixx="1.16073e-06" ixy="-1.91324e-06" ixz="-4.08357e-10" iyy="4.55448e-06" iyz="4.80985e-10" izz="5.71081e-06" />
+    </inertial>
+  </link>
+  <link name="XL_XC_330_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="7.9738e-05 -0.000522082 0.000156526" rpy="0 0 0" />
+      <mass value="0.0168532" />
+      <inertia ixx="2.45858e-06" ixy="-2.3451e-14" ixz="4.47712e-14" iyy="1.4262e-06" iyz="-4.7932e-08" izz="2.13119e-06" />
+    </inertial>
+  </link>
+  <link name="base_link">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="1.4366722e-05 -0.00010691039 -0.0024040291" rpy="0 0 0" />
+      <mass value="0.0162824" />
+      <inertia ixx="1.61417e-06" ixy="3.47268e-09" ixz="-7.7713e-10" iyy="1.62572e-06" iyz="-1.41976e-09" izz="2.52267e-06" />
+    </inertial>
+  </link>
+  <link name="small_needle_hoder_base_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-0.00120503 0.0003059 -0.000101532" rpy="0 0 0" />
+      <mass value="0.020773" />
+      <inertia ixx="2.68109e-06" ixy="8.34229e-08" ixz="7.87172e-08" iyy="5.53461e-06" iyz="4.19901e-08" izz="7.91237e-06" />
+    </inertial>
+  </link>
+  <link name="small_needle_holder_link1_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.0067603411 0.010742293 -0.0056220958" rpy="0 0 0" />
+      <mass value="0.00332751" />
+      <inertia ixx="4.67896e-07" ixy="-2.67743e-07" ixz="2.00383e-08" iyy="2.10944e-07" iyz="3.18413e-08" izz="6.2836e-07" />
+    </inertial>
+  </link>
+  <link name="small_needle_holder_link2_1">
+    <!-- sw2robot inertia="hull" -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.stl" />
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="-0.034350012 0.015044146 0.0115" rpy="0 0 0" />
+      <mass value="0.00195003" />
+      <inertia ixx="1.82933e-07" ixy="3.91066e-07" ixz="-1.45386e-22" iyy="9.04573e-07" iyz="6.36835e-23" izz="1.08458e-06" />
+    </inertial>
+  </link>
+  <joint name="small_needle_hoder_base_1__XL_XC_330_1" type="fixed">
+    <origin xyz="0.038688034 -0.006248738 0.011774486" rpy="-3.141592607 0 1.5707963" />
+    <parent link="small_needle_hoder_base_1" />
+    <child link="XL_XC_330_1" />
+    <axis xyz="0 0 -1" />
+    <!-- mates: COINCIDENT, CONCENTRIC, CONCENTRIC, COINCIDENT, CONCENTRIC, CONCENTRIC -->
+  </joint>
+  <joint name="small_needle_hoder_base_1__SURGERY_CLAMP_ASSY_1" type="fixed">
+    <origin xyz="-0.037277901 0.011289345 -0.004030915" rpy="0 0 -3.0922928" />
+    <parent link="small_needle_hoder_base_1" />
+    <child link="SURGERY_CLAMP_ASSY_1" />
+    <axis xyz="0 0 -1" />
+    <!-- mates: COINCIDENT, COINCIDENT, DISTANCE, COINCIDENT, COINCIDENT, DISTANCE -->
+  </joint>
+  <joint name="screwlock_male_hard_v2_1__small_needle_hoder_base_1" type="fixed">
+    <origin xyz="-0.009065668 -0.000168333 -0.015571405" rpy="-6.327e-06 -2.654e-06 3.141589" />
+    <parent link="base_link" />
+    <child link="small_needle_hoder_base_1" />
+    <axis xyz="0 0 1" />
+    <!-- mates: COINCIDENT, CONCENTRIC, PARALLEL, COINCIDENT, CONCENTRIC, PARALLEL -->
+  </joint>
+  <joint name="SURGERY_CLAMP_ASSY_1__SURGERY_CLAMP_01_1" type="revolute">
+    <origin xyz="0.040124645 -0.00714826 0.001320943" rpy="0 0 3.0922928" />
+    <parent link="SURGERY_CLAMP_ASSY_1" />
+    <child link="SURGERY_CLAMP_01_1" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-0.29662" upper="0.44772" effort="10" velocity="3.14" />
+    <mimic joint="XL_XC_330_1__small_needle_holder_link1_1" multiplier="0.581031" offset="0" />
+    <!-- mates: CONCENTRIC, COINCIDENT, CONCENTRIC, COINCIDENT -->
+  </joint>
+  <joint name="XL_XC_330_1__small_needle_holder_link1_1" type="revolute">
+    <origin xyz="7.9738e-05 0.006746875 0.013703058" rpy="-3.141592607 0 1.5707963" />
+    <parent link="XL_XC_330_1" />
+    <child link="small_needle_holder_link1_1" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-0.62832" upper="0.62832" effort="10" velocity="3.14" />
+    <!-- mates: COINCIDENT, CONCENTRIC, COINCIDENT, CONCENTRIC -->
+  </joint>
+  <joint name="small_needle_holder_link1_1__small_needle_holder_link2_1" type="revolute">
+    <origin xyz="0.020772397 0.033007689 -0.017" rpy="0 -0 0" />
+    <parent link="small_needle_holder_link1_1" />
+    <child link="small_needle_holder_link2_1" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.84903" upper="0.87973" effort="10" velocity="3.14" />
+    <mimic joint="XL_XC_330_1__small_needle_holder_link1_1" multiplier="1.35269" offset="0" />
+    <!-- mates: CONCENTRIC, COINCIDENT, CONCENTRIC, COINCIDENT -->
+  </joint>
+</robot>

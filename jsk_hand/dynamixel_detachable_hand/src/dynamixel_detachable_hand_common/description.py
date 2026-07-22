@@ -146,7 +146,8 @@ def normalize_tool(tool: str, *, attached: bool = True) -> str:
 def robot_description_path(side: str, tool: str = "generic", *, attached: bool = True) -> Path:
     side = normalize_side(side)
     tool = normalize_tool(tool, attached=attached)
-    name = f"{side}_detacher.urdf" if tool == "detacher" else f"{side}_{tool}.urdf"
+    model_tool = _model_tool(tool)
+    name = f"{side}_detacher.urdf" if model_tool == "detacher" else f"{side}_{model_tool}.urdf"
     path = package_share_path() / "urdf" / name
     if not path.exists():
         raise FileNotFoundError(path)
@@ -455,7 +456,7 @@ def _inject_detachable_metadata(
             "side": side,
             "tool": tool,
             "attached": str(attached).lower(),
-            "root_link": f"{side}_base_link" if attached else "base_link",
+            "root_link": f"{side}_base_link",
             "tip_link": _default_tip_link(side, tool, attached),
             "command_joint": f"{side}_joint" if attached else "",
             "detach_joint": f"{side}_detach_joint_0",
@@ -648,7 +649,13 @@ def _default_tip_link(side: str, tool: str, attached: bool) -> str:
         return f"{side}_detach_link_0"
     if tool == "needle_holder":
         return f"{side}_small_needle_holder_link2_1"
+    if _model_tool(tool) == "gripper":
+        return f"{side}_tip_link"
     return f"{side}_link"
+
+
+def _model_tool(tool: str) -> str:
+    return "gripper" if tool == "forceps" else tool
 
 
 def _local_name(tag: str) -> str:

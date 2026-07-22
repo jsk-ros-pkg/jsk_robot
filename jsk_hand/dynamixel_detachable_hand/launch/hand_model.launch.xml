@@ -9,6 +9,9 @@
   <arg name="auto_detect" default="false" />
   <arg name="scan_ids" default="" />
   <arg name="simulated_present_ids" default="" />
+  <arg name="joint_states_source_topic" default="joint_states" />
+  <arg name="joint_states_topic" default="display_joint_states" />
+  <arg name="sim_mode" default="false" />
   <arg name="publish_static_tf" default="false" />
   <arg name="parent_frame" default="" />
   <arg name="root_frame" default="$(var side)_base_link" />
@@ -20,7 +23,7 @@
   <node pkg="robot_state_publisher" exec="robot_state_publisher"
         name="robot_state_publisher" namespace="$(var namespace)" output="screen">
     <param name="robot_description" value="$(var robot_description_cmd)" />
-    <remap from="joint_states" to="display_joint_states" />
+    <remap from="joint_states" to="$(var joint_states_topic)" />
   </node>
 
   <node pkg="dynamixel_detachable_hand" exec="modular_hand_manager.py"
@@ -29,11 +32,11 @@
 
   <node pkg="dynamixel_detachable_hand" exec="joint_state_coupling_relay.py"
         name="joint_state_coupling_relay" namespace="$(var namespace)" output="screen"
-        args="--joint-states-source-topic joint_states --joint-states-topic display_joint_states" />
+        args="--joint-states-source-topic $(var joint_states_source_topic) --joint-states-topic $(var joint_states_topic)" />
 
   <node if="$(var publish_static_tf)"
-        pkg="tf2_ros" exec="static_transform_publisher"
+        pkg="dynamixel_detachable_hand" exec="static_transform_publisher_xyz_rpy.py"
         name="tool_mount_static_tf" namespace="$(var namespace)"
-        args="$(var static_xyz) $(var static_rpy) $(var parent_frame) $(var root_frame)"
+        args="--xyz $(var static_xyz) --rpy $(var static_rpy) --frame-id $(var parent_frame) --child-frame-id $(var root_frame)"
         output="screen" />
 </launch>

@@ -35,6 +35,7 @@
   <exec_depend>launch_xml</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>surgenoid_needle_holder_description</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>xacro</exec_depend>
 
