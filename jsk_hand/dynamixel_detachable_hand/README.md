@@ -161,10 +161,10 @@ couplings. It does not command Dynamixel current or require `/dev/lhand` /
 
 Render checks of the package-local tool URDFs:
 
-| Tool | Front view | Side view |
-| --- | --- | --- |
-| Gripper | ![Gripper front view](figs/sim_gripper_front.png) | ![Gripper side view](figs/sim_gripper_side.png) |
-| Needle holder | ![Needle holder front view](figs/sim_needle_holder_front.png) | ![Needle holder side view](figs/sim_needle_holder_side.png) |
+| Tool | Front view | Side view | Oblique view |
+| --- | --- | --- | --- |
+| Gripper | ![Gripper front view](figs/sim_gripper_front.png) | ![Gripper side view](figs/sim_gripper_side.png) | ![Gripper oblique view](figs/sim_gripper_oblique.png) |
+| Needle holder | ![Needle holder front view](figs/sim_needle_holder_front.png) | ![Needle holder side view](figs/sim_needle_holder_side.png) | ![Needle holder oblique view](figs/sim_needle_holder_oblique.png) |
 
 The screenshots can be regenerated without Genesis:
 

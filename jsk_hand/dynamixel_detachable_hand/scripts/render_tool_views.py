@@ -31,6 +31,10 @@ VIEWS = {
         "direction": np.array([1.0, 0.0, 0.0]),
         "up": np.array([0.0, 0.0, 1.0]),
     },
+    "oblique": {
+        "direction": np.array([0.8, -0.8, 0.45]),
+        "up": np.array([0.0, 0.0, 1.0]),
+    },
 }
 
 
