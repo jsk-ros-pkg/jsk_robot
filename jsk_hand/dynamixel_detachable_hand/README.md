@@ -159,16 +159,17 @@ couplings. It does not command Dynamixel current or require `/dev/lhand` /
 `/dev/rhand`. Physical attach/detach current is only used by
 `hand_control.launch.xml` or explicit `hand_command.py attach/detach` calls.
 
-Genesis render checks of the package-local tool URDFs:
+Render checks of the package-local tool URDFs:
 
-| Gripper | Needle holder |
-| --- | --- |
-| ![Genesis gripper simulation](figs/sim_gripper.png) | ![Genesis needle holder simulation](figs/sim_needle_holder.png) |
+| Tool | Front view | Side view |
+| --- | --- | --- |
+| Gripper | ![Gripper front view](figs/sim_gripper_front.png) | ![Gripper side view](figs/sim_gripper_side.png) |
+| Needle holder | ![Needle holder front view](figs/sim_needle_holder_front.png) | ![Needle holder side view](figs/sim_needle_holder_side.png) |
 
-The screenshots can be regenerated from `nextage_ros_genesis`:
+The screenshots can be regenerated without Genesis:
 
 ```bash
-ros2 run nextage_ros_genesis render_detachable_end_effectors.py
+xvfb-run -a python3 scripts/render_tool_views.py
 ```
 
 ## EusLisp Interface

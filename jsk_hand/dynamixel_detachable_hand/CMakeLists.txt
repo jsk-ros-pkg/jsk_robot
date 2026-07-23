@@ -44,6 +44,7 @@ set(_python_entrypoint_scripts
   scripts/joint_state_coupling_relay.py
   scripts/modular_hand_manager.py
   scripts/print_robot_description.py
+  scripts/render_tool_views.py
   scripts/static_transform_publisher_xyz_rpy.py
   scripts/tool_auto_detector.py
 )

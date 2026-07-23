@@ -6,6 +6,7 @@
   <arg name="port_name" default="/dev/$(var side)" />
   <arg name="baud_rate" default="57600" />
   <arg name="protocol_version" default="2.0" />
+  <arg name="use_sim_time" default="false" />
   <arg name="auto_detect" default="false" />
   <arg name="scan_ids" default="" />
   <arg name="simulated_present_ids" default="" />
@@ -23,20 +24,27 @@
   <node pkg="robot_state_publisher" exec="robot_state_publisher"
         name="robot_state_publisher" namespace="$(var namespace)" output="screen">
     <param name="robot_description" value="$(var robot_description_cmd)" />
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
     <remap from="joint_states" to="$(var joint_states_topic)" />
   </node>
 
   <node pkg="dynamixel_detachable_hand" exec="modular_hand_manager.py"
         name="modular_hand_manager" namespace="$(var namespace)" output="screen"
-        args="--side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --auto-detect $(var auto_detect) --scan-ids $(var scan_ids) --simulated-present-ids $(var simulated_present_ids)" />
+        args="--side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --auto-detect $(var auto_detect) --scan-ids $(var scan_ids) --simulated-present-ids $(var simulated_present_ids)">
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+  </node>
 
   <node pkg="dynamixel_detachable_hand" exec="joint_state_coupling_relay.py"
         name="joint_state_coupling_relay" namespace="$(var namespace)" output="screen"
-        args="--joint-states-source-topic $(var joint_states_source_topic) --joint-states-topic $(var joint_states_topic)" />
+        args="--joint-states-source-topic $(var joint_states_source_topic) --joint-states-topic $(var joint_states_topic)">
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+  </node>
 
   <node if="$(var publish_static_tf)"
         pkg="dynamixel_detachable_hand" exec="static_transform_publisher_xyz_rpy.py"
         name="tool_mount_static_tf" namespace="$(var namespace)"
         args="--xyz $(var static_xyz) --rpy $(var static_rpy) --frame-id $(var parent_frame) --child-frame-id $(var root_frame)"
-        output="screen" />
+        output="screen">
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+  </node>
 </launch>
