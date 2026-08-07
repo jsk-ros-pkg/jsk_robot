@@ -12,7 +12,12 @@
 
 (defparameter *lhand-detach-torque-constant* 1.15)
 (defparameter *lhand-detach-current-ma* 400.0)
-(defparameter *lhand-effort-limit* 0.92)
+(defparameter *lhand-effort-limit* 0.50)
+(defparameter *lhand-gripper-effort* 0.50)
+(defparameter *lhand-gripper-close-effort* 0.50)
+(defparameter *lhand-gripper-open-position* -2.25)
+(defparameter *lhand-gripper-close-position* -4.5)
+(defparameter *lhand-gripper-open-time* 0.25)
 
 (defclass lhand-interface
   :super propertied-object
@@ -47,7 +52,7 @@
                     controller-action
                     control_msgs::FollowJointTrajectory
                     :groupname groupname))
-    (ros::advertise "/lhand/joint_group_effort_controller/command" std_msgs::Float64MultiArray 1)
+    (ros::advertise "/lhand/joint_group_effort_controller/commands" std_msgs::Float64MultiArray 1)
     (ros::subscribe "/lhand/joint_states" sensor_msgs::JointState
                     #'send self :joint-states-callback 1 :groupname groupname)
     (when (eq execution-mode :kinematic-simulator)
@@ -253,7 +258,7 @@
   (:set-detach-effort (detach-effort)
     (let ((msg (instance std_msgs::Float64MultiArray :init)))
       (send msg :data (apply #'float-vector (send self :detach-effort-command detach-effort)))
-      (ros::publish "/lhand/joint_group_effort_controller/command" msg)))
+      (ros::publish "/lhand/joint_group_effort_controller/commands" msg)))
 
   (:stop-detach ()
     (send self :set-detach-effort 0.0))
@@ -279,11 +284,11 @@
             (= state action_msgs::GoalStatus::*STATUS_EXECUTING*)
             (= state action_msgs::GoalStatus::*STATUS_CANCELING*)))))
 
-  (:open (&key (wait t) (tm 1.0) (velocity 2.0) (acceleration 0.0) (effort 0.0))
-    (send self :move-hand 0.0 :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
+  (:open (&key (wait t) (tm *lhand-gripper-open-time*) (velocity 0.0) (acceleration 0.0) (effort *lhand-gripper-effort*))
+    (send self :move-hand *lhand-gripper-open-position* :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
 
-  (:close (&key (wait t) (tm 1.0) (velocity 2.0) (acceleration 0.0) (effort 0.0))
-    (send self :move-hand -3.0 :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
+  (:close (&key (wait t) (tm 1.0) (velocity 0.0) (acceleration 0.0) (effort *lhand-gripper-close-effort*))
+    (send self :move-hand *lhand-gripper-close-position* :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
 
   (:open-holder (&key (wait nil) (tm 1.0) (velocity 0.3) (acceleration 0.0) (effort 0.8))
     (send self :move-hand -1.87 :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))

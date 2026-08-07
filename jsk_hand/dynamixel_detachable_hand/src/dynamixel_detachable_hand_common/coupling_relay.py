@@ -91,9 +91,12 @@ def main(argv: list[str] | None = None) -> None:
     node = JointStateCouplingRelay(args.joint_states_source_topic, args.joint_states_topic)
     try:
         rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

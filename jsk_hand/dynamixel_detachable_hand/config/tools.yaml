@@ -16,6 +16,83 @@ tools:
     description: Dummy forceps placeholder model.
     loop_coupling: false
 
+grasp_commands:
+  defaults:
+    open:
+      position: 0.0
+      velocity: 2.0
+      acceleration: 0.0
+      effort: 0.0
+    close:
+      position: -2.7
+      velocity: 2.0
+      acceleration: 0.0
+      effort: 0.0
+    open-holder:
+      position: -1.87
+      velocity: 0.3
+      acceleration: 0.0
+      effort: 0.8
+    close-holder:
+      position: 1.0
+      velocity: 0.3
+      acceleration: 0.0
+      effort: 0.8
+    open-forceps:
+      position: -2.2
+      velocity: 1.0
+      acceleration: 0.0
+      effort: 0.0
+    close-forceps:
+      position: -3.0
+      velocity: 2.5
+      acceleration: 0.0
+      effort: 0.0
+    open-scissors:
+      position: -0.8
+      velocity: 3.0
+      acceleration: 0.0
+      effort: 0.9
+    close-scissors:
+      position: -0.1
+      velocity: 2.0
+      acceleration: 0.0
+      effort: 0.8
+  tools:
+    generic:
+      open:
+        position: 0.0
+      close:
+        position: -2.7
+    gripper:
+      open:
+        position: 0.0
+      close:
+        position: -2.7
+    needle_holder:
+      open-holder:
+        position: -1.87
+      close-holder:
+        position: 1.0
+    forceps:
+      open-forceps:
+        position: -2.2
+      close-forceps:
+        position: -3.0
+      open-scissors:
+        position: -0.8
+      close-scissors:
+        position: -0.1
+  sides:
+    lhand:
+      defaults:
+        close:
+          position: -3.0
+    rhand:
+      defaults:
+        close:
+          position: -2.7
+
 hardware:
   default_baud_rate: 57600
   protocol_version: 2.0

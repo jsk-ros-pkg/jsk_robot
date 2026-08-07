@@ -20,6 +20,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument("--duration", type=float, default=1.0)
     parser.add_argument("--current-ma", type=float)
+    parser.add_argument("--effort", type=float)
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args(argv)
 
@@ -40,7 +41,8 @@ def _dry_run(args: argparse.Namespace) -> None:
         "open-holder": -0.1,
         "close-holder": 0.08,
     }[args.command]
-    print(f"{args.side} {args.command}: joint={args.side}_joint target={target}")
+    effort = HandInterface.HAND_EFFORT_LIMIT if args.effort is None else args.effort
+    print(f"{args.side} {args.command}: joint={args.side}_joint target={target} effort={effort}")
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -55,13 +57,13 @@ def main(argv: list[str] | None = None) -> None:
     controller = _controller_class(args.side)()
     try:
         if args.command == "open":
-            controller.open(tm=args.duration)
+            controller.open(tm=args.duration, effort=args.effort)
         elif args.command == "close":
-            controller.close(tm=args.duration)
+            controller.close(tm=args.duration, effort=args.effort)
         elif args.command == "open-holder":
-            controller.open_holder(tm=args.duration)
+            controller.open_holder(tm=args.duration, effort=args.effort)
         elif args.command == "close-holder":
-            controller.close_holder(tm=args.duration)
+            controller.close_holder(tm=args.duration, effort=args.effort)
         elif args.command == "attach":
             current_ma = args.current_ma if args.current_ma is not None else -controller.DETACH_CURRENT_MA
             controller.command_detach_current(current_ma, tm=args.duration)
@@ -70,7 +72,8 @@ def main(argv: list[str] | None = None) -> None:
             controller.command_detach_current(current_ma, tm=args.duration)
     finally:
         controller.destroy()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

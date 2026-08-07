@@ -34,4 +34,20 @@ def test_detach_dry_run_smoke() -> None:
     output = run_cli("scripts/hand_command.py", "--side", "lhand", "detach", "--dry-run")
 
     assert "lhand detach" in output
-    assert "effort_command=[0.92, 0.45999999999999996]" in output
+    assert "effort_command=[0.5, 0.45999999999999996]" in output
+
+
+def test_print_tool_only_robot_description_summary_smoke() -> None:
+    output = run_cli(
+        "scripts/print_robot_description.py",
+        "--side",
+        "rhand",
+        "--tool",
+        "generic",
+        "--include-detacher",
+        "false",
+        "--summary",
+    )
+
+    assert "motors=rhand_joint:3" in output
+    assert "rhand_detach_joint_0" not in output

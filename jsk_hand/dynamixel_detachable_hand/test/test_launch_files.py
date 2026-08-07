@@ -22,3 +22,11 @@ def test_ros2_xml_launch_files_parse(launch_file: str) -> None:
     description = parser.parse_description(root)
 
     assert description.entities
+
+
+def test_dual_hand_launch_uses_only_tool_motor_controllers() -> None:
+    launch_text = Path("launch/dual_hand.launch.xml").read_text()
+
+    assert launch_text.count('<arg name="include_detacher" value="false" />') == 2
+    assert "config/lhand/tool_only_controllers.yaml" in launch_text
+    assert "config/rhand/tool_only_controllers.yaml" in launch_text

@@ -30,8 +30,15 @@ def test_attached_robot_description_has_ros2_control(side: str, tool: str) -> No
     assert model.attached is True
     assert len(model.motors) == 2
     assert [motor.id for motor in model.motors] == [EXPECTED_TOOL_IDS[side][tool], EXPECTED_DETACHER_IDS[side]]
-    assert f"<ros2_control name=\"{side}_dynamixel_general_hw\" type=\"system\">" in model.robot_description
-    assert "dynamixel_general_hw/DynamixelGeneralHw" in model.robot_description
+    assert f"<ros2_control name=\"{side}_dynamixel_hardware_interface\" type=\"system\">" in model.robot_description
+    assert "dynamixel_hardware_interface/DynamixelHardware" in model.robot_description
+    assert "<param name=\"number_of_joints\">2</param>" in model.robot_description
+    assert "<param name=\"number_of_transmissions\">2</param>" in model.robot_description
+    assert f"<param name=\"dynamixel_state_pub_msg_name\">/{side}/dynamixel_hardware_interface/dxl_state</param>" in model.robot_description
+    assert f"<gpio name=\"{side}_motor\">" in model.robot_description
+    assert f"<param name=\"ID\">{EXPECTED_TOOL_IDS[side][tool]}</param>" in model.robot_description
+    assert "<command_interface name=\"Goal Position\" />" in model.robot_description
+    assert "<command_interface name=\"Goal Current\" />" in model.robot_description
     assert f"<joint name=\"{side}_detach_joint_0\"" in model.robot_description
 
 
@@ -43,7 +50,26 @@ def test_detacher_robot_description_has_only_detacher_motor(side: str) -> None:
     assert model.attached is False
     assert [motor.joint for motor in model.motors] == [f"{side}_detach_joint_0"]
     assert [motor.id for motor in model.motors] == [EXPECTED_DETACHER_IDS[side]]
-    assert f"<param name=\"Operating_Mode\">0</param>" in model.robot_description
+    assert f"<param name=\"Operating Mode\">0</param>" in model.robot_description
+    assert "<param name=\"number_of_joints\">1</param>" in model.robot_description
+    assert "<command_interface name=\"Goal Current\" />" in model.robot_description
+
+
+@pytest.mark.parametrize(
+    ("side", "expected_id"),
+    [
+        ("lhand", 2),
+        ("rhand", 3),
+    ],
+)
+def test_tool_only_robot_description_omits_detacher_motor(side: str, expected_id: int) -> None:
+    model = describe_hand(side, "generic", include_detacher=False)
+
+    assert [motor.joint for motor in model.motors] == [f"{side}_joint"]
+    assert [motor.id for motor in model.motors] == [expected_id]
+    assert f'<param name="ID">{expected_id}</param>' in model.robot_description
+    assert '<param name="number_of_joints">1</param>' in model.robot_description
+    assert f'<joint name="{side}_detach_joint_0">' not in model.robot_description.split("<ros2_control", 1)[1]
 
 
 def test_needle_holder_couplings_are_embedded() -> None:

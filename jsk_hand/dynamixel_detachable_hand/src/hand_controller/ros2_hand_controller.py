@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class HandInterface:
     DETACH_TORQUE_CONSTANT = 1.15
     DETACH_CURRENT_MA = 400.0
-    HAND_EFFORT_LIMIT = 0.92
+    HAND_EFFORT_LIMIT = 0.5
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class HandInterface:
         self.owns_node = node is None
         self.joint_name = f"{side}_joint"
         self.detach_joint_name = f"{side}_detach_joint_0"
-        self.effort_joints = tuple(effort_joints or (self.joint_name, self.detach_joint_name))
+        self.effort_joints = tuple(effort_joints or (self.detach_joint_name,))
         self.joint_states: dict[str, float] = {}
         self.detach_effort_pub = self.node.create_publisher(
             Float64MultiArray,
@@ -83,8 +83,28 @@ class HandInterface:
         hand_limit = cls.HAND_EFFORT_LIMIT if hand_effort_limit is None else hand_effort_limit
         return [detach_effort if joint == detach_joint else hand_limit for joint in joints]
 
+    def _resolve_effort_joints(self) -> tuple[str, ...]:
+        import rclpy
+        from rclpy.parameter_client import AsyncParameterClient
+
+        client = AsyncParameterClient(self.node, f"/{self.groupname}/joint_group_effort_controller")
+        try:
+            if not client.services_are_ready() and not client.wait_for_services(timeout_sec=0.2):
+                return self.effort_joints
+            future = client.get_parameters(["joints"])
+            rclpy.spin_until_future_complete(self.node, future, timeout_sec=0.5)
+            response = future.result()
+        except Exception:
+            return self.effort_joints
+        if response is None or not response.values:
+            return self.effort_joints
+        joints = tuple(response.values[0].string_array_value)
+        if joints:
+            self.effort_joints = joints
+        return self.effort_joints
+
     def detach_effort_command(self, detach_effort: float) -> list[float]:
-        return self.detach_effort_command_for_joints(self.side, self.effort_joints, detach_effort)
+        return self.detach_effort_command_for_joints(self.side, self._resolve_effort_joints(), detach_effort)
 
     def set_detach_effort(self, detach_effort: float) -> list[float]:
         from std_msgs.msg import Float64MultiArray
@@ -115,7 +135,7 @@ class HandInterface:
         tm: float = 1.0,
         velocity: float = 0.0,
         acceleration: float = 0.0,
-        effort: float = 0.0,
+        effort: float | None = None,
     ):
         import rclpy
         from control_msgs.action import FollowJointTrajectory
@@ -125,13 +145,14 @@ class HandInterface:
             raise RuntimeError("action client is disabled")
         if not self.action_client.wait_for_server(timeout_sec=5.0):
             raise RuntimeError("position_joint_trajectory_controller action server is not available")
+        hand_effort = self.HAND_EFFORT_LIMIT if effort is None else effort
         goal = FollowJointTrajectory.Goal()
         goal.trajectory.joint_names = [self.joint_name]
         point = JointTrajectoryPoint()
         point.positions = [grasp_angle]
         point.velocities = [velocity]
         point.accelerations = [acceleration]
-        point.effort = [effort]
+        point.effort = [hand_effort]
         point.time_from_start.sec = int(tm)
         point.time_from_start.nanosec = int((tm - int(tm)) * 1_000_000_000)
         goal.trajectory.points = [point]
@@ -150,10 +171,26 @@ class HandInterface:
         if self.action_client is not None:
             self.action_client.server_is_ready()
 
-    def open(self, *, wait: bool = True, tm: float = 1.0, velocity: float = 2.0, acceleration: float = 0.0, effort: float = 0.0):
+    def open(
+        self,
+        *,
+        wait: bool = True,
+        tm: float = 1.0,
+        velocity: float = 2.0,
+        acceleration: float = 0.0,
+        effort: float | None = None,
+    ):
         return self.move_hand(0.0, wait=wait, tm=tm, velocity=velocity, acceleration=acceleration, effort=effort)
 
-    def close(self, *, wait: bool = True, tm: float = 1.0, velocity: float = 2.0, acceleration: float = 0.0, effort: float = 0.0):
+    def close(
+        self,
+        *,
+        wait: bool = True,
+        tm: float = 1.0,
+        velocity: float = 2.0,
+        acceleration: float = 0.0,
+        effort: float | None = None,
+    ):
         return self.move_hand(-2.7, wait=wait, tm=tm, velocity=velocity, acceleration=acceleration, effort=effort)
 
     def attach(self, *, wait: bool = True, tm: float = 1.0, **_) -> list[float]:

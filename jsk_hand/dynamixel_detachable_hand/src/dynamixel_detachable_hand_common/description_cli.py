@@ -20,6 +20,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--side", choices=["lhand", "rhand"], required=True)
     parser.add_argument("--tool", default="generic")
     parser.add_argument("--attached", default="true")
+    parser.add_argument("--include-detacher", default="true")
     parser.add_argument("--port-name")
     parser.add_argument("--baud-rate")
     parser.add_argument("--protocol-version")
@@ -31,11 +32,13 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     args = _parse_args(sys.argv[1:] if argv is None else argv)
     attached = _parse_bool(args.attached)
+    include_detacher = _parse_bool(args.include_detacher)
     if args.summary:
         model = describe_hand(
             args.side,
             args.tool,
             attached=attached,
+            include_detacher=include_detacher,
             port_name=args.port_name,
             baud_rate=args.baud_rate,
             protocol_version=args.protocol_version,
@@ -49,6 +52,7 @@ def main(argv: list[str] | None = None) -> None:
             args.side,
             args.tool,
             attached=attached,
+            include_detacher=include_detacher,
             port_name=args.port_name,
             baud_rate=args.baud_rate,
             protocol_version=args.protocol_version,

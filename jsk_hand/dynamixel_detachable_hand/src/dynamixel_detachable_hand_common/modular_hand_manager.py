@@ -41,6 +41,7 @@ class ModularHandManager(Node):
         side: str,
         tool: str = "generic",
         attached: bool = True,
+        include_detacher: bool = True,
         port_name: str | None = None,
         baud_rate: int | str | None = None,
         protocol_version: str | float | None = None,
@@ -60,6 +61,7 @@ class ModularHandManager(Node):
         self.protocol_version = protocol_version
         self.tool_config_file = tool_config_file
         self.tool_config = load_tool_config(tool_config_file)
+        self.include_detacher = include_detacher
         self.robot_state_publisher_node = robot_state_publisher_node
         self.scan_ids = tuple(scan_ids or scan_ids_from_config(side, tool_config=self.tool_config))
         self.simulated_present_ids = tuple(simulated_present_ids) if simulated_present_ids is not None else None
@@ -82,6 +84,7 @@ class ModularHandManager(Node):
             self.side,
             tool,
             attached=attached,
+            include_detacher=self.include_detacher,
             port_name=self.port_name,
             baud_rate=self.baud_rate,
             protocol_version=self.protocol_version,
@@ -206,6 +209,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--side", choices=list(("lhand", "rhand")), required=True)
     parser.add_argument("--tool", default="generic")
     parser.add_argument("--attached", default="true")
+    parser.add_argument("--include-detacher", default="true")
     parser.add_argument("--port-name")
     parser.add_argument("--baud-rate")
     parser.add_argument("--protocol-version")
@@ -225,6 +229,7 @@ def main(argv: list[str] | None = None) -> None:
         side=args.side,
         tool=args.tool,
         attached=_parse_bool(args.attached),
+        include_detacher=_parse_bool(args.include_detacher),
         port_name=args.port_name,
         baud_rate=args.baud_rate,
         protocol_version=args.protocol_version,
@@ -237,9 +242,12 @@ def main(argv: list[str] | None = None) -> None:
     )
     try:
         rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

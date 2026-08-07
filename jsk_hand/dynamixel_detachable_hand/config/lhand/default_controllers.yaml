@@ -13,10 +13,12 @@ controller_manager:
 
 position_joint_trajectory_controller:
   ros__parameters:
+    allow_nonzero_velocity_at_trajectory_end: true
     joints:
       - lhand_joint
     command_interfaces:
       - position
+      - effort
     state_interfaces:
       - position
       - velocity
@@ -24,6 +26,5 @@ position_joint_trajectory_controller:
 joint_group_effort_controller:
   ros__parameters:
     joints:
-      - lhand_joint
       - lhand_detach_joint_0
     interface_name: effort

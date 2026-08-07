@@ -1,22 +1,17 @@
 <launch>
-  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps" />
-  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="left_tool" default="generic" description="Left end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="right_tool" default="generic" description="Right end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="left_port_name" default="/dev/lhand" />
+  <arg name="right_port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="auto_detect" default="false" />
 
-  <include file="$(find dynamixel_detachable_hand)/launch/left_hand.launch">
-    <arg name="port_name" value="/dev/lhand" />
-    <arg name="baud_rate" value="57600" />
-    <arg name="namespace" value="lhand" />
-    <arg name="tool" value="$(arg left_tool)" />
+  <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/dual_hand.launch.xml">
+    <arg name="left_tool" value="$(var left_tool)" />
+    <arg name="right_tool" value="$(var right_tool)" />
+    <arg name="left_port_name" value="$(var left_port_name)" />
+    <arg name="right_port_name" value="$(var right_port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="auto_detect" value="$(var auto_detect)" />
   </include>
-
-  <include file="$(find dynamixel_detachable_hand)/launch/right_hand.launch">
-    <arg name="port_name" value="/dev/rhand" />
-    <arg name="baud_rate" value="57600" />
-    <arg name="namespace" value="rhand" />
-    <arg name="tool" value="$(arg right_tool)" />
-  </include>
-
-
-  <node name="dxl_temperature_visualizer" pkg="dynamixel_detachable_hand" type="dynamixel_temperature_guages.py" output="screen" />
-
 </launch>

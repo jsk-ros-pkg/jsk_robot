@@ -14,7 +14,7 @@ class RHandInterface(HandInterface):
         tm: float = 1.0,
         velocity: float = 0.5,
         acceleration: float = 0.0,
-        effort: float = 0.0,
+        effort: float | None = None,
     ):
         return self.move_hand(-0.1, wait=wait, tm=tm, velocity=velocity, acceleration=acceleration, effort=effort)
 
@@ -25,6 +25,6 @@ class RHandInterface(HandInterface):
         tm: float = 1.0,
         velocity: float = 0.5,
         acceleration: float = 0.0,
-        effort: float = 0.0,
+        effort: float | None = None,
     ):
         return self.move_hand(0.08, wait=wait, tm=tm, velocity=velocity, acceleration=acceleration, effort=effort)

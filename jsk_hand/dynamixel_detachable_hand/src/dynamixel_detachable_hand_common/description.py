@@ -29,6 +29,7 @@ VALID_TOOLS = ("detacher", "generic", "needle_holder", "gripper", "forceps")
 DEFAULT_BAUD_RATE = 57600
 DEFAULT_PROTOCOL_VERSION = "2.0"
 DEFAULT_TORQUE_CONSTANT = 1.15
+DEFAULT_DYNAMIXEL_CURRENT_UNIT = DEFAULT_TORQUE_CONSTANT / 1000.0
 DEFAULT_HAND_OPERATING_MODE = 5
 DEFAULT_DETACH_OPERATING_MODE = 0
 DEFAULT_HAND_EFFORT_LIMIT = 2.0
@@ -172,6 +173,7 @@ def load_robot_description(
     tool: str = "generic",
     *,
     attached: bool = True,
+    include_detacher: bool = True,
     port_name: str | None = None,
     baud_rate: int | str | None = None,
     protocol_version: str | float | None = None,
@@ -182,6 +184,7 @@ def load_robot_description(
         side,
         tool,
         attached=attached,
+        include_detacher=include_detacher,
         port_name=port_name,
         baud_rate=baud_rate,
         protocol_version=protocol_version,
@@ -195,6 +198,7 @@ def describe_hand(
     tool: str = "generic",
     *,
     attached: bool = True,
+    include_detacher: bool = True,
     port_name: str | None = None,
     baud_rate: int | str | None = None,
     protocol_version: str | float | None = None,
@@ -206,6 +210,7 @@ def describe_hand(
         side,
         tool,
         attached=attached,
+        include_detacher=include_detacher,
         port_name=port_name,
         baud_rate=baud_rate,
         protocol_version=protocol_version,
@@ -226,6 +231,7 @@ def build_robot_description(
     tool: str = "generic",
     *,
     attached: bool = True,
+    include_detacher: bool = True,
     port_name: str | None = None,
     baud_rate: int | str | None = None,
     protocol_version: str | float | None = None,
@@ -247,7 +253,7 @@ def build_robot_description(
     baud = str(baud_rate or _hardware_config(config).get("default_baud_rate", DEFAULT_BAUD_RATE))
     protocol = str(protocol_version or _hardware_config(config).get("protocol_version", DEFAULT_PROTOCOL_VERSION))
 
-    motors = _runtime_motors(root, side, tool, attached, config)
+    motors = _runtime_motors(root, side, tool, attached, include_detacher, config)
     _inject_detachable_metadata(root, side, tool, attached, motors)
     _inject_couplings(root, side, tool, attached)
     _inject_ros2_control(root, side, port, baud, protocol, motors)
@@ -372,6 +378,7 @@ def _runtime_motors(
     side: str,
     tool: str,
     attached: bool,
+    include_detacher: bool,
     config: Mapping,
 ) -> tuple[DynamixelMotorSpec, ...]:
     side_config = _side_config(config, side)
@@ -392,20 +399,24 @@ def _runtime_motors(
             )
         )
 
-    detacher_spec = side_config.get("detacher", {})
-    motors.append(
-        _make_motor_spec(
-            root,
-            side=side,
-            name=f"{side}_detach_motor_0",
-            joint=f"{side}_detach_joint_0",
-            motor_id=_int_value(detacher_spec, "motor_id", _default_motor_id(side, "detacher")),
-            operating_mode_id=_int_value(detacher_spec, "operating_mode", DEFAULT_DETACH_OPERATING_MODE),
-            operating_mode="current",
-            role="detacher",
-            command_interface="effort",
+    # A detached model must always retain its detacher motor.  For an attached
+    # tool, callers may omit it when only the tool Dynamixel is physically
+    # present (for example, the dual gripper setup using IDs 2 and 3).
+    if include_detacher or not attached:
+        detacher_spec = side_config.get("detacher", {})
+        motors.append(
+            _make_motor_spec(
+                root,
+                side=side,
+                name=f"{side}_detach_motor_0",
+                joint=f"{side}_detach_joint_0",
+                motor_id=_int_value(detacher_spec, "motor_id", _default_motor_id(side, "detacher")),
+                operating_mode_id=_int_value(detacher_spec, "operating_mode", DEFAULT_DETACH_OPERATING_MODE),
+                operating_mode="current",
+                role="detacher",
+                command_interface="effort",
+            )
         )
-    )
     return tuple(motors)
 
 
@@ -518,29 +529,118 @@ def _inject_ros2_control(
     protocol_version: str,
     motors: Sequence[DynamixelMotorSpec],
 ) -> None:
-    control = ET.SubElement(root, "ros2_control", {"name": f"{side}_dynamixel_general_hw", "type": "system"})
+    control = ET.SubElement(root, "ros2_control", {"name": f"{side}_dynamixel_hardware_interface", "type": "system"})
     hardware = ET.SubElement(control, "hardware")
-    ET.SubElement(hardware, "plugin").text = "dynamixel_general_hw/DynamixelGeneralHw"
+    ET.SubElement(hardware, "plugin").text = "dynamixel_hardware_interface/DynamixelHardware"
     ET.SubElement(hardware, "param", {"name": "port_name"}).text = port_name
     ET.SubElement(hardware, "param", {"name": "baud_rate"}).text = baud_rate
+    ET.SubElement(hardware, "param", {"name": "number_of_joints"}).text = str(len(motors))
+    ET.SubElement(hardware, "param", {"name": "number_of_transmissions"}).text = str(len(motors))
+    ET.SubElement(hardware, "param", {"name": "dynamixel_model_folder"}).text = "/param/dxl_model"
+    ET.SubElement(hardware, "param", {"name": "disable_torque_at_init"}).text = "true"
+    ET.SubElement(hardware, "param", {"name": "error_timeout_ms"}).text = "1000"
+    ET.SubElement(hardware, "param", {"name": "dynamixel_state_pub_msg_name"}).text = (
+        f"/{side}/dynamixel_hardware_interface/dxl_state"
+    )
+    ET.SubElement(hardware, "param", {"name": "get_dynamixel_data_srv_name"}).text = (
+        f"/{side}/dynamixel_hardware_interface/get_dxl_data"
+    )
+    ET.SubElement(hardware, "param", {"name": "set_dynamixel_data_srv_name"}).text = (
+        f"/{side}/dynamixel_hardware_interface/set_dxl_data"
+    )
+    ET.SubElement(hardware, "param", {"name": "reboot_dxl_srv_name"}).text = (
+        f"/{side}/dynamixel_hardware_interface/reboot_dxl"
+    )
+    ET.SubElement(hardware, "param", {"name": "set_dxl_torque_srv_name"}).text = (
+        f"/{side}/dynamixel_hardware_interface/set_dxl_torque"
+    )
     ET.SubElement(hardware, "param", {"name": "protocol_version"}).text = protocol_version
-    ET.SubElement(hardware, "param", {"name": "calculate_effort"}).text = "true"
+    ET.SubElement(hardware, "param", {"name": "transmission_to_joint_matrix"}).text = _matrix_text(
+        _transmission_to_joint_matrix(motors)
+    )
+    ET.SubElement(hardware, "param", {"name": "joint_to_transmission_matrix"}).text = _matrix_text(
+        _joint_to_transmission_matrix(motors)
+    )
 
     for motor in motors:
+        gpio = ET.SubElement(control, "gpio", {"name": motor.name})
+        ET.SubElement(gpio, "param", {"name": "ID"}).text = str(motor.id)
+        ET.SubElement(gpio, "param", {"name": "type"}).text = "dxl"
+        ET.SubElement(gpio, "param", {"name": "Return Delay Time"}).text = "0"
+        ET.SubElement(gpio, "param", {"name": "Operating Mode"}).text = str(motor.operating_mode_id)
+        ET.SubElement(gpio, "param", {"name": "Torque Enable"}).text = "1"
+        ET.SubElement(gpio, "param", {"name": "[unit info]"}).text = _unit_info_text(motor)
+        for interface in _dynamixel_command_interfaces(motor):
+            ET.SubElement(gpio, "command_interface", {"name": interface})
+        for interface in _dynamixel_state_interfaces():
+            ET.SubElement(gpio, "state_interface", {"name": interface})
+
         joint = ET.SubElement(control, "joint", {"name": motor.joint})
-        ET.SubElement(joint, "param", {"name": "id"}).text = str(motor.id)
-        ET.SubElement(joint, "param", {"name": "Return_Delay_Time"}).text = "0"
-        ET.SubElement(joint, "param", {"name": "Operating_Mode"}).text = str(motor.operating_mode_id)
-        ET.SubElement(joint, "param", {"name": "torque_constant"}).text = str(motor.torque_constant)
-        if motor.command_interface == "position":
-            ET.SubElement(joint, "command_interface", {"name": "position"})
-            ET.SubElement(joint, "command_interface", {"name": "effort"})
-        elif motor.command_interface == "effort":
-            ET.SubElement(joint, "command_interface", {"name": "effort"})
-        else:
-            ET.SubElement(joint, "command_interface", {"name": motor.command_interface})
-        for interface in ("position", "velocity", "effort", "current", "temperature", "voltage"):
+        for interface in _joint_command_interfaces(motor):
+            ET.SubElement(joint, "command_interface", {"name": interface})
+        for interface in ("position", "velocity", "effort", "hardware_state", "torque_enable"):
             ET.SubElement(joint, "state_interface", {"name": interface})
+
+
+def _dynamixel_command_interfaces(motor: DynamixelMotorSpec) -> tuple[str, ...]:
+    if motor.command_interface == "position":
+        return ("Goal Position", "Goal Current")
+    if motor.command_interface == "effort":
+        return ("Goal Current",)
+    if motor.command_interface == "velocity":
+        return ("Goal Velocity",)
+    return (motor.command_interface,)
+
+
+def _dynamixel_state_interfaces() -> tuple[str, ...]:
+    return (
+        "Present Position",
+        "Present Velocity",
+        "Present Current",
+    )
+
+
+def _joint_command_interfaces(motor: DynamixelMotorSpec) -> tuple[str, ...]:
+    if motor.command_interface == "position":
+        return ("position", "effort")
+    if motor.command_interface == "effort":
+        return ("effort",)
+    return (motor.command_interface,)
+
+
+def _unit_info_text(motor: DynamixelMotorSpec) -> str:
+    current_unit = motor.torque_constant / 1000.0 if motor.torque_constant else DEFAULT_DYNAMIXEL_CURRENT_UNIT
+    return (
+        f"Present Current,{current_unit},N m,signed,0.0;"
+        f"Goal Current,{current_unit},N m,signed,0.0"
+    )
+
+
+def _transmission_to_joint_matrix(motors: Sequence[DynamixelMotorSpec]) -> list[list[float]]:
+    matrix: list[list[float]] = []
+    for row, motor in enumerate(motors):
+        matrix.append([])
+        for column, _ in enumerate(motors):
+            value = 0.0
+            if row == column:
+                reduction = motor.mechanical_reduction or 1.0
+                value = 1.0 / reduction
+            matrix[row].append(value)
+    return matrix
+
+
+def _joint_to_transmission_matrix(motors: Sequence[DynamixelMotorSpec]) -> list[list[float]]:
+    matrix: list[list[float]] = []
+    for row, motor in enumerate(motors):
+        matrix.append([])
+        for column, _ in enumerate(motors):
+            value = motor.mechanical_reduction if row == column else 0.0
+            matrix[row].append(value)
+    return matrix
+
+
+def _matrix_text(matrix: Sequence[Sequence[float]]) -> str:
+    return ",".join(str(value) for row in matrix for value in row)
 
 
 def _drop_generated_blocks(root: ET.Element) -> None:

@@ -13,6 +13,10 @@
     <arg name="port_name" value="$(var left_port_name)" />
     <arg name="baud_rate" value="$(var baud_rate)" />
     <arg name="auto_detect" value="$(var auto_detect)" />
+    <arg name="include_detacher" value="false" />
+    <arg name="controllers_file" value="$(find-pkg-share dynamixel_detachable_hand)/config/lhand/tool_only_controllers.yaml" />
+    <arg name="robot_description_cmd"
+         value="$(command 'ros2 run dynamixel_detachable_hand print_robot_description.py --side lhand --tool $(var left_tool) --attached true --include-detacher false --port-name $(var left_port_name) --baud-rate $(var baud_rate) --protocol-version 2.0')" />
   </include>
 
   <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
@@ -22,5 +26,9 @@
     <arg name="port_name" value="$(var right_port_name)" />
     <arg name="baud_rate" value="$(var baud_rate)" />
     <arg name="auto_detect" value="$(var auto_detect)" />
+    <arg name="include_detacher" value="false" />
+    <arg name="controllers_file" value="$(find-pkg-share dynamixel_detachable_hand)/config/rhand/tool_only_controllers.yaml" />
+    <arg name="robot_description_cmd"
+         value="$(command 'ros2 run dynamixel_detachable_hand print_robot_description.py --side rhand --tool $(var right_tool) --attached true --include-detacher false --port-name $(var right_port_name) --baud-rate $(var baud_rate) --protocol-version 2.0')" />
   </include>
 </launch>
