@@ -1,0 +1,25 @@
+repositories:
+  jsk-ros-pkg/jsk_robot:
+    type: git
+    url: https://github.com/Michi-Tsubaki/jsk_robot.git
+    version: ros2
+  jsk-ros-pkg/jsk_robot/jsk_g1_robot/inspire_tutorials:
+    type: git
+    url: https://github.com/Michi-Tsubaki/inspire_tutorials.git
+    version: main
+  jsk-ros-pkg/jsk_roseus:
+    type: git
+    url: https://github.com/Michi-Tsubaki/jsk_roseus.git
+    version: ros2-beta
+  mqcmd196/g1_ros:
+    type: git
+    url: https://github.com/mqcmd196/g1_ros.git
+    version: master
+  unitreerobotics/unitree_ros:
+    type: git
+    url: https://github.com/mqcmd196/unitree_ros.git
+    version: description-package
+  unitreerobotics/unitree_sdk2:
+    type: git
+    url: https://github.com/mqcmd196/unitree_sdk2.git
+    version: add-package-xml

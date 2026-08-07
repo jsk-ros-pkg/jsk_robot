@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>g1eus</name>
+  <version>0.0.0</version>
+  <description>EusLisp interface for Unitree G1 Robot.</description>
+
+  <maintainer email="tsubaki@jsk.t.u-tokyo.ac.jp">Michitoshi Tsubaki</maintainer>
+  <author email="tsubaki@jsk.t.u-tokyo.ac.jp">Michitoshi Tsubaki</author>
+  <license>BSD</license>
+
+  <!-- g1eus is a ROS 2 only package. On ROS 1 it is built as a dummy
+       package (see CMakeLists.txt), so it only depends on catkin there. -->
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake_auto</buildtool_depend>
+
+  <depend condition="$ROS_VERSION == 2">builtin_interfaces</depend>
+  <depend condition="$ROS_VERSION == 2">control_msgs</depend>
+  <depend condition="$ROS_VERSION == 2">geometry_msgs</depend>
+  <depend condition="$ROS_VERSION == 2">roseus</depend>
+  <depend condition="$ROS_VERSION == 2">sensor_msgs</depend>
+  <depend condition="$ROS_VERSION == 2">trajectory_msgs</depend>
+
+  <exec_depend condition="$ROS_VERSION == 2">g1_description</exec_depend>
+
+  <export>
+    <build_type condition="$ROS_VERSION == 1">catkin</build_type>
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+  </export>
+</package>

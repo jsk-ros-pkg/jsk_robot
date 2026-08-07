@@ -1,0 +1,9 @@
+repositories:
+  jsk_roseus:
+    type: git
+    url: https://github.com/Michi-Tsubaki/jsk_roseus.git
+    version: ros2-beta
+  unitree_ros:
+    type: git
+    url: https://github.com/mqcmd196/unitree_ros.git
+    version: description-package

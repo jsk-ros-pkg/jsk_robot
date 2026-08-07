@@ -1,0 +1,50 @@
+# ROS 2 CI for the migrated packages (currently g1eus).
+# ROS 1 packages are covered by config.yml and are excluded here via AMENT_IGNORE.
+name: ROS 2 CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  industrial_ci:
+    name: ${{ matrix.ROS_DISTRO }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ROS_DISTRO: jazzy
+            ROS_REPO: main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and test with industrial_ci
+        uses: ros-industrial/industrial_ci@master
+        env:
+          ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
+          ROS_REPO: ${{ matrix.ROS_REPO }}
+          TARGET_WORKSPACE: jsk_g1_robot/g1eus
+          UPSTREAM_WORKSPACE: >-
+            .github/ros2.repos
+            -jsk_roseus/roseus_tutorials
+          # euslisp / jskeus are provided by k-okada's PPA, not by rosdep.
+          BEFORE_INIT: >-
+            export DEBIAN_FRONTEND=noninteractive &&
+            ici_asroot apt-get update &&
+            ici_asroot apt-get install -y --no-install-recommends software-properties-common &&
+            ici_asroot add-apt-repository -y ppa:k-okada/euslisp &&
+            ici_asroot apt-get update
+          ADDITIONAL_DEBS: >-
+            euslisp-dev
+            jskeus-dev
+          ROSDEP_SKIP_KEYS: >-
+            euslisp-dev
+            jskeus-dev
