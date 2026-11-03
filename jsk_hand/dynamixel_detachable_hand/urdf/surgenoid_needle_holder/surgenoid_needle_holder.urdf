@@ -5,13 +5,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_ASSY_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_ASSY_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -25,13 +25,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_01_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_01_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -45,13 +45,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/XL_XC_330_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/XL_XC_330_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -65,13 +65,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/screwlock_male_hard_v2_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/screwlock_male_hard_v2_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -85,13 +85,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_hoder_base_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_hoder_base_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -105,13 +105,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link1_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link1_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -125,13 +125,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link2_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link2_1.stl" />
       </geometry>
     </collision>
     <inertial>
