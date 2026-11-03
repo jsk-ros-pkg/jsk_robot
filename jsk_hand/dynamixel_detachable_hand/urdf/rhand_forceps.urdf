@@ -41,12 +41,12 @@
     effort: (Stall Torque [Nm]) * (mechanicalReduction in sample_trans) = 0.92 * 1.0
     velocity: (No Load Speed [rad/s]) / (mechanicalReduction in sample_trans) = (65 [rev/min] * 2 * pi / 60) / 1.0
   -->
-  <joint name="rhand_joint" type="continuous">
+  <joint name="rhand_joint" type="revolute">
     <origin rpy="0 0 0" xyz="0 0 0.1"/>
     <parent link="rhand_base_link"/>
     <child link="rhand_link"/>
     <axis xyz="0 1 0"/>
-    <limit effort="2.0" velocity="6.8"/>
+    <limit lower="-12.566" upper="12.566" effort="2.0" velocity="6.8"/>
   </joint>
 
   <joint name="rhand_detach_joint_0" type="continuous">
@@ -81,4 +81,47 @@
     </actuator>
   </transmission>
 
+
+  <!-- Dynamixel motor (ros2_control, dynamixel_hardware_interface) -->
+  <ros2_control name="rhand_forceps" type="system">
+    <hardware>
+      <plugin>dynamixel_hardware_interface/DynamixelHardware</plugin>
+      <param name="port_name">/dev/rhand</param>
+      <param name="baud_rate">57600</param>
+      <param name="number_of_joints">1</param>
+      <param name="number_of_transmissions">1</param>
+      <param name="dynamixel_model_folder">/param/dxl_model</param>
+      <param name="disable_torque_at_init">true</param>
+      <param name="error_timeout_ms">1000</param>
+      <param name="dynamixel_state_pub_msg_name">forceps/dxl_state</param>
+      <param name="get_dynamixel_data_srv_name">forceps/get_dxl_data</param>
+      <param name="set_dynamixel_data_srv_name">forceps/set_dxl_data</param>
+      <param name="reboot_dxl_srv_name">forceps/reboot_dxl</param>
+      <param name="set_dxl_torque_srv_name">forceps/set_dxl_torque</param>
+      <param name="protocol_version">2.0</param>
+      <param name="initialize_communication_on_configure">true</param>
+    </hardware>
+    <gpio name="rhand_motor">
+      <param name="ID">7</param>
+      <param name="type">dxl</param>
+      <param name="Return Delay Time">0</param>
+      <param name="Operating Mode">5</param>
+      <param name="Torque Enable">1</param>
+      <param name="[unit info]">Present Current,0.00115,N m,signed,0.0;Goal Current,0.00115,N m,signed,0.0</param>
+      <command_interface name="Goal Position" />
+      <command_interface name="Goal Current" />
+      <state_interface name="Present Position" />
+      <state_interface name="Present Velocity" />
+      <state_interface name="Present Current" />
+    </gpio>
+    <joint name="rhand_joint">
+      <command_interface name="position" />
+      <command_interface name="effort" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+      <state_interface name="hardware_state" />
+      <state_interface name="torque_enable" />
+    </joint>
+  </ros2_control>
 </robot>

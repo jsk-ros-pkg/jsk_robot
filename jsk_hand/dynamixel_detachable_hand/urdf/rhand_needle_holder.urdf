@@ -4,13 +4,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_ASSY_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_ASSY_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_ASSY_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -23,13 +23,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_01_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/SURGERY_CLAMP_01_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/SURGERY_CLAMP_01_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -42,13 +42,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/XL_XC_330_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/XL_XC_330_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/XL_XC_330_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -61,13 +61,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/screwlock_male_hard_v2_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/screwlock_male_hard_v2_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/screwlock_male_hard_v2_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -80,13 +80,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_hoder_base_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_hoder_base_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_hoder_base_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -99,13 +99,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link1_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link1_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link1_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -118,13 +118,13 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.dae" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link2_1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://surgenoid_needle_holder_description/meshes/small_needle_holder_link2_1.stl" />
+        <mesh filename="package://dynamixel_detachable_hand/meshes/surgenoid_needle_holder/small_needle_holder_link2_1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -164,7 +164,7 @@
     <parent link="rhand_xl_xc_330_1" />
     <child link="rhand_small_needle_holder_link1_1" />
     <axis xyz="0 0 -1" />
-    <limit lower="-0.62832" upper="0.62832" effort="10" velocity="3.14" />
+    <limit lower="-12.566" upper="12.566" effort="10" velocity="3.14" />
   </joint>
   <joint name="rhand_holder_tip_joint" type="revolute">
     <origin xyz="0.020772397 0.033007689 -0.017" rpy="0 -0 0" />
@@ -219,4 +219,47 @@
       <mechanicalReduction>1.0</mechanicalReduction>
     </actuator>
   </transmission>
+
+  <!-- Dynamixel motor (ros2_control, dynamixel_hardware_interface) -->
+  <ros2_control name="rhand_needle_holder" type="system">
+    <hardware>
+      <plugin>dynamixel_hardware_interface/DynamixelHardware</plugin>
+      <param name="port_name">/dev/rhand</param>
+      <param name="baud_rate">57600</param>
+      <param name="number_of_joints">1</param>
+      <param name="number_of_transmissions">1</param>
+      <param name="dynamixel_model_folder">/param/dxl_model</param>
+      <param name="disable_torque_at_init">true</param>
+      <param name="error_timeout_ms">1000</param>
+      <param name="dynamixel_state_pub_msg_name">needle_holder/dxl_state</param>
+      <param name="get_dynamixel_data_srv_name">needle_holder/get_dxl_data</param>
+      <param name="set_dynamixel_data_srv_name">needle_holder/set_dxl_data</param>
+      <param name="reboot_dxl_srv_name">needle_holder/reboot_dxl</param>
+      <param name="set_dxl_torque_srv_name">needle_holder/set_dxl_torque</param>
+      <param name="protocol_version">2.0</param>
+      <param name="initialize_communication_on_configure">true</param>
+    </hardware>
+    <gpio name="rhand_motor">
+      <param name="ID">5</param>
+      <param name="type">dxl</param>
+      <param name="Return Delay Time">0</param>
+      <param name="Operating Mode">5</param>
+      <param name="Torque Enable">1</param>
+      <param name="[unit info]">Present Current,0.00115,N m,signed,0.0;Goal Current,0.00115,N m,signed,0.0</param>
+      <command_interface name="Goal Position" />
+      <command_interface name="Goal Current" />
+      <state_interface name="Present Position" />
+      <state_interface name="Present Velocity" />
+      <state_interface name="Present Current" />
+    </gpio>
+    <joint name="rhand_joint">
+      <command_interface name="position" />
+      <command_interface name="effort" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+      <state_interface name="hardware_state" />
+      <state_interface name="torque_enable" />
+    </joint>
+  </ros2_control>
 </robot>
