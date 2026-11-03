@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .ros2_hand_controller import HandInterface
+from .hand_interface import HandInterface
 
 
 class LHandInterface(HandInterface):

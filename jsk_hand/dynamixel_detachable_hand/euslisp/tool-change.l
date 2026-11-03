@@ -45,7 +45,8 @@
      ((or (string= s "FORCEPS")
           (string= s "SCISSORS")
           (string= s "SCISSOR")) :forceps)
-     (t (error "unsupported detachable tool ~A" tool)))))
+     ;; other tools: the group name in srdf/<side>.srdf, e.g. :my_tool
+     (t (intern (substitute #\_ #\- s) *keyword-package*)))))
 
 (defun detachable-tool-normalize-robot-kind (kind)
   (let ((s (detachable-tool-key-string kind)))
@@ -57,11 +58,7 @@
      (t (error "unsupported robot kind ~A" kind)))))
 
 (defun detachable-tool-tool-name (tool)
-  (case (detachable-tool-normalize-tool tool)
-    (:generic "generic")
-    (:needle_holder "needle_holder")
-    (:gripper "gripper")
-    (:forceps "forceps")))
+  (string-downcase (symbol-name (detachable-tool-normalize-tool tool))))
 
 (defun detachable-tool-side-name (side)
   (case (detachable-tool-normalize-side side)
@@ -244,10 +241,30 @@
               (or static-rpy "0 0 0"))
     ""))
 
+(defun detachable-tool-launch-command (name)
+  "roslaunch <name>.launch (ROS 1) or ros2 launch <name>.launch.xml (ROS 2);
+both take the same arguments."
+  (if (detachable-hand-ros2-p)
+      (format nil "ros2 launch dynamixel_detachable_hand ~A.launch.xml" name)
+    (format nil "roslaunch dynamixel_detachable_hand ~A.launch" name)))
+
 (defun detachable-tool-kill-model-nodes (namespace)
   (detachable-tool-shell
-   (format nil "pkill -f \"ros2 launch dynamixel_detachable_hand .*namespace:=~A\" >/dev/null 2>&1 || true"
+   (format nil "pkill -f \"~A dynamixel_detachable_hand .*namespace:=~A\" >/dev/null 2>&1 || true"
+           (if (detachable-hand-ros2-p) "ros2 launch" "roslaunch")
            namespace)))
+
+(defun detachable-tool-set-tool (side tool-name &key namespace)
+  "Switch the running hand with set_tool/<tool> (no relaunch); nil when it is not running."
+  (ros::load-ros-package "std_srvs")
+  (let* ((ns (or namespace (detachable-tool-side-name side)))
+         (srv (format nil "/~A/set_tool/~A" ns tool-name))
+         res)
+    (when (ros::wait-for-service srv 1)
+      (setq res (ros::service-call srv (instance (symbol-value (read-from-string "std_srvs::TriggerRequest")) :init)))
+      (unless (and res (send res :success))
+        (ros::ros-warn "~A failed: ~A" srv (and res (send res :message))))
+      t)))
 
 (defun reload-tool-model (side tool &key namespace
                                     publish-static-tf parent-frame root-frame
@@ -263,8 +280,8 @@
            publish-static-tf parent-frame root static-xyz static-rpy)))
     (detachable-tool-kill-model-nodes ns)
     (detachable-tool-shell
-     (format nil "ros2 launch dynamixel_detachable_hand hand_model.launch.xml side:=~A namespace:=~A tool:=~A attached:=true~A &"
-             side-name ns tool-name static-tf-args))
+     (format nil "~A side:=~A namespace:=~A tool:=~A attached:=true~A &"
+             (detachable-tool-launch-command "hand_model") side-name ns tool-name static-tf-args))
     (when wait (ros::duration-sleep wait))
     tool-name))
 
@@ -284,8 +301,8 @@
            publish-static-tf parent-frame root static-xyz static-rpy)))
     (detachable-tool-kill-model-nodes ns)
     (detachable-tool-shell
-     (format nil "ros2 launch dynamixel_detachable_hand hand_control.launch.xml side:=~A namespace:=~A port_name:=~A baud_rate:=~A tool:=~A attached:=true~A &"
-             side-name ns port baud-rate tool-name static-tf-args))
+     (format nil "~A side:=~A namespace:=~A port_name:=~A baud_rate:=~A tool:=~A attached:=true~A &"
+             (detachable-tool-launch-command "hand_control") side-name ns port baud-rate tool-name static-tf-args))
     (when wait (ros::duration-sleep wait))
     tool-name))
 
@@ -297,8 +314,8 @@
          (port (or port-name (format nil "/dev/~A" side-name))))
     (detachable-tool-kill-model-nodes ns)
     (detachable-tool-shell
-     (format nil "ros2 launch dynamixel_detachable_hand hand_detacher.launch.xml side:=~A namespace:=~A port_name:=~A baud_rate:=~A &"
-             side-name ns port baud-rate))
+     (format nil "~A side:=~A namespace:=~A port_name:=~A baud_rate:=~A &"
+             (detachable-tool-launch-command "hand_detacher") side-name ns port baud-rate))
     (when wait (ros::duration-sleep wait))
     ns))
 
@@ -413,6 +430,8 @@
     (when physical
       (send (detachable-tool-hand-interface side) :attach :tm tm))
     (cond
+     ((and (or restart-control reload-model)
+           (detachable-tool-set-tool side (detachable-tool-tool-name tname) :namespace namespace)))
      (restart-control
       (start-tool-control side tname :namespace namespace :port-name port-name
                           :baud-rate baud-rate :wait wait
@@ -476,16 +495,19 @@
     (detach-tool-tip robot a)
     (detachable-tool-redraw-viewers robot)
     (detachable-tool-state-set a :tool :generic)
-    (when restart-control
+    (cond
+     ((and (or restart-control reload-model)
+           (detachable-tool-set-tool side "detacher" :namespace namespace)))
+     (restart-control
       (start-detacher-control side :namespace namespace :port-name port-name
                               :baud-rate baud-rate :wait wait))
-    (when reload-model
+     (reload-model
       (reload-tool-model side :generic :namespace namespace :wait wait
                          :publish-static-tf static-p
                          :parent-frame parent
                          :root-frame root
                          :static-xyz xyz
-                         :static-rpy rpy))
+                         :static-rpy rpy)))
     (detachable-tool-clear-arm-state a)
     t))
 

@@ -4,7 +4,20 @@ import argparse
 import sys
 
 from hand_controller import LHandController, RHandController
-from hand_controller.ros2_hand_controller import HandInterface
+from hand_controller.hand_interface import ROS_VERSION, HandInterface
+
+
+# command -> (tool, <group_state>) of srdf/<side>.srdf
+NAMED = {
+    "open": ("gripper", "open"),
+    "close": ("gripper", "close"),
+    "open-holder": ("needle_holder", "open"),
+    "close-holder": ("needle_holder", "close"),
+    "open-forceps": ("forceps", "open"),
+    "close-forceps": ("forceps", "close"),
+    "open-scissors": ("forceps", "open_scissors"),
+    "close-scissors": ("forceps", "close_scissors"),
+}
 
 
 def _controller_class(side: str):
@@ -16,13 +29,16 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--side", choices=["lhand", "rhand"], required=True)
     parser.add_argument(
         "command",
-        choices=["open", "close", "open-holder", "close-holder", "attach", "detach"],
+        choices=sorted(NAMED) + ["attach", "detach"],
     )
     parser.add_argument("--duration", type=float, default=1.0)
     parser.add_argument("--current-ma", type=float)
     parser.add_argument("--effort", type=float)
     parser.add_argument("--dry-run", action="store_true")
-    return parser.parse_args(argv)
+    # drop ROS 1 remappings (__name:=...) and ROS 2 --ros-args
+    if "--ros-args" in argv:
+        argv = argv[: argv.index("--ros-args")]
+    return parser.parse_args([arg for arg in argv if ":=" not in arg])
 
 
 def _dry_run(args: argparse.Namespace) -> None:
@@ -35,12 +51,9 @@ def _dry_run(args: argparse.Namespace) -> None:
         data = HandInterface.detach_effort_command_for_joints(args.side, joints, effort)
         print(f"{args.side} {args.command}: current_ma={current_ma:.1f} effort_command={data}")
         return
-    target = {
-        "open": 0.0,
-        "close": -2.7,
-        "open-holder": -0.1,
-        "close-holder": 0.08,
-    }[args.command]
+    from dynamixel_detachable_hand_common.description import named_position
+
+    target = named_position(args.side, *NAMED[args.command])
     effort = HandInterface.HAND_EFFORT_LIMIT if args.effort is None else args.effort
     print(f"{args.side} {args.command}: joint={args.side}_joint target={target} effort={effort}")
 
@@ -51,19 +64,19 @@ def main(argv: list[str] | None = None) -> None:
         _dry_run(args)
         return
 
-    import rclpy
+    if ROS_VERSION == 2:
+        import rclpy
 
-    rclpy.init()
+        rclpy.init()
+    else:
+        import rospy
+
+        rospy.init_node(f"{args.side}_hand_command", anonymous=True)
     controller = _controller_class(args.side)()
     try:
-        if args.command == "open":
-            controller.open(tm=args.duration, effort=args.effort)
-        elif args.command == "close":
-            controller.close(tm=args.duration, effort=args.effort)
-        elif args.command == "open-holder":
-            controller.open_holder(tm=args.duration, effort=args.effort)
-        elif args.command == "close-holder":
-            controller.close_holder(tm=args.duration, effort=args.effort)
+        if args.command in NAMED:
+            method = getattr(controller, args.command.replace("-", "_"))
+            method(tm=args.duration, effort=args.effort)
         elif args.command == "attach":
             current_ma = args.current_ma if args.current_ma is not None else -controller.DETACH_CURRENT_MA
             controller.command_detach_current(current_ma, tm=args.duration)
@@ -72,7 +85,7 @@ def main(argv: list[str] | None = None) -> None:
             controller.command_detach_current(current_ma, tm=args.duration)
     finally:
         controller.destroy()
-        if rclpy.ok():
+        if ROS_VERSION == 2 and rclpy.ok():
             rclpy.shutdown()
 
 
