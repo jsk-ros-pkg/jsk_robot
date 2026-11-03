@@ -1,4 +1,5 @@
 <launch>
+  <!-- ROS 1 only, kept for compatibility: use hand_model.launch -->
   <arg name="side" default="rhand" doc="Hand side: lhand or rhand" />
   <arg name="namespace" default="$(arg side)" />
   <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps" />
@@ -9,34 +10,21 @@
   <arg name="root_frame" default="$(eval arg('side') + '_base_link')" />
   <arg name="static_xyz" default="0 0 0" />
   <arg name="static_rpy" default="0 0 0" />
-  <arg name="static_tf_period" default="100" />
-  <arg name="robot_description_file"
-       default="$(eval find('dynamixel_detachable_hand') + '/urdf/' + arg('side') + '_' + arg('tool') + '.urdf')" />
-  <arg name="couplings_file"
-       default="$(eval find('dynamixel_detachable_hand') + '/config/' + arg('side') + '/needle_holder_loop_couplings.yaml' if arg('tool') == 'needle_holder' else find('dynamixel_detachable_hand') + '/config/' + arg('side') + '/empty_loop_couplings.yaml')" />
+  <arg name="static_tf_period" default="100" doc="Unused: the static transform is latched" />
+  <arg name="robot_description_file" default="" />
+  <arg name="couplings_file" default="" doc="Unused: the display couplings are embedded in robot_description" />
 
-  <group ns="$(arg namespace)">
-    <param name="current_tool" value="$(arg tool)" />
-    <param name="robot_description"
-           command="$(find xacro)/xacro $(arg robot_description_file)" />
-
-    <node pkg="surgenoid_needle_holder_description" type="loop_coupling_relay.py"
-          name="loop_coupling_relay" output="screen">
-      <param name="config_file" value="$(arg couplings_file)" />
-      <remap from="joint_states_source" to="$(arg joint_states_source_topic)" />
-      <remap from="joint_states" to="$(arg joint_states_topic)" />
-    </node>
-
-    <node pkg="robot_state_publisher" type="robot_state_publisher"
-          name="robot_state_publisher" output="screen">
-      <remap from="robot_description" to="robot_description" />
-      <remap from="joint_states" to="$(arg joint_states_topic)" />
-    </node>
-
-    <node if="$(arg publish_static_tf)"
-          pkg="tf" type="static_transform_publisher"
-          name="tool_mount_static_tf"
-          args="$(arg static_xyz) $(arg static_rpy) $(arg parent_frame) $(arg root_frame) $(arg static_tf_period)"
-          output="screen" />
-  </group>
+  <include file="$(find dynamixel_detachable_hand)/launch/hand_model.launch">
+    <arg name="side" value="$(arg side)" />
+    <arg name="namespace" value="$(arg namespace)" />
+    <arg name="tool" value="$(arg tool)" />
+    <arg name="joint_states_source_topic" value="$(arg joint_states_source_topic)" />
+    <arg name="joint_states_topic" value="$(arg joint_states_topic)" />
+    <arg name="publish_static_tf" value="$(arg publish_static_tf)" />
+    <arg name="parent_frame" value="$(arg parent_frame)" />
+    <arg name="root_frame" value="$(arg root_frame)" />
+    <arg name="static_xyz" value="$(arg static_xyz)" />
+    <arg name="static_rpy" value="$(arg static_rpy)" />
+    <arg name="robot_description_file" value="$(arg robot_description_file)" />
+  </include>
 </launch>

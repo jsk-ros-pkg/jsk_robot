@@ -3,10 +3,10 @@
   <arg name="baud_rate" default="57600" />
   <arg name="namespace" default="lhand" />
 
-  <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_detacher.launch.xml">
+  <include file="$(find dynamixel_detachable_hand)/launch/hand_detacher.launch">
     <arg name="side" value="lhand" />
-    <arg name="namespace" value="$(var namespace)" />
-    <arg name="port_name" value="$(var port_name)" />
-    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="namespace" value="$(arg namespace)" />
+    <arg name="port_name" value="$(arg port_name)" />
+    <arg name="baud_rate" value="$(arg baud_rate)" />
   </include>
 </launch>

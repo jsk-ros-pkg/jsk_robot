@@ -1,0 +1,70 @@
+<launch>
+  <!-- ROS 1 (dynamixel_general_hw) hand_control.launch.xml with the same arguments -->
+  <arg name="side" default="lhand" doc="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(arg side)" />
+  <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="attached" default="true" />
+  <arg name="include_detacher" default="true" doc="Include the detacher motor in ros_control" />
+  <arg name="port_name" default="/dev/$(arg side)" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="protocol_version" default="2.0" />
+  <arg name="controllers_file" default="$(find dynamixel_detachable_hand)/config/$(arg side)/ros1/default_controllers.yaml" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="$(arg side)_base_link" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <!-- ROS 1 only -->
+  <arg name="control_rate" default="50" />
+  <arg name="hand_effort_limit" default="0.92"
+       doc="Goal Current limit [Nm] of the hand motor (joint_group_effort_controller), also read by the Python/EusLisp interfaces" />
+  <!-- kept for the former ROS 1 left_hand.launch / right_hand.launch -->
+  <arg name="robot_description_file" default=""
+       doc="Source URDF instead of urdf/SIDE_TOOL.urdf (empty: default)" />
+  <arg name="couplings_file" default=""
+       doc="Unused: the display couplings are now embedded in robot_description" />
+
+  <arg name="robot_description_cmd"
+       default="rosrun dynamixel_detachable_hand print_robot_description.py --side $(arg side) --tool $(arg tool) --attached $(arg attached) --include-detacher $(arg include_detacher) --port-name $(arg port_name) --baud-rate $(arg baud_rate) --protocol-version $(arg protocol_version) --robot-description-file=$(arg robot_description_file)" />
+  <arg name="dynamixel_info_cmd"
+       default="rosrun dynamixel_detachable_hand print_robot_description.py --side $(arg side) --tool $(arg tool) --attached $(arg attached) --include-detacher $(arg include_detacher) --robot-description-file=$(arg robot_description_file) --dynamixel-info" />
+
+  <group ns="$(arg namespace)">
+    <param name="robot_description" command="$(arg robot_description_cmd)" />
+    <param name="current_tool" value="$(arg tool)" />
+    <param name="hand_effort_limit" value="$(arg hand_effort_limit)" />
+
+    <!-- respawn: modular_hand_manager restarts only these nodes on set_tool/<tool> -->
+    <node name="dynamixel_general_control" pkg="dynamixel_general_hw" type="dynamixel_general_control_node"
+          respawn="true" output="screen">
+      <rosparam subst_value="true">
+        port_name: $(arg port_name)
+        baud_rate: $(arg baud_rate)
+        control_rate: $(arg control_rate)
+        calculate_effort: true
+        publish_temperature: true
+        publish_input_voltage: true
+        write_read_interval: -1
+      </rosparam>
+      <param name="dynamixel_info" type="yaml" command="$(arg dynamixel_info_cmd)" />
+    </node>
+
+    <rosparam file="$(arg controllers_file)" command="load" subst_value="true" />
+    <!-- modular_hand_manager loads and starts the controllers and sets the initial current -->
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+          respawn="true" output="screen">
+      <remap from="joint_states" to="display_joint_states" />
+    </node>
+
+    <node name="modular_hand_manager" pkg="dynamixel_detachable_hand" type="modular_hand_manager.py" output="screen"
+          args="--side $(arg side) --tool $(arg tool) --attached $(arg attached) --include-detacher $(arg include_detacher) --port-name $(arg port_name) --baud-rate $(arg baud_rate) --protocol-version $(arg protocol_version) --restart-hardware true --hand-effort-limit $(arg hand_effort_limit)" />
+
+    <node name="joint_state_coupling_relay" pkg="dynamixel_detachable_hand" type="joint_state_coupling_relay.py" output="screen"
+          args="--joint-states-source-topic joint_states --joint-states-topic display_joint_states" />
+
+    <node if="$(arg publish_static_tf)" name="tool_mount_static_tf"
+          pkg="dynamixel_detachable_hand" type="static_transform_publisher_xyz_rpy.py" output="screen"
+          args="--xyz $(arg static_xyz) --rpy $(arg static_rpy) --frame-id $(arg parent_frame) --child-frame-id $(arg root_frame)" />
+  </group>
+</launch>

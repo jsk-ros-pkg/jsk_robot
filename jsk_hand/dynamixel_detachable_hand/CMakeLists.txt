@@ -1,43 +1,16 @@
-cmake_minimum_required(VERSION 3.8)
-project(dynamixel_detachable_hand)
-
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+# ROS_VERSION is unset only on pre-ros_environment (ROS 1) distros
+if("$ENV{ROS_VERSION}" STREQUAL "")
+  set(ENV{ROS_VERSION} 1)
 endif()
 
-find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_python REQUIRED)
-find_package(action_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-find_package(control_msgs REQUIRED)
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
-find_package(rcl_interfaces REQUIRED)
-find_package(roseus REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
-find_package(rosidl_default_runtime REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(std_srvs REQUIRED)
-find_package(trajectory_msgs REQUIRED)
-find_package(unique_identifier_msgs REQUIRED)
+if("$ENV{ROS_VERSION}" EQUAL 1)
+  cmake_minimum_required(VERSION 3.0.2)
+elseif("$ENV{ROS_VERSION}" EQUAL 2)
+  cmake_minimum_required(VERSION 3.8)
+endif()
+project(dynamixel_detachable_hand)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/DynamixelMotor.msg"
-  "msg/HandDescription.msg"
-  "msg/ToolState.msg"
-  "srv/GetToolState.srv"
-  "srv/SetTool.srv"
-  DEPENDENCIES builtin_interfaces
-)
-
-ament_python_install_package(dynamixel_detachable_hand_common
-  PACKAGE_DIR src/dynamixel_detachable_hand_common
-)
-ament_python_install_package(hand_controller
-  PACKAGE_DIR src/hand_controller
-)
-
-message(STATUS "dynamixel_detachable_hand scripts use their source shebangs")
+# no messages of its own: diagnostic_msgs, std_msgs and std_srvs are used
 
 set(_python_entrypoint_scripts
   scripts/hand_command.py
@@ -46,57 +19,105 @@ set(_python_entrypoint_scripts
   scripts/print_robot_description.py
   scripts/render_tool_views.py
   scripts/static_transform_publisher_xyz_rpy.py
-  scripts/tool_auto_detector.py
+)
+# ROS 1 only: they use dynamixel_general_hw topics / roslaunch.
+set(_ros1_scripts
+  scripts/dynamixel_temperature_guages.py
+  scripts/monitor_connection.py
+)
+# ROS 2 only: CAD needle holder viewer (rclpy)
+set(_ros2_scripts
+  scripts/loop_closure_relay.py
 )
 
-install(PROGRAMS
-  ${_python_entrypoint_scripts}
-  DESTINATION lib/${PROJECT_NAME}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ GROUP_EXECUTE
-    WORLD_READ WORLD_EXECUTE
+# <name>.launch (ROS 1) and <name>.launch.xml (ROS 2, also installed as <name>.launch) share arguments
+set(_launch_names
+  dual_detacher
+  dual_hand
+  dual_hand_optional
+  hand_control
+  hand_detacher
+  hand_model
+  left_detacher
+  left_hand
+  right_detacher
+  right_hand
+)
+# ROS 1 only, kept for compatibility
+set(_ros1_launch_names
+  hand_tool_model
 )
 
-install(DIRECTORY
-  config
-  euslisp
-  figs
-  launch
-  meshes
-  udev
-  urdf
-  DESTINATION share/${PROJECT_NAME}
+if("$ENV{ROS_VERSION}" EQUAL 2)
+  find_package(ament_cmake REQUIRED)
+  find_package(ament_cmake_python REQUIRED)
+  find_package(jsk_ros1_ros2_compat REQUIRED)
+  # roseus generates the EusLisp messages of the packages found here (ament_package hook)
+  find_package(roseus REQUIRED)
+  foreach(_msg_pkg
+      action_msgs builtin_interfaces control_msgs diagnostic_msgs
+      sensor_msgs std_msgs std_srvs trajectory_msgs)
+    find_package(${_msg_pkg} REQUIRED)
+  endforeach()
+
+  ament_python_install_package(dynamixel_detachable_hand_common
+    PACKAGE_DIR src/dynamixel_detachable_hand_common
+  )
+  ament_python_install_package(hand_controller
+    PACKAGE_DIR src/hand_controller
+  )
+
+  jsk_ros1_ros2_compat_install_python(PROGRAMS ${_python_entrypoint_scripts} ${_ros2_scripts})
+
+  install(DIRECTORY
+    config
+    euslisp
+    figs
+    meshes
+    rviz
+    srdf
+    udev
+    urdf
+    DESTINATION share/${PROJECT_NAME}
+  )
+  install(FILES launch/surgenoid_needle_holder_display.launch.py
+    DESTINATION share/${PROJECT_NAME}/launch)
+  foreach(_launch ${_launch_names})
+    install(FILES launch/${_launch}.launch.xml
+      DESTINATION share/${PROJECT_NAME}/launch)
+    install(FILES launch/${_launch}.launch.xml
+      DESTINATION share/${PROJECT_NAME}/launch
+      RENAME ${_launch}.launch)
+  endforeach()
+
+  install(FILES
+    README.md
+    DESTINATION share/${PROJECT_NAME}
+  )
+
+  ament_package()
+
+else() # ROS 1
+
+find_package(catkin REQUIRED)
+
+catkin_python_setup()
+
+catkin_package()
+
+catkin_install_python(PROGRAMS ${_python_entrypoint_scripts} ${_ros1_scripts}
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(FILES
-  README.md
-  DESTINATION share/${PROJECT_NAME}
+install(DIRECTORY config euslisp figs meshes rviz srdf udev urdf
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+foreach(_launch ${_launch_names} ${_ros1_launch_names})
+  install(FILES launch/${_launch}.launch
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
+endforeach()
+install(FILES README.md
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-if(BUILD_TESTING)
-  find_package(ament_cmake_pytest REQUIRED)
-  ament_add_pytest_test(test_description test/test_description.py
-    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
-  ament_add_pytest_test(test_hand_controller test/test_hand_controller.py
-    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
-  ament_add_pytest_test(test_smoke_cli test/test_smoke_cli.py
-    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
-  ament_add_pytest_test(test_launch_files test/test_launch_files.py
-    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
-  ament_add_pytest_test(test_modular_hand_manager test/test_modular_hand_manager.py
-    APPEND_ENV PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/src
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  )
 endif()
-
-ament_export_dependencies(rosidl_default_runtime)
-ament_package()

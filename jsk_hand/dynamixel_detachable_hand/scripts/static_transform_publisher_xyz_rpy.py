@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import argparse
 import math
+import os
+import sys
 
 from geometry_msgs.msg import TransformStamped
-import rclpy
-from rclpy.node import Node
-from tf2_ros import StaticTransformBroadcaster
+
+ROS_VERSION = int(os.environ.get("ROS_VERSION", "1"))
 
 
 def quaternion_from_rpy(roll: float, pitch: float, yaw: float) -> tuple[float, float, float, float]:
@@ -40,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--rpy", nargs="+", default=("0", "0", "0"))
     parser.add_argument("--frame-id", required=True)
     parser.add_argument("--child-frame-id", required=True)
-    args, _ = parser.parse_known_args()
+    args, _ = parser.parse_known_args([arg for arg in sys.argv[1:] if ":=" not in arg])
     args.xyz = _float_triplet(parser, args.xyz, "--xyz")
     args.rpy = _float_triplet(parser, args.rpy, "--rpy")
     return args
@@ -48,12 +49,25 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    rclpy.init()
-    node = Node("static_transform_publisher_xyz_rpy")
-    broadcaster = StaticTransformBroadcaster(node)
+    if ROS_VERSION == 2:
+        import rclpy
+        from rclpy.node import Node
+        from tf2_ros import StaticTransformBroadcaster
+
+        rclpy.init()
+        node = Node("static_transform_publisher_xyz_rpy")
+        broadcaster = StaticTransformBroadcaster(node)
+        stamp = node.get_clock().now().to_msg()
+    else:
+        import rospy
+        from tf2_ros import StaticTransformBroadcaster
+
+        rospy.init_node("static_transform_publisher_xyz_rpy")
+        broadcaster = StaticTransformBroadcaster()
+        stamp = rospy.Time.now()
 
     transform = TransformStamped()
-    transform.header.stamp = node.get_clock().now().to_msg()
+    transform.header.stamp = stamp
     transform.header.frame_id = args.frame_id
     transform.child_frame_id = args.child_frame_id
     transform.transform.translation.x = args.xyz[0]
@@ -66,6 +80,9 @@ def main() -> None:
     transform.transform.rotation.w = qw
 
     broadcaster.sendTransform(transform)
+    if ROS_VERSION == 1:
+        rospy.spin()
+        return
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:

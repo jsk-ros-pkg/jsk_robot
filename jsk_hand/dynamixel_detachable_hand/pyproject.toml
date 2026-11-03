@@ -1,7 +1,7 @@
 [project]
 name = "dynamixel-detachable-hand"
 version = "0.1.0"
-description = "ROS 2 detachable surgical tool module using Dynamixelhand model, control and euslisp/python utilities."
+description = "ROS 1 / ROS 2 detachable surgical tool module using Dynamixel hand model, control and euslisp/python utilities."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "BSD-3-Clause" }
@@ -15,6 +15,3 @@ dependencies = [
   "PyYAML>=5.4",
 ]
 
-[tool.pytest.ini_options]
-testpaths = ["test"]
-pythonpath = ["src"]

@@ -1,17 +1,33 @@
 <launch>
-  <arg name="left_tool" default="generic" description="Left end-effector tool: generic, needle_holder, gripper, forceps" />
-  <arg name="right_tool" default="generic" description="Right end-effector tool: generic, needle_holder, gripper, forceps" />
+  <!-- ROS 1 dual_hand.launch.xml; include_detacher defaults to true as the former ROS 1 launch -->
+  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps" />
   <arg name="left_port_name" default="/dev/lhand" />
   <arg name="right_port_name" default="/dev/rhand" />
   <arg name="baud_rate" default="57600" />
-  <arg name="auto_detect" default="false" />
+  <arg name="include_detacher" default="true" />
+  <!-- ROS 1 only -->
+  <arg name="hand_effort_limit" default="0.92" />
+  <arg name="launch_temperature_visualizer" default="true" />
 
-  <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/dual_hand.launch.xml">
-    <arg name="left_tool" value="$(var left_tool)" />
-    <arg name="right_tool" value="$(var right_tool)" />
-    <arg name="left_port_name" value="$(var left_port_name)" />
-    <arg name="right_port_name" value="$(var right_port_name)" />
-    <arg name="baud_rate" value="$(var baud_rate)" />
-    <arg name="auto_detect" value="$(var auto_detect)" />
+  <include file="$(find dynamixel_detachable_hand)/launch/left_hand.launch">
+    <arg name="port_name" value="$(arg left_port_name)" />
+    <arg name="baud_rate" value="$(arg baud_rate)" />
+    <arg name="namespace" value="lhand" />
+    <arg name="tool" value="$(arg left_tool)" />
+    <arg name="include_detacher" value="$(arg include_detacher)" />
+    <arg name="hand_effort_limit" value="$(arg hand_effort_limit)" />
   </include>
+
+  <include file="$(find dynamixel_detachable_hand)/launch/right_hand.launch">
+    <arg name="port_name" value="$(arg right_port_name)" />
+    <arg name="baud_rate" value="$(arg baud_rate)" />
+    <arg name="namespace" value="rhand" />
+    <arg name="tool" value="$(arg right_tool)" />
+    <arg name="include_detacher" value="$(arg include_detacher)" />
+    <arg name="hand_effort_limit" value="$(arg hand_effort_limit)" />
+  </include>
+
+  <node if="$(arg launch_temperature_visualizer)" name="dxl_temperature_visualizer"
+        pkg="dynamixel_detachable_hand" type="dynamixel_temperature_guages.py" output="screen" />
 </launch>
