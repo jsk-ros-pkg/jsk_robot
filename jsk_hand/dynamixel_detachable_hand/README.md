@@ -2,6 +2,11 @@
 
 Detachable surgical tools (gripper, needle holder, forceps) driven by Dynamixel motors, for ROS 1 and ROS 2.
 
+| Tool | Hardware | Model |
+| --- | --- | --- |
+| `gripper` | <img src="figs/real_hand.jpg" width="200"> | <img src="figs/sim_gripper_oblique.png" width="260"> |
+| `needle_holder` | <img src="figs/real_holder.jpg" width="200"> | <img src="figs/sim_needle_holder_oblique.png" width="260"> |
+
 ```mermaid
 flowchart LR
   subgraph User[" "]
