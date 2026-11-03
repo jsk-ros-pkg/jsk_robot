@@ -7,9 +7,6 @@
   <arg name="baud_rate" default="57600" />
   <arg name="protocol_version" default="2.0" />
   <arg name="use_sim_time" default="false" />
-  <arg name="auto_detect" default="false" />
-  <arg name="scan_ids" default="" />
-  <arg name="simulated_present_ids" default="" />
   <arg name="joint_states_source_topic" default="joint_states" />
   <arg name="joint_states_topic" default="display_joint_states" />
   <arg name="sim_mode" default="false" />
@@ -32,7 +29,7 @@
 
   <node pkg="dynamixel_detachable_hand" exec="modular_hand_manager.py"
         name="modular_hand_manager" namespace="$(var namespace)" output="screen"
-        args="--side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --auto-detect $(var auto_detect) --scan-ids $(var scan_ids) --simulated-present-ids $(var simulated_present_ids)">
+        args="--side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --use-ros2-control false">
     <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
   </node>
 

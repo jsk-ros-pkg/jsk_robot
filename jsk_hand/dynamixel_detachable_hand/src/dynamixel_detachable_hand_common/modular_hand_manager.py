@@ -1,201 +1,297 @@
+"""Switch the detachable tool with set_tool/<tool> without restarting the launch (ROS 1 / ROS 2)."""
+
 from __future__ import annotations
 
 import argparse
-import sys
-from typing import Iterable
 
-import rclpy
-from rcl_interfaces.msg import Parameter, ParameterType, ParameterValue
-from rcl_interfaces.srv import SetParameters
-from rclpy.node import Node
-from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
-from rclpy.task import Future
-from rclpy.utilities import remove_ros_args
+from diagnostic_msgs.msg import DiagnosticArray
 from std_msgs.msg import String
+from std_srvs.srv import Trigger
 
-from dynamixel_detachable_hand.srv import GetToolState, SetTool
 from dynamixel_detachable_hand_common.description import (
+    TOOLS,
+    VALID_TOOLS,
     HandModel,
+    build_control_description,
+    component_name,
     describe_hand,
-    load_tool_config,
+    gripper_controller_name,
     normalize_side,
     normalize_tool,
-    resolve_tool_from_ids,
-    scan_ids_from_config,
 )
-from dynamixel_detachable_hand_common.messages import description_to_msg, state_to_msg
+from dynamixel_detachable_hand_common.messages import description_to_msg, state_to_msg, state_to_text
+from dynamixel_detachable_hand_common.ros_compat import ROS_VERSION, node_argv, ros_compat
+
+JOINT_STATE_BROADCASTER = "joint_state_broadcaster"
+DETACHER_CONTROLLER = "joint_group_effort_controller"
 
 
-TRANSIENT_LOCAL_QOS = QoSProfile(
-    history=HistoryPolicy.KEEP_LAST,
-    depth=1,
-    reliability=ReliabilityPolicy.RELIABLE,
-    durability=DurabilityPolicy.TRANSIENT_LOCAL,
-)
+class ModularHandManager:
+    """``node`` is the rclpy node on ROS 2 and ``None`` on ROS 1."""
 
-
-class ModularHandManager(Node):
     def __init__(
         self,
         *,
         side: str,
+        node=None,
         tool: str = "generic",
         attached: bool = True,
         include_detacher: bool = True,
         port_name: str | None = None,
         baud_rate: int | str | None = None,
         protocol_version: str | float | None = None,
-        tool_config_file: str | None = None,
         robot_state_publisher_node: str = "robot_state_publisher",
-        auto_detect: bool = False,
-        scan_ids: Iterable[int] | None = None,
-        detect_period: float = 1.0,
-        simulated_present_ids: Iterable[int] | None = None,
+        controller_manager: str = "controller_manager",
+        use_ros2_control: bool | None = None,
+        restart_hardware: bool = False,
+        hand_effort_limit: float = 0.92,
     ) -> None:
-        side = normalize_side(side)
-        tool = normalize_tool(tool, attached=attached)
-        super().__init__(f"{side}_modular_hand_manager")
-        self.side = side
-        self.port_name = port_name
-        self.baud_rate = baud_rate
-        self.protocol_version = protocol_version
-        self.tool_config_file = tool_config_file
-        self.tool_config = load_tool_config(tool_config_file)
+        self.side = normalize_side(side)
+        self.node = node
         self.include_detacher = include_detacher
+        self.hardware = dict(port_name=port_name, baud_rate=baud_rate, protocol_version=protocol_version)
         self.robot_state_publisher_node = robot_state_publisher_node
-        self.scan_ids = tuple(scan_ids or scan_ids_from_config(side, tool_config=self.tool_config))
-        self.simulated_present_ids = tuple(simulated_present_ids) if simulated_present_ids is not None else None
-        self.model = self._describe(tool=tool, attached=attached)
-        self._parameter_futures: list[Future] = []
+        self.controller_manager = controller_manager
+        self.use_ros2_control = (ROS_VERSION == 2) if use_ros2_control is None else use_ros2_control
+        self._group = None
+        self.restart_hardware = ROS_VERSION == 1 and restart_hardware
+        self.hand_effort_limit = hand_effort_limit
+        self.model = self._describe(tool=normalize_tool(tool, attached=attached), attached=attached)
 
-        self.robot_description_pub = self.create_publisher(String, "robot_description", TRANSIENT_LOCAL_QOS)
-        self.tool_state_pub = self.create_publisher(type(state_to_msg(self.model, self.get_clock().now().to_msg())), "tool_state", TRANSIENT_LOCAL_QOS)
-        self.hand_description_pub = self.create_publisher(type(description_to_msg(self.model, self.get_clock().now().to_msg())), "hand_description", TRANSIENT_LOCAL_QOS)
-
-        self.create_service(SetTool, "set_tool", self._set_tool_cb)
-        self.create_service(GetToolState, "get_tool_state", self._get_tool_state_cb)
+        self.tool_state_pub = ros_compat.create_publisher(node, "tool_state", DiagnosticArray, latch=True)
+        self.hand_description_pub = ros_compat.create_publisher(node, "hand_description", DiagnosticArray, latch=True)
+        if ROS_VERSION == 1:
+            # ROS 2 robot_state_publisher publishes robot_description itself
+            self.robot_description_pub = ros_compat.create_publisher(node, "robot_description", String, latch=True)
+        if self.use_ros2_control:
+            self._init_ros2_control()
+        if self.restart_hardware:
+            self._ros1_timer = ros_compat.create_timer(node, 0.1, self._start_ros1_controllers)
+        self._services = [self._service("get_tool_state", self._get_tool_state_cb)]
+        for tool_name in VALID_TOOLS:
+            self._services.append(self._service(f"set_tool/{tool_name}", self._make_set_tool_cb(tool_name)))
         self.publish_model()
-        if auto_detect:
-            self.get_logger().info(f"{self.side}: auto detect enabled, scan_ids={list(self.scan_ids)}")
-            self.create_timer(max(detect_period, 0.1), self.detect_and_update)
+
+    # -- ROS 2 control -------------------------------------------------------
+    def _init_ros2_control(self) -> None:
+        from controller_manager_msgs.srv import (
+            ConfigureController,
+            ListControllers,
+            ListHardwareComponents,
+            LoadController,
+            SetHardwareComponentState,
+            SwitchController,
+        )
+        from rclpy.callback_groups import ReentrantCallbackGroup
+
+        self._group = ReentrantCallbackGroup()
+        cm = self.controller_manager
+        self._set_hw = self.node.create_client(
+            SetHardwareComponentState, f"{cm}/set_hardware_component_state", callback_group=self._group
+        )
+        self._switch = self.node.create_client(SwitchController, f"{cm}/switch_controller", callback_group=self._group)
+        self._list = self.node.create_client(ListControllers, f"{cm}/list_controllers", callback_group=self._group)
+        self._list_hw = self.node.create_client(
+            ListHardwareComponents, f"{cm}/list_hardware_components", callback_group=self._group
+        )
+        self._load = self.node.create_client(LoadController, f"{cm}/load_controller", callback_group=self._group)
+        self._configure = self.node.create_client(
+            ConfigureController, f"{cm}/configure_controller", callback_group=self._group
+        )
+        description = String()
+        description.data = build_control_description(self.side, include_detacher=self.include_detacher, **self.hardware)
+        # controller_manager subscribes to it (remapped from robot_description)
+        self.control_description_pub = ros_compat.create_publisher(
+            self.node, "control_description", String, latch=True
+        )
+        self.control_description_pub.publish(description)
+        self._started = False
+        self._start_timer = self.node.create_timer(0.5, self._start_ros2_control, callback_group=self._group)
+
+    def _start_ros2_control(self) -> None:
+        """Load the controllers of every tool, then activate the detacher and the attached tool."""
+        from controller_manager_msgs.srv import ConfigureController, ListHardwareComponents, LoadController
+
+        if self._started:
+            return
+        response = self._call(self._list_hw, ListHardwareComponents.Request(), timeout=1.0)
+        if not response or not response.component:
+            return  # control_description not received yet
+        self._started = True
+        self._start_timer.cancel()
+        loaded = self._loaded_controllers()
+        for name in [JOINT_STATE_BROADCASTER, DETACHER_CONTROLLER] + [gripper_controller_name(t) for t in TOOLS]:
+            if name in loaded:
+                continue
+            ok = self._call(self._load, LoadController.Request(name=name))
+            ok = ok and ok.ok and self._call(self._configure, ConfigureController.Request(name=name))
+            if not (ok and ok.ok):
+                ros_compat.logwarn(self.node, f"{name} could not be loaded (config/{self.side}/controllers.yaml?)")
+        if self.include_detacher:
+            self._set_component(component_name(self.side, "detacher"), "active")
+            self._switch_controllers(activate=[DETACHER_CONTROLLER])
+        ok, message = self._activate(self.model)
+        if not ok:
+            ros_compat.logwarn(self.node, message)
+            self.set_model(tool="detacher", attached=False)
+
+    def _call(self, client, request, timeout: float = 15.0):
+        if not client.wait_for_service(timeout_sec=timeout):
+            return None
+        return client.call(request, timeout_sec=timeout)
+
+    def _loaded_controllers(self) -> set[str]:
+        from controller_manager_msgs.srv import ListControllers
+
+        response = self._call(self._list, ListControllers.Request(), timeout=1.0)
+        return {c.name for c in response.controller} if response else set()
+
+    def _set_component(self, name: str, label: str) -> bool:
+        from controller_manager_msgs.srv import SetHardwareComponentState
+        from lifecycle_msgs.msg import State
+
+        ids = {"active": State.PRIMARY_STATE_ACTIVE, "unconfigured": State.PRIMARY_STATE_UNCONFIGURED}
+        request = SetHardwareComponentState.Request()
+        request.name = name
+        request.target_state = State(id=ids[label], label=label)
+        response = self._call(self._set_hw, request)
+        return bool(response and response.ok)
+
+    def _switch_controllers(self, *, activate=(), deactivate=()) -> bool:
+        from controller_manager_msgs.srv import SwitchController
+
+        request = SwitchController.Request()
+        request.activate_controllers = list(activate)
+        request.deactivate_controllers = list(deactivate)
+        request.strictness = SwitchController.Request.BEST_EFFORT
+        response = self._call(self._switch, request)
+        return bool(response and response.ok)
+
+    def _deactivate(self, model: HandModel) -> None:
+        if model.attached:
+            self._switch_controllers(deactivate=[gripper_controller_name(model.tool), JOINT_STATE_BROADCASTER])
+            self._set_component(model.component, "unconfigured")
+        else:
+            self._switch_controllers(deactivate=[JOINT_STATE_BROADCASTER])
+
+    def _activate(self, model: HandModel) -> tuple[bool, str]:
+        ok, message = True, ""
+        if model.attached and not self._set_component(model.component, "active"):
+            ok, message = False, f"{model.component} could not be activated (is the tool attached?)"
+        controllers = [JOINT_STATE_BROADCASTER]
+        if ok and model.attached:
+            controllers.append(gripper_controller_name(model.tool))
+        # joint_state_broadcaster takes the interfaces of the components active at activation
+        self._switch_controllers(activate=controllers)
+        return ok, message
+
+    # -- ROS 1 hardware ------------------------------------------------------
+    def _start_ros1_controllers(self, _event) -> None:
+        from dynamixel_detachable_hand_common import ros1_hardware
+
+        self._ros1_timer.shutdown()
+        ros1_hardware.set_controller_params(self.model, self.include_detacher)
+        if not ros1_hardware.start_controllers(self.model, self.include_detacher, self.hand_effort_limit):
+            ros_compat.logerr(self.node, "failed to start the controllers")
+
+    def _restart_ros1_hardware(self, model: HandModel) -> tuple[bool, str]:
+        from dynamixel_detachable_hand_common import ros1_hardware
+
+        if ros1_hardware.restart_hardware(model, self.include_detacher, self.hand_effort_limit):
+            return True, ""
+        detached = self._describe(tool="detacher", attached=False)
+        ros1_hardware.restart_hardware(detached, self.include_detacher, self.hand_effort_limit)
+        self.set_model(tool="detacher", attached=False)
+        return False, f"{model.component} could not be started (is the tool attached?)"
+
+    # -- model ---------------------------------------------------------------
+    def _service(self, name, callback):
+        if self.use_ros2_control:
+            return self.node.create_service(Trigger, name, callback, callback_group=self._group)
+        return ros_compat.create_service(self.node, name, Trigger, callback)
 
     def _describe(self, *, tool: str, attached: bool) -> HandModel:
-        return describe_hand(
-            self.side,
-            tool,
-            attached=attached,
-            include_detacher=self.include_detacher,
-            port_name=self.port_name,
-            baud_rate=self.baud_rate,
-            protocol_version=self.protocol_version,
-            tool_config=self.tool_config,
-        )
+        return describe_hand(self.side, tool, attached=attached, include_detacher=self.include_detacher, **self.hardware)
+
+    def destroy_node(self) -> None:
+        if ROS_VERSION == 2 and self.node is not None:
+            self.node.destroy_node()
 
     def publish_model(self) -> None:
-        stamp = self.get_clock().now().to_msg()
-        description = String()
-        description.data = self.model.robot_description
-        self.robot_description_pub.publish(description)
+        stamp = ros_compat.stamp_now(self.node)
+        if ROS_VERSION == 1:
+            description = String()
+            description.data = self.model.robot_description
+            self.robot_description_pub.publish(description)
         self.tool_state_pub.publish(state_to_msg(self.model, stamp))
         self.hand_description_pub.publish(description_to_msg(self.model, stamp))
-        self.get_logger().info(
+        ros_compat.loginfo(
+            self.node,
             f"{self.side}: tool={self.model.tool}, attached={self.model.attached}, "
-            f"tip={self.model.tip_link}, motors={[m.id for m in self.model.motors]}"
+            f"motors={[m.id for m in self.model.motors]}",
         )
 
-    def set_model(self, *, tool: str, attached: bool, update_robot_state_publisher: bool = False) -> HandModel:
+    def set_model(self, *, tool: str, attached: bool) -> HandModel:
         model = self._describe(tool=tool, attached=attached)
         if model.robot_description_sha256 == self.model.robot_description_sha256:
             return self.model
         self.model = model
         self.publish_model()
-        if update_robot_state_publisher:
-            ok, message = self._request_robot_state_publisher_update(model)
-            if not ok:
-                self.get_logger().warn(message)
+        self._update_robot_state_publisher(model)
+        if ROS_VERSION == 1:
+            # read by monitor_connection.py when it restarts dual_hand.launch
+            ros_compat.set_param(self.node, "current_tool", model.tool)
         return model
 
-    def detect_and_update(self) -> None:
-        present_ids = self.simulated_present_ids
-        if present_ids is None:
-            present_ids = ping_present_ids(self.port_name or f"/dev/{self.side}", self.baud_rate, self.scan_ids)
-        tool, attached = resolve_tool_from_ids(self.side, present_ids, tool_config=self.tool_config)
-        if tool != self.model.tool or attached != self.model.attached:
-            self.get_logger().info(f"{self.side}: detected ids={list(present_ids)} -> tool={tool}, attached={attached}")
-            self.set_model(tool=tool, attached=attached, update_robot_state_publisher=True)
-
-    def _set_tool_cb(self, request: SetTool.Request, response: SetTool.Response) -> SetTool.Response:
-        if request.side and normalize_side(request.side) != self.side:
-            response.success = False
-            response.message = f"manager for {self.side} cannot update {request.side}"
-            return response
+    def set_tool(self, tool: str) -> tuple[bool, str]:
         try:
-            model = self.set_model(
-                tool=request.tool,
-                attached=request.attached,
-                update_robot_state_publisher=request.update_robot_state_publisher,
-            )
-            response.success = True
-            response.message = f"{self.side} set to {model.tool}, attached={model.attached}"
-            response.state = state_to_msg(model, self.get_clock().now().to_msg())
-            response.robot_description = model.robot_description
+            tool = normalize_tool(tool)
+            attached = tool != "detacher"
+            new_model = self._describe(tool=tool, attached=attached)
         except Exception as exc:
-            response.success = False
-            response.message = str(exc)
-        return response
+            return False, str(exc)
+        if self.use_ros2_control and new_model.component != self.model.component:
+            self._deactivate(self.model)
+            ok, message = self._activate(new_model)
+            if not ok:
+                self.set_model(tool="detacher", attached=False)
+                return False, message
+        if self.restart_hardware and new_model.robot_description_sha256 != self.model.robot_description_sha256:
+            ok, message = self._restart_ros1_hardware(new_model)
+            if not ok:
+                return False, message
+        self.set_model(tool=tool, attached=attached)
+        return True, state_to_text(self.model)
 
-    def _get_tool_state_cb(self, request: GetToolState.Request, response: GetToolState.Response) -> GetToolState.Response:
-        if request.side and normalize_side(request.side) != self.side:
-            response.success = False
-            response.message = f"manager for {self.side} cannot report {request.side}"
+    def _make_set_tool_cb(self, tool: str):
+        def _cb(_request, response):
+            response.success, response.message = self.set_tool(tool)
             return response
-        stamp = self.get_clock().now().to_msg()
+
+        return _cb
+
+    def _get_tool_state_cb(self, _request, response):
         response.success = True
-        response.message = "ok"
-        response.state = state_to_msg(self.model, stamp)
-        response.hand_description = description_to_msg(self.model, stamp)
-        response.robot_description = self.model.robot_description
+        response.message = state_to_text(self.model)
         return response
 
-    def _request_robot_state_publisher_update(self, model: HandModel) -> tuple[bool, str]:
-        service_name = f"{self.robot_state_publisher_node}/set_parameters"
-        client = self.create_client(SetParameters, service_name)
-        if not client.wait_for_service(timeout_sec=1.0):
-            return False, f"{service_name} is not available"
+    def _update_robot_state_publisher(self, model: HandModel) -> None:
+        if ROS_VERSION == 1:
+            # ROS 1 robot_state_publisher reads robot_description only at startup
+            ros_compat.set_param(self.node, "robot_description", model.robot_description)
+            return
+        from rcl_interfaces.msg import Parameter, ParameterType, ParameterValue
+        from rcl_interfaces.srv import SetParameters
+
+        client = self.node.create_client(
+            SetParameters, f"{self.robot_state_publisher_node}/set_parameters", callback_group=self._group
+        )
         request = SetParameters.Request()
         value = ParameterValue(type=ParameterType.PARAMETER_STRING, string_value=model.robot_description)
         request.parameters = [Parameter(name="robot_description", value=value)]
-        future = client.call_async(request)
-        self._parameter_futures.append(future)
-        return True, f"requested robot_state_publisher update through {service_name}"
-
-
-def ping_present_ids(port_name: str, baud_rate: int | str | None, ids: Iterable[int]) -> tuple[int, ...]:
-    try:
-        from dynamixel_sdk import PacketHandler, PortHandler
-    except Exception:
-        return ()
-
-    port = PortHandler(port_name)
-    if not port.openPort():
-        return ()
-    try:
-        port.setBaudRate(int(baud_rate or 57600))
-        packet = PacketHandler(2.0)
-        present: list[int] = []
-        for motor_id in ids:
-            _model_number, result, _error = packet.ping(port, int(motor_id))
-            if result == 0:
-                present.append(int(motor_id))
-        return tuple(present)
-    finally:
-        port.closePort()
-
-
-def _parse_csv_ints(text: str | None) -> tuple[int, ...] | None:
-    if text is None or text == "":
-        return None
-    return tuple(int(item.strip(), 0) for item in text.split(",") if item.strip())
+        if self._call(client, request, timeout=2.0) is None:
+            ros_compat.logwarn(self.node, f"{self.robot_state_publisher_node} is not available")
+        self.node.destroy_client(client)
 
 
 def _parse_bool(text: str | bool) -> bool:
@@ -206,26 +302,26 @@ def _parse_bool(text: str | bool) -> bool:
 
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--side", choices=list(("lhand", "rhand")), required=True)
+    parser.add_argument("--side", choices=["lhand", "rhand"], required=True)
     parser.add_argument("--tool", default="generic")
     parser.add_argument("--attached", default="true")
     parser.add_argument("--include-detacher", default="true")
     parser.add_argument("--port-name")
     parser.add_argument("--baud-rate")
     parser.add_argument("--protocol-version")
-    parser.add_argument("--tool-config-file")
     parser.add_argument("--robot-state-publisher-node", default="robot_state_publisher")
-    parser.add_argument("--auto-detect", default="false")
-    parser.add_argument("--scan-ids")
-    parser.add_argument("--detect-period", type=float, default=1.0)
-    parser.add_argument("--simulated-present-ids")
+    parser.add_argument("--controller-manager", default="controller_manager")
+    parser.add_argument("--use-ros2-control", default="", help="default: true on ROS 2")
+    parser.add_argument("--restart-hardware", default="false", help="ROS 1: restart dynamixel_general_control")
+    parser.add_argument("--hand-effort-limit", type=float, default=0.92, help="ROS 1: hand Goal Current limit")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> None:
-    rclpy.init(args=argv)
-    args = _parse_args(remove_ros_args(sys.argv if argv is None else argv)[1:])
-    node = ModularHandManager(
+    args = _parse_args(node_argv(argv))
+    node = ros_compat.init_node(f"{args.side}_modular_hand_manager")
+    ModularHandManager(
+        node=node,
         side=args.side,
         tool=args.tool,
         attached=_parse_bool(args.attached),
@@ -233,21 +329,13 @@ def main(argv: list[str] | None = None) -> None:
         port_name=args.port_name,
         baud_rate=args.baud_rate,
         protocol_version=args.protocol_version,
-        tool_config_file=args.tool_config_file,
         robot_state_publisher_node=args.robot_state_publisher_node,
-        auto_detect=_parse_bool(args.auto_detect),
-        scan_ids=_parse_csv_ints(args.scan_ids),
-        detect_period=args.detect_period,
-        simulated_present_ids=_parse_csv_ints(args.simulated_present_ids),
+        controller_manager=args.controller_manager,
+        use_ros2_control=_parse_bool(args.use_ros2_control) if args.use_ros2_control else None,
+        restart_hardware=_parse_bool(args.restart_hardware),
+        hand_effort_limit=args.hand_effort_limit,
     )
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+    ros_compat.spin(node, multi_threaded=True)
 
 
 if __name__ == "__main__":

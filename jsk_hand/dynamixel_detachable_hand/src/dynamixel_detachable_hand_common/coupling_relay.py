@@ -1,12 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import sys
 
-import rclpy
-from rclpy.node import Node
-from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
-from rclpy.utilities import remove_ros_args
 from sensor_msgs.msg import JointState
 from std_msgs.msg import String
 
@@ -15,14 +10,7 @@ from dynamixel_detachable_hand_common.description import (
     evaluate_polynomial,
     extract_couplings,
 )
-
-
-TRANSIENT_LOCAL_QOS = QoSProfile(
-    history=HistoryPolicy.KEEP_LAST,
-    depth=1,
-    reliability=ReliabilityPolicy.RELIABLE,
-    durability=DurabilityPolicy.TRANSIENT_LOCAL,
-)
+from dynamixel_detachable_hand_common.ros_compat import node_argv, ros_compat
 
 
 def apply_couplings(msg: JointState, couplings: tuple[ToolCoupling, ...]) -> JointState:
@@ -49,21 +37,27 @@ def apply_couplings(msg: JointState, couplings: tuple[ToolCoupling, ...]) -> Joi
     return out
 
 
-class JointStateCouplingRelay(Node):
-    def __init__(self, source_topic: str, output_topic: str) -> None:
-        super().__init__("joint_state_coupling_relay")
+class JointStateCouplingRelay:
+    """Fill the display-only joints from the <coupling> metadata of robot_description."""
+
+    def __init__(self, node, source_topic: str, output_topic: str) -> None:
+        self.node = node
         self.couplings: tuple[ToolCoupling, ...] = ()
-        self.publisher = self.create_publisher(JointState, output_topic, 10)
-        self.create_subscription(String, "robot_description", self._robot_description_cb, TRANSIENT_LOCAL_QOS)
-        self.create_subscription(JointState, source_topic, self._joint_state_cb, 10)
+        self.publisher = ros_compat.create_publisher(node, output_topic, JointState, queue_size=10)
+        self._description_sub = ros_compat.create_subscription(
+            node, "robot_description", String, self._robot_description_cb, queue_size=1, latch=True
+        )
+        self._joint_state_sub = ros_compat.create_subscription(
+            node, source_topic, JointState, self._joint_state_cb, queue_size=10
+        )
 
     def _robot_description_cb(self, msg: String) -> None:
         try:
             self.couplings = extract_couplings(msg.data)
-            self.get_logger().info(f"loaded {len(self.couplings)} joint coupling rules")
+            ros_compat.loginfo(self.node, f"loaded {len(self.couplings)} joint coupling rules")
         except Exception as exc:
             self.couplings = ()
-            self.get_logger().error(f"failed to parse coupling metadata: {exc}")
+            ros_compat.logerr(self.node, f"failed to parse coupling metadata: {exc}")
 
     def _joint_state_cb(self, msg: JointState) -> None:
         self.publisher.publish(apply_couplings(msg, self.couplings))
@@ -86,17 +80,10 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> None:
-    rclpy.init(args=argv)
-    args = _parse_args(remove_ros_args(sys.argv if argv is None else argv)[1:])
-    node = JointStateCouplingRelay(args.joint_states_source_topic, args.joint_states_topic)
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+    args = _parse_args(node_argv(argv))
+    node = ros_compat.init_node("joint_state_coupling_relay")
+    JointStateCouplingRelay(node, args.joint_states_source_topic, args.joint_states_topic)
+    ros_compat.spin(node)
 
 
 if __name__ == "__main__":

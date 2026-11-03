@@ -1,10 +1,11 @@
 <launch>
+  <!-- include_detacher: false = tool motors only (dual gripper teleop); ROS 1 defaults to true -->
   <arg name="left_tool" default="generic" />
   <arg name="right_tool" default="generic" />
   <arg name="left_port_name" default="/dev/lhand" />
   <arg name="right_port_name" default="/dev/rhand" />
   <arg name="baud_rate" default="57600" />
-  <arg name="auto_detect" default="false" />
+  <arg name="include_detacher" default="false" />
 
   <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
     <arg name="side" value="lhand" />
@@ -12,11 +13,7 @@
     <arg name="tool" value="$(var left_tool)" />
     <arg name="port_name" value="$(var left_port_name)" />
     <arg name="baud_rate" value="$(var baud_rate)" />
-    <arg name="auto_detect" value="$(var auto_detect)" />
-    <arg name="include_detacher" value="false" />
-    <arg name="controllers_file" value="$(find-pkg-share dynamixel_detachable_hand)/config/lhand/tool_only_controllers.yaml" />
-    <arg name="robot_description_cmd"
-         value="$(command 'ros2 run dynamixel_detachable_hand print_robot_description.py --side lhand --tool $(var left_tool) --attached true --include-detacher false --port-name $(var left_port_name) --baud-rate $(var baud_rate) --protocol-version 2.0')" />
+    <arg name="include_detacher" value="$(var include_detacher)" />
   </include>
 
   <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
@@ -25,10 +22,6 @@
     <arg name="tool" value="$(var right_tool)" />
     <arg name="port_name" value="$(var right_port_name)" />
     <arg name="baud_rate" value="$(var baud_rate)" />
-    <arg name="auto_detect" value="$(var auto_detect)" />
-    <arg name="include_detacher" value="false" />
-    <arg name="controllers_file" value="$(find-pkg-share dynamixel_detachable_hand)/config/rhand/tool_only_controllers.yaml" />
-    <arg name="robot_description_cmd"
-         value="$(command 'ros2 run dynamixel_detachable_hand print_robot_description.py --side rhand --tool $(var right_tool) --attached true --include-detacher false --port-name $(var right_port_name) --baud-rate $(var baud_rate) --protocol-version 2.0')" />
+    <arg name="include_detacher" value="$(var include_detacher)" />
   </include>
 </launch>
