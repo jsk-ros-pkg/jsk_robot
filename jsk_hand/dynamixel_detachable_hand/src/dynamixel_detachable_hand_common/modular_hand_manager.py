@@ -114,13 +114,18 @@ class ModularHandManager:
 
         if self._started:
             return
+        # Claim startup before blocking: this timer uses a reentrant callback group.
+        self._started = True
         response = self._call(self._list_hw, ListHardwareComponents.Request(), timeout=1.0)
         if not response or not response.component:
+            self._started = False
             return  # control_description not received yet
-        self._started = True
         self._start_timer.cancel()
         loaded = self._loaded_controllers()
-        for name in [JOINT_STATE_BROADCASTER, DETACHER_CONTROLLER] + [gripper_controller_name(t) for t in TOOLS]:
+        controllers = [JOINT_STATE_BROADCASTER] + [gripper_controller_name(t) for t in TOOLS]
+        if self.include_detacher:
+            controllers.append(DETACHER_CONTROLLER)
+        for name in controllers:
             if name in loaded:
                 continue
             ok = self._call(self._load, LoadController.Request(name=name))
@@ -244,6 +249,8 @@ class ModularHandManager:
         return model
 
     def set_tool(self, tool: str) -> tuple[bool, str]:
+        if not self.include_detacher:
+            return False, "Tool changing is disabled because the detacher is disabled"
         try:
             tool = normalize_tool(tool)
             attached = tool != "detacher"

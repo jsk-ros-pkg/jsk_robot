@@ -10,6 +10,7 @@
   <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
     <arg name="side" value="lhand" />
     <arg name="namespace" value="lhand" />
+    <arg name="controllers_file" value="$(find-pkg-share dynamixel_detachable_hand)/config/lhand/controllers.yaml" />
     <arg name="tool" value="$(var left_tool)" />
     <arg name="port_name" value="$(var left_port_name)" />
     <arg name="baud_rate" value="$(var baud_rate)" />
@@ -19,6 +20,7 @@
   <include file="$(find-pkg-share dynamixel_detachable_hand)/launch/hand_control.launch.xml">
     <arg name="side" value="rhand" />
     <arg name="namespace" value="rhand" />
+    <arg name="controllers_file" value="$(find-pkg-share dynamixel_detachable_hand)/config/rhand/controllers.yaml" />
     <arg name="tool" value="$(var right_tool)" />
     <arg name="port_name" value="$(var right_port_name)" />
     <arg name="baud_rate" value="$(var baud_rate)" />
