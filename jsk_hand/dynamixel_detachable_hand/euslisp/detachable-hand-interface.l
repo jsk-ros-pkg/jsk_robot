@@ -395,7 +395,7 @@ published on the hand joint of joint_group_effort_controller."
       (send self :set-detach-effort 0.0))
     hand-effort)
 
-  (:move-hand (grasp-angle &key (wait t) (tm 1.0) (velocity 0.0) (acceleration 0.0) (effort 0.0))
+  (:move-hand (grasp-angle &key (wait t) (tm 1.0) (velocity 0.0) (acceleration 0.0) (effort (send self :hand-effort)))
     ;; ROS 1 ignores the trajectory effort as before; use :set-hand-effort there
     (if (not (send self :ensure-controller-or-simulator (if (detachable-hand-ros2-p) 5.0 1.0)))
         (progn
@@ -407,7 +407,10 @@ published on the hand joint of joint_group_effort_controller."
                     (send self :trajectory-goal grasp-angle tm velocity acceleration effort))))
         (send action-client- :send-goal goal)
         (when wait
-          (send action-client- :wait-for-result :timeout (+ tm 5.0))
+          (unless (send action-client- :wait-for-result :timeout (+ tm 5.0))
+            (send action-client- :cancel-goal)
+            (send action-client- :wait-for-result :timeout 2.0)
+            (error "Hand movement timed out; cancellation requested for ~A" groupname))
           (setq move-state- (send action-client- :get-state))
           (unless (= move-state- *detachable-hand-status-succeeded*)
             (ros::ros-warn "Hand movement failed: ~A" move-state-)))))
@@ -437,6 +440,10 @@ published on the hand joint of joint_group_effort_controller."
       (send command :effort (float-vector (float (or effort 0.0))))
       (send goal :command command)
       goal))
+
+  (:hand-result ()
+    "Last controller result, including reached_goal and stalled on ROS 2."
+    (and action-client- (send action-client- :get-result)))
 
   (:cancel-move-hand ()
     (if (send self :simulation-modep)
@@ -473,7 +480,7 @@ published on the hand joint of joint_group_effort_controller."
     (send self :move-hand (send self :gripper-close-position)
           :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
 
-  (:move-named (state &key (tool "gripper") (wait t) (tm 1.0) (velocity 0.0) (acceleration 0.0) (effort 0.0))
+  (:move-named (state &key (tool "gripper") (wait t) (tm 1.0) (velocity 0.0) (acceleration 0.0) (effort (send self :hand-effort)))
     "move to the <group_state> state of tool in srdf/<side>.srdf"
     (send self :move-hand (send self :named-position tool state)
           :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
@@ -484,10 +491,10 @@ published on the hand joint of joint_group_effort_controller."
   (:close-holder (&key (wait nil) (tm 1.0) (velocity 0.3) (acceleration 0.0) (effort 0.8))
     (send self :move-hand (send self :named-position "needle_holder" "close") :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
 
-  (:open-forceps (&key (wait nil) (tm 1.0) (velocity 1.0) (acceleration 0.0) (effort 0.0))
+  (:open-forceps (&key (wait nil) (tm 1.0) (velocity 1.0) (acceleration 0.0) (effort (send self :hand-effort)))
     (send self :move-hand (send self :named-position "forceps" "open") :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
 
-  (:close-forceps (&key (wait nil) (tm 1.0) (velocity 2.5) (acceleration 0.0) (effort 0.0))
+  (:close-forceps (&key (wait nil) (tm 1.0) (velocity 2.5) (acceleration 0.0) (effort (send self :hand-effort)))
     (send self :move-hand (send self :named-position "forceps" "close") :wait wait :tm tm :velocity velocity :acceleration acceleration :effort effort))
 
   (:open-scissors (&key (wait nil) (tm 1.0) (velocity 3.0) (acceleration 0.0) (effort 0.9))

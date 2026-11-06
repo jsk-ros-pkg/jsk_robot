@@ -114,7 +114,7 @@ class HandInterface:
         from control_msgs.action import ParallelGripperCommand
         from rclpy.action import ActionClient
 
-        deadline = time.time() + 2.0
+        deadline = time.time() + 5.0
         while self.tool is None and time.time() < deadline:
             self._spin_once(0.05)
         if self.tool is None:
@@ -374,6 +374,11 @@ class HandInterface:
         self._goal_handle = goal_handle
         self._result_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self.node, self._result_future, timeout_sec=tm + 5.0)
+        if not self._result_future.done():
+            cancel = goal_handle.cancel_goal_async()
+            rclpy.spin_until_future_complete(self.node, cancel, timeout_sec=2.0)
+            rclpy.spin_until_future_complete(self.node, self._result_future, timeout_sec=2.0)
+            raise TimeoutError("hand gripper movement timed out; cancellation requested")
         return self._result_future.result()
 
     def _ros2_goal_handle(self):
