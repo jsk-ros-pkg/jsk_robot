@@ -39,7 +39,8 @@ def _key_values(items) -> list:
 
 
 def state_dict(model: HandModel) -> dict:
-    return {key: getattr(model, key) for key in STATE_KEYS}
+    return {**{key: getattr(model, key) for key in STATE_KEYS},
+            "motor_ids": [motor.id for motor in model.motors]}
 
 
 def state_to_text(model: HandModel) -> str:
@@ -83,3 +84,17 @@ def description_to_msg(model: HandModel, stamp) -> DiagnosticArray:
 
 def status_to_dict(status: DiagnosticStatus) -> dict:
     return {kv.key: kv.value for kv in status.values}
+
+
+def detection_to_msg(model, stamp, detected_ids, port_name):
+    """Startup discovery snapshot, distinct from configured tool_state."""
+    status = DiagnosticStatus()
+    status.name = f"{model.side}/detected_tool"
+    status.hardware_id = port_name
+    status.message = model.tool if model.attached else "no tool detected"
+    status.values = _key_values([
+        ("side", model.side), ("port", port_name),
+        ("detected_ids", sorted(detected_ids)), ("tool", model.tool),
+        ("attached", model.attached), ("detection_scope", "startup"),
+    ])
+    return _array(stamp, [status])

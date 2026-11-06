@@ -19,7 +19,7 @@ from dynamixel_detachable_hand_common.description import (
     normalize_side,
     normalize_tool,
 )
-from dynamixel_detachable_hand_common.messages import description_to_msg, state_to_msg, state_to_text
+from dynamixel_detachable_hand_common.messages import description_to_msg, detection_to_msg, state_to_msg, state_to_text
 from dynamixel_detachable_hand_common.ros_compat import ROS_VERSION, node_argv, ros_compat
 
 JOINT_STATE_BROADCASTER = "joint_state_broadcaster"
@@ -45,6 +45,7 @@ class ModularHandManager:
         use_ros2_control: bool | None = None,
         restart_hardware: bool = False,
         hand_effort_limit: float = 0.92,
+        detected_ids: list[int] | None = None,
     ) -> None:
         self.side = normalize_side(side)
         self.node = node
@@ -71,6 +72,11 @@ class ModularHandManager:
         for tool_name in VALID_TOOLS:
             self._services.append(self._service(f"set_tool/{tool_name}", self._make_set_tool_cb(tool_name)))
         self.publish_model()
+        if detected_ids is not None:
+            self.detected_tool_pub = ros_compat.create_publisher(node, "detected_tool", DiagnosticArray, latch=True)
+            self.detected_tool_pub.publish(detection_to_msg(
+                self.model, ros_compat.stamp_now(node), detected_ids, port_name or f"/dev/{self.side}"
+            ))
 
     # -- ROS 2 control -------------------------------------------------------
     def _init_ros2_control(self) -> None:
@@ -312,6 +318,7 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--side", choices=["lhand", "rhand"], required=True)
     parser.add_argument("--tool", default="generic")
     parser.add_argument("--attached", default="true")
+    parser.add_argument("--detected-ids", default=None, help="startup discovery IDs, comma separated")
     parser.add_argument("--include-detacher", default="true")
     parser.add_argument("--port-name")
     parser.add_argument("--baud-rate")
@@ -341,6 +348,7 @@ def main(argv: list[str] | None = None) -> None:
         use_ros2_control=_parse_bool(args.use_ros2_control) if args.use_ros2_control else None,
         restart_hardware=_parse_bool(args.restart_hardware),
         hand_effort_limit=args.hand_effort_limit,
+        detected_ids=[int(i) for i in args.detected_ids.split(",") if i] if args.detected_ids not in (None, "unspecified") else None,
     )
     ros_compat.spin(node, multi_threaded=True)
 

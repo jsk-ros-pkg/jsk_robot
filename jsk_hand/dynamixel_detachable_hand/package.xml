@@ -40,6 +40,7 @@
   <exec_depend condition="$ROS_VERSION == 1">python3-rospkg</exec_depend>
   <exec_depend condition="$ROS_VERSION == 1">rosgraph</exec_depend>
   <exec_depend condition="$ROS_VERSION == 1">rosnode</exec_depend>
+  <exec_depend condition="$ROS_VERSION == 1">roslaunch</exec_depend>
   <exec_depend condition="$ROS_VERSION == 1">rospy</exec_depend>
   <exec_depend condition="$ROS_VERSION == 1">rostopic</exec_depend>
   <exec_depend condition="$ROS_VERSION == 1">cv_bridge</exec_depend>

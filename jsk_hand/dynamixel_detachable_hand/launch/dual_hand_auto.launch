@@ -1,0 +1,15 @@
+<launch>
+  <arg name="left_port_name" default="/dev/lhand" />
+  <arg name="right_port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="include_detacher" default="true" />
+  <arg name="hand_effort_limit" default="0.92" />
+  <!-- Scan and release both buses before starting the existing ros_control launch. -->
+  <node pkg="dynamixel_detachable_hand" type="dual_hand_auto.py" name="dual_hand_auto" output="screen" required="true">
+    <param name="left_port_name" value="$(arg left_port_name)" />
+    <param name="right_port_name" value="$(arg right_port_name)" />
+    <param name="baud_rate" value="$(arg baud_rate)" type="int" />
+    <param name="include_detacher" value="$(arg include_detacher)" type="bool" />
+    <param name="hand_effort_limit" value="$(arg hand_effort_limit)" type="double" />
+  </node>
+</launch>

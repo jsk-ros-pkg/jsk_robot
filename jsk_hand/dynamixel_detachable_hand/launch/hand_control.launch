@@ -4,6 +4,7 @@
   <arg name="namespace" default="$(arg side)" />
   <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps" />
   <arg name="attached" default="true" />
+  <arg name="detected_ids" default="unspecified" />
   <arg name="include_detacher" default="true" doc="Include the detacher motor in ros_control" />
   <arg name="port_name" default="/dev/$(arg side)" />
   <arg name="baud_rate" default="57600" />
@@ -58,7 +59,7 @@
     </node>
 
     <node name="modular_hand_manager" pkg="dynamixel_detachable_hand" type="modular_hand_manager.py" output="screen"
-          args="--side $(arg side) --tool $(arg tool) --attached $(arg attached) --include-detacher $(arg include_detacher) --port-name $(arg port_name) --baud-rate $(arg baud_rate) --protocol-version $(arg protocol_version) --restart-hardware true --hand-effort-limit $(arg hand_effort_limit)" />
+          args="--side $(arg side) --tool $(arg tool) --attached $(arg attached) --include-detacher $(arg include_detacher) --port-name $(arg port_name) --baud-rate $(arg baud_rate) --protocol-version $(arg protocol_version) --detected-ids=$(arg detected_ids) --restart-hardware true --hand-effort-limit $(arg hand_effort_limit)" />
 
     <node name="joint_state_coupling_relay" pkg="dynamixel_detachable_hand" type="joint_state_coupling_relay.py" output="screen"
           args="--joint-states-source-topic joint_states --joint-states-topic display_joint_states" />

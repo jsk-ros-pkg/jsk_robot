@@ -22,16 +22,19 @@ set(_python_entrypoint_scripts
 )
 # ROS 1 only: they use dynamixel_general_hw topics / roslaunch.
 set(_ros1_scripts
+  scripts/dual_hand_auto.py
   scripts/dynamixel_temperature_guages.py
   scripts/monitor_connection.py
 )
-# ROS 2 only: CAD needle holder viewer (rclpy)
+# ROS 2 only
 set(_ros2_scripts
+  scripts/detect_hand_tools.py
   scripts/loop_closure_relay.py
 )
 
 # <name>.launch (ROS 1) and <name>.launch.xml (ROS 2, also installed as <name>.launch) share arguments
 set(_launch_names
+  dual_hand_auto
   dual_detacher
   dual_hand
   dual_hand_optional

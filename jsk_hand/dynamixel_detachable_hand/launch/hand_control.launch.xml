@@ -3,6 +3,7 @@
   <arg name="namespace" default="$(var side)" />
   <arg name="tool" default="generic" description="Tool: generic, needle_holder, gripper, forceps" />
   <arg name="attached" default="true" />
+  <arg name="detected_ids" default="unspecified" />
   <arg name="include_detacher" default="true" description="Activate the detacher motor" />
   <arg name="port_name" default="/dev/$(var side)" />
   <arg name="baud_rate" default="57600" />
@@ -31,7 +32,7 @@
 
   <node pkg="dynamixel_detachable_hand" exec="modular_hand_manager.py"
         name="modular_hand_manager" namespace="$(var namespace)" output="screen"
-        args="--side $(var side) --tool $(var tool) --attached $(var attached) --include-detacher $(var include_detacher) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version)" />
+        args="--side $(var side) --tool $(var tool) --attached $(var attached) --include-detacher $(var include_detacher) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --detected-ids=$(var detected_ids)" />
 
   <node pkg="dynamixel_detachable_hand" exec="joint_state_coupling_relay.py"
         name="joint_state_coupling_relay" namespace="$(var namespace)" output="screen"

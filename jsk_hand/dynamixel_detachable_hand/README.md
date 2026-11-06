@@ -77,6 +77,48 @@ ros2 launch dynamixel_detachable_hand hand_detacher.launch.xml side:=lhand      
 ros2 launch dynamixel_detachable_hand hand_model.launch.xml side:=rhand tool:=needle_holder  # model only
 ```
 
+### Automatically detect attached tools (ROS 1 / ROS 2)
+
+```bash
+ros2 launch dynamixel_detachable_hand dual_hand_auto.launch.xml
+# ROS 1
+roslaunch dynamixel_detachable_hand dual_hand_auto.launch
+```
+
+Automatically detects tools on `/dev/lhand` and `/dev/rhand` at startup.
+Stop existing hand launches first. Restart this launch to detect tools again,
+or use `set_tool/<tool>` to select a tool at runtime.
+
+- For tool-only hardware, set `include_detacher:=false` (default: `true`).
+  If only a tool responds, that side starts with the detacher disabled.
+- To change serial settings, use `left_port_name`, `right_port_name`, and `baud_rate`.
+
+### Inspect detected and selected tools
+
+Startup console logs show the arm (`lhand`/left or `rhand`/right), serial port,
+responding IDs, tool type, and whether a tool was detected.
+Both ROS versions publish `diagnostic_msgs/DiagnosticArray` on:
+
+| Topic (replace `lhand` with `rhand` for the right arm) | Contents |
+| --- | --- |
+| `/lhand/detected_tool` | Startup scan: side, port, detected IDs, tool, attached, `detection_scope=startup`. Auto launch only. |
+| `/lhand/tool_state` | Selected model: side, tool, attached, motor IDs; updated on tool changes. |
+| `/lhand/hand_description` | Selected model and individual motor specifications. |
+
+Detection is a startup snapshot, not a live connection or controller-health
+monitor. `tool_state` describes the selected model, not proof of successful
+motor communication. Check controller_manager for controller/hardware status.
+ROS 1 publishers are latched; ROS 2 publishers use reliable transient-local QoS
+so late subscribers can retrieve the last message:
+
+```bash
+ros2 topic echo /lhand/detected_tool --qos-durability transient_local --qos-reliability reliable --once
+ros2 topic echo /rhand/tool_state --qos-durability transient_local --qos-reliability reliable --once
+# ROS 1
+rostopic echo -n 1 /lhand/detected_tool
+rostopic echo -n 1 /rhand/tool_state
+```
+
 ### Python
 
 ```python
