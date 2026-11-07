@@ -1,0 +1,42 @@
+<launch>
+  <arg name="left_port_name" default="/dev/lhand" />
+  <arg name="right_port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="include_detacher" default="true" />
+  <!-- Scan and release both buses before starting any hardware component. -->
+  <let name="detections" value="$(command 'ros2 run detachable_tools detect_hand_tools.py --left-port-name $(var left_port_name) --right-port-name $(var right_port_name) --baud-rate $(var baud_rate) --include-detacher $(var include_detacher)')" />
+  <let name="lhand_include_detacher" value="$(eval &quot;($(var detections))['lhand']['include_detacher']&quot;)" />
+  <let name="lhand_tool" value="$(eval &quot;($(var detections))['lhand']['tool']&quot;)" />
+  <let name="lhand_attached" value="$(eval &quot;($(var detections))['lhand']['attached']&quot;)" />
+  <let name="lhand_detected_ids" value="$(eval &quot;($(var detections))['lhand']['detected_ids']&quot;)" />
+  <log message="lhand: port=$(var left_port_name), detected IDs=$(var lhand_detected_ids), tool=$(var lhand_tool), attached=$(var lhand_attached), tool changing enabled=$(var lhand_include_detacher)" />
+  <include file="$(find-pkg-share detachable_tools)/launch/hand_control.launch.xml">
+    <arg name="side" value="lhand" />
+    <arg name="namespace" value="lhand" />
+    <arg name="controllers_file" value="$(find-pkg-share detachable_tools)/config/lhand/controllers.yaml" />
+    <arg name="port_name" value="$(var left_port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="protocol_version" value="2.0" />
+    <arg name="include_detacher" value="$(var lhand_include_detacher)" />
+    <arg name="tool" value="$(var lhand_tool)" />
+    <arg name="attached" value="$(var lhand_attached)" />
+    <arg name="detected_ids" value="$(var lhand_detected_ids)" />
+  </include>
+  <let name="rhand_include_detacher" value="$(eval &quot;($(var detections))['rhand']['include_detacher']&quot;)" />
+  <let name="rhand_tool" value="$(eval &quot;($(var detections))['rhand']['tool']&quot;)" />
+  <let name="rhand_attached" value="$(eval &quot;($(var detections))['rhand']['attached']&quot;)" />
+  <let name="rhand_detected_ids" value="$(eval &quot;($(var detections))['rhand']['detected_ids']&quot;)" />
+  <log message="rhand: port=$(var right_port_name), detected IDs=$(var rhand_detected_ids), tool=$(var rhand_tool), attached=$(var rhand_attached), tool changing enabled=$(var rhand_include_detacher)" />
+  <include file="$(find-pkg-share detachable_tools)/launch/hand_control.launch.xml">
+    <arg name="side" value="rhand" />
+    <arg name="namespace" value="rhand" />
+    <arg name="controllers_file" value="$(find-pkg-share detachable_tools)/config/rhand/controllers.yaml" />
+    <arg name="port_name" value="$(var right_port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="protocol_version" value="2.0" />
+    <arg name="include_detacher" value="$(var rhand_include_detacher)" />
+    <arg name="tool" value="$(var rhand_tool)" />
+    <arg name="attached" value="$(var rhand_attached)" />
+    <arg name="detected_ids" value="$(var rhand_detected_ids)" />
+  </include>
+</launch>

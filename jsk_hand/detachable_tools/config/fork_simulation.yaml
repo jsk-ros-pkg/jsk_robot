@@ -1,0 +1,19 @@
+# Synthetic scene only: these are not measured hardware calibration values.
+rate: 20.0
+segment_seconds: 5.0
+latch_seconds: 1.5
+fork_xyz: [0.32, -0.30, 0.06]  # WAIST frame, metres
+fork_rpy: [0.0, 0.0, 0.0]
+fork_to_wrist_xyz: [0.0, 0.0, 0.06]
+fork_to_wrist_rpy: [0.0, 3.141592653589793, 0.0]
+approach_offset: [0.0, -0.08, 0.0]  # fork-local horizontal direction
+lift_distance: 0.12
+# Optical axes in wrist coordinates, fixed throughout the sequence.
+wrist_to_camera_xyz: [0.0, 0.0, -0.06]
+wrist_to_camera_rpy: [1.5707963267948966, 0.0, -1.5707963267948966]
+fork_to_tag_xyz: [0.26, 0.0, 0.14]
+fork_to_tag_rpy: [1.5707963267948966, 0.0, -1.5707963267948966]
+tag_id: 0
+tag_size: 0.08
+image_size: [640, 480]
+focal_length: 600.0

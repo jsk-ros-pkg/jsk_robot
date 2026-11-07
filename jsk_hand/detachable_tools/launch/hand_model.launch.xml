@@ -1,0 +1,49 @@
+<launch>
+  <arg name="side" default="lhand" description="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(var side)" />
+  <arg name="tool" default="generic" description="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="attached" default="true" />
+  <arg name="port_name" default="/dev/$(var side)" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="protocol_version" default="2.0" />
+  <arg name="use_sim_time" default="false" />
+  <arg name="joint_states_source_topic" default="joint_states" />
+  <arg name="joint_states_topic" default="display_joint_states" />
+  <arg name="sim_mode" default="false" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="$(var side)_base_link" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <arg name="robot_state_publisher_description_topic" default="robot_description" />
+  <arg name="robot_description_cmd"
+       default="$(command 'ros2 run detachable_tools print_robot_description.py --side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version)')" />
+
+  <node pkg="robot_state_publisher" exec="robot_state_publisher"
+        name="robot_state_publisher" namespace="$(var namespace)" output="screen">
+    <param name="robot_description" value="$(var robot_description_cmd)" />
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+    <remap from="joint_states" to="$(var joint_states_topic)" />
+    <remap from="robot_description" to="$(var robot_state_publisher_description_topic)" />
+  </node>
+
+  <node pkg="detachable_tools" exec="modular_hand_manager.py"
+        name="modular_hand_manager" namespace="$(var namespace)" output="screen"
+        args="--side $(var side) --tool $(var tool) --attached $(var attached) --port-name $(var port_name) --baud-rate $(var baud_rate) --protocol-version $(var protocol_version) --use-ros2-control false">
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+  </node>
+
+  <node pkg="detachable_tools" exec="joint_state_coupling_relay.py"
+        name="joint_state_coupling_relay" namespace="$(var namespace)" output="screen"
+        args="--joint-states-source-topic $(var joint_states_source_topic) --joint-states-topic $(var joint_states_topic)">
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+  </node>
+
+  <node if="$(var publish_static_tf)"
+        pkg="detachable_tools" exec="static_transform_publisher_xyz_rpy.py"
+        name="tool_mount_static_tf" namespace="$(var namespace)"
+        args="--xyz $(var static_xyz) --rpy $(var static_rpy) --frame-id $(var parent_frame) --child-frame-id $(var root_frame)"
+        output="screen">
+    <param name="use_sim_time" type="bool" value="$(var use_sim_time)" />
+  </node>
+</launch>

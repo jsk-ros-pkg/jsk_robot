@@ -1,0 +1,19 @@
+<launch>
+  <arg name="side" default="lhand" description="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(var side)" />
+  <arg name="port_name" default="/dev/$(var side)" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="protocol_version" default="2.0" />
+  <arg name="controllers_file" default="$(find-pkg-share detachable_tools)/config/$(var side)/controllers.yaml" />
+
+  <include file="$(find-pkg-share detachable_tools)/launch/hand_control.launch.xml">
+    <arg name="side" value="$(var side)" />
+    <arg name="namespace" value="$(var namespace)" />
+    <arg name="tool" value="detacher" />
+    <arg name="attached" value="false" />
+    <arg name="port_name" value="$(var port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+    <arg name="protocol_version" value="$(var protocol_version)" />
+    <arg name="controllers_file" value="$(var controllers_file)" />
+  </include>
+</launch>

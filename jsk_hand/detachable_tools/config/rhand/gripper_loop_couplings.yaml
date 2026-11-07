@@ -1,0 +1,6 @@
+# Rack fingers of the rhand gripper: 0 m at open (0.0 rad), 0.05 m at close (-1.5 rad)
+couplings:
+  - driver: rhand_joint
+    followers:
+      - joint: rhand_finger_joint
+        poly: [-0.03333333, 0.00000000]

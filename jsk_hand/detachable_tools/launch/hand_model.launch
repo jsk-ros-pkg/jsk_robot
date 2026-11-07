@@ -1,0 +1,47 @@
+<launch>
+  <!-- ROS 1 counterpart of hand_model.launch.xml (model only, no motors). -->
+  <arg name="side" default="lhand" doc="Hand side: lhand or rhand" />
+  <arg name="namespace" default="$(arg side)" />
+  <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="attached" default="true" />
+  <arg name="port_name" default="/dev/$(arg side)" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="protocol_version" default="2.0" />
+  <arg name="use_sim_time" default="false" />
+  <arg name="joint_states_source_topic" default="joint_states" />
+  <arg name="joint_states_topic" default="display_joint_states" />
+  <arg name="sim_mode" default="false" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="$(arg side)_base_link" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <arg name="robot_state_publisher_description_topic" default="robot_description" />
+  <!-- ROS 1 only -->
+  <arg name="robot_description_file" default=""
+       doc="Source URDF instead of urdf/SIDE_TOOL.urdf (empty: default)" />
+  <arg name="robot_description_cmd"
+       default="rosrun detachable_tools print_robot_description.py --side $(arg side) --tool $(arg tool) --attached $(arg attached) --port-name $(arg port_name) --baud-rate $(arg baud_rate) --protocol-version $(arg protocol_version) --robot-description-file=$(arg robot_description_file)" />
+
+  <param name="use_sim_time" value="$(arg use_sim_time)" />
+
+  <group ns="$(arg namespace)">
+    <param name="$(arg robot_state_publisher_description_topic)" command="$(arg robot_description_cmd)" />
+    <param name="current_tool" value="$(arg tool)" />
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+      <remap from="joint_states" to="$(arg joint_states_topic)" />
+      <remap from="robot_description" to="$(arg robot_state_publisher_description_topic)" />
+    </node>
+
+    <node name="modular_hand_manager" pkg="detachable_tools" type="modular_hand_manager.py" output="screen"
+          args="--side $(arg side) --tool $(arg tool) --attached $(arg attached) --port-name $(arg port_name) --baud-rate $(arg baud_rate) --protocol-version $(arg protocol_version)" />
+
+    <node name="joint_state_coupling_relay" pkg="detachable_tools" type="joint_state_coupling_relay.py" output="screen"
+          args="--joint-states-source-topic $(arg joint_states_source_topic) --joint-states-topic $(arg joint_states_topic)" />
+
+    <node if="$(arg publish_static_tf)" name="tool_mount_static_tf"
+          pkg="detachable_tools" type="static_transform_publisher_xyz_rpy.py" output="screen"
+          args="--xyz $(arg static_xyz) --rpy $(arg static_rpy) --frame-id $(arg parent_frame) --child-frame-id $(arg root_frame)" />
+  </group>
+</launch>

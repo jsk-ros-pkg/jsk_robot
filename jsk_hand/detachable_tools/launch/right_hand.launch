@@ -1,0 +1,36 @@
+<launch>
+  <!-- ROS 1 right_hand.launch.xml, also accepting the former ROS 1 arguments -->
+  <arg name="port_name" default="/dev/rhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="namespace" default="rhand" />
+  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="publish_static_tf" default="false" />
+  <arg name="parent_frame" default="" />
+  <arg name="root_frame" default="rhand_base_link" />
+  <arg name="static_xyz" default="0 0 0" />
+  <arg name="static_rpy" default="0 0 0" />
+  <!-- ROS 1 only -->
+  <arg name="include_detacher" default="true" />
+  <arg name="controllers_file"
+       default="$(eval find('detachable_tools') + '/config/rhand/ros1/' + ('default' if str(arg('include_detacher')).lower() in ('true', '1') else 'tool_only') + '_controllers.yaml')" />
+  <arg name="hand_effort_limit" default="0.92" />
+  <arg name="robot_description_file" default="" />
+  <arg name="couplings_file" default="" doc="Unused, kept for compatibility" />
+
+  <include file="$(find detachable_tools)/launch/hand_control.launch">
+    <arg name="side" value="rhand" />
+    <arg name="namespace" value="$(arg namespace)" />
+    <arg name="tool" value="$(arg tool)" />
+    <arg name="port_name" value="$(arg port_name)" />
+    <arg name="baud_rate" value="$(arg baud_rate)" />
+    <arg name="publish_static_tf" value="$(arg publish_static_tf)" />
+    <arg name="parent_frame" value="$(arg parent_frame)" />
+    <arg name="root_frame" value="$(arg root_frame)" />
+    <arg name="static_xyz" value="$(arg static_xyz)" />
+    <arg name="static_rpy" value="$(arg static_rpy)" />
+    <arg name="include_detacher" value="$(arg include_detacher)" />
+    <arg name="controllers_file" value="$(arg controllers_file)" />
+    <arg name="hand_effort_limit" value="$(arg hand_effort_limit)" />
+    <arg name="robot_description_file" value="$(arg robot_description_file)" />
+  </include>
+</launch>
