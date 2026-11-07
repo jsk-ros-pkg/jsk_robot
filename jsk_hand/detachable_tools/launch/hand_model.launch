@@ -2,7 +2,7 @@
   <!-- ROS 1 counterpart of hand_model.launch.xml (model only, no motors). -->
   <arg name="side" default="lhand" doc="Hand side: lhand or rhand" />
   <arg name="namespace" default="$(arg side)" />
-  <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps, yubi" />
   <arg name="attached" default="true" />
   <arg name="port_name" default="/dev/$(arg side)" />
   <arg name="baud_rate" default="57600" />

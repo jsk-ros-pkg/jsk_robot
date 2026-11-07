@@ -3,7 +3,7 @@
   ros__parameters:
     update_rate: 50
     hardware_components_initial_state:
-      unconfigured: [lhand_detacher, lhand_generic, lhand_gripper, lhand_needle_holder, lhand_forceps]
+      unconfigured: [lhand_detacher, lhand_generic, lhand_gripper, lhand_needle_holder, lhand_forceps, lhand_yubi]
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -14,6 +14,8 @@
     gripper_gripper_controller:
       type: parallel_gripper_action_controller/GripperActionController
     needle_holder_gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+    yubi_gripper_controller:
       type: parallel_gripper_action_controller/GripperActionController
     forceps_gripper_controller:
       type: parallel_gripper_action_controller/GripperActionController
@@ -44,4 +46,10 @@
   ros__parameters:
     joint: lhand_forceps_joint
     max_effort_interface: lhand_forceps_joint/effort
+    allow_stalling: true
+
+/**/yubi_gripper_controller:
+  ros__parameters:
+    joint: lhand_yubi_joint
+    max_effort_interface: lhand_yubi_joint/effort
     allow_stalling: true

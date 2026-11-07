@@ -3,7 +3,7 @@
   <arg name="port_name" default="/dev/lhand" />
   <arg name="baud_rate" default="57600" />
   <arg name="namespace" default="lhand" />
-  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps, yubi" />
   <arg name="publish_static_tf" default="false" />
   <arg name="parent_frame" default="" />
   <arg name="root_frame" default="lhand_base_link" />

@@ -65,6 +65,9 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 | Gripper (`gripper`, `generic`) | 2 | 3 |
 | Needle holder (`needle_holder`) | 4 | 5 |
 | Forceps (`forceps`) | 6 | 7 |
+| YUBI (`yubi`) | 8 | 9 |
+
+YUBI setup, source CAD, and model limitations: [YUBI](meshes/yubi/README.md).
 
 ## Usage
 

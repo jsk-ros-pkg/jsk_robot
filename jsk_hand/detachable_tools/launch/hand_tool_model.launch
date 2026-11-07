@@ -2,7 +2,7 @@
   <!-- ROS 1 only, kept for compatibility: use hand_model.launch -->
   <arg name="side" default="rhand" doc="Hand side: lhand or rhand" />
   <arg name="namespace" default="$(arg side)" />
-  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="tool" default="generic" doc="End-effector tool: generic, needle_holder, gripper, forceps, yubi" />
   <arg name="joint_states_source_topic" default="joint_states_source" />
   <arg name="joint_states_topic" default="joint_states" />
   <arg name="publish_static_tf" default="false" />

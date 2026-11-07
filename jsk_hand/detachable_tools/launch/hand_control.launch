@@ -2,7 +2,7 @@
   <!-- ROS 1 (dynamixel_general_hw) hand_control.launch.xml with the same arguments -->
   <arg name="side" default="lhand" doc="Hand side: lhand or rhand" />
   <arg name="namespace" default="$(arg side)" />
-  <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="tool" default="generic" doc="Tool: generic, needle_holder, gripper, forceps, yubi" />
   <arg name="attached" default="true" />
   <arg name="detected_ids" default="unspecified" />
   <arg name="include_detacher" default="true" doc="Include the detacher motor in ros_control" />

@@ -1,8 +1,8 @@
 <launch>
   <arg name="left_hand_attached" default="false" />
   <arg name="right_hand_attached" default="false" />
-  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps" />
-  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps, yubi" />
+  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps, yubi" />
 
   <include if="$(arg left_hand_attached)" file="$(find detachable_tools)/launch/left_hand.launch">
     <arg name="port_name" value="/dev/lhand" />

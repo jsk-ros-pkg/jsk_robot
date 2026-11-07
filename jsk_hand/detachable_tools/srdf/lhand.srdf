@@ -13,6 +13,9 @@
   <group name="lhand_forceps">
     <joint name="lhand_joint" />
   </group>
+  <group name="lhand_yubi">
+    <joint name="lhand_joint" />
+  </group>
   <group_state name="open" group="lhand_generic">
     <joint name="lhand_joint" value="-2.25" />
   </group_state>

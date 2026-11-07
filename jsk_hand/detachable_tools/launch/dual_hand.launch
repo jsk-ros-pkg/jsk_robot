@@ -1,7 +1,7 @@
 <launch>
   <!-- ROS 1 dual_hand.launch.xml; include_detacher defaults to true as the former ROS 1 launch -->
-  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps" />
-  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps" />
+  <arg name="left_tool" default="generic" doc="Left end-effector tool: generic, needle_holder, gripper, forceps, yubi" />
+  <arg name="right_tool" default="generic" doc="Right end-effector tool: generic, needle_holder, gripper, forceps, yubi" />
   <arg name="left_port_name" default="/dev/lhand" />
   <arg name="right_port_name" default="/dev/rhand" />
   <arg name="baud_rate" default="57600" />

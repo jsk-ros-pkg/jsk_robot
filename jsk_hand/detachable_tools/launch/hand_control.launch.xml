@@ -1,7 +1,7 @@
 <launch>
   <arg name="side" default="lhand" description="Hand side: lhand or rhand" />
   <arg name="namespace" default="$(var side)" />
-  <arg name="tool" default="generic" description="Tool: generic, needle_holder, gripper, forceps" />
+  <arg name="tool" default="generic" description="Tool: generic, needle_holder, gripper, forceps, yubi" />
   <arg name="attached" default="true" />
   <arg name="detected_ids" default="unspecified" />
   <arg name="include_detacher" default="true" description="Activate the detacher motor" />
