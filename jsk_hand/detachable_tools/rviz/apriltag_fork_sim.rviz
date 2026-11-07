@@ -11,11 +11,22 @@ Visualization Manager:
       Offset: {X: 0, Y: 0, Z: -0.5}
     - Class: rviz_default_plugins/RobotModel
       Enabled: true
-      Name: NextageOpen
+      Name: JSKNextageOpen
       Visual Enabled: true
       Description Source: Topic
       Description Topic:
         Value: /robot_description
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+        Depth: 5
+    - Class: rviz_default_plugins/RobotModel
+      Enabled: true
+      Name: Detachable right gripper
+      Visual Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /tool/robot_description
         Durability Policy: Transient Local
         Reliability Policy: Reliable
         History Policy: Keep Last
@@ -50,7 +61,7 @@ Visualization Manager:
       Distance: 1.65
       Focal Point: {X: 0.22, Y: -0.18, Z: 0.15}
       Pitch: 0.3
-      Yaw: 0.85
+      Yaw: -0.85
 Window Geometry:
   Width: 1280
   Height: 900

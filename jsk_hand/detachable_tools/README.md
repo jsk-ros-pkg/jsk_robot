@@ -199,7 +199,7 @@ Then `set_tool/<tool>` and `move_named("open", "<tool>")` work for the new tool.
 
 ### AprilTag wrist-camera / fork simulation (ROS 2 Jazzy)
 
-ROSだけで動くNextageOpen右腕の運動学デモです。仮想手首カメラの画像を
+ROSだけで動くJSKNextageOpen右腕の運動学デモです。仮想手首カメラの画像を
 `apriltag_ros`に入力し、検出TFからfork位置を計算してRVizで脱着を再生します。
 scikit-robotは不要です。
 
@@ -217,7 +217,10 @@ source install/setup.bash
 ros2 run detachable_tools apriltag_fork_sim.py
 ```
 
-`nextage_description`、`robot_state_publisher`、RVizも必要です。既定では
+`nextage_tutorials`（`JSKNextageOpenGripper.urdf`とメッシュ）、
+`nextage_description`、`robot_state_publisher`、RVizも必要です。
+`nextage_tutorials`はこのデモの実行時に必要です。パッケージ全体への依存追加は
+循環依存になるため行っていません。既定では
 ROS_DOMAIN_ID=87、localhost内に分離し、実機のcontroller/actionは使用しません。
 Ctrl-Cで子プロセスも終了します。1回の再生後は画面を保持します。
 `--once`は再生後に終了、`--no-rviz --once`は画面なしでの検証です。
@@ -232,21 +235,25 @@ ros2 run detachable_tools apriltag_fork_sim.py \
 `config/fork_simulation.yaml`はメートル・ラジアンです。
 既定動作は横から8 cm挿入 → detach → 上へ12 cm抜く → 下げる → attach → 横へ退避。
 forkの+Zが上、入口は-Yです。タグは36h11、ID=0、黒枠外周の一辺8 cm。
+タグはfork後部のバーの前面に固定し、バーはfork支柱へ接続しています。
+手首→グリッパと手首→カメラはJSKモデルの固定ジョイント列から取得します。
+標準手先と円柱のダミー工具は使用しません。右グリッパを独立した
+robot_state_publisherで表示し、解除後もねじ込み部・力覚センサは腕側に残します。
 右腕は観測姿勢から開始し、10枚の認識結果を平均してfork位置を固定します。
 画像の時刻に対応するカメラ姿勢で変換し、認識後は全560点のIK、関節範囲、
 関節速度、IK解の連続性を検査してから再生します。
-`--config FILE`で仮配置とカメラ取付位置を変更できます。
+`--config FILE`で仮配置と工具支持位置を変更できます。カメラ取付位置はURDFに従います。
 
 `/tmp/apriltag_fork_sim/`に初期カメラ画像、子プロセスログ、完了後の
 `report.json`を保存します（`--output`で変更可能）。認識できない場合、
 推定誤差が1 cmまたは5度を超える場合、IKが解けない場合は終了します。
 真値は画像生成と誤差検証のみに使い、動作目標は検出結果から求めます。
 
-これは理想ピンホールカメラと簡略工具／forkによる運動学検証です。
+これは理想ピンホールカメラとJSKの実形状ツール／簡略forkによる運動学検証です。
 画像はタグ平面を投影したもので、腕・工具による遮蔽、照明、レンズ歪み、
 接触力、衝突判定、ロックの機構は模擬していません。detach/attachは
-工具が手首に追従するかforkに残るかの状態切替です。既存Nextageモデルの
-手先外観と追加した工具図形は機械的な整合を保証しません。
+工具が手首に追従するかforkに残るかの状態切替です。ねじの回転・接触は
+計算していません。forkの寸法と工具の支持位置は仮設定です。
 実機のカメラ外部校正、fork寸法、脱着機構の検証には別途置き換えが必要です。
 
 ```bash

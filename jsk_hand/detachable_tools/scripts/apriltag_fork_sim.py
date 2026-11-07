@@ -16,7 +16,7 @@ import numpy as np
 import yaml
 from scipy.spatial.transform import Rotation
 from detachable_tools_common.fork_simulation import (
-    RightArm, TagCamera, make_plan, pose_error, transform)
+    RightArm, TagCamera, make_plan, pose_error, transform, split_jsk_model)
 
 
 def main():
@@ -45,24 +45,26 @@ def main():
     from visualization_msgs.msg import Marker, MarkerArray
     from tf2_ros import Buffer, TransformListener, TransformBroadcaster, TransformException
     from ament_index_python.packages import get_package_share_directory, get_package_prefix
-    import xacro
     import cv2
 
     source_share = Path(__file__).resolve().parent.parent
     share = source_share if (source_share / 'config/fork_simulation.yaml').exists() else Path(
         get_package_share_directory('detachable_tools'))
     config = yaml.safe_load((args.config or share / 'config/fork_simulation.yaml').read_text())
-    description = Path(get_package_share_directory('nextage_description')) / 'urdf/NextageOpen.urdf'
-    urdf = xacro.process_file(str(description)).toxml()
+    description = Path(get_package_share_directory('nextage_tutorials')) / 'urdf/JSKNextageOpenGripper.urdf'
+    urdf, tool_urdf, wrist_to_tool, wrist_to_camera = split_jsk_model(
+        description.read_text(), share)
     arm = RightArm(urdf)
     fork_truth = transform(config['fork_xyz'], config['fork_rpy'])
     fork_to_tag = transform(config['fork_to_tag_xyz'], config['fork_to_tag_rpy'])
     tag_truth = fork_truth @ fork_to_tag
-    wrist_to_camera = transform(config['wrist_to_camera_xyz'], config['wrist_to_camera_rpy'])
-    fork_to_wrist = transform(config['fork_to_wrist_xyz'], config['fork_to_wrist_rpy'])
+    fork_to_tool = transform(config['fork_to_tool_xyz'], config['fork_to_tool_rpy'])
+    fork_to_wrist = fork_to_tool @ np.linalg.inv(wrist_to_tool)
+    config['fork_to_wrist_xyz'] = fork_to_wrist[:3, 3].tolist()
+    config['fork_to_wrist_rpy'] = Rotation.from_matrix(fork_to_wrist[:3, :3]).as_euler('xyz').tolist()
     initial = fork_truth @ fork_to_wrist
     initial[:3, 3] += fork_truth[:3, :3] @ config['approach_offset']
-    q0 = arm.ik(initial, [-.15, -.22, -1.45, -1., -1.38, 1.26])
+    q0 = arm.ik(initial, [-.28, -.20, -1.86, .27, .40, 1.19])
     camera = TagCamera(config)
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / 'report.json').write_text(json.dumps({'completed': False}) + '\n')
@@ -71,7 +73,7 @@ def main():
 
     def spawn(package, executable, extra):
         binary = Path(get_package_prefix(package)) / 'lib' / package / executable
-        log = (args.output / (executable + '.log')).open('w')
+        log = (args.output / (str(len(children)) + '_' + executable + '.log')).open('w')
         logs.append(log)
         children.append(subprocess.Popen([str(binary), *extra], stdout=log, stderr=log))
 
@@ -141,6 +143,10 @@ def main():
             self.report.update(perception_position_error_m=float(pe),
                                perception_rotation_error_deg=float(np.rad2deg(re)),
                                detector_samples=len(self.observations),
+                               robot_model=str(description),
+                               wrist_to_tool=wrist_to_tool.tolist(),
+                               wrist_to_camera=wrist_to_camera.tolist(),
+                               tag_mount='fork rear bar',
                                fork_estimate=estimate.tolist(),
                                camera_model='ideal pinhole, no occlusion or lighting',
                                collision_checked=False, physics_simulated=False)
@@ -165,11 +171,12 @@ def main():
                 add(Marker.CUBE, fork_truth @ transform([x,-.045,0]), [.025,.15,.012], [.45,.5,.55,1])
             add(Marker.CUBE, fork_truth @ transform([0,.04,0]), [.095,.025,.012], [.45,.5,.55,1])
             add(Marker.CUBE, fork_truth @ transform([0,.04,-.12]), [.035,.035,.24], [.35,.4,.45,1])
-            tool = wrist @ np.linalg.inv(fork_to_wrist) if self.attached else self.parked_tool
-            add(Marker.CYLINDER, tool @ transform([0,0,-.05]), [.022,.022,.12], [0.1,.7,.85,1])
-            add(Marker.CYLINDER, tool @ transform([0,0,.016]), [.075,.075,.02], [0.1,.7,.85,1])
-            add(Marker.CYLINDER, wrist @ transform([0,0,.022]), [.04,.04,.044], [.8,.5,.15,1])
-            add(Marker.CUBE, cam, [.04,.025,.025], [.9,.7,.1,1])
+            # Tag-bearing rear bar is rigidly connected to the fork post.
+            tag_pos = np.array(config['fork_to_tag_xyz'])
+            add(Marker.CUBE, fork_truth @ transform([tag_pos[0]/2, tag_pos[1]+.012, tag_pos[2]]),
+                [abs(tag_pos[0])+.10,.02,.10], [.35,.4,.45,1])
+            add(Marker.CUBE, fork_truth @ transform([0,(tag_pos[1]+.04)/2,tag_pos[2]]),
+                [.025,abs(tag_pos[1]-.04)+.025,.025], [.35,.4,.45,1])
             # Actual tag bitmap as individual flat squares; white quiet border.
             cell = config['tag_size'] / 8
             add(Marker.CUBE, tag_truth @ transform([0,0,-.001]), [10*cell,10*cell,.002], [1,1,1,1])
@@ -180,7 +187,7 @@ def main():
                         add(Marker.CUBE, tag_truth @ transform([(col-3.5)*cell,(3.5-row)*cell,.0005]),
                             [cell,cell,.001], [0,0,0,1])
             add(Marker.TEXT_VIEW_FACING, transform([.35,-.30,.52]), [0,0,.027], [1,1,1,1],
-                'SIMULATION ONLY\n' + self.phase + ('\nLOCKED' if self.attached else '\nRELEASED'))
+                'JSK_NEJINEJI\n' + self.phase + ('\nLOCKED' if self.attached else '\nRELEASED'))
             if self.plan:
                 line = add(Marker.LINE_STRIP, np.eye(4), [.003,0,0], [.2,1,.3,1])
                 for q, _, _ in self.plan:
@@ -198,7 +205,7 @@ def main():
             elif self.index < len(self.plan):
                 self.q, self.phase, attached = self.plan[self.index]
                 if self.attached and not attached:
-                    self.parked_tool = arm.fk(self.q) @ np.linalg.inv(fork_to_wrist)
+                    self.parked_tool = arm.fk(self.q) @ wrist_to_tool
                 self.attached = attached
                 self.index += 1
             elif not self.done:
@@ -219,10 +226,13 @@ def main():
                 del self.history[next(iter(self.history))]
             self.broadcaster.sendTransform([
                 self.tf('WAIST', 'wrist_camera_optical', cam, stamp),
-                self.tf('WAIST', 'sim_fork_truth', fork_truth, stamp)])
+                self.tf('WAIST', 'sim_fork_truth', fork_truth, stamp),
+                self.tf('sim_fork_truth', 'sim_tag_mount', fork_to_tag, stamp),
+                self.tf('WAIST', 'rhand_base_link',
+                        wrist @ wrist_to_tool if self.attached else self.parked_tool, stamp)])
             js = JointState()
             js.header.stamp = stamp
-            js.name = arm.all_names
+            js.name = arm.all_names + ['lhand_joint', 'rhand_joint']
             positions = dict(zip(arm.names, self.q))
             positions.update(LARM_JOINT1=-.3, LARM_JOINT2=-1.4, LARM_JOINT4=.3)
             js.position = [float(positions.get(n, 0)) for n in js.name]
@@ -251,12 +261,16 @@ def main():
             params = Path(tmp) / 'params.yaml'
             params.write_text(yaml.safe_dump({
                 'robot_state_publisher': {'ros__parameters': {'robot_description': urdf}},
+                'tool_state_publisher': {'ros__parameters': {'robot_description': tool_urdf}},
                 'apriltag': {'ros__parameters': {
                     'family': '36h11', 'size': config['tag_size'], 'max_hamming': 0,
                     'pose_estimation_method': 'pnp', 'detector.decimate': 1.0,
                     'tag.ids': [config['tag_id']], 'tag.frames': ['fork_tag'],
                     'tag.sizes': [config['tag_size']]}}}))
             spawn('robot_state_publisher', 'robot_state_publisher', ['--ros-args', '--params-file', str(params)])
+            spawn('robot_state_publisher', 'robot_state_publisher', ['--ros-args',
+                  '-r', '__node:=tool_state_publisher', '--params-file', str(params),
+                  '-r', 'robot_description:=/tool/robot_description'])
             spawn('apriltag_ros', 'apriltag_node', ['--ros-args', '-r', '__node:=apriltag',
                   '--params-file', str(params), '-r', 'image_rect:=/wrist_camera/image_rect',
                   '-r', 'camera_info:=/wrist_camera/camera_info'])

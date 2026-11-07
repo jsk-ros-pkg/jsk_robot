@@ -133,3 +133,53 @@ class TagCamera:
         homography = cv2.getPerspectiveTransform(source, pixels)
         return cv2.warpPerspective(patch, homography, (self.width, self.height),
                                    flags=cv2.INTER_LINEAR, borderValue=230)
+
+
+def fixed_transform(root, parent, child):
+    """Read a rigid mounting transform from the URDF instead of duplicating calibration."""
+    result = np.eye(4)
+    while child != parent:
+        joint = next((j for j in root.findall('joint') if j.find('child').get('link') == child), None)
+        if joint is None or joint.get('type') != 'fixed':
+            raise ValueError(f'No fixed chain from {parent} to {child}')
+        origin = joint.find('origin')
+        local = np.eye(4) if origin is None else transform(
+            np.fromstring(origin.get('xyz', '0 0 0'), sep=' '),
+            np.fromstring(origin.get('rpy', '0 0 0'), sep=' '))
+        result = local @ result
+        child = joint.find('parent').get('link')
+    return result
+
+
+def split_jsk_model(urdf, mesh_share):
+    """Separate the detachable right gripper; keep left gripper and both NEJINEJI units."""
+    import copy
+    root = ET.fromstring(urdf)
+    wrist_tool = fixed_transform(root, 'RARM_JOINT5_Link', 'rhand_base_link')
+    wrist_camera = fixed_transform(root, 'RARM_JOINT5_Link', 'RARM_CAMERA_Link')
+    # The upstream JSK model still uses the package name from before the rename.
+    for mesh in root.findall('.//mesh'):
+        uri = mesh.get('filename')
+        for name in ('dynamixel_detachable_hand', 'detachable_tools'):
+            prefix = f'package://{name}/'
+            if uri.startswith(prefix):
+                mesh.set('filename', (mesh_share / uri[len(prefix):]).as_uri())
+    descendants = {'rhand_base_link'}
+    while True:
+        children = {j.find('child').get('link') for j in root.findall('joint')
+                    if j.find('parent').get('link') in descendants}
+        if children <= descendants:
+            break
+        descendants |= children
+    tool = ET.Element('robot', name='detachable_right_gripper')
+    for element in list(root):
+        if element.tag == 'material':
+            tool.append(copy.deepcopy(element))
+        if element.tag == 'link' and element.get('name') in descendants:
+            root.remove(element)
+            tool.append(element)
+        elif element.tag == 'joint' and element.find('child').get('link') in descendants:
+            root.remove(element)
+            if element.find('parent').get('link') in descendants:
+                tool.append(element)
+    return ET.tostring(root, encoding='unicode'), ET.tostring(tool, encoding='unicode'), wrist_tool, wrist_camera
