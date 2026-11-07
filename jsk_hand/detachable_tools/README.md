@@ -7,35 +7,6 @@ Detachable surgical tools (gripper, needle holder, forceps) driven by Dynamixel 
 | `gripper` | <img src="figs/real_hand.jpg" width="200"> | <img src="figs/sim_gripper_oblique.png" width="260"> |
 | `needle_holder` | <img src="figs/real_holder.jpg" width="200"> | <img src="figs/sim_needle_holder_oblique.png" width="260"> |
 
-```mermaid
-flowchart LR
-  subgraph User[" "]
-    Py["hand_controller (Python)"]
-    Eus["lhand-interface.l / rhand-interface.l"]
-  end
-  Manager["modular_hand_manager"]
-  subgraph Control["dynamixel_general_hw (ROS 1) / controller_manager (ROS 2)"]
-    Detacher["detacher"]
-    Tools["generic / gripper / needle_holder / forceps"]
-  end
-  Relay["joint_state_coupling_relay"]
-  RSP["robot_state_publisher"]
-  subgraph Bus["Dynamixel bus"]
-    M0["detacher motor"]
-    M1["tool motor"]
-  end
-
-  Py --> Manager
-  Eus --> Manager
-  Py --> Control
-  Eus --> Control
-  Manager --> Control
-  Manager --> RSP
-  Detacher --> M0
-  Tools --> M1
-  Control --> Relay --> RSP
-```
-
 ## Setup
 
 ```bash
@@ -200,65 +171,59 @@ For a tool named `<tool>` (on both `lhand` and `rhand`):
 
 Then `set_tool/<tool>` and `move_named("open", "<tool>")` work for the new tool.
 
-### AprilTag wrist-camera / fork simulation (ROS 2 Jazzy)
+### Fork simulation (ROS 2 Jazzy)
 
-ROSだけで動くJSKNextageOpen右腕の運動学デモです。仮想手首カメラの画像を
-`apriltag_ros`に入力し、検出TFからfork位置を計算してRVizで脱着を再生します。
-scikit-robotは不要です。
-
-```text
-仮想カメラ画像 + CameraInfo → apriltag_ros → camera→tag TF
-撮影時刻の腕FK + カメラ取付変換 + tag→fork → fork位置推定
-→ 全経路IK検証 → JointState / robot_state_publisher / RViz
-```
+Run in an environment where `nextage_tutorials` and `nextage_description` have been built.
 
 ```bash
-# 通常の依存導入（既に導入済みなら不要）
 sudo apt install ros-jazzy-apriltag-ros python3-scipy python3-opencv
 colcon build --packages-select detachable_tools
 source install/setup.bash
 ros2 run detachable_tools apriltag_fork_sim.py
 ```
 
-`nextage_tutorials`（`JSKNextageOpenGripper.urdf`とメッシュ）、
-`nextage_description`、`robot_state_publisher`、RVizも必要です。
-`nextage_tutorials`はこのデモの実行時に必要です。パッケージ全体への依存追加は
-循環依存になるため行っていません。既定では
-ROS_DOMAIN_ID=87、localhost内に分離し、実機のcontroller/actionは使用しません。
-Ctrl-Cで子プロセスも終了します。1回の再生後は画面を保持します。
-`--once`は再生後に終了、`--no-rviz --once`は画面なしでの検証です。
+- `--config FILE`: Use a custom configuration (default: `config/fork_simulation.yaml`)
+- `--no-rviz --once`: Run once without a GUI
+- `--output DIR`: Directory for logs (default: `/tmp/apriltag_fork_sim/`)
 
-この環境で検証したユーザーディレクトリの依存パッケージを使う場合：
+### Example for Nextage fork (ROS 2)
+
+Build `nextage_tutorials` and publish joint states, camera TFs, and detected AprilTag TFs before calling the services from a pose where the tag is visible.
 
 ```bash
-ros2 run detachable_tools apriltag_fork_sim.py \
-  --extra-prefix "$HOME/.cache/fork_sim_ros/root/opt/ros/jazzy"
+ros2 run detachable_tools nextage_fork_server.py \
+  --config "$(ros2 pkg prefix detachable_tools)/share/detachable_tools/config/nextage_fork_api.yaml"
 ```
 
-`config/fork_simulation.yaml`はメートル・ラジアンです。
-既定動作は横から8 cm挿入 → detach → 上へ12 cm抜く → 下げる → attach → 横へ退避。
-forkの+Zが上、入口は-Yです。タグは36h11、ID=0、黒枠外周の一辺8 cm。
-タグはfork後部のバーの前面に固定し、バーはfork支柱へ接続しています。
-手首→グリッパと手首→カメラはJSKモデルの固定ジョイント列から取得します。
-標準手先と円柱のダミー工具は使用しません。右グリッパを独立した
-robot_state_publisherで表示し、解除後もねじ込み部・力覚センサは腕側に残します。
-右腕は観測姿勢から開始し、10枚の認識結果を平均してfork位置を固定します。
-画像の時刻に対応するカメラ姿勢で変換し、認識後は全560点のIK、関節範囲、
-関節速度、IK解の連続性を検査してから再生します。
-`--config FILE`で仮配置と工具支持位置を変更できます。カメラ取付位置はURDFに従います。
+Services use `std_srvs/Trigger` under `/fork_exchange/`, with JSON in the response `message` field.
 
-`/tmp/apriltag_fork_sim/`に初期カメラ画像、子プロセスログ、完了後の
-`report.json`を保存します（`--output`で変更可能）。認識できない場合、
-推定誤差が1 cmまたは5度を超える場合、IKが解けない場合は終了します。
-真値は画像生成と誤差検証のみに使い、動作目標は検出結果から求めます。
+- `plan_detach` / `plan_attach`: Check the planned paths
+- `detach` / `attach`: Detach / attach the fork
 
-これは理想ピンホールカメラとJSKの実形状ツール／簡略forkによる運動学検証です。
-画像はタグ平面を投影したもので、腕・工具による遮蔽、照明、レンズ歪み、
-接触力、衝突判定、ロックの機構は模擬していません。detach/attachは
-工具が手首に追従するかforkに残るかの状態切替です。ねじの回転・接触は
-計算していません。forkの寸法と工具の支持位置は仮設定です。
-実機のカメラ外部校正、fork寸法、脱着機構の検証には別途置き換えが必要です。
+Python:
 
-```bash
-PYTHONPATH=src:$PYTHONPATH python3 -m unittest discover -s test -p 'test_fork_simulation.py'
+```python
+import rclpy
+from detachable_tools_common.fork_api import NextageForkAPI
+
+rclpy.init()
+node = rclpy.create_node('fork_client')
+fork = NextageForkAPI(node)
+future = fork.plan_detach()  # The same applies to plan_attach(), detach(), and attach()
+rclpy.spin_until_future_complete(node, future)
+print(fork.result(future.result()))
+node.destroy_node()
+rclpy.shutdown()
 ```
+
+EusLisp:
+
+```lisp
+(load "package://detachable_tools/euslisp/fork-exchange.l")
+(nextage-fork-plan-detach)
+(nextage-fork-plan-attach)
+(nextage-fork-detach)
+(nextage-fork-attach)
+```
+
+For real hardware, copy the configuration file and adjust the tag and tool transforms, camera TFs, observation poses, insertion direction, detach/attach currents and durations, and controller names to match your robot. Set `calibrated: true` and launch with `--hardware`.

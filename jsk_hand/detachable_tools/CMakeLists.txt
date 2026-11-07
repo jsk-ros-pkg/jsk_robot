@@ -29,6 +29,7 @@ set(_ros1_scripts
 # ROS 2 only
 set(_ros2_scripts
   scripts/apriltag_fork_sim.py
+  scripts/nextage_fork_server.py
   scripts/detect_hand_tools.py
   scripts/loop_closure_relay.py
 )
