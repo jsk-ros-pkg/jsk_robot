@@ -1,0 +1,55 @@
+# ROS 2: all hardware starts unconfigured; modular_hand_manager activates the detacher and the tool
+/**/controller_manager:
+  ros__parameters:
+    update_rate: 50
+    hardware_components_initial_state:
+      unconfigured: [lhand_detacher, lhand_generic, lhand_gripper, lhand_needle_holder, lhand_forceps, lhand_yubi]
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    joint_group_effort_controller:
+      type: effort_controllers/JointGroupEffortController
+    generic_gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+    gripper_gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+    needle_holder_gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+    yubi_gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+    forceps_gripper_controller:
+      type: parallel_gripper_action_controller/GripperActionController
+
+/**/joint_group_effort_controller:
+  ros__parameters:
+    joints: [lhand_detach_joint_0]
+
+/**/generic_gripper_controller:
+  ros__parameters:
+    joint: lhand_generic_joint
+    max_effort_interface: lhand_generic_joint/effort
+    allow_stalling: true
+
+/**/gripper_gripper_controller:
+  ros__parameters:
+    joint: lhand_gripper_joint
+    max_effort_interface: lhand_gripper_joint/effort
+    allow_stalling: true
+
+/**/needle_holder_gripper_controller:
+  ros__parameters:
+    joint: lhand_needle_holder_joint
+    max_effort_interface: lhand_needle_holder_joint/effort
+    allow_stalling: true
+
+/**/forceps_gripper_controller:
+  ros__parameters:
+    joint: lhand_forceps_joint
+    max_effort_interface: lhand_forceps_joint/effort
+    allow_stalling: true
+
+/**/yubi_gripper_controller:
+  ros__parameters:
+    joint: lhand_yubi_joint
+    max_effort_interface: lhand_yubi_joint/effort
+    allow_stalling: true

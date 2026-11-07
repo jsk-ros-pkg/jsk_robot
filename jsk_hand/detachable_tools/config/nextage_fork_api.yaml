@@ -1,0 +1,79 @@
+# Example geometry in metres/radians; hardware calibration is separate.
+rate: 20.0
+segment_seconds: 5.0
+approach_seconds: 8.0
+latch_seconds: 1.5
+fork_xyz:
+- 0.32
+- -0.3
+- 0.06
+fork_rpy:
+- 0.0
+- 0.0
+- 0.0
+fork_to_tool_xyz:
+- 0
+- 0
+- 0.015
+fork_to_tool_rpy:
+- 3.141592653589793
+- 0.0
+- 0.0
+approach_offset:
+- 0
+- 0.07
+- 0
+entrance_sign: 1.0
+lift_distance: 0.12
+observation_camera_xyz:
+- 0.04079105477080315
+- 0.039516752399190565
+- 0.08000000000009905
+fork_to_tag_xyz:
+- 0.065
+- 0.025
+- 0.006
+fork_to_tag_rpy:
+- 0.0
+- 0.0
+- 0.0
+tag_id: 0
+tag_size: 0.025
+image_size:
+- 640
+- 480
+focal_length: 600.0
+calibrated: false
+camera_frame: right_ft_camera_optical
+tag_frame: fork_tag
+joint_states_topic: /joint_states
+trajectory_action: /fullbody_controller/follow_joint_trajectory_action
+effort_controller: /rhand/joint_group_effort_controller
+effort_topic: /rhand/joint_group_effort_controller/commands
+detach_current_ma: 400.0
+max_tag_age: 0.5
+max_state_age: 0.5
+observation_seed:
+- 0.5685958078374537
+- -0.34150223688188486
+- -2.1453358850524213
+- 0.3314047883791822
+- 1.013077511065285
+- -2.4924744146249855
+tool_neck_radius: 0.0202
+fork_radial_clearance: 0.0003
+fork_thickness: 0.008
+fork_mouth_depth: 0.04
+fork_back_depth: 0.032
+vision_settle_seconds: 0.2
+vision_timeout_seconds: 3.0
+vision_confirm_frames: 5
+vision_position_tolerance_m: 0.001
+vision_rotation_tolerance_deg: 2.0
+observation_camera_roll: 0.2852808228121139
+observation_attach_camera_xyz:
+- 0.027785166585477264
+- -0.013770742011883965
+- 0.1567780034913757
+observation_attach_camera_roll: 2.223844448024273
+observation_seconds: 8.0

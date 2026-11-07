@@ -1,0 +1,10 @@
+# Closed-loop closures for loop_closure_relay (runtime IK).
+# independent = driven joints (sliders); dependent = solved by IK
+# so each closure's two link points (the cut hinge) coincide.
+closures:
+- link_a: small_needle_holder_link2_1
+  link_b: SURGERY_CLAMP_01_1
+  point: [-0.00657314, -0.05709536, -0.01068661]
+  axis: [-2.65e-06, 6.33e-06, -1.0]
+dependent: [SURGERY_CLAMP_ASSY_1__SURGERY_CLAMP_01_1, small_needle_holder_link1_1__small_needle_holder_link2_1]
+independent: [XL_XC_330_1__small_needle_holder_link1_1]

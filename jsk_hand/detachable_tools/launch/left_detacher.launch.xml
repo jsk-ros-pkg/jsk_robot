@@ -1,0 +1,12 @@
+<launch>
+  <arg name="port_name" default="/dev/lhand" />
+  <arg name="baud_rate" default="57600" />
+  <arg name="namespace" default="lhand" />
+
+  <include file="$(find-pkg-share detachable_tools)/launch/hand_detacher.launch.xml">
+    <arg name="side" value="lhand" />
+    <arg name="namespace" value="$(var namespace)" />
+    <arg name="port_name" value="$(var port_name)" />
+    <arg name="baud_rate" value="$(var baud_rate)" />
+  </include>
+</launch>

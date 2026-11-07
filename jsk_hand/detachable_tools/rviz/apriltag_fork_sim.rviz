@@ -1,0 +1,67 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+      Cell Size: 0.1
+      Plane Cell Count: 20
+      Offset: {X: 0, Y: 0, Z: -0.5}
+    - Class: rviz_default_plugins/RobotModel
+      Enabled: true
+      Name: JSKNextageOpen
+      Visual Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+        Depth: 5
+    - Class: rviz_default_plugins/RobotModel
+      Enabled: true
+      Name: Detachable right gripper
+      Visual Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /tool/robot_description
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+        Depth: 5
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Name: Fork and tool
+      Topic:
+        Value: /fork_sim/markers
+        Depth: 5
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Name: Wrist camera
+      Topic:
+        Value: /wrist_camera/image_rect
+        Reliability Policy: Reliable
+        Depth: 5
+      Min Value: 0
+      Max Value: 255
+      Normalize Range: true
+  Global Options:
+    Fixed Frame: WAIST
+    Background Color: 38; 42; 48
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 1.65
+      Focal Point: {X: 0.22, Y: -0.18, Z: 0.15}
+      Pitch: 0.3
+      Yaw: -0.85
+Window Geometry:
+  Width: 1280
+  Height: 900

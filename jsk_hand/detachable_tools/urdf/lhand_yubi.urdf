@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="lhand_yubi_robot">
+  <!-- Imported YUBI static CAD; drive joint is control-only. Left/right share the supplied geometry. -->
+  <link name="lhand_base_link" />
+  <link name="lhand_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://detachable_tools/meshes/yubi/yubi_xc330_front_flat_with_interface.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="pla_gray">
+        <color rgba="0.75 0.75 0.75 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://detachable_tools/meshes/yubi/yubi_xc330_front_flat_with_interface.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="lhand_yubi_mount_joint" type="fixed">
+    <parent link="lhand_base_link" />
+    <child link="lhand_link" />
+  </joint>
+  <link name="lhand_drive_link" />
+  <joint name="lhand_joint" type="revolute">
+    <parent link="lhand_link" />
+    <child link="lhand_drive_link" />
+    <origin xyz="0 0 -0.022" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-1.2" upper="1.2" effort="1.0" velocity="3.0" />
+    <dynamics damping="0.01" friction="0.01" />
+  </joint>
+  <transmission name="lhand_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="lhand_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <offset>0.0</offset>
+    </joint>
+    <actuator name="lhand_motor">
+      <mechanicalReduction>1.0</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <ros2_control name="lhand_yubi" type="system">
+    <hardware>
+      <plugin>dynamixel_hardware_interface/DynamixelHardware</plugin>
+      <param name="port_name">/dev/lhand</param>
+      <param name="baud_rate">57600</param>
+      <param name="number_of_joints">1</param>
+      <param name="number_of_transmissions">1</param>
+      <param name="dynamixel_model_folder">/param/dxl_model</param>
+      <param name="disable_torque_at_init">true</param>
+      <param name="error_timeout_ms">1000</param>
+      <param name="dynamixel_state_pub_msg_name">yubi/dxl_state</param>
+      <param name="get_dynamixel_data_srv_name">yubi/get_dxl_data</param>
+      <param name="set_dynamixel_data_srv_name">yubi/set_dxl_data</param>
+      <param name="reboot_dxl_srv_name">yubi/reboot_dxl</param>
+      <param name="set_dxl_torque_srv_name">yubi/set_dxl_torque</param>
+      <param name="protocol_version">2.0</param>
+      <param name="initialize_communication_on_configure">true</param>
+    </hardware>
+    <gpio name="lhand_motor">
+      <param name="ID">8</param>
+      <param name="type">dxl</param>
+      <param name="Return Delay Time">0</param>
+      <param name="Operating Mode">5</param>
+      <param name="Torque Enable">1</param>
+      <param name="[unit info]">Present Current,0.00115,N m,signed,0.0;Goal Current,0.00115,N m,signed,0.0</param>
+      <command_interface name="Goal Position" />
+      <command_interface name="Goal Current" />
+      <state_interface name="Present Position" />
+      <state_interface name="Present Velocity" />
+      <state_interface name="Present Current" />
+    </gpio>
+    <joint name="lhand_joint">
+      <command_interface name="position" />
+      <command_interface name="effort" />
+      <state_interface name="position" />
+      <state_interface name="velocity" />
+      <state_interface name="effort" />
+      <state_interface name="hardware_state" />
+      <state_interface name="torque_enable" />
+    </joint>
+  </ros2_control>
+</robot>

@@ -1,0 +1,6 @@
+# Rack fingers of the lhand gripper: 0 m at open (-2.25 rad), 0.05 m at close (-4.5 rad)
+couplings:
+  - driver: lhand_joint
+    followers:
+      - joint: lhand_finger_joint
+        poly: [-0.02222222, -0.05000000]

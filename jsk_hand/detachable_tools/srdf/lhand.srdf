@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!-- Named positions of the lhand hand motor (<side>_joint, rad) for each tool -->
+<robot name="lhand">
+  <group name="lhand_generic">
+    <joint name="lhand_joint" />
+  </group>
+  <group name="lhand_gripper">
+    <joint name="lhand_joint" />
+  </group>
+  <group name="lhand_needle_holder">
+    <joint name="lhand_joint" />
+  </group>
+  <group name="lhand_forceps">
+    <joint name="lhand_joint" />
+  </group>
+  <group name="lhand_yubi">
+    <joint name="lhand_joint" />
+  </group>
+  <group_state name="open" group="lhand_generic">
+    <joint name="lhand_joint" value="-2.25" />
+  </group_state>
+  <group_state name="close" group="lhand_generic">
+    <joint name="lhand_joint" value="-4.5" />
+  </group_state>
+  <group_state name="open" group="lhand_gripper">
+    <joint name="lhand_joint" value="-2.25" />
+  </group_state>
+  <group_state name="close" group="lhand_gripper">
+    <joint name="lhand_joint" value="-4.5" />
+  </group_state>
+  <group_state name="open" group="lhand_needle_holder">
+    <joint name="lhand_joint" value="-1.87" />
+  </group_state>
+  <group_state name="close" group="lhand_needle_holder">
+    <joint name="lhand_joint" value="1.0" />
+  </group_state>
+  <group_state name="open" group="lhand_forceps">
+    <joint name="lhand_joint" value="-2.2" />
+  </group_state>
+  <group_state name="close" group="lhand_forceps">
+    <joint name="lhand_joint" value="-3.0" />
+  </group_state>
+  <group_state name="open_scissors" group="lhand_forceps">
+    <joint name="lhand_joint" value="-0.8" />
+  </group_state>
+  <group_state name="close_scissors" group="lhand_forceps">
+    <joint name="lhand_joint" value="-0.1" />
+  </group_state>
+</robot>
